@@ -29,3 +29,14 @@ describe('objectToQueryParams()', () => {
 
   })
 })
+
+describe('insertScriptElement()', () => {
+  beforeEach(() => {
+    document.head.innerHTML = '';
+  });
+
+  test('inserts a <script> into the DOM', () => {
+    const script = insertScriptElement('');
+    expect(document.querySelector('script')).toBe(script);
+  })
+})

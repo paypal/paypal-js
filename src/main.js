@@ -3,7 +3,7 @@ import { objectToQueryParams, insertScriptElement } from './utils';
 const SDK_BASE_URL = 'https://www.paypal.com/sdk/js';
 let loadingPromise;
 
-export default function getScript(params) {
+export default function getScript(params = {}) {
 
   if (loadingPromise) return loadingPromise;
 
@@ -22,5 +22,9 @@ export default function getScript(params) {
 
       return reject(new Error('window.paypal not available'));
     })
+
+    script.addEventListener('error', () => {
+      return reject(new Error('failed to load the paypal js sdk'));
+    });
   })
 }

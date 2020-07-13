@@ -18,9 +18,14 @@ export default {
       format: 'cjs'
     },
     {
+      file: 'dist/iife-bundle.js',
+      format: 'iife',
+      name: 'paypalGetScript'
+    },
+    {
       file: 'dist/iife-bundle.min.js',
       format: 'iife',
-      name: 'version',
+      name: 'paypalGetScript',
       plugins: [terser()]
     }
   ]

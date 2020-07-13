@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Basic Demo | PayPal JS</title>
+  </head>
+  <body>
+    <script src="../dist/iife-bundle.js"></script>
+    <script>
+      window.paypalGetScript({ clientID: 'sb' })
+        .then(paypal => {
+          paypal.Buttons().render('body');
+        })
+    </script>
+  </body>
+</html>
