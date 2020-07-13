@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "rollup --config",
-    "test": "jest"
+    "test": "jest --env=jsdom src",
+    "test:e2e": "jest -c e2e-tests/jest.config.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,8 @@
     "@rollup/plugin-babel": "^5.0.4",
     "babel-jest": "^26.1.0",
     "jest": "^26.1.0",
+    "jest-puppeteer": "^4.4.0",
+    "puppeteer": "^5.1.0",
     "rollup": "^2.21.0",
     "rollup-plugin-terser": "^6.1.0"
   }
