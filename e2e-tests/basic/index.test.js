@@ -1,13 +1,9 @@
-import { setDefaultOptions } from 'expect-puppeteer'
-
-const timeout = 5000;
-setDefaultOptions({ timeout })
-jest.setTimeout(timeout)
+import { baseURL } from '../test-helper'
 
 describe('Basic Demo', () => {
   beforeEach(async () => {
     await Promise.all([
-        page.goto('http://localhost:4444/e2e-tests/basic/index.html'),
+        page.goto(`${baseURL}/e2e-tests/basic/index.html`),
         page.waitForResponse(response => response.url().startsWith('https://www.paypal.com/sdk/js'))
     ])
   })
@@ -24,18 +20,6 @@ describe('Basic Demo', () => {
       });
 
     expect(version.startsWith('5')).toBe(true);
-
-
-    // await page.evaluate(_ => {
-    //   document.body.style.background = '#000';
-    // });
-
-    // Debit or Credit Card
-    // await page.setRequestInterception(true);
-    // page.on('request', request => {
-    //   console.log('INTERCEPTED: ' + request.url());
-    //   request.continue();
-    // });
   })
 
 

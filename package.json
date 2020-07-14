@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "rollup --config",
+    "lint": "eslint .",
     "test": "jest --env=jsdom src",
     "test:e2e": "jest -c e2e-tests/jest.config.js",
-    "lint": "eslint ."
+    "test:e2e:start": "http-server"
+
   },
   "keywords": [],
   "author": "",
@@ -18,6 +20,7 @@
     "@rollup/plugin-babel": "^5.0.4",
     "babel-jest": "^26.1.0",
     "eslint": "^7.4.0",
+    "http-server": "^0.12.3",
     "jest": "^26.1.0",
     "jest-puppeteer": "^4.4.0",
     "puppeteer": "^5.1.0",

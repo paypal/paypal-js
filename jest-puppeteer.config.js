@@ -1,9 +1,12 @@
+const port = 4444;
+
+
 module.exports = {
   launch: {
     headless: false
   },
   server: {
-    command: 'python -m SimpleHTTPServer 4444',
-    port: 4444
+    command: `npm run test:e2e:start -- --port=${port}`,
+    port
   }
 }
