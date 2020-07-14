@@ -1,4 +1,4 @@
-import { baseURL } from '../test-helper'
+import { baseURL, verison } from '../test-helper'
 
 describe('Basic Demo', () => {
   beforeEach(async () => {
@@ -11,6 +11,14 @@ describe('Basic Demo', () => {
   it('should return the expected page <title>', async () => {
     const pageTitle = await page.title();
     expect(pageTitle).toBe('Basic Demo | PayPal JS');
+  })
+
+  it('should use version from package.json for "window.paypalGetScript.version"', async () => {
+    const version = await page.evaluate(() => {
+      return window.paypalGetScript.version;
+    });
+
+    expect(version).toBe(version);
   })
 
   it('should load the js sdk version 5.x.x', async () => {

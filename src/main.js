@@ -28,3 +28,6 @@ export default function getScript(params = {}) {
         });
     })
 }
+
+// replaced with the package.json version at build time
+getScript.version = '__VERSION__';
