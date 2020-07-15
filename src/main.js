@@ -10,23 +10,16 @@ export default function getScript(params = {}) {
     return loadingPromise = new Promise((resolve, reject) => {
 
         // resolve with null when running in Node
-        if (!window) resolve(null);
+        if (!window) return resolve(null);
 
         const queryParameters = objectToQueryParams(params);
-        const script = insertScriptElement(`${SDK_BASE_URL}?${queryParameters}`);
 
-        script.addEventListener('load', () => {
-            if (window.paypal) {
-                return resolve(window.paypal);
-            }
+        insertScriptElement(`${SDK_BASE_URL}?${queryParameters}`, () => {
+            if (window.paypal) return resolve(window.paypal);
 
-            return reject(new Error('window.paypal not available'));
-        })
-
-        script.addEventListener('error', () => {
-            return reject(new Error('failed to load the paypal js sdk'));
+            return reject(new Error('The window.paypal global variable is not available.'));
         });
-    })
+    });
 }
 
 // replaced with the package.json version at build time

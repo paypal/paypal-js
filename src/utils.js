@@ -1,9 +1,13 @@
-export function insertScriptElement(url) {
-    const script = document.createElement('script');
-    script.src = url;
-    document.head.appendChild(script);
+function loadError() {
+    throw new Error(`The script "${this.src}" didn't load correctly.`);
+}
 
-    return script;
+export function insertScriptElement(url, onloadFunction) {
+    const newScript = document.createElement('script');
+    newScript.onerror = loadError;
+    if (onloadFunction) newScript.onload = onloadFunction;
+    document.head.appendChild(newScript);
+    newScript.src = url;
 }
 
 export function camelCaseToCabobCase(string) {
