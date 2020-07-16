@@ -2,51 +2,55 @@
 
 An async loader for the PayPal JS SDK.
 
-```shell
+
+## Installation and usage
+
+To get started, install paypal-js with npm.
+
+```sh
 npm install @paypal/paypal-js
 ```
 
-## Using paypal-js without a build tool
+Then import the `getScript` function for asynchronously loading the Paypal JS SDK.
 
-1. Load the iife-bundle.min.js script.
-2. This script adds a single global function named `window.paypalGetScript(params)`.
+```js
+import { getScript } from '@paypal/paypal-js';
+
+getScript({ clientID: 'sb' })
+    .then(paypal => {
+        paypal.Buttons().render('#your-container-element');
+    });
+```
+
+### `getScript`
+
+- accepts an object for passing query parameters to the JS SDK. The camelCase keys are converted to cabob-case before passing them as query parameters.
+- returns a Promise that resolves with `window.paypal` after the JS SDK is finished loading.
+
+
+### Using paypal-js without a build tool
 
 ```html
-<script src="dist/iife-bundle.min.js"></script>
+<script src="dist/paypal.iife.min.js"></script>
 <div id="paypal-button-container"></div>
 ```
 
 ```js
-window.paypalGetScript({ clientID: 'sb' })
+window.paypalLoader.getScript({ clientID: 'sb' })
     .then(paypal => {
         paypal.Buttons().render('#paypal-button-container');
     });
 ```
 
 
-## Using paypal-js with JavaScript modules (import/export)
+### Using paypal-js with React
 
-1. Import paypal-js
-2. Call the default function `getScript(params)`.
-
-```js
-import getScript from 'paypal-js';
-
-getScript({ clientID: 'sb' })
-    .then(paypal => {
-        paypal.Buttons().render('#paypal-button-container');
-    });
-```
-
-
-## Using paypal-js with React
-
-With paypal-js the script loading can be decoupled from the rendering of the buttons.
+Use paypal-js to load the JS SDK independently from rendering the buttons.
 
 ```js
 // App.js
 import React from 'react';
-import getScript from '@paypal/paypal-js';
+import { getScript } from '@paypal/paypal-js';
 import PayPalButtonsWrapper from './PayPalButtonsWrapper';
 
 const loadingPromise = getScript({ clientID: 'sb' });
