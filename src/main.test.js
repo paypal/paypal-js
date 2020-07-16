@@ -1,4 +1,4 @@
-import getScript from './main';
+import { getScript } from './main';
 
 jest.mock('./utils', () => (
     {

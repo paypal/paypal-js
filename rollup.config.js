@@ -12,7 +12,7 @@ export default {
     ],
     output: [
         {
-            file: 'dist/esm-bundle.js',
+            file: 'dist/paypal.esm.js',
             format: 'esm',
             plugins: [
                 getBabelOutputPlugin({
@@ -21,18 +21,18 @@ export default {
             ]
         },
         {
-            file: 'dist/cjs-bundle.js',
+            file: 'dist/paypal.js',
             format: 'cjs'
         },
         {
-            file: 'dist/iife-bundle.js',
+            file: 'dist/paypal.iife.js',
             format: 'iife',
-            name: 'paypalGetScript'
+            name: 'paypalLoader'
         },
         {
-            file: 'dist/iife-bundle.min.js',
+            file: 'dist/ipaypal.iife.min.js',
             format: 'iife',
-            name: 'paypalGetScript',
+            name: 'paypalLoader',
             plugins: [terser()]
         }
     ]

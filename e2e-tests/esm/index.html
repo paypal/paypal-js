@@ -6,7 +6,7 @@
   </head>
   <body>
     <script type="module">
-        import getScript from '../../dist/esm-bundle.js';
+        import { getScript } from '../../dist/paypal.esm.js';
 
         getScript({ clientID: 'sb' })
           .then(paypal => {

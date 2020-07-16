@@ -1,8 +1,9 @@
 {
-  "name": "paypal-js",
+  "name": "@paypal/paypal-js",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Async loader for the JS SDK",
+  "main": "dist/paypal.js",
+  "module": "dist/paypal.esm.js",
   "scripts": {
     "build": "rollup --config",
     "lint": "eslint .",

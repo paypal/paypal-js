@@ -3,7 +3,7 @@ import { objectToQueryParams, insertScriptElement } from './utils';
 const SDK_BASE_URL = 'https://www.paypal.com/sdk/js';
 let loadingPromise;
 
-export default function getScript(params = {}) {
+export function getScript(params = {}) {
 
     if (loadingPromise) return loadingPromise;
 
@@ -23,4 +23,4 @@ export default function getScript(params = {}) {
 }
 
 // replaced with the package.json version at build time
-getScript.version = '__VERSION__';
+export const version = '__VERSION__';

@@ -13,9 +13,9 @@ describe('window.paypalGetScript (IIFE)', () => {
         expect(pageTitle).toBe('IIFE Demo | PayPal JS');
     });
 
-    it('should use version from package.json for "window.paypalGetScript.version"', async () => {
+    it('should use version from package.json for "window.paypalLoader.version"', async () => {
         const paypalGetScriptVersion = await page.evaluate(() => {
-            return window.paypalGetScript.version;
+            return window.paypalLoader.version;
         });
 
         expect(paypalGetScriptVersion).toBe(version);
