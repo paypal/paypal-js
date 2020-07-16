@@ -2,7 +2,7 @@ import { setDefaultOptions } from 'expect-puppeteer';
 import jestPuppeteerConfig from '../jest-puppeteer.config';
 import pkg from '../package.json';
 
-export const timeout = 5000;
+export const timeout = 10000;
 setDefaultOptions({ timeout });
 jest.setTimeout(timeout);
 
