@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Demo using window.paypalLoader.loadScript() | PayPal JS</title>
+  </head>
+  <body>
+    <h1>Demo using window.paypalLoader.loadScript()</h1>
+
+    <script src="../../dist/paypal.js"></script>
+    <script>
+      window.paypalLoader.loadScript({ 'client-id': 'sb' })
+          .then(paypal => {
+              paypal.Buttons().render('body');
+          })
+    </script>
+  </body>
+</html>

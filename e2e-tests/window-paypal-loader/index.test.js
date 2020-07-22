@@ -1,16 +1,16 @@
 import { baseURL, version } from '../test-helper';
 
-describe('window.paypalGetScript (IIFE)', () => {
+describe('window.paypalLoader.loadScript()', () => {
     beforeEach(async () => {
         await Promise.all([
-            page.goto(`${baseURL}/e2e-tests/iife/index.html`),
+            page.goto(`${baseURL}/e2e-tests/window-paypal-loader/index.html`),
             page.waitForResponse(response => response.url().startsWith('https://www.paypal.com/sdk/js'))
         ]);
     });
 
     it('should return the expected page <title>', async () => {
         const pageTitle = await page.title();
-        expect(pageTitle).toBe('IIFE Demo | PayPal JS');
+        expect(pageTitle).toBe('Demo using window.paypalLoader.loadScript() | PayPal JS');
     });
 
     it('should use version from package.json for "window.paypalLoader.version"', async () => {
@@ -22,7 +22,6 @@ describe('window.paypalGetScript (IIFE)', () => {
     });
 
     it('should load the js sdk version 5.x.x', async () => {
-
         const paypalVersion = await page.evaluate(() => {
             return window.paypal.version;
         });

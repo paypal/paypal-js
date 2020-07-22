@@ -14,12 +14,16 @@ describe('EcmaScript Module (ESM)', () => {
     });
 
     it('should load the js sdk version 5.x.x', async () => {
-
         const paypalVersion = await page.evaluate(() => {
             return window.paypal.version;
         });
 
         expect(paypalVersion.startsWith('5')).toBe(true);
+    });
+
+    it('the script should have the data-order-id attribute', async () => {
+        const orderId = await page.$eval('head script', element => element.getAttribute('data-order-id'));
+        expect(orderId).toBe('12345');
     });
 
     it('should display the inline form when clicking the "Debit or Credit Card" button', async () => {

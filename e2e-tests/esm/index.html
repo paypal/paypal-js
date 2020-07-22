@@ -5,10 +5,12 @@
     <title>ESM Demo | PayPal JS</title>
   </head>
   <body>
-    <script type="module">
-        import { getScript } from '../../dist/paypal.esm.js';
+    <h1>ESM Demo</h1>
 
-        getScript({ clientID: 'sb' })
+    <script type="module">
+        import { loadScript } from '../../dist/paypal.esm.js';
+
+        loadScript({ 'client-id': 'sb', 'data-order-id': '12345' })
           .then(paypal => {
               paypal.Buttons().render('body');
           });

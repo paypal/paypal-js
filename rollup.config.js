@@ -21,16 +21,16 @@ export default {
             ]
         },
         {
-            file: 'dist/paypal.js',
+            file: 'dist/paypal.node.js',
             format: 'cjs'
         },
         {
-            file: 'dist/paypal.iife.js',
+            file: 'dist/paypal.js',
             format: 'iife',
             name: 'paypalLoader'
         },
         {
-            file: 'dist/ipaypal.iife.min.js',
+            file: 'dist/paypal.min.js',
             format: 'iife',
             name: 'paypalLoader',
             plugins: [terser()]
