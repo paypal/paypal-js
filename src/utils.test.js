@@ -1,4 +1,4 @@
-import { findScript, insertScriptElement, processOptions } from './utils';
+import { findScript, insertScriptElement, objectToQueryString } from './utils';
 
 jest.useFakeTimers();
 
@@ -21,19 +21,14 @@ describe('findScript()', () => {
     });
 });
 
-describe('processOptions()', () => {
-    test('returns a valid attribute object and query string', () => {
-        const options = {
+describe('objectToQueryString()', () => {
+    test('coverts an object to a query string', () => {
+        const params = {
             'client-id': 'sb',
-            currency: 'USD',
-            'data-order-id': '12345',
-            'invalid-property-that-should-be-ignored': 'invalid'
+            currency: 'USD'
         };
 
-        const { attributes, queryString } = processOptions(options);
-
-        expect(attributes).toEqual({ 'data-order-id': '12345' });
-        expect(queryString).toBe('client-id=sb&currency=USD');
+        expect(objectToQueryString(params)).toBe('client-id=sb&currency=USD');
     });
 });
 

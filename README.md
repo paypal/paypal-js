@@ -16,7 +16,13 @@ Then import the `loadScript` function for asynchronously loading the Paypal JS S
 ```js
 import { loadScript } from '@paypal/paypal-js';
 
-loadScript({ 'client-id': 'sb' })
+const options = {
+    params: {
+        'client-id': 'sb'
+    }
+};
+
+loadScript(options)
     .then(paypal => {
         paypal.Buttons().render('#your-container-element');
     });
@@ -36,7 +42,13 @@ loadScript({ 'client-id': 'sb' })
 ```
 
 ```js
-window.paypalLoader.loadScript({ 'client-id': 'sb' })
+const options = {
+    params: {
+        'client-id': 'sb'
+    }
+};
+
+window.paypalLoader.loadScript(options)
     .then(paypal => {
         paypal.Buttons().render('#paypal-button-container');
     });
@@ -50,7 +62,7 @@ import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { loadScript } from '@paypal/paypal-js';
 
-const loadingPromise = loadScript({ 'client-id': 'sb' });
+const loadingPromise = loadScript({ params: { 'client-id': 'sb' } });
 let PayPalButtonsFromDriver;
 
 export default function Checkout() {

@@ -9,7 +9,13 @@
 
     <script src="../../dist/paypal.js"></script>
     <script>
-      window.paypalLoader.loadScript({ 'client-id': 'sb' })
+      const options = {
+          params: {
+              'client-id': 'sb'
+          }
+      };
+
+      window.paypalLoader.loadScript(options)
           .then(paypal => {
               paypal.Buttons().render('body');
           })

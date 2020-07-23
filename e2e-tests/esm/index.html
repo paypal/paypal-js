@@ -10,7 +10,16 @@
     <script type="module">
         import { loadScript } from '../../dist/paypal.esm.js';
 
-        loadScript({ 'client-id': 'sb', 'data-order-id': '12345' })
+        const options = {
+            params: {
+                'client-id': 'sb'
+            },
+            attributes: {
+                'data-order-id': '12345'
+            }
+        };
+
+        loadScript(options)
           .then(paypal => {
               paypal.Buttons().render('body');
           });
