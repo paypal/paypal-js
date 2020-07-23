@@ -37,7 +37,7 @@ loadScript(options)
 ### Using paypal-js without a build tool
 
 ```html
-<script src="dist/paypal.min.js"></script>
+<script src="https://www.paypalobjects.com/api/paypal-js-sdk-loader.js"></script>
 <div id="paypal-button-container"></div>
 ```
 
