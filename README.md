@@ -14,7 +14,7 @@ npm install @paypal/paypal-js
 
 Import the `loadScript` function for asynchronously loading the Paypal JS SDK.
 
-`loadScript(options)`
+### `loadScript(options)`
 - accepts an object for passing query parameters and attributes to the JS SDK.
 - returns a Promise that resolves with `window.paypal` after the JS SDK is finished loading.
 
