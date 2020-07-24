@@ -27,21 +27,6 @@ loadScript({ 'client-id': 'sb' })
     });
 ```
 
-### Using paypal-js without a build tool
-
-```html
-<script src="https://www.paypalobjects.com/api/paypal-js-sdk-loader.js"></script>
-<div id="paypal-button-container"></div>
-```
-
-```js
-window.paypalLoader.loadScript({ 'client-id': 'sb' })
-    .then(paypal => {
-        paypal.Buttons().render('#paypal-button-container');
-    });
-```
-
-
 ### Using paypal-js with React
 
 ```js

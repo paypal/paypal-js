@@ -1,21 +1,28 @@
 import { baseURL } from '../test-helper';
 
-describe('EcmaScript Module (ESM)', () => {
+describe('Buttons Component', () => {
     beforeEach(async () => {
         await Promise.all([
-            page.goto(`${baseURL}/e2e-tests/esm/index.html`, {waitUntil: 'networkidle2'}),
-            page.waitForResponse(response => response.url().startsWith('https://www.paypal.com/sdk/js')),
+            page.goto(`${baseURL}/e2e-tests/buttons/index.html`, {waitUntil: 'networkidle2'}),
+            page.waitForResponse(response => response.url().startsWith('https://www.paypal.com/sdk/js'))
         ]);
     });
 
     it('should return the expected page <title>', async () => {
         const pageTitle = await page.title();
-        expect(pageTitle).toBe('ESM Demo | PayPal JS');
+        expect(pageTitle).toBe('Buttons Demo | PayPal JS');
     });
 
     it('should load the js sdk version 5.x.x', async () => {
         const paypalVersion = await page.evaluate(() => {
-            return window.paypal.version;
+            return new Promise(resolve => {
+                const interval = window.setInterval(() => {
+                    if (typeof window.paypal === "object") {
+                        window.clearInterval(interval);
+                        resolve(window.paypal.version);
+                    }
+                }, 100);
+            });
         });
 
         expect(paypalVersion.startsWith('5')).toBe(true);
