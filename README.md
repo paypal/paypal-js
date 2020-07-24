@@ -26,32 +26,3 @@ loadScript({ 'client-id': 'sb' })
         paypal.Buttons().render('#your-container-element');
     });
 ```
-
-### Using paypal-js with React
-
-```js
-import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom';
-import { loadScript } from '@paypal/paypal-js';
-
-const loadingPromise = loadScript({ 'client-id': 'sb' });
-let PayPalButtonsFromDriver;
-
-export default function Checkout() {
-    const [isLoaded, setIsLoaded] = useState(false);
-
-    useEffect(() => {
-        loadingPromise
-            .then(paypal => {
-                PayPalButtonsFromDriver = paypal.Buttons.driver('react', { React, ReactDOM });
-                setIsLoaded(true);
-            });
-    });
-
-    if (isLoaded) {
-        return <PayPalButtonsFromDriver />;
-    }
-
-    return 'loading';
-}
-```
