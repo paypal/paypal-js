@@ -11,7 +11,7 @@ export default {
     ],
     output: [
         {
-            file: 'dist/paypal.esm.js',
+            file: pkg.module,
             format: 'esm',
             plugins: [
                 getBabelOutputPlugin({
@@ -20,7 +20,7 @@ export default {
             ]
         },
         {
-            file: 'dist/paypal.node.js',
+            file: pkg.main,
             format: 'cjs'
         }
     ]
