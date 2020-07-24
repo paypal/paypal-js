@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Demo using both Credit Messaging and Buttons | PayPal JS</title>
+  </head>
+  <body>
+    <h1>Demo using both Credit Messaging and Buttons</h1>
+
+    <div id="messages"></div>
+    <div id="buttons"></div>
+
+    <script type="module">
+        import { loadScript } from '../../dist/paypal.esm.js';
+
+        const loadScriptOptions = {
+            'client-id': 'sb',
+            'data-order-id': '12345',
+            components: 'messages,buttons'
+        };
+
+        const messagingOptions = {
+          amount: 500,
+          placement: 'product',
+          style: {
+            layout: 'text',
+            logo: {
+              type: 'primary',
+              position: 'top'
+            }
+          }
+        };
+
+        loadScript(loadScriptOptions)
+          .then(paypal => {
+              paypal.Buttons().render('#buttons');
+              paypal.Messages(messagingOptions).render('#messages');
+          });
+    </script>
+  </body>
+</html>

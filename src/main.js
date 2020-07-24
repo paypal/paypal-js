@@ -1,9 +1,9 @@
-import { objectToQueryParams, insertScriptElement } from './utils';
+import { insertScriptElement, processOptions } from './utils';
 
 const SDK_BASE_URL = 'https://www.paypal.com/sdk/js';
 let loadingPromise;
 
-export function getScript(params = {}) {
+export function loadScript(options = {}) {
 
     if (loadingPromise) return loadingPromise;
 
@@ -12,12 +12,20 @@ export function getScript(params = {}) {
         // resolve with null when running in Node
         if (!window) return resolve(null);
 
-        const queryParameters = objectToQueryParams(params);
+        // resolve with the existing global paypal object when it already exists
+        if (window.paypal) return resolve(window.paypal);
 
-        insertScriptElement(`${SDK_BASE_URL}?${queryParameters}`, () => {
-            if (window.paypal) return resolve(window.paypal);
+        const { queryString, attributes, properties } = processOptions(options);
+        const url = `${SDK_BASE_URL}?${queryString}`;
 
-            return reject(new Error('The window.paypal global variable is not available.'));
+        insertScriptElement({
+            url,
+            attributes,
+            properties,
+            callback:() => {
+                if (window.paypal) return resolve(window.paypal);
+                return reject(new Error('The window.paypal global variable is not available.'));
+            }
         });
     });
 }

@@ -1,30 +1,33 @@
-import { camelCaseToCabobCase, objectToQueryParams, insertScriptElement } from './utils';
+import { insertScriptElement, objectToQueryString, processOptions } from './utils';
 
 jest.useFakeTimers();
 
-describe('camelCaseToCabobCase()', () => {
-    test('coverts camelCase keys to cabob-case', () => {
+describe('objectToQueryString()', () => {
+    test('coverts an object to a query string', () => {
         const params = {
-            clientID: 'client-id',
-            merchantID: 'merchant-id'
-        };
-
-        Object.keys(params).forEach(key => {
-            expect(camelCaseToCabobCase(key)).toBe(params[key]);
-        });
-
-    });
-});
-
-describe('objectToQueryParams()', () => {
-    test('coverts an object to a query parameter string', () => {
-        const params = {
-            clientID: 'sb',
+            'client-id': 'sb',
             currency: 'USD'
         };
 
-        expect(objectToQueryParams(params)).toBe('client-id=sb&currency=USD');
+        expect(objectToQueryString(params)).toBe('client-id=sb&currency=USD');
+    });
+});
 
+describe('processOptions()', () => {
+    test('returns attributes, properties, and queryString', () => {
+        const options = {
+            'client-id': 'sb',
+            currency: 'USD',
+            defer: false,
+            'data-order-id': '12345',
+            'some-random-key': 'some-random-value'
+        };
+
+        const { queryString, attributes, properties } = processOptions(options);
+
+        expect(queryString).toBe('client-id=sb&currency=USD&some-random-key=some-random-value');
+        expect(attributes).toEqual({ 'data-order-id': '12345' });
+        expect(properties).toEqual({ defer: false });
     });
 });
 
@@ -63,12 +66,16 @@ describe('insertScriptElement()', () => {
         Object.defineProperty(global.HTMLScriptElement.prototype, 'src', originalHTMLScriptElementSrcPrototype);
     });
 
-    test('inserts a <script> into the DOM', () => {
+    test('inserts a <script> with attributes into the DOM', () => {
         const url = 'https://www.paypal.com/sdk/js';
-        insertScriptElement(url);
+        insertScriptElement({
+            url,
+            attributes: { 'data-order-id': '12345' }
+        });
 
         const scriptFromDOM = document.querySelector('head script');
         expect(scriptFromDOM.src).toBe(url);
+        expect(scriptFromDOM.getAttribute('data-order-id')).toBe('12345');
     });
 
     test("onload() event", () => {
@@ -76,7 +83,10 @@ describe('insertScriptElement()', () => {
         const onloadMock = jest.fn();
 
         const url = 'https://www.paypal.com/sdk/js';
-        insertScriptElement(url, onloadMock);
+        insertScriptElement({
+            url,
+            callback: onloadMock
+        });
 
         jest.runAllTimers();
         expect(onloadMock).toBeCalled();
@@ -86,7 +96,7 @@ describe('insertScriptElement()', () => {
         expect.assertions(1);
 
         const url = loadFailureSrcKey;
-        insertScriptElement(loadFailureSrcKey);
+        insertScriptElement({ url });
         try {
             jest.runAllTimers();
         } catch(e) {

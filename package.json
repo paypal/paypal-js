@@ -25,7 +25,6 @@
     "jest": "^26.1.0",
     "jest-puppeteer": "^4.4.0",
     "puppeteer": "^5.1.0",
-    "rollup": "^2.21.0",
-    "rollup-plugin-terser": "^6.1.0"
+    "rollup": "^2.21.0"
   }
 }

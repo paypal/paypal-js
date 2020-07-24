@@ -1,18 +1,21 @@
-import { getScript } from './main';
+import { loadScript } from './main';
+import * as utils from './utils';
 
-jest.mock('./utils', () => (
-    {
-        ...(jest.requireActual('./utils')),
-        insertScriptElement: (_url, onloadCallback) => {
-            onloadCallback();
-        }
-    }
-));
-
-describe('getScript()', () => {
-    test('resolves the promise', () => {
-        expect.assertions(1);
+// eslint-disable-next-line no-import-assign
+utils.insertScriptElement = jest.fn()
+    .mockImplementation(({ callback }) => {
         window.paypal = {};
-        return expect(getScript({ clientID: 'sb' })).resolves.toEqual(window.paypal);
+        callback();
+    });
+
+describe('loadScript()', () => {
+    test('should insert <script> and resolve the promise', () => {
+        expect.assertions(2);
+
+        return loadScript({ 'client-id': 'sb' })
+            .then(response => {
+                expect(utils.insertScriptElement).toBeCalled();
+                expect(response).toBe(window.paypal);
+            });
     });
 });
