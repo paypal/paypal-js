@@ -3,12 +3,14 @@ import * as utils from './utils';
 
 // eslint-disable-next-line no-import-assign
 utils.insertScriptElement = jest.fn()
-    .mockImplementation(({ callback }) => callback());
+    .mockImplementation(({ callback }) => {
+        window.paypal = {};
+        callback();
+    });
 
 describe('loadScript()', () => {
     test('should insert <script> and resolve the promise', () => {
         expect.assertions(2);
-        window.paypal = {};
 
         return loadScript({ 'client-id': 'sb' })
             .then(response => {

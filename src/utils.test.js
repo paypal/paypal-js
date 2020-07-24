@@ -1,25 +1,6 @@
-import { findScript, insertScriptElement, objectToQueryString } from './utils';
+import { insertScriptElement, objectToQueryString, processOptions } from './utils';
 
 jest.useFakeTimers();
-
-describe('findScript()', () => {
-    beforeEach(() => {
-        document.head.innerHTML = '';
-    });
-
-    test('finds the existing script in the DOM', () => {
-        const url = 'https://www.paypal.com/sdk/js?client-id=sb';
-        document.head.innerHTML = `<script src="${url}"></script>`;
-
-        const result = findScript(url);
-        expect(result.src).toBe(url);
-    });
-
-
-    test('returns null when the script is not found', () => {
-        expect(findScript('https://www.paypal.com/sdk/js?client-id=sb')).toBe(null);
-    });
-});
 
 describe('objectToQueryString()', () => {
     test('coverts an object to a query string', () => {
@@ -32,6 +13,23 @@ describe('objectToQueryString()', () => {
     });
 });
 
+describe('processOptions()', () => {
+    test('returns attributes, properties, and queryString', () => {
+        const options = {
+            'client-id': 'sb',
+            currency: 'USD',
+            defer: false,
+            'data-order-id': '12345',
+            'some-random-key': 'some-random-value'
+        };
+
+        const { queryString, attributes, properties } = processOptions(options);
+
+        expect(queryString).toBe('client-id=sb&currency=USD&some-random-key=some-random-value');
+        expect(attributes).toEqual({ 'data-order-id': '12345' });
+        expect(properties).toEqual({ defer: false });
+    });
+});
 
 describe('insertScriptElement()', () => {
     const loadFailureSrcKey = 'error';

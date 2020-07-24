@@ -11,12 +11,8 @@
         import { loadScript } from '../../dist/paypal.esm.js';
 
         const options = {
-            params: {
-                'client-id': 'sb'
-            },
-            attributes: {
-                'data-order-id': '12345'
-            }
+            'client-id': 'sb',
+            'data-order-id': '12345'
         };
 
         loadScript(options)

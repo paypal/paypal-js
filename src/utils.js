@@ -16,8 +16,24 @@ export function insertScriptElement({ url, attributes = {}, properties = {}, cal
     newScript.defer = properties.defer === undefined ? true : properties.defer;
 }
 
-export function findScript(url) {
-    return document.querySelector(`script[src="${url}"]`);
+export function processOptions(options) {
+    const { queryParams, attributes, properties } = Object.keys(options)
+        .reduce((accumulator, key) => {
+            if (key.startsWith('data-')) {
+                accumulator.attributes[key] = options[key];
+            } else if (key === 'defer') {
+                accumulator.properties[key] = options[key];
+            } else {
+                accumulator.queryParams[key] = options[key];
+            }
+            return accumulator;
+        }, { queryParams: {}, attributes: {}, properties: {} });
+
+    return {
+        queryString: objectToQueryString(queryParams),
+        attributes,
+        properties
+    };
 }
 
 export function objectToQueryString(params) {

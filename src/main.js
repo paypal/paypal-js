@@ -1,9 +1,9 @@
-import { findScript, insertScriptElement, objectToQueryString } from './utils';
+import { insertScriptElement, processOptions } from './utils';
 
 const SDK_BASE_URL = 'https://www.paypal.com/sdk/js';
 let loadingPromise;
 
-export function loadScript({ params = {}, attributes = {}, properties = {} }) {
+export function loadScript(options = {}) {
 
     if (loadingPromise) return loadingPromise;
 
@@ -12,11 +12,11 @@ export function loadScript({ params = {}, attributes = {}, properties = {} }) {
         // resolve with null when running in Node
         if (!window) return resolve(null);
 
-        const queryString = objectToQueryString(params);
-        const url = `${SDK_BASE_URL}?${queryString}`;
-
         // resolve with the existing global paypal object when it already exists
-        if (findScript(url) && window.paypal) return resolve(window.paypal);
+        if (window.paypal) return resolve(window.paypal);
+
+        const { queryString, attributes, properties } = processOptions(options);
+        const url = `${SDK_BASE_URL}?${queryString}`;
 
         insertScriptElement({
             url,
