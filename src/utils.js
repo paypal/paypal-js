@@ -16,7 +16,7 @@ export function insertScriptElement({ url, attributes = {}, properties = {}, cal
     newScript.defer = properties.defer === undefined ? true : properties.defer;
 }
 
-export function processOptions(options) {
+export function processOptions(options = {}) {
     const { queryParams, attributes, properties } = Object.keys(options)
         .reduce((accumulator, key) => {
             if (key.startsWith('data-')) {

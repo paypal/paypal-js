@@ -2,18 +2,20 @@ import { insertScriptElement, processOptions } from './utils';
 
 const SDK_BASE_URL = 'https://www.paypal.com/sdk/js';
 let loadingPromise;
+let isLoading = false;
 
-export function loadScript(options = {}) {
-
-    if (loadingPromise) return loadingPromise;
+export function loadScript(options) {
+    // resolve with the existing promise when the script is loading
+    if (isLoading) return loadingPromise;
 
     return loadingPromise = new Promise((resolve, reject) => {
-
         // resolve with null when running in Node
-        if (!window) return resolve(null);
+        if (typeof window === 'undefined') return resolve(null);
 
         // resolve with the existing global paypal object when it already exists
         if (window.paypal) return resolve(window.paypal);
+
+        isLoading = true;
 
         const { queryString, attributes, properties } = processOptions(options);
         const url = `${SDK_BASE_URL}?${queryString}`;
@@ -22,7 +24,8 @@ export function loadScript(options = {}) {
             url,
             attributes,
             properties,
-            callback:() => {
+            callback: () => {
+                isLoading = false;
                 if (window.paypal) return resolve(window.paypal);
                 return reject(new Error('The window.paypal global variable is not available.'));
             }
