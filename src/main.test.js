@@ -1,21 +1,81 @@
 import { loadScript } from './main';
 import * as utils from './utils';
 
-// eslint-disable-next-line no-import-assign
-utils.insertScriptElement = jest.fn()
-    .mockImplementation(({ callback }) => {
-        window.paypal = {};
-        callback();
+describe('loadScript()', () => {
+    beforeEach(() => {
+        document.head.innerHTML = '';
+
+        // eslint-disable-next-line no-import-assign
+        utils.insertScriptElement = jest.fn()
+            .mockImplementation(({ callback }) => {
+                window.paypal = {};
+                process.nextTick(() => callback());
+            });
+
+        Object.defineProperty(window, 'paypal', {
+            writable: true,
+            value: undefined
+        });
+    });
+    afterEach(() => {
+        utils.insertScriptElement.mockClear();
     });
 
-describe('loadScript()', () => {
     test('should insert <script> and resolve the promise', () => {
-        expect.assertions(2);
+        expect.assertions(3);
+        expect(window.paypal).toBe(undefined);
 
         return loadScript({ 'client-id': 'sb' })
             .then(response => {
-                expect(utils.insertScriptElement).toBeCalled();
-                expect(response).toBe(window.paypal);
+                expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
+                expect(response).toEqual({});
+            });
+    });
+
+    test('should not insert <script> when window.paypal is set', () => {
+        expect.assertions(3);
+        expect(window.paypal).toBe(undefined);
+
+        // set window.paypal to simulate the script already being loaded
+        window.paypal = {};
+
+        return loadScript({ 'client-id': 'sb' })
+            .then(response => {
+                expect(utils.insertScriptElement).not.toHaveBeenCalled();
+                expect(response).toEqual({});
+            });
+    });
+
+    test('should only load the <script> once when loadScript() is called twice', () => {
+        expect.assertions(3);
+        expect(window.paypal).toBe(undefined);
+
+        return Promise.all([
+            loadScript({ 'client-id': 'sb' }),
+            loadScript({ 'client-id': 'sb' })
+        ])
+            .then(response => {
+                expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
+                expect(response).toEqual([{}, {}]);
+            });
+    });
+
+    test('should reject the promise when window.paypal is undefined after loading the <script>', () => {
+        expect.assertions(3);
+
+        // eslint-disable-next-line no-import-assign
+        utils.insertScriptElement = jest.fn()
+            .mockImplementation(({ callback }) => {
+                // do not set window.paypal in the mock implementation
+                process.nextTick(() => callback());
+            });
+
+        expect(window.paypal).toBe(undefined);
+
+        return loadScript({ 'client-id': 'sb' })
+            .catch(err => {
+                expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
+                expect(err.message).toBe('The window.paypal global variable is not available.');
             });
     });
 });

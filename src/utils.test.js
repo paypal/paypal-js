@@ -29,6 +29,13 @@ describe('processOptions()', () => {
         expect(attributes).toEqual({ 'data-order-id': '12345' });
         expect(properties).toEqual({ defer: false });
     });
+    test('when no options are passed in it returns empty attributes, properties, and queryString', () => {
+        const { queryString, attributes, properties } = processOptions();
+
+        expect(queryString).toBe('');
+        expect(attributes).toEqual({});
+        expect(properties).toEqual({});
+    });
 });
 
 describe('insertScriptElement()', () => {
@@ -75,7 +82,20 @@ describe('insertScriptElement()', () => {
 
         const scriptFromDOM = document.querySelector('head script');
         expect(scriptFromDOM.src).toBe(url);
+        expect(scriptFromDOM.defer).toBe(true);
         expect(scriptFromDOM.getAttribute('data-order-id')).toBe('12345');
+    });
+
+    test('sets the defer property to false', () => {
+        const url = 'https://www.paypal.com/sdk/js';
+        insertScriptElement({
+            url,
+            properties: { defer: false }
+        });
+
+        const scriptFromDOM = document.querySelector('head script');
+        expect(scriptFromDOM.src).toBe(url);
+        expect(scriptFromDOM.defer).toBe(false);
     });
 
     test("onload() event", () => {
