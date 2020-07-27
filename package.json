@@ -2,18 +2,24 @@
   "name": "@paypal/paypal-js",
   "version": "0.1.0",
   "description": "Async loader for the JS SDK",
-  "main": "dist/paypal.js",
+  "main": "dist/paypal.node.js",
   "module": "dist/paypal.esm.js",
   "scripts": {
     "build": "rollup --config",
     "lint": "eslint .",
+    "prepack": "npm run build",
     "test": "jest --env=jsdom src",
     "test:e2e": "jest -c e2e-tests/jest.config.js",
     "test:e2e:start": "http-server"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+      "type": "git",
+      "url": "git://github.com/paypal/paypal-js.git"
+  },
   "devDependencies": {
     "@babel/core": "^7.10.4",
     "@babel/preset-env": "^7.10.4",
