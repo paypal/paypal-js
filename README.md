@@ -29,7 +29,7 @@ loadScript({ 'client-id': 'sb' })
 
 ### Setting Options
 
-The `options` object can be used to set query parameters, script parameters, and properties.
+The `options` object can be used to set query parameters and script attributes.
 
 #### Query Parameters
 
@@ -47,7 +47,7 @@ Which will render the following `<script>` tag to the DOM:
 
 View the [full list of supported query parameters](https://developer.paypal.com/docs/checkout/reference/customize-sdk/#query-parameters).
 
-#### Script Parameters
+#### Data Attributes
 
 All options prefixed with `data-` are considered attributes. The following example adds `data-client-token` as an attribute:
 ```js
@@ -62,9 +62,9 @@ Which will render the following `<script>` tag:
 
 View the [full list of supported script parameters](https://developer.paypal.com/docs/checkout/reference/customize-sdk/#script-parameters).
 
-#### Properties
+#### Defer
 
-By default, the `<script>` tag loads with [defer](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#Attributes) to ensure your web page renders as fast as possible.
+The `defer` attribute can also be set. By default, the `<script>` tag loads with [defer](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#Attributes) to ensure your web page renders as fast as possible.
 
 The following example opts out of the default `<script defer>` behavior by setting `defer` to false:
 
@@ -75,6 +75,6 @@ loadScript({ 'client-id': 'YOUR_CLIENT_ID', 'defer': false });
 Which will render the following `<script>` tag:
 
 ```html
-<!-- Note the absense of the `defer` property -->
+<!-- Note the absence of the `defer` attribute -->
 <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"></script>
 ```
