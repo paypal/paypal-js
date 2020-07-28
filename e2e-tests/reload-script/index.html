@@ -27,10 +27,6 @@
 
 
         document.querySelector('#currency').addEventListener('change', (event) => {
-            // remove previous JS SDK script
-            const oldScript = document.querySelector('head script');
-            oldScript.parentElement.removeChild(oldScript);
-
             const newCurrency = event.target.value;
             paypalLoadScript(newCurrency);
         });

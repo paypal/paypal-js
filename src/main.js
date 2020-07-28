@@ -1,4 +1,4 @@
-import { insertScriptElement, processOptions } from './utils';
+import { findScript, insertScriptElement, processOptions } from './utils';
 
 const SDK_BASE_URL = 'https://www.paypal.com/sdk/js';
 let loadingPromise;
@@ -12,14 +12,13 @@ export function loadScript(options) {
         // resolve with null when running in Node
         if (typeof window === 'undefined') return resolve(null);
 
-        // resolve with the existing global paypal object when it already exists
-        // TODO: figure out how to support caching as well as reloading when script attributes change
-        // if (window.paypal) return resolve(window.paypal);
-
-        isLoading = true;
-
         const { queryString, dataAttributes, scriptAttributes } = processOptions(options);
         const url = `${SDK_BASE_URL}?${queryString}`;
+
+        // resolve with the existing global paypal object when a script with the same src already exists
+        if (findScript(url) && window.paypal) return resolve(window.paypal);
+
+        isLoading = true;
 
         insertScriptElement({
             url,

@@ -32,11 +32,12 @@ describe('loadScript()', () => {
             });
     });
 
-    test('should not insert <script> when window.paypal is set', () => {
+    test('should not insert <script> when an existing script with the same src is already in the DOM and window.paypal is set', () => {
         expect.assertions(3);
         expect(window.paypal).toBe(undefined);
 
-        // set window.paypal to simulate the script already being loaded
+        // simulate the script already being loaded
+        document.head.innerHTML = '<script src="https://www.paypal.com/sdk/js?client-id=sb"></script>'
         window.paypal = {};
 
         return loadScript({ 'client-id': 'sb' })
