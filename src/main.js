@@ -13,7 +13,8 @@ export function loadScript(options) {
         if (typeof window === 'undefined') return resolve(null);
 
         // resolve with the existing global paypal object when it already exists
-        if (window.paypal) return resolve(window.paypal);
+        // TODO: figure out how to support caching as well as reloading when script attributes change
+        // if (window.paypal) return resolve(window.paypal);
 
         isLoading = true;
 
