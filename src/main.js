@@ -17,13 +17,13 @@ export function loadScript(options) {
 
         isLoading = true;
 
-        const { queryString, attributes, properties } = processOptions(options);
+        const { queryString, dataAttributes, scriptAttributes } = processOptions(options);
         const url = `${SDK_BASE_URL}?${queryString}`;
 
         insertScriptElement({
             url,
-            attributes,
-            properties,
+            dataAttributes,
+            scriptAttributes,
             callback: () => {
                 isLoading = false;
                 if (window.paypal) return resolve(window.paypal);

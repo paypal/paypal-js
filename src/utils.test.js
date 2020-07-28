@@ -14,7 +14,7 @@ describe('objectToQueryString()', () => {
 });
 
 describe('processOptions()', () => {
-    test('returns attributes, properties, and queryString', () => {
+    test('returns dataAttributes, scriptAttributes, and queryString', () => {
         const options = {
             'client-id': 'sb',
             currency: 'USD',
@@ -23,18 +23,18 @@ describe('processOptions()', () => {
             'some-random-key': 'some-random-value'
         };
 
-        const { queryString, attributes, properties } = processOptions(options);
+        const { queryString, dataAttributes, scriptAttributes } = processOptions(options);
 
         expect(queryString).toBe('client-id=sb&currency=USD&some-random-key=some-random-value');
-        expect(attributes).toEqual({ 'data-order-id': '12345' });
-        expect(properties).toEqual({ defer: false });
+        expect(dataAttributes).toEqual({ 'data-order-id': '12345' });
+        expect(scriptAttributes).toEqual({ defer: false });
     });
-    test('when no options are passed in it returns empty attributes, properties, and queryString', () => {
-        const { queryString, attributes, properties } = processOptions();
+    test('when no options are passed in it returns empty dataAttributes, scriptAttributes, and queryString', () => {
+        const { queryString, dataAttributes, scriptAttributes } = processOptions();
 
         expect(queryString).toBe('');
-        expect(attributes).toEqual({});
-        expect(properties).toEqual({});
+        expect(dataAttributes).toEqual({});
+        expect(scriptAttributes).toEqual({});
     });
 });
 
@@ -77,7 +77,7 @@ describe('insertScriptElement()', () => {
         const url = 'https://www.paypal.com/sdk/js';
         insertScriptElement({
             url,
-            attributes: { 'data-order-id': '12345' }
+            dataAttributes: { 'data-order-id': '12345' }
         });
 
         const scriptFromDOM = document.querySelector('head script');
@@ -90,7 +90,7 @@ describe('insertScriptElement()', () => {
         const url = 'https://www.paypal.com/sdk/js';
         insertScriptElement({
             url,
-            properties: { defer: false }
+            scriptAttributes: { defer: false }
         });
 
         const scriptFromDOM = document.querySelector('head script');
