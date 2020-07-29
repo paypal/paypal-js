@@ -18,7 +18,7 @@ export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes
     document.head.insertBefore(newScript, document.head.firstElementChild);
 
     newScript.src = url;
-    newScript.defer = scriptAttributes.defer === undefined ? true : scriptAttributes.defer;
+    newScript.defer = scriptAttributes.defer ?? true;
 }
 
 export function processOptions(options = {}) {
