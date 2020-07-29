@@ -1,4 +1,4 @@
-import { insertScriptElement, objectToQueryString, processOptions } from './utils';
+import { findScript, insertScriptElement, objectToQueryString, processOptions } from './utils';
 
 jest.useFakeTimers();
 
@@ -38,6 +38,24 @@ describe('processOptions()', () => {
     });
 });
 
+describe('findScript()', () => {
+    beforeEach(() => {
+        document.head.innerHTML = '';
+    });
+
+    test('finds the existing script in the DOM', () => {
+        const url = 'https://www.paypal.com/sdk/js?client-id=sb';
+        document.head.innerHTML = `<script src="${url}"></script>`;
+
+        const result = findScript(url);
+        expect(result.src).toBe(url);
+    });
+
+    test('returns null when the script is not found', () => {
+        expect(findScript('https://www.paypal.com/sdk/js?client-id=sb')).toBe(null);
+    });
+});
+
 describe('insertScriptElement()', () => {
     const loadFailureSrcKey = 'error';
     let originalHTMLScriptElementSrcPrototype;
@@ -51,11 +69,11 @@ describe('insertScriptElement()', () => {
             'src'
         );
 
-        let currentSrc;
+        // let currentSrc;
 
         Object.defineProperty(global.HTMLScriptElement.prototype, 'src', {
             set(src) {
-                currentSrc = src;
+                this.currentSrc = src;
                 if (src === loadFailureSrcKey) {
                     setTimeout(() => this.onerror(new Error('error message')));
                 } else if (this.onload) {
@@ -63,7 +81,7 @@ describe('insertScriptElement()', () => {
                 }
             },
             get() {
-                return currentSrc;
+                return this.currentSrc;
             }
         });
 
@@ -84,6 +102,22 @@ describe('insertScriptElement()', () => {
         expect(scriptFromDOM.src).toBe(url);
         expect(scriptFromDOM.defer).toBe(true);
         expect(scriptFromDOM.getAttribute('data-order-id')).toBe('12345');
+    });
+
+    test('prepends a <script> to the top of the <head> before any other scripts', () => {
+        // simulate having the JS SDK already loaded with currency=USD
+        const existingScript = document.createElement('script');
+        existingScript.src = 'https://www.paypal.com/sdk/js?client-id=sb&currency=USD';
+        document.head.appendChild(existingScript);
+
+        // load the JS SDK with currency=EUR
+        const newScriptSrc = 'https://www.paypal.com/sdk/js?client-id=sb&currency=EUR';
+        insertScriptElement({ url: newScriptSrc });
+
+        const [firstScript, secondScript] = document.querySelectorAll('head script');
+
+        expect(firstScript.src).toBe(newScriptSrc);
+        expect(secondScript.src).toBe(existingScript.src);
     });
 
     test('sets the defer property to false', () => {

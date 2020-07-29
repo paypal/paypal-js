@@ -2,6 +2,10 @@ function loadError() {
     throw new Error(`The script "${this.src}" didn't load correctly.`);
 }
 
+export function findScript(url) {
+    return document.querySelector(`script[src="${url}"]`);
+}
+
 export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes = {}, callback }) {
     const newScript = document.createElement('script');
     newScript.onerror = loadError;
@@ -11,9 +15,10 @@ export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes
         newScript.setAttribute(key, dataAttributes[key]);
     });
 
-    document.head.appendChild(newScript);
+    document.head.insertBefore(newScript, document.head.firstElementChild);
+
     newScript.src = url;
-    newScript.defer = scriptAttributes.defer === undefined ? true : scriptAttributes.defer;
+    newScript.defer = scriptAttributes.defer ?? true;
 }
 
 export function processOptions(options = {}) {
