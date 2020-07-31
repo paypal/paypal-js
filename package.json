@@ -1,0 +1,42 @@
+{
+  "name": "@paypal/react-paypal-js",
+  "version": "0.1.0",
+  "description": "React components for the JS SDK",
+  "main": "dist/react-paypal.node.js",
+  "module": "dist/react-paypal.esm.js",
+  "scripts": {
+    "build": "rollup --config",
+    "lint": "eslint ."
+  },
+  "files": [
+    "dist"
+  ],
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/paypal/react-paypal-js.git"
+  },
+  "dependencies": {
+    "@paypal/paypal-js": "file:paypal-paypal-js-0.1.0.tgz"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-react": "^7.10.4",
+    "@rollup/plugin-babel": "^5.0.4",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@rollup/plugin-replace": "^2.3.3",
+    "babel-jest": "^26.1.0",
+    "eslint": "^7.4.0",
+    "eslint-plugin-react": "^7.20.5",
+    "http-server": "^0.12.3",
+    "jest": "^26.1.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "rollup": "^2.21.0"
+  },
+  "peerDependencies": {
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0"
+  }
+}

@@ -1,0 +1,29 @@
+{
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended"
+    ],
+    "env": {
+        "browser": true,
+        "es2020": true,
+        "node": true,
+        "jest": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 11,
+        "sourceType": "module"
+    },
+    "globals": {
+        "page": "readonly"
+    },
+    "ignorePatterns": ["dist/*.js"],
+    "rules": {
+        "indent": ["error", 4],
+        "semi": ["error", "always"]
+    },
+    "settings": {
+        "react": {
+            "version": "16.3"
+        }
+    }
+}
