@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useReducer } from 'react';
+import PropTypes from 'prop-types';
 import { loadScript } from '@paypal/paypal-js';
 
 const ScriptContext = createContext();
@@ -28,7 +29,22 @@ function scriptReducer(state, action) {
     }
 }
 
-// eslint-disable-next-line react/prop-types
+function useScriptState() {
+    const context = useContext(ScriptContext);
+    if (context === undefined) {
+        throw new Error('useScriptState must be used within a ScriptProvider');
+    }
+    return context;
+}
+
+function useScriptDispatch() {
+    const context = React.useContext(ScriptDispatchContext);
+    if (context === undefined) {
+        throw new Error('useScriptDispatch must be used within a ScriptProvider');
+    }
+    return context;
+}
+
 function ScriptProvider({options, children}) {
     const initialState = {
         options,
@@ -60,20 +76,11 @@ function ScriptProvider({options, children}) {
     );
 }
 
-function useScriptState() {
-    const context = useContext(ScriptContext);
-    if (context === undefined) {
-        throw new Error('useScriptState must be used within a ScriptProvider');
-    }
-    return context;
-}
-
-function useScriptDispatch() {
-    const context = React.useContext(ScriptDispatchContext);
-    if (context === undefined) {
-        throw new Error('useScriptDispatch must be used within a ScriptProvider');
-    }
-    return context;
-}
+ScriptProvider.propTypes = {
+    children: PropTypes.any,
+    options: PropTypes.shape({
+        'client-id': PropTypes.string.isRequired
+    })
+};
 
 export {ScriptProvider, useScriptDispatch, useScriptState};

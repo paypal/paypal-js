@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
 import { useScriptState } from '../ScriptContext';
 
 export default function CheckoutButtons(props) {
@@ -8,7 +9,6 @@ export default function CheckoutButtons(props) {
 
     useEffect(() => {
         if (isLoaded) {
-            // eslint-disable-next-line react/prop-types
             const { createOrder, style } = props;
             const options = { createOrder, style };
             buttons.current = window.paypal.Buttons(options);
@@ -34,3 +34,8 @@ export default function CheckoutButtons(props) {
 
     return <div id="paypal-buttons" ref={buttonsContainerRef} />;
 }
+
+CheckoutButtons.propTypes = {
+    createOrder: PropTypes.func,
+    style: PropTypes.object
+};

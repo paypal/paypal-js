@@ -18,7 +18,8 @@
     "url": "git://github.com/paypal/react-paypal-js.git"
   },
   "dependencies": {
-    "@paypal/paypal-js": "file:paypal-paypal-js-0.1.0.tgz"
+    "@paypal/paypal-js": "file:paypal-paypal-js-0.1.0.tgz",
+    "prop-types": "^15.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.10.4",
