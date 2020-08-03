@@ -5,6 +5,9 @@ import pkg from './package.json';
 export default {
     input: 'src/main.js',
     plugins: [
+        getBabelOutputPlugin({
+            presets: ['@babel/preset-env']
+        }),
         replace({
             '__VERSION__': pkg.version
         })
@@ -12,12 +15,7 @@ export default {
     output: [
         {
             file: pkg.module,
-            format: 'esm',
-            plugins: [
-                getBabelOutputPlugin({
-                    presets: ['@babel/preset-env']
-                })
-            ]
+            format: 'esm'
         },
         {
             file: pkg.main,
