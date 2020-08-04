@@ -5,7 +5,7 @@ import pkg from './package.json';
 export default {
     input: 'src/index.js',
     plugins: [nodeResolve(), babel({ presets: ['@babel/preset-react'] })],
-    external: ['react'],
+    external: ['react', 'prop-types'],
     output: [
         {
             file: pkg.module,
