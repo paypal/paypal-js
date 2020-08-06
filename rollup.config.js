@@ -2,6 +2,7 @@ import babel from '@rollup/plugin-babel';
 import replace from '@rollup/plugin-replace';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import filesize from 'rollup-plugin-filesize';
 import pkg from './package.json';
 
 export default {
@@ -17,7 +18,8 @@ export default {
         }),
         replace({
             '__VERSION__': pkg.version
-        })
+        }),
+        filesize()
     ],
     output: [
         {
