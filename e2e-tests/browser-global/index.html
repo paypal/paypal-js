@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Demo with window.paypalLoadScript | PayPal JS</title>
+  </head>
+  <body>
+    <h1>Demo with window.paypalLoadScript</h1>
+
+    <!-- bring your own promise polyfill -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/promise-polyfill/8.1.3/polyfill.js"></script>
+    <script src="../../dist/paypal.browser.js"></script>
+    <script>
+        var options = {
+            'client-id': 'sb',
+            'data-order-id': '12345'
+        };
+
+        window.paypalLoadScript(options)
+          .then(function (paypal) {
+              paypal.Buttons().render('body');
+          });
+    </script>
+  </body>
+</html>
