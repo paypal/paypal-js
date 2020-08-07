@@ -37,7 +37,7 @@ describe('loadScript()', () => {
         expect(window.paypal).toBe(undefined);
 
         // simulate the script already being loaded
-        document.head.innerHTML = '<script src="https://www.paypal.com/sdk/js?client-id=sb"></script>'
+        document.head.innerHTML = '<script src="https://www.paypal.com/sdk/js?client-id=sb"></script>';
         window.paypal = {};
 
         return loadScript({ 'client-id': 'sb' })
