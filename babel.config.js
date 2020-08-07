@@ -22,10 +22,7 @@ module.exports = api => {
                         version: '3.6',
                         proposals: true
                     },
-                    modules: false,
-                    exclude: [
-                        "es.promise"
-                    ]
+                    modules: false
                 }
             ]
         ]
