@@ -3,7 +3,15 @@ import replace from '@rollup/plugin-replace';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import filesize from 'rollup-plugin-filesize';
+import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
+
+const outputConfigForBrowserBundle = {
+    format: 'iife',
+    name: 'paypalLoadScript',
+    // update the default export to be the loadScript() function
+    footer: 'paypalLoadScript = paypalLoadScript.loadScript;'
+};
 
 export default {
     input: 'src/main.js',
@@ -32,10 +40,12 @@ export default {
         },
         {
             file: 'dist/paypal.browser.js',
-            format: 'iife',
-            name: 'paypalLoadScript',
-            // update the default export to be the loadScript() function
-            footer: 'paypalLoadScript = paypalLoadScript.loadScript;'
+            ...outputConfigForBrowserBundle
+        },
+        {
+            file: 'dist/paypal.browser.min.js',
+            ...outputConfigForBrowserBundle,
+            plugins: [terser()]
         }
     ]
 };
