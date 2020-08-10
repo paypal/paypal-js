@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { useScriptState } from '../ScriptContext';
+import { useScriptReducer } from '../ScriptContext';
 
 export default function CheckoutButtons(props) {
-    const { isLoaded } = useScriptState();
+    const [{ isLoaded }] = useScriptReducer();
     const buttonsContainerRef = useRef(null);
     const buttons = useRef(null);
 

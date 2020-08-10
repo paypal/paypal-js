@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, waitFor } from '@testing-library/react';
 import * as payPalJS from '@paypal/paypal-js';
-import { ScriptProvider, useScriptState } from './ScriptContext';
+import { ScriptProvider, useScriptReducer } from './ScriptContext';
 
 describe('<ScriptProvider />', () => {
     let loadScriptBackup = payPalJS.loadScript;
@@ -37,7 +37,7 @@ describe('<ScriptProvider />', () => {
     });
 });
 
-describe('useScriptState', () => {
+describe('useScriptReducer', () => {
     test('should manage state for loadScript() options and for "isLoaded"', () => {
         const { state, TestComponent } = setupTestComponent();
         render(<ScriptProvider options={{ 'client-id': 'sb' }}><TestComponent /></ScriptProvider>);
@@ -60,7 +60,8 @@ describe('useScriptState', () => {
 function setupTestComponent() {
     const state = {};
     function TestComponent() {
-        Object.assign(state, useScriptState());
+        const [scriptState] = useScriptReducer();
+        Object.assign(state, scriptState);
         return null;
     }
 
