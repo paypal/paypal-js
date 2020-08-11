@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "prepack": "npm run build",
     "test": "jest --env=jsdom src",
+    "test:bundle": "jest --env=jsdom e2e-tests/bundle/**",
     "test:e2e": "jest -c e2e-tests/jest.config.js",
     "test:e2e:start": "http-server"
   },
@@ -30,6 +31,7 @@
     "babel-jest": "^26.1.0",
     "core-js": "^3.6.5",
     "eslint": "^7.4.0",
+    "filesize": "^6.1.0",
     "http-server": "^0.12.3",
     "jest": "^26.1.0",
     "jest-puppeteer": "^4.4.0",
