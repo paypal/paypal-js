@@ -11,7 +11,7 @@ export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes
     newScript.onerror = loadError;
     if (callback) newScript.onload = callback;
 
-    Object.keys(dataAttributes).forEach(key => {
+    forEachObjectKey(dataAttributes, key => {
         newScript.setAttribute(key, dataAttributes[key]);
     });
 
@@ -22,17 +22,23 @@ export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes
 }
 
 export function processOptions(options = {}) {
-    const { queryParams, dataAttributes, scriptAttributes } = Object.keys(options)
-        .reduce((accumulator, key) => {
-            if (key.startsWith('data-')) {
-                accumulator.dataAttributes[key] = options[key];
-            } else if (key === 'defer') {
-                accumulator.scriptAttributes[key] = options[key];
-            } else {
-                accumulator.queryParams[key] = options[key];
-            }
-            return accumulator;
-        }, { queryParams: {}, dataAttributes: {}, scriptAttributes: {} });
+    const processedOptions = {
+        queryParams: {},
+        dataAttributes: {},
+        scriptAttributes: {}
+    };
+
+    forEachObjectKey(options, key => {
+        if (key.substring(0, 5) === 'data-') {
+            processedOptions.dataAttributes[key] = options[key];
+        } else if (key === 'defer') {
+            processedOptions.scriptAttributes[key] = options[key];
+        } else {
+            processedOptions.queryParams[key] = options[key];
+        }
+    });
+
+    const { queryParams, dataAttributes, scriptAttributes } = processedOptions;
 
     return {
         queryString: objectToQueryString(queryParams),
@@ -42,10 +48,20 @@ export function processOptions(options = {}) {
 }
 
 export function objectToQueryString(params) {
-    return Object.keys(params)
-        .reduce((accumulator, key, currentIndex) => {
-            if (currentIndex !== 0) accumulator += '&';
+    let queryString = '';
 
-            return accumulator += `${key}=${params[key]}`;
-        }, '');
+    forEachObjectKey(params, key => {
+        if (queryString.length !== 0) queryString += '&';
+        queryString += key + '=' + params[key];
+    });
+    return queryString;
+}
+
+// uses es3 to avoid requiring polyfills for Array.prototype.forEach and Object.keys
+function forEachObjectKey(obj, callback) {
+    for (let key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            callback(key);
+        }
+    }
 }
