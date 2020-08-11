@@ -29,20 +29,13 @@ function scriptReducer(state, action) {
     }
 }
 
-function useScriptState() {
-    const context = useContext(ScriptContext);
-    if (context === undefined) {
-        throw new Error('useScriptState must be used within a ScriptProvider');
+function useScriptReducer() {
+    const scriptContext = useContext(ScriptContext);
+    const dispatchContext = React.useContext(ScriptDispatchContext);
+    if (scriptContext === undefined || dispatchContext === undefined) {
+        throw new Error('useScriptReducer must be used within a ScriptProvider');
     }
-    return context;
-}
-
-function useScriptDispatch() {
-    const context = React.useContext(ScriptDispatchContext);
-    if (context === undefined) {
-        throw new Error('useScriptDispatch must be used within a ScriptProvider');
-    }
-    return context;
+    return [scriptContext, dispatchContext];
 }
 
 function ScriptProvider({options, children}) {
@@ -83,4 +76,4 @@ ScriptProvider.propTypes = {
     })
 };
 
-export {ScriptProvider, useScriptDispatch, useScriptState};
+export {ScriptProvider, useScriptReducer};

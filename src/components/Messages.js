@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { useScriptState } from '../ScriptContext';
+import { useScriptReducer } from '../ScriptContext';
 
 export default function Messages() {
-    const { isLoaded } = useScriptState();
+    const [{ isLoaded }] = useScriptReducer();
     const messagesContainerRef = useRef(null);
 
     useEffect(() => {
