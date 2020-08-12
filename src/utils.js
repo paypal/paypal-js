@@ -60,7 +60,7 @@ export function objectToQueryString(params) {
 // uses es3 to avoid requiring polyfills for Array.prototype.forEach and Object.keys
 function forEachObjectKey(obj, callback) {
     for (let key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        if (obj.hasOwnProperty(key)) {
             callback(key);
         }
     }
