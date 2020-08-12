@@ -1,6 +1,6 @@
 import childProcess from 'child_process';
 
-const command = 'npx eslint dist/paypal.browser.* --no-eslintrc --parser-options="{ ecmaVersion: 3 }"'
+const command = 'npx eslint dist/paypal.browser.* --no-eslintrc --parser-options="{ ecmaVersion: 3 }"';
 
 describe('es3', () => {
     it("should parse browser bundle using eslint's es3 parser", async () => {

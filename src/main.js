@@ -1,3 +1,4 @@
+import Promise from 'promise-polyfill';
 import { findScript, insertScriptElement, processOptions } from './utils';
 
 const SDK_BASE_URL = 'https://www.paypal.com/sdk/js';

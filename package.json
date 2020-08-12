@@ -39,5 +39,8 @@
     "rollup": "^2.21.0",
     "rollup-plugin-filesize": "^9.0.2",
     "rollup-plugin-terser": "^7.0.0"
+  },
+  "dependencies": {
+    "promise-polyfill": "^8.1.3"
   }
 }
