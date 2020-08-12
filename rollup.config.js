@@ -6,11 +6,13 @@ import filesize from 'rollup-plugin-filesize';
 import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
+const banner = getBannerText();
 const outputConfigForBrowserBundle = {
     format: 'iife',
     name: 'paypalLoadScript',
     // update the default export to be the loadScript() function
-    footer: 'paypalLoadScript = paypalLoadScript.loadScript;'
+    footer: 'paypalLoadScript = paypalLoadScript.loadScript;',
+    banner
 };
 
 export default {
@@ -32,11 +34,13 @@ export default {
     output: [
         {
             file: pkg.module,
-            format: 'esm'
+            format: 'esm',
+            banner
         },
         {
             file: pkg.main,
-            format: 'cjs'
+            format: 'cjs',
+            banner
         },
         {
             file: 'dist/paypal.browser.js',
@@ -49,3 +53,25 @@ export default {
         }
     ]
 };
+
+function getBannerText() {
+    const banner = `
+/*!
+ * paypal-js v${pkg.version} (${new Date().toISOString()})
+ * Copyright 2020-present, PayPal, Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */`.trim();
+
+    return banner;
+}
