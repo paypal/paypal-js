@@ -100,6 +100,7 @@ describe('insertScriptElement()', () => {
 
         const scriptFromDOM = document.querySelector('head script');
         expect(scriptFromDOM.src).toBe(url);
+        expect(scriptFromDOM.async).toBe(true);
         expect(scriptFromDOM.defer).toBe(true);
         expect(scriptFromDOM.getAttribute('data-order-id')).toBe('12345');
     });
@@ -120,15 +121,16 @@ describe('insertScriptElement()', () => {
         expect(secondScript.src).toBe(existingScript.src);
     });
 
-    test('sets the defer property to false', () => {
+    test('sets the async and defer attributes to false', () => {
         const url = 'https://www.paypal.com/sdk/js';
         insertScriptElement({
             url,
-            scriptAttributes: { defer: false }
+            scriptAttributes: { async: false, defer: false }
         });
 
         const scriptFromDOM = document.querySelector('head script');
         expect(scriptFromDOM.src).toBe(url);
+        expect(scriptFromDOM.async).toBe(false);
         expect(scriptFromDOM.defer).toBe(false);
     });
 

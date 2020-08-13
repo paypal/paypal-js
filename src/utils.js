@@ -18,6 +18,7 @@ export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes
     document.head.insertBefore(newScript, document.head.firstElementChild);
 
     newScript.src = url;
+    newScript.async = scriptAttributes.async ?? true;
     newScript.defer = scriptAttributes.defer ?? true;
 }
 
@@ -31,7 +32,7 @@ export function processOptions(options = {}) {
     forEachObjectKey(options, key => {
         if (key.substring(0, 5) === 'data-') {
             processedOptions.dataAttributes[key] = options[key];
-        } else if (key === 'defer') {
+        } else if (key === 'defer' || key === 'async') {
             processedOptions.scriptAttributes[key] = options[key];
         } else {
             processedOptions.queryParams[key] = options[key];
