@@ -19,13 +19,13 @@ This PayPal React library consists of two main parts:
 
 ```js
 // App.js
-import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 export default function App() {
-  return (
-    <PayPalScriptProvider options={{ 'client-id': 'sb' }}>
-        <PayPalButtons style={{ layout: 'horizontal' }} />
-    </PayPalScriptProvider>
-  );
+    return (
+        <PayPalScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalButtons style={{ layout: "horizontal" }} />
+        </PayPalScriptProvider>
+    );
 }
 ```

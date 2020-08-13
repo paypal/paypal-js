@@ -1,7 +1,9 @@
 {
     "extends": [
         "eslint:recommended",
-        "plugin:react/recommended"
+        "plugin:react/recommended",
+        "prettier",
+        "prettier/react"
     ],
     "env": {
         "browser": true,
@@ -17,10 +19,6 @@
         "page": "readonly"
     },
     "ignorePatterns": ["dist/*.js"],
-    "rules": {
-        "indent": ["error", 4],
-        "semi": ["error", "always"]
-    },
     "settings": {
         "react": {
             "version": "16.3"
