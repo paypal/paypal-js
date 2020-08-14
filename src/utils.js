@@ -17,8 +17,15 @@ export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes
 
     document.head.insertBefore(newScript, document.head.firstElementChild);
 
+    if (typeof scriptAttributes.async !== 'undefined') {
+        newScript.async = scriptAttributes.async;
+    }
+
+    if (typeof scriptAttributes.defer !== 'undefined') {
+        newScript.defer = scriptAttributes.defer;
+    }
+
     newScript.src = url;
-    newScript.defer = scriptAttributes.defer ?? true;
 }
 
 export function processOptions(options = {}) {

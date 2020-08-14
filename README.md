@@ -39,10 +39,10 @@ The following example adds `client-id` and `currency` as query string parameters
 loadScript({ 'client-id': 'YOUR_CLIENT_ID', 'currency': 'EUR' });
 ```
 
-Which will render the following `<script>` tag to the DOM:
+Which will dynamically insert the following `<script>` tag:
 
 ```html
-<script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=EUR" defer></script>
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=EUR"></script>
 ```
 
 View the [full list of supported query parameters](https://developer.paypal.com/docs/checkout/reference/customize-sdk/#query-parameters).
@@ -54,27 +54,26 @@ All options prefixed with `data-` are considered attributes. The following examp
 loadScript({ 'client-id': 'YOUR_CLIENT_ID', 'data-client-token': 'abc123xyz==' });
 ```
 
-Which will render the following `<script>` tag:
+Which will dynamically insert the following `<script>` tag:
 
 ```html
-<script data-client-token="abc123xyz==" src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID" defer></script>
+<script data-client-token="abc123xyz==" src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"></script>
 ```
 
 View the [full list of supported script parameters](https://developer.paypal.com/docs/checkout/reference/customize-sdk/#script-parameters).
 
-#### Defer
+#### Async and Defer attributes
 
-The `defer` attribute can also be set. By default, the `<script>` tag loads with [defer](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#Attributes) to ensure your web page renders as fast as possible.
+You can optionally set the `async` and `defer` attributes. By default, these are not set since it already loads async thanks to the dynamic script insertion default behavior.
 
-The following example opts out of the default `<script defer>` behavior by setting `defer` to false:
+The following example sets `async` and `defer` to true:
 
 ```js
-loadScript({ 'client-id': 'YOUR_CLIENT_ID', 'defer': false });
+loadScript({ 'client-id': 'YOUR_CLIENT_ID', 'defer': true, 'async': true });
 ```
 
-Which will render the following `<script>` tag:
+Which will dynamically insert the following `<script>` tag:
 
 ```html
-<!-- Note the absence of the `defer` attribute -->
-<script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"></script>
+<script async defer src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"></script>
 ```
