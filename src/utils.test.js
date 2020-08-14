@@ -14,27 +14,24 @@ describe('objectToQueryString()', () => {
 });
 
 describe('processOptions()', () => {
-    test('returns dataAttributes, scriptAttributes, and queryString', () => {
+    test('returns dataAttributes and queryString', () => {
         const options = {
             'client-id': 'sb',
             currency: 'USD',
-            defer: false,
             'data-order-id': '12345',
             'some-random-key': 'some-random-value'
         };
 
-        const { queryString, dataAttributes, scriptAttributes } = processOptions(options);
+        const { queryString, dataAttributes } = processOptions(options);
 
         expect(queryString).toBe('client-id=sb&currency=USD&some-random-key=some-random-value');
         expect(dataAttributes).toEqual({ 'data-order-id': '12345' });
-        expect(scriptAttributes).toEqual({ defer: false });
     });
-    test('when no options are passed in it returns empty dataAttributes, scriptAttributes, and queryString', () => {
+    test('when no options are passed in it returns empty dataAttributes and queryString', () => {
         const { queryString, dataAttributes, scriptAttributes } = processOptions();
 
         expect(queryString).toBe('');
         expect(dataAttributes).toEqual({});
-        expect(scriptAttributes).toEqual({});
     });
 });
 
@@ -100,7 +97,6 @@ describe('insertScriptElement()', () => {
 
         const scriptFromDOM = document.querySelector('head script');
         expect(scriptFromDOM.src).toBe(url);
-        expect(scriptFromDOM.defer).toBe(true);
         expect(scriptFromDOM.getAttribute('data-order-id')).toBe('12345');
     });
 
@@ -118,18 +114,6 @@ describe('insertScriptElement()', () => {
 
         expect(firstScript.src).toBe(newScriptSrc);
         expect(secondScript.src).toBe(existingScript.src);
-    });
-
-    test('sets the defer property to false', () => {
-        const url = 'https://www.paypal.com/sdk/js';
-        insertScriptElement({
-            url,
-            scriptAttributes: { defer: false }
-        });
-
-        const scriptFromDOM = document.querySelector('head script');
-        expect(scriptFromDOM.src).toBe(url);
-        expect(scriptFromDOM.defer).toBe(false);
     });
 
     test("onload() event", () => {

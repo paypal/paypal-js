@@ -6,44 +6,38 @@ export function findScript(url) {
     return document.querySelector(`script[src="${url}"]`);
 }
 
-export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes = {}, callback }) {
+export function insertScriptElement({ url, dataAttributes = {}, callback }) {
     const newScript = document.createElement('script');
     newScript.onerror = loadError;
-    if (callback) newScript.onload = callback;
+    newScript.onload = callback;
 
     forEachObjectKey(dataAttributes, key => {
         newScript.setAttribute(key, dataAttributes[key]);
     });
 
-    document.head.insertBefore(newScript, document.head.firstElementChild);
-
     newScript.src = url;
-    newScript.defer = scriptAttributes.defer ?? true;
+    document.head.insertBefore(newScript, document.head.firstElementChild);
 }
 
 export function processOptions(options = {}) {
     const processedOptions = {
         queryParams: {},
-        dataAttributes: {},
-        scriptAttributes: {}
+        dataAttributes: {}
     };
 
     forEachObjectKey(options, key => {
         if (key.substring(0, 5) === 'data-') {
             processedOptions.dataAttributes[key] = options[key];
-        } else if (key === 'defer') {
-            processedOptions.scriptAttributes[key] = options[key];
         } else {
             processedOptions.queryParams[key] = options[key];
         }
     });
 
-    const { queryParams, dataAttributes, scriptAttributes } = processedOptions;
+    const { queryParams, dataAttributes } = processedOptions;
 
     return {
         queryString: objectToQueryString(queryParams),
-        dataAttributes,
-        scriptAttributes
+        dataAttributes
     };
 }
 
@@ -60,7 +54,7 @@ export function objectToQueryString(params) {
 // uses es3 to avoid requiring polyfills for Array.prototype.forEach and Object.keys
 function forEachObjectKey(obj, callback) {
     for (let key in obj) {
-        if (obj.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
             callback(key);
         }
     }
