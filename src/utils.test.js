@@ -14,27 +14,24 @@ describe('objectToQueryString()', () => {
 });
 
 describe('processOptions()', () => {
-    test('returns dataAttributes, scriptAttributes, and queryString', () => {
+    test('returns dataAttributes and queryString', () => {
         const options = {
             'client-id': 'sb',
             currency: 'USD',
-            defer: true,
             'data-order-id': '12345',
             'some-random-key': 'some-random-value'
         };
 
-        const { queryString, dataAttributes, scriptAttributes } = processOptions(options);
+        const { queryString, dataAttributes } = processOptions(options);
 
         expect(queryString).toBe('client-id=sb&currency=USD&some-random-key=some-random-value');
         expect(dataAttributes).toEqual({ 'data-order-id': '12345' });
-        expect(scriptAttributes).toEqual({ defer: true });
     });
-    test('when no options are passed in it returns empty dataAttributes, scriptAttributes, and queryString', () => {
+    test('when no options are passed in it returns empty dataAttributes and queryString', () => {
         const { queryString, dataAttributes, scriptAttributes } = processOptions();
 
         expect(queryString).toBe('');
         expect(dataAttributes).toEqual({});
-        expect(scriptAttributes).toEqual({});
     });
 });
 
@@ -117,19 +114,6 @@ describe('insertScriptElement()', () => {
 
         expect(firstScript.src).toBe(newScriptSrc);
         expect(secondScript.src).toBe(existingScript.src);
-    });
-
-    test('sets the async and defer attributes', () => {
-        const url = 'https://www.paypal.com/sdk/js';
-        insertScriptElement({
-            url,
-            scriptAttributes: { defer: false, async: true }
-        });
-
-        const scriptFromDOM = document.querySelector('head script');
-        expect(scriptFromDOM.src).toBe(url);
-        expect(scriptFromDOM.defer).toBe(false);
-        expect(scriptFromDOM.async).toBe(true);
     });
 
     test("onload() event", () => {

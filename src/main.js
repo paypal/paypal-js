@@ -13,7 +13,7 @@ export function loadScript(options) {
         // resolve with null when running in Node
         if (typeof window === 'undefined') return resolve(null);
 
-        const { queryString, dataAttributes, scriptAttributes } = processOptions(options);
+        const { queryString, dataAttributes } = processOptions(options);
         const url = `${SDK_BASE_URL}?${queryString}`;
 
         // resolve with the existing global paypal object when a script with the same src already exists
@@ -24,7 +24,6 @@ export function loadScript(options) {
         insertScriptElement({
             url,
             dataAttributes,
-            scriptAttributes,
             callback: () => {
                 isLoading = false;
                 if (window.paypal) return resolve(window.paypal);

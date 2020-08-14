@@ -6,7 +6,7 @@ export function findScript(url) {
     return document.querySelector(`script[src="${url}"]`);
 }
 
-export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes = {}, callback }) {
+export function insertScriptElement({ url, dataAttributes = {}, callback }) {
     const newScript = document.createElement('script');
     newScript.onerror = loadError;
     newScript.onload = callback;
@@ -15,14 +15,6 @@ export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes
         newScript.setAttribute(key, dataAttributes[key]);
     });
 
-    if (typeof scriptAttributes.async !== 'undefined') {
-        newScript.async = scriptAttributes.async;
-    }
-
-    if (typeof scriptAttributes.defer !== 'undefined') {
-        newScript.defer = scriptAttributes.defer;
-    }
-
     newScript.src = url;
     document.head.insertBefore(newScript, document.head.firstElementChild);
 }
@@ -30,26 +22,22 @@ export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes
 export function processOptions(options = {}) {
     const processedOptions = {
         queryParams: {},
-        dataAttributes: {},
-        scriptAttributes: {}
+        dataAttributes: {}
     };
 
     forEachObjectKey(options, key => {
         if (key.substring(0, 5) === 'data-') {
             processedOptions.dataAttributes[key] = options[key];
-        } else if (key === 'defer') {
-            processedOptions.scriptAttributes[key] = options[key];
         } else {
             processedOptions.queryParams[key] = options[key];
         }
     });
 
-    const { queryParams, dataAttributes, scriptAttributes } = processedOptions;
+    const { queryParams, dataAttributes } = processedOptions;
 
     return {
         queryString: objectToQueryString(queryParams),
-        dataAttributes,
-        scriptAttributes
+        dataAttributes
     };
 }
 
@@ -66,7 +54,7 @@ export function objectToQueryString(params) {
 // uses es3 to avoid requiring polyfills for Array.prototype.forEach and Object.keys
 function forEachObjectKey(obj, callback) {
     for (let key in obj) {
-        if (obj.hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
             callback(key);
         }
     }

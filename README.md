@@ -39,7 +39,7 @@ The following example adds `client-id` and `currency` as query string parameters
 loadScript({ 'client-id': 'YOUR_CLIENT_ID', 'currency': 'EUR' });
 ```
 
-Which will dynamically insert the following `<script>` tag:
+Which will load the following `<script>` asynchronously:
 
 ```html
 <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=EUR"></script>
@@ -54,26 +54,10 @@ All options prefixed with `data-` are considered attributes. The following examp
 loadScript({ 'client-id': 'YOUR_CLIENT_ID', 'data-client-token': 'abc123xyz==' });
 ```
 
-Which will dynamically insert the following `<script>` tag:
+Which will load the following `<script>` asynchronously:
 
 ```html
 <script data-client-token="abc123xyz==" src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"></script>
 ```
 
 View the [full list of supported script parameters](https://developer.paypal.com/docs/checkout/reference/customize-sdk/#script-parameters).
-
-#### Async and Defer attributes
-
-You can optionally set the `async` and `defer` attributes. By default, these are not set since it already loads async thanks to the dynamic script insertion default behavior.
-
-The following example sets `async` and `defer` to true:
-
-```js
-loadScript({ 'client-id': 'YOUR_CLIENT_ID', 'defer': true, 'async': true });
-```
-
-Which will dynamically insert the following `<script>` tag:
-
-```html
-<script async defer src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"></script>
-```
