@@ -15,8 +15,6 @@ export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes
         newScript.setAttribute(key, dataAttributes[key]);
     });
 
-    document.head.insertBefore(newScript, document.head.firstElementChild);
-
     if (typeof scriptAttributes.async !== 'undefined') {
         newScript.async = scriptAttributes.async;
     }
@@ -26,6 +24,7 @@ export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes
     }
 
     newScript.src = url;
+    document.head.insertBefore(newScript, document.head.firstElementChild);
 }
 
 export function processOptions(options = {}) {
