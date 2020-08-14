@@ -9,7 +9,7 @@ export function findScript(url) {
 export function insertScriptElement({ url, dataAttributes = {}, scriptAttributes = {}, callback }) {
     const newScript = document.createElement('script');
     newScript.onerror = loadError;
-    if (callback) newScript.onload = callback;
+    newScript.onload = callback;
 
     forEachObjectKey(dataAttributes, key => {
         newScript.setAttribute(key, dataAttributes[key]);
