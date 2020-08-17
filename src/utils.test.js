@@ -28,7 +28,7 @@ describe('processOptions()', () => {
         expect(dataAttributes).toEqual({ 'data-order-id': '12345' });
     });
     test('when no options are passed in it returns empty dataAttributes and queryString', () => {
-        const { queryString, dataAttributes, scriptAttributes } = processOptions();
+        const { queryString, dataAttributes } = processOptions();
 
         expect(queryString).toBe('');
         expect(dataAttributes).toEqual({});
