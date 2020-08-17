@@ -5,9 +5,9 @@
   "main": "dist/paypal.node.js",
   "module": "dist/paypal.esm.js",
   "scripts": {
-    "build": "rollup --config",
+    "build": "rm -rf dist && rollup --config",
     "lint": "eslint .",
-    "prepack": "npm run build",
+    "prepublishOnly": "npm run lint && npm test && npm run build && npm run test:bundle && npm run test:e2e",
     "test": "jest --env=jsdom src",
     "test:bundle": "jest --env=jsdom e2e-tests/bundle/**",
     "test:e2e": "jest -c e2e-tests/jest.config.js",
