@@ -1,6 +1,6 @@
 {
     "name": "@paypal/react-paypal-js",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "React components for the JS SDK",
     "main": "dist/react-paypal.node.js",
     "module": "dist/react-paypal.esm.js",
@@ -19,7 +19,7 @@
         "url": "git://github.com/paypal/react-paypal-js.git"
     },
     "dependencies": {
-        "@paypal/paypal-js": "file:paypal-paypal-js-0.1.0.tgz",
+        "@paypal/paypal-js": "^1.0.0",
         "prop-types": "^15.7.2"
     },
     "devDependencies": {
