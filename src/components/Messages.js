@@ -11,5 +11,5 @@ export default function Messages(props) {
         }
     });
 
-    return <div id="paypal-messages" ref={messagesContainerRef} />;
+    return <div ref={messagesContainerRef} />;
 }

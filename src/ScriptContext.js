@@ -7,7 +7,7 @@ const ScriptDispatchContext = createContext();
 
 function scriptReducer(state, action) {
     switch (action.type) {
-        case "setLoadingState":
+        case "setIsLoaded":
             return {
                 options: {
                     ...state.options,
@@ -54,7 +54,7 @@ function ScriptProvider({ options, children }) {
         let isSubscribed = true;
         loadScript(state.options).then(() => {
             if (isSubscribed) {
-                dispatch({ type: "setLoadingState", value: true });
+                dispatch({ type: "setIsLoaded", value: true });
             }
         });
         return () => {
