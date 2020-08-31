@@ -1,8 +1,0 @@
-{
-  "PROJECT_TYPE": "front-tier",
-  "web": {
-    "projectName": "@paypal/paypal-js",
-    "staticDirectory": "dist",
-    "staticNamespace": "paypal-js"
-  }
-}
