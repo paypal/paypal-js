@@ -1,7 +1,7 @@
 {
   "name": "@paypal/paypal-js",
   "version": "1.0.0",
-  "description": "Async loader for the JS SDK",
+  "description": "Async loader for the PayPal JS SDK",
   "main": "dist/paypal.node.js",
   "module": "dist/paypal.esm.js",
   "scripts": {
@@ -15,6 +15,12 @@
   },
   "files": [
     "dist"
+  ],
+  "keywords": [
+    "paypal",
+    "async",
+    "script",
+    "loader"
   ],
   "license": "Apache-2.0",
   "repository": {
