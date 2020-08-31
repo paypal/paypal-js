@@ -70,7 +70,7 @@ View the [full list of supported script parameters](https://developer.paypal.com
 
 ### Using a CDN
 
-The paypal-js script is also available on the [UNPKG CDN](https://unpkg.com/). The paypal.browser.js build assigns the `loadScript` function to the window object as `window.paypalLoadScript`. Here's an example:
+The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). The paypal.browser.js build assigns the `loadScript` function to the window object as `window.paypalLoadScript`. Here's an example:
 
 ```html
 <!DOCTYPE html>
