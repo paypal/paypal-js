@@ -1,6 +1,6 @@
 ---
 name: 🐞 Bug report
-about: Report a bug with the paypal-js sdk loader. Before you create a new issue, please search for similar issues.
+about: Report a bug with paypal-js. Before you create a new issue, please search for similar issues.
   It's possible somebody has encountered this bug already.
 title: "[Bug] Bug report"
 labels: 'bug'

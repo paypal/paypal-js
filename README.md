@@ -1,6 +1,6 @@
 # PayPal JS
 
-An async loader for the PayPal JS SDK.
+An async loader for the [PayPal JS SDK](https://developer.paypal.com/docs/checkout/).
 
 <a href="https://www.npmjs.com/package/@paypal/paypal-js"><img src="https://img.shields.io/npm/v/@paypal/paypal-js?style=flat-square" alt="npm version"></a>
 <a href="https://github.com/paypal/paypal-js/blob/main/LICENSE.txt"><img src="https://img.shields.io/npm/l/@paypal/paypal-js?style=flat-square" alt="github license"></a>
@@ -67,3 +67,27 @@ Which will load the following `<script>` asynchronously:
 ```
 
 View the [full list of supported script parameters](https://developer.paypal.com/docs/checkout/reference/customize-sdk/#script-parameters).
+
+### Using a CDN
+
+The paypal-js script is also available on the [UNPKG CDN](https://unpkg.com/). The paypal.browser.js build assigns the `loadScript` function to the window object as `window.paypalLoadScript`. Here's an example:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script src="https://unpkg.com/@paypal/paypal-js/dist/paypal.browser.min.js"></script>
+    </head>
+    <body>
+        <div id="paypal-buttons"></div>
+        <script>
+            window.paypalLoadScript({ 'client-id': 'sb' })
+                .then(paypal => {
+                    paypal.Buttons().render('#paypal-buttons');
+                });
+        </script>
+    </body>
+</html>
+```
+
+Note that the above CDN location points to the latest release of paypal-js. It is advised that when you deploy your site, you import the specific version you have developed and tested with (ex: https://unpkg.com/@paypal/paypal-js@1.0.0/dist/paypal.browser.min.js).
