@@ -70,7 +70,7 @@ View the [full list of supported script parameters](https://developer.paypal.com
 
 ### Using a CDN
 
-The paypal-js script is also available on the [UNPKG CDN](https://unpkg.com/). The paypal.browser.js build assigns the `loadScript` function to the window object as `window.paypalLoadScript`. Here's an example:
+The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). The paypal.browser.js build assigns the `loadScript` function to the window object as `window.paypalLoadScript`. Here's an example:
 
 ```html
 <!DOCTYPE html>
@@ -91,3 +91,7 @@ The paypal-js script is also available on the [UNPKG CDN](https://unpkg.com/). T
 ```
 
 Note that the above CDN location points to the latest release of paypal-js. It is advised that when you deploy your site, you import the specific version you have developed and tested with (ex: https://unpkg.com/@paypal/paypal-js@1.0.0/dist/paypal.browser.min.js).
+
+### Browser Support
+
+This library supports all popular browsers, including IE 11. It provides the same browser support as the JS SDK. Here's the [full list of supported browsers](https://developer.paypal.com/docs/checkout/troubleshoot/support/#supported-browsers).
