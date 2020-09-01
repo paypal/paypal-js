@@ -1,6 +1,6 @@
 # React PayPal JS
 
-React components for the PayPal [JS SDK](https://developer.paypal.com/docs/checkout/).
+React components for the [PayPal JS SDK](https://developer.paypal.com/docs/checkout/).
 
 ## Installation
 
@@ -29,3 +29,7 @@ export default function App() {
     );
 }
 ```
+
+### Browser Support
+
+This library supports all popular browsers, including IE 11. It provides the same browser support as the JS SDK. Here's the [full list of supported browsers](https://developer.paypal.com/docs/checkout/troubleshoot/support/#supported-browsers).
