@@ -7,7 +7,6 @@
   "scripts": {
     "build": "rm -rf dist && rollup --config",
     "lint": "eslint .",
-    "prepublishOnly": "echo \"\nPlease use 'npm run release' instead\n\" && exit 1",
     "release": "node ./scripts/publish",
     "release:patch": "node ./scripts/publish patch",
     "release:minor": "node ./scripts/publish minor",
