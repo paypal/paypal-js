@@ -12,17 +12,17 @@ if (exec('git diff-index --quiet --cached HEAD').code !== 0) {
 }
 
 // validate npm
-let npmUser = exec('npm whoami');
+let npmUser = exec('npm whoami').trim();
 
 if (npmUser) {
     echo(`npm username: ${npmUser}`);
 } else {
     echo("You must be logged in to publish a release. Running 'npm login'");
     exec('npm login');
-    npmUser = exec('npm whoami');
+    npmUser = exec('npm whoami').trim();
 }
 
-const userRole = exec(`npm org ls @paypal ${npmUser} --json`);
+const userRole = JSON.parse(exec(`npm org ls @paypal ${npmUser} --json`));
 const permission = userRole[npmUser];
 
 if (!['developer', 'owner'].includes(permission)) {
