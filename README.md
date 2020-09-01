@@ -95,3 +95,18 @@ Note that the above CDN location points to the latest release of paypal-js. It i
 ### Browser Support
 
 This library supports all popular browsers, including IE 11. It provides the same browser support as the JS SDK. Here's the [full list of supported browsers](https://developer.paypal.com/docs/checkout/troubleshoot/support/#supported-browsers).
+
+## Releasing
+
+Run one of the following commands to publish a new version to npm:
+
+```bash
+# bug fixes
+npm run release:patch
+
+# new functionality that's backwards compatible
+npm run release:minor
+
+# breaking changes
+npm run release:major
+```

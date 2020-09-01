@@ -7,7 +7,11 @@
   "scripts": {
     "build": "rm -rf dist && rollup --config",
     "lint": "eslint .",
-    "prepublishOnly": "npm run lint && npm test && npm run build && npm run test:bundle && npm run test:e2e",
+    "prepublishOnly": "echo \"\nPlease use 'npm run release' instead\n\" && exit 1",
+    "release": "node ./scripts/publish",
+    "release:patch": "node ./scripts/publish patch",
+    "release:minor": "node ./scripts/publish minor",
+    "release:major": "node ./scripts/publish major",
     "test": "jest --env=jsdom src",
     "test:bundle": "jest --env=jsdom e2e-tests/bundle/**",
     "test:e2e": "jest -c e2e-tests/jest.config.js",
@@ -44,7 +48,8 @@
     "puppeteer": "^5.1.0",
     "rollup": "^2.21.0",
     "rollup-plugin-filesize": "^9.0.2",
-    "rollup-plugin-terser": "^7.0.0"
+    "rollup-plugin-terser": "^7.0.0",
+    "shelljs": "^0.8.4"
   },
   "dependencies": {
     "promise-polyfill": "^8.1.3"
