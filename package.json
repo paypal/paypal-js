@@ -2,6 +2,13 @@
     "name": "@paypal/react-paypal-js",
     "version": "0.2.0",
     "description": "React components for the JS SDK",
+    "keywords": [
+        "react",
+        "component",
+        "paypal",
+        "checkout",
+        "payment"
+    ],
     "main": "dist/react-paypal.node.js",
     "module": "dist/react-paypal.esm.js",
     "scripts": {
