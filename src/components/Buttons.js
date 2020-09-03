@@ -30,5 +30,32 @@ export default function Buttons(props) {
 
 Buttons.propTypes = {
     createOrder: PropTypes.func,
-    style: PropTypes.object,
+    createBillingAgreement: PropTypes.func,
+    createSubscription: PropTypes.func,
+    style: PropTypes.exact({
+        color: PropTypes.string,
+        height: PropTypes.number,
+        label: PropTypes.string,
+        layout: PropTypes.string,
+        shape: PropTypes.string,
+        tagline: PropTypes.bool,
+    }),
+    shippingPreference: PropTypes.oneOf([
+        "GET_FROM_FILE",
+        "NO_SHIPPING",
+        "SET_PROVIDED_ADDRESS",
+    ]),
+    onApprove: PropTypes.func,
+    onAuth: PropTypes.func,
+    onCancel: PropTypes.func,
+    onClick: PropTypes.func,
+    onError: PropTypes.func,
+    onInit: PropTypes.func,
+    onShippingChange: PropTypes.func,
+    onSuccess: PropTypes.func,
+};
+
+Buttons.defaultProps = {
+    style: {},
+    shippingPreference: "GET_FROM_FILE",
 };

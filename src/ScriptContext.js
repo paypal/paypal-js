@@ -72,9 +72,24 @@ function ScriptProvider({ options, children }) {
 }
 
 ScriptProvider.propTypes = {
-    children: PropTypes.any,
-    options: PropTypes.shape({
+    children: PropTypes.element.isRequired,
+    options: PropTypes.exact({
+        "buyer-country": PropTypes.string,
         "client-id": PropTypes.string.isRequired,
+        commit: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+        components: PropTypes.string,
+        currency: PropTypes.string,
+        "data-csp-nonce": PropTypes.string,
+        "data-order-id": PropTypes.string,
+        "data-page-type": PropTypes.string,
+        "data-partner-attribution-id": PropTypes.string,
+        debug: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
+        "disable-funding": PropTypes.string,
+        "integration-date": PropTypes.string,
+        intent: PropTypes.string,
+        locale: PropTypes.string,
+        "merchant-id": PropTypes.string,
+        vault: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
     }),
 };
 
