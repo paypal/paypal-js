@@ -72,7 +72,7 @@ describe('insertScriptElement()', () => {
             set(src) {
                 this.currentSrc = src;
                 if (src === loadFailureSrcKey) {
-                    setTimeout(() => this.onerror(new Error('error message')));
+                    setTimeout(() => this.onerror());
                 } else if (this.onload) {
                     setTimeout(() => this.onload());
                 }
@@ -123,7 +123,7 @@ describe('insertScriptElement()', () => {
         const url = 'https://www.paypal.com/sdk/js';
         insertScriptElement({
             url,
-            callback: onloadMock
+            onSuccess: onloadMock
         });
 
         jest.runAllTimers();
@@ -132,13 +132,12 @@ describe('insertScriptElement()', () => {
 
     test("onerror() event", () => {
         expect.assertions(1);
-
+        const onErrorMock = jest.fn();
         const url = loadFailureSrcKey;
-        insertScriptElement({ url });
-        try {
-            jest.runAllTimers();
-        } catch(e) {
-            expect(e.message).toBe(`The script "${url}" didn't load correctly.`);
-        }
+
+        insertScriptElement({ url, onError: onErrorMock });
+
+        jest.runAllTimers();
+        expect(onErrorMock).toBeCalled();
     });
 });

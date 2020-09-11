@@ -1,15 +1,11 @@
-function loadError() {
-    throw new Error(`The script "${this.src}" didn't load correctly.`);
-}
-
 export function findScript(url) {
     return document.querySelector(`script[src="${url}"]`);
 }
 
-export function insertScriptElement({ url, dataAttributes = {}, callback }) {
+export function insertScriptElement({ url, dataAttributes = {}, onSuccess, onError }) {
     const newScript = document.createElement('script');
-    newScript.onerror = loadError;
-    newScript.onload = callback;
+    newScript.onerror = onError;
+    newScript.onload = onSuccess;
 
     forEachObjectKey(dataAttributes, key => {
         newScript.setAttribute(key, dataAttributes[key]);
