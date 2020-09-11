@@ -24,10 +24,14 @@ export function loadScript(options) {
         insertScriptElement({
             url,
             dataAttributes,
-            callback: () => {
+            onSuccess: () => {
                 isLoading = false;
                 if (window.paypal) return resolve(window.paypal);
                 return reject(new Error('The window.paypal global variable is not available.'));
+            },
+            onError: () => {
+                isLoading = false;
+                return reject(new Error(`The script "${url}" didn't load correctly.`));
             }
         });
     });

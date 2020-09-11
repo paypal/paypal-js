@@ -7,9 +7,9 @@ describe('loadScript()', () => {
 
         // eslint-disable-next-line no-import-assign
         utils.insertScriptElement = jest.fn()
-            .mockImplementation(({ callback }) => {
+            .mockImplementation(({ onSuccess }) => {
                 window.paypal = {};
-                process.nextTick(() => callback());
+                process.nextTick(() => onSuccess());
             });
 
         Object.defineProperty(window, 'paypal', {
@@ -66,9 +66,9 @@ describe('loadScript()', () => {
 
         // eslint-disable-next-line no-import-assign
         utils.insertScriptElement = jest.fn()
-            .mockImplementation(({ callback }) => {
+            .mockImplementation(({ onSuccess }) => {
                 // do not set window.paypal in the mock implementation
-                process.nextTick(() => callback());
+                process.nextTick(() => onSuccess());
             });
 
         expect(window.paypal).toBe(undefined);
@@ -77,6 +77,24 @@ describe('loadScript()', () => {
             .catch(err => {
                 expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
                 expect(err.message).toBe('The window.paypal global variable is not available.');
+            });
+    });
+
+    test('should throw an error when the script fails to load', () => {
+        expect.assertions(3);
+
+        // eslint-disable-next-line no-import-assign
+        utils.insertScriptElement = jest.fn()
+            .mockImplementation(({ onError }) => {
+                process.nextTick(() => onError());
+            });
+
+        expect(window.paypal).toBe(undefined);
+
+        return loadScript({ 'client-id': 'sb' })
+            .catch(err => {
+                expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
+                expect(err.message).toBe("The script \"https://www.paypal.com/sdk/js?client-id=sb\" didn't load correctly.");
             });
     });
 });
