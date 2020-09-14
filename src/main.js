@@ -27,11 +27,31 @@ export function loadScript(options) {
             onSuccess: () => {
                 isLoading = false;
                 if (window.paypal) return resolve(window.paypal);
-                return reject(new Error('The window.paypal global variable is not available.'));
+                const errorMessage = 'The window.paypal global variable is not available.';
+                console.error(errorMessage);
+                return reject(new Error(errorMessage));
             },
             onError: () => {
                 isLoading = false;
-                return reject(new Error(`The script "${url}" didn't load correctly.`));
+                let errorMessage = `The script "${url}" didn't load correctly.`;
+
+                if (!window.fetch) {
+                    console.error(errorMessage);
+                    return reject(errorMessage);
+                }
+
+                let responseStatusCode;
+
+                window.fetch(url)
+                    .then(response => {
+                        responseStatusCode = response.status;
+                        return response.text();
+                    })
+                    .then(body => {
+                        errorMessage += `\n\nStatus Code: ${responseStatusCode}\nResponse body: ${body}`;
+                        console.error(errorMessage);
+                        return reject(new Error(errorMessage));
+                    });
             }
         });
     });
