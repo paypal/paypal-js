@@ -20,7 +20,10 @@ export default function PayPalButtons(props) {
     useEffect(() => {
         if (isLoaded) {
             buttons.current = window.paypal.Buttons({ ...props });
-            buttons.current.render(buttonsContainerRef.current);
+
+            if (buttons.current.isEligible()) {
+                buttons.current.render(buttonsContainerRef.current);
+            }
         } else {
             // close the buttons when the script is reloaded
             if (buttons.current) {
