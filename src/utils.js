@@ -1,17 +1,30 @@
-export function findScript(url) {
-    return document.querySelector(`script[src="${url}"]`);
+export function findScript(url, dataAttributes) {
+    const currentScript = document.querySelector(`script[src="${url}"]`);
+    if (!currentScript) return null;
+
+    const nextScript = createScriptElement(url, dataAttributes);
+    let isExactMatch = true;
+
+    forEachObjectKey(currentScript.dataset, key => {
+        if (currentScript.dataset[key] !== nextScript.dataset[key]) {
+            isExactMatch = false;
+        }
+    });
+
+    forEachObjectKey(nextScript.dataset, key => {
+        if (currentScript.dataset[key] !== nextScript.dataset[key]) {
+            isExactMatch = false;
+        }
+    });
+
+    return isExactMatch ? currentScript : null;
 }
 
-export function insertScriptElement({ url, dataAttributes = {}, onSuccess, onError }) {
-    const newScript = document.createElement('script');
+export function insertScriptElement({ url, dataAttributes, onSuccess, onError }) {
+    const newScript = createScriptElement(url, dataAttributes);
     newScript.onerror = onError;
     newScript.onload = onSuccess;
 
-    forEachObjectKey(dataAttributes, key => {
-        newScript.setAttribute(key, dataAttributes[key]);
-    });
-
-    newScript.src = url;
     document.head.insertBefore(newScript, document.head.firstElementChild);
 }
 
@@ -54,4 +67,15 @@ function forEachObjectKey(obj, callback) {
             callback(key);
         }
     }
+}
+
+function createScriptElement(url, dataAttributes = {}) {
+    const newScript = document.createElement('script');
+    newScript.src = url;
+
+    forEachObjectKey(dataAttributes, key => {
+        newScript.setAttribute(key, dataAttributes[key]);
+    });
+
+    return newScript;
 }

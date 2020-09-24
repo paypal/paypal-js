@@ -17,7 +17,7 @@ export function loadScript(options) {
         const url = `${SDK_BASE_URL}?${queryString}`;
 
         // resolve with the existing global paypal object when a script with the same src already exists
-        if (findScript(url) && window.paypal) return resolve(window.paypal);
+        if (findScript(url, dataAttributes) && window.paypal) return resolve(window.paypal);
 
         isLoading = true;
 
