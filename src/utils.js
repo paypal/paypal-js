@@ -3,15 +3,16 @@ export function findScript(url, dataAttributes) {
     if (!currentScript) return null;
 
     const nextScript = createScriptElement(url, dataAttributes);
+
+    // check if the new script has the same number of data attributes
+    if (objectSize(currentScript.dataset) !== objectSize(nextScript.dataset)) {
+        return null;
+    }
+
     let isExactMatch = true;
 
+    // check if the data attribute values are the same
     forEachObjectKey(currentScript.dataset, key => {
-        if (currentScript.dataset[key] !== nextScript.dataset[key]) {
-            isExactMatch = false;
-        }
-    });
-
-    forEachObjectKey(nextScript.dataset, key => {
         if (currentScript.dataset[key] !== nextScript.dataset[key]) {
             isExactMatch = false;
         }
@@ -60,15 +61,6 @@ export function objectToQueryString(params) {
     return queryString;
 }
 
-// uses es3 to avoid requiring polyfills for Array.prototype.forEach and Object.keys
-function forEachObjectKey(obj, callback) {
-    for (let key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            callback(key);
-        }
-    }
-}
-
 function createScriptElement(url, dataAttributes = {}) {
     const newScript = document.createElement('script');
     newScript.src = url;
@@ -78,4 +70,19 @@ function createScriptElement(url, dataAttributes = {}) {
     });
 
     return newScript;
+}
+
+// uses es3 to avoid requiring polyfills for Array.prototype.forEach and Object.keys
+function forEachObjectKey(obj, callback) {
+    for (let key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            callback(key);
+        }
+    }
+}
+
+function objectSize(obj) {
+    let size = 0;
+    forEachObjectKey(obj, () => size++);
+    return size;
 }
