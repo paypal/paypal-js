@@ -42,50 +42,28 @@ describe('findScript()', () => {
 
     test('finds the existing script in the DOM', () => {
         const url = 'https://www.paypal.com/sdk/js?client-id=sb';
-        document.head.innerHTML = `<script src="${url}"></script>`;
+        document.head.innerHTML = `<script src="${url}" data-order-id="123" data-page-type="checkout"></script>`;
 
-        const result = findScript(url);
+        const result = findScript(url, { 'data-page-type': 'checkout', 'data-order-id': '123' });
         expect(result.src).toBe(url);
     });
 
     test('returns null when the script is not found', () => {
         expect(findScript('https://www.paypal.com/sdk/js?client-id=sb')).toBe(null);
     });
+
+    test('returns null when the script is found but the data attributes do not match', () => {
+        const url = 'https://www.paypal.com/sdk/js?client-id=sb';
+        document.head.innerHTML = `<script src="${url}" data-page-type="home"></script>`;
+
+        const result = findScript(url, { 'data-page-type': 'checkout' });
+        expect(result).toBe(null);
+    });
 });
 
 describe('insertScriptElement()', () => {
-    const loadFailureSrcKey = 'error';
-    let originalHTMLScriptElementSrcPrototype;
-
     beforeEach(() => {
         document.head.innerHTML = '';
-
-        // JSDOM does not implement behavior for script loading so we need to mock it
-        originalHTMLScriptElementSrcPrototype = Object.getOwnPropertyDescriptor(
-            global.HTMLScriptElement.prototype,
-            'src'
-        );
-
-        // let currentSrc;
-
-        Object.defineProperty(global.HTMLScriptElement.prototype, 'src', {
-            set(src) {
-                this.currentSrc = src;
-                if (src === loadFailureSrcKey) {
-                    setTimeout(() => this.onerror());
-                } else if (this.onload) {
-                    setTimeout(() => this.onload());
-                }
-            },
-            get() {
-                return this.currentSrc;
-            }
-        });
-
-    });
-
-    afterEach(() => {
-        Object.defineProperty(global.HTMLScriptElement.prototype, 'src', originalHTMLScriptElementSrcPrototype);
     });
 
     test('inserts a <script> with attributes into the DOM', () => {
@@ -116,28 +94,47 @@ describe('insertScriptElement()', () => {
         expect(secondScript.src).toBe(existingScript.src);
     });
 
-    test("onload() event", () => {
-        expect.assertions(1);
-        const onloadMock = jest.fn();
+    describe("callbacks", () => {
+        const loadFailureSrcKey = 'http://localhost/error';
 
-        const url = 'https://www.paypal.com/sdk/js';
-        insertScriptElement({
-            url,
-            onSuccess: onloadMock
+        beforeEach(() => {
+            const insertBeforeSpy = jest.spyOn(document.head, 'insertBefore');
+            insertBeforeSpy.mockImplementation((newScript) => {
+                if (newScript.src === loadFailureSrcKey) {
+                    setTimeout(() => newScript.onerror());
+                } else if (newScript.onload) {
+                    setTimeout(() => newScript.onload());
+                }
+            });
         });
 
-        jest.runAllTimers();
-        expect(onloadMock).toBeCalled();
-    });
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
 
-    test("onerror() event", () => {
-        expect.assertions(1);
-        const onErrorMock = jest.fn();
-        const url = loadFailureSrcKey;
+        test("onload() event", () => {
+            expect.assertions(1);
+            const onloadMock = jest.fn();
 
-        insertScriptElement({ url, onError: onErrorMock });
+            const url = 'https://www.paypal.com/sdk/js';
+            insertScriptElement({
+                url,
+                onSuccess: onloadMock
+            });
 
-        jest.runAllTimers();
-        expect(onErrorMock).toBeCalled();
+            jest.runAllTimers();
+            expect(onloadMock).toBeCalled();
+        });
+
+        test("onerror() event", () => {
+            expect.assertions(1);
+            const onErrorMock = jest.fn();
+            const url = loadFailureSrcKey;
+
+            insertScriptElement({ url, onError: onErrorMock });
+
+            jest.runAllTimers();
+            expect(onErrorMock).toBeCalled();
+        });
     });
 });

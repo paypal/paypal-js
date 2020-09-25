@@ -1,17 +1,31 @@
-export function findScript(url) {
-    return document.querySelector(`script[src="${url}"]`);
+export function findScript(url, dataAttributes) {
+    const currentScript = document.querySelector(`script[src="${url}"]`);
+    if (!currentScript) return null;
+
+    const nextScript = createScriptElement(url, dataAttributes);
+
+    // check if the new script has the same number of data attributes
+    if (objectSize(currentScript.dataset) !== objectSize(nextScript.dataset)) {
+        return null;
+    }
+
+    let isExactMatch = true;
+
+    // check if the data attribute values are the same
+    forEachObjectKey(currentScript.dataset, key => {
+        if (currentScript.dataset[key] !== nextScript.dataset[key]) {
+            isExactMatch = false;
+        }
+    });
+
+    return isExactMatch ? currentScript : null;
 }
 
-export function insertScriptElement({ url, dataAttributes = {}, onSuccess, onError }) {
-    const newScript = document.createElement('script');
+export function insertScriptElement({ url, dataAttributes, onSuccess, onError }) {
+    const newScript = createScriptElement(url, dataAttributes);
     newScript.onerror = onError;
     newScript.onload = onSuccess;
 
-    forEachObjectKey(dataAttributes, key => {
-        newScript.setAttribute(key, dataAttributes[key]);
-    });
-
-    newScript.src = url;
     document.head.insertBefore(newScript, document.head.firstElementChild);
 }
 
@@ -47,6 +61,17 @@ export function objectToQueryString(params) {
     return queryString;
 }
 
+function createScriptElement(url, dataAttributes = {}) {
+    const newScript = document.createElement('script');
+    newScript.src = url;
+
+    forEachObjectKey(dataAttributes, key => {
+        newScript.setAttribute(key, dataAttributes[key]);
+    });
+
+    return newScript;
+}
+
 // uses es3 to avoid requiring polyfills for Array.prototype.forEach and Object.keys
 function forEachObjectKey(obj, callback) {
     for (let key in obj) {
@@ -54,4 +79,10 @@ function forEachObjectKey(obj, callback) {
             callback(key);
         }
     }
+}
+
+function objectSize(obj) {
+    let size = 0;
+    forEachObjectKey(obj, () => size++);
+    return size;
 }
