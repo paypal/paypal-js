@@ -10,7 +10,7 @@ A client-side loader for the [PayPal JS SDK](https://developer.paypal.com/docs/c
 
 Why should I use paypal-js?
 
-- To load the JS SDK script asyncronously to ensure page rendering isn't blocked.
+- To load the JS SDK script asynchronously to ensure page rendering isn't blocked.
 - To use a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) to know when script loading is complete.
 - For reloading the script when query parameters or data attributes change.
 
