@@ -8,11 +8,20 @@ A client-side loader for the [PayPal JS SDK](https://developer.paypal.com/docs/c
 <a href="https://david-dm.org/paypal/paypal-js"><img src="https://img.shields.io/david/paypal/paypal-js?style=flat-square" alt="dependencies"></a>
 <a href="https://david-dm.org/paypal/paypal-js?type=dev"><img src="https://img.shields.io/david/dev/paypal/paypal-js?style=flat-square" alt="dev dependencies"></a>
 
-Why should I use paypal-js?
+## Why use paypal-js?
 
-- To load the JS SDK script asynchronously to ensure page rendering isn't blocked.
-- To use a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) to know when script loading is complete.
-- For reloading the script when query parameters or data attributes change.
+The [default JS SDK code snippet](https://developer.paypal.com/docs/checkout/#add-the-buttons-to-your-website) blocks page rendering:
+
+```html
+<script src="https://www.paypal.com/sdk/js?client-id=sb"></script>
+<script>paypal.Buttons().render('body');</script>
+```
+
+The above snippet can be difficult to implement in a non-blocking way, especially in single page web apps. This is where the paypal-js library comes in. It provides the following benefits over the above snippet:
+
+- Async script loading to ensure page rendering isn't blocked.
+- A [Promise API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) to know when script loading is complete.
+- A convenient way to reload the script when query parameters or data attributes change.
 
 ## Installation
 
