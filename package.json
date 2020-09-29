@@ -1,7 +1,7 @@
 {
   "name": "@paypal/paypal-js",
   "version": "1.0.2",
-  "description": "Async loader for the PayPal JS SDK",
+  "description": "Client-side loader for the PayPal JS SDK",
   "main": "dist/paypal.node.js",
   "module": "dist/paypal.esm.js",
   "scripts": {
