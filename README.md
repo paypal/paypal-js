@@ -1,6 +1,6 @@
 # PayPal JS
 
-A client-side loader for the [PayPal JS SDK](https://developer.paypal.com/docs/checkout/).
+A client-side loader for the [PayPal JS SDK](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/).
 
 <a href="https://www.npmjs.com/package/@paypal/paypal-js"><img src="https://img.shields.io/npm/v/@paypal/paypal-js?style=flat-square" alt="npm version"></a>
 <a href="https://github.com/paypal/paypal-js/blob/main/LICENSE.txt"><img src="https://img.shields.io/npm/l/@paypal/paypal-js?style=flat-square" alt="github license"></a>
@@ -10,7 +10,7 @@ A client-side loader for the [PayPal JS SDK](https://developer.paypal.com/docs/c
 
 ## Why use paypal-js?
 
-The [default JS SDK code snippet](https://developer.paypal.com/docs/checkout/#add-the-buttons-to-your-website) blocks page rendering:
+The [default JS SDK code snippet](https://developer.paypal.com/docs/business/checkout/set-up-standard-payments/#sample-javascript-sdk-code) blocks page rendering:
 
 ```html
 <script src="https://www.paypal.com/sdk/js?client-id=sb"></script>
@@ -66,7 +66,7 @@ Which will load the following `<script>` asynchronously:
 <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=EUR"></script>
 ```
 
-View the [full list of supported query parameters](https://developer.paypal.com/docs/checkout/reference/customize-sdk/#query-parameters).
+View the [full list of supported query parameters](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-configuration/#query-parameters).
 
 #### Data Attributes
 
@@ -81,7 +81,7 @@ Which will load the following `<script>` asynchronously:
 <script data-client-token="abc123xyz==" src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"></script>
 ```
 
-View the [full list of supported script parameters](https://developer.paypal.com/docs/checkout/reference/customize-sdk/#script-parameters).
+View the [full list of supported script parameters](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-configuration/#script-parameters).
 
 ### Using a CDN
 
