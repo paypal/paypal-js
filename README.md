@@ -1,12 +1,27 @@
 # PayPal JS
 
-An async loader for the [PayPal JS SDK](https://developer.paypal.com/docs/checkout/).
+A client-side loader for the [PayPal JS SDK](https://developer.paypal.com/docs/checkout/).
 
 <a href="https://www.npmjs.com/package/@paypal/paypal-js"><img src="https://img.shields.io/npm/v/@paypal/paypal-js?style=flat-square" alt="npm version"></a>
 <a href="https://github.com/paypal/paypal-js/blob/main/LICENSE.txt"><img src="https://img.shields.io/npm/l/@paypal/paypal-js?style=flat-square" alt="github license"></a>
 <a href="https://travis-ci.com/github/paypal/paypal-js"><img src="https://img.shields.io/travis/com/paypal/paypal-js/main.svg?style=flat-square" alt="travis build"></a>
 <a href="https://david-dm.org/paypal/paypal-js"><img src="https://img.shields.io/david/paypal/paypal-js?style=flat-square" alt="dependencies"></a>
 <a href="https://david-dm.org/paypal/paypal-js?type=dev"><img src="https://img.shields.io/david/dev/paypal/paypal-js?style=flat-square" alt="dev dependencies"></a>
+
+## Why use paypal-js?
+
+The [default JS SDK code snippet](https://developer.paypal.com/docs/checkout/#add-the-buttons-to-your-website) blocks page rendering:
+
+```html
+<script src="https://www.paypal.com/sdk/js?client-id=sb"></script>
+<script>paypal.Buttons().render('body');</script>
+```
+
+The above snippet can be difficult to implement in a non-blocking way, especially in single page web apps. This is where the paypal-js library comes in. It provides the following benefits over the above snippet:
+
+- Async script loading to ensure page rendering isn't blocked.
+- A [Promise API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) to know when script loading is complete.
+- A convenient way to reload the script when query parameters or data attributes change.
 
 ## Installation
 
