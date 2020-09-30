@@ -20,6 +20,8 @@ describe('Reload script', () => {
         expect(sdkResponse.url().includes('currency=USD')).toBe(true);
         expect(smartButtonsResponse.url().includes('currency=USD')).toBe(true);
 
+        await expect(page).toMatchElement('iframe.component-frame.visible');
+
         await page.select('select#currency', 'EUR');
         const [sdkResponseUpdated, smartButtonsResponseUpdated] = await Promise.all([
             page.waitForResponse(response => response.url().startsWith('https://www.paypal.com/sdk/js')),

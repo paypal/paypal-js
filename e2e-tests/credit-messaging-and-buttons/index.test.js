@@ -14,10 +14,7 @@ describe('Credit Messaging and Buttons', () => {
     });
 
     it('should display both the credit message component and the buttons component', async () => {
-        // messages iframe
-        await expect(page).toMatchElement('iframe[title="PayPal Credit Promotion Message"]');
-
-        // buttons iframe
-        await expect(page).toMatchElement('iframe[title="PayPal"].component-frame.visible');
+        await expect(page).toMatchElement('#messages iframe');
+        await expect(page).toMatchElement('#buttons iframe');
     });
 });
