@@ -72,7 +72,7 @@ function ScriptProvider({ options, children }) {
 }
 
 ScriptProvider.propTypes = {
-    children: PropTypes.element.isRequired,
+    children: PropTypes.node.isRequired,
     options: PropTypes.exact({
         "buyer-country": PropTypes.string,
         "client-id": PropTypes.string.isRequired,
