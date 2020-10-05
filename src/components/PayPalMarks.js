@@ -9,25 +9,27 @@ import { useScriptReducer } from "../ScriptContext";
  *     <PayPalMarks />
  * ```
  *
- * It can also be configured to use a single funding source similar to the [standalone buttons](https://developer.paypal.com/docs/checkout/integration-features/standalone-buttons/) approach using the `fundingSource` prop.
+ * This component can also be configured to use a single funding source similar to the [standalone buttons](https://developer.paypal.com/docs/checkout/integration-features/standalone-buttons/) approach.
+ * A `FUNDING` object is exported by this library which has a key for every available funding source option.
+ *
+ * ```js
+ *     import { FUNDING } from '@paypal/react-paypal-js'
+ * ```
+ *
+ * Use this `FUNDING` constant to set the `fundingSource` prop.
  *
  * ```jsx
- *     <PayPalMarks fundingSource="paypal"/>
+ *     <PayPalMarks fundingSource={FUNDING.PAYPAL}/>
  * ```
  */
-export default function Marks({ fundingSource }) {
+export default function Marks(props) {
     const [{ isLoaded }] = useScriptReducer();
     const markContainerRef = useRef(null);
     const mark = useRef(null);
 
     useEffect(() => {
         if (isLoaded && !mark.current) {
-            // support either key or value for funding source
-            if (window.paypal.FUNDING[fundingSource]) {
-                fundingSource = window.paypal.FUNDING[fundingSource];
-            }
-
-            mark.current = window.paypal.Marks({ fundingSource });
+            mark.current = window.paypal.Marks({ ...props });
 
             if (mark.current.isEligible()) {
                 mark.current.render(markContainerRef.current);
@@ -40,7 +42,7 @@ export default function Marks({ fundingSource }) {
 
 Marks.propTypes = {
     /**
-     * The individual mark to render. The full list can be found [here](https://developer.paypal.com/docs/checkout/integration-features/standalone-buttons/#complete-your-integration).
+     * The individual mark to render. Use the `FUNDING` constant exported by this library to set this value. The full list can be found [here](https://developer.paypal.com/docs/checkout/integration-features/standalone-buttons/#complete-your-integration).
      */
     fundingSource: PropTypes.string,
 };

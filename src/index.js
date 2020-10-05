@@ -5,3 +5,5 @@ export {
     ScriptProvider as PayPalScriptProvider,
     useScriptReducer as usePayPalScriptReducer,
 } from "./ScriptContext";
+
+export { FUNDING } from "@paypal/sdk-constants";

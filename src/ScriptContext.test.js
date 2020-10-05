@@ -1,25 +1,18 @@
 import React from "react";
 import { render, waitFor } from "@testing-library/react";
-import * as payPalJS from "@paypal/paypal-js";
 import { ScriptProvider, useScriptReducer } from "./ScriptContext";
 
 describe("<ScriptProvider />", () => {
-    let loadScriptBackup = payPalJS.loadScript;
-
     beforeEach(() => {
         document.head.innerHTML = "";
-
-        // eslint-disable-next-line no-import-assign
-        payPalJS.loadScript = jest.fn().mockImplementation((options) => {
-            return new Promise((resolve) => {
-                loadScriptBackup(options);
-                process.nextTick(() => resolve());
-            });
-        });
     });
 
     test("should add the JS SDK <script> to the DOM", () => {
-        render(<ScriptProvider options={{ "client-id": "sb" }} />);
+        render(
+            <ScriptProvider options={{ "client-id": "sb" }}>
+                <></>
+            </ScriptProvider>
+        );
 
         const script = document.querySelector("head script");
         expect(script).toBeTruthy();

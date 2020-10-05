@@ -55,6 +55,11 @@ PayPalButtons.propTypes = {
      */
     createSubscription: PropTypes.func,
     /**
+     * The individual button to render. Use the `FUNDING` constant exported by this library to set this value. The full list can be found [here](https://developer.paypal.com/docs/checkout/integration-features/standalone-buttons/#complete-your-integration).
+     */
+    fundingSource: PropTypes.string,
+
+    /**
      * Approved styling options for customizing layout, color, shape, and labels.
      */
     style: PropTypes.exact({

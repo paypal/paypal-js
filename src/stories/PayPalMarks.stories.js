@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { PayPalScriptProvider, PayPalMarks, PayPalButtons } from "../index";
+import {
+    PayPalScriptProvider,
+    PayPalMarks,
+    PayPalButtons,
+    FUNDING,
+} from "../index";
 
 export default {
     title: "Example/PayPalMarks",
@@ -9,7 +14,10 @@ export default {
 function Template(args) {
     return (
         <PayPalScriptProvider
-            options={{ "client-id": "sb", components: "marks" }}
+            options={{
+                "client-id": "sb",
+                components: "buttons,marks,funding-eligibility",
+            }}
         >
             <PayPalMarks {...args} />
         </PayPalScriptProvider>
@@ -20,10 +28,10 @@ export const Default = Template.bind({});
 Default.args = {};
 
 export const StandAlone = Template.bind({});
-StandAlone.args = { fundingSource: "paypal" };
+StandAlone.args = { fundingSource: FUNDING.PAYPAL };
 
 function RadioButtonTemplate() {
-    const [fundingSource, setFundingSource] = useState("paypal");
+    const [fundingSource, setFundingSource] = useState(FUNDING.PAYPAL);
 
     function onClick(event) {
         setFundingSource(event.target.value);
@@ -42,7 +50,7 @@ function RadioButtonTemplate() {
                         onClick={onClick}
                         type="radio"
                         name="fundingSource"
-                        value="paypal"
+                        value={FUNDING.PAYPAL}
                         defaultChecked
                     />
                     <PayPalMarks fundingSource="paypal" />
@@ -53,9 +61,9 @@ function RadioButtonTemplate() {
                         onClick={onClick}
                         type="radio"
                         name="fundingSource"
-                        value="card"
+                        value={FUNDING.CARD}
                     />
-                    <PayPalMarks fundingSource="card" />
+                    <PayPalMarks fundingSource={FUNDING.CARD} />
                 </label>
 
                 <label className="mark">
@@ -63,9 +71,9 @@ function RadioButtonTemplate() {
                         onClick={onClick}
                         type="radio"
                         name="fundingSource"
-                        value="credit"
+                        value={FUNDING.CREDIT}
                     />
-                    <PayPalMarks fundingSource="credit" />
+                    <PayPalMarks fundingSource={FUNDING.CREDIT} />
                 </label>
             </form>
             <PayPalButtons fundingSource={fundingSource} />
