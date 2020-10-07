@@ -4,4 +4,24 @@
         display: flex;
         align-items: center;
     }
+
+    .spinner {
+        display: inline-block;
+        height: 40px;
+        width: 40px;
+        box-sizing: border-box;
+        border: 3px solid rgba(0, 0, 0, 0.2);
+        border-top-color: rgba(33, 128, 192, 0.8);
+        border-radius: 100%;
+        animation: rotation 0.7s infinite linear;
+    }
+
+    @keyframes rotation {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(359deg);
+        }
+    }
 </style>

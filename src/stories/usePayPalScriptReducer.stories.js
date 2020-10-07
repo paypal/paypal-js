@@ -61,3 +61,24 @@ currencyEUR.args = {
         currency: "EUR",
     },
 };
+
+function LoadingSpinnerTemplate(args) {
+    return (
+        <PayPalScriptProvider
+            options={{ "client-id": "sb", components: "buttons" }}
+        >
+            <LoadingIndicator />
+            <PayPalButtons {...args} />
+        </PayPalScriptProvider>
+    );
+}
+
+export const LoadingSpinner = LoadingSpinnerTemplate.bind({});
+LoadingSpinner.args = {};
+
+function LoadingIndicator() {
+    const [{ isLoaded }] = usePayPalScriptReducer();
+
+    if (isLoaded) return null;
+    if (!isLoaded) return <div className="spinner" />;
+}
