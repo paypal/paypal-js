@@ -26,11 +26,25 @@ function Template(args) {
 
 export const Default = Template.bind({});
 Default.args = {};
+Default.parameters = {
+    docs: {
+        source: {
+            code: "<PayPalMarks />",
+        },
+    },
+};
 
 export const StandAlone = Template.bind({});
 StandAlone.args = { fundingSource: FUNDING.PAYPAL };
+StandAlone.parameters = {
+    docs: {
+        source: {
+            code: "<PayPalMarks fundingSource={FUNDING.PAYPAL} />",
+        },
+    },
+};
 
-function RadioButtonTemplate() {
+function RadioButtonTemplate(args) {
     const [fundingSource, setFundingSource] = useState(FUNDING.PAYPAL);
 
     function onClick(event) {
@@ -53,7 +67,7 @@ function RadioButtonTemplate() {
                         value={FUNDING.PAYPAL}
                         defaultChecked
                     />
-                    <PayPalMarks fundingSource="paypal" />
+                    <PayPalMarks {...args} />
                 </label>
 
                 <label className="mark">
@@ -71,9 +85,9 @@ function RadioButtonTemplate() {
                         onClick={onClick}
                         type="radio"
                         name="fundingSource"
-                        value={FUNDING.CREDIT}
+                        value={FUNDING.PAYLATER}
                     />
-                    <PayPalMarks fundingSource={FUNDING.CREDIT} />
+                    <PayPalMarks fundingSource={FUNDING.PAYLATER} />
                 </label>
             </form>
             <PayPalButtons fundingSource={fundingSource} />
@@ -82,4 +96,4 @@ function RadioButtonTemplate() {
 }
 
 export const RadioButtons = RadioButtonTemplate.bind({});
-RadioButtons.args = {};
+RadioButtons.args = { fundingSource: FUNDING.PAYPAL };
