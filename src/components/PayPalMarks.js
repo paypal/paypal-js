@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { useScriptReducer } from "../ScriptContext";
+import { usePayPalScriptReducer } from "../ScriptContext";
 /**
  * The `<PayPalMarks />` component is used for conditionally rendering different payment options using radio buttons. The [Using Radio Buttons](https://developer.paypal.com/docs/checkout/integration-features/mark-flow/) guide describes this style of integration in detail.
  * It relies on the `<PayPalScriptProvider />` parent component for managing state related to loading the JS SDK script.
@@ -23,7 +23,7 @@ import { useScriptReducer } from "../ScriptContext";
  * ```
  */
 export default function Marks(props) {
-    const [{ isLoaded, options }] = useScriptReducer();
+    const [{ isLoaded, options }] = usePayPalScriptReducer();
     const markContainerRef = useRef(null);
     const mark = useRef(null);
 

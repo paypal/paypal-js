@@ -29,7 +29,7 @@ function scriptReducer(state, action) {
     }
 }
 
-function useScriptReducer() {
+function usePayPalScriptReducer() {
     const scriptContext = useContext(ScriptContext);
     const dispatchContext = React.useContext(ScriptDispatchContext);
     if (scriptContext === undefined || dispatchContext === undefined) {
@@ -40,7 +40,7 @@ function useScriptReducer() {
     return [scriptContext, dispatchContext];
 }
 
-function ScriptProvider({ options, children }) {
+function PayPalScriptProvider({ options, children }) {
     const initialState = {
         options,
         isLoaded: false,
@@ -71,7 +71,7 @@ function ScriptProvider({ options, children }) {
     );
 }
 
-ScriptProvider.propTypes = {
+PayPalScriptProvider.propTypes = {
     children: PropTypes.node.isRequired,
     options: PropTypes.exact({
         "buyer-country": PropTypes.string,
@@ -93,4 +93,4 @@ ScriptProvider.propTypes = {
     }),
 };
 
-export { ScriptProvider, useScriptReducer };
+export { PayPalScriptProvider, usePayPalScriptReducer };

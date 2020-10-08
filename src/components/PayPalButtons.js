@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { useScriptReducer } from "../ScriptContext";
+import { usePayPalScriptReducer } from "../ScriptContext";
 /**
  * This `<PayPalButtons />` component renders the [Smart Payment Buttons](https://developer.paypal.com/docs/checkout/).
  * It relies on the `<PayPalScriptProvider />` parent component for managing state related to loading the JS SDK script.
@@ -13,7 +13,7 @@ import { useScriptReducer } from "../ScriptContext";
  * ```
  */
 export default function PayPalButtons(props) {
-    const [{ isLoaded, options }] = useScriptReducer();
+    const [{ isLoaded, options }] = usePayPalScriptReducer();
     const buttonsContainerRef = useRef(null);
     const buttons = useRef(null);
 

@@ -1,17 +1,17 @@
 import React from "react";
 import { render, waitFor } from "@testing-library/react";
-import { ScriptProvider, useScriptReducer } from "./ScriptContext";
+import { PayPalScriptProvider, usePayPalScriptReducer } from "./ScriptContext";
 
-describe("<ScriptProvider />", () => {
+describe("<PayPalScriptProvider />", () => {
     beforeEach(() => {
         document.head.innerHTML = "";
     });
 
     test("should add the JS SDK <script> to the DOM", () => {
         render(
-            <ScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "sb" }}>
                 <></>
-            </ScriptProvider>
+            </PayPalScriptProvider>
         );
 
         const script = document.querySelector("head script");
@@ -22,9 +22,9 @@ describe("<ScriptProvider />", () => {
     test('should set "isLoaded" state to true after loading the script', async () => {
         const { state, TestComponent } = setupTestComponent();
         render(
-            <ScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "sb" }}>
                 <TestComponent />
-            </ScriptProvider>
+            </PayPalScriptProvider>
         );
 
         // verify initial loading state
@@ -33,20 +33,20 @@ describe("<ScriptProvider />", () => {
     });
 });
 
-describe("useScriptReducer", () => {
+describe("usePayPalScriptReducer", () => {
     test('should manage state for loadScript() options and for "isLoaded"', () => {
         const { state, TestComponent } = setupTestComponent();
         render(
-            <ScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "sb" }}>
                 <TestComponent />
-            </ScriptProvider>
+            </PayPalScriptProvider>
         );
 
         expect(state).toHaveProperty("options");
         expect(state).toHaveProperty("isLoaded");
     });
 
-    test("should throw an error when used without <ScriptProvider>", () => {
+    test("should throw an error when used without <PayPalScriptProvider>", () => {
         const { TestComponent } = setupTestComponent();
 
         jest.spyOn(console, "error");
@@ -60,7 +60,7 @@ describe("useScriptReducer", () => {
 function setupTestComponent() {
     const state = {};
     function TestComponent() {
-        const [scriptState] = useScriptReducer();
+        const [scriptState] = usePayPalScriptReducer();
         Object.assign(state, scriptState);
         return null;
     }

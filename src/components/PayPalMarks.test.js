@@ -1,7 +1,7 @@
 import React from "react";
 import { render, waitFor } from "@testing-library/react";
 
-import { ScriptProvider, useScriptReducer } from "../ScriptContext";
+import { PayPalScriptProvider, usePayPalScriptReducer } from "../ScriptContext";
 import PayPalMarks from "./PayPalMarks";
 import { FUNDING } from "@paypal/sdk-constants";
 
@@ -27,11 +27,11 @@ describe("<PayPalMarks />", () => {
         const spyOnMarks = jest.spyOn(window.paypal, "Marks");
 
         render(
-            <ScriptProvider
+            <PayPalScriptProvider
                 options={{ "client-id": "sb", components: "marks" }}
             >
                 <PayPalMarks fundingSource={FUNDING.CREDIT} />
-            </ScriptProvider>
+            </PayPalScriptProvider>
         );
 
         await waitFor(() =>
@@ -41,21 +41,21 @@ describe("<PayPalMarks />", () => {
         );
     });
 
-    test("should throw an error when no components are passed to the ScriptProvider", () => {
+    test("should throw an error when no components are passed to the PayPalScriptProvider", () => {
         expect(() =>
             render(
-                <ScriptProvider options={{ "client-id": "sb" }}>
+                <PayPalScriptProvider options={{ "client-id": "sb" }}>
                     <SetIsLoadedToTrue />
                     <PayPalMarks />
-                </ScriptProvider>
+                </PayPalScriptProvider>
             )
         ).toThrowErrorMatchingSnapshot();
     });
 
-    test("should throw an error when the 'marks' component is missing from the components list passed to the ScriptProvider", () => {
+    test("should throw an error when the 'marks' component is missing from the components list passed to the PayPalScriptProvider", () => {
         expect(() =>
             render(
-                <ScriptProvider
+                <PayPalScriptProvider
                     options={{
                         "client-id": "sb",
                         components: "buttons,messages",
@@ -63,15 +63,15 @@ describe("<PayPalMarks />", () => {
                 >
                     <SetIsLoadedToTrue />
                     <PayPalMarks />
-                </ScriptProvider>
+                </PayPalScriptProvider>
             )
         ).toThrowErrorMatchingSnapshot();
     });
 });
 
-// immediately sets the ScriptProvider `isLoaded` state to true
+// immediately sets the PayPalScriptProvider `isLoaded` state to true
 function SetIsLoadedToTrue() {
-    const [, dispatch] = useScriptReducer();
+    const [, dispatch] = usePayPalScriptReducer();
     dispatch({ type: "setIsLoaded", value: true });
     return null;
 }
