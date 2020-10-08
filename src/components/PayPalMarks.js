@@ -23,12 +23,14 @@ import { useScriptReducer } from "../ScriptContext";
  * ```
  */
 export default function Marks(props) {
-    const [{ isLoaded }] = useScriptReducer();
+    const [{ isLoaded, options }] = useScriptReducer();
     const markContainerRef = useRef(null);
     const mark = useRef(null);
 
     useEffect(() => {
         if (isLoaded && !mark.current) {
+            verifyGlobalStateForMarks(options);
+
             mark.current = window.paypal.Marks({ ...props });
 
             if (mark.current.isEligible()) {
@@ -38,6 +40,25 @@ export default function Marks(props) {
     });
 
     return <div ref={markContainerRef} />;
+}
+
+function verifyGlobalStateForMarks({ components = "" }) {
+    if (typeof window.paypal.Marks !== "undefined") {
+        return;
+    }
+
+    let errorMessage =
+        "Unable to render <PayPalMarks /> because window.paypal.Marks is undefined.";
+
+    // the JS SDK does not load the Marks component by default. It must be passed into the "components" query parameter.
+    if (!components.includes("marks")) {
+        const expectedComponents = components ? `${components},marks` : "marks";
+
+        errorMessage +=
+            "\nTo fix the issue, add 'marks' to the list of components passed to the parent PayPalScriptProvider:" +
+            `\n\`<PayPalScriptProvider options={{ components: '${expectedComponents}'}}>\`.`;
+    }
+    throw new Error(errorMessage);
 }
 
 Marks.propTypes = {

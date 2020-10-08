@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PayPalButtons /> should throw an error when no components are passed to the ScriptProvider 1`] = `"Unable to render <PayPalButtons /> because window.paypal.Buttons is undefined."`;
+
+exports[`<PayPalButtons /> should throw an error when the 'buttons' component is missing from the components list passed to the ScriptProvider 1`] = `
+"Unable to render <PayPalButtons /> because window.paypal.Buttons is undefined.
+To fix the issue, add 'buttons' to the list of components passed to the parent PayPalScriptProvider:
+\`<PayPalScriptProvider options={{ components: 'marks,messages,buttons'}}>\`."
+`;

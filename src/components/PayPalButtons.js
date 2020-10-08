@@ -13,12 +13,14 @@ import { useScriptReducer } from "../ScriptContext";
  * ```
  */
 export default function PayPalButtons(props) {
-    const [{ isLoaded }] = useScriptReducer();
+    const [{ isLoaded, options }] = useScriptReducer();
     const buttonsContainerRef = useRef(null);
     const buttons = useRef(null);
 
     useEffect(() => {
         if (isLoaded) {
+            verifyGlobalStateForButtons(options);
+
             buttons.current = window.paypal.Buttons({ ...props });
 
             if (buttons.current.isEligible()) {
@@ -39,6 +41,28 @@ export default function PayPalButtons(props) {
     });
 
     return <div ref={buttonsContainerRef} />;
+}
+
+function verifyGlobalStateForButtons({ components = "" }) {
+    if (typeof window.paypal.Buttons !== "undefined") {
+        return;
+    }
+
+    let errorMessage =
+        "Unable to render <PayPalButtons /> because window.paypal.Buttons is undefined.";
+
+    // the JS SDK includes the Buttons component by default when no 'components' are specified.
+    // The 'buttons' component must be included in the 'components' list when using it with other components.
+    if (components.length && !components.includes("buttons")) {
+        const expectedComponents = components
+            ? `${components},buttons`
+            : "buttons";
+
+        errorMessage +=
+            "\nTo fix the issue, add 'buttons' to the list of components passed to the parent PayPalScriptProvider:" +
+            `\n\`<PayPalScriptProvider options={{ components: '${expectedComponents}'}}>\`.`;
+    }
+    throw new Error(errorMessage);
 }
 
 PayPalButtons.propTypes = {
