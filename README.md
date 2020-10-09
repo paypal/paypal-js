@@ -1,6 +1,6 @@
 # React PayPal JS
 
-React components for the [PayPal JS SDK](https://developer.paypal.com/docs/checkout/).
+React components for the [PayPal JS SDK](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/).
 
 ## Installation
 
@@ -14,8 +14,8 @@ npm install @paypal/react-paypal-js
 
 This PayPal React library consists of two main parts:
 
-1. Context Provider - this `<PayPalScriptProvider \>` component manages loading the JS SDK script. Add it to the root of your React app. It uses the [Context API](https://reactjs.org/docs/context.html) for managing state and communicating to child components. It also supports reloading the script when parameters change.
-2. SDK Components - the `<PayPalButtons />` and `<PayPalMessages />` components are used to render the UI for PayPal buttons and credit messaging.
+1. Context Provider - this `<PayPalScriptProvider />` component manages loading the JS SDK script. Add it to the root of your React app. It uses the [Context API](https://reactjs.org/docs/context.html) for managing state and communicating to child components. It also supports reloading the script when parameters change.
+2. SDK Components - components like `<PayPalButtons />` are used to render the UI for PayPal products served by the JS SDK.
 
 ```js
 // App.js
@@ -32,4 +32,4 @@ export default function App() {
 
 ### Browser Support
 
-This library supports all popular browsers, including IE 11. It provides the same browser support as the JS SDK. Here's the [full list of supported browsers](https://developer.paypal.com/docs/checkout/troubleshoot/support/#supported-browsers).
+This library supports all popular browsers, including IE 11. It provides the same browser support as the JS SDK. Here's the [full list of supported browsers](https://developer.paypal.com/docs/business/checkout/reference/browser-support/#supported-browsers-by-platform).

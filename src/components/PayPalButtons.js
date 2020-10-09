@@ -2,11 +2,10 @@ import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { usePayPalScriptReducer } from "../ScriptContext";
 /**
- * This `<PayPalButtons />` component renders the [Smart Payment Buttons](https://developer.paypal.com/docs/checkout/).
+ * This `<PayPalButtons />` component renders the [Smart Payment Buttons](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#buttons).
  * It relies on the `<PayPalScriptProvider />` parent component for managing state related to loading the JS SDK script.
  *
- * All the [Smart Payment Button integration features](https://developer.paypal.com/docs/checkout/integration-features/) can be configured using props.
- * For example, here's how you would use the `style` and `createOrder` options:
+ * Use props for customizing your buttons. For example, here's how you would use the `style` and `createOrder` options:
  *
  * ```jsx
  *     <PayPalButtons style={{ layout: "vertical" }} createOrder={(data, actions) => {}} />
@@ -54,9 +53,7 @@ function verifyGlobalStateForButtons({ components = "" }) {
     // the JS SDK includes the Buttons component by default when no 'components' are specified.
     // The 'buttons' component must be included in the 'components' list when using it with other components.
     if (components.length && !components.includes("buttons")) {
-        const expectedComponents = components
-            ? `${components},buttons`
-            : "buttons";
+        const expectedComponents = `${components},buttons`;
 
         errorMessage +=
             "\nTo fix the issue, add 'buttons' to the list of components passed to the parent PayPalScriptProvider:" +
@@ -79,12 +76,13 @@ PayPalButtons.propTypes = {
      */
     createSubscription: PropTypes.func,
     /**
-     * The individual button to render. Use the `FUNDING` constant exported by this library to set this value. The full list can be found [here](https://developer.paypal.com/docs/checkout/integration-features/standalone-buttons/#complete-your-integration).
+     * The individual button to render. Use the `FUNDING` constant exported by this library to set this value.
+     * View the [list of available funding sources](https://developer.paypal.com/docs/business/checkout/configure-payments/standalone-buttons/#funding-sources) for more info.
      */
     fundingSource: PropTypes.string,
 
     /**
-     * Approved styling options for customizing layout, color, shape, and labels.
+     * [Styling options](https://developer.paypal.com/docs/business/checkout/reference/style-guide/#customize-the-payment-buttons) for customizing layout, color, shape, and labels.
      */
     style: PropTypes.exact({
         color: PropTypes.string,
@@ -111,7 +109,8 @@ PayPalButtons.propTypes = {
      */
     onApprove: PropTypes.func,
     /**
-     * Called when the buyer cancels the transaction. Often used to show the buyer a [cancellation page](https://developer.paypal.com/docs/checkout/integration-features/cancellation-page/).
+     * Called when the buyer cancels the transaction.
+     * Often used to show the buyer a [cancellation page](https://developer.paypal.com/docs/business/checkout/add-capabilities/buyer-experience/#show-a-cancellation-page).
      */
     onCancel: PropTypes.func,
     /**
@@ -119,7 +118,8 @@ PayPalButtons.propTypes = {
      */
     onClick: PropTypes.func,
     /**
-     * Catch all for errors preventing buyer checkout. Often used to show the buyer an [error page](https://developer.paypal.com/docs/checkout/integration-features/handle-errors/).
+     * Catch all for errors preventing buyer checkout.
+     * Often used to show the buyer an [error page](https://developer.paypal.com/docs/checkout/integration-features/handle-errors/).
      */
     onError: PropTypes.func,
     /**
