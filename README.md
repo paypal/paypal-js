@@ -109,7 +109,7 @@ Note that the above CDN location points to the latest release of paypal-js. It i
 
 ### Browser Support
 
-This library supports all popular browsers, including IE 11. It provides the same browser support as the JS SDK. Here's the [full list of supported browsers](https://developer.paypal.com/docs/checkout/troubleshoot/support/#supported-browsers).
+This library supports all popular browsers, including IE 11. It provides the same browser support as the JS SDK. Here's the [full list of supported browsers](https://developer.paypal.com/docs/business/checkout/reference/browser-support/#supported-browsers-by-platform).
 
 ## Releasing
 
