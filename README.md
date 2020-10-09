@@ -22,7 +22,7 @@ React developers think in terms of components and not about loading external scr
 Provide a solution to developers that abstracts away complexities around loading the JS SDK. Enforce best practices by default so buyers get the best possible user experience.
 
 -   Enforce async loading the JS SDK up front so when it's time to render the buttons to your buyer, they render immediately.
-    Abstract away the complexity around loading the JS SDK with the global `<PayPalScriptProvider>` component.
+-   Abstract away the complexity around loading the JS SDK with the global `<PayPalScriptProvider>` component.
 -   Support dispatching actions to reload the JS SDK and re-render components when global parameters like `currency` change.
 -   Easy to use components for all the different PayPal product offerings:
     -   `<PayPalButtons />`
