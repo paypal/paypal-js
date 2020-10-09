@@ -9,6 +9,26 @@ React components for the [PayPal JS SDK](https://developer.paypal.com/docs/busin
 
 https://paypal.github.io/react-paypal-js/
 
+## Why use react-paypal-js?
+
+### The Problem
+
+Developers integrating with PayPal are expected to add the JS SDK `<script>` to a website and then render components like the PayPal Buttons after the script loads. This architecture works great for simple websites but can be challenging when building single page apps.
+
+React developers think in terms of components and not about loading external scripts from an index.html file. It's easy to end up with a React PayPal integration that's sub-optimal and hurts the buyer's user experience. For example, abstracting away all the implementation details of the PayPal Buttons into a single React component is an anti-pattern because it tightly couples script loading with rendering. It's also problematic when you need to render multiple different PayPal components that share the same global script parameters.
+
+### The Solution
+
+Provide a solution to developers that abstracts away complexities around loading the JS SDK. Enforce best practices by default so buyers get the best possible user experience.
+
+-   Enforce async loading the JS SDK up front so when it's time to render the buttons to your buyer, they render immediately.
+    Abstract away the complexity around loading the JS SDK with the global `<PayPalScriptProvider>` component.
+-   Support dispatching actions to reload the JS SDK and re-render components when global parameters like `currency` change.
+-   Easy to use components for all the different PayPal product offerings:
+    -   `<PayPalButtons />`
+    -   `<PayPalMarks />`
+    -   `<PayPalMessages />`
+
 ## Installation
 
 To get started, install react-paypal-js with npm.
