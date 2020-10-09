@@ -2,6 +2,13 @@
 
 React components for the [PayPal JS SDK](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/).
 
+<a href="https://www.npmjs.com/package/@paypal/react-paypal-js"><img src="https://img.shields.io/npm/v/@paypal/react-paypal-js?style=flat-square" alt="npm version"></a>
+<a href="https://github.com/paypal/react-paypal-js/blob/main/LICENSE.txt"><img src="https://img.shields.io/npm/l/@paypal/react-paypal-js?style=flat-square" alt="github license"></a>
+<a href="https://david-dm.org/paypal/react-paypal-js"><img src="https://img.shields.io/david/paypal/react-paypal-js?style=flat-square" alt="dependencies"></a>
+<a href="https://david-dm.org/paypal/react-paypal-js?type=dev"><img src="https://img.shields.io/david/dev/paypal/react-paypal-js?style=flat-square" alt="dev dependencies"></a>
+
+https://paypal.github.io/react-paypal-js/
+
 ## Installation
 
 To get started, install react-paypal-js with npm.
