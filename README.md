@@ -19,7 +19,9 @@ React developers think in terms of components and not about loading external scr
 
 ### The Solution
 
-Provide a solution to developers that abstracts away complexities around loading the JS SDK. Enforce best practices by default so buyers get the best possible user experience.
+`react-paypal-js` provides a solution to developers to abstract away complexities around loading the JS SDK. It enforces best practices by default so buyers get the best possible user experience.
+
+**Features**
 
 -   Enforce async loading the JS SDK up front so when it's time to render the buttons to your buyer, they render immediately.
 -   Abstract away the complexity around loading the JS SDK with the global `<PayPalScriptProvider>` component.
