@@ -23,7 +23,7 @@ import { usePayPalScriptReducer } from "../ScriptContext";
  *     <PayPalMarks fundingSource={FUNDING.PAYPAL}/>
  * ```
  */
-export default function Marks(props) {
+export default function PayPalMarks(props) {
     const [{ isLoaded, options }] = usePayPalScriptReducer();
     const markContainerRef = useRef(null);
     const mark = useRef(null);
@@ -62,7 +62,7 @@ function verifyGlobalStateForMarks({ components = "" }) {
     throw new Error(errorMessage);
 }
 
-Marks.propTypes = {
+PayPalMarks.propTypes = {
     /**
      * The individual mark to render. Use the `FUNDING` constant exported by this library to set this value.
      * View the [list of available funding sources](https://developer.paypal.com/docs/business/checkout/configure-payments/standalone-buttons/#funding-sources) for more info.
