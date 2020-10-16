@@ -1,4 +1,5 @@
 const { exec } = require('shelljs');
+const readline = require("readline");
 
 // validate git and npm
 require('./validate');
@@ -19,5 +20,15 @@ exec(`npm version ${newVersionArg}`);
 // push up new version commit and tag
 exec('git push --follow-tags');
 
-// publish to public npm
-exec('npm publish');
+// use the readline module to simulate npm prompt
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+// prompt for otp and publish to public npm
+rl.question("Enter OTP for public npm: ", (otp) => {
+    exec(`npm publish --otp=${otp}`);
+
+    rl.close();
+});
