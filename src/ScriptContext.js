@@ -31,7 +31,7 @@ function scriptReducer(state, action) {
 
 function usePayPalScriptReducer() {
     const scriptContext = useContext(ScriptContext);
-    const dispatchContext = React.useContext(ScriptDispatchContext);
+    const dispatchContext = useContext(ScriptDispatchContext);
     if (scriptContext === undefined || dispatchContext === undefined) {
         throw new Error(
             "useScriptReducer must be used within a ScriptProvider"
