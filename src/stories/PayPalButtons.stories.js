@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FUNDING, PayPalScriptProvider, PayPalButtons } from "../index";
 
 export default {
@@ -84,3 +84,44 @@ StandAlone.parameters = {
         },
     },
 };
+
+function DynamicAmountTemplate(args) {
+    const [amount, setAmount] = useState(2);
+
+    function createOrder(data, actions) {
+        return actions.order.create({
+            purchase_units: [
+                {
+                    amount: {
+                        value: amount,
+                    },
+                },
+            ],
+        });
+    }
+
+    function onChange(event) {
+        const selectedAmount = event.target.value;
+        setAmount(selectedAmount);
+    }
+
+    return (
+        <PayPalScriptProvider options={defaultOptions}>
+            <select
+                onChange={onChange}
+                name="amount"
+                id="amount"
+                style={{ marginBottom: "20px" }}
+            >
+                <option value="2">$2.00</option>
+                <option value="4">$4.00</option>
+                <option value="6">$6.00</option>
+            </select>
+
+            <PayPalButtons {...args} createOrder={createOrder} />
+        </PayPalScriptProvider>
+    );
+}
+
+export const DynamicAmount = DynamicAmountTemplate.bind({});
+DynamicAmount.args = {};
