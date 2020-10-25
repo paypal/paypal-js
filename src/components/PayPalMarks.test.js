@@ -6,14 +6,15 @@ import PayPalMarks from "./PayPalMarks";
 import { FUNDING } from "@paypal/sdk-constants";
 
 describe("<PayPalMarks />", () => {
+    let consoleErrorSpy;
     beforeEach(() => {
         window.paypal = {};
 
-        jest.spyOn(console, "error");
+        consoleErrorSpy = jest.spyOn(console, "error");
         console.error.mockImplementation(() => {});
     });
     afterEach(() => {
-        console.error.mockRestore();
+        jest.clearAllMocks();
     });
 
     test("should pass props to window.paypal.Marks()", async () => {
@@ -66,6 +67,29 @@ describe("<PayPalMarks />", () => {
                 </PayPalScriptProvider>
             )
         ).toThrowErrorMatchingSnapshot();
+    });
+
+    test("should catch and log zoid render errors", async () => {
+        window.paypal.Marks = () => {
+            return {
+                isEligible: jest.fn().mockReturnValue(true),
+                render: jest
+                    .fn()
+                    .mockReturnValue(Promise.reject("Window closed")),
+            };
+        };
+
+        render(
+            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+                <PayPalMarks />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() =>
+            expect(consoleErrorSpy).toHaveBeenCalledWith(
+                expect.stringMatching(/Window closed/)
+            )
+        );
     });
 });
 

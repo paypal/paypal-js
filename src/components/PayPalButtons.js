@@ -22,9 +22,15 @@ export default function PayPalButtons(props) {
 
             buttons.current = window.paypal.Buttons({ ...props });
 
-            if (buttons.current.isEligible()) {
-                buttons.current.render(buttonsContainerRef.current);
+            if (!buttons.current.isEligible()) {
+                return;
             }
+
+            buttons.current.render(buttonsContainerRef.current).catch((err) => {
+                console.error(
+                    `Failed to render <PayPalButtons /> component. ${err}`
+                );
+            });
         } else {
             // close the buttons when the script is reloaded
             if (buttons.current) {

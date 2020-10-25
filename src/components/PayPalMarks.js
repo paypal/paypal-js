@@ -34,9 +34,15 @@ export default function PayPalMarks(props) {
 
             mark.current = window.paypal.Marks({ ...props });
 
-            if (mark.current.isEligible()) {
-                mark.current.render(markContainerRef.current);
+            if (!mark.current.isEligible()) {
+                return;
             }
+
+            mark.current.render(markContainerRef.current).catch((err) => {
+                console.error(
+                    `Failed to render <PayPalMarks /> component. ${err}`
+                );
+            });
         }
     });
 
