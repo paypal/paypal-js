@@ -35,7 +35,13 @@ function Currency() {
     }
 
     return (
-        <select value={value} onChange={onChange} name="currency" id="currency">
+        <select
+            value={value}
+            onChange={onChange}
+            name="currency"
+            id="currency"
+            style={{ marginBottom: "20px" }}
+        >
             <option value="USD">United States dollar</option>
             <option value="EUR">Euro</option>
             <option value="CAD">Canadian dollar</option>
