@@ -7,7 +7,9 @@
         "component",
         "paypal",
         "checkout",
-        "payment"
+        "payment",
+        "payment buttons",
+        "paypal javascript sdk"
     ],
     "main": "dist/react-paypal.node.js",
     "module": "dist/react-paypal.esm.js",
