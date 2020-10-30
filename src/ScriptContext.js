@@ -26,16 +26,6 @@ function scriptReducer(state, action) {
                 options: action.value,
             };
 
-        // deprecated - remove for the v2 release
-        case "changeCurrency":
-            return {
-                options: {
-                    ...state.options,
-                    currency: action.value,
-                },
-                loadingStatus: SCRIPT_LOADING_STATE.PENDING,
-            };
-
         default: {
             throw new Error(`Unhandled action type: ${action.type}`);
         }
