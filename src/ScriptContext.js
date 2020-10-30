@@ -104,6 +104,7 @@ PayPalScriptProvider.propTypes = {
         commit: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         components: PropTypes.string,
         currency: PropTypes.string,
+        "data-client-token": PropTypes.string,
         "data-csp-nonce": PropTypes.string,
         "data-order-id": PropTypes.string,
         "data-page-type": PropTypes.string,
