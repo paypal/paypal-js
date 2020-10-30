@@ -1,44 +1,57 @@
 import React from "react";
 import { render, waitFor, fireEvent, screen } from "@testing-library/react";
 import { PayPalScriptProvider, usePayPalScriptReducer } from "./ScriptContext";
+import { loadScript } from "@paypal/paypal-js";
+
+jest.mock("@paypal/paypal-js", () => ({
+    loadScript: jest.fn(),
+}));
 
 describe("<PayPalScriptProvider />", () => {
     beforeEach(() => {
-        document.head.innerHTML = "";
+        loadScript.mockResolvedValue({});
     });
 
-    test("should add the JS SDK <script> to the DOM", () => {
-        render(
-            <PayPalScriptProvider options={{ "client-id": "sb" }}>
-                <></>
-            </PayPalScriptProvider>
-        );
-
-        const script = document.querySelector("head script");
-        expect(script).toBeTruthy();
-        expect(script.src).toBe("https://www.paypal.com/sdk/js?client-id=sb");
-    });
-
-    test('should set "isLoaded" state to true after loading the script', async () => {
+    test('should set "isResolved" state to "true" after loading the script', async () => {
         const { state, TestComponent } = setupTestComponent();
         render(
             <PayPalScriptProvider options={{ "client-id": "sb" }}>
                 <TestComponent />
             </PayPalScriptProvider>
         );
+        expect(loadScript).toHaveBeenCalledWith({ "client-id": "sb" });
 
         // verify initial loading state
-        expect(state.isLoaded).toBe(false);
-        await waitFor(() => expect(state.isLoaded).toBe(true));
+        expect(state.isPending).toBeTruthy();
+        await waitFor(() => expect(state.isResolved).toBeTruthy());
+        expect(state.isPending).toBeFalsy();
+        expect(state.isRejected).toBeFalsy();
+    });
+
+    test('should set "isRejected" state to "true" after failing to load the script', async () => {
+        loadScript.mockRejectedValue(new Error());
+        const { state, TestComponent } = setupTestComponent();
+        render(
+            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+                <TestComponent />
+            </PayPalScriptProvider>
+        );
+        expect(loadScript).toHaveBeenCalledWith({ "client-id": "sb" });
+
+        // verify initial loading state
+        expect(state.isPending).toBeTruthy();
+        await waitFor(() => expect(state.isRejected).toBeTruthy());
+        expect(state.isPending).toBeFalsy();
+        expect(state.isResolved).toBeFalsy();
     });
 });
 
 describe("usePayPalScriptReducer", () => {
     beforeEach(() => {
-        document.head.innerHTML = "";
+        loadScript.mockResolvedValue({});
     });
 
-    test('should manage state for loadScript() options and for "isLoaded"', () => {
+    test('should manage state for loadScript() options and for "isLoaded"', async () => {
         const { state, TestComponent } = setupTestComponent();
         render(
             <PayPalScriptProvider options={{ "client-id": "sb" }}>
@@ -47,7 +60,8 @@ describe("usePayPalScriptReducer", () => {
         );
 
         expect(state.options).toHaveProperty("client-id", "sb");
-        expect(state.isLoaded).toBe(false);
+        expect(state.isPending).toBeTruthy();
+        await waitFor(() => expect(state.isResolved).toBeTruthy());
     });
 
     test("should throw an error when used without <PayPalScriptProvider>", () => {
@@ -73,22 +87,20 @@ describe("usePayPalScriptReducer", () => {
             </PayPalScriptProvider>
         );
 
-        let script = document.querySelector("head script");
         expect(state.options).toMatchObject({ "client-id": "abc" });
-        expect(script.src).toBe("https://www.paypal.com/sdk/js?client-id=abc");
+        expect(loadScript).toHaveBeenCalledWith(state.options);
 
-        await waitFor(() => expect(state.isLoaded).toBe(true));
+        await waitFor(() => expect(state.isResolved).toBeTruthy());
 
         // this click dispatches the action "resetOptions" causing the script to reload
         fireEvent.click(screen.getByText("Reload button"));
+        await waitFor(() => expect(state.isResolved).toBeTruthy());
 
         expect(state.options).toMatchObject({
             "client-id": "xyz",
             disableFunding: "card",
         });
-        expect(script.src).toBe(
-            "https://www.paypal.com/sdk/js?client-id=xyz&disableFunding=card"
-        );
+        expect(loadScript).toHaveBeenCalledWith(state.options);
     });
 });
 

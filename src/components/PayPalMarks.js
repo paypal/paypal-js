@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { usePayPalScriptReducer } from "../ScriptContext";
 /**
@@ -24,34 +24,37 @@ import { usePayPalScriptReducer } from "../ScriptContext";
  * ```
  */
 export default function PayPalMarks(props) {
-    const [{ isLoaded, options }] = usePayPalScriptReducer();
+    const [{ isResolved, options }] = usePayPalScriptReducer();
     const markContainerRef = useRef(null);
     const mark = useRef(null);
+    const [, setErrorState] = useState(null);
 
     useEffect(() => {
-        if (isLoaded && !mark.current) {
-            verifyGlobalStateForMarks(options);
-
-            mark.current = window.paypal.Marks({ ...props });
-
-            if (!mark.current.isEligible()) {
-                return;
-            }
-
-            mark.current.render(markContainerRef.current).catch((err) => {
-                console.error(
-                    `Failed to render <PayPalMarks /> component. ${err}`
-                );
-            });
+        if (!isResolved || mark.current) {
+            return;
         }
+
+        if (!hasValidStateForMarks(options, setErrorState)) {
+            return;
+        }
+
+        mark.current = window.paypal.Marks({ ...props });
+
+        if (!mark.current.isEligible()) {
+            return;
+        }
+
+        mark.current.render(markContainerRef.current).catch((err) => {
+            console.error(`Failed to render <PayPalMarks /> component. ${err}`);
+        });
     });
 
     return <div ref={markContainerRef} />;
 }
 
-function verifyGlobalStateForMarks({ components = "" }) {
+function hasValidStateForMarks({ components = "" }, setErrorState) {
     if (typeof window.paypal.Marks !== "undefined") {
-        return;
+        return true;
     }
 
     let errorMessage =
@@ -65,7 +68,10 @@ function verifyGlobalStateForMarks({ components = "" }) {
             "\nTo fix the issue, add 'marks' to the list of components passed to the parent PayPalScriptProvider:" +
             `\n\`<PayPalScriptProvider options={{ components: '${expectedComponents}'}}>\`.`;
     }
-    throw new Error(errorMessage);
+    setErrorState(() => {
+        throw new Error(errorMessage);
+    });
+    return false;
 }
 
 PayPalMarks.propTypes = {

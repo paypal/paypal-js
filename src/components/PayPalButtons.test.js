@@ -1,14 +1,21 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { render, waitFor } from "@testing-library/react";
 
-import { PayPalScriptProvider, usePayPalScriptReducer } from "../ScriptContext";
+import { PayPalScriptProvider } from "../ScriptContext";
 import PayPalButtons from "./PayPalButtons";
 import { FUNDING } from "@paypal/sdk-constants";
+import { loadScript } from "@paypal/paypal-js";
+
+jest.mock("@paypal/paypal-js", () => ({
+    loadScript: jest.fn(),
+}));
 
 describe("<PayPalButtons />", () => {
     let consoleErrorSpy;
     beforeEach(() => {
         window.paypal = {};
+        loadScript.mockResolvedValue(window.paypal);
 
         consoleErrorSpy = jest.spyOn(console, "error");
         console.error.mockImplementation(() => {});
@@ -18,15 +25,13 @@ describe("<PayPalButtons />", () => {
     });
 
     test("should pass props to window.paypal.Buttons()", async () => {
-        window.paypal.Buttons = () => {
-            return {
+        window.paypal = {
+            Buttons: jest.fn(() => ({
                 close: jest.fn(),
                 isEligible: jest.fn(),
                 render: jest.fn(),
-            };
+            })),
         };
-
-        const spyOnButtons = jest.spyOn(window.paypal, "Buttons");
 
         render(
             <PayPalScriptProvider options={{ "client-id": "sb" }}>
@@ -39,38 +44,52 @@ describe("<PayPalButtons />", () => {
         );
 
         await waitFor(() =>
-            expect(spyOnButtons).toHaveBeenCalledWith({
+            expect(window.paypal.Buttons).toHaveBeenCalledWith({
                 shippingPreference: "GET_FROM_FILE",
                 style: { layout: "horizontal" },
                 fundingSource: FUNDING.CREDIT,
             })
         );
     });
-    test("should throw an error when no components are passed to the PayPalScriptProvider", () => {
-        expect(() =>
-            render(
-                <PayPalScriptProvider options={{ "client-id": "sb" }}>
-                    <SetIsLoadedToTrue />
-                    <PayPalButtons />
-                </PayPalScriptProvider>
-            )
-        ).toThrowErrorMatchingSnapshot();
+    test("should throw an error when no components are passed to the PayPalScriptProvider", async () => {
+        const onError = jest.fn();
+
+        const wrapper = ({ children }) => (
+            <ErrorBoundary onError={onError}>{children}</ErrorBoundary>
+        );
+
+        render(
+            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+                <PayPalButtons />
+            </PayPalScriptProvider>,
+            { wrapper }
+        );
+
+        await waitFor(() => expect(onError).toHaveBeenCalled());
+        expect(onError.mock.calls[0][0].message).toMatchSnapshot();
     });
 
-    test("should throw an error when the 'buttons' component is missing from the components list passed to the PayPalScriptProvider", () => {
-        expect(() =>
-            render(
-                <PayPalScriptProvider
-                    options={{
-                        "client-id": "sb",
-                        components: "marks,messages",
-                    }}
-                >
-                    <SetIsLoadedToTrue />
-                    <PayPalButtons />
-                </PayPalScriptProvider>
-            )
-        ).toThrowErrorMatchingSnapshot();
+    test("should throw an error when the 'buttons' component is missing from the components list passed to the PayPalScriptProvider", async () => {
+        const onError = jest.fn();
+
+        const wrapper = ({ children }) => (
+            <ErrorBoundary onError={onError}>{children}</ErrorBoundary>
+        );
+
+        render(
+            <PayPalScriptProvider
+                options={{
+                    "client-id": "sb",
+                    components: "marks,messages",
+                }}
+            >
+                <PayPalButtons />
+            </PayPalScriptProvider>,
+            { wrapper }
+        );
+
+        await waitFor(() => expect(onError).toHaveBeenCalled());
+        expect(onError.mock.calls[0][0].message).toMatchSnapshot();
     });
 
     test("should catch and log zoid render errors", async () => {
@@ -98,9 +117,23 @@ describe("<PayPalButtons />", () => {
     });
 });
 
-// immediately sets the PayPalScriptProvider `isLoaded` state to true
-function SetIsLoadedToTrue() {
-    const [, dispatch] = usePayPalScriptReducer();
-    dispatch({ type: "setIsLoaded", value: true });
-    return null;
+class ErrorBoundary extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false };
+    }
+
+    componentDidCatch(error) {
+        this.setState({ hasError: true });
+        this.props.onError(error);
+    }
+
+    render() {
+        return !this.state.hasError && this.props.children;
+    }
 }
+
+ErrorBoundary.propTypes = {
+    onError: PropTypes.func.isRequired,
+    children: PropTypes.node.isRequired,
+};

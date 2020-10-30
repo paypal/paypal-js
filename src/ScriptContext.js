@@ -2,20 +2,29 @@ import React, { createContext, useContext, useEffect, useReducer } from "react";
 import PropTypes from "prop-types";
 import { loadScript } from "@paypal/paypal-js";
 
+const SCRIPT_LOADING_STATE = {
+    PENDING: "pending",
+    REJECTED: "rejected",
+    RESOLVED: "resolved",
+};
+
 const ScriptContext = createContext();
 const ScriptDispatchContext = createContext();
 
 function scriptReducer(state, action) {
     switch (action.type) {
-        case "setIsLoaded":
+        case "setLoadingStatus":
             return {
                 options: {
                     ...state.options,
                 },
-                isLoaded: action.value,
+                loadingStatus: action.value,
             };
         case "resetOptions":
-            return { options: action.value };
+            return {
+                loadingStatus: SCRIPT_LOADING_STATE.PENDING,
+                options: action.value,
+            };
 
         // deprecated - remove for the v2 release
         case "changeCurrency":
@@ -24,7 +33,7 @@ function scriptReducer(state, action) {
                     ...state.options,
                     currency: action.value,
                 },
-                isLoaded: false,
+                loadingStatus: SCRIPT_LOADING_STATE.PENDING,
             };
 
         default: {
@@ -41,26 +50,48 @@ function usePayPalScriptReducer() {
             "useScriptReducer must be used within a ScriptProvider"
         );
     }
-    return [scriptContext, dispatchContext];
+
+    const { loadingStatus, ...restScriptContext } = scriptContext;
+
+    const derivedStatusContext = {
+        ...restScriptContext,
+        isPending: loadingStatus === SCRIPT_LOADING_STATE.PENDING,
+        isResolved: loadingStatus === SCRIPT_LOADING_STATE.RESOLVED,
+        isRejected: loadingStatus === SCRIPT_LOADING_STATE.REJECTED,
+    };
+
+    return [derivedStatusContext, dispatchContext];
 }
 
 function PayPalScriptProvider({ options, children }) {
     const initialState = {
         options,
-        isLoaded: false,
+        loadingStatus: SCRIPT_LOADING_STATE.PENDING,
     };
 
     const [state, dispatch] = useReducer(scriptReducer, initialState);
 
     useEffect(() => {
-        if (state.isLoaded) return;
+        if (state.loadingStatus !== SCRIPT_LOADING_STATE.PENDING) return;
 
         let isSubscribed = true;
-        loadScript(state.options).then(() => {
-            if (isSubscribed) {
-                dispatch({ type: "setIsLoaded", value: true });
-            }
-        });
+        loadScript(state.options)
+            .then(() => {
+                if (isSubscribed) {
+                    dispatch({
+                        type: "setLoadingStatus",
+                        value: SCRIPT_LOADING_STATE.RESOLVED,
+                    });
+                }
+            })
+            .catch(() => {
+                if (isSubscribed) {
+                    dispatch({
+                        type: "setLoadingStatus",
+                        value: SCRIPT_LOADING_STATE.REJECTED,
+                    });
+                }
+            });
         return () => {
             isSubscribed = false;
         };
