@@ -51,7 +51,7 @@ describe("usePayPalScriptReducer", () => {
         loadScript.mockResolvedValue({});
     });
 
-    test('should manage state for loadScript() options and for "isLoaded"', async () => {
+    test("should manage state for loadScript()", async () => {
         const { state, TestComponent } = setupTestComponent();
         render(
             <PayPalScriptProvider options={{ "client-id": "sb" }}>

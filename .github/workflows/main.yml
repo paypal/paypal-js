@@ -3,33 +3,33 @@ name: "CI"
 on: pull_request
 
 jobs:
-  ci:
-    runs-on: ubuntu-latest
+    ci:
+        runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [10.x, 12.x]
+        strategy:
+            matrix:
+                node-version: [10.x, 12.x]
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
 
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
+            - name: Use Node.js ${{ matrix.node-version }}
+              uses: actions/setup-node@v1
+              with:
+                  node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies
-      run: npm install
+            - name: Install dependencies
+              run: npm install
 
-    - name: Lint
-      run: npm run lint
+            - name: Lint
+              run: npm run lint
 
-    - name: Test
-      run: npm run test
+            - name: Test
+              run: npm run test
 
-    - name: Build
-      run: npm run build
+            - name: Build
+              run: npm run build
 
-    - name: Build Storybook
-      run: npm run build-storybook
+            - name: Build Storybook
+              run: npm run build-storybook
