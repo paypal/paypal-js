@@ -73,7 +73,10 @@ function RadioButtonTemplate(args) {
                 ))}
             </form>
             <br />
-            <PayPalButtons fundingSource={fundingSource} />
+            <PayPalButtons
+                fundingSource={fundingSource}
+                style={{ color: "white" }}
+            />
         </PayPalScriptProvider>
     );
 }
