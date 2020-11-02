@@ -59,12 +59,12 @@ function TransactionTypeForm() {
                 value: scriptOptions,
             });
         } else {
+            const { "client-id": clientId, components } = scriptOptions;
             dispatch({
                 type: "resetOptions",
                 value: {
-                    ...scriptOptions,
-                    intent: "order",
-                    vault: false,
+                    "client-id": clientId,
+                    components,
                 },
             });
         }

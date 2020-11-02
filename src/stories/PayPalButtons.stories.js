@@ -8,6 +8,12 @@ export default {
         shippingPreference: { control: null },
         style: { control: null },
     },
+    args: {
+        // Storybook passes empty functions by default for props like `onShippingChange`.
+        // This turns on the `onShippingChange()` feature which uses the popup experience with the Standard Card button.
+        // We pass null to opt-out so the inline guest feature works as expected with the Standard Card button.
+        onShippingChange: null,
+    },
 };
 
 const defaultOptions = {
