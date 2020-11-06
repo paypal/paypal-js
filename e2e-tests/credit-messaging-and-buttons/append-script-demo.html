@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>appendScript() Demo | PayPal JS</title>
+  </head>
+  <body>
+    <h1>appendScript() Demo w/ Buttons and Messages</h1>
+
+    <div id="paypal-buttons"></div>
+    <div id="paypal-messages"></div>
+
+    <script>
+        // global functions for rendering components
+        let currentButtons;
+        function renderButtons () {
+            if (currentButtons) {
+                currentButtons.close();
+            }
+            currentButtons = window.paypal.Buttons();
+            currentButtons.render('#paypal-buttons')
+                .catch(err => {
+                    console.log('Buttons rendering error', err);
+                })
+        }
+
+        function renderMessages () {
+            paypal.Messages().render('#paypal-messages');
+        }
+    </script>
+
+
+    <script type="module">
+        import { loadScript } from '../../dist/paypal.esm.js';
+
+        const options = {
+            'client-id': 'sb',
+            'data-order-id': '12345',
+            components: 'buttons'
+        };
+
+        loadScript(options)
+          .then(paypal => {
+            renderButtons();
+          });
+    </script>
+
+
+    <script type="module">
+        import { appendScript } from '../../dist/paypal.esm.js';
+
+        // the previous set options like client-id are persisted
+        appendScript({ components: 'buttons,messages' })
+        .then(paypal => {
+            renderButtons();
+            renderMessages();
+        });
+    </script>
+
+  </body>
+</html>

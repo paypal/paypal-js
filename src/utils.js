@@ -47,6 +47,7 @@ export function processOptions(options = {}) {
 
     return {
         queryString: objectToQueryString(queryParams),
+        queryParams,
         dataAttributes
     };
 }
@@ -73,7 +74,7 @@ function createScriptElement(url, dataAttributes = {}) {
 }
 
 // uses es3 to avoid requiring polyfills for Array.prototype.forEach and Object.keys
-function forEachObjectKey(obj, callback) {
+export function forEachObjectKey(obj, callback) {
     for (let key in obj) {
         if (Object.prototype.hasOwnProperty.call(obj, key)) {
             callback(key);
