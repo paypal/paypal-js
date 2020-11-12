@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { render, waitFor } from "@testing-library/react";
+import { render, waitFor, screen, fireEvent } from "@testing-library/react";
 
 import { PayPalScriptProvider } from "../ScriptContext";
 import PayPalButtons from "./PayPalButtons";
@@ -51,6 +51,90 @@ describe("<PayPalButtons />", () => {
             })
         );
     });
+
+    test("should re-render Buttons when props.forceReRender changes", async () => {
+        window.paypal = {
+            Buttons: jest.fn(() => ({
+                close: jest.fn(),
+                isEligible: jest.fn(),
+                render: jest.fn(),
+            })),
+        };
+
+        // eslint-disable-next-line react/prop-types
+        function ButtonWrapper({ initialAmount }) {
+            const [amount, setAmount] = useState(initialAmount);
+            return (
+                <>
+                    <button onClick={() => setAmount(amount + 1)}>
+                        Update Amount
+                    </button>
+                    <PayPalButtons forceReRender={amount} />
+                </>
+            );
+        }
+
+        render(
+            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+                <ButtonWrapper initialOrderID="1" />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() =>
+            expect(window.paypal.Buttons).toHaveBeenCalledTimes(1)
+        );
+
+        fireEvent.click(screen.getByText("Update Amount"));
+
+        // confirm re-render when the forceReRender value changes
+        await waitFor(() =>
+            expect(window.paypal.Buttons).toHaveBeenCalledTimes(2)
+        );
+    });
+
+    test("should not re-render Buttons from side-effect in props.createOrder function", async () => {
+        window.paypal = {
+            Buttons: jest.fn(() => ({
+                close: jest.fn(),
+                isEligible: jest.fn(),
+                render: jest.fn(),
+            })),
+        };
+
+        // eslint-disable-next-line react/prop-types
+        function ButtonWrapper({ initialOrderID }) {
+            const [orderID, setOrderID] = useState(initialOrderID);
+            return (
+                <>
+                    <div data-testid="orderID">{orderID}</div>
+                    <PayPalButtons createOrder={() => setOrderID("2")} />
+                </>
+            );
+        }
+
+        render(
+            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+                <ButtonWrapper initialOrderID="1" />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() =>
+            expect(window.paypal.Buttons).toHaveBeenCalledTimes(1)
+        );
+
+        expect(screen.getByTestId("orderID").innerHTML).toBe("1");
+
+        // call createOrder() to trigger a state change
+        window.paypal.Buttons.mock.calls[0][0].createOrder();
+
+        await waitFor(() =>
+            expect(screen.getByTestId("orderID").innerHTML).toBe("2")
+        );
+
+        // confirm that the Buttons were NOT reset by a side-effect in createOrder()
+        expect(window.paypal.Buttons).toHaveBeenCalledTimes(1);
+    });
+
     test("should throw an error when no components are passed to the PayPalScriptProvider", async () => {
         const onError = jest.fn();
 
