@@ -50,6 +50,7 @@ export default function PayPalButtons(props) {
         props.forceReRender,
         props.fundingSource,
         props.shippingPreference,
+        props.style,
     ]);
 
     return <div ref={buttonsContainerRef} />;
