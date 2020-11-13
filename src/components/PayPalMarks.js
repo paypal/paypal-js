@@ -47,7 +47,7 @@ export default function PayPalMarks(props) {
         mark.current.render(markContainerRef.current).catch((err) => {
             console.error(`Failed to render <PayPalMarks /> component. ${err}`);
         });
-    });
+    }, [isResolved, props.fundingSource]);
 
     return <div ref={markContainerRef} />;
 }
