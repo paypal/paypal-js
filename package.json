@@ -70,8 +70,8 @@
         "shelljs": "^0.8.4"
     },
     "peerDependencies": {
-        "react": "^17.0.1",
-        "react-dom": "^17.0.1"
+        "react": ">=16.3.0",
+        "react-dom": ">=16.3.0"
     },
     "husky": {
         "hooks": {
