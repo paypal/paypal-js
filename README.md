@@ -1,11 +1,10 @@
 # PayPal JS
 
-A client-side loader for the [PayPal JS SDK](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/).
+> A client-side loader for the [PayPal JS SDK](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/)
 
 <a href="https://www.npmjs.com/package/@paypal/paypal-js"><img src="https://img.shields.io/npm/v/@paypal/paypal-js" alt="npm version"></a>
+<a href="https://www.npmjs.com/package/@paypal/paypal-js"><img src="https://img.shields.io/npm/dm/@paypal/paypal-js" alt="npm downloads"></a>
 <a href="https://github.com/paypal/paypal-js/actions?query=workflow%3ACI"><img src="https://github.com/paypal/paypal-js/workflows/CI/badge.svg" alt="CI Status"></a>
-<a href="https://david-dm.org/paypal/paypal-js"><img src="https://img.shields.io/david/paypal/paypal-js" alt="dependencies"></a>
-<a href="https://david-dm.org/paypal/paypal-js?type=dev"><img src="https://img.shields.io/david/dev/paypal/paypal-js" alt="dev dependencies"></a>
 <a href="https://github.com/paypal/paypal-js/blob/main/LICENSE.txt"><img src="https://img.shields.io/npm/l/@paypal/paypal-js" alt="GitHub license"></a>
 
 ## Why use paypal-js?
