@@ -4,7 +4,7 @@
 
 <div class="badges">
     <a href="https://www.npmjs.com/package/@paypal/react-paypal-js"><img src="https://img.shields.io/npm/v/@paypal/react-paypal-js" alt="npm version"></a>
-    <a href="https://www.npmjs.com/package/@paypal/react-paypal-js"><img src="https://img.shields.io/npm/dm/@paypal/react-paypal-js" alt="npm version"></a>
+    <a href="https://www.npmjs.com/package/@paypal/react-paypal-js"><img src="https://img.shields.io/npm/dm/@paypal/react-paypal-js" alt="npm downloads"></a>
     <a href="https://github.com/paypal/react-paypal-js/actions?query=workflow%3ACI"><img src="https://github.com/paypal/react-paypal-js/workflows/CI/badge.svg" alt="CI Status"></a>
     <a href="https://github.com/paypal/react-paypal-js/blob/main/LICENSE.txt"><img src="https://img.shields.io/npm/l/@paypal/react-paypal-js" alt="GitHub license"></a>
     <a href="https://paypal.github.io/react-paypal-js/"><img src="https://raw.githubusercontent.com/storybooks/brand/master/badge/badge-storybook.svg"></a>

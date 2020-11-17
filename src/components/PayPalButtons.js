@@ -45,13 +45,7 @@ export default function PayPalButtons(props) {
         });
 
         return cleanup;
-    }, [
-        isResolved,
-        props.forceReRender,
-        props.fundingSource,
-        props.shippingPreference,
-        props.style,
-    ]);
+    }, [isResolved, props.forceReRender, props.fundingSource, props.style]);
 
     return <div ref={buttonsContainerRef} />;
 }
@@ -110,18 +104,6 @@ PayPalButtons.propTypes = {
         tagline: PropTypes.bool,
     }),
     /**
-     * The possible values for shippingPreference are:
-     *
-     *    * `"NO_SHIPPING"`- Redact shipping address fields from the PayPal pages.
-     *    * `"GET_FROM_FILE"`- Use the buyer-selected shipping address.
-     *    * `"SET_PROVIDED_ADDRESS"`- Use the merchant-provided address.
-     */
-    shippingPreference: PropTypes.oneOf([
-        "GET_FROM_FILE",
-        "NO_SHIPPING",
-        "SET_PROVIDED_ADDRESS",
-    ]),
-    /**
      * Finalizes the transaction. Often used to show the buyer a [confirmation page](https://developer.paypal.com/docs/checkout/integration-features/confirmation-page/).
      */
     onApprove: PropTypes.func,
@@ -156,5 +138,4 @@ PayPalButtons.propTypes = {
 
 PayPalButtons.defaultProps = {
     style: {},
-    shippingPreference: "GET_FROM_FILE",
 };
