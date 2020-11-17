@@ -38,14 +38,12 @@ describe("<PayPalButtons />", () => {
                 <PayPalButtons
                     fundingSource={FUNDING.CREDIT}
                     style={{ layout: "horizontal" }}
-                    shippingPreference="GET_FROM_FILE"
                 />
             </PayPalScriptProvider>
         );
 
         await waitFor(() =>
             expect(window.paypal.Buttons).toHaveBeenCalledWith({
-                shippingPreference: "GET_FROM_FILE",
                 style: { layout: "horizontal" },
                 fundingSource: FUNDING.CREDIT,
             })

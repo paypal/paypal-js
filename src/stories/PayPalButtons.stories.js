@@ -5,7 +5,6 @@ export default {
     title: "Example/PayPalButtons",
     component: PayPalButtons,
     argTypes: {
-        shippingPreference: { control: null },
         style: { control: null },
     },
     args: {
