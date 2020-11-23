@@ -38,7 +38,6 @@
     "@rollup/plugin-node-resolve": "^10.0.0",
     "@rollup/plugin-replace": "^2.3.4",
     "babel-jest": "^26.6.3",
-    "core-js": "^3.7.0",
     "eslint": "^7.13.0",
     "eslint-plugin-compat": "^3.8.0",
     "filesize": "^6.1.0",
