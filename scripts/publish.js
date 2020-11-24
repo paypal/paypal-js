@@ -12,6 +12,7 @@ const newVersionArg = process.argv[2] || "patch";
 exec(`npm version ${newVersionArg}`);
 
 // push up new version commit and tag
+exec("git push");
 exec("git push --follow-tags");
 
 // use the readline module to simulate npm prompt
