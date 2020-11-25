@@ -80,12 +80,38 @@ CustomStyle.parameters = {
 };
 
 export const StandAlone = Template.bind({});
-StandAlone.args = { fundingSource: FUNDING.PAYLATER };
+StandAlone.args = { fundingSource: FUNDING.PAYPAL };
 
 StandAlone.parameters = {
     docs: {
         source: {
-            code: "<PayPalButtons fundingSource={FUNDING.PAYLATER} />",
+            code: "<PayPalButtons fundingSource={FUNDING.PAYPAL} />",
+        },
+    },
+};
+
+function TinyTemplate(args) {
+    return (
+        <PayPalScriptProvider options={defaultOptions}>
+            <div style={{ width: "80px" }}>
+                <PayPalButtons {...args} />
+            </div>
+        </PayPalScriptProvider>
+    );
+}
+
+export const Tiny = TinyTemplate.bind({});
+Tiny.args = {
+    fundingSource: FUNDING.PAYPAL,
+    style: { height: 25 },
+};
+
+Tiny.parameters = {
+    docs: {
+        source: {
+            code: `<PayPalButtons fundingSource={FUNDING.PAYPAL} style={${prettyPrint(
+                CustomStyle.args.style
+            )}} />`,
         },
     },
 };
