@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { FUNDING, PayPalScriptProvider, PayPalButtons } from "../index";
 
+const scriptProviderOptions = {
+    "client-id": "sb",
+    components: "buttons",
+};
+
 export default {
     title: "Example/PayPalButtons",
     component: PayPalButtons,
@@ -13,84 +18,38 @@ export default {
         // We pass null to opt-out so the inline guest feature works as expected with the Standard Card button.
         onShippingChange: null,
     },
+    decorators: [
+        (Story) => (
+            <PayPalScriptProvider options={scriptProviderOptions}>
+                <Story />
+            </PayPalScriptProvider>
+        ),
+    ],
 };
 
-const defaultOptions = {
-    "client-id": "sb",
-    components: "buttons",
-};
+export const Default = () => <PayPalButtons />;
 
-function Template(args) {
-    return (
-        <PayPalScriptProvider options={defaultOptions}>
-            <PayPalButtons {...args} />
-        </PayPalScriptProvider>
-    );
-}
+export const Horizontal = () => (
+    <PayPalButtons style={{ layout: "horizontal" }} />
+);
 
-function prettyPrint(obj) {
-    return JSON.stringify(obj, null, 4);
-}
+export const CustomStyle = () => (
+    <PayPalButtons
+        style={{ color: "blue", shape: "pill", label: "pay", height: 40 }}
+    />
+);
 
-export const Default = Template.bind({});
-Default.args = {};
-Default.parameters = {
-    docs: {
-        source: {
-            code: "<PayPalButtons />",
-        },
-    },
-};
+export const Standalone = () => (
+    <PayPalButtons fundingSource={FUNDING.PAYPAL} />
+);
 
-export const Horizontal = Template.bind({});
-Horizontal.args = {
-    style: {
-        layout: "horizontal",
-    },
-};
+export const Tiny = () => (
+    <div style={{ maxWidth: "80px" }}>
+        <PayPalButtons fundingSource={FUNDING.PAYPAL} />
+    </div>
+);
 
-Horizontal.parameters = {
-    docs: {
-        source: {
-            code: `<PayPalButtons style={${prettyPrint(
-                Horizontal.args.style
-            )}} />`,
-        },
-    },
-};
-
-export const CustomStyle = Template.bind({});
-CustomStyle.args = {
-    style: {
-        color: "blue",
-        shape: "pill",
-        label: "pay",
-        height: 40,
-    },
-};
-
-CustomStyle.parameters = {
-    docs: {
-        source: {
-            code: `<PayPalButtons style={${prettyPrint(
-                CustomStyle.args.style
-            )}} />`,
-        },
-    },
-};
-
-export const StandAlone = Template.bind({});
-StandAlone.args = { fundingSource: FUNDING.PAYLATER };
-
-StandAlone.parameters = {
-    docs: {
-        source: {
-            code: "<PayPalButtons fundingSource={FUNDING.PAYLATER} />",
-        },
-    },
-};
-
-function DynamicAmountTemplate(args) {
+export const DynamicAmount = () => {
     const [amount, setAmount] = useState(2);
     const [orderID, setOrderID] = useState(false);
 
@@ -118,23 +77,15 @@ function DynamicAmountTemplate(args) {
     }
 
     return (
-        <PayPalScriptProvider options={defaultOptions}>
-            <div>
-                <select onChange={onChange} name="amount" id="amount">
-                    <option value="2">$2.00</option>
-                    <option value="4">$4.00</option>
-                    <option value="6">$6.00</option>
-                </select>
-                <p>Order ID: {orderID ? orderID : "unknown"}</p>
-            </div>
-            <PayPalButtons
-                {...args}
-                createOrder={createOrder}
-                forceReRender={amount}
-            />
-        </PayPalScriptProvider>
-    );
-}
+        <>
+            <select onChange={onChange} name="amount" id="amount">
+                <option value="2">$2.00</option>
+                <option value="4">$4.00</option>
+                <option value="6">$6.00</option>
+            </select>
+            <p>Order ID: {orderID ? orderID : "unknown"}</p>
 
-export const DynamicAmount = DynamicAmountTemplate.bind({});
-DynamicAmount.args = {};
+            <PayPalButtons createOrder={createOrder} forceReRender={amount} />
+        </>
+    );
+};
