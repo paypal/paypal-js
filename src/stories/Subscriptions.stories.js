@@ -5,115 +5,92 @@ import {
     usePayPalScriptReducer,
 } from "../index";
 
-export default {
-    title: "Example/Subscriptions",
-    argTypes: {
-        style: { control: null },
-    },
-};
-
-const scriptOptions = {
+const scriptProviderOptions = {
     "client-id": "sb",
     components: "buttons",
     intent: "subscription",
     vault: true,
 };
 
-function Template(args) {
-    return (
-        <PayPalScriptProvider options={scriptOptions}>
-            <PayPalButtons {...args} />
-        </PayPalScriptProvider>
-    );
-}
-
-export const Default = Template.bind({});
-Default.args = {
-    createSubscription: function (data, actions) {
-        return actions.subscription.create({
-            plan_id: "P-3RX065706M3469222L5IFM4I",
-        });
-    },
-    style: {
-        label: "subscribe",
-    },
+export default {
+    title: "Example/Subscriptions",
+    decorators: [
+        (Story) => (
+            <PayPalScriptProvider options={scriptProviderOptions}>
+                <Story />
+            </PayPalScriptProvider>
+        ),
+    ],
 };
 
-function OrdersAndSubscriptionsTemplate(args) {
-    return (
-        <PayPalScriptProvider options={scriptOptions}>
-            <TransactionTypeForm />
-            <br />
-            <CustomPayPalButtons {...args} />
-        </PayPalScriptProvider>
-    );
-}
-
-function TransactionTypeForm() {
-    const [, dispatch] = usePayPalScriptReducer();
-
-    function onChange(event) {
-        if (event.target.value === "subscription") {
-            dispatch({
-                type: "resetOptions",
-                value: scriptOptions,
-            });
-        } else {
-            const { "client-id": clientId, components } = scriptOptions;
-            dispatch({
-                type: "resetOptions",
-                value: {
-                    "client-id": clientId,
-                    components,
-                },
-            });
+export const Default = () => (
+    <PayPalButtons
+        createSubscription={(data, actions) =>
+            actions.subscription.create({
+                plan_id: "P-3RX065706M3469222L5IFM4I",
+            })
         }
+        style={{
+            label: "subscribe",
+        }}
+    />
+);
+
+export const OrdersAndSubscriptions = () => {
+    const [{ options }, dispatch] = usePayPalScriptReducer();
+
+    const buttonSubscriptionOptions = {
+        createSubscription: function (data, actions) {
+            return actions.subscription.create({
+                plan_id: "P-3RX065706M3469222L5IFM4I",
+            });
+        },
+        style: {
+            label: "subscribe",
+        },
+    };
+
+    const buttonOptions =
+        options.intent === "subscription" ? buttonSubscriptionOptions : {};
+
+    function onChange({ target: { value } }) {
+        dispatch({
+            type: "resetOptions",
+            value:
+                value === "subscription"
+                    ? scriptProviderOptions
+                    : {
+                          "client-id": scriptProviderOptions["client-id"],
+                          components: scriptProviderOptions.components,
+                      },
+        });
     }
 
     return (
-        <form>
-            <label>
-                <input
-                    defaultChecked
-                    onChange={onChange}
-                    type="radio"
-                    name="type"
-                    value="subscription"
-                />
-                Subscription
-            </label>
-            <label>
-                <input
-                    onChange={onChange}
-                    type="radio"
-                    name="type"
-                    value="order"
-                />
-                Order
-            </label>
-        </form>
+        <>
+            <form>
+                <label>
+                    <input
+                        defaultChecked
+                        onChange={onChange}
+                        type="radio"
+                        name="type"
+                        value="subscription"
+                    />
+                    Subscription
+                </label>
+                <label>
+                    <input
+                        onChange={onChange}
+                        type="radio"
+                        name="type"
+                        value="order"
+                    />
+                    Order
+                </label>
+            </form>
+            <br />
+            <PayPalButtons {...buttonOptions} />
+        </>
     );
-}
-
-function CustomPayPalButtons(args) {
-    const [{ options }] = usePayPalScriptReducer();
-
-    const buttonOptions =
-        options.intent === "subscription"
-            ? {
-                  createSubscription: function (data, actions) {
-                      return actions.subscription.create({
-                          plan_id: "P-3RX065706M3469222L5IFM4I",
-                      });
-                  },
-                  style: {
-                      label: "subscribe",
-                  },
-              }
-            : {};
-
-    return <PayPalButtons {...{ ...args, ...buttonOptions }} />;
-}
-
-export const OrdersAndSubscriptions = OrdersAndSubscriptionsTemplate.bind({});
-OrdersAndSubscriptions.args = {};
+};

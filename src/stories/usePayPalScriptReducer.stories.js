@@ -5,91 +5,86 @@ import {
     PayPalButtons,
 } from "../index";
 
-export default {
-    title: "Example/usePayPalScriptReducer",
-    component: usePayPalScriptReducer,
-};
-
-const scriptOptions = {
+const scriptProviderOptions = {
     "client-id": "sb",
     components: "buttons",
 };
 
-function Currency() {
-    const [state, dispatch] = usePayPalScriptReducer();
-    const {
-        options: { currency },
-    } = state;
+export default {
+    title: "Example/usePayPalScriptReducer",
+    component: usePayPalScriptReducer,
+    decorators: [
+        (Story) => (
+            <PayPalScriptProvider options={scriptProviderOptions}>
+                <Story />
+            </PayPalScriptProvider>
+        ),
+    ],
+};
+
+export const Currency = () => {
+    const [
+        {
+            options: { currency },
+        },
+        dispatch,
+    ] = usePayPalScriptReducer();
     const [value, setValue] = useState(currency);
 
-    function onChange(event) {
-        const selectedCurrency = event.target.value;
-        setValue(selectedCurrency);
+    function onChange({ target: { value } }) {
+        setValue(value);
         dispatch({
             type: "resetOptions",
             value: {
-                ...scriptOptions,
-                currency: selectedCurrency,
+                ...scriptProviderOptions,
+                currency: value,
             },
         });
     }
 
     return (
-        <select
-            value={value}
-            onChange={onChange}
-            name="currency"
-            id="currency"
-            style={{ marginBottom: "20px" }}
-        >
-            <option value="USD">United States dollar</option>
-            <option value="EUR">Euro</option>
-            <option value="CAD">Canadian dollar</option>
-        </select>
-    );
-}
-
-function Template(args) {
-    return (
-        <PayPalScriptProvider {...args}>
-            <Currency />
+        <>
+            <select
+                value={value}
+                onChange={onChange}
+                name="currency"
+                id="currency"
+                style={{ marginBottom: "20px" }}
+            >
+                <option value="USD">United States dollar</option>
+                <option value="EUR">Euro</option>
+                <option value="CAD">Canadian dollar</option>
+            </select>
             <PayPalButtons />
-        </PayPalScriptProvider>
+        </>
     );
-}
-
-export const currencyUSD = Template.bind({});
-currencyUSD.args = {
-    options: {
-        ...scriptOptions,
-        currency: "USD",
-    },
 };
 
-export const currencyEUR = Template.bind({});
-currencyEUR.args = {
-    options: {
-        ...scriptOptions,
-        currency: "EUR",
-    },
-};
+export const LoadingSpinner = () => {
+    const [{ isPending }, dispatch] = usePayPalScriptReducer();
 
-function LoadingSpinnerTemplate(args) {
+    function reload() {
+        dispatch({
+            type: "resetOptions",
+            value: {
+                ...scriptProviderOptions,
+                "data-order-id": Date.now(),
+            },
+        });
+    }
+
     return (
-        <PayPalScriptProvider
-            options={{ "client-id": "sb", components: "buttons" }}
-        >
-            <LoadingIndicator />
-            <PayPalButtons {...args} />
-        </PayPalScriptProvider>
+        <>
+            <button
+                type="button"
+                onClick={reload}
+                style={{ display: "block", marginBottom: "20px" }}
+            >
+                Reload
+            </button>
+
+            {isPending ? <div className="spinner" /> : null}
+            <PayPalButtons />
+        </>
     );
-}
-
-export const LoadingSpinner = LoadingSpinnerTemplate.bind({});
-LoadingSpinner.args = {};
-
-function LoadingIndicator() {
-    const [{ isPending }] = usePayPalScriptReducer();
-
-    return isPending ? <div className="spinner" /> : null;
-}
+};

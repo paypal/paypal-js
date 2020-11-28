@@ -70,9 +70,8 @@ export const DynamicAmount = () => {
             });
     }
 
-    function onChange(event) {
-        const selectedAmount = event.target.value;
-        setAmount(selectedAmount);
+    function onChange({ target: { value } }) {
+        setAmount(value);
         setOrderID(false);
     }
 

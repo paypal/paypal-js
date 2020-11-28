@@ -6,82 +6,61 @@ import {
     FUNDING,
 } from "../index";
 
+const scriptProviderOptions = {
+    "client-id": "sb",
+    components: "buttons,marks,funding-eligibility",
+};
+
 export default {
     title: "Example/PayPalMarks",
     component: PayPalMarks,
+    decorators: [
+        (Story) => (
+            <PayPalScriptProvider options={scriptProviderOptions}>
+                <Story />
+            </PayPalScriptProvider>
+        ),
+    ],
 };
 
-function Template(args) {
-    return (
-        <PayPalScriptProvider
-            options={{
-                "client-id": "sb",
-                components: "buttons,marks,funding-eligibility",
-            }}
-        >
-            <PayPalMarks {...args} />
-        </PayPalScriptProvider>
+export const Default = () => <PayPalMarks />;
+
+export const StandAlone = () => <PayPalMarks fundingSource={FUNDING.PAYPAL} />;
+
+export const RadioButtons = () => {
+    const fundingSources = [FUNDING.PAYPAL, FUNDING.CARD, FUNDING.PAYLATER];
+
+    const [selectedFundingSource, setSelectedFundingSource] = useState(
+        fundingSources[0]
     );
-}
 
-export const Default = Template.bind({});
-Default.args = {};
-Default.parameters = {
-    docs: {
-        source: {
-            code: "<PayPalMarks />",
-        },
-    },
-};
-
-export const StandAlone = Template.bind({});
-StandAlone.args = { fundingSource: FUNDING.PAYPAL };
-StandAlone.parameters = {
-    docs: {
-        source: {
-            code: "<PayPalMarks fundingSource={FUNDING.PAYPAL} />",
-        },
-    },
-};
-
-function RadioButtonTemplate(args) {
-    const [fundingSource, setFundingSource] = useState(FUNDING.PAYPAL);
-
-    function onChange(event) {
-        setFundingSource(event.target.value);
+    function onChange({ target: { value } }) {
+        setSelectedFundingSource(value);
     }
 
     return (
-        <PayPalScriptProvider
-            options={{
-                "client-id": "sb",
-                components: "buttons,marks,funding-eligibility",
-            }}
-        >
+        <>
             <form>
-                {args.fundingSources.map((source, index) => (
-                    <label className="mark" key={index}>
+                {fundingSources.map((fundingSource) => (
+                    <label className="mark" key={fundingSource}>
                         <input
-                            defaultChecked={index === 0}
+                            defaultChecked={
+                                fundingSource === selectedFundingSource
+                            }
                             onChange={onChange}
                             type="radio"
                             name="fundingSource"
-                            value={source}
+                            value={fundingSource}
                         />
-                        <PayPalMarks fundingSource={source} />
+                        <PayPalMarks fundingSource={fundingSource} />
                     </label>
                 ))}
             </form>
             <br />
             <PayPalButtons
-                fundingSource={fundingSource}
+                fundingSource={selectedFundingSource}
                 style={{ color: "white" }}
             />
-        </PayPalScriptProvider>
+        </>
     );
-}
-
-export const RadioButtons = RadioButtonTemplate.bind({});
-RadioButtons.args = {
-    fundingSources: [FUNDING.PAYPAL, FUNDING.CARD, FUNDING.PAYLATER],
 };
