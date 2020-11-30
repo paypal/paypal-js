@@ -1,14 +1,21 @@
 import filesize from 'filesize';
 import fs from 'fs';
 
-const maxBundleSizeInKiloBytes = 6;
+const maxBundleSizeInKiloBytes = 3;
+const maxLegacyBundleSizeInKiloBytes = 6;
 
 describe('bundle size', () => {
     it(`paypal.browser.min.js should be less than ${maxBundleSizeInKiloBytes} KB`, () => {
         const { size: sizeInBytes } = fs.statSync('dist/paypal.browser.min.js');
-        const [sizeInKiloBytes, label] = filesize(sizeInBytes, {output: "array"});
-        console.log(`paypal.browser.min.js: ${sizeInKiloBytes} ${label}`);
+        const [sizeInKiloBytes] = filesize(sizeInBytes, {output: "array"});
 
         expect(sizeInKiloBytes).toBeLessThan(maxBundleSizeInKiloBytes);
+    });
+
+    it(`paypal.legacy.browser.min.js should be less than ${maxLegacyBundleSizeInKiloBytes} KB`, () => {
+        const { size: sizeInBytes } = fs.statSync('dist/paypal.legacy.browser.min.js');
+        const [sizeInKiloBytes] = filesize(sizeInBytes, {output: "array"});
+
+        expect(sizeInKiloBytes).toBeLessThan(maxLegacyBundleSizeInKiloBytes);
     });
 });

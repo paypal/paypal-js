@@ -1,7 +1,9 @@
-import { loadScript } from './main';
+import loadScript from './loadScript';
 import * as utils from './utils';
 
 describe('loadScript()', () => {
+    let PromiseBackup = window.Promise;
+
     beforeEach(() => {
         document.head.innerHTML = '';
 
@@ -16,7 +18,10 @@ describe('loadScript()', () => {
             writable: true,
             value: undefined
         });
+
+        window.Promise = PromiseBackup;
     });
+
     afterEach(() => {
         utils.insertScriptElement.mockClear();
     });
@@ -96,5 +101,24 @@ describe('loadScript()', () => {
                 expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
                 expect(err.message).toBe("The script \"https://www.paypal.com/sdk/js?client-id=sb\" didn't load correctly.");
             });
+    });
+
+    test('should use the provided promise ponyfill', () => {
+        expect.assertions(1);
+        const PromisePonyfill = jest.fn();
+
+        loadScript({ 'client-id': 'sb' }, PromisePonyfill);
+        expect(PromisePonyfill).toHaveBeenCalledTimes(1);
+    });
+
+    test('should throw an error when the Promise implementation is undefined', () => {
+        expect.assertions(3);
+        delete window.Promise;
+
+        expect(window.paypal).toBe(undefined);
+        expect(window.Promise).toBe(undefined);
+        expect(() => loadScript({ 'client-id': 'sb' })).toThrow(
+            'Failed to load the PayPal JS SDK script because Promise is undefined. To resolve the issue, use a Promise polyfill.'
+        );
     });
 });

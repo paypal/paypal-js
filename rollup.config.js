@@ -15,44 +15,74 @@ const outputConfigForBrowserBundle = {
     banner
 };
 
-export default {
-    input: 'src/main.js',
-    plugins: [
-        nodeResolve({
-            browser: true
-        }),
-        commonjs(),
-        babel({
-            babelHelpers: 'bundled',
-            exclude: /node_modules/
-        }),
-        replace({
-            '__VERSION__': pkg.version
-        }),
-        filesize()
-    ],
-    output: [
-        {
-            file: pkg.module,
-            format: 'esm',
-            banner
-        },
-        {
-            file: pkg.main,
-            format: 'cjs',
-            banner
-        },
-        {
-            file: 'dist/paypal.browser.js',
-            ...outputConfigForBrowserBundle
-        },
-        {
-            file: 'dist/paypal.browser.min.js',
-            ...outputConfigForBrowserBundle,
-            plugins: [terser()]
-        }
-    ]
-};
+export default [
+    {
+        input: 'src/index.js',
+        plugins: [
+            nodeResolve({
+                browser: true
+            }),
+            commonjs(),
+            babel({
+                babelHelpers: 'bundled',
+                exclude: /node_modules/
+            }),
+            replace({
+                '__VERSION__': pkg.version
+            }),
+            filesize()
+        ],
+        output: [
+            {
+                file: pkg.module,
+                format: 'esm',
+                banner
+            },
+            {
+                file: pkg.main,
+                format: 'cjs',
+                banner
+            },
+            {
+                file: 'dist/paypal.browser.js',
+                ...outputConfigForBrowserBundle
+            },
+            {
+                file: 'dist/paypal.browser.min.js',
+                ...outputConfigForBrowserBundle,
+                plugins: [terser()]
+            }
+        ]
+    },
+    {
+        input: 'src/legacy/index.js',
+        plugins: [
+            nodeResolve({
+                browser: true
+            }),
+            commonjs(),
+            babel({
+                babelHelpers: 'bundled',
+                exclude: /node_modules/
+            }),
+            replace({
+                '__VERSION__': pkg.version
+            }),
+            filesize()
+        ],
+        output: [
+            {
+                file: 'dist/paypal.legacy.browser.js',
+                ...outputConfigForBrowserBundle
+            },
+            {
+                file: 'dist/paypal.legacy.browser.min.js',
+                ...outputConfigForBrowserBundle,
+                plugins: [terser()]
+            }
+        ]
+    }
+];
 
 function getBannerText() {
     const banner = `

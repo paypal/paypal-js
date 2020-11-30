@@ -1,5 +1,5 @@
 {
-  "extends": "eslint:recommended",
+  "extends": ["eslint:recommended", "plugin:compat/recommended"],
   "env": {
     "browser": true,
     "es2020": true,
@@ -17,5 +17,10 @@
   "rules": {
     "indent": ["error", 4],
     "semi": ["error", "always"]
+  },
+  "settings": {
+    "polyfills": [
+      "Promise"
+    ]
   }
 }
