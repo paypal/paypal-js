@@ -45,7 +45,7 @@ export const Standalone = () => (
 
 export const Tiny = () => (
     <div style={{ maxWidth: "80px" }}>
-        <PayPalButtons fundingSource={FUNDING.PAYPAL} />
+        <PayPalButtons fundingSource={FUNDING.PAYPAL} style={{ height: 25 }} />
     </div>
 );
 
