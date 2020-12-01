@@ -5,8 +5,9 @@ let loadingPromise;
 let isLoading = false;
 
 export default function loadScript(options, PromisePonyfill) {
-    // resolve with the existing promise when the script is loading
-    if (isLoading) return loadingPromise;
+    if (!(options instanceof Object)) {
+        throw new Error('Invalid arguments. Expected an object to be passed into loadScript().');
+    }
 
     if (typeof PromisePonyfill === 'undefined') {
         // default to using window.Promise as the Promise implementation
@@ -16,6 +17,9 @@ export default function loadScript(options, PromisePonyfill) {
 
         PromisePonyfill = Promise;
     }
+
+    // resolve with the existing promise when the script is loading
+    if (isLoading) return loadingPromise;
 
     return loadingPromise = new PromisePonyfill((resolve, reject) => {
         // resolve with null when running in Node
