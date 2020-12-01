@@ -3,7 +3,7 @@
 > A client-side loader for the [PayPal JS SDK](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/)
 
 <a href="https://www.npmjs.com/package/@paypal/paypal-js"><img src="https://img.shields.io/npm/v/@paypal/paypal-js" alt="npm version"></a>
-<a href="https://www.npmjs.com/package/@paypal/paypal-js"><img src="https://img.shields.io/bundlephobia/minzip/@paypal/paypal-js" alt="Bundle size minified and gzipped"></a>
+<a href="https://bundlephobia.com/result?p=@paypal/paypal-js"><img src="https://img.shields.io/bundlephobia/minzip/@paypal/paypal-js" alt="Bundle size minified and gzipped"></a>
 <a href="https://www.npmjs.com/package/@paypal/paypal-js"><img src="https://img.shields.io/npm/dm/@paypal/paypal-js" alt="npm downloads"></a>
 <a href="https://github.com/paypal/paypal-js/actions?query=workflow%3ACI"><img src="https://github.com/paypal/paypal-js/workflows/CI/badge.svg" alt="CI Status"></a>
 <a href="https://github.com/paypal/paypal-js/blob/main/LICENSE.txt"><img src="https://img.shields.io/npm/l/@paypal/paypal-js" alt="GitHub license"></a>
