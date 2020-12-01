@@ -26,47 +26,39 @@ describe('loadScript()', () => {
         utils.insertScriptElement.mockClear();
     });
 
-    test('should insert <script> and resolve the promise', () => {
-        expect.assertions(3);
+    test('should insert <script> and resolve the promise', async () => {
         expect(window.paypal).toBe(undefined);
 
-        return loadScript({ 'client-id': 'sb' })
-            .then(response => {
-                expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
-                expect(response).toEqual({});
-            });
+        const response = await loadScript({ 'client-id': 'sb' });
+        expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
+        expect(response).toEqual({});
     });
 
-    test('should not insert <script> when an existing script with the same src is already in the DOM and window.paypal is set', () => {
-        expect.assertions(3);
+    test('should not insert <script> when an existing script with the same src is already in the DOM and window.paypal is set', async () => {
         expect(window.paypal).toBe(undefined);
 
         // simulate the script already being loaded
         document.head.innerHTML = '<script src="https://www.paypal.com/sdk/js?client-id=sb"></script>';
         window.paypal = {};
 
-        return loadScript({ 'client-id': 'sb' })
-            .then(response => {
-                expect(utils.insertScriptElement).not.toHaveBeenCalled();
-                expect(response).toEqual({});
-            });
+        const response = await loadScript({ 'client-id': 'sb' });
+        expect(utils.insertScriptElement).not.toHaveBeenCalled();
+        expect(response).toEqual({});
     });
 
-    test('should only load the <script> once when loadScript() is called twice', () => {
-        expect.assertions(3);
+    test('should only load the <script> once when loadScript() is called twice', async () => {
         expect(window.paypal).toBe(undefined);
 
-        return Promise.all([
+        const response = await Promise.all([
             loadScript({ 'client-id': 'sb' }),
             loadScript({ 'client-id': 'sb' })
-        ])
-            .then(response => {
-                expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
-                expect(response).toEqual([{}, {}]);
-            });
+        ]);
+
+        expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
+        expect(response).toEqual([{}, {}]);
     });
 
-    test('should reject the promise when window.paypal is undefined after loading the <script>', () => {
+    test('should reject the promise when window.paypal is undefined after loading the <script>', async () => {
         expect.assertions(3);
 
         // eslint-disable-next-line no-import-assign
@@ -78,14 +70,21 @@ describe('loadScript()', () => {
 
         expect(window.paypal).toBe(undefined);
 
-        return loadScript({ 'client-id': 'sb' })
-            .catch(err => {
-                expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
-                expect(err.message).toBe('The window.paypal global variable is not available.');
-            });
+        try {
+            await loadScript({ 'client-id': 'sb' });
+        } catch (err) {
+            expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
+            expect(err.message).toBe('The window.paypal global variable is not available.');
+        }
     });
 
-    test('should throw an error when the script fails to load', () => {
+    test('should throw an error from invalid arguments', () => {
+        expect(() => loadScript()).toThrow(
+            'Invalid arguments. Expected an object to be passed into loadScript().'
+        );
+    });
+
+    test('should throw an error when the script fails to load', async () => {
         expect.assertions(3);
 
         // eslint-disable-next-line no-import-assign
@@ -96,15 +95,15 @@ describe('loadScript()', () => {
 
         expect(window.paypal).toBe(undefined);
 
-        return loadScript({ 'client-id': 'sb' })
-            .catch(err => {
-                expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
-                expect(err.message).toBe("The script \"https://www.paypal.com/sdk/js?client-id=sb\" didn't load correctly.");
-            });
+        try {
+            await loadScript({ 'client-id': 'sb' });
+        } catch (err) {
+            expect(utils.insertScriptElement).toHaveBeenCalledTimes(1);
+            expect(err.message).toBe("The script \"https://www.paypal.com/sdk/js?client-id=sb\" didn't load correctly.");
+        }
     });
 
     test('should use the provided promise ponyfill', () => {
-        expect.assertions(1);
         const PromisePonyfill = jest.fn();
 
         loadScript({ 'client-id': 'sb' }, PromisePonyfill);
@@ -112,7 +111,6 @@ describe('loadScript()', () => {
     });
 
     test('should throw an error when the Promise implementation is undefined', () => {
-        expect.assertions(3);
         delete window.Promise;
 
         expect(window.paypal).toBe(undefined);
