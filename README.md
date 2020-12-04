@@ -60,6 +60,69 @@ export default function App() {
 }
 ```
 
+### PayPalButtons
+
+The `<PayPalButtons />` component is fully documented in Storybook. Checkout the [docs page for the PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default) to learn more about the available props.
+
+### PayPalScriptProvider
+
+The `<PayPalScriptProvider />` component is designed to be used with the `usePayPalScriptReducer` hook for managing global state. This `usePayPalScriptReducer` hook has the same API as [React's useReducer hook](https://reactjs.org/docs/hooks-reference.html#usereducer).
+
+#### Tracking loading state
+
+The `usePayPalScriptReducer` hook provides an easy way to tap into the loading state of the JS SDK script. This state can be used to show a loading spinner while the script loads or an error message if it fails to load. The following derived attributes are provided for tracking this loading state:
+
+-   isPending - not finished loading (default state)
+-   isResolved - successfully loaded
+-   isRejected - failed to load
+
+For example, here's how you can use it to show a loading spinner.
+
+```js
+const [{ isPending }] = usePayPalScriptReducer();
+
+return (
+    <>
+        {isPending ? <div className="spinner" /> : null}
+        <PayPalButtons />
+    </>
+);
+```
+
+To learn more, check out the [loading spinner example in storybook](https://paypal.github.io/react-paypal-js/?path=/story/example-usepaypalscriptreducer--loading-spinner).
+
+#### Reloading when parameters change
+
+The `usePayPalScriptReducer` hook can be used to reload the JS SDK script when parameters like currency change. It provides the action `resetOptions` for reloading with new parameters. For example, here's how you can use it to change currency.
+
+```js
+const [{ scriptOptions }, dispatch] = usePayPalScriptReducer();
+const [currency, setCurrency] = useState(scriptOptions.currency);
+
+function onCurrencyChange({ target: { value } }) {
+    setCurrency(value);
+    dispatch({
+        type: "resetOptions",
+        value: {
+            ...scriptProviderOptions,
+            currency: value,
+        },
+    });
+}
+
+return (
+    <>
+        <select value={currency} onChange={onCurrencyChange}>
+            <option value="USD">United States dollar</option>
+            <option value="EUR">Euro</option>
+        </select>
+        <PayPalButtons />
+    </>
+);
+```
+
+To learn more, check out the [dynamic currency example in storybook](https://paypal.github.io/react-paypal-js/?path=/story/example-usepaypalscriptreducer--currency).
+
 ### Browser Support
 
 This library supports all popular browsers, including IE 11. It provides the same browser support as the JS SDK. Here's the [full list of supported browsers](https://developer.paypal.com/docs/business/checkout/reference/browser-support/#supported-browsers-by-platform).

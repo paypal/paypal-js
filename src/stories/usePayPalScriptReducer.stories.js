@@ -23,16 +23,11 @@ export default {
 };
 
 export const Currency = () => {
-    const [
-        {
-            options: { currency },
-        },
-        dispatch,
-    ] = usePayPalScriptReducer();
-    const [value, setValue] = useState(currency);
+    const [{ options }, dispatch] = usePayPalScriptReducer();
+    const [currency, setCurrency] = useState(options.currency);
 
-    function onChange({ target: { value } }) {
-        setValue(value);
+    function onCurrencyChange({ target: { value } }) {
+        setCurrency(value);
         dispatch({
             type: "resetOptions",
             value: {
@@ -45,8 +40,8 @@ export const Currency = () => {
     return (
         <>
             <select
-                value={value}
-                onChange={onChange}
+                value={currency}
+                onChange={onCurrencyChange}
                 name="currency"
                 id="currency"
                 style={{ marginBottom: "20px" }}
