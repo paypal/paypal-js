@@ -14,7 +14,8 @@
     "test": "jest --env=jsdom src",
     "test:bundle": "jest --env=jsdom e2e-tests/bundle/**",
     "test:e2e": "jest -c e2e-tests/jest.config.js",
-    "test:e2e:start": "http-server"
+    "test:e2e:start": "http-server",
+    "validate": "npm run build && npm run lint && npm test -- --coverage"
   },
   "files": [
     "dist"
