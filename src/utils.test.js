@@ -59,7 +59,15 @@ describe('findScript()', () => {
         expect(findScript('https://www.paypal.com/sdk/js?client-id=sb')).toBe(null);
     });
 
-    test('returns null when the script is found but the data attributes do not match', () => {
+    test('returns null when the script is found but the number of data attributes do not match', () => {
+        const url = 'https://www.paypal.com/sdk/js?client-id=sb';
+        document.head.innerHTML = `<script src="${url}" data-order-id="12345" data-page-type="home"></script>`;
+
+        const result = findScript(url, { 'data-order-id': '12345' });
+        expect(result).toBe(null);
+    });
+
+    test('returns null when the script is found but the data attribute values do not match', () => {
         const url = 'https://www.paypal.com/sdk/js?client-id=sb';
         document.head.innerHTML = `<script src="${url}" data-page-type="home"></script>`;
 
