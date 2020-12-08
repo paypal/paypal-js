@@ -18,7 +18,11 @@ const newVersionArg = process.argv[2] || 'patch';
 exec(`npm version ${newVersionArg}`);
 
 // push up new version commit and tag
+exec('git push');
 exec('git push --follow-tags');
+
+// build again to get the new version number for the comment banner
+exec('npm run build');
 
 // use the readline module to simulate npm prompt
 const rl = readline.createInterface({
