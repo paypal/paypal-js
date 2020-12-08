@@ -72,6 +72,7 @@ View the [full list of supported query parameters](https://developer.paypal.com/
 #### Data Attributes
 
 All options prefixed with `data-` are considered attributes. The following example adds `data-client-token` as an attribute:
+
 ```js
 loadScript({ 'client-id': 'YOUR_CLIENT_ID', 'data-client-token': 'abc123xyz==' });
 ```
@@ -83,6 +84,14 @@ Which will load the following `<script>` asynchronously:
 ```
 
 View the [full list of supported script parameters](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-configuration/#script-parameters).
+
+#### sdkBaseURL
+
+For local development, the `sdkBaseURL` option can be used to set the base url of the JS SDK:
+
+```js
+loadScript({ 'client-id': 'YOUR_CLIENT_ID', sdkBaseURL: 'http://localhost.paypal.com:8000/sdk/js' });
+```
 
 ### Legacy Browser Support
 

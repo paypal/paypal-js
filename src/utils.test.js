@@ -14,7 +14,7 @@ describe('objectToQueryString()', () => {
 });
 
 describe('processOptions()', () => {
-    test('returns dataAttributes and queryString', () => {
+    test('returns dataAttributes and url', () => {
         const options = {
             'client-id': 'sb',
             currency: 'USD',
@@ -22,15 +22,22 @@ describe('processOptions()', () => {
             'some-random-key': 'some-random-value'
         };
 
-        const { queryString, dataAttributes } = processOptions(options);
+        const { url, dataAttributes } = processOptions(options);
 
-        expect(queryString).toBe('client-id=sb&currency=USD&some-random-key=some-random-value');
+        expect(url).toBe('https://www.paypal.com/sdk/js?client-id=sb&currency=USD&some-random-key=some-random-value');
         expect(dataAttributes).toEqual({ 'data-order-id': '12345' });
     });
-    test('when no options are passed in it returns empty dataAttributes and queryString', () => {
-        const { queryString, dataAttributes } = processOptions();
 
-        expect(queryString).toBe('');
+    test('sets a custom base url', () => {
+        const { url } = processOptions({ 'client-id': 'sb', sdkBaseURL: 'http://localhost.paypal.com:8000/sdk/js' });
+
+        expect(url).toBe('http://localhost.paypal.com:8000/sdk/js?client-id=sb');
+    });
+
+    test('default values when no options are passed in', () => {
+        const { url, dataAttributes } = processOptions();
+
+        expect(url).toBe('https://www.paypal.com/sdk/js?');
         expect(dataAttributes).toEqual({});
     });
 });

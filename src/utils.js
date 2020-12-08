@@ -30,6 +30,13 @@ export function insertScriptElement({ url, dataAttributes, onSuccess, onError })
 }
 
 export function processOptions(options = {}) {
+    let sdkBaseURL = 'https://www.paypal.com/sdk/js';
+
+    if (options.sdkBaseURL) {
+        sdkBaseURL = options.sdkBaseURL;
+        delete options.sdkBaseURL;
+    }
+
     const processedOptions = {
         queryParams: {},
         dataAttributes: {}
@@ -46,7 +53,7 @@ export function processOptions(options = {}) {
     const { queryParams, dataAttributes } = processedOptions;
 
     return {
-        queryString: objectToQueryString(queryParams),
+        url: `${sdkBaseURL}?${objectToQueryString(queryParams)}`,
         dataAttributes
     };
 }

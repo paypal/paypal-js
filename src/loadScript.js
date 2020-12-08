@@ -1,6 +1,5 @@
 import { findScript, insertScriptElement, processOptions } from './utils';
 
-const SDK_BASE_URL = 'https://www.paypal.com/sdk/js';
 let loadingPromise;
 let isLoading = false;
 
@@ -25,9 +24,7 @@ export default function loadScript(options, PromisePonyfill) {
         // resolve with null when running in Node
         if (typeof window === 'undefined') return resolve(null);
 
-        const { queryString, dataAttributes } = processOptions(options);
-        const sdkBaseURL = options.sdkBaseURL || SDK_BASE_URL;
-        const url = `${sdkBaseURL}?${queryString}`;
+        const { url, dataAttributes } = processOptions(options);
 
         // resolve with the existing global paypal object when a script with the same src already exists
         if (findScript(url, dataAttributes) && window.paypal) return resolve(window.paypal);
