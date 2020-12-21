@@ -4,6 +4,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import filesize from 'rollup-plugin-filesize';
 import { terser } from 'rollup-plugin-terser';
+import typescript from '@rollup/plugin-typescript';
 import pkg from './package.json';
 
 const banner = getBannerText();
@@ -14,18 +15,17 @@ const outputConfigForBrowserBundle = {
     footer: 'paypalLoadScript = paypalLoadScript.loadScript;',
     banner
 };
+const tsconfigOverride = { exclude: ['node_modules', '**/*.test.ts'] };
 
 export default [
     {
-        input: 'src/index.js',
+        input: 'src/index.ts',
         plugins: [
-            nodeResolve({
-                browser: true
-            }),
-            commonjs(),
+            typescript({ ...tsconfigOverride }),
             babel({
                 babelHelpers: 'bundled',
-                exclude: /node_modules/
+                exclude: /node_modules/,
+                extensions: ['.ts', '.js']
             }),
             replace({
                 '__VERSION__': pkg.version
@@ -55,8 +55,9 @@ export default [
         ]
     },
     {
-        input: 'src/legacy/index.js',
+        input: 'src/legacy/index.ts',
         plugins: [
+            typescript({ ...tsconfigOverride }),
             nodeResolve({
                 browser: true
             }),

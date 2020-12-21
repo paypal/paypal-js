@@ -1,9 +1,18 @@
 import { findScript, insertScriptElement, processOptions } from './utils';
+import type { PayPalScriptOptions } from '../types/script-options';
+import type { PayPalNamespace } from '../types/index';
 
-let loadingPromise;
+type PromiseResults = Promise<PayPalNamespace | null>;
+let loadingPromise: PromiseResults;
 let isLoading = false;
 
-export default function loadScript(options, PromisePonyfill) {
+declare global {
+    interface Window {
+        paypal?: PayPalNamespace;
+    }
+}
+
+export default function loadScript(options: PayPalScriptOptions, PromisePonyfill?: PromiseConstructor): PromiseResults {
     if (!(options instanceof Object)) {
         throw new Error('Invalid arguments. Expected an object to be passed into loadScript().');
     }
