@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
+    "strict": true,
+
+      // these are overridden by the Rollup plugin
+      "outDir": "./dist",
+      "rootDir": "./src"
+  },
+  "include": ["src"]
+}

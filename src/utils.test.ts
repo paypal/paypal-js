@@ -34,10 +34,10 @@ describe('processOptions()', () => {
         expect(url).toBe('http://localhost.paypal.com:8000/sdk/js?client-id=sb');
     });
 
-    test('default values when no options are passed in', () => {
-        const { url, dataAttributes } = processOptions();
+    test('default values when only client-id is passed in', () => {
+        const { url, dataAttributes } = processOptions({ 'client-id': 'sb' });
 
-        expect(url).toBe('https://www.paypal.com/sdk/js?');
+        expect(url).toBe('https://www.paypal.com/sdk/js?client-id=sb');
         expect(dataAttributes).toEqual({});
     });
 });
@@ -52,11 +52,13 @@ describe('findScript()', () => {
         document.head.innerHTML = `<script src="${url}" data-order-id="123" data-page-type="checkout"></script>`;
 
         const result = findScript(url, { 'data-page-type': 'checkout', 'data-order-id': '123' });
+        if (!result) throw new Error('Expected to find <script> element');
+
         expect(result.src).toBe(url);
     });
 
     test('returns null when the script is not found', () => {
-        expect(findScript('https://www.paypal.com/sdk/js?client-id=sb')).toBe(null);
+        expect(findScript('https://www.paypal.com/sdk/js?client-id=sb')).toBeNull();
     });
 
     test('returns null when the script is found but the number of data attributes do not match', () => {
@@ -64,7 +66,7 @@ describe('findScript()', () => {
         document.head.innerHTML = `<script src="${url}" data-order-id="12345" data-page-type="home"></script>`;
 
         const result = findScript(url, { 'data-order-id': '12345' });
-        expect(result).toBe(null);
+        expect(result).toBeNull();
     });
 
     test('returns null when the script is found but the data attribute values do not match', () => {
@@ -72,7 +74,7 @@ describe('findScript()', () => {
         document.head.innerHTML = `<script src="${url}" data-page-type="home"></script>`;
 
         const result = findScript(url, { 'data-page-type': 'checkout' });
-        expect(result).toBe(null);
+        expect(result).toBeNull();
     });
 });
 
@@ -85,10 +87,14 @@ describe('insertScriptElement()', () => {
         const url = 'https://www.paypal.com/sdk/js';
         insertScriptElement({
             url,
-            dataAttributes: { 'data-order-id': '12345' }
+            dataAttributes: { 'data-order-id': '12345' },
+            onError: jest.fn(),
+            onSuccess: jest.fn()
         });
 
-        const scriptFromDOM = document.querySelector('head script');
+        const scriptFromDOM = document.querySelector<HTMLScriptElement>('head script');
+        if (!scriptFromDOM) throw new Error('Expected to find <script> element');
+
         expect(scriptFromDOM.src).toBe(url);
         expect(scriptFromDOM.getAttribute('data-order-id')).toBe('12345');
     });
@@ -101,9 +107,13 @@ describe('insertScriptElement()', () => {
 
         // load the JS SDK with currency=EUR
         const newScriptSrc = 'https://www.paypal.com/sdk/js?client-id=sb&currency=EUR';
-        insertScriptElement({ url: newScriptSrc });
+        insertScriptElement({
+            url: newScriptSrc,
+            onError: jest.fn(),
+            onSuccess: jest.fn()
+        });
 
-        const [firstScript, secondScript] = document.querySelectorAll('head script');
+        const [firstScript, secondScript] = document.querySelectorAll<HTMLScriptElement>('head script');
 
         expect(firstScript.src).toBe(newScriptSrc);
         expect(secondScript.src).toBe(existingScript.src);
@@ -114,12 +124,19 @@ describe('insertScriptElement()', () => {
 
         beforeEach(() => {
             const insertBeforeSpy = jest.spyOn(document.head, 'insertBefore');
-            insertBeforeSpy.mockImplementation((newScript) => {
+            interface MockHTMLScriptElement extends Node {
+                src: string;
+                onerror: () => void;
+                onload: () => void;
+            }
+            insertBeforeSpy.mockImplementation(domNode => {
+                const newScript = <MockHTMLScriptElement>domNode;
                 if (newScript.src === loadFailureSrcKey) {
                     setTimeout(() => newScript.onerror());
                 } else if (newScript.onload) {
                     setTimeout(() => newScript.onload());
                 }
+                return newScript;
             });
         });
 
@@ -134,6 +151,7 @@ describe('insertScriptElement()', () => {
             const url = 'https://www.paypal.com/sdk/js';
             insertScriptElement({
                 url,
+                onError: jest.fn(),
                 onSuccess: onloadMock
             });
 
@@ -146,7 +164,11 @@ describe('insertScriptElement()', () => {
             const onErrorMock = jest.fn();
             const url = loadFailureSrcKey;
 
-            insertScriptElement({ url, onError: onErrorMock });
+            insertScriptElement({
+                url,
+                onError: onErrorMock,
+                onSuccess: jest.fn()
+            });
 
             jest.runAllTimers();
             expect(onErrorMock).toBeCalled();
