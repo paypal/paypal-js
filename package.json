@@ -28,7 +28,9 @@
     "paypal",
     "async",
     "script",
-    "loader"
+    "loader",
+    "types",
+    "typescript-definitions"
   ],
   "license": "Apache-2.0",
   "repository": {
