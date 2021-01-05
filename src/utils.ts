@@ -90,6 +90,10 @@ function createScriptElement(url: string, dataAttributes: StringMap = {}): HTMLS
 
     forEachObjectKey(dataAttributes, key => {
         newScript.setAttribute(key, dataAttributes[key]);
+
+        if (key === 'data-csp-nonce') {
+            newScript.setAttribute('nonce', dataAttributes['data-csp-nonce']);
+        }
     });
 
     return newScript;

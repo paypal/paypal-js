@@ -79,12 +79,13 @@ describe('findScript()', () => {
 });
 
 describe('insertScriptElement()', () => {
+    const url = 'https://www.paypal.com/sdk/js?client-id=sb';
+
     beforeEach(() => {
         document.head.innerHTML = '';
     });
 
     test('inserts a <script> with attributes into the DOM', () => {
-        const url = 'https://www.paypal.com/sdk/js';
         insertScriptElement({
             url,
             dataAttributes: { 'data-order-id': '12345' },
@@ -99,14 +100,29 @@ describe('insertScriptElement()', () => {
         expect(scriptFromDOM.getAttribute('data-order-id')).toBe('12345');
     });
 
+    test('sets a nonce on the script tag when data-csp-nonce is used', () => {
+        insertScriptElement({
+            url,
+            dataAttributes: { 'data-csp-nonce': '12345' },
+            onError: jest.fn(),
+            onSuccess: jest.fn()
+        });
+
+        const scriptFromDOM = document.querySelector<HTMLScriptElement>('head script');
+        if (!scriptFromDOM) throw new Error('Expected to find <script> element');
+
+        expect(scriptFromDOM.getAttribute('data-csp-nonce')).toBe('12345');
+        expect(scriptFromDOM.getAttribute('nonce')).toBe('12345');
+    });
+
     test('prepends a <script> to the top of the <head> before any other scripts', () => {
         // simulate having the JS SDK already loaded with currency=USD
         const existingScript = document.createElement('script');
-        existingScript.src = 'https://www.paypal.com/sdk/js?client-id=sb&currency=USD';
+        existingScript.src = `${url}&currency=USD`;
         document.head.appendChild(existingScript);
 
         // load the JS SDK with currency=EUR
-        const newScriptSrc = 'https://www.paypal.com/sdk/js?client-id=sb&currency=EUR';
+        const newScriptSrc = `${url}&currency=EUR`;
         insertScriptElement({
             url: newScriptSrc,
             onError: jest.fn(),
