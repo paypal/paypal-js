@@ -8,6 +8,7 @@ import type {
 
 interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
     forceReRender?: unknown;
+    className?: string;
 }
 /**
  * This `<PayPalButtons />` component renders the [Smart Payment Buttons](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#buttons).
@@ -147,6 +148,7 @@ PayPalButtons.propTypes = {
      * the existing Buttons and render them again using the current props.
      */
     forceReRender: PropTypes.any,
+    className: PropTypes.string,
 };
 
 PayPalButtons.defaultProps = {

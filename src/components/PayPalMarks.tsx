@@ -6,6 +6,10 @@ import type {
     PayPalMarksComponent,
 } from "@paypal/paypal-js/types/components/marks";
 
+interface PayPalMarksReactProps extends PayPalMarksComponentProps {
+    className?: string;
+}
+
 /**
  * The `<PayPalMarks />` component is used for conditionally rendering different payment options using radio buttons.
  * The [Display PayPal Buttons with other Payment Methods guide](https://developer.paypal.com/docs/business/checkout/add-capabilities/buyer-experience/#display-paypal-buttons-with-other-payment-methods) describes this style of integration in detail.
@@ -28,7 +32,7 @@ import type {
  *     <PayPalMarks fundingSource={FUNDING.PAYPAL}/>
  * ```
  */
-export default function PayPalMarks(props: PayPalMarksComponentProps) {
+export default function PayPalMarks(props: PayPalMarksReactProps) {
     const [{ isResolved, options }] = usePayPalScriptReducer();
     const markContainerRef = useRef<HTMLDivElement>(null);
     const mark = useRef<PayPalMarksComponent | null>(null);
@@ -94,4 +98,5 @@ PayPalMarks.propTypes = {
      * View the [list of available funding sources](https://developer.paypal.com/docs/business/checkout/configure-payments/standalone-buttons/#funding-sources) for more info.
      */
     fundingSource: PropTypes.string,
+    className: PropTypes.string,
 };

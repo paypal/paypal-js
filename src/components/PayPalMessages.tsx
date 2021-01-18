@@ -7,6 +7,7 @@ import type {
 
 interface PayPalMessagesReactProps extends PayPalMessagesComponentProps {
     forceReRender?: unknown;
+    className?: string;
 }
 
 export default function PayPalMessages(props: PayPalMessagesReactProps) {
