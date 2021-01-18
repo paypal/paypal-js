@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { usePayPalScriptReducer } from "../ScriptContext";
+import type {
+    PayPalMarksComponentProps,
+    PayPalMarksComponent,
+} from "@paypal/paypal-js/types/components/marks";
+
 /**
  * The `<PayPalMarks />` component is used for conditionally rendering different payment options using radio buttons.
  * The [Display PayPal Buttons with other Payment Methods guide](https://developer.paypal.com/docs/business/checkout/add-capabilities/buyer-experience/#display-paypal-buttons-with-other-payment-methods) describes this style of integration in detail.
@@ -23,24 +28,39 @@ import { usePayPalScriptReducer } from "../ScriptContext";
  *     <PayPalMarks fundingSource={FUNDING.PAYPAL}/>
  * ```
  */
-export default function PayPalMarks(props) {
+export default function PayPalMarks(props: PayPalMarksComponentProps) {
     const [{ isResolved, options }] = usePayPalScriptReducer();
-    const markContainerRef = useRef(null);
-    const mark = useRef(null);
+    const markContainerRef = useRef<HTMLDivElement>(null);
+    const mark = useRef<PayPalMarksComponent | null>(null);
     const [, setErrorState] = useState(null);
 
     useEffect(() => {
-        if (!isResolved || mark.current) {
+        // verify the sdk script has successfully loaded
+        if (isResolved === false) {
             return;
         }
 
-        if (!hasValidStateForMarks(options, setErrorState)) {
+        // don't rerender when already rendered
+        if (mark.current !== null) {
+            return;
+        }
+
+        // verify dependency on window.paypal object
+        if (window.paypal === undefined || window.paypal.Marks === undefined) {
+            setErrorState(() => {
+                throw new Error(getErrorMessage(options));
+            });
             return;
         }
 
         mark.current = window.paypal.Marks({ ...props });
 
-        if (!mark.current.isEligible()) {
+        // only render the mark when eligible
+        if (mark.current.isEligible() === false) {
+            return;
+        }
+
+        if (markContainerRef.current === null) {
             return;
         }
 
@@ -52,11 +72,7 @@ export default function PayPalMarks(props) {
     return <div ref={markContainerRef} />;
 }
 
-function hasValidStateForMarks({ components = "" }, setErrorState) {
-    if (typeof window.paypal.Marks !== "undefined") {
-        return true;
-    }
-
+function getErrorMessage({ components = "" }) {
     let errorMessage =
         "Unable to render <PayPalMarks /> because window.paypal.Marks is undefined.";
 
@@ -68,10 +84,8 @@ function hasValidStateForMarks({ components = "" }, setErrorState) {
             "\nTo fix the issue, add 'marks' to the list of components passed to the parent PayPalScriptProvider:" +
             `\n\`<PayPalScriptProvider options={{ components: '${expectedComponents}'}}>\`.`;
     }
-    setErrorState(() => {
-        throw new Error(errorMessage);
-    });
-    return false;
+
+    return errorMessage;
 }
 
 PayPalMarks.propTypes = {

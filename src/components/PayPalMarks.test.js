@@ -27,8 +27,8 @@ describe("<PayPalMarks />", () => {
     test("should pass props to window.paypal.Marks()", async () => {
         window.paypal = {
             Marks: jest.fn(() => ({
-                isEligible: jest.fn(),
-                render: jest.fn(),
+                isEligible: jest.fn().mockReturnValue(true),
+                render: jest.fn().mockResolvedValue({}),
             })),
         };
 

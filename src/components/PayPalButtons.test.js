@@ -28,8 +28,8 @@ describe("<PayPalButtons />", () => {
         window.paypal = {
             Buttons: jest.fn(() => ({
                 close: jest.fn(),
-                isEligible: jest.fn(),
-                render: jest.fn(),
+                isEligible: jest.fn().mockReturnValue(true),
+                render: jest.fn().mockResolvedValue({}),
             })),
         };
 
@@ -54,8 +54,8 @@ describe("<PayPalButtons />", () => {
         window.paypal = {
             Buttons: jest.fn(() => ({
                 close: jest.fn(),
-                isEligible: jest.fn(),
-                render: jest.fn(),
+                isEligible: jest.fn().mockReturnValue(true),
+                render: jest.fn().mockResolvedValue({}),
             })),
         };
 
@@ -94,8 +94,8 @@ describe("<PayPalButtons />", () => {
         window.paypal = {
             Buttons: jest.fn(() => ({
                 close: jest.fn(),
-                isEligible: jest.fn(),
-                render: jest.fn(),
+                isEligible: jest.fn().mockReturnValue(true),
+                render: jest.fn().mockResolvedValue({}),
             })),
         };
 

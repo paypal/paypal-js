@@ -1,6 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { usePayPalScriptReducer } from "../ScriptContext";
+import type {
+    PayPalButtonsComponentProps,
+    PayPalButtonsComponent,
+} from "@paypal/paypal-js/types/components/buttons";
+
+interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
+    forceReRender?: unknown;
+}
 /**
  * This `<PayPalButtons />` component renders the [Smart Payment Buttons](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#buttons).
  * It relies on the `<PayPalScriptProvider />` parent component for managing state related to loading the JS SDK script.
@@ -11,30 +19,41 @@ import { usePayPalScriptReducer } from "../ScriptContext";
  *     <PayPalButtons style={{ layout: "vertical" }} createOrder={(data, actions) => {}} />
  * ```
  */
-export default function PayPalButtons(props) {
+export default function PayPalButtons(props: PayPalButtonsReactProps) {
     const [{ isResolved, options }] = usePayPalScriptReducer();
-    const buttonsContainerRef = useRef(null);
-    const buttons = useRef(null);
+    const buttonsContainerRef = useRef<HTMLDivElement>(null);
+    const buttons = useRef<PayPalButtonsComponent | null>(null);
     const [, setErrorState] = useState(null);
 
     useEffect(() => {
         const cleanup = () => {
-            if (buttons.current) {
-                buttons.current.close();
-            }
+            buttons?.current?.close();
         };
 
-        if (!isResolved) {
+        // verify the sdk script has successfully loaded
+        if (isResolved === false) {
             return cleanup;
         }
 
-        if (!hasValidGlobalStateForButtons(options, setErrorState)) {
+        // verify dependency on window.paypal object
+        if (
+            window.paypal === undefined ||
+            window.paypal.Buttons === undefined
+        ) {
+            setErrorState(() => {
+                throw new Error(getErrorMessage(options));
+            });
             return cleanup;
         }
 
         buttons.current = window.paypal.Buttons({ ...props });
 
-        if (!buttons.current.isEligible()) {
+        // only render the button when eligible
+        if (buttons.current.isEligible() === false) {
+            return cleanup;
+        }
+
+        if (buttonsContainerRef.current === null) {
             return cleanup;
         }
 
@@ -50,11 +69,7 @@ export default function PayPalButtons(props) {
     return <div ref={buttonsContainerRef} />;
 }
 
-function hasValidGlobalStateForButtons({ components = "" }, setErrorState) {
-    if (typeof window.paypal.Buttons !== "undefined") {
-        return true;
-    }
-
+function getErrorMessage({ components = "" }) {
     let errorMessage =
         "Unable to render <PayPalButtons /> because window.paypal.Buttons is undefined.";
 
@@ -67,10 +82,8 @@ function hasValidGlobalStateForButtons({ components = "" }, setErrorState) {
             "\nTo fix the issue, add 'buttons' to the list of components passed to the parent PayPalScriptProvider:" +
             `\n\`<PayPalScriptProvider options={{ components: '${expectedComponents}'}}>\`.`;
     }
-    setErrorState(() => {
-        throw new Error(errorMessage);
-    });
-    return false;
+
+    return errorMessage;
 }
 
 PayPalButtons.propTypes = {

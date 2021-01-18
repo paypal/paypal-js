@@ -1,17 +1,36 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
 import PropTypes from "prop-types";
 import { loadScript } from "@paypal/paypal-js";
+import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 
-const SCRIPT_LOADING_STATE = {
-    PENDING: "pending",
-    REJECTED: "rejected",
-    RESOLVED: "resolved",
-};
+enum SCRIPT_LOADING_STATE {
+    PENDING = "pending",
+    REJECTED = "rejected",
+    RESOLVED = "resolved",
+}
 
-const ScriptContext = createContext();
-const ScriptDispatchContext = createContext();
+interface ScriptContextState {
+    options: PayPalScriptOptions;
+    loadingStatus: SCRIPT_LOADING_STATE;
+}
 
-function scriptReducer(state, action) {
+interface ScriptContextDerivedState {
+    options: PayPalScriptOptions;
+    isPending: boolean;
+    isRejected: boolean;
+    isResolved: boolean;
+}
+
+type ScriptReducerAction =
+    | { type: "setLoadingStatus"; value: SCRIPT_LOADING_STATE }
+    | { type: "resetOptions"; value: PayPalScriptOptions };
+
+type ScriptReducerDispatch = (action: ScriptReducerAction) => void;
+
+const ScriptContext = createContext<ScriptContextState | null>(null);
+const ScriptDispatchContext = createContext<ScriptReducerDispatch | null>(null);
+
+function scriptReducer(state: ScriptContextState, action: ScriptReducerAction) {
     switch (action.type) {
         case "setLoadingStatus":
             return {
@@ -27,17 +46,21 @@ function scriptReducer(state, action) {
             };
 
         default: {
-            throw new Error(`Unhandled action type: ${action.type}`);
+            return state;
         }
     }
 }
 
-function usePayPalScriptReducer() {
+function usePayPalScriptReducer(): [
+    ScriptContextDerivedState,
+    ScriptReducerDispatch
+] {
     const scriptContext = useContext(ScriptContext);
     const dispatchContext = useContext(ScriptDispatchContext);
-    if (scriptContext === undefined || dispatchContext === undefined) {
+
+    if (scriptContext === null || dispatchContext === null) {
         throw new Error(
-            "useScriptReducer must be used within a ScriptProvider"
+            "usePayPalScriptReducer must be used within a PayPalScriptProvider"
         );
     }
 
@@ -53,7 +76,12 @@ function usePayPalScriptReducer() {
     return [derivedStatusContext, dispatchContext];
 }
 
-function PayPalScriptProvider({ options, children }) {
+interface ScriptProviderProps {
+    options: PayPalScriptOptions;
+    children?: React.ReactNode;
+}
+
+function PayPalScriptProvider({ options, children }: ScriptProviderProps) {
     const initialState = {
         options,
         loadingStatus: SCRIPT_LOADING_STATE.PENDING,
