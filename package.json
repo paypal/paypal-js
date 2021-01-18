@@ -27,7 +27,8 @@
         "release:patch": "node ./scripts/publish patch",
         "release:minor": "node ./scripts/publish minor",
         "release:major": "node ./scripts/publish major",
-        "typecheck": "tsc --noEmit"
+        "typecheck": "tsc --noEmit",
+        "validate": "npm run typecheck && npm run build && npm run lint && npm test -- --coverage"
     },
     "files": [
         "dist"
