@@ -25,8 +25,9 @@ type OnCancelledOrderActions = {
 };
 
 export interface PayPalButtonsComponentProps {
+    createBillingAgreement?: () => Promise<string>;
     createOrder?: (data: CreateOrderData, actions: CreateOrderActions) => Promise<string>;
-    createSubscription?: (data: Record<string, unknown>, actions: Record<string, unknown>) => void;
+    createSubscription?: (data: Record<string, unknown>, actions: Record<string, unknown>) => Promise<string>;
 
     fundingSource?: string;
 
