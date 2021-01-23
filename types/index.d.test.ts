@@ -18,19 +18,44 @@ loadScript({ 'client-id': 'sb' })
         paypal.Buttons().render('#container');
         paypal.Buttons().render(document.createElement('div'));
 
+        // minimal createOrder payload
         paypal.Buttons({
-            fundingSource: 'PAYPAL',
             createOrder: (data, actions) => {
                 return actions.order.create({
-                    intent: 'AUTHORIZE',
-                    purchase_units: [
-                        {
-                            amount: {
-                                value: '1.20',
-                                currency_code: 'USD'
-                            }
+                    purchase_units: [{
+                        amount: {
+                            value: '88.44'
                         }
-                    ]
+                    }]
+                });
+            }
+        });
+
+        // createOrder for partners
+        // https://developer.paypal.com/docs/platforms/checkout/set-up-payments#create-order
+        paypal.Buttons({
+            fundingSource: 'paypal',
+            createOrder: (data, actions) => {
+                return actions.order.create({
+                    "intent": "CAPTURE",
+                    "purchase_units": [{
+                        "amount": {
+                            "currency_code": "USD",
+                            "value": "100.00"
+                        },
+                        "payee": {
+                            "email_address": "seller@example.com"
+                        },
+                        "payment_instruction": {
+                            "disbursement_mode": "INSTANT",
+                            "platform_fees": [{
+                                "amount": {
+                                    "currency_code": "USD",
+                                    "value": "25.00"
+                                }
+                            }]
+                        }
+                    }]
                 });
             }
         });

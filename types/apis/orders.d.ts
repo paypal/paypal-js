@@ -30,8 +30,8 @@ type Payer = {
 }
 
 type Payee = {
-    merchant_id: string;
-    email_address: string;
+    merchant_id?: string;
+    email_address?: string;
 }
 
 interface Amount {
@@ -53,7 +53,7 @@ interface AmountWithBreakdown extends Amount {
 
 type PlatformFee = {
     amount: Amount;
-    payee: Payee;
+    payee?: Payee;
 }
 
 type PaymentInstruction = {
