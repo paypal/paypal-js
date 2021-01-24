@@ -28,7 +28,9 @@ export default function PayPalButtons(props: PayPalButtonsReactProps) {
 
     useEffect(() => {
         const cleanup = () => {
-            buttons?.current?.close();
+            if (buttons.current !== null) {
+                buttons.current.close();
+            }
         };
 
         // verify the sdk script has successfully loaded
