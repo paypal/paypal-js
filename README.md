@@ -62,9 +62,9 @@ loadScript({ 'client-id': 'sb' })
     });
 ```
 
-### Setting Options
+### Passing Arguments
 
-The `options` object can be used to set query parameters and script attributes.
+The `loadScript` function accepts an object for configuring the JS SDK. It's used for setting query parameters and script attributes.
 
 #### Query Parameters
 
@@ -151,7 +151,11 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
 </html>
 ```
 
-Note that the above CDN location points to the latest release of paypal-js. It is advised that when you deploy your site, you import the specific version you have developed and tested with (ex: https://unpkg.com/@paypal/paypal-js@1.0.0/dist/paypal.browser.min.js).
+Note that the above CDN location points to the latest release of paypal-js. It is advised that when you deploy your site, you import the specific version you have developed and tested with (ex: https://unpkg.com/@paypal/paypal-js@2.1.3/dist/paypal.browser.min.js).
+
+## TypeScript Support
+
+This package includes TypeScript type definitions for the PayPal JS SDK. This includes types for the `window.paypal` namespace. We support projects using TypeScript versions >= 3.8.
 
 ## Releasing
 
