@@ -1,4 +1,4 @@
-// https://developer.paypal.com/docs/api/orders/v2
+// https://developer.paypal.com/docs/api/orders/v2/#orders-create-request-body
 
 type SHIPPING_PREFERENCE = "GET_FROM_FILE" | "NO_SHIPPING" | "SET_PROVIDED_ADDRESS";
 

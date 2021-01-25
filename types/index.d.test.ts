@@ -59,6 +59,16 @@ loadScript({ 'client-id': 'sb' })
                 });
             }
         });
+
+        // createSubscription
+        paypal.Buttons({
+            createSubscription: function (data, actions) {
+                return actions.subscription.create({
+                    plan_id: "P-3RX123456M3469222L5IFM4I"
+                });
+            }
+        });
+
     })
     .catch(err => {
         console.error(err);

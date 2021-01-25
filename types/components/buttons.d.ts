@@ -1,10 +1,20 @@
 import type { CreateOrderRequestBody } from '../apis/orders';
+import type { CreateSubscriptionRequestBody } from '../apis/subscriptions';
+
 
 type CreateOrderData = Record<string, unknown>;
 
 type CreateOrderActions = {
     order: {
         create: (options: CreateOrderRequestBody) => Promise<string>;
+    }
+};
+
+type CreateSubscriptionData = Record<string, unknown>;
+
+type CreateSubscriptionActions = {
+    subscription: {
+        create: (options: CreateSubscriptionRequestBody) => Promise<string>;
     }
 };
 
@@ -27,7 +37,7 @@ type OnCancelledOrderActions = {
 export interface PayPalButtonsComponentProps {
     createBillingAgreement?: () => Promise<string>;
     createOrder?: (data: CreateOrderData, actions: CreateOrderActions) => Promise<string>;
-    createSubscription?: (data: Record<string, unknown>, actions: Record<string, unknown>) => Promise<string>;
+    createSubscription?: (data: CreateSubscriptionData, actions: CreateSubscriptionActions) => Promise<string>;
 
     fundingSource?: string;
 
