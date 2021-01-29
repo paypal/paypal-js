@@ -5,16 +5,16 @@ interface ShippingAmount {
     value: string;
 }
 
-type UntypedObject = Record<string, any>;
+type UnknownObject = Record<string, unknown>;
 
 export type CreateSubscriptionRequestBody = {
     plan_id: string;
     start_time?: string;
     quantity?: string;
     shipping_amount?: ShippingAmount;
-    subscriber?: UntypedObject;
+    subscriber?: UnknownObject;
     auto_renewal?: boolean;
-    application_context?: UntypedObject;
+    application_context?: UnknownObject;
     custom_id?: string;
-    plan?: UntypedObject;
+    plan?: UnknownObject;
 }

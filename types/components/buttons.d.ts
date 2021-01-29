@@ -2,7 +2,7 @@ import type { CreateOrderRequestBody } from '../apis/orders';
 import type { CreateSubscriptionRequestBody } from '../apis/subscriptions';
 
 
-type CreateOrderData = Record<string, unknown>;
+type UnknownObject = Record<string, unknown>;
 
 type CreateOrderActions = {
     order: {
@@ -10,19 +10,25 @@ type CreateOrderActions = {
     }
 };
 
-type CreateSubscriptionData = Record<string, unknown>;
-
 type CreateSubscriptionActions = {
     subscription: {
         create: (options: CreateSubscriptionRequestBody) => Promise<string>;
     }
 };
 
-type OnApproveOrderData = Record<string, unknown>;
+type OnInitActions = {
+    enable: () => void;
+    disable: () => void;
+};
+
+type OnClickActions = {
+    reject: () => void;
+    resolve: () => void;
+};
 
 type OnApproveOrderActions = {
     order: {
-        capture: (options: Record<string, unknown>) => Promise<Record<string, unknown>>;
+        capture: (options: UnknownObject) => Promise<UnknownObject>;
     }
 };
 
@@ -36,16 +42,16 @@ type OnCancelledOrderActions = {
 
 export interface PayPalButtonsComponentProps {
     createBillingAgreement?: () => Promise<string>;
-    createOrder?: (data: CreateOrderData, actions: CreateOrderActions) => Promise<string>;
-    createSubscription?: (data: CreateSubscriptionData, actions: CreateSubscriptionActions) => Promise<string>;
+    createOrder?: (data: UnknownObject, actions: CreateOrderActions) => Promise<string>;
+    createSubscription?: (data: UnknownObject, actions: CreateSubscriptionActions) => Promise<string>;
 
     fundingSource?: string;
 
-    onApprove?: (data: OnApproveOrderData, actions: OnApproveOrderActions) => Promise<void>;
-    onCancel?: (data: OnCancelledOrderData, actions: OnCancelledOrderActions) => void;
-    onClick?: () => void;
+    onApprove?: (data: UnknownObject, actions: OnApproveOrderActions) => Promise<void>;
+    onCancel?: (data: UnknownObject, actions: OnCancelledOrderActions) => void;
+    onClick?: (data: UnknownObject, actions: OnClickActions) => Promise<void> | void;
     onError?: () => void;
-    onInit?: () => void;
+    onInit?: (data: UnknownObject, actions: OnInitActions) => void;
     onShippingChange?: () => void;
 
     style?: {
