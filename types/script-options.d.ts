@@ -7,6 +7,7 @@ interface PayPalScriptQueryParameters {
     vault?: boolean | string;
     components?: string;
     'disable-funding'?: string;
+    'enable-funding'?: string;
     'disable-card'?: string;
     'integration-date'?: string;
     debug?: boolean | string;
