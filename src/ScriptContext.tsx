@@ -139,6 +139,7 @@ PayPalScriptProvider.propTypes = {
         "data-partner-attribution-id": PropTypes.string,
         debug: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
         "disable-funding": PropTypes.string,
+        "enable-funding": PropTypes.string,
         "integration-date": PropTypes.string,
         intent: PropTypes.string,
         locale: PropTypes.string,
