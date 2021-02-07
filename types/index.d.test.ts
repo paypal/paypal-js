@@ -112,9 +112,21 @@ loadScript({ 'client-id': 'sb' })
                             return actions.resolve();
                         }
                     });
-            }
+            },
 
         }).render('#paypal-button-container');
+
+        // standalone buton integration
+        // https://developer.paypal.com/docs/business/checkout/configure-payments/standalone-buttons/#2-render-all-eligible-buttons
+        paypal.getFundingSources().forEach(fundingSource => {
+            const button = paypal.Buttons({
+                fundingSource: fundingSource
+            });
+
+            if (button.isEligible()) {
+                button.render('#paypal-button-container');
+            }
+        });
     })
     .catch(err => {
         console.error(err);
