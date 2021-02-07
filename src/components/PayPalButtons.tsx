@@ -55,7 +55,10 @@ export default function PayPalButtons(props: PayPalButtonsReactProps) {
             return cleanup;
         }
 
-        buttons.current = window.paypal.Buttons({ ...props });
+        const componentProps = { ...props };
+        delete componentProps.className;
+
+        buttons.current = window.paypal.Buttons({ ...componentProps });
 
         // only render the button when eligible
         if (buttons.current.isEligible() === false) {
@@ -75,7 +78,7 @@ export default function PayPalButtons(props: PayPalButtonsReactProps) {
         return cleanup;
     }, [isResolved, props.forceReRender, props.fundingSource]);
 
-    return <div ref={buttonsContainerRef} />;
+    return <div ref={buttonsContainerRef} className={props.className} />;
 }
 
 function getErrorMessage({ components = "" }) {
@@ -97,4 +100,5 @@ function getErrorMessage({ components = "" }) {
 
 PayPalButtons.defaultProps = {
     style: {},
+    className: ""
 };

@@ -46,6 +46,27 @@ describe("<PayPalMarks />", () => {
         );
     });
 
+    test("should use className prop and add to div container", async () => {
+        window.paypal = {
+            Marks: jest.fn(() => ({
+                isEligible: jest.fn().mockReturnValue(true),
+                render: jest.fn().mockResolvedValue({}),
+            })),
+        };
+
+        render(
+            <PayPalScriptProvider
+                options={{ "client-id": "sb", components: "marks" }}
+            >
+                <PayPalMarks className="custom-class-name" />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() =>
+            expect(document.querySelector("div.custom-class-name")).toBeTruthy()
+        );
+    });
+
     test("should throw an error when no components are passed to the PayPalScriptProvider", async () => {
         const onError = jest.fn();
 

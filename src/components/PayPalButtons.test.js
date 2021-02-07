@@ -49,6 +49,26 @@ describe("<PayPalButtons />", () => {
         );
     });
 
+    test("should use className prop and add to div container", async () => {
+        window.paypal = {
+            Buttons: jest.fn(() => ({
+                close: jest.fn(),
+                isEligible: jest.fn().mockReturnValue(true),
+                render: jest.fn().mockResolvedValue({}),
+            })),
+        };
+
+        render(
+            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+                <PayPalButtons className="custom-class-name" />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() =>
+            expect(document.querySelector("div.custom-class-name")).toBeTruthy()
+        );
+    });
+
     test("should re-render Buttons when props.forceReRender changes", async () => {
         window.paypal = {
             Buttons: jest.fn(() => ({

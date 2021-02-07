@@ -33,7 +33,10 @@ export default function PayPalMessages(props: PayPalMessagesReactProps) {
             return;
         }
 
-        messages.current = window.paypal.Messages({ ...props });
+        const componentProps = { ...props };
+        delete componentProps.className;
+
+        messages.current = window.paypal.Messages({ ...componentProps });
 
         if (messagesContainerRef.current === null) {
             return;
@@ -46,7 +49,7 @@ export default function PayPalMessages(props: PayPalMessagesReactProps) {
         });
     }, [isResolved, props.forceReRender]);
 
-    return <div ref={messagesContainerRef} />;
+    return <div ref={messagesContainerRef} className={props.className} />;
 }
 
 function getErrorMessage({ components = "" }) {
@@ -66,3 +69,7 @@ function getErrorMessage({ components = "" }) {
 
     return errorMessage;
 }
+
+PayPalMessages.defaultProps = {
+    className: ""
+};

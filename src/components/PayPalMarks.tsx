@@ -59,7 +59,10 @@ export default function PayPalMarks(props: PayPalMarksReactProps) {
             return;
         }
 
-        mark.current = window.paypal.Marks({ ...props });
+        const componentProps = { ...props };
+        delete componentProps.className;
+
+        mark.current = window.paypal.Marks({ ...componentProps });
 
         // only render the mark when eligible
         if (mark.current.isEligible() === false) {
@@ -75,7 +78,7 @@ export default function PayPalMarks(props: PayPalMarksReactProps) {
         });
     }, [isResolved, props.fundingSource]);
 
-    return <div ref={markContainerRef} />;
+    return <div ref={markContainerRef} className={props.className} />;
 }
 
 function getErrorMessage({ components = "" }) {
@@ -93,3 +96,7 @@ function getErrorMessage({ components = "" }) {
 
     return errorMessage;
 }
+
+PayPalMarks.defaultProps = {
+    className: ""
+};
