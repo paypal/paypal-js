@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { render, waitFor, screen, fireEvent } from "@testing-library/react";
 
 import { PayPalScriptProvider } from "../ScriptContext";
@@ -59,7 +58,6 @@ describe("<PayPalButtons />", () => {
             })),
         };
 
-        // eslint-disable-next-line react/prop-types
         function ButtonWrapper({ initialAmount }) {
             const [amount, setAmount] = useState(initialAmount);
             return (
@@ -99,7 +97,6 @@ describe("<PayPalButtons />", () => {
             })),
         };
 
-        // eslint-disable-next-line react/prop-types
         function ButtonWrapper({ initialOrderID }) {
             const [orderID, setOrderID] = useState(initialOrderID);
             return (
@@ -214,8 +211,3 @@ class ErrorBoundary extends React.Component {
         return !this.state.hasError && this.props.children;
     }
 }
-
-ErrorBoundary.propTypes = {
-    onError: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
-};

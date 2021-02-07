@@ -32,7 +32,7 @@ export default [
                 presets: ["@babel/preset-react"],
             }),
         ],
-        external: ["react", "prop-types"],
+        external: ["react"],
     },
 
     // ESM
@@ -51,6 +51,6 @@ export default [
             ],
         },
         plugins: [typescript({ ...tsconfigOverride }), nodeResolve()],
-        external: ["react", "prop-types"],
+        external: ["react"],
     },
 ];

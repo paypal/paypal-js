@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import PropTypes from "prop-types";
 import { usePayPalScriptReducer } from "../ScriptContext";
 import type {
     PayPalMarksComponentProps,
@@ -7,6 +6,9 @@ import type {
 } from "@paypal/paypal-js/types/components/marks";
 
 interface PayPalMarksReactProps extends PayPalMarksComponentProps {
+    /**
+     * Pass a css class to the div container.
+     */
     className?: string;
 }
 
@@ -91,12 +93,3 @@ function getErrorMessage({ components = "" }) {
 
     return errorMessage;
 }
-
-PayPalMarks.propTypes = {
-    /**
-     * The individual mark to render. Use the `FUNDING` constant exported by this library to set this value.
-     * View the [list of available funding sources](https://developer.paypal.com/docs/business/checkout/configure-payments/standalone-buttons/#funding-sources) for more info.
-     */
-    fundingSource: PropTypes.string,
-    className: PropTypes.string,
-};

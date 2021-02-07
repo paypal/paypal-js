@@ -118,7 +118,6 @@ function setupTestComponent() {
     };
 }
 
-// eslint-disable-next-line react/prop-types
 function ResetParamsOnClick({ options }) {
     const [, dispatch] = usePayPalScriptReducer();
 

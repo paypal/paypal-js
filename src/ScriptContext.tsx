@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
-import PropTypes from "prop-types";
 import { loadScript } from "@paypal/paypal-js";
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 
@@ -123,29 +122,5 @@ function PayPalScriptProvider({ options, children }: ScriptProviderProps) {
         </ScriptContext.Provider>
     );
 }
-
-PayPalScriptProvider.propTypes = {
-    children: PropTypes.node.isRequired,
-    options: PropTypes.exact({
-        "buyer-country": PropTypes.string,
-        "client-id": PropTypes.string.isRequired,
-        commit: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-        components: PropTypes.string,
-        currency: PropTypes.string,
-        "data-client-token": PropTypes.string,
-        "data-csp-nonce": PropTypes.string,
-        "data-order-id": PropTypes.string,
-        "data-page-type": PropTypes.string,
-        "data-partner-attribution-id": PropTypes.string,
-        debug: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-        "disable-funding": PropTypes.string,
-        "enable-funding": PropTypes.string,
-        "integration-date": PropTypes.string,
-        intent: PropTypes.string,
-        locale: PropTypes.string,
-        "merchant-id": PropTypes.string,
-        vault: PropTypes.oneOfType([PropTypes.bool, PropTypes.string]),
-    }),
-};
 
 export { PayPalScriptProvider, usePayPalScriptReducer };

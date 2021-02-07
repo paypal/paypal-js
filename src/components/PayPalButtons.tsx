@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import PropTypes from "prop-types";
 import { usePayPalScriptReducer } from "../ScriptContext";
 import type {
     PayPalButtonsComponentProps,
@@ -7,7 +6,14 @@ import type {
 } from "@paypal/paypal-js/types/components/buttons";
 
 interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
+    /**
+     * Used to re-render the component.
+     * Changes to this prop will destroy the existing Buttons and render them again using the current props.
+     */
     forceReRender?: unknown;
+    /**
+     * Pass a css class to the div container.
+     */
     className?: string;
 }
 /**
@@ -88,70 +94,6 @@ function getErrorMessage({ components = "" }) {
 
     return errorMessage;
 }
-
-PayPalButtons.propTypes = {
-    /**
-     * Sets up the transaction. Called when the buyer clicks the PayPal button.
-     */
-    createOrder: PropTypes.func,
-    /**
-     * Deprecated, replaced by `createSubscription`.
-     */
-    createBillingAgreement: PropTypes.func,
-    /**
-     * Sets up a subscription. Called when the buyer clicks the PayPal button.
-     */
-    createSubscription: PropTypes.func,
-    /**
-     * The individual button to render. Use the `FUNDING` constant exported by this library to set this value.
-     * View the [list of available funding sources](https://developer.paypal.com/docs/business/checkout/configure-payments/standalone-buttons/#funding-sources) for more info.
-     */
-    fundingSource: PropTypes.string,
-
-    /**
-     * [Styling options](https://developer.paypal.com/docs/business/checkout/reference/style-guide/#customize-the-payment-buttons) for customizing layout, color, shape, and labels.
-     */
-    style: PropTypes.exact({
-        color: PropTypes.string,
-        height: PropTypes.number,
-        label: PropTypes.string,
-        layout: PropTypes.string,
-        shape: PropTypes.string,
-        tagline: PropTypes.bool,
-    }),
-    /**
-     * Finalizes the transaction. Often used to show the buyer a [confirmation page](https://developer.paypal.com/docs/checkout/integration-features/confirmation-page/).
-     */
-    onApprove: PropTypes.func,
-    /**
-     * Called when the buyer cancels the transaction.
-     * Often used to show the buyer a [cancellation page](https://developer.paypal.com/docs/business/checkout/add-capabilities/buyer-experience/#show-a-cancellation-page).
-     */
-    onCancel: PropTypes.func,
-    /**
-     * Called when the button is clicked. Often used for [validation](https://developer.paypal.com/docs/checkout/integration-features/validation/).
-     */
-    onClick: PropTypes.func,
-    /**
-     * Catch all for errors preventing buyer checkout.
-     * Often used to show the buyer an [error page](https://developer.paypal.com/docs/checkout/integration-features/handle-errors/).
-     */
-    onError: PropTypes.func,
-    /**
-     * Called when the button first renders.
-     */
-    onInit: PropTypes.func,
-    /**
-     * Called when the buyer changes their shipping address on PayPal.
-     */
-    onShippingChange: PropTypes.func,
-    /**
-     * Used to re-render the component. Changes to this prop will destroy
-     * the existing Buttons and render them again using the current props.
-     */
-    forceReRender: PropTypes.any,
-    className: PropTypes.string,
-};
 
 PayPalButtons.defaultProps = {
     style: {},

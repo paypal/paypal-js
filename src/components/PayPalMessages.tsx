@@ -44,7 +44,6 @@ export default function PayPalMessages(props: PayPalMessagesReactProps) {
                 `Failed to render <PayPalMessages /> component. ${err}`
             );
         });
-        // eslint-disable-next-line react/prop-types
     }, [isResolved, props.forceReRender]);
 
     return <div ref={messagesContainerRef} />;

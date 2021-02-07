@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { render, waitFor } from "@testing-library/react";
 
 import { PayPalScriptProvider } from "../ScriptContext";
@@ -123,8 +122,3 @@ class ErrorBoundary extends React.Component {
         return !this.state.hasError && this.props.children;
     }
 }
-
-ErrorBoundary.propTypes = {
-    onError: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
-};
