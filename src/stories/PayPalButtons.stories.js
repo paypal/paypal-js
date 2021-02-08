@@ -77,6 +77,7 @@ export const DynamicAmount = () => {
 
     return (
         <>
+            <label htmlor="amount">Order Amount: </label>
             <select onChange={onChange} name="amount" id="amount">
                 <option value="2">$2.00</option>
                 <option value="4">$4.00</option>
@@ -85,6 +86,31 @@ export const DynamicAmount = () => {
             <p>Order ID: {orderID ? orderID : "unknown"}</p>
 
             <PayPalButtons createOrder={createOrder} forceReRender={amount} />
+        </>
+    );
+};
+
+export const Disabled = () => {
+    const [isDisabled, setIsDisabled] = useState(true);
+
+    function onCheckboxChange({ target: { checked } }) {
+        setIsDisabled(!checked);
+    }
+
+    return (
+        <>
+            <label htmlFor="check">Check here to continue</label>
+            <input
+                id="check"
+                name="check"
+                type="checkbox"
+                onChange={onCheckboxChange}
+            />
+
+            <PayPalButtons
+                fundingSource={FUNDING.PAYPAL}
+                disabled={isDisabled}
+            />
         </>
     );
 };

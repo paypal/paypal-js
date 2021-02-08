@@ -45,6 +45,7 @@ describe("<PayPalButtons />", () => {
             expect(window.paypal.Buttons).toHaveBeenCalledWith({
                 style: { layout: "horizontal" },
                 fundingSource: FUNDING.CREDIT,
+                onInit: expect.any(Function),
             })
         );
     });
@@ -67,6 +68,49 @@ describe("<PayPalButtons />", () => {
         await waitFor(() =>
             expect(document.querySelector("div.custom-class-name")).toBeTruthy()
         );
+    });
+
+    test("should disable the Buttons with disabled=true", async () => {
+        window.paypal = {
+            Buttons: jest.fn(() => ({
+                close: jest.fn(),
+                isEligible: jest.fn().mockReturnValue(true),
+                render: jest.fn().mockResolvedValue({}),
+            })),
+        };
+
+        const onInitCallbackMock = jest.fn();
+
+        render(
+            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+                <PayPalButtons
+                    className="custom-class-name"
+                    disabled={true}
+                    onInit={onInitCallbackMock}
+                />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() => {
+            expect(
+                document.querySelector("div.paypal-buttons-disabled")
+            ).toBeTruthy();
+            expect(window.paypal.Buttons).toHaveBeenCalled();
+        });
+
+        const onInitCallback = window.paypal.Buttons.mock.calls[0][0].onInit;
+
+        const onInitActions = {
+            enable: jest.fn(),
+            disable: jest.fn(),
+        };
+
+        onInitCallback({}, onInitActions);
+
+        await waitFor(() => {
+            expect(onInitCallbackMock).toHaveBeenCalled();
+            expect(onInitActions.disable).toHaveBeenCalled();
+        });
     });
 
     test("should re-render Buttons when props.forceReRender changes", async () => {

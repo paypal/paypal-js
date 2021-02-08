@@ -3,6 +3,7 @@ import { usePayPalScriptReducer } from "../ScriptContext";
 import type {
     PayPalButtonsComponentProps,
     PayPalButtonsComponent,
+    OnInitActions
 } from "@paypal/paypal-js/types/components/buttons";
 
 interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
@@ -15,6 +16,10 @@ interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
      * Pass a css class to the div container.
      */
     className?: string;
+    /**
+     * Disables the buttons.
+     */
+    disabled?: boolean;
 }
 
 /**
@@ -29,24 +34,28 @@ interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
  */
 export default function PayPalButtons({
     className = "",
+    disabled = false,
     forceReRender,
     ...buttonProps
 }: PayPalButtonsReactProps) {
     const [{ isResolved, options }] = usePayPalScriptReducer();
     const buttonsContainerRef = useRef<HTMLDivElement>(null);
     const buttons = useRef<PayPalButtonsComponent | null>(null);
+    const [initActions, setInitActions] = useState<OnInitActions | null>(null);
+
     const [, setErrorState] = useState(null);
 
-    useEffect(() => {
-        const cleanup = () => {
-            if (buttons.current !== null) {
-                buttons.current.close();
-            }
-        };
+    function closeButtonsComponent() {
+        if (buttons.current !== null) {
+            buttons.current.close();
+        }
+    }
 
+    // useEffect hook for rendering the buttons
+    useEffect(() => {
         // verify the sdk script has successfully loaded
         if (isResolved === false) {
-            return cleanup;
+            return closeButtonsComponent;
         }
 
         // verify dependency on window.paypal object
@@ -57,18 +66,25 @@ export default function PayPalButtons({
             setErrorState(() => {
                 throw new Error(getErrorMessage(options));
             });
-            return cleanup;
+            return closeButtonsComponent;
         }
 
-        buttons.current = window.paypal.Buttons({ ...buttonProps });
+        const decoratedOnInit = (data: Record<string, unknown>, actions: OnInitActions) => {
+            setInitActions(actions);
+            if (typeof buttonProps.onInit === 'function') {
+                buttonProps.onInit(data, actions);
+            }
+        }
+
+        buttons.current = window.paypal.Buttons({ ...buttonProps, onInit: decoratedOnInit });
 
         // only render the button when eligible
         if (buttons.current.isEligible() === false) {
-            return cleanup;
+            return closeButtonsComponent;
         }
 
         if (buttonsContainerRef.current === null) {
-            return cleanup;
+            return closeButtonsComponent;
         }
 
         buttons.current.render(buttonsContainerRef.current).catch((err) => {
@@ -77,10 +93,28 @@ export default function PayPalButtons({
             );
         });
 
-        return cleanup;
+        return closeButtonsComponent;
     }, [isResolved, forceReRender, buttonProps.fundingSource]);
 
-    return <div ref={buttonsContainerRef} className={className} />;
+    // useEffect hook for managing disabled state
+    useEffect(() => {
+        if (initActions === null) {
+            return;
+        }
+
+        if (disabled === true) {
+            initActions.disable();
+        } else {
+            initActions.enable();
+        }
+
+    }, [disabled, initActions])
+
+    const isDisabledStyle = disabled ? { opacity: 0.33 }: {};
+    const classNames = `${className} ${disabled ? 'paypal-buttons-disabled' : ''}`.trim();
+
+
+    return <div ref={buttonsContainerRef} style={isDisabledStyle} className={classNames} />;
 }
 
 function getErrorMessage({ components = "" }) {
