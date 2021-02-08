@@ -34,7 +34,10 @@ interface PayPalMarksReactProps extends PayPalMarksComponentProps {
  *     <PayPalMarks fundingSource={FUNDING.PAYPAL}/>
  * ```
  */
-export default function PayPalMarks(props: PayPalMarksReactProps) {
+export default function PayPalMarks({
+    className = "",
+    ...markProps
+}: PayPalMarksReactProps) {
     const [{ isResolved, options }] = usePayPalScriptReducer();
     const markContainerRef = useRef<HTMLDivElement>(null);
     const mark = useRef<PayPalMarksComponent | null>(null);
@@ -59,10 +62,7 @@ export default function PayPalMarks(props: PayPalMarksReactProps) {
             return;
         }
 
-        const componentProps = { ...props };
-        delete componentProps.className;
-
-        mark.current = window.paypal.Marks({ ...componentProps });
+        mark.current = window.paypal.Marks({ ...markProps });
 
         // only render the mark when eligible
         if (mark.current.isEligible() === false) {
@@ -76,9 +76,9 @@ export default function PayPalMarks(props: PayPalMarksReactProps) {
         mark.current.render(markContainerRef.current).catch((err) => {
             console.error(`Failed to render <PayPalMarks /> component. ${err}`);
         });
-    }, [isResolved, props.fundingSource]);
+    }, [isResolved, markProps.fundingSource]);
 
-    return <div ref={markContainerRef} className={props.className} />;
+    return <div ref={markContainerRef} className={className} />;
 }
 
 function getErrorMessage({ components = "" }) {
@@ -96,7 +96,3 @@ function getErrorMessage({ components = "" }) {
 
     return errorMessage;
 }
-
-PayPalMarks.defaultProps = {
-    className: ""
-};

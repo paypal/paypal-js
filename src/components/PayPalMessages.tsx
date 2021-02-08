@@ -10,7 +10,11 @@ interface PayPalMessagesReactProps extends PayPalMessagesComponentProps {
     className?: string;
 }
 
-export default function PayPalMessages(props: PayPalMessagesReactProps) {
+export default function PayPalMessages({
+    className = "",
+    forceReRender,
+    ...messageProps
+}: PayPalMessagesReactProps) {
     const [{ isResolved, options }] = usePayPalScriptReducer();
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const messages = useRef<PayPalMessagesComponent | null>(null);
@@ -33,10 +37,7 @@ export default function PayPalMessages(props: PayPalMessagesReactProps) {
             return;
         }
 
-        const componentProps = { ...props };
-        delete componentProps.className;
-
-        messages.current = window.paypal.Messages({ ...componentProps });
+        messages.current = window.paypal.Messages({ ...messageProps });
 
         if (messagesContainerRef.current === null) {
             return;
@@ -47,9 +48,9 @@ export default function PayPalMessages(props: PayPalMessagesReactProps) {
                 `Failed to render <PayPalMessages /> component. ${err}`
             );
         });
-    }, [isResolved, props.forceReRender]);
+    }, [isResolved, forceReRender]);
 
-    return <div ref={messagesContainerRef} className={props.className} />;
+    return <div ref={messagesContainerRef} className={className} />;
 }
 
 function getErrorMessage({ components = "" }) {
@@ -69,7 +70,3 @@ function getErrorMessage({ components = "" }) {
 
     return errorMessage;
 }
-
-PayPalMessages.defaultProps = {
-    className: ""
-};

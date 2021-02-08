@@ -16,6 +16,7 @@ interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
      */
     className?: string;
 }
+
 /**
  * This `<PayPalButtons />` component renders the [Smart Payment Buttons](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#buttons).
  * It relies on the `<PayPalScriptProvider />` parent component for managing state related to loading the JS SDK script.
@@ -26,7 +27,11 @@ interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
  *     <PayPalButtons style={{ layout: "vertical" }} createOrder={(data, actions) => {}} />
  * ```
  */
-export default function PayPalButtons(props: PayPalButtonsReactProps) {
+export default function PayPalButtons({
+    className = "",
+    forceReRender,
+    ...buttonProps
+}: PayPalButtonsReactProps) {
     const [{ isResolved, options }] = usePayPalScriptReducer();
     const buttonsContainerRef = useRef<HTMLDivElement>(null);
     const buttons = useRef<PayPalButtonsComponent | null>(null);
@@ -55,10 +60,7 @@ export default function PayPalButtons(props: PayPalButtonsReactProps) {
             return cleanup;
         }
 
-        const componentProps = { ...props };
-        delete componentProps.className;
-
-        buttons.current = window.paypal.Buttons({ ...componentProps });
+        buttons.current = window.paypal.Buttons({ ...buttonProps });
 
         // only render the button when eligible
         if (buttons.current.isEligible() === false) {
@@ -76,9 +78,9 @@ export default function PayPalButtons(props: PayPalButtonsReactProps) {
         });
 
         return cleanup;
-    }, [isResolved, props.forceReRender, props.fundingSource]);
+    }, [isResolved, forceReRender, buttonProps.fundingSource]);
 
-    return <div ref={buttonsContainerRef} className={props.className} />;
+    return <div ref={buttonsContainerRef} className={className} />;
 }
 
 function getErrorMessage({ components = "" }) {
@@ -97,8 +99,3 @@ function getErrorMessage({ components = "" }) {
 
     return errorMessage;
 }
-
-PayPalButtons.defaultProps = {
-    style: {},
-    className: ""
-};
