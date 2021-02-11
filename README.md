@@ -29,9 +29,9 @@ React developers think in terms of components and not about loading external scr
 -   Abstract away the complexity around loading the JS SDK with the global `<PayPalScriptProvider>` component.
 -   Support dispatching actions to reload the JS SDK and re-render components when global parameters like `currency` change.
 -   Easy to use components for all the different PayPal product offerings:
-    -   `<PayPalButtons />`
-    -   `<PayPalMarks />`
-    -   `<PayPalMessages />`
+    -   [PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default)
+    -   [PayPalMarks](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalmarks--default)
+    -   [PayPalMessages](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalmessages--default)
 
 ## Installation
 
