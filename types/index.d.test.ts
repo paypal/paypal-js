@@ -18,7 +18,7 @@ loadScript({ 'client-id': 'sb' })
         paypal.Buttons().render('#container');
         paypal.Buttons().render(document.createElement('div'));
 
-        // minimal createOrder payload
+        // minimal createOrder and onApprove payload
         paypal.Buttons({
             createOrder: (data, actions) => {
                 return actions.order.create({
@@ -27,6 +27,11 @@ loadScript({ 'client-id': 'sb' })
                             value: '88.44'
                         }
                     }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(details => {
+                    console.log(details.payer.name.given_name);
                 });
             }
         });

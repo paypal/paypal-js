@@ -1,4 +1,4 @@
-import type { CreateOrderRequestBody } from '../apis/orders';
+import type { CreateOrderRequestBody, CaptureOrderResponseBody } from '../apis/orders';
 import type { CreateSubscriptionRequestBody } from '../apis/subscriptions';
 
 type UnknownObject = Record<string, unknown>;
@@ -27,9 +27,13 @@ export type OnClickActions = {
     resolve: () => void;
 };
 
+// todo: what else is possible here?
 export type OnApproveOrderActions = {
     order: {
-        capture: (options: UnknownObject) => Promise<UnknownObject>;
+        capture: () => Promise<CaptureOrderResponseBody>;
+        redirect: (redirectURL: string) => void;
+        restart: () => void;
+
     }
 };
 

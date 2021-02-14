@@ -1,4 +1,5 @@
 // https://developer.paypal.com/docs/api/orders/v2/#orders-create-request-body
+// https://developer.paypal.com/docs/api/orders/v2/#orders-capture-response
 
 type SHIPPING_PREFERENCE = "GET_FROM_FILE" | "NO_SHIPPING" | "SET_PROVIDED_ADDRESS";
 
@@ -103,9 +104,28 @@ type OrderApplicationContext = {
     stored_payment_source: Record<string, unknown>;
 }
 
+type LinkDescription = {
+    href: string;
+    rel: string;
+    method?: string;
+}
+
+type INTENT = "CAPTURE" | "AUTHORIZE";
+
 export type CreateOrderRequestBody = {
-    intent?: "CAPTURE" | "AUTHORIZE";
+    intent?: INTENT;
     purchase_units: PurchaseUnit[];
     payer?: Payer;
     application_context?: OrderApplicationContext;
+}
+
+export type CaptureOrderResponseBody = {
+    create_time: string;
+    update_time: string;
+    id: string;
+    intent: INTENT;
+    payer: Payer;
+    purchase_units: PurchaseUnit[];
+    status: "COMPLETED" | "SAVED" | "APPROVED" | "VOIDED" | "COMPLETED" | "PAYER_ACTION_REQUIRED";
+    links: LinkDescription[];
 }
