@@ -1,4 +1,7 @@
 export interface PayPalMarksComponentProps {
+    /**
+     * Used for defining a standalone mark.
+     */
     fundingSource?: string;
 }
 
