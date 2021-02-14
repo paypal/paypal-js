@@ -17,4 +17,4 @@ export type CreateSubscriptionRequestBody = {
     application_context?: UnknownObject;
     custom_id?: string;
     plan?: UnknownObject;
-}
+};

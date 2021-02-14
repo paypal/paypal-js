@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Demo with window.paypalLoadScript | PayPal JS</title>
-  </head>
-  <body>
-    <h1>Demo with window.paypalLoadScript</h1>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Demo with window.paypalLoadScript | PayPal JS</title>
+    </head>
+    <body>
+        <h1>Demo with window.paypalLoadScript</h1>
 
-    <script src="../../dist/paypal.browser.min.js"></script>
-    <script>
-        var options = {
-            'client-id': 'sb',
-            'data-order-id': '12345'
-        };
+        <script src="../../dist/paypal.browser.min.js"></script>
+        <script>
+            var options = {
+                "client-id": "sb",
+                "data-order-id": "12345",
+            };
 
-        window.paypalLoadScript(options)
-          .then(function (paypal) {
-              paypal.Buttons().render('body');
-          });
-    </script>
-  </body>
+            window.paypalLoadScript(options).then(function (paypal) {
+                paypal.Buttons().render("body");
+            });
+        </script>
+    </body>
 </html>

@@ -1,6 +1,6 @@
-import { findScript, insertScriptElement, processOptions } from './utils';
-import type { PayPalScriptOptions } from '../types/script-options';
-import type { PayPalNamespace } from '../types/index';
+import { findScript, insertScriptElement, processOptions } from "./utils";
+import type { PayPalScriptOptions } from "../types/script-options";
+import type { PayPalNamespace } from "../types/index";
 
 type PromiseResults = Promise<PayPalNamespace | null>;
 let loadingPromise: PromiseResults;
@@ -12,15 +12,22 @@ declare global {
     }
 }
 
-export default function loadScript(options: PayPalScriptOptions, PromisePonyfill?: PromiseConstructor): PromiseResults {
+export default function loadScript(
+    options: PayPalScriptOptions,
+    PromisePonyfill?: PromiseConstructor
+): PromiseResults {
     if (!(options instanceof Object)) {
-        throw new Error('Invalid arguments. Expected an object to be passed into loadScript().');
+        throw new Error(
+            "Invalid arguments. Expected an object to be passed into loadScript()."
+        );
     }
 
-    if (typeof PromisePonyfill === 'undefined') {
+    if (typeof PromisePonyfill === "undefined") {
         // default to using window.Promise as the Promise implementation
-        if (typeof Promise === 'undefined') {
-            throw new Error('Failed to load the PayPal JS SDK script because Promise is undefined. To resolve the issue, use a Promise polyfill.');
+        if (typeof Promise === "undefined") {
+            throw new Error(
+                "Failed to load the PayPal JS SDK script because Promise is undefined. To resolve the issue, use a Promise polyfill."
+            );
         }
 
         PromisePonyfill = Promise;
@@ -29,14 +36,15 @@ export default function loadScript(options: PayPalScriptOptions, PromisePonyfill
     // resolve with the existing promise when the script is loading
     if (isLoading) return loadingPromise;
 
-    return loadingPromise = new PromisePonyfill((resolve, reject) => {
+    return (loadingPromise = new PromisePonyfill((resolve, reject) => {
         // resolve with null when running in Node
-        if (typeof window === 'undefined') return resolve(null);
+        if (typeof window === "undefined") return resolve(null);
 
         const { url, dataAttributes } = processOptions(options);
 
         // resolve with the existing global paypal object when a script with the same src already exists
-        if (findScript(url, dataAttributes) && window.paypal) return resolve(window.paypal);
+        if (findScript(url, dataAttributes) && window.paypal)
+            return resolve(window.paypal);
 
         isLoading = true;
 
@@ -46,12 +54,18 @@ export default function loadScript(options: PayPalScriptOptions, PromisePonyfill
             onSuccess: () => {
                 isLoading = false;
                 if (window.paypal) return resolve(window.paypal);
-                return reject(new Error('The window.paypal global variable is not available.'));
+                return reject(
+                    new Error(
+                        "The window.paypal global variable is not available."
+                    )
+                );
             },
             onError: () => {
                 isLoading = false;
-                return reject(new Error(`The script "${url}" didn't load correctly.`));
-            }
+                return reject(
+                    new Error(`The script "${url}" didn't load correctly.`)
+                );
+            },
         });
-    });
+    }));
 }

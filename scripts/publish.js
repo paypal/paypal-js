@@ -1,28 +1,28 @@
-const { exec } = require('shelljs');
+const { exec } = require("shelljs");
 const readline = require("readline");
 
 // validate git and npm
-require('./validate');
+require("./validate");
 
 // lint, unit test, and build
-exec('npm run lint && npm test && npm run build');
+exec("npm run lint && npm test && npm run build");
 
 // ensure bundle size is below threshold
-exec('npm run test:bundle');
+exec("npm run test:bundle");
 
 // run puppeteer tests
-exec('npm run test:e2e');
+exec("npm run test:e2e");
 
 // bump version
-const newVersionArg = process.argv[2] || 'patch';
+const newVersionArg = process.argv[2] || "patch";
 exec(`npm version ${newVersionArg}`);
 
 // push up new version commit and tag
-exec('git push');
-exec('git push --follow-tags');
+exec("git push");
+exec("git push --follow-tags");
 
 // build again to get the new version number for the comment banner
-exec('npm run build');
+exec("npm run build");
 
 // use the readline module to simulate npm prompt
 const rl = readline.createInterface({

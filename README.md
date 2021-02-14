@@ -28,14 +28,16 @@ The [default JS SDK code snippet](https://developer.paypal.com/docs/business/che
 
 ```html
 <script src="https://www.paypal.com/sdk/js?client-id=sb"></script>
-<script>paypal.Buttons().render('body');</script>
+<script>
+    paypal.Buttons().render("body");
+</script>
 ```
 
 The above snippet can be difficult to implement in a non-blocking way, especially in single page web apps. This is where the paypal-js library comes in. It provides the following benefits over the above snippet:
 
-- Async script loading to ensure page rendering isn't blocked.
-- A [Promise API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) to know when script loading is complete.
-- A convenient way to reload the script when query parameters or data attributes change.
+-   Async script loading to ensure page rendering isn't blocked.
+-   A [Promise API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) to know when script loading is complete.
+-   A convenient way to reload the script when query parameters or data attributes change.
 
 ## Installation
 
@@ -50,16 +52,16 @@ npm install @paypal/paypal-js
 Import the `loadScript` function for asynchronously loading the Paypal JS SDK.
 
 ### `loadScript(options)`
-- accepts an object for passing query parameters and attributes to the JS SDK.
-- returns a Promise that resolves with `window.paypal` after the JS SDK is finished loading.
+
+-   accepts an object for passing query parameters and attributes to the JS SDK.
+-   returns a Promise that resolves with `window.paypal` after the JS SDK is finished loading.
 
 ```js
-import { loadScript } from '@paypal/paypal-js';
+import { loadScript } from "@paypal/paypal-js";
 
-loadScript({ 'client-id': 'sb' })
-    .then(paypal => {
-        paypal.Buttons().render('#your-container-element');
-    });
+loadScript({ "client-id": "sb" }).then((paypal) => {
+    paypal.Buttons().render("#your-container-element");
+});
 ```
 
 ### Passing Arguments
@@ -71,7 +73,7 @@ The `loadScript` function accepts an object for configuring the JS SDK. It's use
 The following example adds `client-id` and `currency` as query string parameters:
 
 ```js
-loadScript({ 'client-id': 'YOUR_CLIENT_ID', 'currency': 'EUR' });
+loadScript({ "client-id": "YOUR_CLIENT_ID", currency: "EUR" });
 ```
 
 Which will load the following `<script>` asynchronously:
@@ -87,13 +89,19 @@ View the [full list of supported query parameters](https://developer.paypal.com/
 All options prefixed with `data-` are considered attributes. The following example adds `data-client-token` as an attribute:
 
 ```js
-loadScript({ 'client-id': 'YOUR_CLIENT_ID', 'data-client-token': 'abc123xyz==' });
+loadScript({
+    "client-id": "YOUR_CLIENT_ID",
+    "data-client-token": "abc123xyz==",
+});
 ```
 
 Which will load the following `<script>` asynchronously:
 
 ```html
-<script data-client-token="abc123xyz==" src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"></script>
+<script
+    data-client-token="abc123xyz=="
+    src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"
+></script>
 ```
 
 View the [full list of supported script parameters](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-configuration/#script-parameters).
@@ -103,7 +111,10 @@ View the [full list of supported script parameters](https://developer.paypal.com
 For local development, the `sdkBaseURL` option can be used to set the base url of the JS SDK:
 
 ```js
-loadScript({ 'client-id': 'YOUR_CLIENT_ID', sdkBaseURL: 'http://localhost.paypal.com:8000/sdk/js' });
+loadScript({
+    "client-id": "YOUR_CLIENT_ID",
+    sdkBaseURL: "http://localhost.paypal.com:8000/sdk/js",
+});
 ```
 
 ### Legacy Browser Support
@@ -116,11 +127,10 @@ The `loadScript()` function takes in a second parameter for providing a Promise 
 2. Use a [ponyfill strategy](https://github.com/sindresorhus/ponyfill) that passes a Promise library into `loadScript()` without affecting other code:
 
 ```js
-import { loadScript } from '@paypal/paypal-js';
-import PromisePonyfill from 'promise-polyfill';
+import { loadScript } from "@paypal/paypal-js";
+import PromisePonyfill from "promise-polyfill";
 
-loadScript(options, PromisePonyfill)
-    .then(paypalObject => {})
+loadScript(options, PromisePonyfill).then((paypalObject) => {});
 ```
 
 We also provide a legacy build that includes the [promise-polyfill](https://github.com/taylorhakes/promise-polyfill) library. You can reference it from the CDN here:
@@ -142,10 +152,9 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
     <body>
         <div id="paypal-buttons"></div>
         <script>
-            window.paypalLoadScript({ 'client-id': 'sb' })
-                .then(paypal => {
-                    paypal.Buttons().render('#paypal-buttons');
-                });
+            window.paypalLoadScript({ "client-id": "sb" }).then((paypal) => {
+                paypal.Buttons().render("#paypal-buttons");
+            });
         </script>
     </body>
 </html>

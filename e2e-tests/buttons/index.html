@@ -1,24 +1,23 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Buttons Demo | PayPal JS</title>
-  </head>
-  <body>
-    <h1>Buttons Demo</h1>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Buttons Demo | PayPal JS</title>
+    </head>
+    <body>
+        <h1>Buttons Demo</h1>
 
-    <script type="module">
-        import { loadScript } from '../../dist/paypal.esm.js';
+        <script type="module">
+            import { loadScript } from "../../dist/paypal.esm.js";
 
-        const options = {
-            'client-id': 'sb',
-            'data-order-id': '12345'
-        };
+            const options = {
+                "client-id": "sb",
+                "data-order-id": "12345",
+            };
 
-        loadScript(options)
-          .then(paypal => {
-              paypal.Buttons().render('body');
-          });
-    </script>
-  </body>
+            loadScript(options).then((paypal) => {
+                paypal.Buttons().render("body");
+            });
+        </script>
+    </body>
 </html>

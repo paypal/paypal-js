@@ -1,73 +1,73 @@
 {
-  "name": "@paypal/paypal-js",
-  "version": "2.1.6",
-  "description": "Client-side loader for the PayPal JS SDK",
-  "main": "dist/paypal.node.js",
-  "module": "dist/paypal.esm.js",
-  "types": "types/index.d.ts",
-  "scripts": {
-    "build": "rm -rf dist && rollup --config",
-    "lint": "eslint .",
-    "prettier": "prettier --write . --tab-width=4",
-    "release": "node ./scripts/publish",
-    "release:patch": "node ./scripts/publish patch",
-    "release:minor": "node ./scripts/publish minor",
-    "release:major": "node ./scripts/publish major",
-    "test": "jest --env=jsdom src",
-    "test:bundle": "jest --env=jsdom e2e-tests/bundle/**",
-    "test:e2e": "jest -c e2e-tests/jest.config.js",
-    "test:e2e:start": "serve",
-    "typecheck": "tsc --noEmit && tsc types/*.ts --noEmit",
-    "validate": "npm run typecheck && npm run build && npm run lint && npm test -- --coverage && npm run test:bundle"
-  },
-  "files": [
-    "dist",
-    "types",
-    "!types/**/*.test.ts"
-  ],
-  "keywords": [
-    "paypal",
-    "async",
-    "script",
-    "loader",
-    "types",
-    "typescript-definitions"
-  ],
-  "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/paypal/paypal-js.git"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.12.13",
-    "@babel/preset-env": "^7.12.13",
-    "@babel/preset-typescript": "^7.12.13",
-    "@rollup/plugin-babel": "^5.2.3",
-    "@rollup/plugin-commonjs": "^17.1.0",
-    "@rollup/plugin-node-resolve": "^11.1.1",
-    "@rollup/plugin-replace": "^2.3.4",
-    "@rollup/plugin-typescript": "^8.1.1",
-    "@types/jest": "^26.0.20",
-    "@types/promise-polyfill": "^6.0.3",
-    "@typescript-eslint/eslint-plugin": "^4.14.2",
-    "@typescript-eslint/parser": "^4.14.2",
-    "babel-jest": "^26.6.3",
-    "eslint": "^7.19.0",
-    "eslint-plugin-compat": "^3.9.0",
-    "filesize": "^6.1.0",
-    "jest": "^26.6.3",
-    "jest-puppeteer": "^4.4.0",
-    "prettier": "2.2.1",
-    "puppeteer": "^7.0.1",
-    "rollup": "^2.38.5",
-    "rollup-plugin-filesize": "^9.1.0",
-    "rollup-plugin-terser": "^7.0.2",
-    "serve": "^11.3.2",
-    "shelljs": "^0.8.4",
-    "tslib": "^2.1.0",
-    "typescript": "^4.1.3"
-  },
-  "dependencies": {
-    "promise-polyfill": "^8.2.0"
-  }
+    "name": "@paypal/paypal-js",
+    "version": "2.1.6",
+    "description": "Client-side loader for the PayPal JS SDK",
+    "main": "dist/paypal.node.js",
+    "module": "dist/paypal.esm.js",
+    "types": "types/index.d.ts",
+    "scripts": {
+        "build": "rm -rf dist && rollup --config",
+        "lint": "eslint .",
+        "prettier": "prettier --write . --tab-width=4",
+        "release": "node ./scripts/publish",
+        "release:patch": "node ./scripts/publish patch",
+        "release:minor": "node ./scripts/publish minor",
+        "release:major": "node ./scripts/publish major",
+        "test": "jest --env=jsdom src",
+        "test:bundle": "jest --env=jsdom e2e-tests/bundle/**",
+        "test:e2e": "jest -c e2e-tests/jest.config.js",
+        "test:e2e:start": "serve",
+        "typecheck": "tsc --noEmit && tsc types/*.ts --noEmit",
+        "validate": "npm run typecheck && npm run build && npm run lint && npm test -- --coverage && npm run test:bundle"
+    },
+    "files": [
+        "dist",
+        "types",
+        "!types/**/*.test.ts"
+    ],
+    "keywords": [
+        "paypal",
+        "async",
+        "script",
+        "loader",
+        "types",
+        "typescript-definitions"
+    ],
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/paypal/paypal-js.git"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.12.13",
+        "@babel/preset-env": "^7.12.13",
+        "@babel/preset-typescript": "^7.12.13",
+        "@rollup/plugin-babel": "^5.2.3",
+        "@rollup/plugin-commonjs": "^17.1.0",
+        "@rollup/plugin-node-resolve": "^11.1.1",
+        "@rollup/plugin-replace": "^2.3.4",
+        "@rollup/plugin-typescript": "^8.1.1",
+        "@types/jest": "^26.0.20",
+        "@types/promise-polyfill": "^6.0.3",
+        "@typescript-eslint/eslint-plugin": "^4.14.2",
+        "@typescript-eslint/parser": "^4.14.2",
+        "babel-jest": "^26.6.3",
+        "eslint": "^7.19.0",
+        "eslint-plugin-compat": "^3.9.0",
+        "filesize": "^6.1.0",
+        "jest": "^26.6.3",
+        "jest-puppeteer": "^4.4.0",
+        "prettier": "2.2.1",
+        "puppeteer": "^7.0.1",
+        "rollup": "^2.38.5",
+        "rollup-plugin-filesize": "^9.1.0",
+        "rollup-plugin-terser": "^7.0.2",
+        "serve": "^11.3.2",
+        "shelljs": "^0.8.4",
+        "tslib": "^2.1.0",
+        "typescript": "^4.1.3"
+    },
+    "dependencies": {
+        "promise-polyfill": "^8.2.0"
+    }
 }

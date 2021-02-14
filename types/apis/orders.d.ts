@@ -1,7 +1,10 @@
 // https://developer.paypal.com/docs/api/orders/v2/#orders-create-request-body
 // https://developer.paypal.com/docs/api/orders/v2/#orders-capture-response
 
-type SHIPPING_PREFERENCE = "GET_FROM_FILE" | "NO_SHIPPING" | "SET_PROVIDED_ADDRESS";
+type SHIPPING_PREFERENCE =
+    | "GET_FROM_FILE"
+    | "NO_SHIPPING"
+    | "SET_PROVIDED_ADDRESS";
 
 type Address = {
     address_line_1: string;
@@ -28,12 +31,12 @@ type Payer = {
         tax_id_type: string;
     };
     address: Address;
-}
+};
 
 type Payee = {
     merchant_id?: string;
     email_address?: string;
-}
+};
 
 interface Amount {
     currency_code?: string;
@@ -49,25 +52,25 @@ interface AmountWithBreakdown extends Amount {
         insurance: Amount;
         shipping_discount: Amount;
         discount: Amount;
-    }
+    };
 }
 
 type PlatformFee = {
     amount: Amount;
     payee?: Payee;
-}
+};
 
 type PaymentInstruction = {
     platform_fees: PlatformFee[];
     disbursement_mode: "INSTANT" | "DELAYED";
-}
+};
 
 type ShippingInfo = {
     name: {
         full_name: string;
     };
     address: Address;
-}
+};
 
 type PurchaseItem = {
     name: string;
@@ -77,7 +80,7 @@ type PurchaseItem = {
     description?: string;
     sku: string;
     category: "DIGITAL_GOODS" | "PHYSICAL_GOODS";
-}
+};
 
 type PurchaseUnit = {
     amount: AmountWithBreakdown;
@@ -90,7 +93,7 @@ type PurchaseUnit = {
     payment_instruction?: PaymentInstruction;
     shipping?: ShippingInfo;
     items?: PurchaseItem[];
-}
+};
 
 type OrderApplicationContext = {
     brand_name: string;
@@ -102,13 +105,13 @@ type OrderApplicationContext = {
     return_url: string;
     cancel_url: string;
     stored_payment_source: Record<string, unknown>;
-}
+};
 
 type LinkDescription = {
     href: string;
     rel: string;
     method?: string;
-}
+};
 
 type INTENT = "CAPTURE" | "AUTHORIZE";
 
@@ -117,7 +120,7 @@ export type CreateOrderRequestBody = {
     purchase_units: PurchaseUnit[];
     payer?: Payer;
     application_context?: OrderApplicationContext;
-}
+};
 
 export type CaptureOrderResponseBody = {
     create_time: string;
@@ -126,6 +129,12 @@ export type CaptureOrderResponseBody = {
     intent: INTENT;
     payer: Payer;
     purchase_units: PurchaseUnit[];
-    status: "COMPLETED" | "SAVED" | "APPROVED" | "VOIDED" | "COMPLETED" | "PAYER_ACTION_REQUIRED";
+    status:
+        | "COMPLETED"
+        | "SAVED"
+        | "APPROVED"
+        | "VOIDED"
+        | "COMPLETED"
+        | "PAYER_ACTION_REQUIRED";
     links: LinkDescription[];
-}
+};

@@ -1,88 +1,88 @@
-import babel from '@rollup/plugin-babel';
-import replace from '@rollup/plugin-replace';
-import { nodeResolve } from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import filesize from 'rollup-plugin-filesize';
-import { terser } from 'rollup-plugin-terser';
-import typescript from '@rollup/plugin-typescript';
-import pkg from './package.json';
+import babel from "@rollup/plugin-babel";
+import replace from "@rollup/plugin-replace";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+import filesize from "rollup-plugin-filesize";
+import { terser } from "rollup-plugin-terser";
+import typescript from "@rollup/plugin-typescript";
+import pkg from "./package.json";
 
 const banner = getBannerText();
 const outputConfigForBrowserBundle = {
-    format: 'iife',
-    name: 'paypalLoadScript',
+    format: "iife",
+    name: "paypalLoadScript",
     // update the default export to be the loadScript() function
-    footer: 'paypalLoadScript = paypalLoadScript.loadScript;',
-    banner
+    footer: "paypalLoadScript = paypalLoadScript.loadScript;",
+    banner,
 };
-const tsconfigOverride = { exclude: ['node_modules', '**/*.test.ts'] };
+const tsconfigOverride = { exclude: ["node_modules", "**/*.test.ts"] };
 
 export default [
     {
-        input: 'src/index.ts',
+        input: "src/index.ts",
         plugins: [
             typescript({ ...tsconfigOverride }),
             babel({
-                babelHelpers: 'bundled',
+                babelHelpers: "bundled",
                 exclude: /node_modules/,
-                extensions: ['.ts', '.js']
+                extensions: [".ts", ".js"],
             }),
             replace({
-                '__VERSION__': pkg.version
+                __VERSION__: pkg.version,
             }),
-            filesize()
+            filesize(),
         ],
         output: [
             {
                 file: pkg.module,
-                format: 'esm',
-                banner
+                format: "esm",
+                banner,
             },
             {
                 file: pkg.main,
-                format: 'cjs',
-                banner
+                format: "cjs",
+                banner,
             },
             {
-                file: 'dist/paypal.browser.js',
-                ...outputConfigForBrowserBundle
-            },
-            {
-                file: 'dist/paypal.browser.min.js',
+                file: "dist/paypal.browser.js",
                 ...outputConfigForBrowserBundle,
-                plugins: [terser()]
-            }
-        ]
+            },
+            {
+                file: "dist/paypal.browser.min.js",
+                ...outputConfigForBrowserBundle,
+                plugins: [terser()],
+            },
+        ],
     },
     {
-        input: 'src/legacy/index.ts',
+        input: "src/legacy/index.ts",
         plugins: [
             typescript({ ...tsconfigOverride }),
             nodeResolve({
-                browser: true
+                browser: true,
             }),
             commonjs(),
             babel({
-                babelHelpers: 'bundled',
-                exclude: /node_modules/
+                babelHelpers: "bundled",
+                exclude: /node_modules/,
             }),
             replace({
-                '__VERSION__': pkg.version
+                __VERSION__: pkg.version,
             }),
-            filesize()
+            filesize(),
         ],
         output: [
             {
-                file: 'dist/paypal.legacy.browser.js',
-                ...outputConfigForBrowserBundle
+                file: "dist/paypal.legacy.browser.js",
+                ...outputConfigForBrowserBundle,
             },
             {
-                file: 'dist/paypal.legacy.browser.min.js',
+                file: "dist/paypal.legacy.browser.min.js",
                 ...outputConfigForBrowserBundle,
-                plugins: [terser()]
-            }
-        ]
-    }
+                plugins: [terser()],
+            },
+        ],
+    },
 ];
 
 function getBannerText() {

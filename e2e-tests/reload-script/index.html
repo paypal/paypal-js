@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Reload Script Demo | PayPal JS</title>
-  </head>
-  <body>
-    <h1>Reload Script Demo</h1>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Reload Script Demo | PayPal JS</title>
+    </head>
+    <body>
+        <h1>Reload Script Demo</h1>
 
-    <script type="module">
-        import { loadScript } from '../../dist/paypal.esm.js';
-        window.paypalLoadScript = function (currency) {
-            const options = {
-                'client-id': 'sb',
-                'data-order-id': '12345',
-                currency
+        <script type="module">
+            import { loadScript } from "../../dist/paypal.esm.js";
+            window.paypalLoadScript = function (currency) {
+                const options = {
+                    "client-id": "sb",
+                    "data-order-id": "12345",
+                    currency,
+                };
+
+                loadScript(options).then((paypal) => {
+                    paypal.Buttons().render("#paypal-buttons");
+                });
             };
 
-            loadScript(options)
-            .then(paypal => {
-                paypal.Buttons().render('#paypal-buttons');
-            });
-        }
+            const currentCurrency = document.querySelector("#currency").value;
+            paypalLoadScript(currentCurrency);
 
-        const currentCurrency = document.querySelector('#currency').value
-        paypalLoadScript(currentCurrency);
+            document
+                .querySelector("#currency")
+                .addEventListener("change", (event) => {
+                    const newCurrency = event.target.value;
+                    paypalLoadScript(newCurrency);
+                });
+        </script>
 
+        <form>
+            <label for="currency-select">Choose a currency:</label>
 
-        document.querySelector('#currency').addEventListener('change', (event) => {
-            const newCurrency = event.target.value;
-            paypalLoadScript(newCurrency);
-        });
-    </script>
+            <select name="currency" id="currency">
+                <option value="USD" selected>United States dollar</option>
+                <option value="EUR">Euro</option>
+                <option value="CAD">Canadian dollar</option>
+            </select>
+        </form>
+        <br />
 
-    <form>
-        <label for="currency-select">Choose a currency:</label>
-
-        <select name="currency" id="currency">
-            <option value="USD" selected>United States dollar</option>
-            <option value="EUR">Euro</option>
-            <option value="CAD">Canadian dollar</option>
-        </select>
-    </form>
-    <br>
-
-    <div id="paypal-buttons"></div>
-  </body>
+        <div id="paypal-buttons"></div>
+    </body>
 </html>
