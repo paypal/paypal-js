@@ -48,7 +48,7 @@ This PayPal React library consists of two main parts:
 1. Context Provider - this `<PayPalScriptProvider />` component manages loading the JS SDK script. Add it to the root of your React app. It uses the [Context API](https://reactjs.org/docs/context.html) for managing state and communicating to child components. It also supports reloading the script when parameters change.
 2. SDK Components - components like `<PayPalButtons />` are used to render the UI for PayPal products served by the JS SDK.
 
-```js
+```jsx
 // App.js
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
@@ -95,7 +95,7 @@ The `usePayPalScriptReducer` hook provides an easy way to tap into the loading s
 
 For example, here's how you can use it to show a loading spinner.
 
-```js
+```jsx
 const [{ isPending }] = usePayPalScriptReducer();
 
 return (
@@ -112,7 +112,7 @@ To learn more, check out the [loading spinner example in storybook](https://payp
 
 The `usePayPalScriptReducer` hook can be used to reload the JS SDK script when parameters like currency change. It provides the action `resetOptions` for reloading with new parameters. For example, here's how you can use it to change currency.
 
-```js
+```jsx
 const [{ scriptOptions }, dispatch] = usePayPalScriptReducer();
 const [currency, setCurrency] = useState(scriptOptions.currency);
 
