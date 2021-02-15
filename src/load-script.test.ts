@@ -30,7 +30,7 @@ describe("loadScript()", () => {
         });
 
         mockedProcessOptions.mockReturnValue({
-            url: "https://www.paypal.com/sdk/js?client-id=sb",
+            url: "https://www.paypal.com/sdk/js?client-id=test",
             dataAttributes: {},
         });
 
@@ -51,7 +51,7 @@ describe("loadScript()", () => {
     test("should insert <script> and resolve the promise", async () => {
         expect(window.paypal).toBe(undefined);
 
-        const response = await loadScript({ "client-id": "sb" });
+        const response = await loadScript({ "client-id": "test" });
         expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
         expect(response).toEqual(window.paypal);
     });
@@ -63,7 +63,7 @@ describe("loadScript()", () => {
         mockedFindScript.mockReturnValue(document.createElement("script"));
         window.paypal = paypalNamespace;
 
-        const response = await loadScript({ "client-id": "sb" });
+        const response = await loadScript({ "client-id": "test" });
         expect(mockedInsertScriptElement).not.toHaveBeenCalled();
         expect(response).toEqual(window.paypal);
     });
@@ -72,8 +72,8 @@ describe("loadScript()", () => {
         expect(window.paypal).toBe(undefined);
 
         const response = await Promise.all([
-            loadScript({ "client-id": "sb" }),
-            loadScript({ "client-id": "sb" }),
+            loadScript({ "client-id": "test" }),
+            loadScript({ "client-id": "test" }),
         ]);
 
         expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
@@ -91,7 +91,7 @@ describe("loadScript()", () => {
         expect(window.paypal).toBe(undefined);
 
         try {
-            await loadScript({ "client-id": "sb" });
+            await loadScript({ "client-id": "test" });
         } catch (err) {
             expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
             expect(err.message).toBe(
@@ -117,11 +117,11 @@ describe("loadScript()", () => {
         expect(window.paypal).toBe(undefined);
 
         try {
-            await loadScript({ "client-id": "sb" });
+            await loadScript({ "client-id": "test" });
         } catch (err) {
             expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
             expect(err.message).toBe(
-                'The script "https://www.paypal.com/sdk/js?client-id=sb" didn\'t load correctly.'
+                'The script "https://www.paypal.com/sdk/js?client-id=test" didn\'t load correctly.'
             );
         }
     });
@@ -129,7 +129,7 @@ describe("loadScript()", () => {
     test("should use the provided promise ponyfill", () => {
         const PromisePonyfill = jest.fn();
         // @ts-expect-error ignore mock error
-        loadScript({ "client-id": "sb" }, PromisePonyfill);
+        loadScript({ "client-id": "test" }, PromisePonyfill);
         expect(PromisePonyfill).toHaveBeenCalledTimes(1);
     });
 
@@ -139,7 +139,7 @@ describe("loadScript()", () => {
 
         expect(window.paypal).toBe(undefined);
         expect(window.Promise).toBe(undefined);
-        expect(() => loadScript({ "client-id": "sb" })).toThrow(
+        expect(() => loadScript({ "client-id": "test" })).toThrow(
             "Failed to load the PayPal JS SDK script because Promise is undefined. To resolve the issue, use a Promise polyfill."
         );
     });

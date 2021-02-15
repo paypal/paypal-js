@@ -3,17 +3,17 @@ import type { PayPalNamespace } from ".";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const loadScriptBasicPromise: Promise<PayPalNamespace | null> = loadScript({
-    "client-id": "sb",
+    "client-id": "test",
 });
 
 loadScript({
-    "client-id": "sb",
+    "client-id": "test",
     currency: "USD",
     "data-order-id": "12345",
     "disable-funding": "card",
 });
 
-loadScript({ "client-id": "sb" })
+loadScript({ "client-id": "test" })
     .then((paypal) => {
         if (!(paypal && paypal.Buttons)) return;
 

@@ -10,18 +10,18 @@ jest.useFakeTimers();
 describe("objectToQueryString()", () => {
     test("coverts an object to a query string", () => {
         const params = {
-            "client-id": "sb",
+            "client-id": "test",
             currency: "USD",
         };
 
-        expect(objectToQueryString(params)).toBe("client-id=sb&currency=USD");
+        expect(objectToQueryString(params)).toBe("client-id=test&currency=USD");
     });
 });
 
 describe("processOptions()", () => {
     test("returns dataAttributes and url", () => {
         const options = {
-            "client-id": "sb",
+            "client-id": "test",
             currency: "USD",
             "data-order-id": "12345",
             "some-random-key": "some-random-value",
@@ -30,26 +30,26 @@ describe("processOptions()", () => {
         const { url, dataAttributes } = processOptions(options);
 
         expect(url).toBe(
-            "https://www.paypal.com/sdk/js?client-id=sb&currency=USD&some-random-key=some-random-value"
+            "https://www.paypal.com/sdk/js?client-id=test&currency=USD&some-random-key=some-random-value"
         );
         expect(dataAttributes).toEqual({ "data-order-id": "12345" });
     });
 
     test("sets a custom base url", () => {
         const { url } = processOptions({
-            "client-id": "sb",
+            "client-id": "test",
             sdkBaseURL: "http://localhost.paypal.com:8000/sdk/js",
         });
 
         expect(url).toBe(
-            "http://localhost.paypal.com:8000/sdk/js?client-id=sb"
+            "http://localhost.paypal.com:8000/sdk/js?client-id=test"
         );
     });
 
     test("default values when only client-id is passed in", () => {
-        const { url, dataAttributes } = processOptions({ "client-id": "sb" });
+        const { url, dataAttributes } = processOptions({ "client-id": "test" });
 
-        expect(url).toBe("https://www.paypal.com/sdk/js?client-id=sb");
+        expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
         expect(dataAttributes).toEqual({});
     });
 });
@@ -60,7 +60,7 @@ describe("findScript()", () => {
     });
 
     test("finds the existing script in the DOM", () => {
-        const url = "https://www.paypal.com/sdk/js?client-id=sb";
+        const url = "https://www.paypal.com/sdk/js?client-id=test";
         document.head.innerHTML = `<script src="${url}" data-order-id="123" data-page-type="checkout"></script>`;
 
         const result = findScript(url, {
@@ -74,12 +74,12 @@ describe("findScript()", () => {
 
     test("returns null when the script is not found", () => {
         expect(
-            findScript("https://www.paypal.com/sdk/js?client-id=sb")
+            findScript("https://www.paypal.com/sdk/js?client-id=test")
         ).toBeNull();
     });
 
     test("returns null when the script is found but the number of data attributes do not match", () => {
-        const url = "https://www.paypal.com/sdk/js?client-id=sb";
+        const url = "https://www.paypal.com/sdk/js?client-id=test";
         document.head.innerHTML = `<script src="${url}" data-order-id="12345" data-page-type="home"></script>`;
 
         const result = findScript(url, { "data-order-id": "12345" });
@@ -87,7 +87,7 @@ describe("findScript()", () => {
     });
 
     test("returns null when the script is found but the data attribute values do not match", () => {
-        const url = "https://www.paypal.com/sdk/js?client-id=sb";
+        const url = "https://www.paypal.com/sdk/js?client-id=test";
         document.head.innerHTML = `<script src="${url}" data-page-type="home"></script>`;
 
         const result = findScript(url, { "data-page-type": "checkout" });
@@ -96,7 +96,7 @@ describe("findScript()", () => {
 });
 
 describe("insertScriptElement()", () => {
-    const url = "https://www.paypal.com/sdk/js?client-id=sb";
+    const url = "https://www.paypal.com/sdk/js?client-id=test";
 
     beforeEach(() => {
         document.head.innerHTML = "";

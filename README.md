@@ -27,7 +27,7 @@
 The [default JS SDK code snippet](https://developer.paypal.com/docs/business/checkout/set-up-standard-payments/#sample-javascript-sdk-code) blocks page rendering:
 
 ```html
-<script src="https://www.paypal.com/sdk/js?client-id=sb"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=test"></script>
 <script>
     paypal.Buttons().render("body");
 </script>
@@ -59,7 +59,7 @@ Import the `loadScript` function for asynchronously loading the Paypal JS SDK.
 ```js
 import { loadScript } from "@paypal/paypal-js";
 
-loadScript({ "client-id": "sb" }).then((paypal) => {
+loadScript({ "client-id": "test" }).then((paypal) => {
     paypal.Buttons().render("#your-container-element");
 });
 ```
@@ -152,7 +152,7 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
     <body>
         <div id="paypal-buttons"></div>
         <script>
-            window.paypalLoadScript({ "client-id": "sb" }).then((paypal) => {
+            window.paypalLoadScript({ "client-id": "test" }).then((paypal) => {
                 paypal.Buttons().render("#paypal-buttons");
             });
         </script>
