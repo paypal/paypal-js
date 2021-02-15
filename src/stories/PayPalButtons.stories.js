@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FUNDING, PayPalScriptProvider, PayPalButtons } from "../index";
 
 const scriptProviderOptions = {
-    "client-id": "sb",
+    "client-id": "test",
     components: "buttons",
 };
 

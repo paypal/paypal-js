@@ -15,11 +15,11 @@ describe("<PayPalScriptProvider />", () => {
     test('should set "isResolved" state to "true" after loading the script', async () => {
         const { state, TestComponent } = setupTestComponent();
         render(
-            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <TestComponent />
             </PayPalScriptProvider>
         );
-        expect(loadScript).toHaveBeenCalledWith({ "client-id": "sb" });
+        expect(loadScript).toHaveBeenCalledWith({ "client-id": "test" });
 
         // verify initial loading state
         expect(state.isPending).toBeTruthy();
@@ -32,11 +32,11 @@ describe("<PayPalScriptProvider />", () => {
         loadScript.mockRejectedValue(new Error());
         const { state, TestComponent } = setupTestComponent();
         render(
-            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <TestComponent />
             </PayPalScriptProvider>
         );
-        expect(loadScript).toHaveBeenCalledWith({ "client-id": "sb" });
+        expect(loadScript).toHaveBeenCalledWith({ "client-id": "test" });
 
         // verify initial loading state
         expect(state.isPending).toBeTruthy();
@@ -54,12 +54,12 @@ describe("usePayPalScriptReducer", () => {
     test("should manage state for loadScript()", async () => {
         const { state, TestComponent } = setupTestComponent();
         render(
-            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <TestComponent />
             </PayPalScriptProvider>
         );
 
-        expect(state.options).toHaveProperty("client-id", "sb");
+        expect(state.options).toHaveProperty("client-id", "test");
         expect(state.isPending).toBeTruthy();
         await waitFor(() => expect(state.isResolved).toBeTruthy());
     });

@@ -33,7 +33,7 @@ describe("<PayPalMarks />", () => {
 
         render(
             <PayPalScriptProvider
-                options={{ "client-id": "sb", components: "marks" }}
+                options={{ "client-id": "test", components: "marks" }}
             >
                 <PayPalMarks fundingSource={FUNDING.CREDIT} />
             </PayPalScriptProvider>
@@ -56,7 +56,7 @@ describe("<PayPalMarks />", () => {
 
         render(
             <PayPalScriptProvider
-                options={{ "client-id": "sb", components: "marks" }}
+                options={{ "client-id": "test", components: "marks" }}
             >
                 <PayPalMarks className="custom-class-name" />
             </PayPalScriptProvider>
@@ -75,7 +75,7 @@ describe("<PayPalMarks />", () => {
         );
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <PayPalMarks />
             </PayPalScriptProvider>,
             { wrapper }
@@ -95,7 +95,7 @@ describe("<PayPalMarks />", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "sb",
+                    "client-id": "test",
                     components: "buttons,messages",
                 }}
             >
@@ -115,7 +115,7 @@ describe("<PayPalMarks />", () => {
         });
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <PayPalMarks />
             </PayPalScriptProvider>
         );

@@ -6,7 +6,7 @@ import {
 } from "../index";
 
 const scriptProviderOptions = {
-    "client-id": "sb",
+    "client-id": "test",
     components: "buttons",
 };
 

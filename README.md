@@ -54,7 +54,7 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 export default function App() {
     return (
-        <PayPalScriptProvider options={{ "client-id": "sb" }}>
+        <PayPalScriptProvider options={{ "client-id": "test" }}>
             <PayPalButtons style={{ layout: "horizontal" }} />
         </PayPalScriptProvider>
     );
@@ -71,7 +71,7 @@ Use the PayPalScriptProvider `options` prop to configure the JS SDK. It accepts 
 
 ```jsx
 const initialOptions = {
-    "client-id": "sb",
+    "client-id": "test",
     currency: "USD",
     intent: "capture",
     "data-client-token": "abc123xyz==",

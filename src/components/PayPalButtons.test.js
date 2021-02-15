@@ -33,7 +33,7 @@ describe("<PayPalButtons />", () => {
         };
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <PayPalButtons
                     fundingSource={FUNDING.CREDIT}
                     style={{ layout: "horizontal" }}
@@ -60,7 +60,7 @@ describe("<PayPalButtons />", () => {
         };
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <PayPalButtons className="custom-class-name" />
             </PayPalScriptProvider>
         );
@@ -82,7 +82,7 @@ describe("<PayPalButtons />", () => {
         const onInitCallbackMock = jest.fn();
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <PayPalButtons
                     className="custom-class-name"
                     disabled={true}
@@ -135,7 +135,7 @@ describe("<PayPalButtons />", () => {
         }
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <ButtonWrapper initialOrderID="1" />
             </PayPalScriptProvider>
         );
@@ -172,7 +172,7 @@ describe("<PayPalButtons />", () => {
         }
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <ButtonWrapper initialOrderID="1" />
             </PayPalScriptProvider>
         );
@@ -202,7 +202,7 @@ describe("<PayPalButtons />", () => {
         );
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <PayPalButtons />
             </PayPalScriptProvider>,
             { wrapper }
@@ -222,7 +222,7 @@ describe("<PayPalButtons />", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "sb",
+                    "client-id": "test",
                     components: "marks,messages",
                 }}
             >
@@ -247,7 +247,7 @@ describe("<PayPalButtons />", () => {
         };
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "sb" }}>
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <PayPalButtons />
             </PayPalScriptProvider>
         );
