@@ -67,6 +67,22 @@ The `<PayPalButtons />` component is fully documented in Storybook. Checkout the
 
 ### PayPalScriptProvider
 
+Use the PayPalScriptProvider `options` prop to configure the JS SDK. It accepts an object for passing query parameters and data attributes to the JS SDK script.
+
+```jsx
+const initialOptions = {
+    "client-id": "sb",
+    currency: "USD",
+    intent: "capture",
+    "data-client-token": "abc123xyz==",
+};
+<PayPalScriptProvider options={initialOptions}>
+    <PayPalButtons />
+</PayPalScriptProvider>;
+```
+
+The [JS SDK Configuration guide](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-configuration/) contains the full list of query parameters and data attributes that can be used with the JS SDK.
+
 The `<PayPalScriptProvider />` component is designed to be used with the `usePayPalScriptReducer` hook for managing global state. This `usePayPalScriptReducer` hook has the same API as [React's useReducer hook](https://reactjs.org/docs/hooks-reference.html#usereducer).
 
 #### Tracking loading state
