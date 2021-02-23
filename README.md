@@ -113,8 +113,9 @@ To learn more, check out the [loading spinner example in storybook](https://payp
 The `usePayPalScriptReducer` hook can be used to reload the JS SDK script when parameters like currency change. It provides the action `resetOptions` for reloading with new parameters. For example, here's how you can use it to change currency.
 
 ```jsx
-const [{ scriptOptions }, dispatch] = usePayPalScriptReducer();
-const [currency, setCurrency] = useState(scriptOptions.currency);
+// get the state for the sdk script and the dispatch method
+const [{ options }, dispatch] = usePayPalScriptReducer();
+const [currency, setCurrency] = useState(options.currency);
 
 function onCurrencyChange({ target: { value } }) {
     setCurrency(value);
