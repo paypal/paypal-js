@@ -22,6 +22,7 @@ interface PayPalScriptDataAttributes {
     "data-page-type"?: string;
     "data-client-token"?: string;
     "data-merchant-id"?: string;
+    "data-namespace"?: string;
 }
 
 export interface PayPalScriptOptions
