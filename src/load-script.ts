@@ -38,17 +38,17 @@ export default function loadScript(
         if (typeof window === "undefined") return resolve(null);
 
         const { url, dataAttributes } = processOptions(options);
+        const namespace = dataAttributes["data-namespace"] || "paypal";
 
-        // resolve with the existing global paypal object when a script with the same src already exists
-        if (findScript(url, dataAttributes) && window.paypal)
-            return resolve(window.paypal);
+        // resolve with the existing global paypal namespace when a script with the same params already exists
+        if (findScript(url, dataAttributes) && window[namespace]) {
+            return resolve(window[namespace]);
+        }
 
         insertScriptElement({
             url,
             dataAttributes,
             onSuccess: () => {
-                const namespace = dataAttributes.dataNamespace || "paypal";
-
                 if (window[namespace]) return resolve(window[namespace]);
                 return reject(
                     new Error(

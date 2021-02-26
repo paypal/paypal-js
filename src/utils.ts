@@ -32,7 +32,7 @@ export function findScript(
     return isExactMatch ? currentScript : null;
 }
 
-interface ScriptElement {
+export interface ScriptElement {
     url: string;
     dataAttributes?: StringMap;
     onSuccess: () => void;
