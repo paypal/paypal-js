@@ -1,38 +1,23 @@
-jest.mock("./utils", () => {
-    return {
-        findScript: jest.fn(),
-        insertScriptElement: jest.fn(),
-        processOptions: jest.fn(),
-    };
-});
-
 import loadScript from "./load-script";
-import { findScript, insertScriptElement, processOptions } from "./utils";
+// import using "*" so we can spy on insertScriptElement()
+import * as utils from "./utils";
 
 describe("loadScript()", () => {
+    const insertScriptElementSpy = jest.spyOn(utils, "insertScriptElement");
     const PromiseBackup = window.Promise;
     const paypalNamespace = { version: "5" };
-
-    const mockedInsertScriptElement = <jest.Mock<void>>insertScriptElement;
-    const mockedProcessOptions = <
-        jest.Mock<{ url: string; dataAttributes: Record<string, unknown> }>
-    >processOptions;
-    const mockedFindScript = <jest.Mock<HTMLScriptElement | null>>findScript;
 
     beforeEach(() => {
         document.head.innerHTML = "";
 
-        mockedFindScript.mockReturnValue(null);
+        insertScriptElementSpy.mockImplementation(
+            ({ onSuccess, dataAttributes = {} }: utils.ScriptElement) => {
+                const namespace = dataAttributes["data-namespace"] || "paypal";
+                window[namespace] = paypalNamespace;
 
-        mockedInsertScriptElement.mockImplementation(({ onSuccess }) => {
-            window.paypal = paypalNamespace;
-            process.nextTick(() => onSuccess());
-        });
-
-        mockedProcessOptions.mockReturnValue({
-            url: "https://www.paypal.com/sdk/js?client-id=test",
-            dataAttributes: {},
-        });
+                process.nextTick(() => onSuccess());
+            }
+        );
 
         Object.defineProperty(window, "paypal", {
             writable: true,
@@ -43,47 +28,47 @@ describe("loadScript()", () => {
     });
 
     afterEach(() => {
-        mockedFindScript.mockClear();
-        mockedInsertScriptElement.mockClear();
-        mockedProcessOptions.mockClear();
+        insertScriptElementSpy.mockClear();
     });
 
     test("should insert <script> and resolve the promise", async () => {
         expect(window.paypal).toBe(undefined);
 
         const response = await loadScript({ "client-id": "test" });
-        expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+        expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
         expect(response).toEqual(window.paypal);
     });
 
-    test("should not insert <script> when an existing script with the same src is already in the DOM and window.paypal is set", async () => {
+    test("should not insert <script> when an existing script with the same params is already in the DOM", async () => {
         expect(window.paypal).toBe(undefined);
 
         // simulate the script already being loaded
-        mockedFindScript.mockReturnValue(document.createElement("script"));
+        document.head.innerHTML =
+            '<script src="https://www.paypal.com/sdk/js?client-id=test"></script>';
         window.paypal = paypalNamespace;
 
         const response = await loadScript({ "client-id": "test" });
-        expect(mockedInsertScriptElement).not.toHaveBeenCalled();
+        expect(insertScriptElementSpy).not.toHaveBeenCalled();
         expect(response).toEqual(window.paypal);
     });
 
-    test("should only load the <script> once when loadScript() is called twice", async () => {
-        expect(window.paypal).toBe(undefined);
+    test("should support loading multiple scripts using different namespaces", async () => {
+        expect(window.paypal1).toBe(undefined);
+        expect(window.paypal2).toBe(undefined);
 
         const response = await Promise.all([
-            loadScript({ "client-id": "test" }),
-            loadScript({ "client-id": "test" }),
+            loadScript({ "client-id": "test", "data-namespace": "paypal1" }),
+            loadScript({ "client-id": "test", "data-namespace": "paypal2" }),
         ]);
 
-        expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
-        expect(response).toEqual([window.paypal, window.paypal]);
+        expect(insertScriptElementSpy).toHaveBeenCalledTimes(2);
+        expect(response).toEqual([window.paypal1, window.paypal2]);
     });
 
     test("should reject the promise when window.paypal is undefined after loading the <script>", async () => {
         expect.assertions(3);
 
-        mockedInsertScriptElement.mockImplementation(({ onSuccess }) => {
+        insertScriptElementSpy.mockImplementation(({ onSuccess }) => {
             // do not set window.paypal in the mock implementation
             process.nextTick(() => onSuccess());
         });
@@ -93,7 +78,7 @@ describe("loadScript()", () => {
         try {
             await loadScript({ "client-id": "test" });
         } catch (err) {
-            expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
             expect(err.message).toBe(
                 "The window.paypal global variable is not available."
             );
@@ -110,8 +95,8 @@ describe("loadScript()", () => {
     test("should throw an error when the script fails to load", async () => {
         expect.assertions(3);
 
-        mockedInsertScriptElement.mockImplementationOnce(({ onError }) => {
-            process.nextTick(() => onError());
+        insertScriptElementSpy.mockImplementation(({ onError }) => {
+            process.nextTick(() => onError && onError("failed to load"));
         });
 
         expect(window.paypal).toBe(undefined);
@@ -119,7 +104,7 @@ describe("loadScript()", () => {
         try {
             await loadScript({ "client-id": "test" });
         } catch (err) {
-            expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
             expect(err.message).toBe(
                 'The script "https://www.paypal.com/sdk/js?client-id=test" didn\'t load correctly.'
             );
