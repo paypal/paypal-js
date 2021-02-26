@@ -154,3 +154,13 @@ loadScript({ "client-id": "test" })
     .catch((err) => {
         console.error(err);
     });
+
+loadScript({ "client-id": "test", "data-namespace": "customName" }).then(
+    (customObject) => {
+        customObject.Buttons();
+
+        // example showing how to use the types with a custom namespace off window
+        const customObjectFromWindow = window.customName as PayPalNamespace;
+        customObjectFromWindow.Buttons();
+    }
+);

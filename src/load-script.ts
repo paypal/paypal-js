@@ -3,10 +3,10 @@ import type { PayPalScriptOptions } from "../types/script-options";
 import type { PayPalNamespace } from "../types/index";
 
 type PromiseResults = Promise<PayPalNamespace | null>;
-let loadingPromise: PromiseResults;
 
 declare global {
     interface Window {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         [key: string]: any;
         paypal?: PayPalNamespace;
     }
@@ -33,7 +33,7 @@ export default function loadScript(
         PromisePonyfill = Promise;
     }
 
-    return (loadingPromise = new PromisePonyfill((resolve, reject) => {
+    return new PromisePonyfill((resolve, reject) => {
         // resolve with null when running in Node
         if (typeof window === "undefined") return resolve(null);
 
@@ -62,5 +62,5 @@ export default function loadScript(
                 );
             },
         });
-    }));
+    });
 }
