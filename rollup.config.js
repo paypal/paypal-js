@@ -29,6 +29,7 @@ export default [
             }),
             replace({
                 __VERSION__: pkg.version,
+                preventAssignment: true,
             }),
             filesize(),
         ],
@@ -68,6 +69,7 @@ export default [
             }),
             replace({
                 __VERSION__: pkg.version,
+                preventAssignment: true,
             }),
             filesize(),
         ],
