@@ -16,14 +16,17 @@ export function findScript(
     const nextScript = createScriptElement(url, dataAttributes);
 
     // check if the new script has the same number of data attributes
-    if (objectSize(currentScript.dataset) !== objectSize(nextScript.dataset)) {
+    if (
+        Object.keys(currentScript.dataset).length !==
+        Object.keys(nextScript.dataset).length
+    ) {
         return null;
     }
 
     let isExactMatch = true;
 
     // check if the data attribute values are the same
-    forEachObjectKey(currentScript.dataset, (key) => {
+    Object.keys(currentScript.dataset).forEach((key) => {
         if (currentScript.dataset[key] !== nextScript.dataset[key]) {
             isExactMatch = false;
         }
@@ -72,7 +75,7 @@ export function processOptions(
         dataAttributes: {},
     };
 
-    forEachObjectKey(options, (key) => {
+    Object.keys(options).forEach((key) => {
         const keyType =
             key.substring(0, 5) === "data-" ? "dataAttributes" : "queryParams";
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -90,7 +93,7 @@ export function processOptions(
 export function objectToQueryString(params: StringMap): string {
     let queryString = "";
 
-    forEachObjectKey(params, (key) => {
+    Object.keys(params).forEach((key) => {
         if (queryString.length !== 0) queryString += "&";
         queryString += key + "=" + params[key];
     });
@@ -104,7 +107,7 @@ function createScriptElement(
     const newScript: HTMLScriptElement = document.createElement("script");
     newScript.src = url;
 
-    forEachObjectKey(dataAttributes, (key) => {
+    Object.keys(dataAttributes).forEach((key) => {
         newScript.setAttribute(key, dataAttributes[key]);
 
         if (key === "data-csp-nonce") {
@@ -113,22 +116,4 @@ function createScriptElement(
     });
 
     return newScript;
-}
-
-// uses es3 to avoid requiring polyfills for Array.prototype.forEach and Object.keys
-function forEachObjectKey(
-    obj: Record<string, unknown>,
-    callback: (key: string) => void
-): void {
-    for (const key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            callback(key);
-        }
-    }
-}
-
-function objectSize(obj: Record<string, unknown>): number {
-    let size = 0;
-    forEachObjectKey(obj, () => size++);
-    return size;
 }
