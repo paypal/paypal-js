@@ -20,6 +20,9 @@ loadScript({ "client-id": "test" })
         paypal.Buttons().render("#container");
         paypal.Buttons().render(document.createElement("div"));
 
+        // window.paypal also works
+        window.paypal.Buttons().render("#container");
+
         // minimal createOrder and onApprove payload
         paypal.Buttons({
             createOrder: (data, actions) => {
@@ -160,7 +163,9 @@ loadScript({ "client-id": "test", "data-namespace": "customName" }).then(
         customObject.Buttons();
 
         // example showing how to use the types with a custom namespace off window
-        const customObjectFromWindow = window.customName as PayPalNamespace;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const customObjectFromWindow = (window as any)
+            .customName as PayPalNamespace;
         customObjectFromWindow.Buttons();
     }
 );

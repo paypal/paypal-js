@@ -1,6 +1,8 @@
 interface PayPalScriptQueryParameters {
     "client-id": string;
-    "merchant-id"?: string;
+    // loadScript() supports an array and will convert it
+    // to the correct merchant-id and data-merchant-id string values
+    "merchant-id"?: string[] | string;
     currency?: string;
     intent?: string;
     commit?: boolean;
@@ -28,6 +30,7 @@ interface PayPalScriptDataAttributes {
 export interface PayPalScriptOptions
     extends PayPalScriptQueryParameters,
         PayPalScriptDataAttributes {
-    [key: string]: string | boolean | undefined;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: any;
     sdkBaseURL?: string;
 }

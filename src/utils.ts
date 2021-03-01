@@ -65,24 +65,40 @@ export function processOptions(
         delete options.sdkBaseURL;
     }
 
-    interface ProcessedScriptOptions {
-        queryParams: StringMap;
-        dataAttributes: StringMap;
-    }
+    const processedMerchantIDAttributes = processMerchantID(
+        options["merchant-id"],
+        options["data-merchant-id"]
+    );
 
-    const processedOptions: ProcessedScriptOptions = {
-        queryParams: {},
-        dataAttributes: {},
-    };
+    const newOptions = Object.assign(
+        options,
+        processedMerchantIDAttributes
+    ) as PayPalScriptOptions;
 
-    Object.keys(options).forEach((key) => {
-        const keyType =
-            key.substring(0, 5) === "data-" ? "dataAttributes" : "queryParams";
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        processedOptions[keyType][key] = options[key]!.toString();
-    });
+    const { queryParams, dataAttributes } = Object.keys(newOptions)
+        .filter((key) => {
+            return (
+                typeof newOptions[key] !== "undefined" &&
+                newOptions[key] !== null &&
+                newOptions[key] !== ""
+            );
+        })
+        .reduce(
+            (accumulator, key) => {
+                const value = newOptions[key].toString();
 
-    const { queryParams, dataAttributes } = processedOptions;
+                if (key.substring(0, 5) === "data-") {
+                    accumulator.dataAttributes[key] = value;
+                } else {
+                    accumulator.queryParams[key] = value;
+                }
+                return accumulator;
+            },
+            {
+                queryParams: {} as StringMap,
+                dataAttributes: {} as StringMap,
+            }
+        );
 
     return {
         url: `${sdkBaseURL}?${objectToQueryString(queryParams)}`,
@@ -116,4 +132,37 @@ function createScriptElement(
     });
 
     return newScript;
+}
+
+function processMerchantID(
+    merchantID: string[] | string | undefined,
+    dataMerchantID: string | undefined
+): {
+    "merchant-id": string | undefined;
+    "data-merchant-id": string | undefined;
+} {
+    let newMerchantID = "";
+    let newDataMerchantID = "";
+
+    if (Array.isArray(merchantID)) {
+        if (merchantID.length > 1) {
+            newMerchantID = "*";
+            newDataMerchantID = merchantID.toString();
+        } else {
+            newMerchantID = merchantID.toString();
+        }
+    } else if (typeof merchantID === "string" && merchantID.length > 0) {
+        newMerchantID = merchantID;
+    } else if (
+        typeof dataMerchantID === "string" &&
+        dataMerchantID.length > 0
+    ) {
+        newMerchantID = "*";
+        newDataMerchantID = dataMerchantID;
+    }
+
+    return {
+        "merchant-id": newMerchantID,
+        "data-merchant-id": newDataMerchantID,
+    };
 }

@@ -1,5 +1,5 @@
-import loadScript from "./load-script";
-// import using "*" so we can spy on insertScriptElement()
+import { loadScript } from "./load-script";
+// import using "*" to spy on insertScriptElement()
 import * as utils from "./utils";
 
 describe("loadScript()", () => {
@@ -13,7 +13,9 @@ describe("loadScript()", () => {
         insertScriptElementSpy.mockImplementation(
             ({ onSuccess, dataAttributes = {} }: utils.ScriptElement) => {
                 const namespace = dataAttributes["data-namespace"] || "paypal";
-                window[namespace] = paypalNamespace;
+
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                (window as any)[namespace] = paypalNamespace;
 
                 process.nextTick(() => onSuccess());
             }
@@ -53,8 +55,10 @@ describe("loadScript()", () => {
     });
 
     test("should support loading multiple scripts using different namespaces", async () => {
-        expect(window.paypal1).toBe(undefined);
-        expect(window.paypal2).toBe(undefined);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const windowObject = window as any;
+        expect(windowObject.paypal1).toBe(undefined);
+        expect(windowObject.paypal2).toBe(undefined);
 
         const response = await Promise.all([
             loadScript({ "client-id": "test", "data-namespace": "paypal1" }),
@@ -62,7 +66,7 @@ describe("loadScript()", () => {
         ]);
 
         expect(insertScriptElementSpy).toHaveBeenCalledTimes(2);
-        expect(response).toEqual([window.paypal1, window.paypal2]);
+        expect(response).toEqual([windowObject.paypal1, windowObject.paypal2]);
     });
 
     test("should reject the promise when window.paypal is undefined after loading the <script>", async () => {
@@ -88,7 +92,11 @@ describe("loadScript()", () => {
     test("should throw an error from invalid arguments", () => {
         // @ts-expect-error ignore invalid arguments error
         expect(() => loadScript()).toThrow(
-            "Invalid arguments. Expected an object to be passed into loadScript()."
+            "Invalid arguments. Expected options to be an object."
+        );
+        // @ts-expect-error ignore invalid arguments error
+        expect(() => loadScript({}, {})).toThrow(
+            "Invalid arguments. Expected PromisePolyfill to be a function."
         );
     });
 
@@ -125,7 +133,7 @@ describe("loadScript()", () => {
         expect(window.paypal).toBe(undefined);
         expect(window.Promise).toBe(undefined);
         expect(() => loadScript({ "client-id": "test" })).toThrow(
-            "Failed to load the PayPal JS SDK script because Promise is undefined. To resolve the issue, use a Promise polyfill."
+            "Promise is undefined. To resolve the issue, use a Promise polyfill."
         );
     });
 });

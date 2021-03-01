@@ -59,9 +59,13 @@ Import the `loadScript` function for asynchronously loading the Paypal JS SDK.
 ```js
 import { loadScript } from "@paypal/paypal-js";
 
-loadScript({ "client-id": "test" }).then((paypal) => {
-    paypal.Buttons().render("#your-container-element");
-});
+loadScript({ "client-id": "test" })
+    .then((paypal) => {
+        paypal.Buttons().render("#your-container-element");
+    })
+    .catch(err) => {
+        console.error("failed to load the PayPal JS SDK script", err);
+    });
 ```
 
 ### Passing Arguments
@@ -105,6 +109,43 @@ Which will load the following `<script>` asynchronously:
 ```
 
 View the [full list of supported script parameters](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-configuration/#script-parameters).
+
+#### Merchant ID Array
+
+The `merchant-id` option accepts an array to simplify the implementation for Multi-Seller Payments. With this approach the caller doesn't have to worry about managing the two different merchant id values (`data-merchant-id` and `merchant-id`).
+
+**Here's an example with multiple `merchant-id` values:**
+
+```js
+loadScript({
+    "client-id": "YOUR_CLIENT_ID",
+    "merchant-id": ["123", "456", "789"],
+});
+```
+
+Which will load the following `<script>` and use `merchant-id=*` to properly configure the edge cache:
+
+```html
+<script
+    data-merchant-id="123,456,789"
+    src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&merchant-id=*"
+></script>
+```
+
+**Here's an example with one `merchant-id` value:**
+
+```js
+loadScript({
+    "client-id": "YOUR_CLIENT_ID",
+    "merchant-id": ["123"],
+});
+```
+
+When there's only one, the merchant-id is passed in using the query string.
+
+```html
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&merchant-id=123"></script>
+```
 
 #### sdkBaseURL
 
