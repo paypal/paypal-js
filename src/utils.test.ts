@@ -52,6 +52,52 @@ describe("processOptions()", () => {
         expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
         expect(dataAttributes).toEqual({});
     });
+
+    test("supports passing an array of merchant ids", () => {
+        const { url, dataAttributes } = processOptions({
+            "client-id": "test",
+            "merchant-id": ["123", "456", "789"],
+        });
+
+        expect(url).toBe(
+            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*"
+        );
+        expect(dataAttributes).toEqual({ "data-merchant-id": "123,456,789" });
+    });
+
+    test("supports passing a single merchant id", () => {
+        const { url, dataAttributes } = processOptions({
+            "client-id": "test",
+            "merchant-id": "123",
+        });
+
+        expect(url).toBe(
+            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=123"
+        );
+        expect(dataAttributes).toEqual({});
+
+        const { url: url2, dataAttributes: dataAttributes2 } = processOptions({
+            "client-id": "test",
+            "merchant-id": ["123"],
+        });
+
+        expect(url2).toBe(
+            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=123"
+        );
+        expect(dataAttributes2).toEqual({});
+    });
+
+    test("falls back to data-merchant-id when merchant-id is not set", () => {
+        const { url, dataAttributes } = processOptions({
+            "client-id": "test",
+            "data-merchant-id": "123,456,789",
+        });
+
+        expect(url).toBe(
+            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*"
+        );
+        expect(dataAttributes).toEqual({ "data-merchant-id": "123,456,789" });
+    });
 });
 
 describe("findScript()", () => {

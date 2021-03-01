@@ -17,6 +17,7 @@ module.exports = (api) => {
                 {
                     useBuiltIns: false,
                     modules: false,
+                    exclude: ["@babel/plugin-transform-typeof-symbol"],
                 },
             ],
         ],
