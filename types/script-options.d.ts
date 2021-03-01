@@ -1,5 +1,7 @@
 interface PayPalScriptQueryParameters {
     "client-id": string;
+    // loadScript() supports an array and will convert it
+    // to the correct merchant-id and data-merchant-id string values
     "merchant-id"?: string[] | string;
     currency?: string;
     intent?: string;
