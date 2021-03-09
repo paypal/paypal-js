@@ -29,6 +29,12 @@ declare module "@paypal/paypal-js" {
         PromisePonyfill?: PromiseConstructor
     ): Promise<PayPalNamespace | null>;
 
+    export function loadCustomScript(options: {
+        url: string;
+        attributes?: Record<string, string>;
+        PromisePonyfill?: PromiseConstructor;
+    }): Promise<void>;
+
     export const version: string;
 }
 

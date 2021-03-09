@@ -151,7 +151,7 @@ describe("insertScriptElement()", () => {
     test("inserts a <script> with attributes into the DOM", () => {
         insertScriptElement({
             url,
-            dataAttributes: { "data-order-id": "12345" },
+            attributes: { "data-order-id": "12345" },
             onError: jest.fn(),
             onSuccess: jest.fn(),
         });
@@ -169,7 +169,7 @@ describe("insertScriptElement()", () => {
     test("sets a nonce on the script tag when data-csp-nonce is used", () => {
         insertScriptElement({
             url,
-            dataAttributes: { "data-csp-nonce": "12345" },
+            attributes: { "data-csp-nonce": "12345" },
             onError: jest.fn(),
             onSuccess: jest.fn(),
         });

@@ -1,18 +1,18 @@
-import { loadScript } from "./load-script";
+import { loadScript, loadCustomScript } from "./load-script";
 // import using "*" to spy on insertScriptElement()
 import * as utils from "./utils";
 
 describe("loadScript()", () => {
     const insertScriptElementSpy = jest.spyOn(utils, "insertScriptElement");
-    const PromiseBackup = window.Promise;
+
     const paypalNamespace = { version: "5" };
 
     beforeEach(() => {
         document.head.innerHTML = "";
 
         insertScriptElementSpy.mockImplementation(
-            ({ onSuccess, dataAttributes = {} }: utils.ScriptElement) => {
-                const namespace = dataAttributes["data-namespace"] || "paypal";
+            ({ onSuccess, attributes = {} }: utils.ScriptElement) => {
+                const namespace = attributes["data-namespace"] || "paypal";
 
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 (window as any)[namespace] = paypalNamespace;
@@ -25,8 +25,6 @@ describe("loadScript()", () => {
             writable: true,
             value: undefined,
         });
-
-        window.Promise = PromiseBackup;
     });
 
     afterEach(() => {
@@ -91,38 +89,100 @@ describe("loadScript()", () => {
 
     test("should throw an error from invalid arguments", () => {
         // @ts-expect-error ignore invalid arguments error
-        expect(() => loadScript()).toThrow(
-            "Invalid arguments. Expected options to be an object."
-        );
+        expect(() => loadScript()).toThrow("Expected an options object.");
         // @ts-expect-error ignore invalid arguments error
         expect(() => loadScript({}, {})).toThrow(
-            "Invalid arguments. Expected PromisePolyfill to be a function."
+            "Expected PromisePonyfill to be a function."
+        );
+    });
+});
+
+describe("loadCustomScript()", () => {
+    const insertScriptElementSpy = jest.spyOn(utils, "insertScriptElement");
+    const PromiseBackup = window.Promise;
+
+    beforeEach(() => {
+        document.head.innerHTML = "";
+
+        insertScriptElementSpy.mockImplementation(
+            ({ onSuccess }: utils.ScriptElement) => {
+                process.nextTick(() => onSuccess());
+            }
         );
     });
 
+    afterEach(() => {
+        insertScriptElementSpy.mockClear();
+        window.Promise = PromiseBackup;
+    });
+
+    test("should insert <script> and resolve the promise", async () => {
+        const options = {
+            url: "https://www.example.com/index.js",
+            attributes: { id: "test-id-value" },
+        };
+
+        await loadCustomScript(options);
+        expect(insertScriptElementSpy).toHaveBeenCalledWith(
+            expect.objectContaining(options)
+        );
+    });
+
+    test("should throw an error from invalid arguments", () => {
+        // @ts-expect-error ignore invalid arguments error
+        expect(() => loadCustomScript()).toThrow("Expected an options object.");
+        // @ts-expect-error ignore invalid arguments error
+        expect(() => loadCustomScript({ url: null })).toThrow("Invalid url.");
+        expect(() => loadCustomScript({ url: "" })).toThrow("Invalid url.");
+
+        expect(() =>
+            loadCustomScript({
+                url: "https://www.example.com/index.js",
+                // @ts-expect-error ignore invalid arguments error
+                attributes: "",
+            })
+        ).toThrow("Expected attributes to be an object.");
+        expect(() =>
+            loadCustomScript(
+                {
+                    url: "https://www.example.com/index.js",
+                },
+                // @ts-expect-error ignore invalid arguments error
+                {}
+            )
+        ).toThrow("Expected PromisePonyfill to be a function.");
+    });
+
     test("should throw an error when the script fails to load", async () => {
-        expect.assertions(3);
+        expect.assertions(2);
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
             process.nextTick(() => onError && onError("failed to load"));
         });
 
-        expect(window.paypal).toBe(undefined);
-
         try {
-            await loadScript({ "client-id": "test" });
+            await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
             expect(err.message).toBe(
-                'The script "https://www.paypal.com/sdk/js?client-id=test" didn\'t load correctly.'
+                'The script "https://www.example.com/index.js" failed to load.'
             );
         }
     });
 
     test("should use the provided promise ponyfill", () => {
-        const PromisePonyfill = jest.fn();
-        // @ts-expect-error ignore mock error
-        loadScript({ "client-id": "test" }, PromisePonyfill);
+        const PromisePonyfill = jest.fn(() => {
+            return {
+                then: jest.fn(),
+            };
+        });
+        loadCustomScript(
+            {
+                url: "https://www.example.com/index.js",
+            },
+            // @ts-expect-error ignore mock error
+            PromisePonyfill
+        );
         expect(PromisePonyfill).toHaveBeenCalledTimes(1);
     });
 
@@ -132,7 +192,9 @@ describe("loadScript()", () => {
 
         expect(window.paypal).toBe(undefined);
         expect(window.Promise).toBe(undefined);
-        expect(() => loadScript({ "client-id": "test" })).toThrow(
+        expect(() =>
+            loadCustomScript({ url: "https://www.example.com/index.js" })
+        ).toThrow(
             "Promise is undefined. To resolve the issue, use a Promise polyfill."
         );
     });

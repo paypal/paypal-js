@@ -1,19 +1,17 @@
 import type { PayPalScriptOptions } from "../types/script-options";
 
-interface StringMap {
-    [key: string]: string;
-}
+type StringMap = Record<string, string>;
 
 export function findScript(
     url: string,
-    dataAttributes?: StringMap
+    attributes?: StringMap
 ): HTMLScriptElement | null {
     const currentScript = document.querySelector<HTMLScriptElement>(
         `script[src="${url}"]`
     );
     if (currentScript === null) return null;
 
-    const nextScript = createScriptElement(url, dataAttributes);
+    const nextScript = createScriptElement(url, attributes);
 
     // check if the new script has the same number of data attributes
     if (
@@ -37,18 +35,18 @@ export function findScript(
 
 export interface ScriptElement {
     url: string;
-    dataAttributes?: StringMap;
+    attributes?: StringMap;
     onSuccess: () => void;
     onError: OnErrorEventHandler;
 }
 
 export function insertScriptElement({
     url,
-    dataAttributes,
+    attributes,
     onSuccess,
     onError,
 }: ScriptElement): void {
-    const newScript = createScriptElement(url, dataAttributes);
+    const newScript = createScriptElement(url, attributes);
     newScript.onerror = onError;
     newScript.onload = onSuccess;
 
@@ -118,16 +116,16 @@ export function objectToQueryString(params: StringMap): string {
 
 function createScriptElement(
     url: string,
-    dataAttributes: StringMap = {}
+    attributes: StringMap = {}
 ): HTMLScriptElement {
     const newScript: HTMLScriptElement = document.createElement("script");
     newScript.src = url;
 
-    Object.keys(dataAttributes).forEach((key) => {
-        newScript.setAttribute(key, dataAttributes[key]);
+    Object.keys(attributes).forEach((key) => {
+        newScript.setAttribute(key, attributes[key]);
 
         if (key === "data-csp-nonce") {
-            newScript.setAttribute("nonce", dataAttributes["data-csp-nonce"]);
+            newScript.setAttribute("nonce", attributes["data-csp-nonce"]);
         }
     });
 

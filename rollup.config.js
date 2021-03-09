@@ -11,9 +11,11 @@ const banner = getBannerText();
 const outputConfigForBrowserBundle = {
     format: "iife",
     name: "paypalLoadScript",
-    // update the default export to be the loadScript() function
-    footer: "paypalLoadScript = paypalLoadScript.loadScript;",
     banner,
+    // declare global variables for loadScript() and loadCustomScript()
+    footer:
+        "window.paypalLoadCustomScript = paypalLoadScript.loadCustomScript;" +
+        "\nwindow.paypalLoadScript = paypalLoadScript.loadScript;",
 };
 const tsconfigOverride = { exclude: ["node_modules", "**/*.test.ts"] };
 
@@ -88,7 +90,7 @@ export default [
 ];
 
 function getBannerText() {
-    const banner = `
+    return `
 /*!
  * paypal-js v${pkg.version} (${new Date().toISOString()})
  * Copyright 2020-present, PayPal, Inc. All rights reserved.
@@ -105,6 +107,4 @@ function getBannerText() {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */`.trim();
-
-    return banner;
 }

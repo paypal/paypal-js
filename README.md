@@ -63,7 +63,7 @@ loadScript({ "client-id": "test" })
     .then((paypal) => {
         paypal.Buttons().render("#your-container-element");
     })
-    .catch(err) => {
+    .catch((err) => {
         console.error("failed to load the PayPal JS SDK script", err);
     });
 ```
@@ -202,6 +202,28 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
 ```
 
 Note that the above CDN location points to the latest release of paypal-js. It is advised that when you deploy your site, you import the specific version you have developed and tested with (ex: https://unpkg.com/@paypal/paypal-js@2.1.3/dist/paypal.browser.min.js).
+
+### `loadCustomScript(options)`
+
+The `loadCustomScript` function is a generic script loader function that works with any url.
+
+-   accepts an object for defining the script url and attributes.
+-   returns a promise to indicate if the script was successfully loaded.
+
+```js
+import { loadCustomScript } from "@paypal/paypal-js";
+
+loadCustomScript({
+    url: "https://www.example.com/index.js",
+    attributes: { id: "custom-id-value", "data-foo": "custom-data-attribute" },
+})
+    .then(() => {
+        console.log("successfully loaded the custom script");
+    })
+    .catch((err) => {
+        console.error("failed to load the custom script", err);
+    });
+```
 
 ## TypeScript Support
 

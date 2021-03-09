@@ -2,8 +2,11 @@
  * @jest-environment node
  */
 
-import { loadScript } from "./load-script";
+import { loadScript, loadCustomScript } from "./load-script";
 
-test("should resolve with null when global window object does not exist", () => {
-    return expect(loadScript({ "client-id": "test" })).resolves.toBe(null);
+test("should still resolve when global window object does not exist", async () => {
+    await expect(loadScript({ "client-id": "test" })).resolves.toBeNull();
+    await expect(
+        loadCustomScript({ url: "https://www.example.com/index.js" })
+    ).resolves.toBeUndefined();
 });

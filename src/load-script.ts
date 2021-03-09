@@ -11,66 +11,79 @@ import type { PayPalNamespace } from "../types/index";
  */
 export function loadScript(
     options: PayPalScriptOptions,
-    PromisePonyfill?: PromiseConstructor
+    PromisePonyfill: PromiseConstructor = getDefaultPromiseImplementation()
 ): Promise<PayPalNamespace | null> {
     validateArguments(options, PromisePonyfill);
 
-    if (typeof PromisePonyfill === "undefined") {
-        PromisePonyfill = getDefaultPromiseImplementation();
+    // resolve with null when running in Node
+    if (typeof window === "undefined") return PromisePonyfill.resolve(null);
+
+    const { url, dataAttributes } = processOptions(options);
+    const namespace = dataAttributes["data-namespace"] || "paypal";
+    const existingWindowNamespace = getPayPalWindowNamespace(namespace);
+
+    // resolve with the existing global paypal namespace when a script with the same params already exists
+    if (findScript(url, dataAttributes) && existingWindowNamespace) {
+        return PromisePonyfill.resolve(existingWindowNamespace);
     }
 
-    return new PromisePonyfill((resolve, reject) => {
-        // resolve with null when running in Node
-        if (typeof window === "undefined") return resolve(null);
+    return loadCustomScript(
+        {
+            url,
+            attributes: dataAttributes,
+        },
+        PromisePonyfill
+    ).then(() => {
+        const newWindowNamespace = getPayPalWindowNamespace(namespace);
 
-        const { url, dataAttributes } = processOptions(options);
-        const namespace = dataAttributes["data-namespace"] || "paypal";
-        const existingWindowNamespace = getPayPalWindowNamespace(namespace);
-
-        // resolve with the existing global paypal namespace when a script with the same params already exists
-        if (findScript(url, dataAttributes) && existingWindowNamespace) {
-            return resolve(existingWindowNamespace);
+        if (newWindowNamespace) {
+            return newWindowNamespace;
         }
 
-        insertScriptElement({
-            url,
-            dataAttributes,
-            onSuccess: () => {
-                const newWindowNamespace = getPayPalWindowNamespace(namespace);
-
-                if (newWindowNamespace) return resolve(newWindowNamespace);
-                return reject(
-                    new Error(
-                        `The window.${namespace} global variable is not available.`
-                    )
-                );
-            },
-            onError: () => {
-                return reject(
-                    new Error(`The script "${url}" didn't load correctly.`)
-                );
-            },
-        });
+        throw new Error(
+            `The window.${namespace} global variable is not available.`
+        );
     });
 }
 
-function validateArguments(
-    options: PayPalScriptOptions,
-    PromisePonyfill?: PromiseConstructor
-) {
-    if (typeof options !== "object" || options === null) {
-        throw new Error("Invalid arguments. Expected options to be an object.");
+/**
+ * Load a custom script asynchronously.
+ *
+ * @param {Object} options - used to set the script url and attributes.
+ * @param {PromiseConstructor} [PromisePonyfill=window.Promise] - optional Promise Constructor ponyfill.
+ * @return {Promise<void>} returns a promise to indicate if the script was successfully loaded.
+ */
+export function loadCustomScript(
+    options: {
+        url: string;
+        attributes?: Record<string, string>;
+    },
+    PromisePonyfill: PromiseConstructor = getDefaultPromiseImplementation()
+): Promise<void> {
+    validateArguments(options, PromisePonyfill);
+
+    const { url, attributes } = options;
+
+    if (typeof url !== "string" || url.length === 0) {
+        throw new Error("Invalid url.");
     }
 
-    if (typeof PromisePonyfill === "undefined") {
-        return;
+    if (typeof attributes !== "undefined" && typeof attributes !== "object") {
+        throw new Error("Expected attributes to be an object.");
     }
 
-    if (typeof PromisePonyfill !== "function") {
-        throw new Error(
-            "Invalid arguments. Expected PromisePolyfill to be a function."
-        );
-    }
+    return new PromisePonyfill((resolve, reject) => {
+        // resolve with undefined when running in Node
+        if (typeof window === "undefined") return resolve();
+
+        insertScriptElement({
+            url,
+            attributes,
+            onSuccess: () => resolve(),
+            onError: () =>
+                reject(new Error(`The script "${url}" failed to load.`)),
+        });
+    });
 }
 
 function getDefaultPromiseImplementation() {
@@ -85,4 +98,17 @@ function getDefaultPromiseImplementation() {
 function getPayPalWindowNamespace(namespace: string): PayPalNamespace {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (window as any)[namespace];
+}
+
+function validateArguments(options: unknown, PromisePonyfill?: unknown) {
+    if (typeof options !== "object" || options === null) {
+        throw new Error("Expected an options object.");
+    }
+
+    if (
+        typeof PromisePonyfill !== "undefined" &&
+        typeof PromisePonyfill !== "function"
+    ) {
+        throw new Error("Expected PromisePonyfill to be a function.");
+    }
 }
