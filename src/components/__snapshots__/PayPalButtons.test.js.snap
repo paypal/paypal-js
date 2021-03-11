@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<PayPalButtons /> should catch and log zoid render errors 1`] = `"Failed to render <PayPalButtons /> component. Window closed"`;
+
 exports[`<PayPalButtons /> should throw an error when no components are passed to the PayPalScriptProvider 1`] = `"Unable to render <PayPalButtons /> because window.paypal.Buttons is undefined."`;
 
 exports[`<PayPalButtons /> should throw an error when the 'buttons' component is missing from the components list passed to the PayPalScriptProvider 1`] = `

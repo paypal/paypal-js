@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { render, waitFor, screen, fireEvent } from "@testing-library/react";
+import {
+    render,
+    waitFor,
+    screen,
+    fireEvent,
+    act,
+} from "@testing-library/react";
 
 import { PayPalScriptProvider } from "../ScriptContext";
 import PayPalButtons from "./PayPalButtons";
@@ -11,13 +17,11 @@ jest.mock("@paypal/paypal-js", () => ({
 }));
 
 describe("<PayPalButtons />", () => {
-    let consoleErrorSpy;
     beforeEach(() => {
         window.paypal = {};
         loadScript.mockResolvedValue(window.paypal);
-
-        consoleErrorSpy = jest.spyOn(console, "error");
-        console.error.mockImplementation(() => {});
+        const consoleErrorSpy = jest.spyOn(console, "error");
+        consoleErrorSpy.mockImplementation(() => {});
     });
     afterEach(() => {
         jest.clearAllMocks();
@@ -98,14 +102,14 @@ describe("<PayPalButtons />", () => {
             expect(window.paypal.Buttons).toHaveBeenCalled();
         });
 
-        const onInitCallback = window.paypal.Buttons.mock.calls[0][0].onInit;
-
         const onInitActions = {
             enable: jest.fn(),
             disable: jest.fn(),
         };
 
-        onInitCallback({}, onInitActions);
+        act(() =>
+            window.paypal.Buttons.mock.calls[0][0].onInit({}, onInitActions)
+        );
 
         await waitFor(() => {
             expect(onInitCallbackMock).toHaveBeenCalled();
@@ -183,8 +187,10 @@ describe("<PayPalButtons />", () => {
 
         expect(screen.getByTestId("orderID").innerHTML).toBe("1");
 
-        // call createOrder() to trigger a state change
-        window.paypal.Buttons.mock.calls[0][0].createOrder();
+        act(() =>
+            // call createOrder() to trigger a state change
+            window.paypal.Buttons.mock.calls[0][0].createOrder()
+        );
 
         await waitFor(() =>
             expect(screen.getByTestId("orderID").innerHTML).toBe("2")
@@ -246,17 +252,21 @@ describe("<PayPalButtons />", () => {
             };
         };
 
+        const onError = jest.fn();
+
+        const wrapper = ({ children }) => (
+            <ErrorBoundary onError={onError}>{children}</ErrorBoundary>
+        );
+
         render(
             <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <PayPalButtons />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
+            { wrapper }
         );
 
-        await waitFor(() =>
-            expect(consoleErrorSpy).toHaveBeenCalledWith(
-                expect.stringMatching(/Window closed/)
-            )
-        );
+        await waitFor(() => expect(onError).toHaveBeenCalled());
+        expect(onError.mock.calls[0][0].message).toMatchSnapshot();
     });
 });
 
