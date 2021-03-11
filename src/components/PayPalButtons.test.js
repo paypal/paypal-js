@@ -241,14 +241,16 @@ describe("<PayPalButtons />", () => {
         expect(onError.mock.calls[0][0].message).toMatchSnapshot();
     });
 
-    test("should catch and log zoid render errors", async () => {
+    test("should catch and throw unexpected zoid render errors", async () => {
         window.paypal.Buttons = () => {
             return {
                 close: jest.fn(),
                 isEligible: jest.fn().mockReturnValue(true),
-                render: jest
-                    .fn()
-                    .mockReturnValue(Promise.reject("Window closed")),
+                render: jest.fn((element) => {
+                    // simulate adding markup for paypal button
+                    element.append(document.createElement("div"));
+                    return Promise.reject("Unknown error");
+                }),
             };
         };
 
