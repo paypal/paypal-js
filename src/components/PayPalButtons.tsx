@@ -89,11 +89,11 @@ export default function PayPalButtons({
 
         buttons.current.render(buttonsContainerRef.current).catch((err) => {
             // component failed to render, possibly because it was closed or destroyed.
-            if (buttonsContainerRef.current === null) {
-                // ref is no longer in the DOM, we can safely ignore the error
+            if (buttonsContainerRef.current === null || buttonsContainerRef.current.children.length === 0) {
+                // paypal button is no longer in the DOM, we can safely ignore the error
                 return;
             }
-            // ref is still in the DOM
+            // paypal button is still in the DOM
             setErrorState(() => {
                 throw new Error(`Failed to render <PayPalButtons /> component. ${err}`);
             });
