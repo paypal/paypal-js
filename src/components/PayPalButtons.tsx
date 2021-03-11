@@ -3,7 +3,7 @@ import { usePayPalScriptReducer } from "../ScriptContext";
 import type {
     PayPalButtonsComponentProps,
     PayPalButtonsComponent,
-    OnInitActions
+    OnInitActions,
 } from "@paypal/paypal-js/types/components/buttons";
 
 interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
@@ -69,14 +69,20 @@ export default function PayPalButtons({
             return closeButtonsComponent;
         }
 
-        const decoratedOnInit = (data: Record<string, unknown>, actions: OnInitActions) => {
+        const decoratedOnInit = (
+            data: Record<string, unknown>,
+            actions: OnInitActions
+        ) => {
             setInitActions(actions);
-            if (typeof buttonProps.onInit === 'function') {
+            if (typeof buttonProps.onInit === "function") {
                 buttonProps.onInit(data, actions);
             }
-        }
+        };
 
-        buttons.current = window.paypal.Buttons({ ...buttonProps, onInit: decoratedOnInit });
+        buttons.current = window.paypal.Buttons({
+            ...buttonProps,
+            onInit: decoratedOnInit,
+        });
 
         // only render the button when eligible
         if (buttons.current.isEligible() === false) {
@@ -89,13 +95,18 @@ export default function PayPalButtons({
 
         buttons.current.render(buttonsContainerRef.current).catch((err) => {
             // component failed to render, possibly because it was closed or destroyed.
-            if (buttonsContainerRef.current === null || buttonsContainerRef.current.children.length === 0) {
+            if (
+                buttonsContainerRef.current === null ||
+                buttonsContainerRef.current.children.length === 0
+            ) {
                 // paypal button is no longer in the DOM, we can safely ignore the error
                 return;
             }
             // paypal button is still in the DOM
             setErrorState(() => {
-                throw new Error(`Failed to render <PayPalButtons /> component. ${err}`);
+                throw new Error(
+                    `Failed to render <PayPalButtons /> component. ${err}`
+                );
             });
         });
 
@@ -113,14 +124,20 @@ export default function PayPalButtons({
         } else {
             initActions.enable();
         }
+    }, [disabled, initActions]);
 
-    }, [disabled, initActions])
+    const isDisabledStyle = disabled ? { opacity: 0.33 } : {};
+    const classNames = `${className} ${
+        disabled ? "paypal-buttons-disabled" : ""
+    }`.trim();
 
-    const isDisabledStyle = disabled ? { opacity: 0.33 }: {};
-    const classNames = `${className} ${disabled ? 'paypal-buttons-disabled' : ''}`.trim();
-
-
-    return <div ref={buttonsContainerRef} style={isDisabledStyle} className={classNames} />;
+    return (
+        <div
+            ref={buttonsContainerRef}
+            style={isDisabledStyle}
+            className={classNames}
+        />
+    );
 }
 
 function getErrorMessage({ components = "" }) {
