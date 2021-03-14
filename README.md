@@ -231,15 +231,4 @@ This package includes TypeScript type definitions for the PayPal JS SDK. This in
 
 ## Releasing
 
-Run one of the following commands to publish a new version to npm:
-
-```bash
-# bug fixes
-npm run release:patch
-
-# new functionality that's backwards compatible
-npm run release:minor
-
-# breaking changes
-npm run release:major
-```
+Run `npm run release` to publish a new release. The version number is determined by the git commits which follow [conventional commits spec](https://www.conventionalcommits.org).
