@@ -20,6 +20,8 @@ jobs:
 
             - name: ⬇️ Checkout repo
               uses: actions/checkout@v2
+              with:
+                fetch-depth: 0
 
             - name: ⎔ Setup node
               uses: actions/setup-node@v1
@@ -33,6 +35,9 @@ jobs:
 
             - name: ▶️ Run validate script
               run: npm run validate
+
+            - name: 👕 Lint commit messages
+              uses: wagoid/commitlint-github-action@v2
 
             - name: ⬆️ Upload coverage report
               uses: codecov/codecov-action@v1
