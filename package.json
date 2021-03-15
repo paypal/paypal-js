@@ -82,19 +82,5 @@
     "peerDependencies": {
         "react": ">=16.3.0",
         "react-dom": ">=16.3.0"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
-    },
-    "lint-staged": {
-        "*.js": [
-            "prettier --write",
-            "eslint"
-        ],
-        "*.{json,css,html,md}": [
-            "prettier --write"
-        ]
     }
 }
