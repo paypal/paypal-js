@@ -68,7 +68,9 @@ describe("usePayPalScriptReducer", () => {
         const { TestComponent } = setupTestComponent();
 
         jest.spyOn(console, "error");
-        console.error.mockImplementation(() => {});
+        console.error.mockImplementation(() => {
+            // do nothing
+        });
 
         expect(() => render(<TestComponent />)).toThrow();
         console.error.mockRestore();

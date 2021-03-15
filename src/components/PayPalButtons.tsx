@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, FunctionComponent } from "react";
 import { usePayPalScriptReducer } from "../ScriptContext";
 import type {
     PayPalButtonsComponentProps,
@@ -6,7 +6,7 @@ import type {
     OnInitActions,
 } from "@paypal/paypal-js/types/components/buttons";
 
-interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
+export interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
     /**
      * Used to re-render the component.
      * Changes to this prop will destroy the existing Buttons and render them again using the current props.
@@ -32,12 +32,12 @@ interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
  *     <PayPalButtons style={{ layout: "vertical" }} createOrder={(data, actions) => {}} />
  * ```
  */
-export default function PayPalButtons({
+export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
     className = "",
     disabled = false,
     forceReRender,
     ...buttonProps
-}: PayPalButtonsReactProps) {
+}: PayPalButtonsReactProps) => {
     const [{ isResolved, options }] = usePayPalScriptReducer();
     const buttonsContainerRef = useRef<HTMLDivElement>(null);
     const buttons = useRef<PayPalButtonsComponent | null>(null);
@@ -138,7 +138,7 @@ export default function PayPalButtons({
             className={classNames}
         />
     );
-}
+};
 
 function getErrorMessage({ components = "" }) {
     let errorMessage =

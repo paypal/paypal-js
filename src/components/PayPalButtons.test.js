@@ -8,7 +8,7 @@ import {
 } from "@testing-library/react";
 
 import { PayPalScriptProvider } from "../ScriptContext";
-import PayPalButtons from "./PayPalButtons";
+import { PayPalButtons } from "./PayPalButtons";
 import { FUNDING } from "@paypal/sdk-constants";
 import { loadScript } from "@paypal/paypal-js";
 
@@ -21,7 +21,9 @@ describe("<PayPalButtons />", () => {
         window.paypal = {};
         loadScript.mockResolvedValue(window.paypal);
         const consoleErrorSpy = jest.spyOn(console, "error");
-        consoleErrorSpy.mockImplementation(() => {});
+        consoleErrorSpy.mockImplementation(() => {
+            // do nothing
+        });
     });
     afterEach(() => {
         jest.clearAllMocks();

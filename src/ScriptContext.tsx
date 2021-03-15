@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useReducer } from "react";
+import React, {
+    createContext,
+    useContext,
+    useEffect,
+    useReducer,
+    FunctionComponent,
+} from "react";
 import { loadScript } from "@paypal/paypal-js";
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 
@@ -80,7 +86,10 @@ interface ScriptProviderProps {
     children?: React.ReactNode;
 }
 
-function PayPalScriptProvider({ options, children }: ScriptProviderProps) {
+const PayPalScriptProvider: FunctionComponent<ScriptProviderProps> = ({
+    options,
+    children,
+}: ScriptProviderProps) => {
     const initialState = {
         options,
         loadingStatus: SCRIPT_LOADING_STATE.PENDING,
@@ -121,6 +130,6 @@ function PayPalScriptProvider({ options, children }: ScriptProviderProps) {
             </ScriptDispatchContext.Provider>
         </ScriptContext.Provider>
     );
-}
+};
 
 export { PayPalScriptProvider, usePayPalScriptReducer };

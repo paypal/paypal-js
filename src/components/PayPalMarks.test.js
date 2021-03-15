@@ -2,7 +2,7 @@ import React from "react";
 import { render, waitFor } from "@testing-library/react";
 
 import { PayPalScriptProvider } from "../ScriptContext";
-import PayPalMarks from "./PayPalMarks";
+import { PayPalMarks } from "./PayPalMarks";
 import { FUNDING } from "@paypal/sdk-constants";
 import { loadScript } from "@paypal/paypal-js";
 
@@ -17,7 +17,9 @@ describe("<PayPalMarks />", () => {
         loadScript.mockResolvedValue(window.paypal);
 
         consoleErrorSpy = jest.spyOn(console, "error");
-        console.error.mockImplementation(() => {});
+        console.error.mockImplementation(() => {
+            // do nothing
+        });
     });
     afterEach(() => {
         jest.clearAllMocks();
