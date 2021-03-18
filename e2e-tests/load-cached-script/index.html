@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Load Cached Script | PayPal JS</title>
+    </head>
+    <body>
+        <h1>Load Cached Script</h1>
+
+        <script type="module">
+            import { loadScript } from "../../dist/paypal.esm.js";
+
+            const options = {
+                "client-id": "test",
+                "data-order-id": "12345",
+            };
+
+            // initial load and render
+            loadScript(options).then((paypal) => {
+                window.currentPayPalButton = paypal.Buttons();
+
+                window.currentPayPalButton
+                    .render("#paypal-buttons")
+                    .catch((err) => {
+                        // ignore any render errors when reloading
+                    });
+            });
+
+            document
+                .querySelector("#btn-reload")
+                .addEventListener("click", (event) => {
+                    // this should not reload the script since the options have not changed
+                    const colors = ["gold", "blue", "black"];
+                    loadScript(options).then((paypal) => {
+                        if (
+                            window.currentPayPalButton &&
+                            window.currentPayPalButton.close
+                        ) {
+                            window.currentPayPalButton.close().then((err) => {
+                                // ignore errors when closing
+                            });
+                        }
+
+                        const color =
+                            colors[Math.floor(Math.random() * colors.length)];
+
+                        window.currentPayPalButton = paypal.Buttons({
+                            style: { color },
+                        });
+
+                        window.currentPayPalButton
+                            .render("#paypal-buttons")
+                            .catch((err) => {
+                                // ignore any render errors when reloading
+                            });
+                    });
+                });
+        </script>
+
+        <button id="btn-reload" type="button">Reload Script</button>
+        <br />
+
+        <div id="paypal-buttons"></div>
+    </body>
+</html>

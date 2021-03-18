@@ -13,9 +13,13 @@ export function findScript(
 
     const nextScript = createScriptElement(url, attributes);
 
+    // ignore the data-uid-auto attribute that gets auto-assigned to every script tag
+    const currentScriptDataset = Object.assign({}, currentScript.dataset);
+    delete currentScriptDataset.uidAuto;
+
     // check if the new script has the same number of data attributes
     if (
-        Object.keys(currentScript.dataset).length !==
+        Object.keys(currentScriptDataset).length !==
         Object.keys(nextScript.dataset).length
     ) {
         return null;
@@ -24,8 +28,8 @@ export function findScript(
     let isExactMatch = true;
 
     // check if the data attribute values are the same
-    Object.keys(currentScript.dataset).forEach((key) => {
-        if (currentScript.dataset[key] !== nextScript.dataset[key]) {
+    Object.keys(currentScriptDataset).forEach((key) => {
+        if (currentScriptDataset[key] !== nextScript.dataset[key]) {
             isExactMatch = false;
         }
     });

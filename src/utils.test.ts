@@ -107,7 +107,7 @@ describe("findScript()", () => {
 
     test("finds the existing script in the DOM", () => {
         const url = "https://www.paypal.com/sdk/js?client-id=test";
-        document.head.innerHTML = `<script src="${url}" data-order-id="123" data-page-type="checkout"></script>`;
+        document.head.innerHTML = `<script src="${url}" data-order-id="123" data-page-type="checkout" data-uid-auto="81376a99ff_mdm6mji6mzg"></script>`;
 
         const result = findScript(url, {
             "data-page-type": "checkout",
