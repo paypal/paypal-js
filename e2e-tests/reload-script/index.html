@@ -9,26 +9,28 @@
 
         <script type="module">
             import { loadScript } from "../../dist/paypal.esm.js";
-            window.paypalLoadScript = function (currency) {
-                const options = {
-                    "client-id": "test",
-                    "data-order-id": "12345",
-                    currency,
-                };
 
-                loadScript(options).then((paypal) => {
-                    paypal.Buttons().render("#paypal-buttons");
-                });
+            const options = {
+                "client-id": "test",
+                "data-order-id": "12345",
+                currency: document.querySelector("#currency").value,
             };
 
-            const currentCurrency = document.querySelector("#currency").value;
-            paypalLoadScript(currentCurrency);
+            // initial load and render
+            loadScript(options).then((paypal) => {
+                paypal.Buttons().render("#paypal-buttons");
+            });
 
             document
                 .querySelector("#currency")
                 .addEventListener("change", (event) => {
-                    const newCurrency = event.target.value;
-                    paypalLoadScript(newCurrency);
+                    // reload and render with new currency
+                    loadScript({
+                        ...options,
+                        currency: event.target.value,
+                    }).then((paypal) => {
+                        paypal.Buttons().render("#paypal-buttons");
+                    });
                 });
         </script>
 
