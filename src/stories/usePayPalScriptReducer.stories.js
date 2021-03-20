@@ -37,6 +37,19 @@ export const Currency = () => {
         });
     }
 
+    function createOrder(data, actions) {
+        return actions.order.create({
+            purchase_units: [
+                {
+                    amount: {
+                        value: "88.44",
+                        currency,
+                    },
+                },
+            ],
+        });
+    }
+
     return (
         <>
             <select
@@ -50,7 +63,7 @@ export const Currency = () => {
                 <option value="EUR">Euro</option>
                 <option value="CAD">Canadian dollar</option>
             </select>
-            <PayPalButtons />
+            <PayPalButtons createOrder={createOrder} />
         </>
     );
 };
