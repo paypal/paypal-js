@@ -18,7 +18,14 @@ jest.mock("@paypal/paypal-js", () => ({
 
 describe("<PayPalButtons />", () => {
     beforeEach(() => {
-        window.paypal = {};
+        window.paypal = {
+            Buttons: jest.fn(() => ({
+                close: jest.fn().mockResolvedValue(),
+                isEligible: jest.fn().mockReturnValue(true),
+                render: jest.fn().mockResolvedValue({}),
+            })),
+        };
+
         loadScript.mockResolvedValue(window.paypal);
         const consoleErrorSpy = jest.spyOn(console, "error");
         consoleErrorSpy.mockImplementation(() => {
@@ -30,14 +37,6 @@ describe("<PayPalButtons />", () => {
     });
 
     test("should pass props to window.paypal.Buttons()", async () => {
-        window.paypal = {
-            Buttons: jest.fn(() => ({
-                close: jest.fn(),
-                isEligible: jest.fn().mockReturnValue(true),
-                render: jest.fn().mockResolvedValue({}),
-            })),
-        };
-
         render(
             <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <PayPalButtons
@@ -57,14 +56,6 @@ describe("<PayPalButtons />", () => {
     });
 
     test("should use className prop and add to div container", async () => {
-        window.paypal = {
-            Buttons: jest.fn(() => ({
-                close: jest.fn(),
-                isEligible: jest.fn().mockReturnValue(true),
-                render: jest.fn().mockResolvedValue({}),
-            })),
-        };
-
         render(
             <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <PayPalButtons className="custom-class-name" />
@@ -77,14 +68,6 @@ describe("<PayPalButtons />", () => {
     });
 
     test("should disable the Buttons with disabled=true", async () => {
-        window.paypal = {
-            Buttons: jest.fn(() => ({
-                close: jest.fn(),
-                isEligible: jest.fn().mockReturnValue(true),
-                render: jest.fn().mockResolvedValue({}),
-            })),
-        };
-
         const onInitCallbackMock = jest.fn();
 
         render(
@@ -120,14 +103,6 @@ describe("<PayPalButtons />", () => {
     });
 
     test("should re-render Buttons when props.forceReRender changes", async () => {
-        window.paypal = {
-            Buttons: jest.fn(() => ({
-                close: jest.fn(),
-                isEligible: jest.fn().mockReturnValue(true),
-                render: jest.fn().mockResolvedValue({}),
-            })),
-        };
-
         function ButtonWrapper({ initialAmount }) {
             const [amount, setAmount] = useState(initialAmount);
             return (
@@ -159,14 +134,6 @@ describe("<PayPalButtons />", () => {
     });
 
     test("should not re-render Buttons from side-effect in props.createOrder function", async () => {
-        window.paypal = {
-            Buttons: jest.fn(() => ({
-                close: jest.fn(),
-                isEligible: jest.fn().mockReturnValue(true),
-                render: jest.fn().mockResolvedValue({}),
-            })),
-        };
-
         function ButtonWrapper({ initialOrderID }) {
             const [orderID, setOrderID] = useState(initialOrderID);
             return (
@@ -203,6 +170,8 @@ describe("<PayPalButtons />", () => {
     });
 
     test("should throw an error when no components are passed to the PayPalScriptProvider", async () => {
+        // reset the paypal namespace to trigger the error
+        window.paypal = {};
         const onError = jest.fn();
 
         const wrapper = ({ children }) => (
@@ -221,6 +190,8 @@ describe("<PayPalButtons />", () => {
     });
 
     test("should throw an error when the 'buttons' component is missing from the components list passed to the PayPalScriptProvider", async () => {
+        // reset the paypal namespace to trigger the error
+        window.paypal = {};
         const onError = jest.fn();
 
         const wrapper = ({ children }) => (
@@ -246,7 +217,7 @@ describe("<PayPalButtons />", () => {
     test("should catch and throw unexpected zoid render errors", async () => {
         window.paypal.Buttons = () => {
             return {
-                close: jest.fn(),
+                close: jest.fn().mockResolvedValue(),
                 isEligible: jest.fn().mockReturnValue(true),
                 render: jest.fn((element) => {
                     // simulate adding markup for paypal button

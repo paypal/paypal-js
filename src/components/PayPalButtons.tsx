@@ -48,7 +48,9 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
 
     function closeButtonsComponent() {
         if (buttons.current !== null) {
-            buttons.current.close();
+            buttons.current.close().catch(() => {
+                // ignore any errors when attempting to close the component
+            });
         }
     }
 
