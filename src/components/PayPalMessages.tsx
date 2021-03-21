@@ -49,9 +49,20 @@ export const PayPalMessages: FunctionComponent<PayPalMessagesReactProps> = ({
         }
 
         messages.current.render(messagesContainerRef.current).catch((err) => {
-            console.error(
-                `Failed to render <PayPalMessages /> component. ${err}`
-            );
+            // component failed to render, possibly because it was closed or destroyed.
+            if (
+                messagesContainerRef.current === null ||
+                messagesContainerRef.current.children.length === 0
+            ) {
+                // paypal messages container is no longer in the DOM, we can safely ignore the error
+                return;
+            }
+            // paypal messages container is still in the DOM
+            setErrorState(() => {
+                throw new Error(
+                    `Failed to render <PayPalMessages /> component. ${err}`
+                );
+            });
         });
     }, [isResolved, forceReRender]);
 

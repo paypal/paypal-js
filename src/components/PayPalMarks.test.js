@@ -11,15 +11,9 @@ jest.mock("@paypal/paypal-js", () => ({
 }));
 
 describe("<PayPalMarks />", () => {
-    let consoleErrorSpy;
     beforeEach(() => {
         window.paypal = {};
         loadScript.mockResolvedValue(window.paypal);
-
-        consoleErrorSpy = jest.spyOn(console, "error");
-        console.error.mockImplementation(() => {
-            // do nothing
-        });
     });
     afterEach(() => {
         jest.clearAllMocks();
@@ -70,6 +64,10 @@ describe("<PayPalMarks />", () => {
     });
 
     test("should throw an error when no components are passed to the PayPalScriptProvider", async () => {
+        jest.spyOn(console, "error").mockImplementation(() => {
+            // do nothing
+        });
+
         const onError = jest.fn();
 
         const wrapper = ({ children }) => (
@@ -88,6 +86,10 @@ describe("<PayPalMarks />", () => {
     });
 
     test("should throw an error when the 'marks' component is missing from the components list passed to the PayPalScriptProvider", async () => {
+        jest.spyOn(console, "error").mockImplementation(() => {
+            // do nothing
+        });
+
         const onError = jest.fn();
 
         const wrapper = ({ children }) => (
@@ -110,23 +112,37 @@ describe("<PayPalMarks />", () => {
         expect(onError.mock.calls[0][0].message).toMatchSnapshot();
     });
 
-    test("should catch and log zoid render errors", async () => {
-        window.paypal.Marks = () => ({
-            isEligible: jest.fn().mockReturnValue(true),
-            render: jest.fn().mockRejectedValue("Window closed"),
+    test("should catch and throw unexpected zoid render errors", async () => {
+        jest.spyOn(console, "error").mockImplementation(() => {
+            // do nothing
         });
+
+        window.paypal.Marks = () => {
+            return {
+                isEligible: jest.fn().mockReturnValue(true),
+                render: jest.fn((element) => {
+                    // simulate adding markup for paypal mark
+                    element.append(document.createElement("div"));
+                    return Promise.reject("Unknown error");
+                }),
+            };
+        };
+
+        const onError = jest.fn();
+
+        const wrapper = ({ children }) => (
+            <ErrorBoundary onError={onError}>{children}</ErrorBoundary>
+        );
 
         render(
             <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <PayPalMarks />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
+            { wrapper }
         );
 
-        await waitFor(() =>
-            expect(consoleErrorSpy).toHaveBeenCalledWith(
-                expect.stringMatching(/Window closed/)
-            )
-        );
+        await waitFor(() => expect(onError).toHaveBeenCalled());
+        expect(onError.mock.calls[0][0].message).toMatchSnapshot();
     });
 });
 

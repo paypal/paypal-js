@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<PayPalMarks /> should catch and throw unexpected zoid render errors 1`] = `"Failed to render <PayPalMarks /> component. Unknown error"`;
+
 exports[`<PayPalMarks /> should throw an error when no components are passed to the PayPalScriptProvider 1`] = `
 "Unable to render <PayPalMarks /> because window.paypal.Marks is undefined.
 To fix the issue, add 'marks' to the list of components passed to the parent PayPalScriptProvider:

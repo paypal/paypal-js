@@ -27,10 +27,6 @@ describe("<PayPalButtons />", () => {
         };
 
         loadScript.mockResolvedValue(window.paypal);
-        const consoleErrorSpy = jest.spyOn(console, "error");
-        consoleErrorSpy.mockImplementation(() => {
-            // do nothing
-        });
     });
     afterEach(() => {
         jest.clearAllMocks();
@@ -170,6 +166,10 @@ describe("<PayPalButtons />", () => {
     });
 
     test("should throw an error when no components are passed to the PayPalScriptProvider", async () => {
+        jest.spyOn(console, "error").mockImplementation(() => {
+            // do nothing
+        });
+
         // reset the paypal namespace to trigger the error
         window.paypal = {};
         const onError = jest.fn();
@@ -190,6 +190,10 @@ describe("<PayPalButtons />", () => {
     });
 
     test("should throw an error when the 'buttons' component is missing from the components list passed to the PayPalScriptProvider", async () => {
+        jest.spyOn(console, "error").mockImplementation(() => {
+            // do nothing
+        });
+
         // reset the paypal namespace to trigger the error
         window.paypal = {};
         const onError = jest.fn();
@@ -215,6 +219,10 @@ describe("<PayPalButtons />", () => {
     });
 
     test("should catch and throw unexpected zoid render errors", async () => {
+        jest.spyOn(console, "error").mockImplementation(() => {
+            // do nothing
+        });
+
         window.paypal.Buttons = () => {
             return {
                 close: jest.fn().mockResolvedValue(),

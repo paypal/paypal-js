@@ -82,7 +82,20 @@ export const PayPalMarks: FunctionComponent<PayPalMarksReactProps> = ({
         }
 
         mark.current.render(markContainerRef.current).catch((err) => {
-            console.error(`Failed to render <PayPalMarks /> component. ${err}`);
+            // component failed to render, possibly because it was closed or destroyed.
+            if (
+                markContainerRef.current === null ||
+                markContainerRef.current.children.length === 0
+            ) {
+                // paypal marks container is no longer in the DOM, we can safely ignore the error
+                return;
+            }
+            // paypal marks container is still in the DOM
+            setErrorState(() => {
+                throw new Error(
+                    `Failed to render <PayPalMarks /> component. ${err}`
+                );
+            });
         });
     }, [isResolved, markProps.fundingSource]);
 
