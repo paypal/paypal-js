@@ -21,16 +21,15 @@ export type CreateSubscriptionActions = {
 };
 
 export type OnInitActions = {
-    enable: () => void;
-    disable: () => void;
+    enable: () => Promise<void>;
+    disable: () => Promise<void>;
 };
 
 export type OnClickActions = {
-    reject: () => void;
-    resolve: () => void;
+    reject: () => Promise<void>;
+    resolve: () => Promise<void>;
 };
 
-// todo: what else is possible here?
 export type OnApproveOrderActions = {
     order: {
         capture: () => Promise<CaptureOrderResponseBody>;
