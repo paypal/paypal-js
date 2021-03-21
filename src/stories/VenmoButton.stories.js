@@ -29,7 +29,9 @@ export default {
 };
 
 export const Standalone = () => (
-    <PayPalButtons fundingSource={FUNDING.VENMO} style={{ color: "blue" }} />
+    <PayPalButtons fundingSource={FUNDING.VENMO} style={{ color: "blue" }}>
+        <p>You are not eligible to pay with Venmo.</p>
+    </PayPalButtons>
 );
 
 export const Default = () => <PayPalButtons />;

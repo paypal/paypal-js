@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useState, FunctionComponent } from "react";
+import React, {
+    useEffect,
+    useRef,
+    useState,
+    FunctionComponent,
+    ReactElement,
+} from "react";
 import { usePayPalScriptReducer } from "../ScriptContext";
 import { getPayPalWindowNamespace, DEFAULT_PAYPAL_NAMESPACE } from "./utils";
 import type {
@@ -21,6 +27,10 @@ export interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
      * Disables the buttons.
      */
     disabled?: boolean;
+    /**
+     * Used to render custom content when ineligible.
+     */
+    children?: ReactElement | null;
 }
 
 /**
@@ -36,6 +46,7 @@ export interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
 export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
     className = "",
     disabled = false,
+    children = null,
     forceReRender,
     ...buttonProps
 }: PayPalButtonsReactProps) => {
@@ -44,6 +55,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
 
     const [{ isResolved, options }] = usePayPalScriptReducer();
     const [initActions, setInitActions] = useState<OnInitActions | null>(null);
+    const [isEligible, setIsEligible] = useState(true);
     const [, setErrorState] = useState(null);
 
     function closeButtonsComponent() {
@@ -93,6 +105,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
 
         // only render the button when eligible
         if (buttons.current.isEligible() === false) {
+            setIsEligible(false);
             return closeButtonsComponent;
         }
 
@@ -141,6 +154,10 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
     const classNames = `${className} ${
         disabled ? "paypal-buttons-disabled" : ""
     }`.trim();
+
+    if (isEligible === false) {
+        return children;
+    }
 
     return (
         <div

@@ -18,6 +18,8 @@ jest.mock("@paypal/paypal-js", () => ({
 
 describe("<PayPalButtons />", () => {
     beforeEach(() => {
+        document.body.innerHTML = "";
+
         window.paypal = {
             Buttons: jest.fn(() => ({
                 close: jest.fn().mockResolvedValue(),
@@ -163,6 +165,40 @@ describe("<PayPalButtons />", () => {
 
         // confirm that the Buttons were NOT reset by a side-effect in createOrder()
         expect(window.paypal.Buttons).toHaveBeenCalledTimes(1);
+    });
+
+    test("should render custom content when ineligible", async () => {
+        window.paypal = {
+            Buttons: jest.fn(() => ({
+                close: jest.fn().mockResolvedValue(),
+                isEligible: jest.fn().mockReturnValue(false),
+                render: jest.fn().mockResolvedValue({}),
+            })),
+        };
+
+        render(
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
+                <PayPalButtons className="test-button" />
+            </PayPalScriptProvider>
+        );
+
+        // defaults to rendering null when ineligible
+        await waitFor(() =>
+            expect(document.querySelector(".test-button")).toBeNull()
+        );
+
+        render(
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
+                <PayPalButtons>
+                    <p className="custom-content">Custom Content</p>
+                </PayPalButtons>
+            </PayPalScriptProvider>
+        );
+
+        // supports rendering props.children when ineligible
+        await waitFor(() =>
+            expect(document.querySelector(".custom-content")).toBeTruthy()
+        );
     });
 
     test("should throw an error when no components are passed to the PayPalScriptProvider", async () => {
