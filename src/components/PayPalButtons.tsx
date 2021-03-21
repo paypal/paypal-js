@@ -49,7 +49,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
     function closeButtonsComponent() {
         if (buttons.current !== null) {
             buttons.current.close().catch(() => {
-                // ignore any errors when attempting to close the component
+                // ignore errors when closing the component
             });
         }
     }
@@ -127,9 +127,13 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
         }
 
         if (disabled === true) {
-            initActions.disable();
+            initActions.disable().catch(() => {
+                // ignore errors when disabling the component
+            });
         } else {
-            initActions.enable();
+            initActions.enable().catch(() => {
+                // ignore errors when enabling the component
+            });
         }
     }, [disabled, initActions]);
 

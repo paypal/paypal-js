@@ -84,8 +84,8 @@ describe("<PayPalButtons />", () => {
         });
 
         const onInitActions = {
-            enable: jest.fn(),
-            disable: jest.fn(),
+            enable: jest.fn().mockResolvedValue(true),
+            disable: jest.fn().mockResolvedValue(true),
         };
 
         act(() =>
