@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, FunctionComponent } from "react";
 import { usePayPalScriptReducer } from "../ScriptContext";
+import { getPayPalWindowNamespace, DEFAULT_PAYPAL_NAMESPACE } from "./utils";
 import type {
     PayPalButtonsComponentProps,
     PayPalButtonsComponent,
@@ -38,11 +39,11 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
     forceReRender,
     ...buttonProps
 }: PayPalButtonsReactProps) => {
-    const [{ isResolved, options }] = usePayPalScriptReducer();
     const buttonsContainerRef = useRef<HTMLDivElement>(null);
     const buttons = useRef<PayPalButtonsComponent | null>(null);
-    const [initActions, setInitActions] = useState<OnInitActions | null>(null);
 
+    const [{ isResolved, options }] = usePayPalScriptReducer();
+    const [initActions, setInitActions] = useState<OnInitActions | null>(null);
     const [, setErrorState] = useState(null);
 
     function closeButtonsComponent() {
@@ -58,10 +59,14 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
             return closeButtonsComponent;
         }
 
-        // verify dependency on window.paypal object
+        const paypalWindowNamespace = getPayPalWindowNamespace(
+            options["data-namespace"]
+        );
+
+        // verify dependency on window object
         if (
-            window.paypal === undefined ||
-            window.paypal.Buttons === undefined
+            paypalWindowNamespace === undefined ||
+            paypalWindowNamespace.Buttons === undefined
         ) {
             setErrorState(() => {
                 throw new Error(getErrorMessage(options));
@@ -79,7 +84,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
             }
         };
 
-        buttons.current = window.paypal.Buttons({
+        buttons.current = paypalWindowNamespace.Buttons({
             ...buttonProps,
             onInit: decoratedOnInit,
         });
@@ -140,9 +145,11 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
     );
 };
 
-function getErrorMessage({ components = "" }) {
-    let errorMessage =
-        "Unable to render <PayPalButtons /> because window.paypal.Buttons is undefined.";
+function getErrorMessage({
+    components = "",
+    "data-namespace": dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
+}) {
+    let errorMessage = `Unable to render <PayPalButtons /> because window.${dataNamespace}.Buttons is undefined.`;
 
     // the JS SDK includes the Buttons component by default when no 'components' are specified.
     // The 'buttons' component must be included in the 'components' list when using it with other components.

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, FunctionComponent } from "react";
 import { usePayPalScriptReducer } from "../ScriptContext";
+import { getPayPalWindowNamespace, DEFAULT_PAYPAL_NAMESPACE } from "./utils";
 import type {
     PayPalMessagesComponentProps,
     PayPalMessagesComponent,
@@ -26,10 +27,14 @@ export const PayPalMessages: FunctionComponent<PayPalMessagesReactProps> = ({
             return;
         }
 
-        // verify dependency on window.paypal object
+        const paypalWindowNamespace = getPayPalWindowNamespace(
+            options["data-namespace"]
+        );
+
+        // verify dependency on window object
         if (
-            window.paypal === undefined ||
-            window.paypal.Messages === undefined
+            paypalWindowNamespace === undefined ||
+            paypalWindowNamespace.Messages === undefined
         ) {
             setErrorState(() => {
                 throw new Error(getErrorMessage(options));
@@ -37,7 +42,7 @@ export const PayPalMessages: FunctionComponent<PayPalMessagesReactProps> = ({
             return;
         }
 
-        messages.current = window.paypal.Messages({ ...messageProps });
+        messages.current = paypalWindowNamespace.Messages({ ...messageProps });
 
         if (messagesContainerRef.current === null) {
             return;
@@ -53,9 +58,11 @@ export const PayPalMessages: FunctionComponent<PayPalMessagesReactProps> = ({
     return <div ref={messagesContainerRef} className={className} />;
 };
 
-function getErrorMessage({ components = "" }) {
-    let errorMessage =
-        "Unable to render <PayPalMessages /> because window.paypal.Messages is undefined.";
+function getErrorMessage({
+    components = "",
+    "data-namespace": dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
+}) {
+    let errorMessage = `Unable to render <PayPalMessages /> because window.${dataNamespace}.Messages is undefined.`;
 
     // the JS SDK does not load the Messages component by default. It must be passed into the "components" query parameter.
     if (!components.includes("messages")) {
