@@ -31,7 +31,7 @@ export const Currency = () => {
         dispatch({
             type: "resetOptions",
             value: {
-                ...scriptProviderOptions,
+                ...options,
                 currency: value,
             },
         });

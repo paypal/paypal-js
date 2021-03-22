@@ -122,7 +122,7 @@ function onCurrencyChange({ target: { value } }) {
     dispatch({
         type: "resetOptions",
         value: {
-            ...scriptProviderOptions,
+            ...options,
             currency: value,
         },
     });
