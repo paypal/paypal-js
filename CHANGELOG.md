@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.4](https://github.com/paypal/paypal-js/compare/v3.1.3...v3.1.4) (2021-03-22)
+
+### Bug Fixes
+
+-   do not mutate the options object ([28b5984](https://github.com/paypal/paypal-js/commit/28b5984bc2d2d7c4b001f66118b9354a2c3f3df5))
+
 ### [3.1.3](https://github.com/paypal/paypal-js/compare/v3.1.2...v3.1.3) (2021-03-21)
 
 ### Bug Fixes
