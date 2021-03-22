@@ -73,6 +73,7 @@ export function processOptions(
     );
 
     const newOptions = Object.assign(
+        {},
         options,
         processedMerchantIDAttributes
     ) as PayPalScriptOptions;
