@@ -15,6 +15,7 @@ import type { getFundingSources } from "./components/funding-eligibility";
 
 export interface PayPalNamespace {
     Buttons?: (options?: PayPalButtonsComponentProps) => PayPalButtonsComponent;
+    HostedFields?: (options?: PayPalButtonsComponentProps) => PayPalButtonsComponent;
     Marks?: (options?: PayPalMarksComponentProps) => PayPalMarksComponent;
     Messages?: (
         options?: PayPalMessagesComponentProps
