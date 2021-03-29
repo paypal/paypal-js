@@ -174,3 +174,56 @@ loadScript({ "client-id": "test", "data-namespace": "customName" }).then(
         customObjectFromWindow.Buttons();
     }
 );
+
+// hosted-fields
+// https://developer.paypal.com/docs/business/checkout/advanced-card-payments/
+loadScript({
+    "client-id": "test",
+    components: "buttons,hosted-fields",
+    "data-client-token": "123456789",
+}).then((paypal) => {
+    if (paypal.HostedFields.isEligible() === false) return;
+
+    paypal.HostedFields.render({
+        createOrder: (data, actions) => {
+            return actions.order.create({
+                purchase_units: [
+                    {
+                        amount: {
+                            value: "1.00",
+                        },
+                    },
+                ],
+            });
+        },
+        styles: {
+            ".valid": {
+                color: "green",
+            },
+            ".invalid": {
+                color: "red",
+            },
+        },
+        fields: {
+            number: {
+                selector: "#card-number",
+                placeholder: "4111 1111 1111 1111",
+            },
+            cvv: {
+                selector: "#cvv",
+                placeholder: "123",
+            },
+            expirationDate: {
+                selector: "#expiration-date",
+                placeholder: "MM/YY",
+            },
+        },
+    }).then((cardFields) => {
+        document
+            .querySelector("#card-form")
+            .addEventListener("submit", (event) => {
+                event.preventDefault();
+                cardFields.submit({});
+            });
+    });
+});
