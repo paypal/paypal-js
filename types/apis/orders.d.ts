@@ -96,15 +96,15 @@ type PurchaseUnit = {
 };
 
 type OrderApplicationContext = {
-    brand_name: string;
-    locale: string;
-    landing_page: "LOGIN" | "BILLING" | "NO_PREFERENCE";
-    shipping_preference: SHIPPING_PREFERENCE;
-    user_action: "CONTINUE" | "PAY_NOW";
-    payment_method: Record<string, unknown>;
-    return_url: string;
-    cancel_url: string;
-    stored_payment_source: Record<string, unknown>;
+    brand_name?: string;
+    locale?: string;
+    landing_page?: "LOGIN" | "BILLING" | "NO_PREFERENCE";
+    shipping_preference?: SHIPPING_PREFERENCE;
+    user_action?: "CONTINUE" | "PAY_NOW";
+    payment_method?: Record<string, unknown>;
+    return_url?: string;
+    cancel_url?: string;
+    stored_payment_source?: Record<string, unknown>;
 };
 
 type LinkDescription = {
