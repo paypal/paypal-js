@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.5](https://github.com/paypal/paypal-js/compare/v3.1.4...v3.1.5) (2021-03-29)
+
+### Bug Fixes
+
+-   **types:** add types for onApprove callback data ([9d98fd9](https://github.com/paypal/paypal-js/commit/9d98fd9a99cf7a469ab609d0f3970069b6e385c3))
+-   **types:** update OrderApplicationContext fields to be optional ([#69](https://github.com/paypal/paypal-js/issues/69)) ([9a43f7f](https://github.com/paypal/paypal-js/commit/9a43f7f3fb903e50600ce35ced388dc91cdfeac7))
+
 ### [3.1.4](https://github.com/paypal/paypal-js/compare/v3.1.3...v3.1.4) (2021-03-22)
 
 ### Bug Fixes
