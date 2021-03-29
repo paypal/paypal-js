@@ -30,7 +30,17 @@ export type OnClickActions = {
     resolve: () => Promise<void>;
 };
 
-export type OnApproveOrderActions = {
+export type OnApproveData = {
+    billingToken?: string | null;
+    facilitatorAccessToken: string;
+    orderID: string;
+    payerID?: string | null;
+    paymentID?: string | null;
+    subscriptionID?: string | null;
+    authCode?: string | null;
+};
+
+export type OnApproveActions = {
     order: {
         capture: () => Promise<CaptureOrderResponseBody>;
         redirect: (redirectURL: string) => void;
@@ -38,11 +48,7 @@ export type OnApproveOrderActions = {
     };
 };
 
-export type OnCancelledOrderData = {
-    orderID: string;
-};
-
-export type OnCancelledOrderActions = {
+export type OnCancelledActions = {
     redirect: () => void;
 };
 
@@ -74,14 +80,14 @@ export interface PayPalButtonsComponentProps {
      * Called when finalizing the transaction. Supports capturing an order with the [v2/checkout/orders/:order_id/capture api](https://developer.paypal.com/docs/api/orders/v2/#orders_capture).
      */
     onApprove?: (
-        data: UnknownObject,
-        actions: OnApproveOrderActions
+        data: OnApproveData,
+        actions: OnApproveActions
     ) => Promise<void>;
     /**
      * Called when the buyer cancels the transaction.
      * Often used to show the buyer a [cancellation page](https://developer.paypal.com/docs/business/checkout/add-capabilities/buyer-experience/#3-show-cancellation-page).
      */
-    onCancel?: (data: UnknownObject, actions: OnCancelledOrderActions) => void;
+    onCancel?: (data: UnknownObject, actions: OnCancelledActions) => void;
     /**
      * Called when the button is clicked. Often used for [validation](https://developer.paypal.com/docs/checkout/integration-features/validation/).
      */
