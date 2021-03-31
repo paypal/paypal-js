@@ -7,9 +7,26 @@ jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),
 }));
 
+function loadScriptMockImplementation({
+    "client-id": clientID,
+    "data-react-paypal-script-id": reactPayPalScriptID,
+}) {
+    const newScript = document.createElement("script");
+    newScript.src = `https://www.paypal.com/sdk/js?client-id=${clientID}`;
+    newScript.setAttribute("data-react-paypal-script-id", reactPayPalScriptID);
+
+    document.head.insertBefore(newScript, document.head.firstElementChild);
+    return Promise.resolve({});
+}
+
 describe("<PayPalScriptProvider />", () => {
     beforeEach(() => {
-        loadScript.mockResolvedValue({});
+        document.head.innerHTML = "";
+        loadScript.mockImplementation(loadScriptMockImplementation);
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
     test('should set "isResolved" state to "true" after loading the script', async () => {
@@ -19,7 +36,12 @@ describe("<PayPalScriptProvider />", () => {
                 <TestComponent />
             </PayPalScriptProvider>
         );
-        expect(loadScript).toHaveBeenCalledWith({ "client-id": "test" });
+        expect(loadScript).toHaveBeenCalledWith({
+            "client-id": "test",
+            "data-react-paypal-script-id": expect.stringContaining(
+                "react-paypal-js"
+            ),
+        });
 
         // verify initial loading state
         expect(state.isPending).toBeTruthy();
@@ -36,7 +58,12 @@ describe("<PayPalScriptProvider />", () => {
                 <TestComponent />
             </PayPalScriptProvider>
         );
-        expect(loadScript).toHaveBeenCalledWith({ "client-id": "test" });
+        expect(loadScript).toHaveBeenCalledWith({
+            "client-id": "test",
+            "data-react-paypal-script-id": expect.stringContaining(
+                "react-paypal-js"
+            ),
+        });
 
         // verify initial loading state
         expect(state.isPending).toBeTruthy();
@@ -48,7 +75,12 @@ describe("<PayPalScriptProvider />", () => {
 
 describe("usePayPalScriptReducer", () => {
     beforeEach(() => {
-        loadScript.mockResolvedValue({});
+        document.head.innerHTML = "";
+        loadScript.mockImplementation(loadScriptMockImplementation);
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
     test("should manage state for loadScript()", async () => {
@@ -93,10 +125,19 @@ describe("usePayPalScriptReducer", () => {
         expect(loadScript).toHaveBeenCalledWith(state.options);
 
         await waitFor(() => expect(state.isResolved).toBeTruthy());
+        const firstScriptID = state.options["data-react-paypal-script-id"];
 
         // this click dispatches the action "resetOptions" causing the script to reload
         fireEvent.click(screen.getByText("Reload button"));
         await waitFor(() => expect(state.isResolved).toBeTruthy());
+        const secondScriptID = state.options["data-react-paypal-script-id"];
+
+        expect(
+            document.querySelector(
+                `script[data-react-paypal-script-id="${secondScriptID}"]`
+            )
+        ).toBeTruthy();
+        expect(firstScriptID).not.toBe(secondScriptID);
 
         expect(state.options).toMatchObject({
             "client-id": "xyz",

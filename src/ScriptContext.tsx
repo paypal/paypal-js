@@ -8,6 +8,10 @@ import React, {
 import { loadScript } from "@paypal/paypal-js";
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 
+export interface ReactPayPalScriptOptions extends PayPalScriptOptions {
+    "data-react-paypal-script-id": string;
+}
+
 enum SCRIPT_LOADING_STATE {
     PENDING = "pending",
     REJECTED = "rejected",
@@ -15,12 +19,12 @@ enum SCRIPT_LOADING_STATE {
 }
 
 interface ScriptContextState {
-    options: PayPalScriptOptions;
+    options: ReactPayPalScriptOptions;
     loadingStatus: SCRIPT_LOADING_STATE;
 }
 
 interface ScriptContextDerivedState {
-    options: PayPalScriptOptions;
+    options: ReactPayPalScriptOptions;
     isPending: boolean;
     isRejected: boolean;
     isResolved: boolean;
@@ -28,7 +32,7 @@ interface ScriptContextDerivedState {
 
 type ScriptReducerAction =
     | { type: "setLoadingStatus"; value: SCRIPT_LOADING_STATE }
-    | { type: "resetOptions"; value: PayPalScriptOptions };
+    | { type: "resetOptions"; value: ReactPayPalScriptOptions };
 
 type ScriptReducerDispatch = (action: ScriptReducerAction) => void;
 
@@ -45,14 +49,34 @@ function scriptReducer(state: ScriptContextState, action: ScriptReducerAction) {
                 loadingStatus: action.value,
             };
         case "resetOptions":
+            // destroy existing script to make sure only one script loads at a time
+            destroySDKScript(state.options["data-react-paypal-script-id"]);
             return {
                 loadingStatus: SCRIPT_LOADING_STATE.PENDING,
-                options: action.value,
+                options: {
+                    ...action.value,
+                    "data-react-paypal-script-id": `${getNewScriptID()}`,
+                },
             };
 
         default: {
             return state;
         }
+    }
+}
+
+function getNewScriptID() {
+    return `react-paypal-js-${Math.random().toString(36).substring(7)}`;
+}
+
+function destroySDKScript(reactPayPalScriptID: string) {
+    const scriptNode = document.querySelector(
+        `script[data-react-paypal-script-id="${reactPayPalScriptID}"]`
+    );
+    if (scriptNode === null) return;
+
+    if (scriptNode.parentNode) {
+        scriptNode.parentNode.removeChild(scriptNode);
     }
 }
 
@@ -91,7 +115,10 @@ const PayPalScriptProvider: FunctionComponent<ScriptProviderProps> = ({
     children,
 }: ScriptProviderProps) => {
     const initialState = {
-        options,
+        options: {
+            ...options,
+            "data-react-paypal-script-id": `${getNewScriptID()}`,
+        },
         loadingStatus: SCRIPT_LOADING_STATE.PENDING,
     };
 
