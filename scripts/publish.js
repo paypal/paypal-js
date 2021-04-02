@@ -5,16 +5,13 @@ const readline = require("readline");
 require("./validate");
 
 // lint, unit test, and build
-exec("npm run lint && npm test && npm run build");
-
-// ensure bundle size is below threshold
-exec("npm run test:bundle");
+exec("npm run validate");
 
 // run puppeteer tests
 exec("npm run test:e2e");
 
 // use standard-version to bump version based on git commit conventions
-exec("npx standard-version");
+exec("npx standard-version --no-verify");
 
 // push up new version commit and tag
 exec("git push");
