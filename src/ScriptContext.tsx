@@ -13,6 +13,7 @@ export interface ReactPayPalScriptOptions extends PayPalScriptOptions {
 }
 
 enum SCRIPT_LOADING_STATE {
+    INITIAL = "initial",
     PENDING = "pending",
     REJECTED = "rejected",
     RESOLVED = "resolved",
@@ -25,6 +26,7 @@ interface ScriptContextState {
 
 interface ScriptContextDerivedState {
     options: ReactPayPalScriptOptions;
+    isInitial: boolean;
     isPending: boolean;
     isRejected: boolean;
     isResolved: boolean;
@@ -97,6 +99,7 @@ function usePayPalScriptReducer(): [
 
     const derivedStatusContext = {
         ...restScriptContext,
+        isInitial: loadingStatus === SCRIPT_LOADING_STATE.INITIAL,
         isPending: loadingStatus === SCRIPT_LOADING_STATE.PENDING,
         isResolved: loadingStatus === SCRIPT_LOADING_STATE.RESOLVED,
         isRejected: loadingStatus === SCRIPT_LOADING_STATE.REJECTED,
@@ -108,23 +111,37 @@ function usePayPalScriptReducer(): [
 interface ScriptProviderProps {
     options: PayPalScriptOptions;
     children?: React.ReactNode;
+    deferLoading?: boolean;
 }
 
 const PayPalScriptProvider: FunctionComponent<ScriptProviderProps> = ({
     options,
     children,
+    deferLoading = false,
 }: ScriptProviderProps) => {
     const initialState = {
         options: {
             ...options,
             "data-react-paypal-script-id": `${getNewScriptID()}`,
         },
-        loadingStatus: SCRIPT_LOADING_STATE.PENDING,
+        loadingStatus: deferLoading
+            ? SCRIPT_LOADING_STATE.INITIAL
+            : SCRIPT_LOADING_STATE.PENDING,
     };
 
     const [state, dispatch] = useReducer(scriptReducer, initialState);
 
     useEffect(() => {
+        if (
+            deferLoading === false &&
+            state.loadingStatus === SCRIPT_LOADING_STATE.INITIAL
+        ) {
+            return dispatch({
+                type: "setLoadingStatus",
+                value: SCRIPT_LOADING_STATE.PENDING,
+            });
+        }
+
         if (state.loadingStatus !== SCRIPT_LOADING_STATE.PENDING) return;
 
         let isSubscribed = true;
@@ -148,7 +165,7 @@ const PayPalScriptProvider: FunctionComponent<ScriptProviderProps> = ({
         return () => {
             isSubscribed = false;
         };
-    });
+    }, [options, deferLoading, state.loadingStatus]);
 
     return (
         <ScriptContext.Provider value={state}>

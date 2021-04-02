@@ -26,7 +26,7 @@ React developers think in terms of components and not about loading external scr
 **Features**
 
 -   Enforce async loading the JS SDK up front so when it's time to render the buttons to your buyer, they render immediately.
--   Abstract away the complexity around loading the JS SDK with the global `<PayPalScriptProvider>` component.
+-   Abstract away the complexity around loading the JS SDK with the global [PayPalScriptProvider](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalscriptprovider--default) component.
 -   Support dispatching actions to reload the JS SDK and re-render components when global parameters like `currency` change.
 -   Easy to use components for all the different PayPal product offerings:
     -   [PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default)
@@ -61,11 +61,9 @@ export default function App() {
 }
 ```
 
-### PayPalButtons
-
-The `<PayPalButtons />` component is fully documented in Storybook. Checkout the [docs page for the PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default) to learn more about the available props.
-
 ### PayPalScriptProvider
+
+#### Options
 
 Use the PayPalScriptProvider `options` prop to configure the JS SDK. It accepts an object for passing query parameters and data attributes to the JS SDK script.
 
@@ -76,20 +74,41 @@ const initialOptions = {
     intent: "capture",
     "data-client-token": "abc123xyz==",
 };
-<PayPalScriptProvider options={initialOptions}>
-    <PayPalButtons />
-</PayPalScriptProvider>;
+
+export default function App() {
+    return (
+        <PayPalScriptProvider options={initialOptions}>
+            <PayPalButtons />
+        </PayPalScriptProvider>
+    );
+}
 ```
 
 The [JS SDK Configuration guide](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-configuration/) contains the full list of query parameters and data attributes that can be used with the JS SDK.
 
-The `<PayPalScriptProvider />` component is designed to be used with the `usePayPalScriptReducer` hook for managing global state. This `usePayPalScriptReducer` hook has the same API as [React's useReducer hook](https://reactjs.org/docs/hooks-reference.html#usereducer).
+#### deferLoading
+
+Use the optional PayPalScriptProvider `deferLoading` prop to control when the JS SDK script loads.
+
+-   This prop is set to false by default since we usually know all the sdk script params up front and want to load the script right way so components like `<PayPalButtons />` render immediately.
+-   This prop can be set to true to prevent loading the JS SDK script when the PayPalScriptProvider renders. Use `deferLoading={true}` initially and then dispatch an action later on in the app's life cycle to load the sdk script.
+
+```jsx
+<PayPalScriptProvider deferLoading={true} options={initialOptions}>
+    <PayPalButtons />
+</PayPalScriptProvider>
+```
+
+To learn more, check out the [defer loading example in storybook](https://paypal.github.io/react-paypal-js/?path=/story/example-paypalscriptprovider--defer-loading).
 
 #### Tracking loading state
 
+The `<PayPalScriptProvider />` component is designed to be used with the `usePayPalScriptReducer` hook for managing global state. This `usePayPalScriptReducer` hook has the same API as [React's useReducer hook](https://reactjs.org/docs/hooks-reference.html#usereducer).
+
 The `usePayPalScriptReducer` hook provides an easy way to tap into the loading state of the JS SDK script. This state can be used to show a loading spinner while the script loads or an error message if it fails to load. The following derived attributes are provided for tracking this loading state:
 
--   isPending - not finished loading (default state)
+-   isInitial - not started (only used when passing `deferLoading={true}`)
+-   isPending - loading (default)
 -   isResolved - successfully loaded
 -   isRejected - failed to load
 
@@ -140,6 +159,10 @@ return (
 ```
 
 To learn more, check out the [dynamic currency example in storybook](https://paypal.github.io/react-paypal-js/?path=/story/example-usepaypalscriptreducer--currency).
+
+### PayPalButtons
+
+The `<PayPalButtons />` component is fully documented in Storybook. Checkout the [docs page for the PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default) to learn more about the available props.
 
 ### Browser Support
 

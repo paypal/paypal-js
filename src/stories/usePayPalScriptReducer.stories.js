@@ -13,28 +13,38 @@ const scriptProviderOptions = {
 export default {
     title: "Example/usePayPalScriptReducer",
     component: usePayPalScriptReducer,
-    decorators: [
-        (Story) => (
-            <PayPalScriptProvider options={scriptProviderOptions}>
-                <Story />
-            </PayPalScriptProvider>
-        ),
-    ],
 };
 
 export const Currency = () => {
-    const [{ options }, dispatch] = usePayPalScriptReducer();
-    const [currency, setCurrency] = useState(options.currency);
+    const [currency, setCurrency] = useState("USD");
 
-    function onCurrencyChange({ target: { value } }) {
-        setCurrency(value);
-        dispatch({
-            type: "resetOptions",
-            value: {
-                ...options,
-                currency: value,
-            },
-        });
+    function CurrencySelect() {
+        const [{ options }, dispatch] = usePayPalScriptReducer();
+
+        function onCurrencyChange({ target: { value } }) {
+            setCurrency(value);
+            dispatch({
+                type: "resetOptions",
+                value: {
+                    ...options,
+                    currency: value,
+                },
+            });
+        }
+
+        return (
+            <select
+                value={currency}
+                onChange={onCurrencyChange}
+                name="currency"
+                id="currency"
+                style={{ marginBottom: "20px" }}
+            >
+                <option value="USD">United States dollar</option>
+                <option value="EUR">Euro</option>
+                <option value="CAD">Canadian dollar</option>
+            </select>
+        );
     }
 
     function createOrder(data, actions) {
@@ -51,48 +61,46 @@ export const Currency = () => {
     }
 
     return (
-        <>
-            <select
-                value={currency}
-                onChange={onCurrencyChange}
-                name="currency"
-                id="currency"
-                style={{ marginBottom: "20px" }}
-            >
-                <option value="USD">United States dollar</option>
-                <option value="EUR">Euro</option>
-                <option value="CAD">Canadian dollar</option>
-            </select>
+        <PayPalScriptProvider options={scriptProviderOptions}>
+            <CurrencySelect />
             <PayPalButtons createOrder={createOrder} />
-        </>
+        </PayPalScriptProvider>
     );
 };
 
 export const LoadingSpinner = () => {
-    const [{ isPending }, dispatch] = usePayPalScriptReducer();
+    function ReloadButton() {
+        const [{ options }, dispatch] = usePayPalScriptReducer();
 
-    function reload() {
-        dispatch({
-            type: "resetOptions",
-            value: {
-                ...scriptProviderOptions,
-                "data-order-id": Date.now(),
-            },
-        });
-    }
-
-    return (
-        <>
+        return (
             <button
                 type="button"
-                onClick={reload}
                 style={{ display: "block", marginBottom: "20px" }}
+                onClick={() => {
+                    dispatch({
+                        type: "resetOptions",
+                        value: {
+                            ...options,
+                            "data-order-id": Date.now(),
+                        },
+                    });
+                }}
             >
                 Reload
             </button>
+        );
+    }
 
-            {isPending ? <div className="spinner" /> : null}
+    function LoadingSpinner() {
+        const [{ isPending }] = usePayPalScriptReducer();
+        return isPending ? <div className="spinner" /> : null;
+    }
+
+    return (
+        <PayPalScriptProvider options={scriptProviderOptions}>
+            <ReloadButton />
+            <LoadingSpinner />
             <PayPalButtons />
-        </>
+        </PayPalScriptProvider>
     );
 };

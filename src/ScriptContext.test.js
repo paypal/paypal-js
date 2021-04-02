@@ -71,6 +71,43 @@ describe("<PayPalScriptProvider />", () => {
         expect(state.isPending).toBeFalsy();
         expect(state.isResolved).toBeFalsy();
     });
+
+    test("should control script loading with the deferLoading prop", async () => {
+        const { state, TestComponent } = setupTestComponent();
+
+        const { rerender } = render(
+            <PayPalScriptProvider
+                deferLoading={true}
+                options={{ "client-id": "test" }}
+            >
+                <TestComponent />
+            </PayPalScriptProvider>
+        );
+
+        // verify initial state
+        expect(state.isInitial).toBe(true);
+        expect(loadScript).not.toHaveBeenCalled();
+
+        // re-render the same PayPalScriptProvider component with different props
+        rerender(
+            <PayPalScriptProvider
+                deferLoading={false}
+                options={{ "client-id": "test" }}
+            >
+                <TestComponent />
+            </PayPalScriptProvider>
+        );
+
+        expect(loadScript).toHaveBeenCalledWith({
+            "client-id": "test",
+            "data-react-paypal-script-id": expect.stringContaining(
+                "react-paypal-js"
+            ),
+        });
+
+        expect(state.isPending).toBe(true);
+        await waitFor(() => expect(state.isResolved).toBe(true));
+    });
 });
 
 describe("usePayPalScriptReducer", () => {
