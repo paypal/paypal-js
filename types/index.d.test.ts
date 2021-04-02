@@ -153,6 +153,11 @@ loadScript({ "client-id": "test" })
                 button.render("#paypal-button-container");
             }
         });
+
+        // funding eligibility
+        // https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#funding-eligibility
+        paypal.rememberFunding([paypal.FUNDING.VENMO]);
+        paypal.isFundingEligible(paypal.FUNDING.VENMO);
     })
     .catch((err) => {
         console.error(err);

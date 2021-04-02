@@ -11,7 +11,11 @@ import type {
     PayPalMessagesComponentProps,
     PayPalMessagesComponent,
 } from "./components/messages";
-import type { getFundingSources } from "./components/funding-eligibility";
+import type {
+    getFundingSources,
+    isFundingEligible,
+    rememberFunding,
+} from "./components/funding-eligibility";
 
 export interface PayPalNamespace {
     Buttons?: (options?: PayPalButtonsComponentProps) => PayPalButtonsComponent;
@@ -20,6 +24,9 @@ export interface PayPalNamespace {
         options?: PayPalMessagesComponentProps
     ) => PayPalMessagesComponent;
     getFundingSources?: getFundingSources;
+    isFundingEligible?: isFundingEligible;
+    rememberFunding?: rememberFunding;
+    FUNDING?: Record<string, string>;
     version: string;
 }
 
