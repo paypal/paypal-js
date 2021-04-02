@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.6](https://github.com/paypal/paypal-js/compare/v3.1.5...v3.1.6) (2021-04-02)
+
+
+### Bug Fixes
+
+* **types:** add types for funding-eligibility ([b78de97](https://github.com/paypal/paypal-js/commit/b78de970170c7f86d51524e97bee9edcd41bf2a8))
+
 ### [3.1.5](https://github.com/paypal/paypal-js/compare/v3.1.4...v3.1.5) (2021-03-29)
 
 ### Bug Fixes
