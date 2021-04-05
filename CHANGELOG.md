@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.2.0](https://github.com/paypal/react-paypal-js/compare/v5.1.2...v5.2.0) (2021-04-05)
+
+### Features
+
+-   add deferLoading prop to control sdk script loading ([2cf3904](https://github.com/paypal/react-paypal-js/commit/2cf3904ebe21edcd8ffd14dcd67b553ad6ced6c8))
+
 ### [5.1.2](https://github.com/paypal/react-paypal-js/compare/v5.1.1...v5.1.2) (2021-04-02)
 
 ### Bug Fixes
