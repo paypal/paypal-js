@@ -100,15 +100,19 @@ describe("<PayPalButtons />", () => {
         });
     });
 
-    test("should re-render Buttons when props.forceReRender changes", async () => {
+    test("should re-render Buttons when any item from props.forceReRender changes", async () => {
         function ButtonWrapper({ initialAmount }) {
             const [amount, setAmount] = useState(initialAmount);
+            const [currency, setCurrency] = useState("USD");
             return (
                 <>
                     <button onClick={() => setAmount(amount + 1)}>
                         Update Amount
                     </button>
-                    <PayPalButtons forceReRender={amount} />
+                    <button onClick={() => setCurrency("EUR")}>
+                        Update Currency
+                    </button>
+                    <PayPalButtons forceReRender={[amount, currency]} />
                 </>
             );
         }
@@ -125,9 +129,16 @@ describe("<PayPalButtons />", () => {
 
         fireEvent.click(screen.getByText("Update Amount"));
 
-        // confirm re-render when the forceReRender value changes
+        // confirm re-render when the forceReRender value changes for first item
         await waitFor(() =>
             expect(window.paypal.Buttons).toHaveBeenCalledTimes(2)
+        );
+
+        fireEvent.click(screen.getByText("Update Currency"));
+
+        // confirm re-render when the forceReRender value changes for second item
+        await waitFor(() =>
+            expect(window.paypal.Buttons).toHaveBeenCalledTimes(3)
         );
     });
 

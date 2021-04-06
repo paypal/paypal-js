@@ -7,13 +7,13 @@ import type {
 } from "@paypal/paypal-js/types/components/messages";
 
 export interface PayPalMessagesReactProps extends PayPalMessagesComponentProps {
-    forceReRender?: unknown;
+    forceReRender?: unknown[];
     className?: string;
 }
 
 export const PayPalMessages: FunctionComponent<PayPalMessagesReactProps> = ({
     className = "",
-    forceReRender,
+    forceReRender = [],
     ...messageProps
 }: PayPalMessagesReactProps) => {
     const [{ isResolved, options }] = usePayPalScriptReducer();
@@ -64,7 +64,7 @@ export const PayPalMessages: FunctionComponent<PayPalMessagesReactProps> = ({
                 );
             });
         });
-    }, [isResolved, forceReRender]);
+    }, [isResolved, ...forceReRender]);
 
     return <div ref={messagesContainerRef} className={className} />;
 };

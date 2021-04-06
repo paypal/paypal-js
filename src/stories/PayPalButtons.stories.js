@@ -85,7 +85,7 @@ export const DynamicAmount = () => {
             </select>
             <p>Order ID: {orderID ? orderID : "unknown"}</p>
 
-            <PayPalButtons createOrder={createOrder} forceReRender={amount} />
+            <PayPalButtons createOrder={createOrder} forceReRender={[amount]} />
         </>
     );
 };

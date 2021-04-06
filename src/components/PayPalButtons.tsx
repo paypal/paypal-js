@@ -18,7 +18,7 @@ export interface PayPalButtonsReactProps extends PayPalButtonsComponentProps {
      * Used to re-render the component.
      * Changes to this prop will destroy the existing Buttons and render them again using the current props.
      */
-    forceReRender?: unknown;
+    forceReRender?: unknown[];
     /**
      * Pass a css class to the div container.
      */
@@ -47,7 +47,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
     className = "",
     disabled = false,
     children = null,
-    forceReRender,
+    forceReRender = [],
     ...buttonProps
 }: PayPalButtonsReactProps) => {
     const buttonsContainerRef = useRef<HTMLDivElement>(null);
@@ -131,7 +131,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsReactProps> = ({
         });
 
         return closeButtonsComponent;
-    }, [isResolved, forceReRender, buttonProps.fundingSource]);
+    }, [isResolved, ...forceReRender, buttonProps.fundingSource]);
 
     // useEffect hook for managing disabled state
     useEffect(() => {
