@@ -16,6 +16,7 @@ import type {
     isFundingEligible,
     rememberFunding,
 } from "./components/funding-eligibility";
+import type { PayPalHostedFieldsComponent } from "./components/hosted-fields";
 
 export interface PayPalNamespace {
     Buttons?: (options?: PayPalButtonsComponentProps) => PayPalButtonsComponent;
@@ -23,6 +24,7 @@ export interface PayPalNamespace {
     Messages?: (
         options?: PayPalMessagesComponentProps
     ) => PayPalMessagesComponent;
+    HostedFields?: PayPalHostedFieldsComponent;
     getFundingSources?: getFundingSources;
     isFundingEligible?: isFundingEligible;
     rememberFunding?: rememberFunding;
