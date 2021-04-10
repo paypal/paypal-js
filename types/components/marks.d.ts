@@ -1,4 +1,4 @@
-export interface PayPalMarksComponentProps {
+export interface PayPalMarksComponentOptions {
     /**
      * Used for defining a standalone mark.
      */

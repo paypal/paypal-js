@@ -1,4 +1,4 @@
-export interface PayPalMessagesComponentProps {
+export interface PayPalMessagesComponentOptions {
     account?: string;
     amount?: number | string;
     style?: {

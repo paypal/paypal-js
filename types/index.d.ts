@@ -1,14 +1,14 @@
 import type { PayPalScriptOptions } from "./script-options";
 import type {
-    PayPalButtonsComponentProps,
+    PayPalButtonsComponentOptions,
     PayPalButtonsComponent,
 } from "./components/buttons";
 import type {
-    PayPalMarksComponentProps,
+    PayPalMarksComponentOptions,
     PayPalMarksComponent,
 } from "./components/marks";
 import type {
-    PayPalMessagesComponentProps,
+    PayPalMessagesComponentOptions,
     PayPalMessagesComponent,
 } from "./components/messages";
 import type {
@@ -19,10 +19,12 @@ import type {
 import type { PayPalHostedFieldsComponent } from "./components/hosted-fields";
 
 export interface PayPalNamespace {
-    Buttons?: (options?: PayPalButtonsComponentProps) => PayPalButtonsComponent;
-    Marks?: (options?: PayPalMarksComponentProps) => PayPalMarksComponent;
+    Buttons?: (
+        options?: PayPalButtonsComponentOptions
+    ) => PayPalButtonsComponent;
+    Marks?: (options?: PayPalMarksComponentOptions) => PayPalMarksComponent;
     Messages?: (
-        options?: PayPalMessagesComponentProps
+        options?: PayPalMessagesComponentOptions
     ) => PayPalMessagesComponent;
     HostedFields?: PayPalHostedFieldsComponent;
     getFundingSources?: getFundingSources;

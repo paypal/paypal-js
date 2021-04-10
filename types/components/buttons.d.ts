@@ -52,7 +52,7 @@ export type OnCancelledActions = {
     redirect: () => void;
 };
 
-export interface PayPalButtonsComponentProps {
+export interface PayPalButtonsComponentOptions {
     /**
      * Called on button click. Often used for [Braintree vault integrations](https://developers.braintreepayments.com/guides/paypal/vault/javascript/v3).
      */
