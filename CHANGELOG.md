@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.7](https://github.com/paypal/paypal-js/compare/v3.1.6...v3.1.7) (2021-04-10)
+
+### Bug Fixes
+
+-   **types:** add types for hosted-fields component ([#72](https://github.com/paypal/paypal-js/issues/72)) ([fd8652a](https://github.com/paypal/paypal-js/commit/fd8652a5bc192f3694c32ad734d42bf03c170098))
+-   **types:** rename 'props' to 'options' ([a01c86e](https://github.com/paypal/paypal-js/commit/a01c86ee372f71c099f11e5a7c0d2d283b0d9db6))
+
 ### [3.1.6](https://github.com/paypal/paypal-js/compare/v3.1.5...v3.1.6) (2021-04-02)
 
 ### Bug Fixes
