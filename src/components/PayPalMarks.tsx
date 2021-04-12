@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState, FunctionComponent } from "react";
 import { usePayPalScriptReducer } from "../ScriptContext";
 import { getPayPalWindowNamespace, DEFAULT_PAYPAL_NAMESPACE } from "./utils";
 import type {
-    PayPalMarksComponentProps,
+    PayPalMarksComponentOptions,
     PayPalMarksComponent,
 } from "@paypal/paypal-js/types/components/marks";
 
-export interface PayPalMarksReactProps extends PayPalMarksComponentProps {
+export interface PayPalMarksComponentProps extends PayPalMarksComponentOptions {
     /**
      * Pass a css class to the div container.
      */
@@ -35,10 +35,10 @@ export interface PayPalMarksReactProps extends PayPalMarksComponentProps {
  *     <PayPalMarks fundingSource={FUNDING.PAYPAL}/>
  * ```
  */
-export const PayPalMarks: FunctionComponent<PayPalMarksReactProps> = ({
+export const PayPalMarks: FunctionComponent<PayPalMarksComponentProps> = ({
     className = "",
     ...markProps
-}: PayPalMarksReactProps) => {
+}: PayPalMarksComponentProps) => {
     const [{ isResolved, options }] = usePayPalScriptReducer();
     const markContainerRef = useRef<HTMLDivElement>(null);
     const mark = useRef<PayPalMarksComponent | null>(null);

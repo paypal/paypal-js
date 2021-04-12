@@ -2,20 +2,21 @@ import React, { useEffect, useRef, useState, FunctionComponent } from "react";
 import { usePayPalScriptReducer } from "../ScriptContext";
 import { getPayPalWindowNamespace, DEFAULT_PAYPAL_NAMESPACE } from "./utils";
 import type {
-    PayPalMessagesComponentProps,
+    PayPalMessagesComponentOptions,
     PayPalMessagesComponent,
 } from "@paypal/paypal-js/types/components/messages";
 
-export interface PayPalMessagesReactProps extends PayPalMessagesComponentProps {
+export interface PayPalMessagesComponentProps
+    extends PayPalMessagesComponentOptions {
     forceReRender?: unknown[];
     className?: string;
 }
 
-export const PayPalMessages: FunctionComponent<PayPalMessagesReactProps> = ({
+export const PayPalMessages: FunctionComponent<PayPalMessagesComponentProps> = ({
     className = "",
     forceReRender = [],
     ...messageProps
-}: PayPalMessagesReactProps) => {
+}: PayPalMessagesComponentProps) => {
     const [{ isResolved, options }] = usePayPalScriptReducer();
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const messages = useRef<PayPalMessagesComponent | null>(null);
