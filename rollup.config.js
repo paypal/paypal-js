@@ -60,7 +60,7 @@ export default [
     {
         input: "src/legacy/index.ts",
         plugins: [
-            typescript({ ...tsconfigOverride }),
+            typescript({ ...tsconfigOverride, target: "es5" }),
             nodeResolve({
                 browser: true,
             }),
