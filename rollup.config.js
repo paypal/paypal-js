@@ -17,7 +17,10 @@ const outputConfigForBrowserBundle = {
         "window.paypalLoadCustomScript = paypalLoadScript.loadCustomScript;" +
         "\nwindow.paypalLoadScript = paypalLoadScript.loadScript;",
 };
-const tsconfigOverride = { exclude: ["node_modules", "**/*.test.ts"] };
+const tsconfigOverride = {
+    exclude: ["node_modules", "**/*.test.ts"],
+    target: "es5",
+};
 
 export default [
     {
