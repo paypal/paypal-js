@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [3.1.8](https://github.com/paypal/paypal-js/compare/v3.1.7...v3.1.8) (2021-04-21)
+
+### Bug Fixes
+
+-   override tsconfig target in legacy build ([#76](https://github.com/paypal/paypal-js/issues/76)) ([3228e57](https://github.com/paypal/paypal-js/commit/3228e578d2fcc7659f59773d37569ed56a0ef289))
+
 ### [3.1.7](https://github.com/paypal/paypal-js/compare/v3.1.6...v3.1.7) (2021-04-10)
 
 ### Bug Fixes
