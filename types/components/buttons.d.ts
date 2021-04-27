@@ -58,14 +58,14 @@ export interface PayPalButtonsComponentOptions {
      */
     createBillingAgreement?: () => Promise<string>;
     /**
-     * Called on button click. Supports creating an order with the [/v2/checkout/orders api](https://developer.paypal.com/docs/api/orders/v2/#orders_create).
+     * Called on button click to set up a one-time payment. [createOrder docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#createorder).
      */
     createOrder?: (
         data: UnknownObject,
         actions: CreateOrderActions
     ) => Promise<string>;
     /**
-     * Called on button click. Supports creating a subscription with the [/v1/billing/subscription api](https://developer.paypal.com/docs/api/subscriptions/v1/#subscriptions_create).
+     * Called on button click to set up a recurring payment. [createSubscription docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#createsubscription).
      */
     createSubscription?: (
         data: UnknownObject,
@@ -77,7 +77,7 @@ export interface PayPalButtonsComponentOptions {
      */
     fundingSource?: string;
     /**
-     * Called when finalizing the transaction. Supports capturing an order with the [v2/checkout/orders/:order_id/capture api](https://developer.paypal.com/docs/api/orders/v2/#orders_capture).
+     * Called when finalizing the transaction. Often used to inform the buyer that the transaction is complete. [onApprove docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#onapprove).
      */
     onApprove?: (
         data: OnApproveData,
