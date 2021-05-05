@@ -1,6 +1,6 @@
 // https://developer.paypal.com/docs/api/subscriptions/v1/#subscriptions-create-request-body
 
-interface ShippingAmount {
+export interface ShippingAmount {
     currency_code: string;
     value: string;
 }

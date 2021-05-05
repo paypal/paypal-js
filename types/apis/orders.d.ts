@@ -1,12 +1,12 @@
 // https://developer.paypal.com/docs/api/orders/v2/#orders-create-request-body
 // https://developer.paypal.com/docs/api/orders/v2/#orders-capture-response
 
-type SHIPPING_PREFERENCE =
+export type SHIPPING_PREFERENCE =
     | "GET_FROM_FILE"
     | "NO_SHIPPING"
     | "SET_PROVIDED_ADDRESS";
 
-type Address = {
+export type Address = {
     address_line_1: string;
     address_line_2: string;
     admin_area_2: string;
@@ -15,7 +15,7 @@ type Address = {
     country_code: string;
 };
 
-type Payer = {
+export type Payer = {
     name: {
         given_name: string;
         surname: string;
@@ -33,17 +33,17 @@ type Payer = {
     address: Address;
 };
 
-type Payee = {
+export type Payee = {
     merchant_id?: string;
     email_address?: string;
 };
 
-interface Amount {
+export interface Amount {
     currency_code?: string;
     value: string;
 }
 
-interface AmountWithBreakdown extends Amount {
+export interface AmountWithBreakdown extends Amount {
     breakdown?: {
         item_total: Amount;
         shipping: Amount;
@@ -55,24 +55,24 @@ interface AmountWithBreakdown extends Amount {
     };
 }
 
-type PlatformFee = {
+export type PlatformFee = {
     amount: Amount;
     payee?: Payee;
 };
 
-type PaymentInstruction = {
+export type PaymentInstruction = {
     platform_fees: PlatformFee[];
     disbursement_mode: "INSTANT" | "DELAYED";
 };
 
-type ShippingInfo = {
+export type ShippingInfo = {
     name: {
         full_name: string;
     };
     address: Address;
 };
 
-type PurchaseItem = {
+export type PurchaseItem = {
     name: string;
     quantity: string;
     unit_amount: Amount;
@@ -82,7 +82,7 @@ type PurchaseItem = {
     category: "DIGITAL_GOODS" | "PHYSICAL_GOODS";
 };
 
-type PurchaseUnit = {
+export type PurchaseUnit = {
     amount: AmountWithBreakdown;
     reference_id?: string;
     description?: string;
@@ -95,7 +95,7 @@ type PurchaseUnit = {
     items?: PurchaseItem[];
 };
 
-type OrderApplicationContext = {
+export type OrderApplicationContext = {
     brand_name?: string;
     locale?: string;
     landing_page?: "LOGIN" | "BILLING" | "NO_PREFERENCE";
@@ -107,13 +107,13 @@ type OrderApplicationContext = {
     stored_payment_source?: Record<string, unknown>;
 };
 
-type LinkDescription = {
+export type LinkDescription = {
     href: string;
     rel: string;
     method?: string;
 };
 
-type INTENT = "CAPTURE" | "AUTHORIZE";
+export type INTENT = "CAPTURE" | "AUTHORIZE";
 
 export type CreateOrderRequestBody = {
     intent?: INTENT;
