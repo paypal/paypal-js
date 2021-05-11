@@ -1,6 +1,6 @@
 {
     "name": "@paypal/paypal-js",
-    "version": "3.1.9",
+    "version": "3.1.10",
     "description": "Client-side loader for the PayPal JS SDK",
     "main": "dist/paypal.node.js",
     "module": "dist/paypal.esm.js",
