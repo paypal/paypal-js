@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.1](https://github.com/paypal/react-paypal-js/compare/v6.0.0...v6.0.1) (2021-05-16)
+
+### Bug Fixes
+
+-   **types:** improve type for ScriptLoadingState ([#113](https://github.com/paypal/react-paypal-js/issues/113)) ([402afe4](https://github.com/paypal/react-paypal-js/commit/402afe4f54b58bd5dc1d097e7c8d64e12fc852ff))
+
 ## [6.0.0](https://github.com/paypal/react-paypal-js/compare/v5.2.0...v6.0.0) (2021-04-12)
 
 ### ⚠ BREAKING CHANGES
