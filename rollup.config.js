@@ -7,6 +7,7 @@ import { terser } from "rollup-plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import pkg from "./package.json";
 
+const pkgName = pkg.name.split("@paypal/")[1];
 const banner = getBannerText();
 const outputConfigForBrowserBundle = {
     format: "iife",
@@ -40,21 +41,33 @@ export default [
         ],
         output: [
             {
-                file: pkg.module,
+                file: `dist/esm/${pkgName}.js`,
                 format: "esm",
                 banner,
             },
             {
-                file: pkg.main,
+                file: `dist/esm/${pkgName}.min.js`,
+                format: "esm",
+                banner,
+                plugins: [terser()],
+            },
+            {
+                file: `dist/cjs/${pkgName}.js`,
                 format: "cjs",
                 banner,
             },
             {
-                file: "dist/paypal.browser.js",
+                file: `dist/cjs/${pkgName}.min.js`,
+                format: "cjs",
+                banner,
+                plugins: [terser()],
+            },
+            {
+                file: `dist/iife/${pkgName}.js`,
                 ...outputConfigForBrowserBundle,
             },
             {
-                file: "dist/paypal.browser.min.js",
+                file: `dist/iife/${pkgName}.min.js`,
                 ...outputConfigForBrowserBundle,
                 plugins: [terser()],
             },
@@ -80,11 +93,11 @@ export default [
         ],
         output: [
             {
-                file: "dist/paypal.legacy.browser.js",
+                file: `dist/iife/${pkgName}.legacy.js`,
                 ...outputConfigForBrowserBundle,
             },
             {
-                file: "dist/paypal.legacy.browser.min.js",
+                file: `dist/iife/${pkgName}.legacy.min.js`,
                 ...outputConfigForBrowserBundle,
                 plugins: [terser()],
             },
@@ -95,7 +108,7 @@ export default [
 function getBannerText() {
     return `
 /*!
- * paypal-js v${pkg.version} (${new Date().toISOString()})
+ * ${pkgName} v${pkg.version} (${new Date().toISOString()})
  * Copyright 2020-present, PayPal, Inc. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

@@ -177,18 +177,18 @@ loadScript(options, PromisePonyfill).then((paypalObject) => {});
 We also provide a legacy build that includes the [promise-polyfill](https://github.com/taylorhakes/promise-polyfill) library. You can reference it from the CDN here:
 
 ```html
-<script src="https://unpkg.com/@paypal/paypal-js/dist/paypal.legacy.browser.min.js"></script>
+<script src="https://unpkg.com/@paypal/paypal-js@4.0.0/dist/iife/paypal-js.legacy.min.js"></script>
 ```
 
 ### Using a CDN
 
-The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). The paypal.browser.js build assigns the `loadScript` function to the window object as `window.paypalLoadScript`. Here's an example:
+The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). The iife/paypal-js.js build assigns the `loadScript` function to the window object as `window.paypalLoadScript`. Here's an example:
 
 ```html
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <script src="https://unpkg.com/@paypal/paypal-js/dist/paypal.browser.min.js"></script>
+        <script src="https://unpkg.com/@paypal/paypal-js/dist/iife/paypal-js.min.js"></script>
     </head>
     <body>
         <div id="paypal-buttons"></div>
@@ -201,7 +201,7 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
 </html>
 ```
 
-Note that the above CDN location points to the latest release of paypal-js. It is advised that when you deploy your site, you import the specific version you have developed and tested with (ex: https://unpkg.com/@paypal/paypal-js@2.1.3/dist/paypal.browser.min.js).
+Note that the above CDN location points to the latest release of paypal-js. It is advised that when you deploy your site, you import the specific version you have developed and tested with (ex: https://unpkg.com/@paypal/paypal-js@4.0.0/dist/iife/paypal-js.min.js).
 
 ### `loadCustomScript(options)`
 
