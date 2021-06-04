@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.0](https://github.com/paypal/paypal-js/compare/v3.1.11...v4.0.0) (2021-06-04)
+
+### ⚠ BREAKING CHANGES
+
+-   new urls for the dist files hosted on unpkg.com
+
+### Features
+
+-   improve dist folder structure ([16053a0](https://github.com/paypal/paypal-js/commit/16053a0d559ca056ec89a05346edf0d705820fef))
+
 ### [3.1.11](https://github.com/paypal/paypal-js/compare/v3.1.10...v3.1.11) (2021-06-03)
 
 ### [3.1.10](https://github.com/paypal/paypal-js/compare/v3.1.9...v3.1.10) (2021-05-11)
