@@ -22,7 +22,7 @@
         "postinstall": "husky install",
         "prepublishOnly": "pinst --disable",
         "postpublish": "pinst --enable",
-        "test": "jest",
+        "test": "jest --env=jsdom",
         "start": "npm run storybook",
         "storybook": "start-storybook -p 6006",
         "build-storybook": "build-storybook",
