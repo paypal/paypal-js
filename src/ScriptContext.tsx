@@ -19,7 +19,8 @@ const SCRIPT_LOADING_STATE = {
     RESOLVED: "resolved",
 } as const;
 
-type ScriptLoadingState = typeof SCRIPT_LOADING_STATE[keyof typeof SCRIPT_LOADING_STATE];
+type ScriptLoadingState =
+    typeof SCRIPT_LOADING_STATE[keyof typeof SCRIPT_LOADING_STATE];
 
 interface ScriptContextState {
     options: ReactPayPalScriptOptions;

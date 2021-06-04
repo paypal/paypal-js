@@ -38,9 +38,8 @@ describe("<PayPalScriptProvider />", () => {
         );
         expect(loadScript).toHaveBeenCalledWith({
             "client-id": "test",
-            "data-react-paypal-script-id": expect.stringContaining(
-                "react-paypal-js"
-            ),
+            "data-react-paypal-script-id":
+                expect.stringContaining("react-paypal-js"),
         });
 
         // verify initial loading state
@@ -60,9 +59,8 @@ describe("<PayPalScriptProvider />", () => {
         );
         expect(loadScript).toHaveBeenCalledWith({
             "client-id": "test",
-            "data-react-paypal-script-id": expect.stringContaining(
-                "react-paypal-js"
-            ),
+            "data-react-paypal-script-id":
+                expect.stringContaining("react-paypal-js"),
         });
 
         // verify initial loading state
@@ -100,9 +98,8 @@ describe("<PayPalScriptProvider />", () => {
 
         expect(loadScript).toHaveBeenCalledWith({
             "client-id": "test",
-            "data-react-paypal-script-id": expect.stringContaining(
-                "react-paypal-js"
-            ),
+            "data-react-paypal-script-id":
+                expect.stringContaining("react-paypal-js"),
         });
 
         expect(state.isPending).toBe(true);

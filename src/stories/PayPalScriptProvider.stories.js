@@ -48,9 +48,8 @@ export const DeferLoading = () => {
 };
 
 function PrintLoadingState() {
-    const [
-        { isInitial, isPending, isResolved, isRejected },
-    ] = usePayPalScriptReducer();
+    const [{ isInitial, isPending, isResolved, isRejected }] =
+        usePayPalScriptReducer();
 
     console.log(isPending);
 
