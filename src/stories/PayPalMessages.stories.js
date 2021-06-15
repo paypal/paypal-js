@@ -1,9 +1,11 @@
 import React from "react";
 import { PayPalScriptProvider, PayPalMessages } from "../index";
+import { getOptionsFromQueryString } from "./utils";
 
 const scriptProviderOptions = {
     "client-id": "test",
     components: "messages",
+    ...getOptionsFromQueryString(),
 };
 
 export default {

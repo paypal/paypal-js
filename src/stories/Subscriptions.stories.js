@@ -4,12 +4,14 @@ import {
     PayPalButtons,
     usePayPalScriptReducer,
 } from "../index";
+import { getOptionsFromQueryString } from "./utils";
 
 const scriptProviderOptions = {
     "client-id": "test",
     components: "buttons",
     intent: "subscription",
     vault: true,
+    ...getOptionsFromQueryString(),
 };
 
 export default {

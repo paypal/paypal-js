@@ -1,11 +1,14 @@
 import React from "react";
 import { FUNDING, PayPalScriptProvider, PayPalButtons } from "../index";
+import { getOptionsFromQueryString } from "./utils";
 
 const scriptProviderOptions = {
     "client-id":
         "AdLzRW18VHoABXiBhpX2gf0qhXwiW4MmFVHL69V90vciCg_iBLGyJhlf7EuWtFcdNjGiDfrwe7rmhvMZ",
     components: "buttons,funding-eligibility",
     "enable-funding": "venmo",
+    debug: true,
+    ...getOptionsFromQueryString(),
 };
 
 export default {

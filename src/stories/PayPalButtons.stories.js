@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { FUNDING, PayPalScriptProvider, PayPalButtons } from "../index";
+import { getOptionsFromQueryString } from "./utils";
 
 const scriptProviderOptions = {
     "client-id": "test",
     components: "buttons",
+    ...getOptionsFromQueryString(),
 };
 
 export default {

@@ -5,10 +5,12 @@ import {
     PayPalButtons,
     FUNDING,
 } from "../index";
+import { getOptionsFromQueryString } from "./utils";
 
 const scriptProviderOptions = {
     "client-id": "test",
     components: "buttons,marks,funding-eligibility",
+    ...getOptionsFromQueryString(),
 };
 
 export default {
