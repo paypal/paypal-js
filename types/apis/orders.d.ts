@@ -122,7 +122,7 @@ export type CreateOrderRequestBody = {
     application_context?: OrderApplicationContext;
 };
 
-export type CaptureOrderResponseBody = {
+export type OrderResponseBody = {
     create_time: string;
     update_time: string;
     id: string;
@@ -138,3 +138,6 @@ export type CaptureOrderResponseBody = {
         | "PAYER_ACTION_REQUIRED";
     links: LinkDescription[];
 };
+
+// deprecated - remove `CaptureOrderResponseBody` in next major release
+export type CaptureOrderResponseBody = OrderResponseBody;
