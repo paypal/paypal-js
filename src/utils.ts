@@ -57,9 +57,10 @@ export function insertScriptElement({
     document.head.insertBefore(newScript, document.head.firstElementChild);
 }
 
-export function processOptions(
-    options: PayPalScriptOptions
-): { url: string; dataAttributes: StringMap } {
+export function processOptions(options: PayPalScriptOptions): {
+    url: string;
+    dataAttributes: StringMap;
+} {
     let sdkBaseURL = "https://www.paypal.com/sdk/js";
 
     if (options.sdkBaseURL) {

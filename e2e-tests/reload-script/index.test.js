@@ -31,19 +31,19 @@ describe("Reload script", () => {
         await expect(page).toMatchElement("iframe.component-frame.visible");
 
         await page.select("select#currency", "EUR");
-        const [
-            sdkResponseUpdated,
-            smartButtonsResponseUpdated,
-        ] = await Promise.all([
-            page.waitForResponse((response) =>
-                response.url().startsWith("https://www.paypal.com/sdk/js")
-            ),
-            page.waitForResponse((response) =>
-                response
-                    .url()
-                    .startsWith("https://www.sandbox.paypal.com/smart/buttons")
-            ),
-        ]);
+        const [sdkResponseUpdated, smartButtonsResponseUpdated] =
+            await Promise.all([
+                page.waitForResponse((response) =>
+                    response.url().startsWith("https://www.paypal.com/sdk/js")
+                ),
+                page.waitForResponse((response) =>
+                    response
+                        .url()
+                        .startsWith(
+                            "https://www.sandbox.paypal.com/smart/buttons"
+                        )
+                ),
+            ]);
 
         expect(sdkResponseUpdated.url().includes("currency=EUR")).toBe(true);
         expect(smartButtonsResponseUpdated.url().includes("currency=EUR")).toBe(

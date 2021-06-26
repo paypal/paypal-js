@@ -156,9 +156,8 @@ describe("insertScriptElement()", () => {
             onSuccess: jest.fn(),
         });
 
-        const scriptFromDOM = document.querySelector<HTMLScriptElement>(
-            "head script"
-        );
+        const scriptFromDOM =
+            document.querySelector<HTMLScriptElement>("head script");
         if (!scriptFromDOM)
             throw new Error("Expected to find <script> element");
 
@@ -174,9 +173,8 @@ describe("insertScriptElement()", () => {
             onSuccess: jest.fn(),
         });
 
-        const scriptFromDOM = document.querySelector<HTMLScriptElement>(
-            "head script"
-        );
+        const scriptFromDOM =
+            document.querySelector<HTMLScriptElement>("head script");
         if (!scriptFromDOM)
             throw new Error("Expected to find <script> element");
 
@@ -198,10 +196,8 @@ describe("insertScriptElement()", () => {
             onSuccess: jest.fn(),
         });
 
-        const [
-            firstScript,
-            secondScript,
-        ] = document.querySelectorAll<HTMLScriptElement>("head script");
+        const [firstScript, secondScript] =
+            document.querySelectorAll<HTMLScriptElement>("head script");
 
         expect(firstScript.src).toBe(newScriptSrc);
         expect(secondScript.src).toBe(existingScript.src);
