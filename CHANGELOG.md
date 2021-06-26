@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.1](https://github.com/paypal/paypal-js/compare/v4.0.0...v4.0.1) (2021-06-26)
+
+### Bug Fixes
+
+-   **types:** add type for authorize() ([#96](https://github.com/paypal/paypal-js/issues/96)) ([b30bf77](https://github.com/paypal/paypal-js/commit/b30bf77835743db707177e396158454b61212723))
+
 ## [4.0.0](https://github.com/paypal/paypal-js/compare/v3.1.11...v4.0.0) (2021-06-04)
 
 ### ⚠ BREAKING CHANGES
