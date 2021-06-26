@@ -188,7 +188,7 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <script src="https://unpkg.com/@paypal/paypal-js/dist/iife/paypal-js.min.js"></script>
+        <script src="https://unpkg.com/@paypal/paypal-js@4.0.0/dist/iife/paypal-js.min.js"></script>
     </head>
     <body>
         <div id="paypal-buttons"></div>
@@ -200,8 +200,6 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
     </body>
 </html>
 ```
-
-Note that the above CDN location points to the latest release of paypal-js. It is advised that when you deploy your site, you import the specific version you have developed and tested with (ex: https://unpkg.com/@paypal/paypal-js@4.0.0/dist/iife/paypal-js.min.js).
 
 ### `loadCustomScript(options)`
 
