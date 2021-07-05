@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.1.1](https://github.com/paypal/react-paypal-js/compare/v7.1.0...v7.1.1) (2021-07-05)
+
+### Bug Fixes
+
+-   **types:** export the ScriptProviderProps interface ([e97e3d0](https://github.com/paypal/react-paypal-js/commit/e97e3d0b0cc404e807f7f9e1173ec532592fc8cf))
+-   **types:** update resetOptions to support PayPalScriptOptions type ([236c3cf](https://github.com/paypal/react-paypal-js/commit/236c3cff9be53959b24725718a8b0a999e17f02c))
+
 ## [7.1.0](https://github.com/paypal/react-paypal-js/compare/v7.0.0...v7.1.0) (2021-06-27)
 
 ### Features
