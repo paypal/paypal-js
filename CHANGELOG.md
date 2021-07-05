@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.2](https://github.com/paypal/paypal-js/compare/v4.0.1...v4.0.2) (2021-07-05)
+
+### Bug Fixes
+
+-   **types:** add labels 'subscribe' and 'donate' ([8550a0a](https://github.com/paypal/paypal-js/commit/8550a0a162834876f3173192943810dc08145b04))
+
 ### [4.0.1](https://github.com/paypal/paypal-js/compare/v4.0.0...v4.0.1) (2021-06-26)
 
 ### Bug Fixes
