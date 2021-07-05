@@ -16,7 +16,9 @@ export default {
     decorators: [
         (Story: FunctionComponent): ReactElement => (
             <PayPalScriptProvider options={scriptProviderOptions}>
-                <Story />
+                <div style={{ minHeight: "250px" }}>
+                    <Story />
+                </div>
             </PayPalScriptProvider>
         ),
     ],

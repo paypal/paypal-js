@@ -51,7 +51,7 @@ export const RadioButtons: FunctionComponent = () => {
 
     return (
         <>
-            <form>
+            <form style={{ minHeight: "200px" }}>
                 {fundingSources.map((fundingSource) => (
                     <label className="mark" key={fundingSource}>
                         <input

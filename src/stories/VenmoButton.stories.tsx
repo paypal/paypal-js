@@ -32,7 +32,9 @@ export default {
                     "data-namespace": generateRandomString(),
                 }}
             >
-                <Story />
+                <div style={{ minHeight: "200px" }}>
+                    <Story />
+                </div>
             </PayPalScriptProvider>
         ),
     ],

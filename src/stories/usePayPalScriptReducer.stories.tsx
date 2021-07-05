@@ -69,15 +69,17 @@ export const Currency: FunctionComponent = () => {
     }
 
     return (
-        <PayPalScriptProvider
-            options={{
-                ...scriptProviderOptions,
-                "data-namespace": "currency_example",
-            }}
-        >
-            <CurrencySelect />
-            <PayPalButtons createOrder={createOrder} />
-        </PayPalScriptProvider>
+        <div style={{ minHeight: "300px" }}>
+            <PayPalScriptProvider
+                options={{
+                    ...scriptProviderOptions,
+                    "data-namespace": "currency_example",
+                }}
+            >
+                <CurrencySelect />
+                <PayPalButtons createOrder={createOrder} />
+            </PayPalScriptProvider>
+        </div>
     );
 };
 
@@ -110,15 +112,17 @@ export const LoadingSpinner: FunctionComponent = () => {
     }
 
     return (
-        <PayPalScriptProvider
-            options={{
-                ...scriptProviderOptions,
-                "data-namespace": "spinner_example",
-            }}
-        >
-            <ReloadButton />
-            <LoadingSpinner />
-            <PayPalButtons />
-        </PayPalScriptProvider>
+        <div style={{ minHeight: "300px" }}>
+            <PayPalScriptProvider
+                options={{
+                    ...scriptProviderOptions,
+                    "data-namespace": "spinner_example",
+                }}
+            >
+                <ReloadButton />
+                <LoadingSpinner />
+                <PayPalButtons />
+            </PayPalScriptProvider>
+        </div>
     );
 };

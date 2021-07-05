@@ -36,7 +36,9 @@ export default {
                     "data-namespace": generateRandomString(),
                 }}
             >
-                <Story />
+                <div style={{ minHeight: "200px" }}>
+                    <Story />
+                </div>
             </PayPalScriptProvider>
         ),
     ],
@@ -94,7 +96,7 @@ export const DynamicAmount: FunctionComponent = () => {
     }
 
     return (
-        <>
+        <div style={{ minHeight: "300px" }}>
             <label htmlFor="amount">Order Amount: </label>
             <select onChange={onChange} name="amount" id="amount">
                 <option value="2.00">$2.00</option>
@@ -104,7 +106,7 @@ export const DynamicAmount: FunctionComponent = () => {
             <p>Order ID: {orderID ? orderID : "unknown"}</p>
 
             <PayPalButtons createOrder={createOrder} forceReRender={[amount]} />
-        </>
+        </div>
     );
 };
 
