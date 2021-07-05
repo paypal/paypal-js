@@ -14,11 +14,8 @@ module.exports = {
         },
     ],
     typescript: {
-        reactDocgenTypescriptOptions: {
-            compilerOptions: {
-                allowSyntheticDefaultImports: false,
-                esModuleInterop: false,
-            },
-        },
+        check: false,
+        checkOptions: {},
+        reactDocgen: "react-docgen-typescript",
     },
 };

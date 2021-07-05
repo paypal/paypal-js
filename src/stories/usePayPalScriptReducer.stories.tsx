@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, FunctionComponent, ChangeEvent } from "react";
+import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
+import type { CreateOrderActions } from "@paypal/paypal-js/types/components/buttons";
+
 import {
     PayPalScriptProvider,
     usePayPalScriptReducer,
     PayPalButtons,
 } from "../index";
+import { getOptionsFromQueryString } from "./utils";
 
-const scriptProviderOptions = {
+const scriptProviderOptions: PayPalScriptOptions = {
     "client-id": "test",
     components: "buttons",
+    ...getOptionsFromQueryString(),
 };
 
 export default {
@@ -15,19 +20,19 @@ export default {
     component: usePayPalScriptReducer,
 };
 
-export const Currency = () => {
+export const Currency: FunctionComponent = () => {
     const [currency, setCurrency] = useState("USD");
 
     function CurrencySelect() {
         const [{ options }, dispatch] = usePayPalScriptReducer();
 
-        function onCurrencyChange({ target: { value } }) {
-            setCurrency(value);
+        function onCurrencyChange(event: ChangeEvent<HTMLSelectElement>) {
+            setCurrency(event.target.value);
             dispatch({
                 type: "resetOptions",
                 value: {
                     ...options,
-                    currency: value,
+                    currency: event.target.value,
                 },
             });
         }
@@ -47,13 +52,16 @@ export const Currency = () => {
         );
     }
 
-    function createOrder(data, actions) {
+    function createOrder(
+        data: Record<string, unknown>,
+        actions: CreateOrderActions
+    ) {
         return actions.order.create({
             purchase_units: [
                 {
                     amount: {
                         value: "88.44",
-                        currency,
+                        currency_code: currency,
                     },
                 },
             ],
@@ -61,14 +69,19 @@ export const Currency = () => {
     }
 
     return (
-        <PayPalScriptProvider options={scriptProviderOptions}>
+        <PayPalScriptProvider
+            options={{
+                ...scriptProviderOptions,
+                "data-namespace": "currency_example",
+            }}
+        >
             <CurrencySelect />
             <PayPalButtons createOrder={createOrder} />
         </PayPalScriptProvider>
     );
 };
 
-export const LoadingSpinner = () => {
+export const LoadingSpinner: FunctionComponent = () => {
     function ReloadButton() {
         const [{ options }, dispatch] = usePayPalScriptReducer();
 
@@ -81,7 +94,7 @@ export const LoadingSpinner = () => {
                         type: "resetOptions",
                         value: {
                             ...options,
-                            "data-order-id": Date.now(),
+                            "data-order-id": Date.now().toString(),
                         },
                     });
                 }}
@@ -97,7 +110,12 @@ export const LoadingSpinner = () => {
     }
 
     return (
-        <PayPalScriptProvider options={scriptProviderOptions}>
+        <PayPalScriptProvider
+            options={{
+                ...scriptProviderOptions,
+                "data-namespace": "spinner_example",
+            }}
+        >
             <ReloadButton />
             <LoadingSpinner />
             <PayPalButtons />

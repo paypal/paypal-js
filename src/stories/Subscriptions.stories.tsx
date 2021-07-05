@@ -1,12 +1,15 @@
-import React from "react";
+import React, { FunctionComponent, ReactElement, ChangeEvent } from "react";
+import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
+import type { CreateSubscriptionActions } from "@paypal/paypal-js/types/components/buttons";
+
 import {
     PayPalScriptProvider,
     PayPalButtons,
     usePayPalScriptReducer,
 } from "../index";
-import { getOptionsFromQueryString } from "./utils";
+import { getOptionsFromQueryString, generateRandomString } from "./utils";
 
-const scriptProviderOptions = {
+const subscriptionOptions: PayPalScriptOptions = {
     "client-id": "test",
     components: "buttons",
     intent: "subscription",
@@ -14,22 +17,38 @@ const scriptProviderOptions = {
     ...getOptionsFromQueryString(),
 };
 
+const orderOptions = {
+    "client-id": "test",
+    components: "buttons",
+    ...getOptionsFromQueryString(),
+};
+
 export default {
     title: "Example/Subscriptions",
     decorators: [
-        (Story) => (
-            <PayPalScriptProvider options={scriptProviderOptions}>
+        (Story: FunctionComponent): ReactElement => (
+            <PayPalScriptProvider
+                options={{
+                    ...subscriptionOptions,
+                    "data-namespace": generateRandomString(),
+                }}
+            >
                 <Story />
             </PayPalScriptProvider>
         ),
     ],
 };
 
-export const Default = () => (
+const PLAN_ID = "P-3RX065706M3469222L5IFM4I";
+
+export const Default: FunctionComponent = () => (
     <PayPalButtons
-        createSubscription={(data, actions) =>
+        createSubscription={(
+            data: Record<string, unknown>,
+            actions: CreateSubscriptionActions
+        ) =>
             actions.subscription.create({
-                plan_id: "P-3RX065706M3469222L5IFM4I",
+                plan_id: PLAN_ID,
             })
         }
         style={{
@@ -38,13 +57,16 @@ export const Default = () => (
     />
 );
 
-export const OrdersAndSubscriptions = () => {
+export const OrdersAndSubscriptions: FunctionComponent = () => {
     const [{ options }, dispatch] = usePayPalScriptReducer();
 
     const buttonSubscriptionOptions = {
-        createSubscription: function (data, actions) {
+        createSubscription(
+            data: Record<string, unknown>,
+            actions: CreateSubscriptionActions
+        ) {
             return actions.subscription.create({
-                plan_id: "P-3RX065706M3469222L5IFM4I",
+                plan_id: PLAN_ID,
             });
         },
         style: {
@@ -55,16 +77,13 @@ export const OrdersAndSubscriptions = () => {
     const buttonOptions =
         options.intent === "subscription" ? buttonSubscriptionOptions : {};
 
-    function onChange({ target: { value } }) {
+    function onChange(event: ChangeEvent<HTMLInputElement>) {
         dispatch({
             type: "resetOptions",
             value:
-                value === "subscription"
-                    ? scriptProviderOptions
-                    : {
-                          "client-id": scriptProviderOptions["client-id"],
-                          components: scriptProviderOptions.components,
-                      },
+                event.target.value === "subscription"
+                    ? subscriptionOptions
+                    : orderOptions,
         });
     }
 

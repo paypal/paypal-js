@@ -1,21 +1,29 @@
-import React from "react";
+import React, { FunctionComponent, ReactElement } from "react";
+import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
+
 import { PayPalScriptProvider, usePayPalScriptReducer } from "../index";
+import { getOptionsFromQueryString } from "./utils";
+
+const scriptProviderOptions: PayPalScriptOptions = {
+    "client-id": "test",
+    ...getOptionsFromQueryString(),
+};
 
 export default {
     title: "Example/PayPalScriptProvider",
     component: PayPalScriptProvider,
 };
 
-export const Default = () => {
+export const Default: FunctionComponent = () => {
     return (
-        <PayPalScriptProvider options={{ "client-id": "test" }}>
+        <PayPalScriptProvider options={scriptProviderOptions}>
             <PrintLoadingState />
             {/* add your paypal components here (ex: <PayPalButtons />) */}
         </PayPalScriptProvider>
     );
 };
 
-export const DeferLoading = () => {
+export const DeferLoading: FunctionComponent = () => {
     function LoadScriptButton() {
         const [{ isResolved }, dispatch] = usePayPalScriptReducer();
 
@@ -39,7 +47,10 @@ export const DeferLoading = () => {
     return (
         <PayPalScriptProvider
             deferLoading={true}
-            options={{ "client-id": "test" }}
+            options={{
+                ...scriptProviderOptions,
+                "data-namespace": "defer_loading_example",
+            }}
         >
             <PrintLoadingState />
             <LoadScriptButton />
@@ -47,11 +58,9 @@ export const DeferLoading = () => {
     );
 };
 
-function PrintLoadingState() {
+function PrintLoadingState(): ReactElement | null {
     const [{ isInitial, isPending, isResolved, isRejected }] =
         usePayPalScriptReducer();
-
-    console.log(isPending);
 
     if (isInitial) {
         return (

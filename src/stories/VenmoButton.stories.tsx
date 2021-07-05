@@ -1,8 +1,10 @@
-import React from "react";
-import { FUNDING, PayPalScriptProvider, PayPalButtons } from "../index";
-import { getOptionsFromQueryString } from "./utils";
+import React, { FunctionComponent, ReactElement } from "react";
+import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 
-const scriptProviderOptions = {
+import { FUNDING, PayPalScriptProvider, PayPalButtons } from "../index";
+import { getOptionsFromQueryString, generateRandomString } from "./utils";
+
+const scriptProviderOptions: PayPalScriptOptions = {
     "client-id":
         "AdLzRW18VHoABXiBhpX2gf0qhXwiW4MmFVHL69V90vciCg_iBLGyJhlf7EuWtFcdNjGiDfrwe7rmhvMZ",
     components: "buttons,funding-eligibility",
@@ -23,27 +25,32 @@ export default {
         onShippingChange: null,
     },
     decorators: [
-        (Story) => (
-            <PayPalScriptProvider options={scriptProviderOptions}>
+        (Story: FunctionComponent): ReactElement => (
+            <PayPalScriptProvider
+                options={{
+                    ...scriptProviderOptions,
+                    "data-namespace": generateRandomString(),
+                }}
+            >
                 <Story />
             </PayPalScriptProvider>
         ),
     ],
 };
 
-export const Standalone = () => (
+export const Standalone: FunctionComponent = () => (
     <PayPalButtons fundingSource={FUNDING.VENMO} style={{ color: "blue" }}>
         <p>You are not eligible to pay with Venmo.</p>
     </PayPalButtons>
 );
 
-export const Default = () => <PayPalButtons />;
+export const Default: FunctionComponent = () => <PayPalButtons />;
 
-export const Horizontal = () => (
+export const Horizontal: FunctionComponent = () => (
     <PayPalButtons style={{ layout: "horizontal" }} />
 );
 
-export const CustomStyle = () => (
+export const CustomStyle: FunctionComponent = () => (
     <PayPalButtons
         style={{ color: "blue", shape: "pill", label: "pay", height: 40 }}
     />

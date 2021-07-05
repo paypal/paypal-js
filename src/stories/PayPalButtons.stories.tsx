@@ -1,8 +1,16 @@
-import React, { useState } from "react";
-import { FUNDING, PayPalScriptProvider, PayPalButtons } from "../index";
-import { getOptionsFromQueryString } from "./utils";
+import React, {
+    useState,
+    FunctionComponent,
+    ReactElement,
+    ChangeEvent,
+} from "react";
+import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
+import type { CreateOrderActions } from "@paypal/paypal-js/types/components/buttons";
 
-const scriptProviderOptions = {
+import { FUNDING, PayPalScriptProvider, PayPalButtons } from "../index";
+import { getOptionsFromQueryString, generateRandomString } from "./utils";
+
+const scriptProviderOptions: PayPalScriptOptions = {
     "client-id": "test",
     components: "buttons",
     ...getOptionsFromQueryString(),
@@ -21,41 +29,49 @@ export default {
         onShippingChange: null,
     },
     decorators: [
-        (Story) => (
-            <PayPalScriptProvider options={scriptProviderOptions}>
+        (Story: FunctionComponent): ReactElement => (
+            <PayPalScriptProvider
+                options={{
+                    ...scriptProviderOptions,
+                    "data-namespace": generateRandomString(),
+                }}
+            >
                 <Story />
             </PayPalScriptProvider>
         ),
     ],
 };
 
-export const Default = () => <PayPalButtons />;
+export const Default: FunctionComponent = () => <PayPalButtons />;
 
-export const Horizontal = () => (
+export const Horizontal: FunctionComponent = () => (
     <PayPalButtons style={{ layout: "horizontal" }} />
 );
 
-export const CustomStyle = () => (
+export const CustomStyle: FunctionComponent = () => (
     <PayPalButtons
         style={{ color: "blue", shape: "pill", label: "pay", height: 40 }}
     />
 );
 
-export const Standalone = () => (
+export const Standalone: FunctionComponent = () => (
     <PayPalButtons fundingSource={FUNDING.PAYPAL} />
 );
 
-export const Tiny = () => (
+export const Tiny: FunctionComponent = () => (
     <div style={{ maxWidth: "80px" }}>
         <PayPalButtons fundingSource={FUNDING.PAYPAL} style={{ height: 25 }} />
     </div>
 );
 
-export const DynamicAmount = () => {
-    const [amount, setAmount] = useState(2);
-    const [orderID, setOrderID] = useState(false);
+export const DynamicAmount: FunctionComponent = () => {
+    const [amount, setAmount] = useState("2.00");
+    const [orderID, setOrderID] = useState("");
 
-    function createOrder(data, actions) {
+    function createOrder(
+        data: Record<string, unknown>,
+        actions: CreateOrderActions
+    ) {
         return actions.order
             .create({
                 purchase_units: [
@@ -72,18 +88,18 @@ export const DynamicAmount = () => {
             });
     }
 
-    function onChange({ target: { value } }) {
-        setAmount(value);
-        setOrderID(false);
+    function onChange(event: ChangeEvent<HTMLSelectElement>) {
+        setAmount(event.target.value);
+        setOrderID("");
     }
 
     return (
         <>
-            <label htmlor="amount">Order Amount: </label>
+            <label htmlFor="amount">Order Amount: </label>
             <select onChange={onChange} name="amount" id="amount">
-                <option value="2">$2.00</option>
-                <option value="4">$4.00</option>
-                <option value="6">$6.00</option>
+                <option value="2.00">$2.00</option>
+                <option value="4.00">$4.00</option>
+                <option value="6.00">$6.00</option>
             </select>
             <p>Order ID: {orderID ? orderID : "unknown"}</p>
 
@@ -92,11 +108,11 @@ export const DynamicAmount = () => {
     );
 };
 
-export const Disabled = () => {
+export const Disabled: FunctionComponent = () => {
     const [isDisabled, setIsDisabled] = useState(true);
 
-    function onCheckboxChange({ target: { checked } }) {
-        setIsDisabled(!checked);
+    function onCheckboxChange(event: ChangeEvent<HTMLInputElement>) {
+        setIsDisabled(!event.target.checked);
     }
 
     return (
