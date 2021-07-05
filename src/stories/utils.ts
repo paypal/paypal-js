@@ -4,17 +4,17 @@ const allowedSDKQueryParams = Object.keys(SDK_QUERY_KEYS).map(
     (key) => SDK_QUERY_KEYS[key]
 );
 
-export function getOptionsFromQueryString(): Record<string, unknown> {
-    const searchParams = new URLSearchParams(window.location.search) || [];
+export function getOptionsFromQueryString(): Record<string, string> {
+    const searchParams = new URLSearchParams(window.location.search);
+    const validOptions: Record<string, string> = {};
 
-    return Array.from(searchParams)
-        .filter(([key]) => {
-            return allowedSDKQueryParams.includes(key);
-        })
-        .reduce((acc: Record<string, unknown>, [key, value]) => {
-            acc[key] = value;
-            return acc;
-        }, {});
+    searchParams.forEach((value, key) => {
+        if (allowedSDKQueryParams.includes(key)) {
+            validOptions[key] = value;
+        }
+    });
+
+    return validOptions;
 }
 
 export function generateRandomString(): string {
