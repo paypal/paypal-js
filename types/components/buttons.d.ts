@@ -112,7 +112,14 @@ export interface PayPalButtonsComponentOptions {
     style?: {
         color?: "gold" | "blue" | "silver" | "white" | "black";
         height?: number;
-        label?: "paypal" | "checkout" | "buynow" | "pay" | "installment";
+        label?:
+            | "paypal"
+            | "checkout"
+            | "buynow"
+            | "pay"
+            | "installment"
+            | "subscribe"
+            | "donate";
         layout?: "vertical" | "horizontal";
         shape?: "rect" | "pill";
         tagline?: boolean;
