@@ -117,7 +117,7 @@ function usePayPalScriptReducer(): [
     return [derivedStatusContext, dispatchContext];
 }
 
-interface ScriptProviderProps {
+export interface ScriptProviderProps {
     options: PayPalScriptOptions;
     children?: React.ReactNode;
     deferLoading?: boolean;
