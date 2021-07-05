@@ -40,7 +40,10 @@ type ScriptReducerAction =
           type: "setLoadingStatus";
           value: ScriptLoadingState;
       }
-    | { type: "resetOptions"; value: ReactPayPalScriptOptions };
+    | {
+          type: "resetOptions";
+          value: PayPalScriptOptions | ReactPayPalScriptOptions;
+      };
 
 type ScriptReducerDispatch = (action: ScriptReducerAction) => void;
 
