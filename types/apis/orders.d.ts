@@ -78,8 +78,8 @@ export type PurchaseItem = {
     unit_amount: Amount;
     tax?: Amount;
     description?: string;
-    sku: string;
-    category: "DIGITAL_GOODS" | "PHYSICAL_GOODS";
+    sku?: string;
+    category?: "DIGITAL_GOODS" | "PHYSICAL_GOODS";
 };
 
 export type PurchaseUnit = {
