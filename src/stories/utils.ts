@@ -4,6 +4,9 @@ const allowedSDKQueryParams = Object.keys(SDK_QUERY_KEYS).map(
     (key) => SDK_QUERY_KEYS[key]
 );
 
+// paypal-js supports the sdkBaseURL param for testing in lower environments
+allowedSDKQueryParams.push("sdkBaseURL");
+
 export function getOptionsFromQueryString(): Record<string, string> {
     const searchParams = new URLSearchParams(window.location.search);
     const validOptions: Record<string, string> = {};
