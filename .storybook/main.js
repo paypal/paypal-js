@@ -17,5 +17,12 @@ module.exports = {
         check: false,
         checkOptions: {},
         reactDocgen: "react-docgen-typescript",
+        reactDocgenTypescriptOptions: {
+            // the Storybook docs need this to render the props table for <PayPalButtons />
+            compilerOptions: {
+                allowSyntheticDefaultImports: false,
+                esModuleInterop: false,
+            },
+        },
     },
 };
