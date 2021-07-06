@@ -168,7 +168,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
         }
     }, [disabled, initActions]);
 
-    const isDisabledStyle = disabled ? { opacity: 0.33 } : {};
+    const isDisabledStyle = disabled ? { opacity: 0.38 } : {};
     const classNames = `${className} ${
         disabled ? "paypal-buttons-disabled" : ""
     }`.trim();
