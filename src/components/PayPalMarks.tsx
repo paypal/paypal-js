@@ -28,7 +28,7 @@ A `FUNDING` object is exported by this library which has a key for every availab
 ```jsx
     import { PayPalScriptProvider, PayPalMarks, FUNDING } from "@paypal/react-paypal-js";
 
-    <PayPalScriptProvider options={{ "client-id": "test" }}>
+    <PayPalScriptProvider options={{ "client-id": "test", components: "buttons,marks" }}>
         <PayPalMarks fundingSource={FUNDING.PAYPAL}/>
     </PayPalScriptProvider>
 ```
