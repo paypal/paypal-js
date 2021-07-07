@@ -43,15 +43,20 @@ export interface Amount {
     value: string;
 }
 
+export interface AmountWithRequiredCurrencyCode {
+    currency_code: string;
+    value: string;
+}
+
 export interface AmountWithBreakdown extends Amount {
     breakdown?: {
-        item_total: Amount;
-        shipping: Amount;
-        handling: Amount;
-        tax_total: Amount;
-        insurance: Amount;
-        shipping_discount: Amount;
-        discount: Amount;
+        item_total?: AmountWithRequiredCurrencyCode;
+        shipping?: AmountWithRequiredCurrencyCode;
+        handling?: AmountWithRequiredCurrencyCode;
+        tax_total?: AmountWithRequiredCurrencyCode;
+        insurance?: AmountWithRequiredCurrencyCode;
+        shipping_discount?: AmountWithRequiredCurrencyCode;
+        discount?: AmountWithRequiredCurrencyCode;
     };
 }
 

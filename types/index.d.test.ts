@@ -76,8 +76,43 @@ loadScript({ "client-id": "test" })
             },
         });
 
+        // donations
+        paypal.Buttons({
+            fundingSource: "paypal",
+            style: { label: "donate" },
+            createOrder: (data, actions) => {
+                return actions.order.create({
+                    purchase_units: [
+                        {
+                            amount: {
+                                value: "2.00",
+                                breakdown: {
+                                    item_total: {
+                                        currency_code: "USD",
+                                        value: "2.00",
+                                    },
+                                },
+                            },
+                            items: [
+                                {
+                                    name: "donation-example",
+                                    quantity: "1",
+                                    unit_amount: {
+                                        currency_code: "USD",
+                                        value: "2.00",
+                                    },
+                                    category: "DONATION",
+                                },
+                            ],
+                        },
+                    ],
+                });
+            },
+        });
+
         // createSubscription
         paypal.Buttons({
+            style: { label: "subscribe" },
             createSubscription: (data, actions) => {
                 return actions.subscription.create({
                     plan_id: "P-3RX123456M3469222L5IFM4I",
