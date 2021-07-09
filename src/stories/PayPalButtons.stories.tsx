@@ -5,7 +5,11 @@ import React, {
     ChangeEvent,
 } from "react";
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
-import type { CreateOrderActions } from "@paypal/paypal-js/types/components/buttons";
+import type {
+    CreateOrderActions,
+    OnApproveData,
+    OnApproveActions,
+} from "@paypal/paypal-js/types/components/buttons";
 
 import { FUNDING, PayPalScriptProvider, PayPalButtons } from "../index";
 import { getOptionsFromQueryString, generateRandomString } from "./utils";
@@ -44,7 +48,30 @@ export default {
     ],
 };
 
-export const Default: FunctionComponent = () => <PayPalButtons />;
+export const Default: FunctionComponent = () => {
+    function createOrder(
+        data: Record<string, unknown>,
+        actions: CreateOrderActions
+    ) {
+        return actions.order.create({
+            purchase_units: [
+                {
+                    amount: {
+                        value: "88.44",
+                    },
+                },
+            ],
+        });
+    }
+
+    function onApprove(data: OnApproveData, actions: OnApproveActions) {
+        return actions.order.capture().then(function (details) {
+            alert(`Transaction completed by ${details.payer.name.given_name}!`);
+        });
+    }
+
+    return <PayPalButtons createOrder={createOrder} onApprove={onApprove} />;
+};
 
 export const Horizontal: FunctionComponent = () => (
     <PayPalButtons style={{ layout: "horizontal" }} />
