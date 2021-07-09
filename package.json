@@ -79,7 +79,7 @@
     },
     "standard-version": {
         "scripts": {
-            "postbump": "node scripts/readme-package-version.js"
+            "precommit": "node scripts/readme-package-version.js"
         }
     }
 }
