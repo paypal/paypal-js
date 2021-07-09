@@ -76,5 +76,10 @@
     },
     "dependencies": {
         "promise-polyfill": "^8.2.0"
+    },
+    "standard-version": {
+        "scripts": {
+            "precommit": "node scripts/readme-package-version.js"
+        }
     }
 }
