@@ -1,5 +1,6 @@
 const { readFileSync, writeFileSync } = require("fs");
 const { join } = require("path");
+const { exec } = require("shelljs");
 
 const { version: newVersion } = require("../package.json");
 
@@ -11,3 +12,4 @@ const newReadmeText = readmeText.replace(
 );
 
 writeFileSync(readmeFile, newReadmeText, "utf-8");
+exec(`git add ${readmeFile}`);
