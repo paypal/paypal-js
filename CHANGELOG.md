@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.3](https://github.com/paypal/paypal-js/compare/v4.0.2...v4.0.3) (2021-07-09)
+
+### Bug Fixes
+
+-   **types:** add new category for donation ([3241f46](https://github.com/paypal/paypal-js/commit/3241f4670a0ae3d9748c3413d9c08ecd9983769b))
+-   **types:** add support for donations ([b4eb180](https://github.com/paypal/paypal-js/commit/b4eb180446f4423ec293efdd42ee9977b96414d4))
+-   **types:** update sku and category to be optional ([0e0b129](https://github.com/paypal/paypal-js/commit/0e0b129a3ddb4e998626b840bc8faad41daa11dc))
+
 ### [4.0.2](https://github.com/paypal/paypal-js/compare/v4.0.1...v4.0.2) (2021-07-05)
 
 ### Bug Fixes
