@@ -12,6 +12,4 @@ const newReadmeText = readmeText.replace(
 );
 
 writeFileSync(readmeFile, newReadmeText, "utf-8");
-exec(
-    `git add ${readmeFile} && git commit -m "chore(release): bump version for unpkg links" --no-verify`
-);
+exec(`git add ${readmeFile}`);
