@@ -18,9 +18,6 @@ export default [
         input: "src/index.ts",
         plugins: [
             typescript({
-                declaration: true,
-                declarationDir: "dist/",
-                rootDir: "src/",
                 ...tsconfigOverride,
             }),
             nodeResolve(),
