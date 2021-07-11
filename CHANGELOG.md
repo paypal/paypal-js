@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.2.0](https://github.com/paypal/react-paypal-js/compare/v7.1.2...v7.2.0) (2021-07-11)
+
+### Features
+
+-   more robust package publishing ([#130](https://github.com/paypal/react-paypal-js/issues/130)) ([e5caf02](https://github.com/paypal/react-paypal-js/commit/e5caf02ece24b22f50f7f82b40203358746b5cc2))
+
+### Bug Fixes
+
+-   **release:** do not publish types from storybook ([#131](https://github.com/paypal/react-paypal-js/issues/131)) ([6534d59](https://github.com/paypal/react-paypal-js/commit/6534d595033dc9960b1fe6939a31482e8f22fdbd))
+-   increase opacity for disabled button ([d1ac1d2](https://github.com/paypal/react-paypal-js/commit/d1ac1d28d729774900dd757e0829812ab4cbc4f9))
+-   type declarations don’t depend on internal typings ([#129](https://github.com/paypal/react-paypal-js/issues/129)) ([76a3b9f](https://github.com/paypal/react-paypal-js/commit/76a3b9f72b4893aa7c2210e0d77711820a875bef))
+
 ### [7.1.2](https://github.com/paypal/react-paypal-js/compare/v7.1.1...v7.1.2) (2021-07-05)
 
 ### [7.1.1](https://github.com/paypal/react-paypal-js/compare/v7.1.0...v7.1.1) (2021-07-05)
