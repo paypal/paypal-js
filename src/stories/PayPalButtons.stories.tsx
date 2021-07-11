@@ -49,28 +49,7 @@ export default {
 };
 
 export const Default: FunctionComponent = () => {
-    function createOrder(
-        data: Record<string, unknown>,
-        actions: CreateOrderActions
-    ) {
-        return actions.order.create({
-            purchase_units: [
-                {
-                    amount: {
-                        value: "88.44",
-                    },
-                },
-            ],
-        });
-    }
-
-    function onApprove(data: OnApproveData, actions: OnApproveActions) {
-        return actions.order.capture().then(function (details) {
-            alert(`Transaction completed by ${details.payer.name.given_name}!`);
-        });
-    }
-
-    return <PayPalButtons createOrder={createOrder} onApprove={onApprove} />;
+    return <PayPalButtons />;
 };
 
 export const Horizontal: FunctionComponent = () => (
@@ -96,6 +75,7 @@ export const Tiny: FunctionComponent = () => (
 export const DynamicAmount: FunctionComponent = () => {
     const [amount, setAmount] = useState("2.00");
     const [orderID, setOrderID] = useState("");
+    const [onApproveMessage, setOnApproveMessage] = useState("");
 
     function createOrder(
         data: Record<string, unknown>,
@@ -117,9 +97,18 @@ export const DynamicAmount: FunctionComponent = () => {
             });
     }
 
+    function onApprove(data: OnApproveData, actions: OnApproveActions) {
+        return actions.order.capture().then(function (details) {
+            setOnApproveMessage(
+                `Transaction completed by ${details.payer.name.given_name}!`
+            );
+        });
+    }
+
     function onChange(event: ChangeEvent<HTMLSelectElement>) {
         setAmount(event.target.value);
         setOrderID("");
+        setOnApproveMessage("");
     }
 
     return (
@@ -131,8 +120,13 @@ export const DynamicAmount: FunctionComponent = () => {
                 <option value="6.00">$6.00</option>
             </select>
             <p>Order ID: {orderID ? orderID : "unknown"}</p>
+            <p id="message">Message: {onApproveMessage}</p>
 
-            <PayPalButtons createOrder={createOrder} forceReRender={[amount]} />
+            <PayPalButtons
+                createOrder={createOrder}
+                onApprove={onApprove}
+                forceReRender={[amount]}
+            />
         </div>
     );
 };
