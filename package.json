@@ -20,7 +20,7 @@
         "format": "prettier --write .",
         "lint": "eslint .",
         "postinstall": "husky install",
-        "prepack": "rimraf dist && npm run build && npx tsc --emitDeclarationOnly --outDir dist/types",
+        "prepack": "rimraf dist && npm run build && npm run type-declarations",
         "prepublishOnly": "pinst --disable",
         "postpublish": "pinst --enable",
         "test": "jest --env=jsdom",
@@ -30,6 +30,7 @@
         "deploy-storybook": "storybook-to-ghpages",
         "release": "node ./scripts/publish",
         "typecheck": "tsc --noEmit",
+        "type-declarations": "tsc --emitDeclarationOnly --outDir dist/types --project tsconfig.declarations.json",
         "validate": "npm run typecheck && npm run build && npm run lint && npm test -- --coverage"
     },
     "files": [
