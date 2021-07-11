@@ -66,6 +66,41 @@ export const Standalone: FunctionComponent = () => (
     <PayPalButtons fundingSource={FUNDING.PAYPAL} />
 );
 
+export const Donate: FunctionComponent = () => (
+    <PayPalButtons
+        fundingSource={FUNDING.PAYPAL}
+        style={{ label: "donate" }}
+        createOrder={(data, actions) => {
+            return actions.order.create({
+                purchase_units: [
+                    {
+                        amount: {
+                            value: "2.00",
+                            breakdown: {
+                                item_total: {
+                                    currency_code: "USD",
+                                    value: "2.00",
+                                },
+                            },
+                        },
+                        items: [
+                            {
+                                name: "donation-example",
+                                quantity: "1",
+                                unit_amount: {
+                                    currency_code: "USD",
+                                    value: "2.00",
+                                },
+                                category: "DONATION",
+                            },
+                        ],
+                    },
+                ],
+            });
+        }}
+    />
+);
+
 export const Tiny: FunctionComponent = () => (
     <div style={{ maxWidth: "80px" }}>
         <PayPalButtons fundingSource={FUNDING.PAYPAL} style={{ height: 25 }} />
