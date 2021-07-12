@@ -11,7 +11,12 @@ import type {
     OnApproveActions,
 } from "@paypal/paypal-js/types/components/buttons";
 
-import { FUNDING, PayPalScriptProvider, PayPalButtons } from "../index";
+import {
+    FUNDING,
+    PayPalScriptProvider,
+    PayPalButtons,
+    PayPalButtonsComponentProps,
+} from "../index";
 import { getOptionsFromQueryString, generateRandomString } from "./utils";
 
 const scriptProviderOptions: PayPalScriptOptions = {
@@ -111,6 +116,7 @@ export const DynamicAmount: FunctionComponent = () => {
     const [amount, setAmount] = useState("2.00");
     const [orderID, setOrderID] = useState("");
     const [onApproveMessage, setOnApproveMessage] = useState("");
+    const [onErrorMessage, setOnErrorMessage] = useState("");
 
     function createOrder(
         data: Record<string, unknown>,
@@ -140,26 +146,56 @@ export const DynamicAmount: FunctionComponent = () => {
         });
     }
 
+    function onError(err: Record<string, unknown>) {
+        setOnErrorMessage(err.toString());
+    }
+
     function onChange(event: ChangeEvent<HTMLSelectElement>) {
         setAmount(event.target.value);
         setOrderID("");
         setOnApproveMessage("");
+        setOnErrorMessage("");
     }
 
     return (
         <div style={{ minHeight: "300px" }}>
-            <label htmlFor="amount">Order Amount: </label>
-            <select onChange={onChange} name="amount" id="amount">
-                <option value="2.00">$2.00</option>
-                <option value="4.00">$4.00</option>
-                <option value="6.00">$6.00</option>
-            </select>
-            <p>Order ID: {orderID ? orderID : "unknown"}</p>
-            <p id="message">Message: {onApproveMessage}</p>
+            <table className="table" style={{ maxWidth: "400px" }}>
+                <tbody>
+                    <tr>
+                        <th>
+                            <label htmlFor="amount">Order Amount: </label>
+                        </th>
+                        <td>
+                            <select
+                                onChange={onChange}
+                                name="amount"
+                                id="amount"
+                            >
+                                <option value="2.00">$2.00</option>
+                                <option value="4.00">$4.00</option>
+                                <option value="6.00">$6.00</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Order ID:</th>
+                        <td>{orderID ? orderID : "unknown"}</td>
+                    </tr>
+                    <tr>
+                        <th>On Approve Message: </th>
+                        <td data-testid="message">{onApproveMessage}</td>
+                    </tr>
+                    <tr>
+                        <th>On Error Message: </th>
+                        <td data-testid="error">{onErrorMessage}</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <PayPalButtons
                 createOrder={createOrder}
                 onApprove={onApprove}
+                onError={onError}
                 forceReRender={[amount]}
             />
         </div>
