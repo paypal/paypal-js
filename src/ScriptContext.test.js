@@ -105,6 +105,37 @@ describe("<PayPalScriptProvider />", () => {
         expect(state.isPending).toBe(true);
         await waitFor(() => expect(state.isResolved).toBe(true));
     });
+
+    test("should remount without reloading the sdk script when the options have not changed", async () => {
+        const { state, TestComponent } = setupTestComponent();
+
+        // the paypal-js loadScript() function avoids reloading the <script> when the options have not changed
+        const options = {
+            "client-id": "test",
+        };
+
+        const { unmount } = render(
+            <PayPalScriptProvider options={options}>
+                <TestComponent />
+            </PayPalScriptProvider>
+        );
+
+        // unmount to simulate <PayPalScriptProvider> getting removed from the DOM
+        unmount();
+
+        render(
+            <PayPalScriptProvider options={options}>
+                <TestComponent />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() => expect(state.isResolved).toBeTruthy());
+
+        const firstLoadScriptCall = loadScript.mock.calls[0][0];
+        const secondLoadScriptCall = loadScript.mock.calls[1][0];
+
+        expect(firstLoadScriptCall).toEqual(secondLoadScriptCall);
+    });
 });
 
 describe("usePayPalScriptReducer", () => {
