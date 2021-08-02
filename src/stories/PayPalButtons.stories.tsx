@@ -11,7 +11,7 @@ import type {
     OnApproveActions,
 } from "@paypal/paypal-js/types/components/buttons";
 
-import { FUNDING, PayPalScriptProvider, PayPalButtons } from "../index";
+import { PayPalScriptProvider, PayPalButtons, FUNDING } from "../index";
 import { getOptionsFromQueryString, generateRandomString } from "./utils";
 
 const scriptProviderOptions: PayPalScriptOptions = {

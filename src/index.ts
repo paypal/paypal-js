@@ -1,7 +1,10 @@
+export * from "./types/ScriptProvider";
+export * from "./context/ScriptProvider";
+export * from "./hooks/ScriptProvider";
 export * from "./components/PayPalButtons";
 export * from "./components/PayPalMarks";
 export * from "./components/PayPalMessages";
-export * from "./ScriptContext";
+export * from "./components/PayPalScriptProvider";
 
 import * as constants from "@paypal/sdk-constants/dist/module";
 

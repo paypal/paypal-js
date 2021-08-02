@@ -1,7 +1,7 @@
-import React from "react";
+import React, { Component } from "react";
 import { render, waitFor } from "@testing-library/react";
 
-import { PayPalScriptProvider } from "../ScriptContext";
+import { PayPalScriptProvider } from "../components/PayPalScriptProvider.tsx";
 import { PayPalMarks } from "./PayPalMarks";
 import { FUNDING } from "@paypal/sdk-constants";
 import { loadScript } from "@paypal/paypal-js";
@@ -146,7 +146,7 @@ describe("<PayPalMarks />", () => {
     });
 });
 
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends Component {
     constructor(props) {
         super(props);
         this.state = { hasError: false };

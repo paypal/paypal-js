@@ -8,6 +8,7 @@ export function getPayPalWindowNamespace(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (window as any)[namespace];
 }
+
 /**
  * Creates a numeric hash based on the string input.
  */

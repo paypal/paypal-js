@@ -1,7 +1,9 @@
 import React from "react";
 import { render, waitFor, fireEvent, screen } from "@testing-library/react";
-import { PayPalScriptProvider, usePayPalScriptReducer } from "./ScriptContext";
 import { loadScript } from "@paypal/paypal-js";
+import { PayPalScriptProvider } from "./PayPalScriptProvider";
+import { usePayPalScriptReducer } from "../hooks/ScriptProvider";
+import { SCRIPT_ID } from "../constants";
 
 jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),
@@ -9,11 +11,11 @@ jest.mock("@paypal/paypal-js", () => ({
 
 function loadScriptMockImplementation({
     "client-id": clientID,
-    "data-react-paypal-script-id": reactPayPalScriptID,
+    [SCRIPT_ID]: reactPayPalScriptID,
 }) {
     const newScript = document.createElement("script");
     newScript.src = `https://www.paypal.com/sdk/js?client-id=${clientID}`;
-    newScript.setAttribute("data-react-paypal-script-id", reactPayPalScriptID);
+    newScript.setAttribute(SCRIPT_ID, reactPayPalScriptID);
 
     document.head.insertBefore(newScript, document.head.firstElementChild);
     return Promise.resolve({});
@@ -38,8 +40,7 @@ describe("<PayPalScriptProvider />", () => {
         );
         expect(loadScript).toHaveBeenCalledWith({
             "client-id": "test",
-            "data-react-paypal-script-id":
-                expect.stringContaining("react-paypal-js"),
+            [SCRIPT_ID]: expect.stringContaining("react-paypal-js"),
         });
 
         // verify initial loading state
@@ -59,8 +60,7 @@ describe("<PayPalScriptProvider />", () => {
         );
         expect(loadScript).toHaveBeenCalledWith({
             "client-id": "test",
-            "data-react-paypal-script-id":
-                expect.stringContaining("react-paypal-js"),
+            [SCRIPT_ID]: expect.stringContaining("react-paypal-js"),
         });
 
         // verify initial loading state
@@ -98,8 +98,7 @@ describe("<PayPalScriptProvider />", () => {
 
         expect(loadScript).toHaveBeenCalledWith({
             "client-id": "test",
-            "data-react-paypal-script-id":
-                expect.stringContaining("react-paypal-js"),
+            [SCRIPT_ID]: expect.stringContaining("react-paypal-js"),
         });
 
         expect(state.isPending).toBe(true);
@@ -190,17 +189,15 @@ describe("usePayPalScriptReducer", () => {
         expect(loadScript).toHaveBeenCalledWith(state.options);
 
         await waitFor(() => expect(state.isResolved).toBeTruthy());
-        const firstScriptID = state.options["data-react-paypal-script-id"];
+        const firstScriptID = state.options[SCRIPT_ID];
 
         // this click dispatches the action "resetOptions" causing the script to reload
         fireEvent.click(screen.getByText("Reload button"));
         await waitFor(() => expect(state.isResolved).toBeTruthy());
-        const secondScriptID = state.options["data-react-paypal-script-id"];
+        const secondScriptID = state.options[SCRIPT_ID];
 
         expect(
-            document.querySelector(
-                `script[data-react-paypal-script-id="${secondScriptID}"]`
-            )
+            document.querySelector(`script[${SCRIPT_ID}="${secondScriptID}"]`)
         ).toBeTruthy();
         expect(firstScriptID).not.toBe(secondScriptID);
 

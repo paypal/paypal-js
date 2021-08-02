@@ -4,8 +4,9 @@ import type { CreateOrderActions } from "@paypal/paypal-js/types/components/butt
 
 import {
     PayPalScriptProvider,
-    usePayPalScriptReducer,
     PayPalButtons,
+    usePayPalScriptReducer,
+    DISPATCH_ACTION,
 } from "../index";
 import { getOptionsFromQueryString } from "./utils";
 
@@ -29,7 +30,7 @@ export const Currency: FunctionComponent = () => {
         function onCurrencyChange(event: ChangeEvent<HTMLSelectElement>) {
             setCurrency(event.target.value);
             dispatch({
-                type: "resetOptions",
+                type: DISPATCH_ACTION.RESET_OPTIONS,
                 value: {
                     ...options,
                     currency: event.target.value,
@@ -93,7 +94,7 @@ export const LoadingSpinner: FunctionComponent = () => {
                 style={{ display: "block", marginBottom: "20px" }}
                 onClick={() => {
                     dispatch({
-                        type: "resetOptions",
+                        type: DISPATCH_ACTION.RESET_OPTIONS,
                         value: {
                             ...options,
                             "data-order-id": Date.now().toString(),
