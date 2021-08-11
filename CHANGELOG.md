@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.7](https://github.com/paypal/paypal-js/compare/v4.0.6...v4.0.7) (2021-08-11)
+
+### Bug Fixes
+
+-   **types:** add sdk-integration-source script attribute ([d8b0c09](https://github.com/paypal/paypal-js/commit/d8b0c09872d3eb6dfafba3149a56e83e66df0c6f))
+-   **types:** support authorizing payments ([b24b5fb](https://github.com/paypal/paypal-js/commit/b24b5fbc157ad9ebf9a7406ff696b4c9f61a4ff0))
+
 ### [4.0.6](https://github.com/paypal/paypal-js/compare/v4.0.5...v4.0.6) (2021-07-09)
 
 ### [4.0.5](https://github.com/paypal/paypal-js/compare/v4.0.4...v4.0.5) (2021-07-09)
