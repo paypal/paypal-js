@@ -87,6 +87,16 @@ export type PurchaseItem = {
     category?: "DIGITAL_GOODS" | "PHYSICAL_GOODS" | "DONATION";
 };
 
+type Authorization = Record<string, unknown>;
+type Captures = Record<string, unknown>;
+type Refunds = Record<string, unknown>;
+
+export type Payments = {
+    authorizations?: Authorization[];
+    captures?: Captures[];
+    refunds?: Refunds[];
+};
+
 export type PurchaseUnit = {
     amount: AmountWithBreakdown;
     reference_id?: string;
@@ -98,6 +108,7 @@ export type PurchaseUnit = {
     payment_instruction?: PaymentInstruction;
     shipping?: ShippingInfo;
     items?: PurchaseItem[];
+    payments?: Payments;
 };
 
 export type OrderApplicationContext = {

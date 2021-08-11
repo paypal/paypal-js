@@ -43,6 +43,47 @@ loadScript({ "client-id": "test" })
             },
         });
 
+        // authorize a payment
+        // https://developer.paypal.com/docs/business/checkout/add-capabilities/authorization/
+        paypal.Buttons({
+            createOrder: (data, actions) => {
+                return actions.order.create({
+                    intent: "AUTHORIZE",
+                    purchase_units: [
+                        {
+                            amount: {
+                                currency_code: "USD",
+                                value: "100.00",
+                            },
+                        },
+                    ],
+                });
+            },
+
+            onApprove: (data, actions) => {
+                return actions.order.authorize().then((authorization) => {
+                    const authorizationID =
+                        authorization.purchase_units[0].payments
+                            .authorizations[0].id;
+
+                    // call your server to validate and capture the transaction
+                    // eslint-disable-next-line compat/compat
+                    return fetch("/paypal-transaction-complete", {
+                        method: "post",
+
+                        headers: {
+                            "content-type": "application/json",
+                        },
+
+                        body: JSON.stringify({
+                            orderID: data.orderID,
+                            authorizationID: authorizationID,
+                        }),
+                    }).then((response) => response.json());
+                });
+            },
+        });
+
         // createOrder for partners
         // https://developer.paypal.com/docs/platforms/checkout/set-up-payments#create-order
         paypal.Buttons({
@@ -177,7 +218,7 @@ loadScript({ "client-id": "test" })
             })
             .render("#paypal-button-container");
 
-        // standalone buton integration
+        // standalone button integration
         // https://developer.paypal.com/docs/business/checkout/configure-payments/standalone-buttons/#2-render-all-eligible-buttons
         paypal.getFundingSources().forEach((fundingSource) => {
             const button = paypal.Buttons({
