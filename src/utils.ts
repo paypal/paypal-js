@@ -10,12 +10,23 @@ export function getPayPalWindowNamespace(
 }
 
 /**
- * Creates a numeric hash based on the string input.
+ * Creates a string hash code based on the string argument
+ *
+ * @param str the source input string to hash
+ * @returns string hash code
  */
-export function hashStr(str: string): number {
-    let hash = 0;
+export function hashStr(str: string): string {
+    let hash = "";
+
     for (let i = 0; i < str.length; i++) {
-        hash += str[i].charCodeAt(0) * Math.pow((i % 10) + 1, 5);
+        let total = str[i].charCodeAt(0) * i;
+
+        if (str[i + 1]) {
+            total += str[i + 1].charCodeAt(0) * (i - 1);
+        }
+
+        hash += String.fromCharCode(97 + (Math.abs(total) % 26));
     }
-    return Math.floor(Math.pow(Math.sqrt(hash), 5));
+
+    return hash;
 }
