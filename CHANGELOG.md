@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.8](https://github.com/paypal/paypal-js/compare/v4.0.7...v4.0.8) (2021-08-20)
+
+### Bug Fixes
+
+-   **types:** move restart() and redirect() onApprove actions ([#113](https://github.com/paypal/paypal-js/issues/113)) ([51bb788](https://github.com/paypal/paypal-js/commit/51bb788722f566647973b7d7abe7a8f82d4e225b))
+
 ### [4.0.7](https://github.com/paypal/paypal-js/compare/v4.0.6...v4.0.7) (2021-08-11)
 
 ### Bug Fixes
