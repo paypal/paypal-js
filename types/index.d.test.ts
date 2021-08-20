@@ -88,7 +88,7 @@ loadScript({ "client-id": "test" })
         // https://developer.paypal.com/demo/checkout/#/pattern/server
         paypal
             .Buttons({
-                createOrder: (data, actions) => {
+                createOrder: () => {
                     // eslint-disable-next-line compat/compat
                     return fetch("/demo/checkout/api/paypal/order/create/", {
                         method: "post",
