@@ -41,9 +41,9 @@ export type OnApproveActions = {
     order: {
         capture: () => Promise<OrderResponseBody>;
         authorize: () => Promise<OrderResponseBody>;
-        redirect: (redirectURL: string) => void;
-        restart: () => void;
     };
+    redirect: (redirectURL: string) => void;
+    restart: () => void;
 };
 
 export type OnCancelledActions = {

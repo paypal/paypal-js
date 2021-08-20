@@ -84,6 +84,57 @@ loadScript({ "client-id": "test" })
             },
         });
 
+        // server-side integration
+        // https://developer.paypal.com/demo/checkout/#/pattern/server
+        paypal
+            .Buttons({
+                createOrder: (data, actions) => {
+                    // eslint-disable-next-line compat/compat
+                    return fetch("/demo/checkout/api/paypal/order/create/", {
+                        method: "post",
+                    })
+                        .then((res) => res.json())
+                        .then((orderData) => orderData.id);
+                },
+
+                onApprove: (data, actions) => {
+                    // eslint-disable-next-line compat/compat
+                    return fetch(
+                        `/demo/checkout/api/paypal/order/${data.orderID}/capture/`,
+                        {
+                            method: "post",
+                        }
+                    )
+                        .then((res) => res.json())
+                        .then((orderData) => {
+                            const errorDetail =
+                                Array.isArray(orderData.details) &&
+                                orderData.details[0];
+
+                            if (
+                                errorDetail &&
+                                errorDetail.issue === "INSTRUMENT_DECLINED"
+                            ) {
+                                return actions.restart();
+                            }
+
+                            if (errorDetail) {
+                                const msg =
+                                    "Sorry, your transaction could not be processed.";
+                                return alert(msg);
+                            }
+
+                            const transaction =
+                                orderData.purchase_units[0].payments
+                                    .captures[0];
+                            alert(
+                                `Transaction ${transaction.status}: ${transaction.id} \n\nSee console for all available details`
+                            );
+                        });
+                },
+            })
+            .render("#paypal-button-container");
+
         // createOrder for partners
         // https://developer.paypal.com/docs/platforms/checkout/set-up-payments#create-order
         paypal.Buttons({
