@@ -57,7 +57,7 @@
         "babel-jest": "^27.0.6",
         "eslint": "^7.32.0",
         "eslint-plugin-compat": "^3.13.0",
-        "filesize": "^7.0.0",
+        "filesize": "^8.0.0",
         "husky": "^7.0.1",
         "jest": "^27.0.6",
         "jest-puppeteer": "^5.0.4",
