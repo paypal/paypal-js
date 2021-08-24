@@ -1,4 +1,43 @@
-import { hashStr } from "./utils";
+import {
+    getPayPalWindowNamespace,
+    getBraintreeWindowNamespace,
+    hashStr,
+} from "./utils";
+
+describe("getPayPalWindowNamespace", () => {
+    beforeAll(() => {
+        window.paypal = {
+            Buttons: jest.fn(),
+        };
+    });
+
+    test("should return the paypal namespace", () => {
+        expect(getPayPalWindowNamespace("paypal")).toEqual(window.paypal);
+    });
+
+    test("should not found the namespace", () => {
+        expect(getPayPalWindowNamespace("testNamespace")).toBeUndefined();
+    });
+});
+
+describe("getBraintreeWindowNamespace", () => {
+    beforeAll(() => {
+        window.braintree = {
+            createPayment: jest.fn(),
+            client: jest.fn(),
+        };
+    });
+
+    test("should return the paypal namespace", () => {
+        expect(getBraintreeWindowNamespace("braintree")).toEqual(
+            window.braintree
+        );
+    });
+
+    test("should not found the namespace", () => {
+        expect(getBraintreeWindowNamespace("testNamespace")).toBeUndefined();
+    });
+});
 
 describe("hashStr", () => {
     test("should match the hash from the argument string", () => {

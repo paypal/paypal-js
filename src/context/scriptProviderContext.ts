@@ -1,13 +1,13 @@
 import { createContext } from "react";
 //Internal dependencies
-import {
+import type {
     ScriptContextState,
     ReactPayPalScriptOptions,
     ScriptReducerAction,
-    DISPATCH_ACTION,
-    SCRIPT_LOADING_STATE,
-} from "../types/ScriptProvider";
+} from "../types/scriptProviderTypes";
+import { DISPATCH_ACTION, SCRIPT_LOADING_STATE } from "../types/enums";
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
+import type { BraintreePayPalCheckout } from "../types/braintree/paypalCheckout";
 import { hashStr } from "../utils";
 import { SCRIPT_ID } from "../constants";
 
@@ -66,6 +66,12 @@ export function scriptReducer(
                         action.value as PayPalScriptOptions
                     )}`,
                 },
+            };
+        case DISPATCH_ACTION.SET_BRAINTREE_INSTANCE:
+            return {
+                ...state,
+                braintreePayPalCheckoutInstance:
+                    action.value as BraintreePayPalCheckout,
             };
 
         default: {

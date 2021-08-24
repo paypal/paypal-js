@@ -2,7 +2,7 @@ import React from "react";
 import { render, waitFor, fireEvent, screen } from "@testing-library/react";
 import { loadScript } from "@paypal/paypal-js";
 import { PayPalScriptProvider } from "./PayPalScriptProvider";
-import { usePayPalScriptReducer } from "../hooks/ScriptProvider";
+import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { SCRIPT_ID } from "../constants";
 
 jest.mock("@paypal/paypal-js", () => ({

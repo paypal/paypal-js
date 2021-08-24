@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, FunctionComponent } from "react";
-import { usePayPalScriptReducer } from "../hooks/ScriptProvider";
-import { getPayPalWindowNamespace, DEFAULT_PAYPAL_NAMESPACE } from "../utils";
+import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
+import { getPayPalWindowNamespace } from "../utils";
+import { DEFAULT_PAYPAL_NAMESPACE } from "../constants";
 import type {
     PayPalMessagesComponentOptions,
     PayPalMessagesComponent,
@@ -70,6 +71,7 @@ export const PayPalMessages: FunctionComponent<PayPalMessagesComponentProps> =
                         );
                     });
                 });
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [isResolved, ...forceReRender]);
 
         return <div ref={messagesContainerRef} className={className} />;

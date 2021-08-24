@@ -1,28 +1,25 @@
 import { useContext } from "react";
 
-import {
-    SCRIPT_LOADING_STATE,
+import type {
     ScriptContextDerivedState,
     ScriptReducerAction,
-} from "../types/ScriptProvider";
-import { ScriptContext } from "../context/ScriptProvider";
+} from "../types/scriptProviderTypes";
+import { SCRIPT_LOADING_STATE } from "../types/enums";
+import { ScriptContext } from "../context/scriptProviderContext";
+import { contextNotEmptyValidator } from "./contextValidator";
 
 /**
  * Custom hook to get access to the Script context and
  * dispatch actions to modify the state on the {@link ScriptProvider} component
  *
- * @returns
+ * @returns a tuple containing the state of the context and
+ * a dispatch function to modify the state
  */
 export function usePayPalScriptReducer(): [
     ScriptContextDerivedState,
     React.Dispatch<ScriptReducerAction>
 ] {
-    const scriptContext = useContext(ScriptContext);
-    if (scriptContext == null || scriptContext?.dispatch == null) {
-        throw new Error(
-            "usePayPalScriptReducer must be used within a PayPalScriptProvider"
-        );
-    }
+    const scriptContext = contextNotEmptyValidator(useContext(ScriptContext));
 
     const derivedStatusContext = {
         ...scriptContext,

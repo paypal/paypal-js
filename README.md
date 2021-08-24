@@ -29,7 +29,7 @@ React developers think in terms of components and not about loading external scr
 -   Enforce async loading the JS SDK up front so when it's time to render the buttons to your buyer, they render immediately.
 -   Abstract away the complexity around loading the JS SDK with the global [PayPalScriptProvider](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalscriptprovider--default) component.
 -   Support dispatching actions to reload the JS SDK and re-render components when global parameters like `currency` change.
--   Easy to use components for all the different PayPal product offerings:
+-   Easy to use components for all the different Braintree/PayPal product offerings:
     -   [PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default)
     -   [PayPalMarks](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalmarks--default)
     -   [PayPalMessages](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalmessages--default)
@@ -163,7 +163,49 @@ To learn more, check out the [dynamic currency example in storybook](https://pay
 
 ### PayPalButtons
 
-The `<PayPalButtons />` component is fully documented in Storybook. Checkout the [docs page for the PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default) to learn more about the available props.
+The `<PayPalButtons />` component is fully documented in Storybook. Checkout the docs page for the [PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default) to learn more about the available props.
+
+### BraintreePayPalButtons
+
+The Braintree SDK can be used with the PayPal JS SDK to render the PayPal Buttons. Read more about this integration in the [Braintree PayPal client-side integration docs](https://developer.paypal.com/braintree/docs/guides/paypal/client-side/javascript/v3). The `<BraintreePayPalButtons />` component is designed for Braintree merchants who want to render the PayPal button.
+
+```jsx
+// App.js
+import {
+    PayPalScriptProvider,
+    BraintreePayPalButtons,
+} from "@paypal/react-paypal-js";
+
+export default function App() {
+    return (
+        <PayPalScriptProvider
+            options={{
+                "client-id": "test",
+                "data-client-token": "abc123xyz==",
+            }}
+        >
+            <BraintreePayPalButtons
+                createOrder={(data, actions) => {
+                    return actions.braintree.createPayment({
+                        flow: "checkout",
+                        amount: "10.0",
+                        currency: "USD",
+                        intent: "capture"
+                    });
+                }}
+                onApprove={(data, actions) => {
+                    return actions.braintree.tokenizePayment(data)
+                        .then((payload) => {
+                            // call server-side endpoint to finish the sale
+                        })
+                }
+            />
+        </PayPalScriptProvider>
+    );
+}
+```
+
+Checkout the docs page for the [BraintreePayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-braintreepaypalbuttons--default) to learn more about the available props.
 
 ### Browser Support
 

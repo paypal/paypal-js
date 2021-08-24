@@ -1,44 +1,18 @@
-import React, {
-    useEffect,
-    useRef,
-    useState,
-    FunctionComponent,
-    ReactElement,
-} from "react";
-import { usePayPalScriptReducer } from "../hooks/ScriptProvider";
-import { getPayPalWindowNamespace, DEFAULT_PAYPAL_NAMESPACE } from "../utils";
+import React, { useEffect, useRef, useState, FunctionComponent } from "react";
+import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
+import { getPayPalWindowNamespace } from "../utils";
+import { DEFAULT_PAYPAL_NAMESPACE } from "../constants";
 import type {
-    PayPalButtonsComponentOptions,
     PayPalButtonsComponent,
     OnInitActions,
 } from "@paypal/paypal-js/types/components/buttons";
-
-export interface PayPalButtonsComponentProps
-    extends PayPalButtonsComponentOptions {
-    /**
-     * Used to re-render the component.
-     * Changes to this prop will destroy the existing Buttons and render them again using the current props.
-     */
-    forceReRender?: unknown[];
-    /**
-     * Pass a css class to the div container.
-     */
-    className?: string;
-    /**
-     * Disables the buttons.
-     */
-    disabled?: boolean;
-    /**
-     * Used to render custom content when ineligible.
-     */
-    children?: ReactElement | null;
-}
+import type { PayPalButtonsComponentProps } from "../types/paypalButtonTypes";
 
 /**
 This `<PayPalButtons />` component renders the [Smart Payment Buttons](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#buttons).
 It relies on the `<PayPalScriptProvider />` parent component for managing state related to loading the JS SDK script.
 
-Use props for customizing your buttons. For example, here's how you would use the `style` and `createOrder` options:
+Use props for customizing your buttons. For example, here's how you would use the `style`, `createOrder`, and `onApprove` options:
 
 ```jsx
     import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
@@ -149,6 +123,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
         });
 
         return closeButtonsComponent;
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isResolved, ...forceReRender, buttonProps.fundingSource]);
 
     // useEffect hook for managing disabled state

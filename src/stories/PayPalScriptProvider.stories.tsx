@@ -7,7 +7,7 @@ import {
     DISPATCH_ACTION,
     SCRIPT_LOADING_STATE,
 } from "../index";
-import { usePayPalScriptReducer } from "../hooks/ScriptProvider";
+import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 
 const scriptProviderOptions: PayPalScriptOptions = {
     "client-id": "test",
