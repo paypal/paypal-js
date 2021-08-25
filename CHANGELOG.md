@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.3.0](https://github.com/paypal/react-paypal-js/compare/v7.2.1...v7.3.0) (2021-08-25)
+
+### Features
+
+-   **braintree:** add new <BraintreePayPalButtons /> component ([#140](https://github.com/paypal/react-paypal-js/issues/140)) ([a2c7741](https://github.com/paypal/react-paypal-js/commit/a2c774168fbc5ae7a610df384feca684737d7fba))
+
+### Bug Fixes
+
+-   prevent numeric overflow with hashStr function ([#141](https://github.com/paypal/react-paypal-js/issues/141)) ([9914f60](https://github.com/paypal/react-paypal-js/commit/9914f60701c19dcde2fb42ad8791265aee37e34c))
+
 ### [7.2.1](https://github.com/paypal/react-paypal-js/compare/v7.2.0...v7.2.1) (2021-07-28)
 
 ### Bug Fixes
