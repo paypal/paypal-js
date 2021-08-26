@@ -90,10 +90,18 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
             }
         };
 
-        buttons.current = paypalWindowNamespace.Buttons({
-            ...buttonProps,
-            onInit: decoratedOnInit,
-        });
+        try {
+            buttons.current = paypalWindowNamespace.Buttons({
+                ...buttonProps,
+                onInit: decoratedOnInit,
+            });
+        } catch (err) {
+            return setErrorState(() => {
+                throw new Error(
+                    `Failed to render <PayPalButtons /> component. Failed to initialize:  ${err}`
+                );
+            });
+        }
 
         // only render the button when eligible
         if (buttons.current.isEligible() === false) {

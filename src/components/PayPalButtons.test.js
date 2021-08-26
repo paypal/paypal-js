@@ -298,6 +298,47 @@ describe("<PayPalButtons />", () => {
         await waitFor(() => expect(onError).toHaveBeenCalled());
         expect(onError.mock.calls[0][0].message).toMatchSnapshot();
     });
+
+    test("should throw an error during initialization when style prop is invalid", async () => {
+        window.paypal.Buttons = (options) => {
+            if (
+                options.style.color === "gold" &&
+                options.fundingSource == "venmo"
+            )
+                throw new Error(
+                    "Unexpected style.color for venmo button: gold, expected blue, silver, black, white"
+                );
+        };
+        jest.spyOn(console, "error").mockImplementation(() => {
+            // do nothing
+        });
+
+        const wrapper = ({ children }) => (
+            <ErrorBoundary onError={console.error}>{children}</ErrorBoundary>
+        );
+
+        render(
+            <PayPalScriptProvider
+                options={{
+                    "client-id": "test",
+                    components: "marks,messages",
+                }}
+            >
+                <PayPalButtons
+                    style={{ color: "gold" }}
+                    fundingSource={FUNDING.VENMO}
+                />
+            </PayPalScriptProvider>,
+            { wrapper }
+        );
+
+        await waitFor(() => expect(console.error).toBeCalled());
+        expect(console.error).toBeCalledWith(
+            new Error(
+                "Failed to render <PayPalButtons /> component. Failed to initialize:  Error: Unexpected style.color for venmo button: gold, expected blue, silver, black, white"
+            )
+        );
+    });
 });
 
 class ErrorBoundary extends Component {
