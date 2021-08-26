@@ -1,15 +1,16 @@
 import { createContext } from "react";
-//Internal dependencies
+
+import { hashStr } from "../utils";
+import { SCRIPT_ID } from "../constants";
+
 import type {
     ScriptContextState,
     ReactPayPalScriptOptions,
     ScriptReducerAction,
-} from "../types/scriptProviderTypes";
-import { DISPATCH_ACTION, SCRIPT_LOADING_STATE } from "../types/enums";
-import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
+} from "../types";
 import type { BraintreePayPalCheckout } from "../types/braintree/paypalCheckout";
-import { hashStr } from "../utils";
-import { SCRIPT_ID } from "../constants";
+import { DISPATCH_ACTION, SCRIPT_LOADING_STATE } from "../types";
+import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 
 /**
  * Generate a new random identifier for react-paypal-js

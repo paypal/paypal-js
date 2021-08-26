@@ -6,12 +6,12 @@ import {
     BRAINTREE_SOURCE,
     BRAINTREE_PAYPAL_CHECKOUT_SOURCE,
 } from "../../constants";
-import type { BraintreePayPalButtonsComponentProps } from "../../types/braintreePayPalButtonTypes";
 import { PayPalButtons } from "../PayPalButtons";
 import { useBraintreeProviderContext } from "../../hooks/braintreeProviderHooks";
 import { getBraintreeWindowNamespace } from "../../utils";
-import { DISPATCH_ACTION } from "../../types/enums";
 import { decorateActions } from "./utils";
+import type { BraintreePayPalButtonsComponentProps } from "../../types";
+import { DISPATCH_ACTION } from "../../types";
 
 /**
 This `<BraintreePayPalButtons />` component renders the [Braintree PayPal Buttons](https://developer.paypal.com/braintree/docs/guides/paypal/overview) for Braintree Merchants.

@@ -3,11 +3,11 @@ import type { FC } from "react";
 
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 import type {
-    CreateBraintreeActions,
+    CreateOrderBraintreeActions,
     OnApproveBraintreeActions,
-} from "../types/braintreePayPalButtonTypes";
-import type { BraintreePayPalCheckoutTokenizationOptions } from "../types/braintree/paypalCheckout";
-import { OnApproveData } from "../types/braintreePayPalButtonTypes";
+    OnApproveBraintreeData,
+} from "../types";
+
 import { PayPalScriptProvider } from "../index";
 import { BraintreePayPalButtons } from "../components/braintree/BraintreePayPalButtons";
 import {
@@ -74,7 +74,7 @@ export const Default: FC = () => {
         <BraintreePayPalButtons
             createOrder={(
                 data: Record<string, unknown>,
-                actions: CreateBraintreeActions
+                actions: CreateOrderBraintreeActions
             ) =>
                 actions.braintree.createPayment({
                     flow: "checkout",
@@ -96,19 +96,15 @@ export const Default: FC = () => {
                 })
             }
             onApprove={(
-                data: OnApproveData,
+                data: OnApproveBraintreeData,
                 actions: OnApproveBraintreeActions
             ) =>
-                actions.braintree
-                    .tokenizePayment(
-                        data as BraintreePayPalCheckoutTokenizationOptions
-                    )
-                    .then((payload) => {
-                        approveSale(payload.nonce, AMOUNT).then((data) => {
-                            alert(JSON.stringify(data));
-                            // Call server-side endpoint to finish the sale
-                        });
-                    })
+                actions.braintree.tokenizePayment(data).then((payload) => {
+                    approveSale(payload.nonce, AMOUNT).then((data) => {
+                        alert(JSON.stringify(data));
+                        // Call server-side endpoint to finish the sale
+                    });
+                })
             }
         />
     );

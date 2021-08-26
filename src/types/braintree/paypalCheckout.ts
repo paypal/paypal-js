@@ -61,10 +61,13 @@ export interface BraintreePayPalCheckoutCreatePaymentOptions {
 }
 
 export interface BraintreePayPalCheckoutTokenizationOptions {
-    payerId: string;
-    paymentId?: string | undefined;
-    billingToken?: string | undefined;
-    vault?: boolean | undefined;
+    payerID: string;
+    orderID: string;
+    paymentID?: string;
+    paymentToken?: string;
+    billingToken?: string;
+    shippingOptionsId?: string;
+    vault?: boolean;
 }
 
 export interface BraintreePayPalCheckout {

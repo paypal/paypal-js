@@ -4,9 +4,12 @@ import {
     OnApproveActions,
 } from "@paypal/paypal-js/types/components/buttons";
 import type { BraintreeClient } from "./braintree/clientTypes";
-import type { BraintreePayPalCheckout } from "./braintree/paypalCheckout";
+import type {
+    BraintreePayPalCheckout,
+    BraintreePayPalCheckoutTokenizationOptions,
+} from "./braintree/paypalCheckout";
 
-export type CreateBraintreeActions = CreateOrderActions & {
+export type CreateOrderBraintreeActions = CreateOrderActions & {
     braintree: BraintreePayPalCheckout;
 };
 
@@ -14,15 +17,7 @@ export type OnApproveBraintreeActions = OnApproveActions & {
     braintree: BraintreePayPalCheckout;
 };
 
-export type OnApproveData = {
-    billingToken?: string | null;
-    facilitatorAccessToken: string;
-    orderId: string;
-    payerId?: string | null;
-    paymentId?: string | null;
-    subscriptionId?: string | null;
-    authCode?: string | null;
-};
+export type OnApproveBraintreeData = BraintreePayPalCheckoutTokenizationOptions;
 
 export interface BraintreePayPalButtonsComponentProps
     extends Omit<PayPalButtonsComponentProps, "createOrder" | "onApprove"> {
@@ -31,13 +26,13 @@ export interface BraintreePayPalButtonsComponentProps
      */
     createOrder?: (
         data: Record<string, unknown>,
-        actions: CreateBraintreeActions
+        actions: CreateOrderBraintreeActions
     ) => Promise<string>;
     /**
      * The onApprove actions include the braintree sdk paypalCheckoutInstance as `actions.braintree`
      */
     onApprove?: (
-        data: OnApproveData,
+        data: OnApproveBraintreeData,
         actions: OnApproveBraintreeActions
     ) => Promise<void>;
 }

@@ -1,5 +1,4 @@
-export * from "./types/scriptProviderTypes";
-export * from "./types/enums";
+export * from "./types";
 export * from "./context/scriptProviderContext";
 export * from "./hooks/scriptProviderHooks";
 export * from "./components/PayPalButtons";

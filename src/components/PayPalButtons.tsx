@@ -6,7 +6,7 @@ import type {
     PayPalButtonsComponent,
     OnInitActions,
 } from "@paypal/paypal-js/types/components/buttons";
-import type { PayPalButtonsComponentProps } from "../types/paypalButtonTypes";
+import type { PayPalButtonsComponentProps } from "../types";
 
 /**
 This `<PayPalButtons />` component renders the [Smart Payment Buttons](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#buttons).

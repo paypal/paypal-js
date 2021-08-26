@@ -3,7 +3,7 @@ import {
     DEFAULT_BRAINTREE_NAMESPACE,
 } from "./constants";
 import type { PayPalNamespace } from "@paypal/paypal-js";
-import type { BraintreeNamespace } from "./types/braintreePayPalButtonTypes";
+import type { BraintreeNamespace } from "./types";
 
 /**
  * Get the namespace from the window in the browser

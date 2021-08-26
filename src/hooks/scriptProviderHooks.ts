@@ -1,12 +1,9 @@
 import { useContext } from "react";
 
-import type {
-    ScriptContextDerivedState,
-    ScriptReducerAction,
-} from "../types/scriptProviderTypes";
-import { SCRIPT_LOADING_STATE } from "../types/enums";
 import { ScriptContext } from "../context/scriptProviderContext";
 import { contextNotEmptyValidator } from "./contextValidator";
+import type { ScriptContextDerivedState, ScriptReducerAction } from "../types";
+import { SCRIPT_LOADING_STATE } from "../types";
 
 /**
  * Custom hook to get access to the Script context and

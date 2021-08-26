@@ -1,6 +1,8 @@
 import type { BraintreePayPalCheckout } from "../../types/braintree/paypalCheckout";
-import type { BraintreePayPalButtonsComponentProps } from "../../types/braintreePayPalButtonTypes";
-import type { PayPalButtonsComponentProps } from "../../types/paypalButtonTypes";
+import type {
+    PayPalButtonsComponentProps,
+    BraintreePayPalButtonsComponentProps,
+} from "../../types";
 
 /**
  * Override the createOrder callback to send the PayPal checkout instance as argument

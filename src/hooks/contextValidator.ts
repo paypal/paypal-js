@@ -1,12 +1,9 @@
-import type {
-    ScriptContextState,
-    StrictScriptContextState,
-} from "../types/scriptProviderTypes";
 import {
     DATA_CLIENT_TOKEN,
     EMPTY_PROVIDER_CONTEXT_ERROR_MESSAGE,
     EMPTY_PROVIDER_CONTEXT_CLIENT_TOKEN_ERROR_MESSAGE,
 } from "../constants";
+import type { ScriptContextState, StrictScriptContextState } from "../types";
 
 /**
  * Check if the context is available checking the state and dispatch function
