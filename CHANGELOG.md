@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.3.1](https://github.com/paypal/react-paypal-js/compare/v7.3.0...v7.3.1) (2021-08-26)
+
+### Bug Fixes
+
+-   **types:** export all public types ([#147](https://github.com/paypal/react-paypal-js/issues/147)) ([9e8c39b](https://github.com/paypal/react-paypal-js/commit/9e8c39b773fa076c1ffabb3c259ca87f25c55141))
+
 ## [7.3.0](https://github.com/paypal/react-paypal-js/compare/v7.2.1...v7.3.0) (2021-08-25)
 
 ### Features
