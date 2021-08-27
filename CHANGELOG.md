@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.3.2](https://github.com/paypal/react-paypal-js/compare/v7.3.1...v7.3.2) (2021-08-27)
+
+### Bug Fixes
+
+-   **buttons:** catch errors thrown during button initialization ([f60176e](https://github.com/paypal/react-paypal-js/commit/f60176e50fdbfab317bcbb08fdaac890a57ba615))
+-   remove async/await usage to avoid babel polyfill ([#150](https://github.com/paypal/react-paypal-js/issues/150)) ([ecaf084](https://github.com/paypal/react-paypal-js/commit/ecaf08402f17bf92de527bb4d4d714c5007ba5cd))
+
 ### [7.3.1](https://github.com/paypal/react-paypal-js/compare/v7.3.0...v7.3.1) (2021-08-26)
 
 ### Bug Fixes
