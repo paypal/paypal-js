@@ -2,6 +2,7 @@
 export const SCRIPT_ID = "data-react-paypal-script-id";
 export const DATA_CLIENT_TOKEN = "data-client-token";
 export const DATA_SDK_INTEGRATION_SOURCE = "data-sdk-integration-source";
+export const DATA_SDK_INTEGRATION_SOURCE_VALUE = "react-paypal-js";
 
 export const EMPTY_PROVIDER_CONTEXT_ERROR_MESSAGE =
     "usePayPalScriptReducer must be used within a PayPalScriptProvider";
