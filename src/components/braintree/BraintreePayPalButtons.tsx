@@ -59,21 +59,28 @@ export const BraintreePayPalButtons: FC<BraintreePayPalButtonsComponentProps> =
             Promise.all([
                 loadCustomScript({ url: BRAINTREE_SOURCE }),
                 loadCustomScript({ url: BRAINTREE_PAYPAL_CHECKOUT_SOURCE }),
-            ]).then(async () => {
+            ]).then(() => {
                 const clientToken = providerContext.options[
                     DATA_CLIENT_TOKEN
                 ] as string;
 
                 const braintreeNamespace = getBraintreeWindowNamespace();
-                const clientInstance = await braintreeNamespace.client.create({
-                    authorization: clientToken,
-                });
-                dispatch({
-                    type: DISPATCH_ACTION.SET_BRAINTREE_INSTANCE,
-                    value: await braintreeNamespace.paypalCheckout.create({
-                        client: clientInstance,
-                    }),
-                });
+
+                braintreeNamespace.client
+                    .create({
+                        authorization: clientToken,
+                    })
+                    .then((clientInstance) => {
+                        return braintreeNamespace.paypalCheckout.create({
+                            client: clientInstance,
+                        });
+                    })
+                    .then((paypalCheckoutInstance) => {
+                        dispatch({
+                            type: DISPATCH_ACTION.SET_BRAINTREE_INSTANCE,
+                            value: paypalCheckoutInstance,
+                        });
+                    });
             });
         }, [providerContext.options, dispatch]);
 

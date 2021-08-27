@@ -31,7 +31,7 @@ const setup = () => {
     };
     window.braintree = {
         client: {
-            create: jest.fn(),
+            create: jest.fn().mockResolvedValue(),
         },
         paypalCheckout: {
             create: jest.fn().mockReturnValue({
