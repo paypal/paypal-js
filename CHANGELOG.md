@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.3.3](https://github.com/paypal/react-paypal-js/compare/v7.3.2...v7.3.3) (2021-08-31)
+
+### Bug Fixes
+
+-   remove babel polyfill for typeof symbol ([d73fe72](https://github.com/paypal/react-paypal-js/commit/d73fe72e0bfa482226df8d38371dec969324583d))
+-   update error handling logic for BraintreePayPalButtons ([1a1c73d](https://github.com/paypal/react-paypal-js/commit/1a1c73dfb15ff39452034d35a786938e5630aa5d))
+
 ### [7.3.2](https://github.com/paypal/react-paypal-js/compare/v7.3.1...v7.3.2) (2021-08-27)
 
 ### Bug Fixes
