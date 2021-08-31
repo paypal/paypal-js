@@ -169,14 +169,13 @@ describe("usePayPalScriptReducer", () => {
 
     test("should throw an error when used without <PayPalScriptProvider>", () => {
         const { TestComponent } = setupTestComponent();
-
-        jest.spyOn(console, "error");
+        const spyConsoleError = jest.spyOn(console, "error");
         console.error.mockImplementation(() => {
             // do nothing
         });
 
         expect(() => render(<TestComponent />)).toThrow();
-        console.error.mockRestore();
+        spyConsoleError.mockRestore();
     });
 
     test("should use action 'resetOptions' to reload with new params", async () => {

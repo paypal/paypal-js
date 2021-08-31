@@ -1,4 +1,4 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import {
     render,
     waitFor,
@@ -6,6 +6,7 @@ import {
     fireEvent,
     act,
 } from "@testing-library/react";
+import { ErrorBoundary } from "react-error-boundary";
 
 import { PayPalButtons } from "./PayPalButtons";
 import { FUNDING } from "@paypal/sdk-constants";
@@ -15,6 +16,13 @@ import { PayPalScriptProvider } from "../components/PayPalScriptProvider";
 jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),
 }));
+
+const onError = jest.fn();
+const wrapper = ({ children }) => (
+    <ErrorBoundary fallback={<div>Error</div>} onError={onError}>
+        {children}
+    </ErrorBoundary>
+);
 
 describe("<PayPalButtons />", () => {
     beforeEach(() => {
@@ -213,17 +221,11 @@ describe("<PayPalButtons />", () => {
     });
 
     test("should throw an error when no components are passed to the PayPalScriptProvider", async () => {
-        jest.spyOn(console, "error").mockImplementation(() => {
-            // do nothing
-        });
-
+        const spyConsoleError = jest
+            .spyOn(console, "error")
+            .mockImplementation();
         // reset the paypal namespace to trigger the error
         window.paypal = {};
-        const onError = jest.fn();
-
-        const wrapper = ({ children }) => (
-            <ErrorBoundary onError={onError}>{children}</ErrorBoundary>
-        );
 
         render(
             <PayPalScriptProvider options={{ "client-id": "test" }}>
@@ -234,20 +236,15 @@ describe("<PayPalButtons />", () => {
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
         expect(onError.mock.calls[0][0].message).toMatchSnapshot();
+        spyConsoleError.mockRestore();
     });
 
     test("should throw an error when the 'buttons' component is missing from the components list passed to the PayPalScriptProvider", async () => {
-        jest.spyOn(console, "error").mockImplementation(() => {
-            // do nothing
-        });
-
+        const spyConsoleError = jest
+            .spyOn(console, "error")
+            .mockImplementation();
         // reset the paypal namespace to trigger the error
         window.paypal = {};
-        const onError = jest.fn();
-
-        const wrapper = ({ children }) => (
-            <ErrorBoundary onError={onError}>{children}</ErrorBoundary>
-        );
 
         render(
             <PayPalScriptProvider
@@ -263,13 +260,13 @@ describe("<PayPalButtons />", () => {
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
         expect(onError.mock.calls[0][0].message).toMatchSnapshot();
+        spyConsoleError.mockRestore();
     });
 
     test("should catch and throw unexpected zoid render errors", async () => {
-        jest.spyOn(console, "error").mockImplementation(() => {
-            // do nothing
-        });
-
+        const spyConsoleError = jest
+            .spyOn(console, "error")
+            .mockImplementation();
         window.paypal.Buttons = () => {
             return {
                 close: jest.fn().mockResolvedValue(),
@@ -282,12 +279,6 @@ describe("<PayPalButtons />", () => {
             };
         };
 
-        const onError = jest.fn();
-
-        const wrapper = ({ children }) => (
-            <ErrorBoundary onError={onError}>{children}</ErrorBoundary>
-        );
-
         render(
             <PayPalScriptProvider options={{ "client-id": "test" }}>
                 <PayPalButtons />
@@ -297,9 +288,13 @@ describe("<PayPalButtons />", () => {
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
         expect(onError.mock.calls[0][0].message).toMatchSnapshot();
+        spyConsoleError.mockRestore();
     });
 
     test("should throw an error during initialization when style prop is invalid", async () => {
+        const spyConsoleError = jest
+            .spyOn(console, "error")
+            .mockImplementation();
         window.paypal.Buttons = (options) => {
             if (
                 options.style.color === "gold" &&
@@ -309,13 +304,6 @@ describe("<PayPalButtons />", () => {
                     "Unexpected style.color for venmo button: gold, expected blue, silver, black, white"
                 );
         };
-        jest.spyOn(console, "error").mockImplementation(() => {
-            // do nothing
-        });
-
-        const wrapper = ({ children }) => (
-            <ErrorBoundary onError={console.error}>{children}</ErrorBoundary>
-        );
 
         render(
             <PayPalScriptProvider
@@ -332,27 +320,13 @@ describe("<PayPalButtons />", () => {
             { wrapper }
         );
 
-        await waitFor(() => expect(console.error).toBeCalled());
-        expect(console.error).toBeCalledWith(
-            new Error(
-                "Failed to render <PayPalButtons /> component. Failed to initialize:  Error: Unexpected style.color for venmo button: gold, expected blue, silver, black, white"
-            )
+        await waitFor(() => expect(onError).toBeCalled());
+        expect(onError.mock.calls[0][0]).toEqual(
+            expect.objectContaining({
+                message:
+                    "Failed to render <PayPalButtons /> component. Failed to initialize:  Error: Unexpected style.color for venmo button: gold, expected blue, silver, black, white",
+            })
         );
+        spyConsoleError.mockRestore();
     });
 });
-
-class ErrorBoundary extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { hasError: false };
-    }
-
-    componentDidCatch(error) {
-        this.setState({ hasError: true });
-        this.props.onError(error);
-    }
-
-    render() {
-        return !this.state.hasError && this.props.children;
-    }
-}

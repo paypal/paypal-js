@@ -1,6 +1,7 @@
 import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import { loadScript, loadCustomScript } from "@paypal/paypal-js";
+import { ErrorBoundary } from "react-error-boundary";
 
 import { BraintreePayPalButtons } from "./BraintreePayPalButtons";
 import { PayPalScriptProvider } from "../PayPalScriptProvider";
@@ -45,6 +46,13 @@ const setup = () => {
     loadScript.mockResolvedValue(window.paypal);
     loadCustomScript.mockResolvedValue(window.braintree);
 };
+
+const onError = jest.fn();
+const wrapper = ({ children }) => (
+    <ErrorBoundary fallback={<div>Error</div>} onError={onError}>
+        {children}
+    </ErrorBoundary>
+);
 
 describe("Braintree PayPal button fail in mount process", () => {
     beforeEach(setup);
@@ -112,7 +120,12 @@ describe("Braintree PayPal button fail in mount process", () => {
 
         try {
             render(
-                <PayPalScriptProvider options={{ "client-id": "test" }}>
+                <PayPalScriptProvider
+                    options={{
+                        "client-id": "test",
+                        "data-client-token": "",
+                    }}
+                >
                     <BraintreePayPalButtons />
                 </PayPalScriptProvider>
             );
@@ -153,6 +166,92 @@ describe("Braintree PayPal button fail in mount process", () => {
             expect(errorMessage).toEqual("Network error");
         });
         expect(console.error).toBeCalled();
+    });
+
+    test("should fail rendering the BraintreePayPalButton component when loading the Braintree Gateway", async () => {
+        const spyConsoleError = jest
+            .spyOn(console, "error")
+            .mockImplementation();
+        loadCustomScript.mockRejectedValue(new Error("Server Error"));
+
+        render(
+            <PayPalScriptProvider
+                options={{
+                    "client-id": "test",
+                    "data-client-token": CLIENT_TOKEN,
+                }}
+            >
+                <BraintreePayPalButtons />
+            </PayPalScriptProvider>,
+            { wrapper }
+        );
+
+        await waitFor(() => expect(onError).toBeCalled());
+        expect(onError.mock.calls[0][0]).toEqual(
+            expect.objectContaining({
+                message:
+                    "An error occurred when loading the Braintree scripts: Error: Server Error",
+            })
+        );
+        spyConsoleError.mockRestore();
+    });
+
+    test("should fail rendering the BraintreePayPalButton component when creating the Braintree Client", async () => {
+        const spyConsoleError = jest
+            .spyOn(console, "error")
+            .mockImplementation();
+        window.braintree.client.create = jest
+            .fn()
+            .mockRejectedValue(new Error("Cannot create the Braintree client"));
+
+        render(
+            <PayPalScriptProvider
+                options={{
+                    "client-id": "test",
+                    "data-client-token": CLIENT_TOKEN,
+                }}
+            >
+                <BraintreePayPalButtons />
+            </PayPalScriptProvider>,
+            { wrapper }
+        );
+
+        await waitFor(() => expect(onError).toBeCalled());
+        expect(onError.mock.calls[0][0]).toEqual(
+            expect.objectContaining({
+                message:
+                    "An error occurred when loading the Braintree scripts: Error: Cannot create the Braintree client",
+            })
+        );
+        spyConsoleError.mockRestore();
+    });
+
+    test("should fail rendering the BraintreePayPalButton component when the window.braintree namespace is null", async () => {
+        const spyConsoleError = jest
+            .spyOn(console, "error")
+            .mockImplementation();
+        window.braintree = null;
+
+        render(
+            <PayPalScriptProvider
+                options={{
+                    "client-id": "test",
+                    "data-client-token": CLIENT_TOKEN,
+                }}
+            >
+                <BraintreePayPalButtons />
+            </PayPalScriptProvider>,
+            { wrapper }
+        );
+
+        await waitFor(() => expect(onError).toBeCalled());
+        expect(onError.mock.calls[0][0]).toEqual(
+            expect.objectContaining({
+                message:
+                    "An error occurred when loading the Braintree scripts: TypeError: Cannot read property 'client' of null",
+            })
+        );
+        spyConsoleError.mockRestore();
     });
 });
 

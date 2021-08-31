@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, useState, useEffect } from "react";
 import { loadCustomScript } from "@paypal/paypal-js";
 
 import {
@@ -53,35 +53,43 @@ export const BraintreePayPalButtons: FC<BraintreePayPalButtonsComponentProps> =
         forceReRender = [],
         ...buttonProps
     }: BraintreePayPalButtonsComponentProps) => {
+        const [, setErrorState] = useState(null);
         const [providerContext, dispatch] = useBraintreeProviderContext();
 
         useEffect(() => {
             Promise.all([
                 loadCustomScript({ url: BRAINTREE_SOURCE }),
                 loadCustomScript({ url: BRAINTREE_PAYPAL_CHECKOUT_SOURCE }),
-            ]).then(() => {
-                const clientToken = providerContext.options[
-                    DATA_CLIENT_TOKEN
-                ] as string;
+            ])
+                .then(() => {
+                    const clientToken = providerContext.options[
+                        DATA_CLIENT_TOKEN
+                    ] as string;
+                    const braintreeNamespace = getBraintreeWindowNamespace();
 
-                const braintreeNamespace = getBraintreeWindowNamespace();
-
-                braintreeNamespace.client
-                    .create({
-                        authorization: clientToken,
-                    })
-                    .then((clientInstance) => {
-                        return braintreeNamespace.paypalCheckout.create({
-                            client: clientInstance,
+                    return braintreeNamespace.client
+                        .create({
+                            authorization: clientToken,
+                        })
+                        .then((clientInstance) => {
+                            return braintreeNamespace.paypalCheckout.create({
+                                client: clientInstance,
+                            });
+                        })
+                        .then((paypalCheckoutInstance) => {
+                            dispatch({
+                                type: DISPATCH_ACTION.SET_BRAINTREE_INSTANCE,
+                                value: paypalCheckoutInstance,
+                            });
                         });
-                    })
-                    .then((paypalCheckoutInstance) => {
-                        dispatch({
-                            type: DISPATCH_ACTION.SET_BRAINTREE_INSTANCE,
-                            value: paypalCheckoutInstance,
-                        });
+                })
+                .catch((err) => {
+                    setErrorState(() => {
+                        throw new Error(
+                            `An error occurred when loading the Braintree scripts: ${err}`
+                        );
                     });
-            });
+                });
         }, [providerContext.options, dispatch]);
 
         return (
