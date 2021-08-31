@@ -69,11 +69,7 @@ export default [
                 globals: {
                     react: "React",
                 },
-                plugins: [
-                    getBabelOutputPlugin({
-                        presets: ["@babel/preset-env"],
-                    }),
-                ],
+                plugins: [getBabelOutputPlugin()],
                 banner,
             },
             {
@@ -82,12 +78,7 @@ export default [
                 globals: {
                     react: "React",
                 },
-                plugins: [
-                    getBabelOutputPlugin({
-                        presets: ["@babel/preset-env"],
-                    }),
-                    terser(),
-                ],
+                plugins: [getBabelOutputPlugin(), terser()],
                 banner,
             },
         ],
