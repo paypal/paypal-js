@@ -33,18 +33,22 @@ export default {
         onShippingChange: null,
     },
     decorators: [
-        (Story: FunctionComponent): ReactElement => (
-            <PayPalScriptProvider
-                options={{
-                    ...scriptProviderOptions,
-                    "data-namespace": generateRandomString(),
-                }}
-            >
-                <div style={{ minHeight: "200px" }}>
-                    <Story />
-                </div>
-            </PayPalScriptProvider>
-        ),
+        (Story: FunctionComponent): ReactElement => {
+            const uid = generateRandomString();
+            return (
+                <PayPalScriptProvider
+                    options={{
+                        ...scriptProviderOptions,
+                        "data-namespace": uid,
+                        "data-uid": uid,
+                    }}
+                >
+                    <div style={{ minHeight: "200px" }}>
+                        <Story />
+                    </div>
+                </PayPalScriptProvider>
+            );
+        },
     ],
 };
 
