@@ -27,18 +27,23 @@ const orderOptions: PayPalScriptOptions = {
 export default {
     title: "Example/Subscriptions",
     decorators: [
-        (Story: FunctionComponent): ReactElement => (
-            <PayPalScriptProvider
-                options={{
-                    ...subscriptionOptions,
-                    "data-namespace": generateRandomString(),
-                }}
-            >
-                <div style={{ minHeight: "250px" }}>
-                    <Story />
-                </div>
-            </PayPalScriptProvider>
-        ),
+        (Story: FunctionComponent): ReactElement => {
+            const uid = generateRandomString();
+
+            return (
+                <PayPalScriptProvider
+                    options={{
+                        ...subscriptionOptions,
+                        "data-namespace": uid,
+                        "data-uid": uid,
+                    }}
+                >
+                    <div style={{ minHeight: "250px" }}>
+                        <Story />
+                    </div>
+                </PayPalScriptProvider>
+            );
+        },
     ],
 };
 

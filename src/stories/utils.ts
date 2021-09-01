@@ -1,8 +1,8 @@
 import { SDK_QUERY_KEYS } from "@paypal/sdk-constants/dist/module";
 
 const CLIENT_TOKEN_URL =
-    "http://braintree-sdk-demo.herokuapp.com/api/braintree/auth";
-const SALE_URL = "http://braintree-sdk-demo.herokuapp.com/api/braintree/sale";
+    "https://braintree-sdk-demo.herokuapp.com/api/braintree/auth";
+const SALE_URL = "https://braintree-sdk-demo.herokuapp.com/api/braintree/sale";
 const allowedSDKQueryParams = Object.keys(SDK_QUERY_KEYS).map(
     (key) => SDK_QUERY_KEYS[key]
 );
