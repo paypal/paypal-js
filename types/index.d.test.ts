@@ -312,16 +312,9 @@ loadScript({
     if (paypal.HostedFields.isEligible() === false) return;
 
     paypal.HostedFields.render({
-        createOrder: (data, actions) => {
-            return actions.order.create({
-                purchase_units: [
-                    {
-                        amount: {
-                            value: "1.00",
-                        },
-                    },
-                ],
-            });
+        createOrder: () => {
+            // Call your server to create the order
+            return Promise.resolve("7632736476738");
         },
         styles: {
             ".valid": {

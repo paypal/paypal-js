@@ -9,10 +9,7 @@ export type CreateOrderActions = {
 };
 
 export interface PayPalHostedFieldsComponentOptions {
-    createOrder?: (
-        data: UnknownObject,
-        actions: CreateOrderActions
-    ) => Promise<string>;
+    createOrder: () => Promise<string>;
     onError?: (err: UnknownObject) => void;
     styles?: UnknownObject;
     fields?: UnknownObject;
