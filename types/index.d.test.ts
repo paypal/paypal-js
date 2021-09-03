@@ -220,16 +220,13 @@ loadScript({
     if (paypal.HostedFields.isEligible() === false) return;
 
     paypal.HostedFields.render({
-        createOrder: (data, actions) => {
-            return actions.order.create({
-                purchase_units: [
-                    {
-                        amount: {
-                            value: "1.00",
-                        },
-                    },
-                ],
-            });
+        createOrder: () => {
+            // Call your server paypa order
+            return fetch('/your-server/paypal/order', {
+                method: 'post'
+              }).then(function(res) {
+                  return res.json();
+              }).then(orderData => orderData.id); 
         },
         styles: {
             ".valid": {
