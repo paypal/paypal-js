@@ -9,7 +9,7 @@ const loadScriptBasicPromise: Promise<PayPalNamespace | null> = loadScript({
 loadScript({
     "client-id": "test",
     currency: "USD",
-    "data-order-id": "12345",
+    "data-page-type": "checkout",
     "disable-funding": "card",
 });
 

@@ -32,11 +32,11 @@ describe("Buttons Component", () => {
         expect(paypalVersion.startsWith("5")).toBe(true);
     });
 
-    it("the script should have the data-order-id attribute", async () => {
-        const orderId = await page.$eval("head script", (element) =>
-            element.getAttribute("data-order-id")
+    it("the script should have the data-page-type attribute", async () => {
+        const pageType = await page.$eval("head script", (element) =>
+            element.getAttribute("data-page-type")
         );
-        expect(orderId).toBe("12345");
+        expect(pageType).toBe("checkout");
     });
 
     it('should display the inline form when clicking the "Debit or Credit Card" button', async () => {

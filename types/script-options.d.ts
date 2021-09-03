@@ -20,7 +20,6 @@ interface PayPalScriptQueryParameters {
 interface PayPalScriptDataAttributes {
     "data-partner-attribution-id"?: string;
     "data-csp-nonce"?: string;
-    "data-order-id"?: string;
     "data-page-type"?: string;
     "data-client-token"?: string;
     "data-merchant-id"?: string;

@@ -23,7 +23,7 @@ describe("processOptions()", () => {
         const options = {
             "client-id": "test",
             currency: "USD",
-            "data-order-id": "12345",
+            "data-page-type": "checkout",
             "some-random-key": "some-random-value",
         };
 
@@ -32,7 +32,7 @@ describe("processOptions()", () => {
         expect(url).toBe(
             "https://www.paypal.com/sdk/js?client-id=test&currency=USD&some-random-key=some-random-value"
         );
-        expect(dataAttributes).toEqual({ "data-order-id": "12345" });
+        expect(dataAttributes).toEqual({ "data-page-type": "checkout" });
     });
 
     test("sets a custom base url", () => {
@@ -107,11 +107,11 @@ describe("findScript()", () => {
 
     test("finds the existing script in the DOM", () => {
         const url = "https://www.paypal.com/sdk/js?client-id=test";
-        document.head.innerHTML = `<script src="${url}" data-order-id="123" data-page-type="checkout" data-uid-auto="81376a99ff_mdm6mji6mzg"></script>`;
+        document.head.innerHTML = `<script src="${url}" data-client-token="123" data-page-type="checkout" data-uid-auto="81376a99ff_mdm6mji6mzg"></script>`;
 
         const result = findScript(url, {
             "data-page-type": "checkout",
-            "data-order-id": "123",
+            "data-client-token": "123",
         });
         if (!result) throw new Error("Expected to find <script> element");
 
@@ -126,9 +126,9 @@ describe("findScript()", () => {
 
     test("returns null when the script is found but the number of data attributes do not match", () => {
         const url = "https://www.paypal.com/sdk/js?client-id=test";
-        document.head.innerHTML = `<script src="${url}" data-order-id="12345" data-page-type="home"></script>`;
+        document.head.innerHTML = `<script src="${url}" data-client-token="12345" data-page-type="home"></script>`;
 
-        const result = findScript(url, { "data-order-id": "12345" });
+        const result = findScript(url, { "data-client-token": "12345" });
         expect(result).toBeNull();
     });
 
@@ -151,7 +151,7 @@ describe("insertScriptElement()", () => {
     test("inserts a <script> with attributes into the DOM", () => {
         insertScriptElement({
             url,
-            attributes: { "data-order-id": "12345" },
+            attributes: { "data-client-token": "12345" },
             onError: jest.fn(),
             onSuccess: jest.fn(),
         });
@@ -162,7 +162,7 @@ describe("insertScriptElement()", () => {
             throw new Error("Expected to find <script> element");
 
         expect(scriptFromDOM.src).toBe(url);
-        expect(scriptFromDOM.getAttribute("data-order-id")).toBe("12345");
+        expect(scriptFromDOM.getAttribute("data-client-token")).toBe("12345");
     });
 
     test("sets a nonce on the script tag when data-csp-nonce is used", () => {
