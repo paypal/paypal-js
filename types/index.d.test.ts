@@ -221,12 +221,8 @@ loadScript({
 
     paypal.HostedFields.render({
         createOrder: () => {
-            // Call your server paypa order
-            return fetch('/your-server/paypal/order', {
-                method: 'post'
-              }).then(function(res) {
-                  return res.json();
-              }).then(orderData => orderData.id); 
+            // Call your server to create the order
+            return Promise.resolve("7632736476738");
         },
         styles: {
             ".valid": {
