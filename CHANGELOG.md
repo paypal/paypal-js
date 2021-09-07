@@ -2,9 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### 4.0.10 (2021-09-04)
+### [4.0.10](https://github.com/paypal/paypal-js/compare/v4.0.9...v4.0.10) (2021-09-04)
 
-### 4.0.9 (2021-09-04)
+### [4.0.9](https://github.com/paypal/paypal-js/compare/v4.0.8...v4.0.9) (2021-09-04)
+
+### Bug Fixes
+
+-   **types:** remove unsupported data-order-id attribute ([3ddc963](https://github.com/paypal/paypal-js/commit/3ddc9637c2a8a65247dd06bb135c355cddc9633a))
+-   **types:** update createOrder for HostedFields ([#116](https://github.com/paypal/paypal-js/issues/116)) ([62fb2b1](https://github.com/paypal/paypal-js/commit/62fb2b1f9d024b96225195dd6b1332be8a3ef0b6))
 
 ### [4.0.8](https://github.com/paypal/paypal-js/compare/v4.0.7...v4.0.8) (2021-08-20)
 
