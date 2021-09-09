@@ -15,7 +15,7 @@ export interface PayPalHostedFieldsComponentOptions {
     fields?: UnknownObject;
 }
 
-export interface HostedFieldsPaymentMethodResponse {
+export interface HostedFieldsSubmitResponse {
     orderId: string;
     liabilityShift: string;
     liabilityShifted: boolean;
@@ -30,7 +30,7 @@ export interface HostedFieldsPaymentMethodResponse {
 }
 
 export interface HostedFieldsHandler {
-    submit: (options?: UnknownObject) => Promise<HostedFieldsPaymentMethodResponse>;
+    submit: (options?: UnknownObject) => Promise<HostedFieldsSubmitResponse>;
     getCardTypes: () => UnknownObject;
 }
 
