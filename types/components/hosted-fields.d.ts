@@ -17,10 +17,10 @@ export interface PayPalHostedFieldsComponentOptions {
 
 export interface HostedFieldsSubmitResponse {
     orderId: string;
-    liabilityShift: string;
-    liabilityShifted: boolean;
-    authenticationReason: string;
-    authenticationStatus: string;
+    liabilityShift?: string;
+    liabilityShifted?: boolean;
+    authenticationReason?: string;
+    authenticationStatus?: string;
     card: {
         brand: string;
         card_type: string;
