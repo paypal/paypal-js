@@ -17,10 +17,10 @@ export interface PayPalHostedFieldsComponentOptions {
 
 export interface HostedFieldsPaymentMethodValidated {
     orderId: string;
-    liabilityShift: unknown;
-    liabilityShifted: unknown;
-    authenticationReason: unknown;
-    authenticationStatus: unknown;
+    liabilityShift: string;
+    liabilityShifted: boolean;
+    authenticationReason: string;
+    authenticationStatus: string;
     card: {
         brand: string;
         card_type: string;
