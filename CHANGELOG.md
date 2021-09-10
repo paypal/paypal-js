@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.0.11](https://github.com/paypal/paypal-js/compare/v4.0.10...v4.0.11) (2021-09-10)
+
+### Bug Fixes
+
+-   **types:** update submit response for hosted fields ([#117](https://github.com/paypal/paypal-js/issues/117)) ([31ac8b4](https://github.com/paypal/paypal-js/commit/31ac8b4bfa526f7b06dd9ec7fbb9f2b42b94c62c))
+
 ### [4.0.10](https://github.com/paypal/paypal-js/compare/v4.0.9...v4.0.10) (2021-09-04)
 
 ### [4.0.9](https://github.com/paypal/paypal-js/compare/v4.0.8...v4.0.9) (2021-09-04)
