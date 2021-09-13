@@ -134,4 +134,74 @@ describe("<PayPalMarks />", () => {
         expect(onError.mock.calls[0][0].message).toMatchSnapshot();
         spyConsoleError.mockRestore();
     });
+
+    test("should safely ignore error on render process when paypal marks container is no longer in the DOM ", async () => {
+        const spyConsoleError = jest
+            .spyOn(console, "error")
+            .mockImplementation();
+        const mockRender = jest
+            .fn()
+            .mockRejectedValue(new Error("Unknown error"));
+        window.paypal.Marks = () => ({
+            isEligible: jest.fn().mockReturnValue(true),
+            render: mockRender,
+        });
+
+        render(
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
+                <PayPalMarks className="test-class" />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() => expect(mockRender).toBeCalled());
+        spyConsoleError.mockRestore();
+    });
+
+    test("should not render component when ineligible", async () => {
+        const mockIsEligible = jest.fn().mockReturnValue(false);
+        const mockRender = jest.fn().mockResolvedValue();
+        window.paypal.Marks = () => ({
+            isEligible: mockIsEligible,
+            render: mockRender,
+        });
+
+        render(
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
+                <PayPalMarks />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() => expect(mockIsEligible).toBeCalled());
+        expect(mockRender).not.toBeCalled();
+    });
+
+    test("should rerender the component when the funding source change", async () => {
+        const mockRender = jest.fn((element) => {
+            const markElement = document.createElement("div");
+
+            markElement.setAttribute("id", "children-div");
+            element.append(markElement);
+            return Promise.resolve();
+        });
+        window.paypal.Marks = () => ({
+            isEligible: jest.fn().mockReturnValue(true),
+            render: mockRender,
+        });
+
+        const { rerender } = render(
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
+                <PayPalMarks fundingSource="paypal" />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() => expect(mockRender).toBeCalledTimes(1));
+
+        rerender(
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
+                <PayPalMarks fundingSource="card" />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() => expect(mockRender).toBeCalledTimes(2));
+    });
 });
