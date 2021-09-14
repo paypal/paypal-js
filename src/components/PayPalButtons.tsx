@@ -38,7 +38,7 @@ Use props for customizing your buttons. For example, here's how you would use th
 export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
     className = "",
     disabled = false,
-    children = null,
+    children,
     forceReRender = [],
     ...buttonProps
 }: PayPalButtonsComponentProps) => {
@@ -156,16 +156,18 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
         disabled ? "paypal-buttons-disabled" : ""
     }`.trim();
 
-    if (isEligible === false) {
-        return children;
-    }
-
     return (
-        <div
-            ref={buttonsContainerRef}
-            style={isDisabledStyle}
-            className={classNames}
-        />
+        <>
+            {isEligible ? (
+                <div
+                    ref={buttonsContainerRef}
+                    style={isDisabledStyle}
+                    className={classNames}
+                />
+            ) : (
+                children
+            )}
+        </>
     );
 };
 

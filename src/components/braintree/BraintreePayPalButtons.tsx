@@ -49,7 +49,7 @@ export const BraintreePayPalButtons: FC<BraintreePayPalButtonsComponentProps> =
     ({
         className = "",
         disabled = false,
-        children = null,
+        children,
         forceReRender = [],
         ...buttonProps
     }: BraintreePayPalButtonsComponentProps) => {

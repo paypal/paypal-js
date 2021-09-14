@@ -1,12 +1,4 @@
-import React, {
-    useEffect,
-    useRef,
-    useState,
-    FunctionComponent,
-    ReactElement,
-    ReactPortal,
-    ReactFragment,
-} from "react";
+import React, { useEffect, useRef, useState, FunctionComponent } from "react";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace } from "../utils";
 import { DEFAULT_PAYPAL_NAMESPACE } from "../constants";
@@ -14,13 +6,14 @@ import type {
     PayPalMarksComponentOptions,
     PayPalMarksComponent,
 } from "@paypal/paypal-js/types/components/marks";
+import type { Children } from "../types/scriptProviderTypes";
 
 export interface PayPalMarksComponentProps extends PayPalMarksComponentOptions {
     /**
      * Pass a css class to the div container.
      */
     className?: string;
-    children?: ReactElement | ReactPortal | ReactFragment;
+    children?: Children;
 }
 
 /**
