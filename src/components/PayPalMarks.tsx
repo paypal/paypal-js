@@ -1,4 +1,12 @@
-import React, { useEffect, useRef, useState, FunctionComponent } from "react";
+import React, {
+    useEffect,
+    useRef,
+    useState,
+    FunctionComponent,
+    ReactElement,
+    ReactPortal,
+    ReactFragment,
+} from "react";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace } from "../utils";
 import { DEFAULT_PAYPAL_NAMESPACE } from "../constants";
@@ -12,6 +20,7 @@ export interface PayPalMarksComponentProps extends PayPalMarksComponentOptions {
      * Pass a css class to the div container.
      */
     className?: string;
+    children?: ReactElement | ReactPortal | ReactFragment;
 }
 
 /**
@@ -32,10 +41,12 @@ A `FUNDING` object is exported by this library which has a key for every availab
 */
 export const PayPalMarks: FunctionComponent<PayPalMarksComponentProps> = ({
     className = "",
+    children,
     ...markProps
 }: PayPalMarksComponentProps) => {
     const [{ isResolved, options }] = usePayPalScriptReducer();
     const markContainerRef = useRef<HTMLDivElement>(null);
+    const [isEligible, setIsEligible] = useState(true);
     const [, setErrorState] = useState(null);
 
     /**
@@ -45,7 +56,9 @@ export const PayPalMarks: FunctionComponent<PayPalMarksComponentProps> = ({
         const { current } = markContainerRef;
 
         // only render the mark when eligible
-        if (!current || !mark.isEligible()) return;
+        if (!current || !mark.isEligible()) {
+            return setIsEligible(false);
+        }
         // Remove any children before render it again
         if (current.firstChild) {
             current.removeChild(current.firstChild);
@@ -89,7 +102,15 @@ export const PayPalMarks: FunctionComponent<PayPalMarksComponentProps> = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isResolved, markProps.fundingSource]);
 
-    return <div ref={markContainerRef} className={className} />;
+    return (
+        <>
+            {isEligible ? (
+                <div ref={markContainerRef} className={className} />
+            ) : (
+                children
+            )}
+        </>
+    );
 };
 
 function getErrorMessage({

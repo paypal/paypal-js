@@ -165,13 +165,21 @@ describe("<PayPalMarks />", () => {
             render: mockRender,
         });
 
-        render(
+        const { container } = render(
             <PayPalScriptProvider options={{ "client-id": "test" }}>
-                <PayPalMarks />
+                <PayPalMarks className="mark-container">
+                    <div className="ineligible"></div>
+                </PayPalMarks>
             </PayPalScriptProvider>
         );
 
-        await waitFor(() => expect(mockIsEligible).toBeCalled());
+        await waitFor(() =>
+            expect(
+                container.querySelector(".ineligible") instanceof HTMLDivElement
+            ).toBeTruthy()
+        );
+        expect(container.querySelector(".mark-container")).toBeNull();
+        expect(mockIsEligible).toBeCalledTimes(1);
         expect(mockRender).not.toBeCalled();
     });
 
