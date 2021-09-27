@@ -56,6 +56,22 @@ Import the `loadScript` function for asynchronously loading the Paypal JS SDK.
 -   accepts an object for passing query parameters and attributes to the JS SDK.
 -   returns a Promise that resolves with `window.paypal` after the JS SDK is finished loading.
 
+#### Async/Await
+
+```js
+import { loadScript } from "@paypal/paypal-js";
+
+try {
+    const paypal = await loadScript({ "client-id": "test" });
+
+    paypal.Buttons().render("#your-container-element");
+} catch (error) {
+    console.error("failed to load the PayPal JS SDK script", error);
+}
+```
+
+#### Promises
+
 ```js
 import { loadScript } from "@paypal/paypal-js";
 
@@ -207,6 +223,28 @@ The `loadCustomScript` function is a generic script loader function that works w
 
 -   accepts an object for defining the script url and attributes.
 -   returns a promise to indicate if the script was successfully loaded.
+
+#### Async/Await
+
+```js
+import { loadCustomScript } from "@paypal/paypal-js";
+
+try {
+    await loadCustomScript({
+        url: "https://www.example.com/index.js",
+        attributes: {
+            id: "custom-id-value",
+            "data-foo": "custom-data-attribute",
+        },
+    });
+
+    console.log("successfully loaded the custom script");
+} catch (error) {
+    console.error("failed to load the custom script", error);
+}
+```
+
+#### Promises
 
 ```js
 import { loadCustomScript } from "@paypal/paypal-js";
