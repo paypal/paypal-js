@@ -61,12 +61,20 @@ Import the `loadScript` function for asynchronously loading the Paypal JS SDK.
 ```js
 import { loadScript } from "@paypal/paypal-js";
 
-try {
-    const paypal = await loadScript({ "client-id": "test" });
+let paypal;
 
-    paypal.Buttons().render("#your-container-element");
+try {
+    paypal = await loadScript({ "client-id": "test" });
 } catch (error) {
     console.error("failed to load the PayPal JS SDK script", error);
+}
+
+if (paypal) {
+    try {
+        await paypal.Buttons().render("#your-container-element");
+    } catch (error) {
+        console.error("failed to render the PayPal Buttons", error);
+    }
 }
 ```
 
@@ -77,10 +85,15 @@ import { loadScript } from "@paypal/paypal-js";
 
 loadScript({ "client-id": "test" })
     .then((paypal) => {
-        paypal.Buttons().render("#your-container-element");
+        paypal
+            .Buttons()
+            .render("#your-container-element")
+            .catch((error) => {
+                console.error("failed to render the PayPal Buttons", error);
+            });
     })
-    .catch((err) => {
-        console.error("failed to load the PayPal JS SDK script", err);
+    .catch((error) => {
+        console.error("failed to load the PayPal JS SDK script", error);
     });
 ```
 
