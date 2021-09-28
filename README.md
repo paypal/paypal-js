@@ -71,7 +71,7 @@ try {
 
 if (paypal) {
     try {
-        paypal.Buttons().render("#your-container-element");
+        await paypal.Buttons().render("#your-container-element");
     } catch (error) {
         console.error("failed to render the PayPal Buttons", error);
     }
