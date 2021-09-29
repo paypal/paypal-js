@@ -81,7 +81,9 @@ describe("loadScript()", () => {
             await loadScript({ "client-id": "test" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            expect(err.message).toBe(
+            const { message: errorMessage } = err as Record<string, string>;
+
+            expect(errorMessage).toBe(
                 "The window.paypal global variable is not available."
             );
         }
@@ -164,7 +166,9 @@ describe("loadCustomScript()", () => {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            expect(err.message).toBe(
+            const { message: errorMessage } = err as Record<string, string>;
+
+            expect(errorMessage).toBe(
                 'The script "https://www.example.com/index.js" failed to load.'
             );
         }
