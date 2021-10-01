@@ -76,6 +76,25 @@ describe("<PayPalScriptProvider />", () => {
         expect(state.isResolved).toBeFalsy();
     });
 
+    test("shouldn't set isRejected state to true after failing to load the script, because the component was unmount", async () => {
+        loadScript.mockRejectedValue(new Error());
+        const { state, TestComponent } = setupTestComponent();
+        const { unmount } = render(
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
+                <TestComponent />
+            </PayPalScriptProvider>
+        );
+
+        unmount();
+
+        await waitFor(() => expect(loadScript).toBeCalled());
+        // verify initial loading state
+        expect(state.isInitial).toBeFalsy();
+        expect(state.isPending).toBeTruthy();
+        expect(state.isRejected).toBeFalsy();
+        expect(state.isResolved).toBeFalsy();
+    });
+
     test("should control script loading with the deferLoading prop", async () => {
         const { state, TestComponent } = setupTestComponent();
 

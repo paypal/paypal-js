@@ -82,7 +82,6 @@ export function scriptReducer(
                 braintreePayPalCheckoutInstance:
                     action.value as BraintreePayPalCheckout,
             };
-
         default: {
             return state;
         }

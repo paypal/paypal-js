@@ -1,11 +1,14 @@
 export * from "./types";
 export * from "./context/scriptProviderContext";
 export * from "./hooks/scriptProviderHooks";
+export { usePayPalHostedFields } from "./hooks/payPalHostedFieldsHooks";
 export * from "./components/PayPalButtons";
 export * from "./components/braintree/BraintreePayPalButtons";
 export * from "./components/PayPalMarks";
 export * from "./components/PayPalMessages";
 export * from "./components/PayPalScriptProvider";
+export * from "./components/hostedFields/PayPalHostedFieldsProvider";
+export * from "./components/hostedFields/PayPalHostedField";
 
 import * as constants from "@paypal/sdk-constants/dist/module";
 

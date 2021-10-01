@@ -207,6 +207,98 @@ export default function App() {
 
 Checkout the docs page for the [BraintreePayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-braintreepaypalbuttons--default) to learn more about the available props.
 
+### PayPal Hosted Fields
+
+The JS SDK hosted-fields component provides payment form functionality that you can customize. Read more about this integration in the [PayPal Advanced Card Payments documentation](https://developer.paypal.com/docs/business/checkout/advanced-card-payments/).
+
+There are 3 parts to the hosted-fields integration:
+
+1. The `<PayPalHostedFieldsProvider />` provider component wraps the form field elements and accepts props like `createOrder()`.
+2. The `<PayPalHostedField>` component is used for the credit card number, expiration, and cvv elements. These are customizable using props and must be children of the `<PayPalHostedFieldsProvider />` component.
+3. The `usePayPalHostedFields` hook exposes the `submit()` function for submitting the payment with your own custom button.
+
+```jsx
+import {
+    PayPalScriptProvider,
+    PayPalHostedFieldsProvider,
+    PayPalHostedField,
+    usePayPalHostedFields,
+} from "@paypal/react-paypal-js";
+
+const SubmitPayment = () => {
+    // Here declare the variable containing the hostedField instance
+    const hostedFields = usePayPalHostedFields();
+
+    const submitHandler = () => {
+        if (!typeof hostedFields.submit !== "function") return; // validate that `submit()` exists before using it
+        hostedFields
+            .submit({
+                // The full name as shown in the card and billing address
+                cardholderName: "Jhon Wick",
+            })
+            .then((order) => {
+                fetch(
+                    "/your-server-side-integration-endpoint/capture-payment-info"
+                )
+                    .then((response) => response.json())
+                    .then((data) => {
+                        // Inside the data you can find all the information related to the payment
+                    })
+                    .catch((err) => {
+                        // Handle any error
+                    });
+            });
+    };
+
+    return <button onClick={submitHandler}>Pay</button>;
+};
+
+export default function App() {
+    return (
+        <PayPalScriptProvider
+            options={{
+                "client-id": "your-client-id",
+                "data-client-token": "your-data-client-token",
+            }}
+        >
+            <PayPalHostedFieldsProvider
+                createOrder={() => {
+                    // Here define the call to create and order
+                    return fetch(
+                        "/your-server-side-integration-endpoint/orders"
+                    )
+                        .then((response) => response.json())
+                        .then((order) => order.id)
+                        .catch((err) => {
+                            // Handle any error
+                        });
+                }}
+            >
+                <PayPalHostedField
+                    id="card-number"
+                    hostedFieldType="number"
+                    options={{ selector: "#card-number" }}
+                />
+                <PayPalHostedField
+                    id="cvv"
+                    hostedFieldType="cvv"
+                    options={{ selector: "#cvv" }}
+                />
+                <PayPalHostedField
+                    id="expiration-date"
+                    hostedFieldType="expirationDate"
+                    options={{
+                        selector: "#expiration-date",
+                        placeholder: "MM/YY",
+                    }}
+                />
+                <SubmitPayment />
+            </PayPalHostedFieldsProvider>
+        </PayPalScriptProvider>
+    );
+}
+```
+
 ### Browser Support
 
 This library supports all popular browsers, including IE 11. It provides the same browser support as the JS SDK. Here's the [full list of supported browsers](https://developer.paypal.com/docs/business/checkout/reference/browser-support/#supported-browsers-by-platform).

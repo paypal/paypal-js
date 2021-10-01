@@ -42,6 +42,10 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
     forceReRender = [],
     ...buttonProps
 }: PayPalButtonsComponentProps) => {
+    const isDisabledStyle = disabled ? { opacity: 0.38 } : {};
+    const classNames = `${className} ${
+        disabled ? "paypal-buttons-disabled" : ""
+    }`.trim();
     const buttonsContainerRef = useRef<HTMLDivElement>(null);
     const buttons = useRef<PayPalButtonsComponent | null>(null);
 
@@ -109,7 +113,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
             return closeButtonsComponent;
         }
 
-        if (buttonsContainerRef.current === null) {
+        if (!buttonsContainerRef.current) {
             return closeButtonsComponent;
         }
 
@@ -150,11 +154,6 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
             });
         }
     }, [disabled, initActions]);
-
-    const isDisabledStyle = disabled ? { opacity: 0.38 } : {};
-    const classNames = `${className} ${
-        disabled ? "paypal-buttons-disabled" : ""
-    }`.trim();
 
     return (
         <>

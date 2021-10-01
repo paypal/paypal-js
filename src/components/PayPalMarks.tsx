@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, FC, ReactNode } from "react";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace } from "../utils";
 import { DEFAULT_PAYPAL_NAMESPACE, DATA_NAMESPACE } from "../constants";
-import type { FC, ReactNode } from "react";
 import type {
     PayPalMarksComponentOptions,
     PayPalMarksComponent,

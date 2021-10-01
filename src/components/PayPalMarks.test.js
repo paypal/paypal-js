@@ -108,6 +108,27 @@ describe("<PayPalMarks />", () => {
         spyConsoleError.mockRestore();
     });
 
+    test("should throw an error when the 'marks' component is in the components list but wasn't load in the paypal object", async () => {
+        const spyConsoleError = jest
+            .spyOn(console, "error")
+            .mockImplementation();
+        render(
+            <PayPalScriptProvider
+                options={{
+                    "client-id": "test",
+                    components: "buttons,messages,marks",
+                }}
+            >
+                <PayPalMarks />
+            </PayPalScriptProvider>,
+            { wrapper }
+        );
+
+        await waitFor(() => expect(onError).toHaveBeenCalled());
+        expect(onError.mock.calls[0][0].message).toMatchSnapshot();
+        spyConsoleError.mockRestore();
+    });
+
     test("should catch and throw unexpected zoid render errors", async () => {
         const spyConsoleError = jest
             .spyOn(console, "error")

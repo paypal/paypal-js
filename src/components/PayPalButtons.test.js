@@ -38,6 +38,7 @@ describe("<PayPalButtons />", () => {
 
         loadScript.mockResolvedValue(window.paypal);
     });
+
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -90,8 +91,8 @@ describe("<PayPalButtons />", () => {
             expect(
                 document.querySelector("div.paypal-buttons-disabled")
             ).toBeTruthy();
-            expect(window.paypal.Buttons).toHaveBeenCalled();
         });
+        expect(window.paypal.Buttons).toHaveBeenCalled();
 
         const onInitActions = {
             enable: jest.fn().mockResolvedValue(true),
@@ -104,8 +105,54 @@ describe("<PayPalButtons />", () => {
 
         await waitFor(() => {
             expect(onInitCallbackMock).toHaveBeenCalled();
-            expect(onInitActions.disable).toHaveBeenCalled();
         });
+        expect(onInitActions.disable).toHaveBeenCalled();
+    });
+
+    test("should enable the Buttons when disabled=true", async () => {
+        const { container, rerender } = render(
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
+                <PayPalButtons
+                    className="custom-class-name"
+                    disabled={true}
+                    onInit={jest.fn()}
+                />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() => {
+            expect(
+                container
+                    .querySelector("div.custom-class-name")
+                    .classList.contains("paypal-buttons-disabled")
+            ).toBeTruthy();
+        });
+        const onInitActions = {
+            enable: jest.fn().mockResolvedValue(true),
+            disable: jest.fn().mockResolvedValue(true),
+        };
+
+        act(() =>
+            window.paypal.Buttons.mock.calls[0][0].onInit({}, onInitActions)
+        );
+
+        rerender(
+            <PayPalScriptProvider options={{ "client-id": "test" }}>
+                <PayPalButtons
+                    className="custom-class-name"
+                    disabled={false}
+                    onInit={onInitActions}
+                />
+            </PayPalScriptProvider>
+        );
+        await waitFor(() => {
+            expect(onInitActions.enable).toBeCalled();
+        });
+        expect(
+            container
+                .querySelector("div.custom-class-name")
+                .classList.contains("paypal-buttons-disabled")
+        ).toBeFalsy();
     });
 
     test("should re-render Buttons when any item from props.forceReRender changes", async () => {
@@ -189,9 +236,8 @@ describe("<PayPalButtons />", () => {
     test("should render custom content when ineligible", async () => {
         window.paypal = {
             Buttons: jest.fn(() => ({
-                close: jest.fn().mockResolvedValue(),
+                close: jest.fn().mockResolvedValue(true),
                 isEligible: jest.fn().mockReturnValue(false),
-                render: jest.fn().mockResolvedValue({}),
             })),
         };
 
@@ -202,22 +248,16 @@ describe("<PayPalButtons />", () => {
         );
 
         // defaults to rendering null when ineligible
-        await waitFor(() =>
-            expect(document.querySelector(".test-button")).toBeNull()
-        );
-
-        render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
-                <PayPalButtons>
-                    <p className="custom-content">Custom Content</p>
-                </PayPalButtons>
-            </PayPalScriptProvider>
-        );
-
-        // supports rendering props.children when ineligible
-        await waitFor(() =>
-            expect(document.querySelector(".custom-content")).toBeTruthy()
-        );
+        await waitFor(() => {
+            expect(window.paypal.Buttons).toBeCalled();
+        });
+        expect(
+            window.paypal.Buttons.mock.results[0].value.isEligible
+        ).toBeCalled();
+        expect(
+            window.paypal.Buttons.mock.results[0].value.isEligible.mock
+                .results[0].value
+        ).toBeFalsy();
     });
 
     test("should throw an error when no components are passed to the PayPalScriptProvider", async () => {
@@ -347,13 +387,13 @@ describe("<PayPalButtons />", () => {
 
         const { container } = render(
             <PayPalScriptProvider options={{ "client-id": "test" }}>
-                <PayPalButtons class="test-children" />
+                <PayPalButtons className="test-children" />
             </PayPalScriptProvider>
         );
 
         await waitFor(() => expect(mockRender).toBeCalled());
         expect(
-            container.querySelector(".test-children") instanceof HTMLDivElement
+            container.querySelector("div.test-children").hasChildNodes()
         ).toBeFalsy();
         spyConsoleError.mockRestore();
     });
