@@ -6,7 +6,7 @@ import {
     PayPalScriptProvider,
     PayPalButtons,
     usePayPalScriptReducer,
-    DISPATCH_ACTION,
+    SCRIPT_PROVIDER_DISPATCH_ACTION,
 } from "../index";
 import { getOptionsFromQueryString, generateRandomString } from "./utils";
 
@@ -87,7 +87,7 @@ export const OrdersAndSubscriptions: FunctionComponent = () => {
 
     function onChange(event: ChangeEvent<HTMLInputElement>) {
         dispatch({
-            type: DISPATCH_ACTION.RESET_OPTIONS,
+            type: SCRIPT_PROVIDER_DISPATCH_ACTION.RESET_OPTIONS,
             value:
                 event.target.value === "subscription"
                     ? subscriptionOptions

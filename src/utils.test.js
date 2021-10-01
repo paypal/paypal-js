@@ -3,6 +3,7 @@ import {
     getBraintreeWindowNamespace,
     hashStr,
 } from "./utils";
+import { DATA_NAMESPACE } from "./constants";
 
 describe("getPayPalWindowNamespace", () => {
     beforeAll(() => {
@@ -59,7 +60,7 @@ describe("hashStr", () => {
                     debug: false,
                     vault: false,
                     locale: "US",
-                    "data-namespace": "braintree",
+                    [DATA_NAMESPACE]: "braintree",
                 })
             )
         ).toMatchInlineSnapshot(

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, FunctionComponent } from "react";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace } from "../utils";
-import { DEFAULT_PAYPAL_NAMESPACE } from "../constants";
+import { DEFAULT_PAYPAL_NAMESPACE, DATA_NAMESPACE } from "../constants";
 import type {
     PayPalMessagesComponentOptions,
     PayPalMessagesComponent,
@@ -31,7 +31,7 @@ export const PayPalMessages: FunctionComponent<PayPalMessagesComponentProps> =
             }
 
             const paypalWindowNamespace = getPayPalWindowNamespace(
-                options["data-namespace"]
+                options[DATA_NAMESPACE]
             );
 
             // verify dependency on window object
@@ -79,7 +79,7 @@ export const PayPalMessages: FunctionComponent<PayPalMessagesComponentProps> =
 
 function getErrorMessage({
     components = "",
-    "data-namespace": dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
+    [DATA_NAMESPACE]: dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
 }) {
     let errorMessage = `Unable to render <PayPalMessages /> because window.${dataNamespace}.Messages is undefined.`;
 

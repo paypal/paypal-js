@@ -5,7 +5,7 @@ export enum SCRIPT_LOADING_STATE {
     RESOLVED = "resolved",
 }
 
-export enum DISPATCH_ACTION {
+export enum SCRIPT_PROVIDER_DISPATCH_ACTION {
     LOADING_STATUS = "setLoadingStatus",
     RESET_OPTIONS = "resetOptions",
     SET_BRAINTREE_INSTANCE = "braintreeInstance",

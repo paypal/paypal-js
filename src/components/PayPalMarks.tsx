@@ -1,19 +1,19 @@
-import React, { useEffect, useRef, useState, FunctionComponent } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace } from "../utils";
-import { DEFAULT_PAYPAL_NAMESPACE } from "../constants";
+import { DEFAULT_PAYPAL_NAMESPACE, DATA_NAMESPACE } from "../constants";
+import type { FC, ReactNode } from "react";
 import type {
     PayPalMarksComponentOptions,
     PayPalMarksComponent,
 } from "@paypal/paypal-js/types/components/marks";
-import type { Children } from "../types/scriptProviderTypes";
 
 export interface PayPalMarksComponentProps extends PayPalMarksComponentOptions {
     /**
      * Pass a css class to the div container.
      */
     className?: string;
-    children?: Children;
+    children?: ReactNode;
 }
 
 /**
@@ -32,7 +32,7 @@ A `FUNDING` object is exported by this library which has a key for every availab
     </PayPalScriptProvider>
 ```
 */
-export const PayPalMarks: FunctionComponent<PayPalMarksComponentProps> = ({
+export const PayPalMarks: FC<PayPalMarksComponentProps> = ({
     className = "",
     children,
     ...markProps
@@ -77,7 +77,7 @@ export const PayPalMarks: FunctionComponent<PayPalMarksComponentProps> = ({
         if (isResolved === false) return;
 
         const paypalWindowNamespace = getPayPalWindowNamespace(
-            options["data-namespace"]
+            options[DATA_NAMESPACE]
         );
 
         // verify dependency on window object
@@ -108,7 +108,7 @@ export const PayPalMarks: FunctionComponent<PayPalMarksComponentProps> = ({
 
 function getErrorMessage({
     components = "",
-    "data-namespace": dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
+    [DATA_NAMESPACE]: dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
 }) {
     let errorMessage = `Unable to render <PayPalMarks /> because window.${dataNamespace}.Marks is undefined.`;
 

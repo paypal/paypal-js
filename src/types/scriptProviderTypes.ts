@@ -1,15 +1,15 @@
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
-import type { ReactElement, ReactPortal, ReactFragment } from "react";
+import type { ReactNode, Dispatch } from "react";
 import { SCRIPT_ID } from "../constants";
 import { BraintreePayPalCheckout } from "./braintree/paypalCheckout";
-import { DISPATCH_ACTION, SCRIPT_LOADING_STATE } from "./enums";
+import { SCRIPT_PROVIDER_DISPATCH_ACTION, SCRIPT_LOADING_STATE } from "./enums";
 
 export interface ReactPayPalScriptOptions extends PayPalScriptOptions {
     [SCRIPT_ID]: string;
 }
 
 export type ScriptReducerAction = {
-    type: DISPATCH_ACTION;
+    type: SCRIPT_PROVIDER_DISPATCH_ACTION;
     value:
         | SCRIPT_LOADING_STATE
         | ReactPayPalScriptOptions
@@ -26,11 +26,11 @@ export interface ScriptContextState {
     options: ReactPayPalScriptOptions;
     loadingStatus: SCRIPT_LOADING_STATE;
     braintreePayPalCheckoutInstance?: BraintreePayPalCheckout;
-    dispatch: React.Dispatch<ScriptReducerAction> | null;
+    dispatch: Dispatch<ScriptReducerAction> | null;
 }
 
 export interface StrictScriptContextState extends ScriptContextState {
-    dispatch: React.Dispatch<ScriptReducerAction>;
+    dispatch: Dispatch<ScriptReducerAction>;
 }
 
 export interface ScriptContextDerivedState {
@@ -43,8 +43,6 @@ export interface ScriptContextDerivedState {
 
 export interface ScriptProviderProps {
     options: PayPalScriptOptions;
-    children?: React.ReactNode;
+    children?: ReactNode;
     deferLoading?: boolean;
 }
-
-export type Children = ReactElement | ReactPortal | ReactFragment;

@@ -1,8 +1,15 @@
-import { useContext } from "react";
+import React, { useContext } from "react";
 
 import { ScriptContext } from "../context/scriptProviderContext";
-import { contextNotEmptyValidator } from "./contextValidator";
-import type { ScriptContextDerivedState, ScriptReducerAction } from "../types";
+import {
+    contextNotEmptyValidator,
+    contextOptionClientTokenNotEmptyValidator,
+} from "./contextValidator";
+import type {
+    ScriptContextDerivedState,
+    ScriptContextState,
+    ScriptReducerAction,
+} from "../types";
 import { SCRIPT_LOADING_STATE } from "../types";
 
 /**
@@ -28,5 +35,27 @@ export function usePayPalScriptReducer(): [
             scriptContext.loadingStatus === SCRIPT_LOADING_STATE.REJECTED,
     };
 
-    return [derivedStatusContext, scriptContext.dispatch];
+    return [
+        derivedStatusContext,
+        scriptContext.dispatch as React.Dispatch<ScriptReducerAction>,
+    ];
+}
+
+/**
+ * Custom hook to get access to the ScriptProvider context
+ *
+ * @returns the latest state of the context
+ */
+export function useScriptProviderContext(): [
+    ScriptContextState,
+    React.Dispatch<ScriptReducerAction>
+] {
+    const scriptContext = contextOptionClientTokenNotEmptyValidator(
+        contextNotEmptyValidator(useContext(ScriptContext))
+    );
+
+    return [
+        scriptContext,
+        scriptContext.dispatch as React.Dispatch<ScriptReducerAction>,
+    ];
 }

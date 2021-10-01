@@ -34,8 +34,18 @@ describe("contextNotEmptyValidator", () => {
         );
     });
 
-    test("should return same object if dispatch is a function", () => {
-        const state = { dispatch: jest.fn() };
+    test("should return an exception when dispatch is a function with empty parameters", () => {
+        expect(() => {
+            contextNotEmptyValidator({ dispatch: jest.fn() });
+        }).toThrowError(
+            new Error(
+                "usePayPalScriptReducer must be used within a PayPalScriptProvider"
+            )
+        );
+    });
+
+    test("should return same object if dispatch is a function with one parameter", () => {
+        const state = { dispatch: jest.fn((param) => param) };
         expect(contextNotEmptyValidator(state)).toEqual(state);
     });
 });

@@ -6,7 +6,7 @@ import {
     PayPalScriptProvider,
     PayPalButtons,
     usePayPalScriptReducer,
-    DISPATCH_ACTION,
+    SCRIPT_PROVIDER_DISPATCH_ACTION,
 } from "../index";
 import { getOptionsFromQueryString } from "./utils";
 
@@ -30,7 +30,7 @@ export const Currency: FunctionComponent = () => {
         function onCurrencyChange(event: ChangeEvent<HTMLSelectElement>) {
             setCurrency(event.target.value);
             dispatch({
-                type: DISPATCH_ACTION.RESET_OPTIONS,
+                type: SCRIPT_PROVIDER_DISPATCH_ACTION.RESET_OPTIONS,
                 value: {
                     ...options,
                     currency: event.target.value,
@@ -94,7 +94,7 @@ export const LoadingSpinner: FunctionComponent = () => {
                 style={{ display: "block", marginBottom: "20px" }}
                 onClick={() => {
                     dispatch({
-                        type: DISPATCH_ACTION.RESET_OPTIONS,
+                        type: SCRIPT_PROVIDER_DISPATCH_ACTION.RESET_OPTIONS,
                         value: {
                             ...options,
                             "data-order-id": Date.now().toString(),
