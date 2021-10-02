@@ -63,6 +63,7 @@
         "@storybook/react": "^6.3.8",
         "@storybook/storybook-deployer": "^2.8.10",
         "@testing-library/react": "^12.1.1",
+        "@types/jest": "^27.0.2",
         "@types/react": "^17.0.25",
         "@typescript-eslint/eslint-plugin": "^4.32.0",
         "@typescript-eslint/parser": "^4.32.0",
