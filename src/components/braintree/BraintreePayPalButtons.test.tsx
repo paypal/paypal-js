@@ -1,7 +1,14 @@
 import React from "react";
+import { mock } from "jest-mock-extended";
 import { render, waitFor } from "@testing-library/react";
-import { loadScript, loadCustomScript } from "@paypal/paypal-js";
+import {
+    loadScript,
+    loadCustomScript,
+    PayPalNamespace,
+} from "@paypal/paypal-js";
 import { ErrorBoundary } from "react-error-boundary";
+
+import { PayPalButtonsComponent } from "@paypal/paypal-js/types/components/buttons";
 
 import { BraintreePayPalButtons } from "./BraintreePayPalButtons";
 import { PayPalScriptProvider } from "../PayPalScriptProvider";
@@ -10,7 +17,8 @@ import {
     BRAINTREE_SOURCE,
     BRAINTREE_PAYPAL_CHECKOUT_SOURCE,
 } from "../../constants";
-import { FUNDING } from "@paypal/sdk-constants";
+
+import { FUNDING } from "../../index";
 
 jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),
@@ -23,16 +31,21 @@ const CLIENT_TOKEN =
 const setup = () => {
     document.body.innerHTML = "";
 
-    window.paypal = {
-        Buttons: jest.fn(() => ({
-            close: jest.fn().mockResolvedValue(),
-            isEligible: jest.fn().mockReturnValue(true),
-            render: jest.fn().mockResolvedValue({}),
-        })),
-    };
-    window.braintree = {
+    const mockPaypalButtonsComponent = mock<PayPalButtonsComponent>();
+    mockPaypalButtonsComponent.close.mockResolvedValue();
+    mockPaypalButtonsComponent.isEligible.mockReturnValue(true);
+    mockPaypalButtonsComponent.render.mockResolvedValue();
+
+    const mockPayPalNamespace = mock<PayPalNamespace>();
+    mockPayPalNamespace.Buttons = jest
+        .fn()
+        .mockReturnValue(mockPaypalButtonsComponent);
+    window.paypal = mockPayPalNamespace;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).braintree = {
         client: {
-            create: jest.fn().mockResolvedValue(),
+            create: jest.fn().mockResolvedValue({}),
         },
         paypalCheckout: {
             create: jest.fn().mockReturnValue({
@@ -43,12 +56,15 @@ const setup = () => {
         },
     };
 
-    loadScript.mockResolvedValue(window.paypal);
-    loadCustomScript.mockResolvedValue(window.braintree);
+    (loadScript as jest.Mock).mockResolvedValue(window.paypal);
+    (loadCustomScript as jest.Mock).mockResolvedValue(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).braintree
+    );
 };
 
 const onError = jest.fn();
-const wrapper = ({ children }) => (
+const wrapper = ({ children }: { children: JSX.Element }) => (
     <ErrorBoundary fallback={<div>Error</div>} onError={onError}>
         {children}
     </ErrorBoundary>
@@ -68,7 +84,7 @@ describe("Braintree PayPal button fail in mount process", () => {
         try {
             render(<BraintreePayPalButtons />);
         } catch (ex) {
-            errorMessage = ex.message;
+            errorMessage = (ex as Error).message;
         }
         expect(errorMessage).toEqual(
             "usePayPalScriptReducer must be used within a PayPalScriptProvider"
@@ -82,12 +98,13 @@ describe("Braintree PayPal button fail in mount process", () => {
 
         try {
             render(
+                // @ts-expect-error this test case validates that the options property is required
                 <PayPalScriptProvider>
                     <BraintreePayPalButtons />
                 </PayPalScriptProvider>
             );
         } catch (ex) {
-            errorMessage = ex.message;
+            errorMessage = (ex as Error).message;
         }
         expect(errorMessage).toEqual(
             "A client token wasn't found in the provider parent component"
@@ -106,7 +123,7 @@ describe("Braintree PayPal button fail in mount process", () => {
                 </PayPalScriptProvider>
             );
         } catch (ex) {
-            errorMessage = ex.message;
+            errorMessage = (ex as Error).message;
         }
         expect(errorMessage).toEqual(
             EMPTY_PROVIDER_CONTEXT_CLIENT_TOKEN_ERROR_MESSAGE
@@ -130,7 +147,7 @@ describe("Braintree PayPal button fail in mount process", () => {
                 </PayPalScriptProvider>
             );
         } catch (ex) {
-            errorMessage = ex.message;
+            errorMessage = (ex as Error).message;
         }
 
         expect(errorMessage).toEqual(
@@ -140,11 +157,11 @@ describe("Braintree PayPal button fail in mount process", () => {
     });
 
     test("should fail rendering the BraintreePayPalButton component if cannot load braintree scripts", async () => {
-        let errorMessage = null;
+        let errorMessage: string | null = null;
         console.error = jest.fn();
 
         try {
-            loadCustomScript.mockImplementationOnce(() => {
+            (loadCustomScript as jest.Mock).mockImplementationOnce(() => {
                 throw new Error("Network error");
             });
 
@@ -159,7 +176,7 @@ describe("Braintree PayPal button fail in mount process", () => {
                 </PayPalScriptProvider>
             );
         } catch (ex) {
-            errorMessage = ex.message;
+            errorMessage = (ex as Error).message;
         }
 
         await waitFor(() => {
@@ -172,7 +189,9 @@ describe("Braintree PayPal button fail in mount process", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
-        loadCustomScript.mockRejectedValue(new Error("Server Error"));
+        (loadCustomScript as jest.Mock).mockRejectedValue(
+            new Error("Server Error")
+        );
 
         render(
             <PayPalScriptProvider
@@ -200,7 +219,8 @@ describe("Braintree PayPal button fail in mount process", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
-        window.braintree.client.create = jest
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).braintree.client.create = jest
             .fn()
             .mockRejectedValue(new Error("Cannot create the Braintree client"));
 
@@ -230,7 +250,8 @@ describe("Braintree PayPal button fail in mount process", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
-        window.braintree = null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as any).braintree = null;
 
         render(
             <PayPalScriptProvider
@@ -300,14 +321,16 @@ describe("render Braintree PayPal button component", () => {
                 <BraintreePayPalButtons
                     style={{ layout: "horizontal" }}
                     fundingSource={FUNDING.CREDIT}
-                    createOrder={() => null}
-                    onApprove={() => null}
+                    createOrder={jest.fn()}
+                    onApprove={jest.fn()}
                 />
             </PayPalScriptProvider>
         );
 
         await waitFor(() => {
-            expect(window.paypal.Buttons).toBeCalledWith({
+            const mockButtons = (window.paypal &&
+                window.paypal.Buttons) as jest.Mock;
+            expect(mockButtons).toBeCalledWith({
                 style: { layout: "horizontal" },
                 fundingSource: FUNDING.CREDIT,
                 createOrder: expect.any(Function),
