@@ -5,30 +5,37 @@ import { PayPalHostedFieldsContext } from "../../context/payPalHostedFieldsConte
 import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
 import { DATA_NAMESPACE } from "../../constants";
 import {
-    decorateHostedFields,
     generateHostedFieldsFromChildren,
+    throwMissingHostedFieldsError,
 } from "./utils";
 import { validateHostedFieldChildren } from "./validators";
 import { SCRIPT_LOADING_STATE } from "../../types/enums";
+import { getPayPalWindowNamespace } from "../../utils";
 import type { PayPalHostedFieldsComponentProps } from "../../types/payPalHostedFieldTypes";
-import type { HostedFieldsHandler } from "@paypal/paypal-js/types/components/hosted-fields";
+import type {
+    PayPalHostedFieldsComponent,
+    HostedFieldsHandler,
+} from "@paypal/paypal-js/types/components/hosted-fields";
 
 /**
- * TODO: Finish the documentation similar to PayPalButtons
- *
- * @param param0
- * @returns
- */
+This `<PayPalHostedFieldsProvider />` provider component wraps the form field elements and accepts props like `createOrder()`.
+
+This provider component is designed to be used with the `<PayPalHostedField />` component.
+*/
 export const PayPalHostedFieldsProvider: FC<PayPalHostedFieldsComponentProps> =
-    ({ styles, createOrder, children }) => {
+    ({ styles, createOrder, notEligibleError, children }) => {
         const childrenList = Children.toArray(children);
         const [{ options, loadingStatus }] = useScriptProviderContext();
+        const [isEligible, setIsEligible] = useState(true);
         const [cardFields, setCardFields] =
             useState<HostedFieldsHandler | null>(null);
-        const [isEligible, setIsEligible] = useState(true);
         const hostedFieldsContainerRef = useRef<HTMLDivElement>(null);
+        const hostedFields = useRef<PayPalHostedFieldsComponent>();
         const [, setErrorState] = useState(null);
 
+        /**
+         * Executed on the mount process to validate the children
+         */
         useEffect(() => {
             validateHostedFieldChildren(childrenList);
         }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -36,24 +43,37 @@ export const PayPalHostedFieldsProvider: FC<PayPalHostedFieldsComponentProps> =
         useEffect(() => {
             // Only render the hosted fields when script is loaded and hostedFields is eligible
             if (!(loadingStatus === SCRIPT_LOADING_STATE.RESOLVED)) return;
-            const hostedFields = decorateHostedFields({
-                components: options.components,
-                [DATA_NAMESPACE]: options[DATA_NAMESPACE],
-            });
+            // Get the hosted fields from the [window.paypal.HostedFields] SDK
+            if (!hostedFields.current) {
+                // Set HostedFields SDK in the mount process only
+                hostedFields.current = getPayPalWindowNamespace(
+                    options[DATA_NAMESPACE]
+                ).HostedFields;
 
-            if (!hostedFields.isEligible()) {
+                if (!hostedFields.current) {
+                    throwMissingHostedFieldsError({
+                        components: options.components,
+                        [DATA_NAMESPACE]: options[DATA_NAMESPACE],
+                    });
+                }
+            }
+            if (!hostedFields?.current?.isEligible()) {
                 return setIsEligible(false);
             }
+            // Clean all the fields before the rerender
+            if (cardFields) {
+                cardFields.teardown();
+            }
 
-            hostedFields
+            hostedFields.current
                 .render({
                     // Call your server to set up the transaction
                     createOrder: createOrder,
                     styles: styles,
                     fields: generateHostedFieldsFromChildren(childrenList),
                 })
-                .then((cardFields) => {
-                    setCardFields(cardFields);
+                .then((cardFieldsInstance) => {
+                    setCardFields(cardFieldsInstance);
                 })
                 .catch((err) => {
                     setErrorState(() => {
@@ -66,10 +86,12 @@ export const PayPalHostedFieldsProvider: FC<PayPalHostedFieldsComponentProps> =
 
         return (
             <div ref={hostedFieldsContainerRef}>
-                {isEligible && (
+                {isEligible ? (
                     <PayPalHostedFieldsContext.Provider value={cardFields}>
                         {children}
                     </PayPalHostedFieldsContext.Provider>
+                ) : (
+                    notEligibleError
                 )}
             </div>
         );

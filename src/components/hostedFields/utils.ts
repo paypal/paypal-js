@@ -1,5 +1,4 @@
 import { DEFAULT_PAYPAL_NAMESPACE, DATA_NAMESPACE } from "../../constants";
-import { getPayPalWindowNamespace } from "../../utils";
 
 import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types";
 import type {
@@ -9,10 +8,8 @@ import type {
     ReactElement,
     FC,
 } from "react";
-import type { PayPalHostedFieldsComponent } from "@paypal/paypal-js/types/components/hosted-fields";
 import type {
     PayPalHostedFieldsNamespace,
-    DecoratedPayPalHostedFieldsComponent,
     PayPalHostedFieldProps,
     PayPalHostedFieldOptions,
 } from "../../types/payPalHostedFieldTypes";
@@ -46,33 +43,6 @@ export const throwMissingHostedFieldsError = ({
     }
 
     throw new Error(errorMessage);
-};
-
-/**
- * Decorate the HostedFields object in the window with a close custom method
- *
- * @param options scriptProvider options to get the HostedFields dependency
- * @returns the modified HostedFields object
- */
-export const decorateHostedFields = (
-    options: PayPalHostedFieldsNamespace
-): DecoratedPayPalHostedFieldsComponent => {
-    const hostedFields = getPayPalWindowNamespace(
-        options[DATA_NAMESPACE]
-    ).HostedFields;
-    // check if the hosted fields are available in PayPal namespace
-    if (hostedFields == null) throwMissingHostedFieldsError(options);
-
-    return {
-        ...(hostedFields as PayPalHostedFieldsComponent),
-        close(container) {
-            if (container) {
-                container.querySelectorAll("*").forEach((element) => {
-                    element.remove();
-                });
-            }
-        },
-    };
 };
 
 /**

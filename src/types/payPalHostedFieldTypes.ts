@@ -1,6 +1,4 @@
-import type { PayPalHostedFieldsComponent } from "@paypal/paypal-js/types/components/hosted-fields";
-import type { ReactNode } from "react";
-
+import type { ReactNode, HTMLAttributes } from "react";
 import { PAYPAL_HOSTED_FIELDS_TYPES } from "./enums";
 
 export type PayPalHostedFieldsNamespace = {
@@ -19,6 +17,7 @@ export type PayPalHostedFieldOptions = {
     formatInput?: boolean;
     // Enable or disable input masking when input is not focused. If set to `true` instead of an object, the defaults for the `maskInput` parameters will be used
     maskInput?: boolean | { character: string };
+    // If truthy, this field becomes a `<select>` dropdown list. This can only be used for `expirationMonth` and `expirationYear` fields. If you do not use a `placeholder` property for the field, the current month/year will be the default selected value.
     select?: boolean | { options: (string | number)[] };
     // This option applies only to the CVV and postal code fields. Will be used as the `maxlength` attribute of the input if it is less than the default.
     // The primary use cases for the `maxlength` option are: limiting the length of the CVV input for CVV-only verifications when the card type is known and limiting the length of the postal code input when cards are coming from a known region.
@@ -32,19 +31,18 @@ export type PayPalHostedFieldOptions = {
     rejectUnsupportedCards?: boolean;
 };
 
-export interface DecoratedPayPalHostedFieldsComponent
-    extends PayPalHostedFieldsComponent {
-    close(container: HTMLDivElement | null): void;
-}
-
-export type PayPalHostedFieldProps = Record<
-    string,
-    PayPalHostedFieldOptions | string
-> & {
+export interface PayPalHostedFieldProps extends HTMLAttributes<HTMLDivElement> {
+    /**
+     * Represent the hosted field type: [NUMBER, CVV, EXPIRATION_DATE, EXPIRATION_MONTH, EXPIRATION_YEAR, POSTAL_CODE]
+     */
     hostedFieldType: PAYPAL_HOSTED_FIELDS_TYPES;
+    /**
+     * Options to modify the hosted field input. You can set a placeholder text,
+     * a prefill value or set the maximum length of a field.
+     * Check available options in the this type:
+     */
     options: PayPalHostedFieldOptions;
-};
-
+}
 export interface PayPalHostedFieldsBillingAddressProps {
     show: boolean;
     firstName?: { show: boolean; label: string; placeholder: string };
@@ -81,7 +79,28 @@ export interface PayPalHostedFieldsBillingAddress {
 }
 
 export interface PayPalHostedFieldsComponentProps {
+    /**
+     * Function to manually create the transaction from your server
+     */
     createOrder: () => Promise<string>;
     children: ReactNode;
+    /**
+     * Custom styles for hosted fields.
+     *
+     * ```
+     *   {
+     *     ".number": {
+     *       "fontFamily": "monospace"
+     *     },
+     *     ".valid": {
+     *       "color": "green"
+     *     }
+     *   }
+     * ```
+     */
     styles?: Record<string, unknown>;
+    /**
+     * Useful to render a custom error component in the case the client is ineligible
+     */
+    notEligibleError?: ReactNode;
 }

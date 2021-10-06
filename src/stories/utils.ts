@@ -1,8 +1,13 @@
 import { SDK_QUERY_KEYS } from "@paypal/sdk-constants/dist/module";
 
-const CLIENT_TOKEN_URL =
-    "https://braintree-sdk-demo.herokuapp.com/api/braintree/auth";
-const SALE_URL = "https://braintree-sdk-demo.herokuapp.com/api/braintree/sale";
+// FIXME: problem with union on key
+type TokenResponse = {
+    [key in "clientToken" | "client_token"]: string;
+} & { success?: boolean };
+
+export const HEROKU_SERVER = "https://braintree-sdk-demo.herokuapp.com";
+const CLIENT_TOKEN_URL = `${HEROKU_SERVER}/api/braintree/auth`;
+const SALE_URL = `${HEROKU_SERVER}/api/braintree/sale`;
 const allowedSDKQueryParams = Object.keys(SDK_QUERY_KEYS).map(
     (key) => SDK_QUERY_KEYS[key]
 );
@@ -23,12 +28,10 @@ export function getOptionsFromQueryString(): Record<string, string> {
     return validOptions;
 }
 
-export async function getClientToken(): Promise<string> {
-    const response: { clientToken: string; success: boolean } = await (
-        await fetch(CLIENT_TOKEN_URL)
-    ).json();
+export async function getClientToken(url = CLIENT_TOKEN_URL): Promise<string> {
+    const response: TokenResponse = await (await fetch(url)).json();
 
-    return response?.clientToken;
+    return response?.client_token || response?.clientToken;
 }
 
 export async function approveSale(

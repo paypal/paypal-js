@@ -3,7 +3,6 @@ import React from "react";
 import { PayPalHostedField } from "./PayPalHostedField";
 import {
     throwMissingHostedFieldsError,
-    decorateHostedFields,
     generateHostedFieldsFromChildren,
 } from "./utils";
 import { DATA_NAMESPACE } from "../../constants";
@@ -41,74 +40,6 @@ describe("throwMissingHostedFieldsError", () => {
                 "Unable to render <PayPalHostedFieldsProvider /> because window.paypal.HostedFields is undefined."
             )
         );
-    });
-});
-
-describe("decorateHostedFields", () => {
-    test("should throw exception when HostedFields is unavailable", () => {
-        window.paypal = {};
-
-        expect(() => {
-            decorateHostedFields({});
-        }).toThrow(new Error(exceptionMessagePayPalNamespace));
-    });
-
-    test("should decorate the HostedFields when is available in window", () => {
-        window.paypal = {
-            HostedFields: {},
-        };
-        const decoratedHostedFields = decorateHostedFields({});
-
-        expect(decoratedHostedFields).toHaveProperty("close");
-    });
-
-    test("should decorated close function remove all the children", () => {
-        window.paypal = {
-            HostedFields: {},
-        };
-        const decoratedHostedFields = decorateHostedFields({});
-
-        expect(decoratedHostedFields).toHaveProperty("close");
-    });
-
-    test("should remove hosted fields container", () => {
-        window.paypal = {
-            HostedFields: {},
-        };
-        // Define a hosted fields container
-        const divIdentifier = "test-hosted-field";
-        const divElement = document.createElement("div");
-        divElement.setAttribute("id", divIdentifier);
-        document.body.appendChild(divElement);
-        // Define a car number element inside the container
-        const cardNumberIdentifier = "test-hosted-field-card_number";
-        const cardNumberInput = document.createElement("input");
-
-        cardNumberInput.setAttribute("id", cardNumberIdentifier);
-        divElement.appendChild(cardNumberInput);
-        const decoratedHostedFields = decorateHostedFields({});
-
-        expect(
-            document.querySelector(`#${divIdentifier}`) instanceof
-                HTMLDivElement
-        ).toBeTruthy();
-        expect(
-            document.querySelector(`#${cardNumberIdentifier}`) instanceof
-                HTMLInputElement
-        ).toBeTruthy();
-
-        // Shouldn't remove anything if argument is null|undefined
-        decoratedHostedFields.close();
-        expect(
-            document.querySelector(`#${cardNumberIdentifier}`) instanceof
-                HTMLInputElement
-        ).toBeTruthy();
-        // Should remove children inside the container pass as argument
-        decoratedHostedFields.close(divElement);
-        expect(
-            document.querySelector(`#${cardNumberIdentifier}`) instanceof
-                HTMLInputElement
-        ).toBeFalsy();
     });
 });
 

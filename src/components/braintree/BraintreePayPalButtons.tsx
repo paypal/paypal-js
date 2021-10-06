@@ -40,7 +40,7 @@ Use props for customizing your buttons. For example, here's how you would use th
                         // call server-side endpoint to finish the sale
                     })
             }
-        />;
+        />
     </PayPalScriptProvider>
 ```
 
