@@ -17,6 +17,7 @@
     "types": "dist/types/index.d.ts",
     "scripts": {
         "build": "rollup --config",
+        "check-node-version": "node scripts/check-node-version.js",
         "format": "prettier --write .",
         "lint": "eslint .",
         "postinstall": "husky install",
@@ -24,14 +25,14 @@
         "prepublishOnly": "pinst --disable",
         "postpublish": "pinst --enable",
         "test": "jest --env=jsdom",
-        "start": "npm run storybook",
+        "start": "npm run check-node-version && npm run storybook",
         "storybook": "start-storybook -p 6006",
         "build-storybook": "build-storybook",
         "deploy-storybook": "storybook-to-ghpages",
         "release": "node ./scripts/publish",
         "typecheck": "tsc --noEmit",
         "type-declarations": "tsc --emitDeclarationOnly --outDir dist/types --project tsconfig.declarations.json",
-        "validate": "npm run typecheck && npm run build && npm run lint && npm test -- --coverage"
+        "validate": "npm run check-node-version && npm run typecheck && npm run build && npm run lint && npm test -- --coverage"
     },
     "files": [
         "dist"
@@ -70,6 +71,8 @@
         "@typescript-eslint/parser": "^4.32.0",
         "babel-jest": "^27.2.4",
         "babel-loader": "^8.2.2",
+        "chalk": "^4.1.2",
+        "check-node-version": "^4.1.0",
         "eslint": "^7.32.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-react": "^7.26.0",
