@@ -2,6 +2,8 @@ import {
     contextNotEmptyValidator,
     contextOptionClientTokenNotEmptyValidator,
 } from "./contextValidator";
+import { SCRIPT_LOADING_STATE } from "../types/enums";
+import { SCRIPT_ID } from "../constants";
 
 describe("contextNotEmptyValidator", () => {
     test("should throw an exception when called with no args", () => {
@@ -16,7 +18,8 @@ describe("contextNotEmptyValidator", () => {
 
     test("should throw an exception when called with an empty object", () => {
         expect(() => {
-            contextNotEmptyValidator({} as never);
+            // @ts-expect-error - improper context test
+            contextNotEmptyValidator({});
         }).toThrowError(
             new Error(
                 "usePayPalScriptReducer must be used within a PayPalScriptProvider"
@@ -26,7 +29,8 @@ describe("contextNotEmptyValidator", () => {
 
     test("should throw an exception when the dispatch function is invalid", () => {
         expect(() => {
-            contextNotEmptyValidator({ dispatch: 10 } as never);
+            // @ts-expect-error - improper dispatch test
+            contextNotEmptyValidator({ dispatch: 10 });
         }).toThrowError(
             new Error(
                 "usePayPalScriptReducer must be used within a PayPalScriptProvider"
@@ -36,7 +40,8 @@ describe("contextNotEmptyValidator", () => {
 
     test("should return an exception when dispatch is a function with empty parameters", () => {
         expect(() => {
-            contextNotEmptyValidator({ dispatch: jest.fn() } as never);
+            // @ts-expect-error - improper dispatch test
+            contextNotEmptyValidator({ dispatch: jest.fn() });
         }).toThrowError(
             new Error(
                 "usePayPalScriptReducer must be used within a PayPalScriptProvider"
@@ -46,24 +51,16 @@ describe("contextNotEmptyValidator", () => {
 
     test("should return same object if dispatch is a function with one parameter", () => {
         const state = { dispatch: jest.fn((param) => param) };
-        expect(contextNotEmptyValidator(state as never)).toEqual(state);
+        // @ts-expect-error - improper dispatch test
+        expect(contextNotEmptyValidator(state)).toEqual(state);
     });
 });
 
 describe("contextOptionClientTokenNotEmptyValidator", () => {
+    const state = null;
     test("should throw an exception when called with no args", () => {
         expect(() => {
-            contextOptionClientTokenNotEmptyValidator(null);
-        }).toThrowError(
-            new Error(
-                "A client token wasn't found in the provider parent component"
-            )
-        );
-    });
-
-    test("should throw an exception when called with an empty object", () => {
-        expect(() => {
-            contextOptionClientTokenNotEmptyValidator({} as never);
+            contextOptionClientTokenNotEmptyValidator(state);
         }).toThrowError(
             new Error(
                 "A client token wasn't found in the provider parent component"
@@ -72,10 +69,17 @@ describe("contextOptionClientTokenNotEmptyValidator", () => {
     });
 
     test("should throw an exception when data-client-token is null", () => {
+        const state = {
+            options: {
+                "data-client-token": null,
+                [SCRIPT_ID]: "id",
+                "client-id": "123",
+            },
+            loadingStatus: SCRIPT_LOADING_STATE.RESOLVED,
+        };
         expect(() => {
-            contextOptionClientTokenNotEmptyValidator({
-                options: { "data-client-token": null },
-            } as never);
+            // @ts-expect-error - data-client-token of null not expected in types
+            contextOptionClientTokenNotEmptyValidator(state);
         }).toThrowError(
             new Error(
                 "A client token wasn't found in the provider parent component"
@@ -84,10 +88,16 @@ describe("contextOptionClientTokenNotEmptyValidator", () => {
     });
 
     test("should throw an exception when data-client-token is an empty string", () => {
+        const state = {
+            options: {
+                "data-client-token": "",
+                [SCRIPT_ID]: "id",
+                "client-id": "123",
+            },
+            loadingStatus: SCRIPT_LOADING_STATE.RESOLVED,
+        };
         expect(() => {
-            contextOptionClientTokenNotEmptyValidator({
-                options: { "data-client-token": "" },
-            } as never);
+            contextOptionClientTokenNotEmptyValidator(state);
         }).toThrowError(
             new Error(
                 "A client token wasn't found in the provider parent component"
@@ -96,9 +106,14 @@ describe("contextOptionClientTokenNotEmptyValidator", () => {
     });
 
     test("should return object if data client token is a valid string", () => {
-        const state = { options: { "data-client-token": "JKHFGDHJ657" } };
-        expect(
-            contextOptionClientTokenNotEmptyValidator(state as never)
-        ).toEqual(state);
+        const state = {
+            options: {
+                "data-client-token": "JKHFGDHJ657",
+                [SCRIPT_ID]: "id",
+                "client-id": "123",
+            },
+            loadingStatus: SCRIPT_LOADING_STATE.RESOLVED,
+        };
+        expect(contextOptionClientTokenNotEmptyValidator(state)).toEqual(state);
     });
 });
