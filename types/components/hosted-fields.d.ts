@@ -2,6 +2,45 @@ import type { CreateOrderRequestBody } from "../apis/orders";
 
 type UnknownObject = Record<string, unknown>;
 
+type HostedFieldsCardTypes = {
+    [key in
+        | "amex"
+        | "discover"
+        | "elo"
+        | "hiper"
+        | "jcb"
+        | "mastercard"
+        | "visa"]: { eligible: boolean; valuable: boolean };
+};
+
+type HostedFieldsCardState = {
+    fields: {
+        [key in
+            | "number"
+            | "cvv"
+            | "expirationDate"
+            | "expirationMonth"
+            | "expirationYear"
+            | "postalCode"]?: {
+            container: HTMLElement;
+            isEmpty: boolean;
+            isFocused: boolean;
+            isPotentiallyValid: boolean;
+            isValid: boolean;
+        };
+    };
+    cards: {
+        type: string;
+        niceType: string;
+        lengths: number[];
+        gaps: number[];
+        code: {
+            name: string;
+            size: number;
+        };
+    }[];
+};
+
 type HostedFieldsTokenize = {
     vault?: boolean;
     authenticationInsight?: unknown;
@@ -20,35 +59,8 @@ type HostedFieldsTokenize = {
         countryCodeAlpha2?: string;
         countryCodeAlpha3?: string;
         countryName?: string;
-    }
-}
-
-type HostedFieldsCardTypes = {
- [key in "amex" | "discover" | "elo" | "hiper" | "jcb" | "mastercard" | "visa"]:
-    { eligible: boolean, valuable: boolean };
-}
-
-type HostedFieldsCardState = {
-    fields: {
-        [key in "number" | "cvv" | "expirationDate" | "expirationMonth" | "expirationYear" | "postalCode"]?: {
-            container: HTMLElement;
-            isEmpty: boolean;
-            isFocused: boolean;
-            isPotentiallyValid: boolean;
-            isValid: boolean;
-        }
-    },
-    cards: {
-        type: string;
-        niceType: string;
-        lengths: number[];
-        gaps: number[];
-        code: {
-            name: string;
-            size: number;
-        }
-    }[]
-}
+    };
+};
 
 export type CreateOrderActions = {
     order: {
@@ -74,8 +86,8 @@ export interface HostedFieldsSubmitResponse {
         card_type: string;
         last_digits: string;
         type: string;
-    }
-}  
+    };
+}
 
 export interface HostedFieldsHandler {
     /**
@@ -102,14 +114,14 @@ export interface HostedFieldsHandler {
      * Removes a supported attribute from a field.
      */
     removeAttribute: (options: {
-        field: string,
+        field: string;
         attribute: string;
     }) => Promise<void>;
     /**
      * Removes a class to a field. Useful for updating field styles when events occur elsewhere in your checkout.
      */
     removeClass: (options: {
-        field: string,
+        field: string;
         className: string;
     }) => Promise<void>;
     /**
@@ -124,10 +136,7 @@ export interface HostedFieldsHandler {
     /**
      * Sets a visually hidden message (for screen readers) on a field.
      */
-    setMessage: (options: {
-        field: string;
-        attribute: string;
-    }) => void;
+    setMessage: (options: { field: string; attribute: string }) => void;
     /**
      * Sets the month options for the expiration month field when presented as a select element.
      */
@@ -147,7 +156,9 @@ export interface HostedFieldsHandler {
     /**
      * Tokenize fields and returns a nonce payload.
      */
-    tokenize: (options: HostedFieldsTokenize) => Promise<Record<string, unknown>>;
+    tokenize: (
+        options: HostedFieldsTokenize
+    ) => Promise<Record<string, unknown>>;
 }
 
 export interface PayPalHostedFieldsComponent {
