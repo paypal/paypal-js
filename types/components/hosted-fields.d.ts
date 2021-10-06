@@ -47,7 +47,7 @@ type HostedFieldsCardState = {
             name: string;
             size: number;
         }
-    }
+    }[]
 }
 
 export type CreateOrderActions = {
