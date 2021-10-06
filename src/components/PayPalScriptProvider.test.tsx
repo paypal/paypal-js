@@ -8,6 +8,7 @@ import {
     DATA_SDK_INTEGRATION_SOURCE,
     DATA_SDK_INTEGRATION_SOURCE_VALUE,
 } from "../constants";
+import { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 
 jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),
@@ -16,6 +17,9 @@ jest.mock("@paypal/paypal-js", () => ({
 function loadScriptMockImplementation({
     "client-id": clientID,
     [SCRIPT_ID]: reactPayPalScriptID,
+}: {
+    "client-id": string;
+    [SCRIPT_ID]: string;
 }) {
     const newScript = document.createElement("script");
     newScript.src = `https://www.paypal.com/sdk/js?client-id=${clientID}`;
@@ -28,7 +32,9 @@ function loadScriptMockImplementation({
 describe("<PayPalScriptProvider />", () => {
     beforeEach(() => {
         document.head.innerHTML = "";
-        loadScript.mockImplementation(loadScriptMockImplementation);
+        (loadScript as jest.Mock).mockImplementation(
+            loadScriptMockImplementation
+        );
     });
 
     afterEach(() => {
@@ -56,7 +62,7 @@ describe("<PayPalScriptProvider />", () => {
     });
 
     test('should set "isRejected" state to "true" after failing to load the script', async () => {
-        loadScript.mockRejectedValue(new Error());
+        (loadScript as jest.Mock).mockRejectedValue(new Error());
         const { state, TestComponent } = setupTestComponent();
         render(
             <PayPalScriptProvider options={{ "client-id": "test" }}>
@@ -77,7 +83,7 @@ describe("<PayPalScriptProvider />", () => {
     });
 
     test("shouldn't set isRejected state to true after failing to load the script, because the component was unmount", async () => {
-        loadScript.mockRejectedValue(new Error());
+        (loadScript as jest.Mock).mockRejectedValue(new Error());
         const { state, TestComponent } = setupTestComponent();
         const { unmount } = render(
             <PayPalScriptProvider options={{ "client-id": "test" }}>
@@ -156,8 +162,8 @@ describe("<PayPalScriptProvider />", () => {
 
         await waitFor(() => expect(state.isResolved).toBeTruthy());
 
-        const firstLoadScriptCall = loadScript.mock.calls[0][0];
-        const secondLoadScriptCall = loadScript.mock.calls[1][0];
+        const firstLoadScriptCall = (loadScript as jest.Mock).mock.calls[0][0];
+        const secondLoadScriptCall = (loadScript as jest.Mock).mock.calls[1][0];
 
         expect(firstLoadScriptCall).toEqual(secondLoadScriptCall);
     });
@@ -166,7 +172,9 @@ describe("<PayPalScriptProvider />", () => {
 describe("usePayPalScriptReducer", () => {
     beforeEach(() => {
         document.head.innerHTML = "";
-        loadScript.mockImplementation(loadScriptMockImplementation);
+        (loadScript as jest.Mock).mockImplementation(
+            loadScriptMockImplementation
+        );
     });
 
     afterEach(() => {
@@ -189,7 +197,7 @@ describe("usePayPalScriptReducer", () => {
     test("should throw an error when used without <PayPalScriptProvider>", () => {
         const { TestComponent } = setupTestComponent();
         const spyConsoleError = jest.spyOn(console, "error");
-        console.error.mockImplementation(() => {
+        (console.error as jest.Mock).mockImplementation(() => {
             // do nothing
         });
 
@@ -235,8 +243,18 @@ describe("usePayPalScriptReducer", () => {
 });
 
 function setupTestComponent() {
-    const state = {};
-    function TestComponent({ children = null }) {
+    const state = {
+        options: { "data-react-paypal-script-id": "" },
+        isInitial: true,
+        isPending: false,
+        isResolved: false,
+        isRejected: false,
+    };
+    function TestComponent({
+        children = null,
+    }: {
+        children?: JSX.Element | null;
+    }) {
         const [scriptState] = usePayPalScriptReducer();
         Object.assign(state, scriptState);
         return children;
@@ -248,11 +266,18 @@ function setupTestComponent() {
     };
 }
 
-function ResetParamsOnClick({ options }) {
+function ResetParamsOnClick({
+    options,
+}: {
+    options: PayPalScriptOptions;
+}): JSX.Element {
     const [, dispatch] = usePayPalScriptReducer();
 
     function onClick() {
-        dispatch({ type: "resetOptions", value: options });
+        dispatch({
+            type: "resetOptions",
+            value: options as PayPalScriptOptions,
+        });
     }
 
     return <button onClick={onClick}>Reload button</button>;
