@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.1.0](https://github.com/paypal/paypal-js/compare/v4.0.12...v4.1.0) (2021-10-06)
+
+### Features
+
+-   **types:** enhance the hostedFields type ([#124](https://github.com/paypal/paypal-js/issues/124)) ([9f3a025](https://github.com/paypal/paypal-js/commit/9f3a025edde9eeb35c88e7859d2c7f6836baccd1))
+
 ### [4.0.12](https://github.com/paypal/paypal-js/compare/v4.0.11...v4.0.12) (2021-09-29)
 
 ### [4.0.11](https://github.com/paypal/paypal-js/compare/v4.0.10...v4.0.11) (2021-09-10)
