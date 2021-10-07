@@ -1,0 +1,87 @@
+name: 🐞 Bug report
+description: Report a bug with react-paypal-js.
+title: "[BUG]: "
+body:
+- type: markdown
+  attributes:
+    value: |
+      Thanks for taking the time to fill out this bug report!
+- type: checkboxes
+  attributes:
+    label: Is there an existing issue for this?
+    description: Please search to see if an issue already exists for the bug you encountered.
+    options:
+    - label: I have searched the existing issues.
+      required: true
+- type: textarea
+  attributes:
+    label: 🐞 Describe the Bug
+    description: |
+      A clear and concise description of what the bug is.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: 😕 Current Behavior
+    description: |
+      A clear and concise description of what is happening. Please include console logs during the time of the issue, especially error messages.
+    placeholder: |
+      When I do <X>, <Y> happens and I see the error message attached below:
+      ```...```
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: 🤔 Expected Behavior
+    description: A clear and concise description of what you expected to happen.
+    placeholder: When I do <X>, <Z> should happen instead.
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: 🔬 Minimal Reproduction
+    description: Describe steps to reproduce. If possible, please, share a link with a minimal reproduction.
+    placeholder: |
+      1. Go to '...'
+      2. Click on '....'
+      3. Scroll down to '....'
+      4. See error
+    render: markdown
+  validations:
+    required: false
+- type: textarea
+  attributes:
+    label: 🌍 Environment
+    description: |
+      Provide version numbers for the following components:
+    value: |
+        | Software         | Version(s) |
+        | ---------------- | ---------- |
+        | react-paypal-js  |            |
+        | Browser          |            |
+        | Operating System |            |
+    render: markdown
+  validations:
+    required: false
+- type: textarea
+  id: logs
+  attributes:
+    label: Relevant log output
+    description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+    render: shell
+- type: checkboxes
+  id: terms
+  attributes:
+    label: Code of Conduct
+    description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/NativeScript/NativeScript/blob/master/tools/notes/CONTRIBUTING.md#coc)
+    options:
+    - label: I agree to follow this project's Code of Conduct
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: ➕ Anything else?
+    description: |
+      Links? References? Anything that will give us more context about the issue you are encountering!
+  validations:
+    required: false
