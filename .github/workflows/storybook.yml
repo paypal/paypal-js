@@ -11,13 +11,25 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - name: Checkout
+            - name: ⬇️ Checkout repo
               uses: actions/checkout@v2
+              with:
+                  fetch-depth: 0
 
-            - name: Install dependencies
-              run: npm install
+            - name: 🤝 Set Node version from .nvmrc
+              run: echo NVMRC=`cat .nvmrc` >> $GITHUB_ENV
 
-            - name: Deploy Storybook
+            - name: ⎔ Setup node
+              uses: actions/setup-node@v2
+              with:
+                  node-version: ${{ env.NVMRC }}
+
+            - name: 📥 Download deps
+              uses: bahmutov/npm-install@v1
+              with:
+                  useLockFile: false
+
+            - name: ▶️ Deploy Storybook
               run: npm run deploy-storybook -- --ci
               env:
                   GH_TOKEN: ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}
