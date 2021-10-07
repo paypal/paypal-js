@@ -8,6 +8,6 @@ module.exports = {
         `prettier --write ${filenames.join(" ")}`,
         `eslint ${filenames.join(" ")}`,
     ],
-    "**/*.{json,css,html,md}": (filenames) =>
+    "**/*.{json,css,html,md,yml}": (filenames) =>
         `prettier --write ${filenames.join(" ")}`,
 };
