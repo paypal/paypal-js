@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.4.0](https://github.com/paypal/react-paypal-js/compare/v7.3.3...v7.4.0) (2021-10-08)
+
+### Features
+
+-   **hosted-fields:** add support for hosted-fields ([#160](https://github.com/paypal/react-paypal-js/issues/160)) ([e025d9a](https://github.com/paypal/react-paypal-js/commit/e025d9a1b45d43ad4b79e419188d59907b3cf1b8))
+-   update Marks to support the children prop ([#155](https://github.com/paypal/react-paypal-js/issues/155)) ([6aebf98](https://github.com/paypal/react-paypal-js/commit/6aebf98b2592ed7ac68d6b232ab2fa4121dd114e))
+
+### Bug Fixes
+
+-   **types:** standardize types for children ([#157](https://github.com/paypal/react-paypal-js/issues/157)) ([cc956be](https://github.com/paypal/react-paypal-js/commit/cc956beb1323a7516e30174b7d7fd20c9cd60e13))
+-   update Marks to rerender when fundingSource changes ([#154](https://github.com/paypal/react-paypal-js/issues/154)) ([f7b4a25](https://github.com/paypal/react-paypal-js/commit/f7b4a251b01e7777948fda846fe0b55d348ec60a))
+
 ### [7.3.3](https://github.com/paypal/react-paypal-js/compare/v7.3.2...v7.3.3) (2021-08-31)
 
 ### Bug Fixes
