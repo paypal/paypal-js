@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.4.1](https://github.com/paypal/react-paypal-js/compare/v7.4.0...v7.4.1) (2021-10-09)
+
+### Bug Fixes
+
+-   **types:** rename back to DISPATCH_ACTION ([#192](https://github.com/paypal/react-paypal-js/issues/192)) ([2b8f14a](https://github.com/paypal/react-paypal-js/commit/2b8f14ad41a6be3f461fe73b9661c92bd012df2a))
+
 ## [7.4.0](https://github.com/paypal/react-paypal-js/compare/v7.3.3...v7.4.0) (2021-10-08)
 
 ### Features

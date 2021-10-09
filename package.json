@@ -1,6 +1,6 @@
 {
     "name": "@paypal/react-paypal-js",
-    "version": "7.4.0",
+    "version": "7.4.1",
     "description": "React components for the PayPal JS SDK",
     "keywords": [
         "react",
