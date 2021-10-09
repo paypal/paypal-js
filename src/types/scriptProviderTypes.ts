@@ -1,6 +1,6 @@
 import { SCRIPT_ID } from "../constants";
 import { BraintreePayPalCheckout } from "./braintree/paypalCheckout";
-import { SCRIPT_PROVIDER_DISPATCH_ACTION, SCRIPT_LOADING_STATE } from "./enums";
+import { DISPATCH_ACTION, SCRIPT_LOADING_STATE } from "./enums";
 import type { ReactNode, Dispatch } from "react";
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 
@@ -10,15 +10,15 @@ export interface ReactPayPalScriptOptions extends PayPalScriptOptions {
 
 export type ScriptReducerAction =
     | {
-          type: `${SCRIPT_PROVIDER_DISPATCH_ACTION.LOADING_STATUS}`;
+          type: `${DISPATCH_ACTION.LOADING_STATUS}`;
           value: SCRIPT_LOADING_STATE;
       }
     | {
-          type: `${SCRIPT_PROVIDER_DISPATCH_ACTION.RESET_OPTIONS}`;
+          type: `${DISPATCH_ACTION.RESET_OPTIONS}`;
           value: PayPalScriptOptions | ReactPayPalScriptOptions;
       }
     | {
-          type: `${SCRIPT_PROVIDER_DISPATCH_ACTION.SET_BRAINTREE_INSTANCE}`;
+          type: `${DISPATCH_ACTION.SET_BRAINTREE_INSTANCE}`;
           value: BraintreePayPalCheckout;
       };
 

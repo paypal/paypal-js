@@ -11,7 +11,7 @@ import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
 import { getBraintreeWindowNamespace } from "../../utils";
 import { decorateActions } from "./utils";
 import type { BraintreePayPalButtonsComponentProps } from "../../types";
-import { SCRIPT_PROVIDER_DISPATCH_ACTION } from "../../types";
+import { DISPATCH_ACTION } from "../../types";
 
 /**
 This `<BraintreePayPalButtons />` component renders the [Braintree PayPal Buttons](https://developer.paypal.com/braintree/docs/guides/paypal/overview) for Braintree Merchants.
@@ -78,7 +78,7 @@ export const BraintreePayPalButtons: FC<BraintreePayPalButtonsComponentProps> =
                         })
                         .then((paypalCheckoutInstance) => {
                             dispatch({
-                                type: SCRIPT_PROVIDER_DISPATCH_ACTION.SET_BRAINTREE_INSTANCE,
+                                type: DISPATCH_ACTION.SET_BRAINTREE_INSTANCE,
                                 value: paypalCheckoutInstance,
                             });
                         });

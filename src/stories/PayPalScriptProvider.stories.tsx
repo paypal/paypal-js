@@ -4,7 +4,7 @@ import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options
 import { getOptionsFromQueryString } from "./utils";
 import {
     PayPalScriptProvider,
-    SCRIPT_PROVIDER_DISPATCH_ACTION,
+    DISPATCH_ACTION,
     SCRIPT_LOADING_STATE,
 } from "../index";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
@@ -39,7 +39,7 @@ export const DeferLoading: FunctionComponent = () => {
                 disabled={isResolved}
                 onClick={() => {
                     dispatch({
-                        type: SCRIPT_PROVIDER_DISPATCH_ACTION.LOADING_STATUS,
+                        type: DISPATCH_ACTION.LOADING_STATUS,
                         value: SCRIPT_LOADING_STATE.PENDING,
                     });
                 }}

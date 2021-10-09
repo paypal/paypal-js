@@ -4,7 +4,7 @@ import {
     scriptReducer,
 } from "./scriptProviderContext.ts";
 import { SCRIPT_ID } from "../constants";
-import { SCRIPT_PROVIDER_DISPATCH_ACTION } from "../types/enums";
+import { DISPATCH_ACTION } from "../types/enums";
 
 describe("getScriptID", () => {
     test("should return simple hash using empty options object", () => {
@@ -87,7 +87,7 @@ describe("scriptReducer", () => {
     test("should add loadingStatus to the previous state", () => {
         expect(
             scriptReducer(state, {
-                type: SCRIPT_PROVIDER_DISPATCH_ACTION.LOADING_STATUS,
+                type: DISPATCH_ACTION.LOADING_STATUS,
                 value: "resolve",
             })
         ).toMatchObject({ ...state, loadingStatus: "resolve" });
@@ -96,7 +96,7 @@ describe("scriptReducer", () => {
     test("should reset loadingStatus to pending and options", () => {
         expect(
             scriptReducer(state, {
-                type: SCRIPT_PROVIDER_DISPATCH_ACTION.RESET_OPTIONS,
+                type: DISPATCH_ACTION.RESET_OPTIONS,
                 value: { [SCRIPT_ID]: "script" },
             })
         ).toMatchObject({
@@ -113,7 +113,7 @@ describe("scriptReducer", () => {
 
         expect(
             scriptReducer(state, {
-                type: SCRIPT_PROVIDER_DISPATCH_ACTION.SET_BRAINTREE_INSTANCE,
+                type: DISPATCH_ACTION.SET_BRAINTREE_INSTANCE,
                 value: braintreeMockInstance,
             })
         ).toMatchObject({

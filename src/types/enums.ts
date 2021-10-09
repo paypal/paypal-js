@@ -15,7 +15,7 @@ export enum SCRIPT_LOADING_STATE {
  *
  * @enum {string}
  */
-export enum SCRIPT_PROVIDER_DISPATCH_ACTION {
+export enum DISPATCH_ACTION {
     LOADING_STATUS = "setLoadingStatus",
     RESET_OPTIONS = "resetOptions",
     SET_BRAINTREE_INSTANCE = "braintreeInstance",

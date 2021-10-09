@@ -12,10 +12,7 @@ import {
     DATA_SDK_INTEGRATION_SOURCE_VALUE,
 } from "../constants";
 import type { ScriptProviderProps } from "../types";
-import {
-    SCRIPT_LOADING_STATE,
-    SCRIPT_PROVIDER_DISPATCH_ACTION,
-} from "../types";
+import { SCRIPT_LOADING_STATE, DISPATCH_ACTION } from "../types";
 
 export const PayPalScriptProvider: FC<ScriptProviderProps> = ({
     options = { "client-id": "test" },
@@ -39,7 +36,7 @@ export const PayPalScriptProvider: FC<ScriptProviderProps> = ({
             state.loadingStatus === SCRIPT_LOADING_STATE.INITIAL
         ) {
             return dispatch({
-                type: SCRIPT_PROVIDER_DISPATCH_ACTION.LOADING_STATUS,
+                type: DISPATCH_ACTION.LOADING_STATUS,
                 value: SCRIPT_LOADING_STATE.PENDING,
             });
         }
@@ -52,7 +49,7 @@ export const PayPalScriptProvider: FC<ScriptProviderProps> = ({
             .then(() => {
                 if (isSubscribed) {
                     dispatch({
-                        type: SCRIPT_PROVIDER_DISPATCH_ACTION.LOADING_STATUS,
+                        type: DISPATCH_ACTION.LOADING_STATUS,
                         value: SCRIPT_LOADING_STATE.RESOLVED,
                     });
                 }
@@ -60,7 +57,7 @@ export const PayPalScriptProvider: FC<ScriptProviderProps> = ({
             .catch(() => {
                 if (isSubscribed) {
                     dispatch({
-                        type: SCRIPT_PROVIDER_DISPATCH_ACTION.LOADING_STATUS,
+                        type: DISPATCH_ACTION.LOADING_STATUS,
                         value: SCRIPT_LOADING_STATE.REJECTED,
                     });
                 }
