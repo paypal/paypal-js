@@ -22,6 +22,7 @@ const uid = generateRandomString();
 const TOKEN_URL = `${HEROKU_SERVER}/api/paypal/hosted-fields/auth`;
 const CREATE_ORDER_URL = `${HEROKU_SERVER}/api/paypal/checkout/orders`;
 const RED_COLOR = "#dc3545";
+const GREEN_COLOR = "#28a745";
 const scriptProviderOptions: PayPalScriptOptions = {
     "client-id":
         "AdOu-W3GPkrfuTbJNuW9dWVijxvhaXHFIRuKrLDwu14UDwTTHWMFkUwuu9D8I1MAQluERl9cFOd7Mfqe",
@@ -103,14 +104,15 @@ const SubmitPayment = ({ customStyle }: { customStyle?: CSSProperties }) => {
         <>
             <label title="This represents the full name as shown in the card">
                 Card Holder Name
+                <input
+                    id="card-holder"
+                    ref={cardHolderName}
+                    className="card-field"
+                    style={{ ...customStyle, outline: "none" }}
+                    type="text"
+                    placeholder="Full name"
+                />
             </label>
-            <input
-                ref={cardHolderName}
-                className="card-field"
-                style={{ ...customStyle, outline: "none" }}
-                type="text"
-                placeholder="Full name"
-            />
             <button
                 className={`btn${paying ? "" : " btn-primary"}`}
                 style={{ float: "right" }}
@@ -211,7 +213,7 @@ export const Default: FC = () => {
             }
             notEligibleError={<NotEligibleError />}
             styles={{
-                ".valid": { color: "#28a745" },
+                ".valid": { color: GREEN_COLOR },
                 ".invalid": { color: RED_COLOR },
                 input: { "font-family": "monospace", "font-size": "16px" },
             }}
@@ -267,7 +269,7 @@ export const Default: FC = () => {
         source: {
             code: `
             () => {
-    const RED_COLOR_STYLE = { color: "#dc3545" };
+    const RED_COLOR_STYLE = { color: "${RED_COLOR}" };
     const SubmitPayment = () => {
         const cardHolderName = useRef<HTMLInputElement>(null);
         const hostedField = usePayPalHostedFields();
@@ -353,7 +355,7 @@ export const Default: FC = () => {
             }
             notEligibleError={<NotEligibleError />}
             styles={{
-                ".valid": { color: "#28a745" },
+                ".valid": { color: "${GREEN_COLOR}" },
                 ".invalid": RED_COLOR_STYLE,
                 "input": { "font-family": "monospace", "font-size": "16px" }
             }}
@@ -430,7 +432,7 @@ export const ExpirationDate: FC = () => {
             }
             notEligibleError={<NotEligibleError />}
             styles={{
-                ".valid": { color: "#28a745" },
+                ".valid": { color: GREEN_COLOR },
                 ".invalid": { color: RED_COLOR },
             }}
         >
