@@ -7,6 +7,7 @@
     "types": "types/index.d.ts",
     "scripts": {
         "build": "rm -rf dist && rollup --config",
+        "check-node-version": "node scripts/check-node-version.js",
         "lint": "eslint .",
         "format": "prettier --write .",
         "postinstall": "husky install",
@@ -20,7 +21,7 @@
         "test:e2e": "jest -c e2e-tests/jest.config.js",
         "test:e2e:start": "serve",
         "typecheck": "tsc --noEmit && tsc types/*.ts --noEmit",
-        "validate": "npm run typecheck && npm run build && npm run lint && npm test -- --coverage && npm run test:bundle"
+        "validate": "npm run check-node-version && npm run typecheck && npm run build && npm run lint && npm test -- --coverage && npm run test:bundle"
     },
     "files": [
         "dist",
