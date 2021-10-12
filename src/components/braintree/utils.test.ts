@@ -2,11 +2,12 @@ import { decorateActions } from "./utils";
 
 import { mock } from "jest-mock-extended";
 import { BraintreePayPalCheckout } from "../../types/braintree/paypalCheckout";
-import {
-    CreateOrderActions,
-    OnApproveData,
-    OnApproveActions,
-} from "@paypal/paypal-js/types/components/buttons";
+import { CreateBillingAgreementActions } from "../..";
+import type {
+    CreateOrderBraintreeActions,
+    OnApproveBraintreeActions,
+    OnApproveBraintreeData,
+} from "../../types/braintreePayPalButtonTypes";
 
 describe("decorateActions", () => {
     test("shouldn't modify the button props", () => {
@@ -60,10 +61,48 @@ describe("decorateActions", () => {
             throw new Error("buttonProps.createOrder is undefined");
         }
 
-        const mockedCreateOrderActions = mock<CreateOrderActions>();
+        const mockedCreateOrderActions = mock<CreateOrderBraintreeActions>();
 
         expect(
             buttonProps.createOrder({}, mockedCreateOrderActions)
+        ).toBeTruthy();
+    });
+
+    test("should decorate the createBillingAgreement callback", () => {
+        const buttonPropsWithCreateBillingAgreement = {
+            disabled: false,
+            children: null,
+            onClick: jest.fn(),
+            onInit: jest.fn(),
+            createBillingAgreement: jest
+                .fn()
+                .mockImplementation(
+                    (data, actions) =>
+                        actions.braintree.createBillingAgreement !== undefined
+                ),
+        };
+
+        const mockedCheckout = mock<BraintreePayPalCheckout>();
+
+        const buttonProps = decorateActions(
+            buttonPropsWithCreateBillingAgreement,
+            mockedCheckout
+        );
+
+        if (!buttonProps) {
+            throw new Error("buttonProps is undefined");
+        } else if (!buttonProps.createBillingAgreement) {
+            throw new Error("buttonProps.createOrder is undefined");
+        }
+
+        const mockedCreateBillingAgreementActions =
+            mock<CreateBillingAgreementActions>();
+
+        expect(
+            buttonProps.createBillingAgreement(
+                {},
+                mockedCreateBillingAgreementActions
+            )
         ).toBeTruthy();
     });
 
@@ -93,8 +132,8 @@ describe("decorateActions", () => {
             throw new Error("buttonProps.onApprove is undefined");
         }
 
-        const mockedOnApproveData = mock<OnApproveData>();
-        const mockedOnApproveActions = mock<OnApproveActions>();
+        const mockedOnApproveData = mock<OnApproveBraintreeData>();
+        const mockedOnApproveActions = mock<OnApproveBraintreeActions>();
         expect(
             buttonProps.onApprove(mockedOnApproveData, mockedOnApproveActions)
         ).toBeTruthy();

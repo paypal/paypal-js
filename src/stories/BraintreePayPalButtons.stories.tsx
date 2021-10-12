@@ -2,11 +2,7 @@ import React, { useState, useEffect, ReactElement } from "react";
 import type { FC } from "react";
 
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
-import type {
-    CreateOrderBraintreeActions,
-    OnApproveBraintreeActions,
-    OnApproveBraintreeData,
-} from "../types";
+import type { OnApproveBraintreeData } from "../types";
 
 import { PayPalScriptProvider, BraintreePayPalButtons } from "../index";
 import {
@@ -37,7 +33,10 @@ export default {
         onShippingChange: null,
     },
     decorators: [
-        (Story: FC): ReactElement => {
+        (
+            Story: FC,
+            args: { originalStoryFn: { name: string } }
+        ): ReactElement => {
             // Workaround to render the story after got the client token,
             // The new experimental loaders doesn't work in Docs views
             const [clientToken, setClientToken] = useState<string | null>(null);
@@ -58,6 +57,9 @@ export default {
                                     "data-client-token": clientToken,
                                     "data-namespace": uid,
                                     "data-uid": uid,
+                                    vault:
+                                        args.originalStoryFn.name ===
+                                        BillingAgreement.name,
                                 }}
                             >
                                 <Story />
@@ -73,10 +75,7 @@ export default {
 export const Default: FC = () => {
     return (
         <BraintreePayPalButtons
-            createOrder={(
-                data: Record<string, unknown>,
-                actions: CreateOrderBraintreeActions
-            ) =>
+            createOrder={(data, actions) =>
                 actions.braintree.createPayment({
                     flow: "checkout",
                     amount: AMOUNT,
@@ -96,16 +95,52 @@ export const Default: FC = () => {
                     },
                 })
             }
-            onApprove={(
-                data: OnApproveBraintreeData,
-                actions: OnApproveBraintreeActions
-            ) =>
-                actions.braintree.tokenizePayment(data).then((payload) => {
-                    approveSale(payload.nonce, AMOUNT).then((data) => {
-                        alert(JSON.stringify(data));
-                        // Call server-side endpoint to finish the sale
-                    });
+            onApprove={(data, actions) =>
+                actions.braintree
+                    .tokenizePayment(data as OnApproveBraintreeData)
+                    .then((payload) => {
+                        approveSale(payload.nonce, AMOUNT).then((data) => {
+                            alert(JSON.stringify(data));
+                            // Call server-side endpoint to finish the sale
+                        });
+                    })
+            }
+        />
+    );
+};
+
+export const BillingAgreement: FC = () => {
+    return (
+        <BraintreePayPalButtons
+            createBillingAgreement={(data, actions) =>
+                actions.braintree.createPayment({
+                    flow: "vault", // Required
+
+                    // The following are optional params
+                    billingAgreementDescription: "Your agreement description",
+                    enableShippingAddress: true,
+                    shippingAddressEditable: false,
+                    shippingAddressOverride: {
+                        recipientName: "Scruff McGruff",
+                        line1: "1234 Main St.",
+                        line2: "Unit 1",
+                        city: "Chicago",
+                        countryCode: "US",
+                        postalCode: "60652",
+                        state: "IL",
+                        phone: "123.456.7890",
+                    },
                 })
+            }
+            onApprove={(data, actions) =>
+                actions.braintree
+                    .tokenizePayment(data as OnApproveBraintreeData)
+                    .then((payload) => {
+                        approveSale(payload.nonce, AMOUNT).then((data) => {
+                            alert(JSON.stringify(data));
+                            // Call server-side endpoint to finish the sale
+                        });
+                    })
             }
         />
     );
