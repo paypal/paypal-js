@@ -29,10 +29,10 @@ type PayPalHostedFieldOption = {
  * @throws {@code Error}
  *
  */
-export const throwMissingHostedFieldsError = ({
+export const generateMissingHostedFieldsError = ({
     components = "",
     [DATA_NAMESPACE]: dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
-}: PayPalHostedFieldsNamespace): never => {
+}: PayPalHostedFieldsNamespace): string => {
     const expectedComponents = components
         ? `${components},hosted-fields`
         : "hosted-fields";
@@ -42,7 +42,7 @@ export const throwMissingHostedFieldsError = ({
         errorMessage += `\nTo fix the issue, add 'hosted-fields' to the list of components passed to the parent PayPalScriptProvider: <PayPalScriptProvider options={{ components: '${expectedComponents}'}}>`;
     }
 
-    throw new Error(errorMessage);
+    return errorMessage;
 };
 
 /**

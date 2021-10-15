@@ -6,7 +6,7 @@ import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
 import { DATA_NAMESPACE } from "../../constants";
 import {
     generateHostedFieldsFromChildren,
-    throwMissingHostedFieldsError,
+    generateMissingHostedFieldsError,
 } from "./utils";
 import { validateHostedFieldChildren } from "./validators";
 import { SCRIPT_LOADING_STATE } from "../../types/enums";
@@ -44,20 +44,19 @@ export const PayPalHostedFieldsProvider: FC<PayPalHostedFieldsComponentProps> =
             // Only render the hosted fields when script is loaded and hostedFields is eligible
             if (!(loadingStatus === SCRIPT_LOADING_STATE.RESOLVED)) return;
             // Get the hosted fields from the [window.paypal.HostedFields] SDK
-            if (!hostedFields.current) {
-                // Set HostedFields SDK in the mount process only
-                hostedFields.current = getPayPalWindowNamespace(
-                    options[DATA_NAMESPACE]
-                ).HostedFields;
+            hostedFields.current ??= getPayPalWindowNamespace(
+                options[DATA_NAMESPACE]
+            ).HostedFields;
 
-                if (!hostedFields.current) {
-                    throwMissingHostedFieldsError({
+            if (!hostedFields.current) {
+                throw new Error(
+                    generateMissingHostedFieldsError({
                         components: options.components,
                         [DATA_NAMESPACE]: options[DATA_NAMESPACE],
-                    });
-                }
+                    })
+                );
             }
-            if (!hostedFields?.current?.isEligible()) {
+            if (!hostedFields.current.isEligible()) {
                 return setIsEligible(false);
             }
             // Clean all the fields before the rerender

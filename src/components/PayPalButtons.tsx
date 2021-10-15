@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, FunctionComponent } from "react";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
-import { getPayPalWindowNamespace } from "../utils";
-import { DEFAULT_PAYPAL_NAMESPACE, DATA_NAMESPACE } from "../constants";
+import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
+import { DATA_NAMESPACE } from "../constants";
 import type {
     PayPalButtonsComponent,
     OnInitActions,
@@ -79,7 +79,14 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
             paypalWindowNamespace.Buttons === undefined
         ) {
             setErrorState(() => {
-                throw new Error(getErrorMessage(options));
+                throw new Error(
+                    generateErrorMessage({
+                        reactComponentName: PayPalButtons.displayName as string,
+                        sdkComponentKey: "buttons",
+                        sdkRequestedComponents: options.components,
+                        sdkDataNamespace: options[DATA_NAMESPACE],
+                    })
+                );
             });
             return closeButtonsComponent;
         }
@@ -170,21 +177,4 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
     );
 };
 
-function getErrorMessage({
-    components = "",
-    [DATA_NAMESPACE]: dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
-}) {
-    let errorMessage = `Unable to render <PayPalButtons /> because window.${dataNamespace}.Buttons is undefined.`;
-
-    // the JS SDK includes the Buttons component by default when no 'components' are specified.
-    // The 'buttons' component must be included in the 'components' list when using it with other components.
-    if (components.length && !components.includes("buttons")) {
-        const expectedComponents = `${components},buttons`;
-
-        errorMessage +=
-            "\nTo fix the issue, add 'buttons' to the list of components passed to the parent PayPalScriptProvider:" +
-            `\n\`<PayPalScriptProvider options={{ components: '${expectedComponents}'}}>\`.`;
-    }
-
-    return errorMessage;
-}
+PayPalButtons.displayName = "PayPalButtons";

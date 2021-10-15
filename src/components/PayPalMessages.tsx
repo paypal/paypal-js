@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, FunctionComponent } from "react";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
-import { getPayPalWindowNamespace } from "../utils";
-import { DEFAULT_PAYPAL_NAMESPACE, DATA_NAMESPACE } from "../constants";
+import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
+import { DATA_NAMESPACE } from "../constants";
 import type {
     PayPalMessagesComponentOptions,
     PayPalMessagesComponent,
@@ -39,10 +39,17 @@ export const PayPalMessages: FunctionComponent<PayPalMessagesComponentProps> =
                 paypalWindowNamespace === undefined ||
                 paypalWindowNamespace.Messages === undefined
             ) {
-                setErrorState(() => {
-                    throw new Error(getErrorMessage(options));
+                return setErrorState(() => {
+                    throw new Error(
+                        generateErrorMessage({
+                            reactComponentName:
+                                PayPalMessages.displayName as string,
+                            sdkComponentKey: "messages",
+                            sdkRequestedComponents: options.components,
+                            sdkDataNamespace: options[DATA_NAMESPACE],
+                        })
+                    );
                 });
-                return;
             }
 
             messages.current = paypalWindowNamespace.Messages({
@@ -77,22 +84,4 @@ export const PayPalMessages: FunctionComponent<PayPalMessagesComponentProps> =
         return <div ref={messagesContainerRef} className={className} />;
     };
 
-function getErrorMessage({
-    components = "",
-    [DATA_NAMESPACE]: dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
-}) {
-    let errorMessage = `Unable to render <PayPalMessages /> because window.${dataNamespace}.Messages is undefined.`;
-
-    // the JS SDK does not load the Messages component by default. It must be passed into the "components" query parameter.
-    if (!components.includes("messages")) {
-        const expectedComponents = components
-            ? `${components},messages`
-            : "messages";
-
-        errorMessage +=
-            "\nTo fix the issue, add 'messages' to the list of components passed to the parent PayPalScriptProvider:" +
-            `\n\`<PayPalScriptProvider options={{ components: '${expectedComponents}'}}>\`.`;
-    }
-
-    return errorMessage;
-}
+PayPalMessages.displayName = "PayPalMessages";

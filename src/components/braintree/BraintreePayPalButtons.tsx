@@ -102,10 +102,10 @@ export const BraintreePayPalButtons: FC<BraintreePayPalButtonsComponentProps> =
                         className={className}
                         disabled={disabled}
                         forceReRender={forceReRender}
-                        {...decorateActions(
+                        {...(decorateActions(
                             buttonProps,
                             providerContext.braintreePayPalCheckoutInstance
-                        ) as PayPalButtonsComponentProps}
+                        ) as PayPalButtonsComponentProps)}
                     >
                         {children}
                     </PayPalButtons>

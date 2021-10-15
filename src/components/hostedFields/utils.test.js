@@ -2,7 +2,7 @@ import React from "react";
 
 import { PayPalHostedField } from "./PayPalHostedField";
 import {
-    throwMissingHostedFieldsError,
+    generateMissingHostedFieldsError,
     generateHostedFieldsFromChildren,
 } from "./utils";
 import { DATA_NAMESPACE } from "../../constants";
@@ -11,34 +11,32 @@ import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types/enums";
 const exceptionMessagePayPalNamespace =
     "Unable to render <PayPalHostedFieldsProvider /> because window.paypal.HostedFields is undefined.\nTo fix the issue, add 'hosted-fields' to the list of components passed to the parent PayPalScriptProvider: <PayPalScriptProvider options={{ components: 'hosted-fields'}}>";
 
-describe("throwMissingHostedFieldsError", () => {
+describe("generateMissingHostedFieldsError", () => {
     const exceptionMessage =
         "Unable to render <PayPalHostedFieldsProvider /> because window.Braintree.HostedFields is undefined.\nTo fix the issue, add 'hosted-fields' to the list of components passed to the parent PayPalScriptProvider: <PayPalScriptProvider options={{ components: 'marks,hosted-fields'}}>";
 
     test("should throw exception with Braintree namespace", () => {
-        expect(() => {
-            throwMissingHostedFieldsError({
+        expect(
+            generateMissingHostedFieldsError({
                 components: "marks",
                 [DATA_NAMESPACE]: "Braintree",
-            });
-        }).toThrow(new Error(exceptionMessage));
+            })
+        ).toEqual(exceptionMessage);
     });
 
     test("should throw exception with default namespace", () => {
-        expect(() => {
-            throwMissingHostedFieldsError({});
-        }).toThrow(new Error(exceptionMessagePayPalNamespace));
+        expect(generateMissingHostedFieldsError({})).toEqual(
+            exceptionMessagePayPalNamespace
+        );
     });
 
     test("should throw exception unknown exception ", () => {
         window.paypal = {};
 
-        expect(() => {
-            throwMissingHostedFieldsError({ components: "hosted-fields" });
-        }).toThrow(
-            new Error(
-                "Unable to render <PayPalHostedFieldsProvider /> because window.paypal.HostedFields is undefined."
-            )
+        expect(
+            generateMissingHostedFieldsError({ components: "hosted-fields" })
+        ).toEqual(
+            "Unable to render <PayPalHostedFieldsProvider /> because window.paypal.HostedFields is undefined."
         );
     });
 });

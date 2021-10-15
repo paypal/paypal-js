@@ -5,6 +5,13 @@ import {
 import type { PayPalNamespace } from "@paypal/paypal-js";
 import type { BraintreeNamespace } from "./types";
 
+type ErrorMessageParams = {
+    reactComponentName: string;
+    sdkComponentKey: string;
+    sdkRequestedComponents?: string;
+    sdkDataNamespace?: string;
+};
+
 /**
  * Get the namespace from the window in the browser
  * this is useful to get the paypal object from window
@@ -55,4 +62,31 @@ export function hashStr(str: string): string {
     }
 
     return hash;
+}
+
+export function generateErrorMessage({
+    reactComponentName,
+    sdkComponentKey,
+    sdkRequestedComponents = "",
+    sdkDataNamespace = DEFAULT_PAYPAL_NAMESPACE,
+}: ErrorMessageParams): string {
+    const requiredOptionCapitalized = sdkComponentKey
+        .charAt(0)
+        .toUpperCase()
+        .concat(sdkComponentKey.substring(1));
+    let errorMessage = `Unable to render <${reactComponentName} /> because window.${sdkDataNamespace}.${requiredOptionCapitalized} is undefined.`;
+
+    // The JS SDK only loads the buttons component by default.
+    // All other components like messages and marks must be requested using the "components" query parameter
+    if (!sdkRequestedComponents.includes(sdkComponentKey)) {
+        const expectedComponents = [sdkRequestedComponents, sdkComponentKey]
+            .filter(Boolean)
+            .join();
+
+        errorMessage +=
+            `\nTo fix the issue, add '${sdkComponentKey}' to the list of components passed to the parent PayPalScriptProvider:` +
+            `\n\`<PayPalScriptProvider options={{ components: '${expectedComponents}'}}>\`.`;
+    }
+
+    return errorMessage;
 }
