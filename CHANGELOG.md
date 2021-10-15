@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.4.2](https://github.com/paypal/react-paypal-js/compare/v7.4.1...v7.4.2) (2021-10-15)
+
+### Bug Fixes
+
+-   add `createBillingAgreement` support for BraintreePayPalButtons ([#195](https://github.com/paypal/react-paypal-js/issues/195)) ([b4086ab](https://github.com/paypal/react-paypal-js/commit/b4086ab511565b1a904ceb241779c64f8adab36b))
+
 ### [7.4.1](https://github.com/paypal/react-paypal-js/compare/v7.4.0...v7.4.1) (2021-10-09)
 
 ### Bug Fixes
