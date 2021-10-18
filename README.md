@@ -26,7 +26,7 @@ React developers think in terms of components and not about loading external scr
 
 **Features**
 
--   Enforce async loading the JS SDK up front so when it's time to render the buttons to your buyer, they render immediately.
+-   Enforce async loading the JS SDK upfront so when it's time to render the buttons to your buyer, they render immediately.
 -   Abstract away the complexity around loading the JS SDK with the global [PayPalScriptProvider](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalscriptprovider--default) component.
 -   Support dispatching actions to reload the JS SDK and re-render components when global parameters like `currency` change.
 -   Easy to use components for all the different Braintree/PayPal product offerings:
@@ -91,7 +91,7 @@ The [JS SDK Configuration guide](https://developer.paypal.com/docs/business/java
 
 Use the optional PayPalScriptProvider `deferLoading` prop to control when the JS SDK script loads.
 
--   This prop is set to false by default since we usually know all the sdk script params up front and want to load the script right way so components like `<PayPalButtons />` render immediately.
+-   This prop is set to false by default since we usually know all the sdk script params upfront and want to load the script right away so components like `<PayPalButtons />` render immediately.
 -   This prop can be set to true to prevent loading the JS SDK script when the PayPalScriptProvider renders. Use `deferLoading={true}` initially and then dispatch an action later on in the app's life cycle to load the sdk script.
 
 ```jsx
