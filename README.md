@@ -198,7 +198,7 @@ export default function App() {
                         .then((payload) => {
                             // call server-side endpoint to finish the sale
                         })
-                }
+                }}
             />
         </PayPalScriptProvider>
     );
@@ -234,7 +234,7 @@ const SubmitPayment = () => {
         hostedFields
             .submit({
                 // The full name as shown in the card and billing address
-                cardholderName: "Jhon Wick",
+                cardholderName: "John Wick",
             })
             .then((order) => {
                 fetch(
