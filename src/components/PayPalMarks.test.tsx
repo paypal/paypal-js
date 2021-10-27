@@ -1,18 +1,20 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { render, waitFor } from "@testing-library/react";
-
-import { PayPalScriptProvider } from "../components/PayPalScriptProvider.tsx";
+import { mock } from "jest-mock-extended";
+import { PayPalScriptProvider } from '../components/PayPalScriptProvider';
 import { PayPalMarks } from "./PayPalMarks";
-import { FUNDING } from "@paypal/sdk-constants";
-import { loadScript } from "@paypal/paypal-js";
+import { FUNDING } from "../index";
+import { loadScript, PayPalNamespace } from "@paypal/paypal-js";
 import { ErrorBoundary } from "react-error-boundary";
 
 jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),
 }));
 
+const mockPayPalNamespace = mock<PayPalNamespace>();
+
 const onError = jest.fn();
-const wrapper = ({ children }) => (
+const wrapper = ({ children }: { children: ReactNode }) => (
     <ErrorBoundary fallback={<div>Error</div>} onError={onError}>
         {children}
     </ErrorBoundary>
@@ -20,8 +22,8 @@ const wrapper = ({ children }) => (
 
 describe("<PayPalMarks />", () => {
     beforeEach(() => {
-        window.paypal = {};
-        loadScript.mockResolvedValue(window.paypal);
+        window.paypal = mockPayPalNamespace;
+        (loadScript as jest.Mock).mockResolvedValue(window.paypal);
     });
     afterEach(() => {
         jest.clearAllMocks();
@@ -33,7 +35,7 @@ describe("<PayPalMarks />", () => {
                 isEligible: jest.fn().mockReturnValue(true),
                 render: jest.fn().mockResolvedValue({}),
             })),
-        };
+        } as any;
 
         render(
             <PayPalScriptProvider
@@ -44,7 +46,7 @@ describe("<PayPalMarks />", () => {
         );
 
         await waitFor(() =>
-            expect(window.paypal.Marks).toHaveBeenCalledWith({
+            expect(window.paypal?.Marks).toHaveBeenCalledWith({
                 fundingSource: FUNDING.CREDIT,
             })
         );
@@ -56,7 +58,7 @@ describe("<PayPalMarks />", () => {
                 isEligible: jest.fn().mockReturnValue(true),
                 render: jest.fn().mockResolvedValue({}),
             })),
-        };
+        } as any;
 
         render(
             <PayPalScriptProvider
@@ -133,12 +135,13 @@ describe("<PayPalMarks />", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
-        window.paypal.Marks = () => {
+        window.paypal!.Marks = () => {
             return {
                 isEligible: jest.fn().mockReturnValue(true),
                 render: jest.fn((element) => {
                     // simulate adding markup for paypal mark
-                    element.append(document.createElement("div"));
+                    if (typeof element != "string")
+                        element.append(document.createElement("div"));
                     return Promise.reject("Unknown error");
                 }),
             };
@@ -163,7 +166,7 @@ describe("<PayPalMarks />", () => {
         const mockRender = jest
             .fn()
             .mockRejectedValue(new Error("Unknown error"));
-        window.paypal.Marks = () => ({
+        window.paypal!.Marks = () => ({
             isEligible: jest.fn().mockReturnValue(true),
             render: mockRender,
         });
@@ -180,8 +183,8 @@ describe("<PayPalMarks />", () => {
 
     test("should not render component when ineligible", async () => {
         const mockIsEligible = jest.fn().mockReturnValue(false);
-        const mockRender = jest.fn().mockResolvedValue();
-        window.paypal.Marks = () => ({
+        const mockRender = jest.fn().mockResolvedValue(true);
+        window.paypal!.Marks = () => ({
             isEligible: mockIsEligible,
             render: mockRender,
         });
@@ -212,7 +215,7 @@ describe("<PayPalMarks />", () => {
             element.append(markElement);
             return Promise.resolve();
         });
-        window.paypal.Marks = () => ({
+        window.paypal!.Marks = () => ({
             isEligible: jest.fn().mockReturnValue(true),
             render: mockRender,
         });

@@ -44,7 +44,7 @@ export const PayPalHostedFieldsProvider: FC<PayPalHostedFieldsComponentProps> =
             // Only render the hosted fields when script is loaded and hostedFields is eligible
             if (!(loadingStatus === SCRIPT_LOADING_STATE.RESOLVED)) return;
             // Get the hosted fields from the [window.paypal.HostedFields] SDK
-            hostedFields.current ??= getPayPalWindowNamespace(
+            hostedFields.current = getPayPalWindowNamespace(
                 options[DATA_NAMESPACE]
             ).HostedFields;
 
