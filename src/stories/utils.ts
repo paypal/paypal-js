@@ -1,4 +1,8 @@
+import reactElementToJSXString from "react-element-to-jsx-string";
+import format from "string-template";
+
 import { SDK_QUERY_KEYS } from "@paypal/sdk-constants/dist/module";
+import { ReactNode } from "react";
 
 // FIXME: problem with union on key
 type TokenResponse = {
@@ -54,4 +58,18 @@ export async function approveSale(
 
 export function generateRandomString(): string {
     return `uid_${Math.random().toString(36).substring(7)}`;
+}
+
+export function reactElementToString(source: ReactNode, ctx?: unknown): string {
+    return reactElementToJSXString(source, {
+        showFunctions: true,
+        sortProps: false,
+        functionValue: (fn) => format(fn.toString(), ctx),
+    });
+}
+
+export function generateFundingSource(fundingSource?: string): string {
+    return `fundingSource=${
+        fundingSource ? `"${fundingSource}"` : "{undefined}"
+    }`;
 }

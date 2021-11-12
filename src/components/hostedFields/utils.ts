@@ -16,7 +16,7 @@ import type {
 
 // Define the type of the fields object use in the HostedFields.render options
 type PayPalHostedFieldOption = {
-    [key in PAYPAL_HOSTED_FIELDS_TYPES]?: PayPalHostedFieldOptions;
+    [key: string]: PayPalHostedFieldOptions;
 };
 
 /**
@@ -62,7 +62,9 @@ export const generateHostedFieldsFromChildren = (
         } = child as ReactElement<PayPalHostedFieldProps, FC>;
 
         if (
-            Object.values(PAYPAL_HOSTED_FIELDS_TYPES).includes(hostedFieldType)
+            (Object.values(PAYPAL_HOSTED_FIELDS_TYPES) as string[]).includes(
+                hostedFieldType
+            )
         ) {
             fields[hostedFieldType] = {
                 selector: options.selector,

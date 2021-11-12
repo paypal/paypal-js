@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from "react";
 import type { FC, ReactElement } from "react";
+import { action } from "@storybook/addon-actions";
 
+import type { StoryContext } from "@storybook/addons/dist/ts3.9/types";
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 
 import {
     PayPalScriptProvider,
     PayPalHostedFieldsProvider,
     PayPalHostedField,
-    PAYPAL_HOSTED_FIELDS_TYPES,
     usePayPalHostedFields,
-} from "../index";
+} from "../../index";
 import {
     getOptionsFromQueryString,
     generateRandomString,
     getClientToken,
     HEROKU_SERVER,
-} from "./utils";
+} from "../utils";
+import { COMPONENT_PROPS_CATEGORY, COMPONENT_EVENTS, SDK } from "../constants";
+import DocPageStructure from "../components/DocPageStructure";
+import { InEligibleError } from "../commons";
+import { getDefaultCode } from "./codeProvider";
 
 const uid = generateRandomString();
 const TOKEN_URL = `${HEROKU_SERVER}/api/paypal/hosted-fields/auth`;
@@ -26,13 +31,16 @@ const scriptProviderOptions: PayPalScriptOptions = {
     ...getOptionsFromQueryString(),
 };
 
-// Component to show the client isn't eligible to use hosted fields
-const NotEligibleError = () => (
-    <h3>Your client is not able to use hosted fields</h3>
-);
-
 const LoadedCardFields = () => {
     const cardFields = usePayPalHostedFields();
+
+    useEffect(() => {
+        if (cardFields) {
+            action(SDK)("Hosted fields provider successfully loaded.");
+        } else {
+            action(SDK)("Starting loading Hosted fields provider.");
+        }
+    }, [cardFields]);
 
     return (
         <>
@@ -49,8 +57,39 @@ const LoadedCardFields = () => {
 };
 
 export default {
-    title: "Example/PayPalHostedFieldsProvider",
+    title: "PayPal/PayPalHostedFieldsProvider",
     component: PayPalHostedFieldsProvider,
+    parameters: {
+        controls: { expanded: true },
+        docs: {
+            container: ({ context }: { context: StoryContext }): ReactElement => (
+                <DocPageStructure
+                    context={context}
+                    code={getDefaultCode(context.args.styles)}
+                />
+            )
+        }
+    },
+    argTypes: {
+        styles: {
+            control: { type: "object", expanded: true },
+            ...COMPONENT_PROPS_CATEGORY,
+        },
+        createOrder: {
+            control: false,
+            table: { category: COMPONENT_EVENTS },
+        },
+        notEligibleError: {
+            control: false,
+            ...COMPONENT_PROPS_CATEGORY,
+        },
+    },
+    args: {
+        styles: {
+            ".valid": { color: "#28a745" },
+            ".invalid": { color: "#dc3545" },
+        },
+    },
     decorators: [
         (Story: FC): ReactElement => {
             // Workaround to render the story after got the client token,
@@ -86,23 +125,21 @@ export default {
     ],
 };
 
-export const Default: FC = () => {
+export const Default: FC<{ styles: { [key in string]: unknown } }> = (args) => {
     return (
         <PayPalHostedFieldsProvider
             createOrder={() => {
                 // Server call to create the order
                 return Promise.resolve("7NE43326GP4951156");
             }}
-            notEligibleError={<NotEligibleError />}
-            styles={{
-                ".valid": { color: "#28a745" },
-                ".invalid": { color: "#dc3545" },
-            }}
+            notEligibleError={<InEligibleError />}
+            styles={args.styles}
         >
+            <LoadedCardFields />
             <PayPalHostedField
                 id="card-number"
                 className="card-field"
-                hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
+                hostedFieldType="number"
                 options={{
                     selector: "#card-number",
                     placeholder: "4111 1111 1111 1111",
@@ -111,7 +148,7 @@ export const Default: FC = () => {
             <PayPalHostedField
                 id="cvv"
                 className="card-field"
-                hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.CVV}
+                hostedFieldType="cvv"
                 options={{
                     selector: "#cvv",
                     placeholder: "123",
@@ -123,13 +160,12 @@ export const Default: FC = () => {
             <PayPalHostedField
                 id="expiration-date"
                 className="card-field"
-                hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE}
+                hostedFieldType="expirationDate"
                 options={{
                     selector: "#expiration-date",
                     placeholder: "MM/YYYY",
                 }}
             />
-            <LoadedCardFields />
         </PayPalHostedFieldsProvider>
     );
 };

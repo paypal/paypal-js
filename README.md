@@ -33,6 +33,8 @@ React developers think in terms of components and not about loading external scr
     -   [PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default)
     -   [PayPalMarks](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalmarks--default)
     -   [PayPalMessages](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalmessages--default)
+    -   [PayPalHostedFields](https://paypal.github.io/react-paypal-js/?path=/docs/paypal-paypalhostedfields--default)
+    -   [BraintreePayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/braintree-braintreepaypalbuttons--default)
 
 ## Installation
 
@@ -190,14 +192,15 @@ export default function App() {
                         flow: "checkout",
                         amount: "10.0",
                         currency: "USD",
-                        intent: "capture"
+                        intent: "capture",
                     });
                 }}
                 onApprove={(data, actions) => {
-                    return actions.braintree.tokenizePayment(data)
+                    return actions.braintree
+                        .tokenizePayment(data)
                         .then((payload) => {
                             // call server-side endpoint to finish the sale
-                        })
+                        });
                 }}
             />
         </PayPalScriptProvider>
