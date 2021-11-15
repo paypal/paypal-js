@@ -1,4 +1,4 @@
-import { findScript, insertScriptElement, processOptions, obtainErrorMessageFromServer } from "./utils";
+import { findScript, insertScriptElement, processOptions } from "./utils";
 import type { PayPalScriptOptions } from "../types/script-options";
 import type { PayPalNamespace } from "../types/index";
 
@@ -82,10 +82,6 @@ export function loadCustomScript(
             attributes,
             onSuccess: () => resolve(),
             onError: () => {
-                // TODO: add new response object shape for error messages
-                // { errorMessage: "", statusCode: 400 }
-                // { errorMessage: "" }
-
                 const defaultError = new Error(`The script "${url}" failed to load.`);
 
                 if (!window.fetch) {
@@ -99,7 +95,7 @@ export function loadCustomScript(
                         response.text().then(message => {
                             return reject({
                                 status: response.status,
-                                errorMessage: new Error(obtainErrorMessageFromServer(message))
+                                errorMessage: new Error(message)
                             });
                         });
                     })
