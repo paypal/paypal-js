@@ -120,6 +120,23 @@ export function objectToQueryString(params: StringMap): string {
     return queryString;
 }
 
+/**
+ * HACK:FIXME: This is not the ideal solution, the server is returning
+ * a string response and if in the future the server change the response format
+ * this code will breaks and not work anymore. 
+ * 
+ * This code tries to get a readable error message from the server response.
+ * 
+ * @param errorMessage  the server string error message to process
+ * @returns the detail error message
+ */
+export function obtainErrorMessageFromServer(errorMessage: string): string {
+    const startOfDoubleQuote = (errorMessage.indexOf('"') + 1);
+    const endOfDoubleQuote = (errorMessage.lastIndexOf('"'));
+
+    return errorMessage.substring(startOfDoubleQuote, endOfDoubleQuote);
+}
+
 function createScriptElement(
     url: string,
     attributes: StringMap = {}

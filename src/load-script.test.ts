@@ -166,9 +166,97 @@ describe("loadCustomScript()", () => {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            const { message: errorMessage } = err as Record<string, string>;
+            const { errorMessage: { message } } = err as Record<string, { message: string }>;
 
-            expect(errorMessage).toBe(
+            expect(message).toBe(
+                'The script "https://www.example.com/index.js" failed to load.'
+            );
+        }
+    });
+
+    test("should throw an error when the script fails to load taking the response message", async () => {
+        window.fetch = jest.fn().mockResolvedValue({
+            status: 400,
+            text: () => Promise.resolve(`
+                throw new Error("SDK Validation error: 'Expected client-id to be passed'" );
+            
+                /* Original Error:
+            
+                Expected client-id to be passed (debug id: f124435555fb3)
+            
+                */`)
+        });
+
+        insertScriptElementSpy.mockImplementation(({ onError }) => {
+            process.nextTick(() => onError && onError("failed to load"));
+        });
+
+        try {
+            await loadCustomScript({ url: "https://www.example.com/index.js" });
+        } catch (err) {
+            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            const { errorMessage: { message } } = err as Record<string, { message: string }>;
+
+            expect(message).toBe(
+                "SDK Validation error: 'Expected client-id to be passed'"
+            );
+        }
+    });
+
+    test("should throw an error when the script fails to load because invalid client-id", async () => {
+        window.fetch = jest.fn().mockResolvedValue({
+            status: 400,
+            text: () => Promise.resolve(`
+                throw new Error("SDK Validation error: 'client-id not recognized for either production or sandbox: djhhjfg'" );
+
+                /* Original Error:
+                
+                client-id not recognized for either production or sandbox: djhhjfg (debug id: ab31131130723)
+                
+                */`)
+        });
+
+        insertScriptElementSpy.mockImplementation(({ onError }) => {
+            process.nextTick(() => onError && onError("failed to load"));
+        });
+
+        try {
+            await loadCustomScript({ url: "https://www.example.com/index.js" });
+        } catch (err) {
+            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            const { errorMessage: { message } } = err as Record<string, { message: string }>;
+
+            expect(message).toBe(
+                "SDK Validation error: 'client-id not recognized for either production or sandbox: djhhjfg'"
+            );
+        }
+    });
+
+    test("should throw an error when the script fails to load catching an unexpected behavior", async () => {
+        // eslint-disable-next-line compat/compat
+        window.fetch = jest.fn().mockRejectedValue({
+            status: 500,
+            text: () => Promise.resolve(`
+                throw new Error("SDK Validation error: 'Expected client-id to be passed'" );
+            
+                /* Original Error:
+            
+                Expected client-id to be passed (debug id: f124435555fb3)
+            
+                */`)
+        });
+
+        insertScriptElementSpy.mockImplementation(({ onError }) => {
+            process.nextTick(() => onError && onError("failed to load"));
+        });
+
+        try {
+            await loadCustomScript({ url: "https://www.example.com/index.js" });
+        } catch (err) {
+            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            const { errorMessage: { message } } = err as Record<string, { message: string }>;
+
+            expect(message).toBe(
                 'The script "https://www.example.com/index.js" failed to load.'
             );
         }

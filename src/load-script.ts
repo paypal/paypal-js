@@ -1,6 +1,7 @@
-import { findScript, insertScriptElement, processOptions } from "./utils";
+import { findScript, insertScriptElement, processOptions, obtainErrorMessageFromServer } from "./utils";
 import type { PayPalScriptOptions } from "../types/script-options";
 import type { PayPalNamespace } from "../types/index";
+
 
 /**
  * Load the Paypal JS SDK script asynchronously.
@@ -92,16 +93,21 @@ export function loadCustomScript(
                         errorMessage: defaultError
                     });
                 }
-
                 // attempt to fetch() the error reason from the response body
-                fetch(url)
+                return fetch('https://www.paypal.com/sdk/js')
                     .then(response => {
-                        new PromisePonyfill((fetchErrorResolve, fetchErrorReject) => {
-                            if (response.status === 400)
-                            response.text()
-                        })
+                        response.text().then(message => {
+                            return reject({
+                                status: response.status,
+                                errorMessage: new Error(obtainErrorMessageFromServer(message))
+                            });
+                        });
                     })
-                    .then()
+                    .catch(() => {
+                        return reject({
+                            errorMessage: defaultError
+                        });
+                    });
 
             }
         });
