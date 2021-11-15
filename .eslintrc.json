@@ -25,6 +25,6 @@
         "semi": ["error", "always"]
     },
     "settings": {
-        "polyfills": ["Promise"]
+        "polyfills": ["Promise", "fetch"]
     }
 }

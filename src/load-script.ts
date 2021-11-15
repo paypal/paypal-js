@@ -80,8 +80,30 @@ export function loadCustomScript(
             url,
             attributes,
             onSuccess: () => resolve(),
-            onError: () =>
-                reject(new Error(`The script "${url}" failed to load.`)),
+            onError: () => {
+                // TODO: add new response object shape for error messages
+                // { errorMessage: "", statusCode: 400 }
+                // { errorMessage: "" }
+
+                const defaultError = new Error(`The script "${url}" failed to load.`);
+
+                if (!window.fetch) {
+                    return reject({
+                        errorMessage: defaultError
+                    });
+                }
+
+                // attempt to fetch() the error reason from the response body
+                fetch(url)
+                    .then(response => {
+                        new PromisePonyfill((fetchErrorResolve, fetchErrorReject) => {
+                            if (response.status === 400)
+                            response.text()
+                        })
+                    })
+                    .then()
+
+            }
         });
     });
 }
