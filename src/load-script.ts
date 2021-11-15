@@ -2,7 +2,6 @@ import { findScript, insertScriptElement, processOptions } from "./utils";
 import type { PayPalScriptOptions } from "../types/script-options";
 import type { PayPalNamespace } from "../types/index";
 
-
 /**
  * Load the Paypal JS SDK script asynchronously.
  *
@@ -82,30 +81,24 @@ export function loadCustomScript(
             attributes,
             onSuccess: () => resolve(),
             onError: () => {
-                const defaultError = new Error(`The script "${url}" failed to load.`);
+                const defaultError = new Error(
+                    `The script "${url}" failed to load.`
+                );
 
                 if (!window.fetch) {
-                    return reject({
-                        errorMessage: defaultError
-                    });
+                    return reject(defaultError);
                 }
                 // attempt to fetch() the error reason from the response body
-                return fetch('https://www.paypal.com/sdk/js')
-                    .then(response => {
-                        response.text().then(message => {
-                            return reject({
-                                status: response.status,
-                                errorMessage: new Error(message)
-                            });
-                        });
+                return fetch("https://www.paypal.com/sdk/js")
+                    .then((response) => {
+                        response
+                            .text()
+                            .then((message) => reject(new Error(message)));
                     })
                     .catch(() => {
-                        return reject({
-                            errorMessage: defaultError
-                        });
+                        return reject(defaultError);
                     });
-
-            }
+            },
         });
     });
 }

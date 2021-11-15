@@ -166,7 +166,7 @@ describe("loadCustomScript()", () => {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            const { errorMessage: { message } } = err as Record<string, { message: string }>;
+            const { message } = err as Record<string, string>;
 
             expect(message).toBe(
                 'The script "https://www.example.com/index.js" failed to load.'
@@ -196,7 +196,7 @@ describe("loadCustomScript()", () => {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            const { errorMessage: { message } } = err as Record<string, { message: string }>;
+            const { message } = err as Record<string, string >;
 
             expect(message).toBe(
                 errorMessage
@@ -225,7 +225,7 @@ describe("loadCustomScript()", () => {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            const { errorMessage: { message } } = err as Record<string, { message: string }>;
+            const { message } = err as Record<string, string>;
 
             expect(message).toBe(errorMessage);
         }
@@ -246,7 +246,7 @@ describe("loadCustomScript()", () => {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            const { errorMessage: { message } } = err as Record<string, { message: string }>;
+            const { message } = err as Record<string, string>;
 
             expect(message).toBe(
                 'The script "https://www.example.com/index.js" failed to load.'
