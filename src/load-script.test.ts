@@ -166,9 +166,8 @@ describe("loadCustomScript()", () => {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            const { message } = err as Record<string, string>;
 
-            expect(message).toBe(
+            expect(err).toBe(
                 'The script "https://www.example.com/index.js" failed to load.'
             );
         }
@@ -260,7 +259,7 @@ describe("loadCustomScript()", () => {
         // eslint-disable-next-line compat/compat
         window.fetch = jest.fn().mockResolvedValue({
             status: 500,
-            text: jest.fn().mockRejectedValue("throw new Error()"),
+            text: jest.fn().mockRejectedValue("new Error('Random Error')"),
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
@@ -271,9 +270,8 @@ describe("loadCustomScript()", () => {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            const { message } = err as Record<string, string>;
 
-            expect(message).toBe(
+            expect(err).toBe(
                 'The script "https://www.example.com/index.js" failed to load.'
             );
         }
