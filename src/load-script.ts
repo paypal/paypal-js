@@ -95,21 +95,15 @@ export function loadCustomScript(
                 }
                 // attempt to fetch() the error reason from the response body
                 return fetch(url)
-                    .then((response) => {
-                        response
-                            .text()
-                            .then((message) =>
-                                reject(
-                                    new Error(
-                                        parseErrorMessage(message) as string
-                                    )
-                                )
-                            )
-                            .catch((e) => reject(e));
+                    .then((response): void | string | Promise<string> => {
+                        return response.status === 200
+                            ? reject(defaultError)
+                            : response.text();
                     })
-                    .catch(() => {
-                        return reject(defaultError);
-                    });
+                    .then((message) =>
+                        reject(parseErrorMessage(message as string))
+                    )
+                    .catch((err) => reject(err.message || defaultError));
             },
         });
     });

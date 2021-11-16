@@ -186,7 +186,7 @@ describe("loadCustomScript()", () => {
         */`;
         window.fetch = jest.fn().mockResolvedValue({
             status: 400,
-            text: () => Promise.resolve(serverMessage),
+            text: jest.fn().mockResolvedValue(serverMessage),
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
@@ -197,9 +197,8 @@ describe("loadCustomScript()", () => {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            const { message } = err as Record<string, string>;
 
-            expect(message).toBe(errorMessage);
+            expect(err).toBe(errorMessage);
         }
     });
 
@@ -214,7 +213,7 @@ describe("loadCustomScript()", () => {
         */`;
         window.fetch = jest.fn().mockResolvedValue({
             status: 400,
-            text: () => Promise.resolve(serverMessage),
+            text: jest.fn().mockResolvedValue(serverMessage),
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
@@ -225,9 +224,8 @@ describe("loadCustomScript()", () => {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            const { message } = err as Record<string, string>;
 
-            expect(message).toBe(errorMessage);
+            expect(err).toBe(errorMessage);
         }
     });
 
@@ -242,7 +240,7 @@ describe("loadCustomScript()", () => {
         */`;
         window.fetch = jest.fn().mockResolvedValue({
             status: 400,
-            text: () => Promise.resolve(serverMessage),
+            text: jest.fn().mockResolvedValue(serverMessage),
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
@@ -253,17 +251,16 @@ describe("loadCustomScript()", () => {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            const { message } = err as Record<string, string>;
 
-            expect(message).toBe(errorMessage);
+            expect(err).toBe(errorMessage);
         }
     });
 
     test("should throw an error when the script fails to load catching an unexpected behavior", async () => {
         // eslint-disable-next-line compat/compat
-        window.fetch = jest.fn().mockRejectedValue({
+        window.fetch = jest.fn().mockResolvedValue({
             status: 500,
-            text: () => Promise.resolve("throw new Error()"),
+            text: jest.fn().mockRejectedValue("throw new Error()"),
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
