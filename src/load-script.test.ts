@@ -201,7 +201,7 @@ describe("loadCustomScript()", () => {
         }
     });
 
-    test.only("should throw an error when the script fails to load because invalid client-id", async () => {
+    test("should throw an error when the script fails to load because invalid client-id", async () => {
         const errorMessage = "SDK Validation error: 'client-id not recognized for either production or sandbox: djhhjfg'";
         const serverMessage = `throw new Error("${errorMessage}");
 
