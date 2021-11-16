@@ -93,10 +93,10 @@ export function loadCustomScript(
                 if (!window.fetch) {
                     return reject(defaultError);
                 }
-                // NOTE: Attempt to fetch() the error reason from the response body
+                // Fetch the error reason from the response body for validation errors
                 return fetch(url)
                     .then((response) => {
-                        // NOTE: Only catch errors from 400 status responses
+                        // Only catch 400 errors
                         if (response.status === 400) {
                             return response.text();
                         }
