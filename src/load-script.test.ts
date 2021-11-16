@@ -261,7 +261,10 @@ describe("loadCustomScript()", () => {
 
     test("should throw an error when the script fails to load and fail fetching the error message", async () => {
         // eslint-disable-next-line compat/compat
-        window.fetch = jest.fn().mockRejectedValue("Internal Server Error");
+        window.fetch = jest.fn().mockResolvedValue({
+            status: 500,
+            text: jest.fn().mockRejectedValue("Internal Server Error"),
+        });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
             process.nextTick(() => onError && onError("failed to load"));
@@ -279,11 +282,11 @@ describe("loadCustomScript()", () => {
         }
     });
 
-    test("should throw an error when the script fails to load server response is not a text", async () => {
+    test("should throw an error when the script fails to load and server response is unavailable", async () => {
         // eslint-disable-next-line compat/compat
         window.fetch = jest.fn().mockResolvedValue({
-            status: 500,
-            text: jest.fn().mockRejectedValue("throw new Error('Random Error')"),
+            status: 503,
+            text: jest.fn().mockRejectedValue("Service unavailable"),
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {

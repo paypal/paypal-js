@@ -124,13 +124,13 @@ export function objectToQueryString(params: StringMap): string {
  * Parse the error message code received from the server during the scrip load.
  * The response is always an error.
  * This function execute the received string code.
- * NOTE: Server response: throw new Error("detail message");
+ * NOTE: Server response example: throw new Error("detail message");
  * 
  * @param source the received error response from the server
  * @throw {Error} server error message
  * @returns a string or throw the exception
  */
-export function parseErrorMessage(source: string): Error | string {
+export function parseErrorMessage(source: string): string {
     return Function(`'use strict'; ${source}`)();
 }
 

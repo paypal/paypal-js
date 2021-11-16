@@ -93,23 +93,21 @@ export function loadCustomScript(
                 if (!window.fetch) {
                     return reject(defaultError);
                 }
-                // attempt to fetch() the error reason from the response body
+                // NOTE: Attempt to fetch() the error reason from the response body
                 return fetch(url)
-                    .then((response): void | string | Promise<string> => {
-                        return response.status === 200
-                            ? reject(defaultError)
-                            : response.text();
+                    .then((response) => {
+                        // NOTE: Only catch errors from 400 status responses
+                        if (response.status === 400) {
+                            return response.text();
+                        }
+                        throw defaultError;  
                     })
                     .then((message) => {
-                        const parseMessage = parseErrorMessage(
-                            message as string
-                        ) as string;
+                        const parseMessage = parseErrorMessage(message);
 
                         reject(new Error(parseMessage));
                     })
-                    .catch((err) =>
-                        reject(err instanceof Error ? err : defaultError)
-                    );
+                    .catch((err) =>  reject(err));
             },
         });
     });
