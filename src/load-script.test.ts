@@ -175,8 +175,9 @@ describe("loadCustomScript()", () => {
     });
 
     test("should throw an error when the script fails to load taking the response message", async () => {
-        const errorMessage = `
-        throw new Error("SDK Validation error: 'Expected client-id to be passed'" );
+        const errorMessage = "SDK Validation error: 'Expected client-id to be passed'";
+        const serverMessage = `
+        throw new Error("${errorMessage}");
     
         /* Original Error:
     
@@ -185,7 +186,7 @@ describe("loadCustomScript()", () => {
         */`;
         window.fetch = jest.fn().mockResolvedValue({
             status: 400,
-            text: () => Promise.resolve(errorMessage)
+            text: () => Promise.resolve(serverMessage),
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
@@ -196,16 +197,15 @@ describe("loadCustomScript()", () => {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            const { message } = err as Record<string, string >;
+            const { message } = err as Record<string, string>;
 
-            expect(message).toBe(
-                errorMessage
-            );
+            expect(message).toBe(errorMessage);
         }
     });
 
     test("should throw an error when the script fails to load because invalid client-id", async () => {
-        const errorMessage = `throw new Error("SDK Validation error: 'client-id not recognized for either production or sandbox: djhhjfg'" );
+        const errorMessage = "SDK Validation error: 'client-id not recognized for either production or sandbox: djhhjfg'";
+        const serverMessage = `throw new Error("${errorMessage}");
 
         /* Original Error:
         
@@ -214,7 +214,7 @@ describe("loadCustomScript()", () => {
         */`;
         window.fetch = jest.fn().mockResolvedValue({
             status: 400,
-            text: () => Promise.resolve(errorMessage)
+            text: () => Promise.resolve(serverMessage),
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
@@ -235,7 +235,7 @@ describe("loadCustomScript()", () => {
         // eslint-disable-next-line compat/compat
         window.fetch = jest.fn().mockRejectedValue({
             status: 500,
-            text: () => Promise.resolve("throw new Error()")
+            text: () => Promise.resolve("throw new Error()"),
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {

@@ -120,6 +120,20 @@ export function objectToQueryString(params: StringMap): string {
     return queryString;
 }
 
+/**
+ * Parse the error message code received from the server during the scrip load.
+ * The response is always an error.
+ * This function execute the received string code.
+ * NOTE: Server response: throw new Error("detail message");
+ * 
+ * @param source the received error response from the server
+ * @throw {Error} server error message
+ * @returns a string or throw the exception
+ */
+export function parseErrorMessage(source: string) {
+    return Function(`'use strict'; ${source}`)();
+}
+
 function createScriptElement(
     url: string,
     attributes: StringMap = {}

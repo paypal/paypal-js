@@ -1,4 +1,9 @@
-import { findScript, insertScriptElement, processOptions } from "./utils";
+import {
+    findScript,
+    insertScriptElement,
+    processOptions,
+    parseErrorMessage
+} from "./utils";
 import type { PayPalScriptOptions } from "../types/script-options";
 import type { PayPalNamespace } from "../types/index";
 
@@ -89,11 +94,12 @@ export function loadCustomScript(
                     return reject(defaultError);
                 }
                 // attempt to fetch() the error reason from the response body
-                return fetch("https://www.paypal.com/sdk/js")
+                return fetch(url)
                     .then((response) => {
                         response
                             .text()
-                            .then((message) => reject(new Error(message)));
+                            .then((message) => parseErrorMessage(message))
+                            .catch(e => reject(e));
                     })
                     .catch(() => {
                         return reject(defaultError);
