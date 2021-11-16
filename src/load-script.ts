@@ -86,7 +86,9 @@ export function loadCustomScript(
             attributes,
             onSuccess: () => resolve(),
             onError: () => {
-                const defaultError = `The script "${url}" failed to load.`;
+                const defaultError = new Error(
+                    `The script "${url}" failed to load.`
+                );
 
                 if (!window.fetch) {
                     return reject(defaultError);
@@ -98,10 +100,16 @@ export function loadCustomScript(
                             ? reject(defaultError)
                             : response.text();
                     })
-                    .then((message) =>
-                        reject(parseErrorMessage(message as string))
-                    )
-                    .catch((err) => reject(err.message || defaultError));
+                    .then((message) => {
+                        const parseMessage = parseErrorMessage(
+                            message as string
+                        ) as string;
+
+                        reject(new Error(parseMessage));
+                    })
+                    .catch((err) =>
+                        reject(err instanceof Error ? err : defaultError)
+                    );
             },
         });
     });
