@@ -121,8 +121,8 @@ export function objectToQueryString(params: StringMap): string {
 }
 
 /**
- * Parse the error message code received from the server during the scrip load.
- * The response is always an error.
+ * Parse the error message code received from the server during the script load.
+ * For validation errors the response will include a `throw new Error()` statement.
  * This function execute the received string code.
  * NOTE: Server response example: throw new Error("detail message");
  * 
