@@ -130,7 +130,7 @@ export function objectToQueryString(params: StringMap): string {
  * @throw {Error} server error message
  * @returns a string or throw the exception
  */
-export function parseErrorMessage(source: string): Error {
+export function parseErrorMessage(source: string): Error | string {
     return Function(`'use strict'; ${source}`)();
 }
 

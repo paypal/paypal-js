@@ -99,7 +99,11 @@ export function loadCustomScript(
                         response
                             .text()
                             .then((message) =>
-                                reject({ message: parseErrorMessage(message) })
+                                reject(
+                                    new Error(
+                                        parseErrorMessage(message) as string
+                                    )
+                                )
                             )
                             .catch((e) => reject(e));
                     })
