@@ -231,6 +231,34 @@ describe("loadCustomScript()", () => {
         }
     });
 
+    test("should throw an error when the script fails to load and server response is a plain string", async () => {
+        const errorMessage = "SDK Validation error: 'client-id not recognized for either production or sandbox: djhhjfg'";
+        const serverMessage = `return "${errorMessage}";
+
+        /* Original Error:
+        
+        client-id not recognized for either production or sandbox: djhhjfg (debug id: ab31131130723)
+        
+        */`;
+        window.fetch = jest.fn().mockResolvedValue({
+            status: 400,
+            text: () => Promise.resolve(serverMessage),
+        });
+
+        insertScriptElementSpy.mockImplementation(({ onError }) => {
+            process.nextTick(() => onError && onError("failed to load"));
+        });
+
+        try {
+            await loadCustomScript({ url: "https://www.example.com/index.js" });
+        } catch (err) {
+            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            const { message } = err as Record<string, string>;
+
+            expect(message).toBe(errorMessage);
+        }
+    });
+
     test("should throw an error when the script fails to load catching an unexpected behavior", async () => {
         // eslint-disable-next-line compat/compat
         window.fetch = jest.fn().mockRejectedValue({

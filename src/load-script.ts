@@ -2,7 +2,7 @@ import {
     findScript,
     insertScriptElement,
     processOptions,
-    parseErrorMessage
+    parseErrorMessage,
 } from "./utils";
 import type { PayPalScriptOptions } from "../types/script-options";
 import type { PayPalNamespace } from "../types/index";
@@ -98,8 +98,10 @@ export function loadCustomScript(
                     .then((response) => {
                         response
                             .text()
-                            .then((message) => parseErrorMessage(message))
-                            .catch(e => reject(e));
+                            .then((message) =>
+                                reject({ message: parseErrorMessage(message) })
+                            )
+                            .catch((e) => reject(e));
                     })
                     .catch(() => {
                         return reject(defaultError);
