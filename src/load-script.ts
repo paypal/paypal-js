@@ -101,9 +101,7 @@ export function loadCustomScript(
                     .then((message) =>
                         reject(parseErrorMessage(message as string))
                     )
-                    .catch((err) => {
-                        reject(err.message || defaultError);
-                    });
+                    .catch((err) => reject(err.message || defaultError));
             },
         });
     });
