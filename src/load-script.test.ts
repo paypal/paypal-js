@@ -282,29 +282,6 @@ describe("loadCustomScript()", () => {
         }
     });
 
-    test("should throw an error when the script fails to load and server response is unavailable", async () => {
-        // eslint-disable-next-line compat/compat
-        window.fetch = jest.fn().mockResolvedValue({
-            status: 503,
-            text: jest.fn().mockRejectedValue("Service unavailable"),
-        });
-
-        insertScriptElementSpy.mockImplementation(({ onError }) => {
-            process.nextTick(() => onError && onError("failed to load"));
-        });
-
-        try {
-            await loadCustomScript({ url: "https://www.example.com/index.js" });
-        } catch (err) {
-            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            const { message } = err as Record<string, string>;
-
-            expect(message).toBe(
-                'The script "https://www.example.com/index.js" failed to load.'
-            );
-        }
-    });
-
     test("should use the provided promise ponyfill", () => {
         const PromisePonyfill = jest.fn(() => {
             return {
