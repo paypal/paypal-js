@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/paypal/paypal-js/compare/v4.1.0...v4.2.0) (2021-11-17)
+
+### Features
+
+-   useful error message for failed script loads ([#128](https://github.com/paypal/paypal-js/issues/128)) ([a64945b](https://github.com/paypal/paypal-js/commit/a64945b58595b450045726e304a252881b149379))
+
+### Bug Fixes
+
+-   **ie11:** remove usage on Object.assign ([76509ca](https://github.com/paypal/paypal-js/commit/76509ca0c4166c93428444b746aaf8f4bfd15dae))
+
 ## [4.1.0](https://github.com/paypal/paypal-js/compare/v4.0.12...v4.1.0) (2021-10-06)
 
 ### Features
