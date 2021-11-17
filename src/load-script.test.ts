@@ -166,11 +166,120 @@ describe("loadCustomScript()", () => {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
-            const { message: errorMessage } = err as Record<string, string>;
+            const { message } = err as Record<string, string>;
 
-            expect(errorMessage).toBe(
+            expect(message).toBe(
                 'The script "https://www.example.com/index.js" failed to load.'
             );
+        }
+    });
+
+    test("should throw an error when the script fails to load taking the response message", async () => {
+        const errorMessage =
+            "Expected client-id to be passed (debug id: f124435555fb3)";
+        const serverMessage = `
+        throw new Error("SDK Validation error: 'Expected client-id to be passed'");
+    
+        /* Original Error:
+    
+        ${errorMessage}
+    
+        */`;
+        window.fetch = jest.fn().mockResolvedValue({
+            status: 400,
+            text: jest.fn().mockResolvedValue(serverMessage),
+        });
+
+        insertScriptElementSpy.mockImplementation(({ onError }) => {
+            process.nextTick(() => onError && onError("failed to load"));
+        });
+
+        try {
+            await loadCustomScript({ url: "https://www.example.com/index.js" });
+        } catch (err) {
+            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            const { message } = err as Record<string, string>;
+
+            expect(message).toBe(errorMessage);
+        }
+    });
+
+    test("should throw an error when the script fails to load because invalid client-id", async () => {
+        const errorMessage =
+            "client-id not recognized for either production or sandbox: djhhjfg (debug id: ab31131130723)";
+        const serverMessage = `throw new Error("SDK Validation error: 'client-id not recognized for either production or sandbox: djhhjfg'");
+
+        /* Original Error:
+        
+        ${errorMessage}
+        
+        */`;
+        window.fetch = jest.fn().mockResolvedValue({
+            status: 400,
+            text: jest.fn().mockResolvedValue(serverMessage),
+        });
+
+        insertScriptElementSpy.mockImplementation(({ onError }) => {
+            process.nextTick(() => onError && onError("failed to load"));
+        });
+
+        try {
+            await loadCustomScript({ url: "https://www.example.com/index.js" });
+        } catch (err) {
+            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            const { message } = err as Record<string, string>;
+
+            expect(message).toBe(errorMessage);
+        }
+    });
+
+    test("should throw an error when the script fails to load and server response is a plain string", async () => {
+        const errorMessage =
+            "This is a custom error message: djhhjfg (debug id: ab31131130723)";
+        const serverMessage = `Random text here we do not process it: 'This text is ignore'";
+
+        /* Original Error:
+        
+        ${errorMessage}
+        
+        */`;
+        window.fetch = jest.fn().mockResolvedValue({
+            status: 400,
+            text: jest.fn().mockResolvedValue(serverMessage),
+        });
+
+        insertScriptElementSpy.mockImplementation(({ onError }) => {
+            process.nextTick(() => onError && onError("failed to load"));
+        });
+
+        try {
+            await loadCustomScript({ url: "https://www.example.com/index.js" });
+        } catch (err) {
+            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            const { message } = err as Record<string, string>;
+
+            expect(message).toBe(errorMessage);
+        }
+    });
+
+    test("should throw an error when the script fails to load and fail fetching the error message", async () => {
+        // eslint-disable-next-line compat/compat
+        window.fetch = jest.fn().mockResolvedValue({
+            status: 500,
+            text: jest.fn().mockResolvedValue("Internal Server Error"),
+        });
+
+        insertScriptElementSpy.mockImplementation(({ onError }) => {
+            process.nextTick(() => onError && onError("failed to load"));
+        });
+
+        try {
+            await loadCustomScript({ url: "https://www.example.com/index.js" });
+        } catch (err) {
+            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            const { message } = err as Record<string, string>;
+
+            expect(message).toBe("Internal Server Error");
         }
     });
 

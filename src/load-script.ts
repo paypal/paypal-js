@@ -1,4 +1,9 @@
-import { findScript, insertScriptElement, processOptions } from "./utils";
+import {
+    findScript,
+    insertScriptElement,
+    processOptions,
+    parseErrorMessage,
+} from "./utils";
 import type { PayPalScriptOptions } from "../types/script-options";
 import type { PayPalNamespace } from "../types/index";
 
@@ -80,8 +85,30 @@ export function loadCustomScript(
             url,
             attributes,
             onSuccess: () => resolve(),
-            onError: () =>
-                reject(new Error(`The script "${url}" failed to load.`)),
+            onError: () => {
+                const defaultError = new Error(
+                    `The script "${url}" failed to load.`
+                );
+
+                if (!window.fetch) {
+                    return reject(defaultError);
+                }
+                // Fetch the error reason from the response body for validation errors
+                return fetch(url)
+                    .then((response) => {
+                        if (response.status === 200) {
+                            reject(defaultError);
+                        }
+                        return response.text();
+                    })
+                    .then((message) => {
+                        const parseMessage = parseErrorMessage(message);
+                        reject(new Error(parseMessage));
+                    })
+                    .catch((err) => {
+                        reject(err);
+                    });
+            },
         });
     });
 }
