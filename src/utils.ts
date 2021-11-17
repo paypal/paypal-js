@@ -122,16 +122,18 @@ export function objectToQueryString(params: StringMap): string {
 
 /**
  * Parse the error message code received from the server during the script load.
- * For validation errors the response will include a `throw new Error()` statement.
- * This function execute the received string code.
- * NOTE: Server response example: throw new Error("detail message");
- * 
- * @param source the received error response from the server
- * @throw {Error} server error message
- * @returns a string or throw the exception
+ * This function search for the occurrence of this specific string "/* Original Error:".
+ *
+ * @param message the received error response from the server
+ * @returns the content of the message if the string string was found.
+ *          The whole message otherwise
  */
-export function parseErrorMessage(source: string): string {
-    return Function(`'use strict'; ${source}`)();
+export function parseErrorMessage(message: string): string {
+    const originalErrorText = message.split("/* Original Error:")[1];
+
+    return originalErrorText
+        ? originalErrorText.replace(/\n/g, "").replace("*/", "").trim()
+        : message;
 }
 
 function createScriptElement(

@@ -96,16 +96,18 @@ export function loadCustomScript(
                 // Fetch the error reason from the response body for validation errors
                 return fetch(url)
                     .then((response) => {
-                        if (response.status === 400) {
-                            return response.text();
+                        if (response.status === 200) {
+                            reject(defaultError);
                         }
-                        throw defaultError;
+                        return response.text();
                     })
                     .then((message) => {
                         const parseMessage = parseErrorMessage(message);
                         reject(new Error(parseMessage));
                     })
-                    .catch((err) => reject(err));
+                    .catch((err) => {
+                        reject(err);
+                    });
             },
         });
     });
