@@ -174,6 +174,28 @@ describe("loadCustomScript()", () => {
         }
     });
 
+    test("should throw the default error when the script fails to load but getting the error has a success response", async () => {
+        expect.assertions(2);
+        window.fetch = jest.fn().mockResolvedValue({
+            status: 200
+        });
+
+        insertScriptElementSpy.mockImplementation(({ onError }) => {
+            process.nextTick(() => onError && onError("failed to load"));
+        });
+
+        try {
+            await loadCustomScript({ url: "https://www.example.com/index.js" });
+        } catch (err) {
+            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            const { message } = err as Record<string, string>;
+
+            expect(message).toBe(
+                'The script "https://www.example.com/index.js" failed to load.'
+            );
+        }
+    });
+
     test("should throw an error when the script fails to load taking the response message", async () => {
         const errorMessage =
             "Expected client-id to be passed (debug id: f124435555fb3)";
