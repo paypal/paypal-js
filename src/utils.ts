@@ -14,12 +14,12 @@ export function findScript(
     const nextScript = createScriptElement(url, attributes);
 
     // ignore the data-uid-auto attribute that gets auto-assigned to every script tag
-    const currentScriptDataset = Object.assign({}, currentScript.dataset);
-    delete currentScriptDataset.uidAuto;
+    const currentScriptClone = currentScript.cloneNode() as HTMLScriptElement;
+    delete currentScriptClone.dataset.uidAuto;
 
     // check if the new script has the same number of data attributes
     if (
-        Object.keys(currentScriptDataset).length !==
+        Object.keys(currentScriptClone.dataset).length !==
         Object.keys(nextScript.dataset).length
     ) {
         return null;
@@ -28,8 +28,8 @@ export function findScript(
     let isExactMatch = true;
 
     // check if the data attribute values are the same
-    Object.keys(currentScriptDataset).forEach((key) => {
-        if (currentScriptDataset[key] !== nextScript.dataset[key]) {
+    Object.keys(currentScriptClone.dataset).forEach((key) => {
+        if (currentScriptClone.dataset[key] !== nextScript.dataset[key]) {
             isExactMatch = false;
         }
     });
@@ -68,28 +68,19 @@ export function processOptions(options: PayPalScriptOptions): {
         delete options.sdkBaseURL;
     }
 
-    const processedMerchantIDAttributes = processMerchantID(
-        options["merchant-id"],
-        options["data-merchant-id"]
-    );
+    processMerchantID(options);
 
-    const newOptions = Object.assign(
-        {},
-        options,
-        processedMerchantIDAttributes
-    ) as PayPalScriptOptions;
-
-    const { queryParams, dataAttributes } = Object.keys(newOptions)
+    const { queryParams, dataAttributes } = Object.keys(options)
         .filter((key) => {
             return (
-                typeof newOptions[key] !== "undefined" &&
-                newOptions[key] !== null &&
-                newOptions[key] !== ""
+                typeof options[key] !== "undefined" &&
+                options[key] !== null &&
+                options[key] !== ""
             );
         })
         .reduce(
             (accumulator, key) => {
-                const value = newOptions[key].toString();
+                const value = options[key].toString();
 
                 if (key.substring(0, 5) === "data-") {
                     accumulator.dataAttributes[key] = value;
@@ -154,13 +145,10 @@ function createScriptElement(
     return newScript;
 }
 
-function processMerchantID(
-    merchantID: string[] | string | undefined,
-    dataMerchantID: string | undefined
-): {
-    "merchant-id": string | undefined;
-    "data-merchant-id": string | undefined;
-} {
+function processMerchantID(options: PayPalScriptOptions): PayPalScriptOptions {
+    const { "merchant-id": merchantID, "data-merchant-id": dataMerchantID } =
+        options;
+
     let newMerchantID = "";
     let newDataMerchantID = "";
 
@@ -181,8 +169,8 @@ function processMerchantID(
         newDataMerchantID = dataMerchantID;
     }
 
-    return {
-        "merchant-id": newMerchantID,
-        "data-merchant-id": newDataMerchantID,
-    };
+    options["merchant-id"] = newMerchantID;
+    options["data-merchant-id"] = newDataMerchantID;
+
+    return options;
 }
