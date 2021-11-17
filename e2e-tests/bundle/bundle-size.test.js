@@ -1,8 +1,8 @@
 import filesize from "filesize";
 import fs from "fs";
 
-const maxBundleSizeInKiloBytes = 3.7;
-const maxLegacyBundleSizeInKiloBytes = 7.1;
+const maxBundleSizeInKiloBytes = 4;
+const maxLegacyBundleSizeInKiloBytes = 7.5;
 
 describe("bundle size", () => {
     it(`paypal-js.min.js should be less than ${maxBundleSizeInKiloBytes} KB`, () => {
