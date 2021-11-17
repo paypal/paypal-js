@@ -3,6 +3,7 @@ import {
     insertScriptElement,
     objectToQueryString,
     processOptions,
+    parseErrorMessage
 } from "./utils";
 
 jest.useFakeTimers();
@@ -258,4 +259,26 @@ describe("insertScriptElement()", () => {
             expect(onErrorMock).toBeCalled();
         });
     });
+});
+
+
+describe("parseErrorMessage", () => {
+    test("should return the context of the server error message", () => {
+        const errorMessage =
+            "client-id not recognized for either production or sandbox: djhhjfg (debug id: ab31131130723)";
+        const serverMessage = `throw new Error("SDK Validation error: 'client-id not recognized for either production or sandbox: djhhjfg'");
+
+        /* Original Error:
+        
+        ${errorMessage}
+        
+        */`;
+        expect(parseErrorMessage(serverMessage)).toBe(errorMessage);
+    });
+
+    test("should return the exact same message use as parameter", () => {
+        const serverMessage = "Internal Server Error";
+        expect(parseErrorMessage(serverMessage)).toBe(serverMessage);
+    });
+
 });
