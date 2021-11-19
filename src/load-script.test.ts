@@ -177,7 +177,7 @@ describe("loadCustomScript()", () => {
     test("should throw the default error when the script fails to load but getting the error has a success response", async () => {
         expect.assertions(2);
         window.fetch = jest.fn().mockResolvedValue({
-            status: 200
+            status: 200,
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
