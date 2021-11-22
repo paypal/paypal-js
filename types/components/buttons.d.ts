@@ -1,5 +1,6 @@
 import type { CreateOrderRequestBody, OrderResponseBody } from "../apis/orders";
 import type { CreateSubscriptionRequestBody } from "../apis/subscriptions";
+import type { ShippingAddress, SelectedShippingOption } from "../apis/shipping";
 
 type UnknownObject = Record<string, unknown>;
 
@@ -48,6 +49,24 @@ export type OnApproveActions = {
 
 export type OnCancelledActions = {
     redirect: () => void;
+};
+
+export type OnShippingChangeData = {
+    orderID?: string,
+    paymentID?: string,
+    paymentToken?: string,
+    shipping_address?: ShippingAddress,
+    selected_shipping_option?: SelectedShippingOption,
+    buyerAccessToken?: string,
+    forceRestAPI: boolean
+};
+
+export type OnShippingChangeActions = {
+    resolve: () => Promise<void>,
+    reject: () => Promise<void>,
+    order: {
+        patch: () => Promise<OrderResponseBody>
+    }
 };
 
 export interface PayPalButtonsComponentOptions {
@@ -105,7 +124,10 @@ export interface PayPalButtonsComponentOptions {
     /**
      * Called when the buyer changes their shipping address on PayPal.
      */
-    onShippingChange?: () => void;
+    onShippingChange?: (
+        data: OnShippingChangeData,
+        actions: OnShippingChangeActions
+    ) => Promise<string>;
     /**
      * [Styling options](https://developer.paypal.com/docs/business/checkout/reference/style-guide/#customize-the-payment-buttons) for customizing the button appearance.
      */
