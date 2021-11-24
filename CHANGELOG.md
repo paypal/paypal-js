@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.1](https://github.com/paypal/paypal-js/compare/v4.2.0...v4.2.1) (2021-11-24)
+
+### Bug Fixes
+
+-   add types for onShippingChange callback ([#135](https://github.com/paypal/paypal-js/issues/135)) ([65c5302](https://github.com/paypal/paypal-js/commit/65c5302276925a920ae2bec19aa7aebef8d0aaae))
+
 ## [4.2.0](https://github.com/paypal/paypal-js/compare/v4.1.0...v4.2.0) (2021-11-17)
 
 ### Features
