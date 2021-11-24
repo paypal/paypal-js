@@ -127,7 +127,7 @@ export interface PayPalButtonsComponentOptions {
     onShippingChange?: (
         data: OnShippingChangeData,
         actions: OnShippingChangeActions
-    ) => Promise<string>;
+    ) => Promise<void>;
     /**
      * [Styling options](https://developer.paypal.com/docs/business/checkout/reference/style-guide/#customize-the-payment-buttons) for customizing the button appearance.
      */
