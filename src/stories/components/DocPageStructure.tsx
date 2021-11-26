@@ -14,6 +14,12 @@ import type { DocsContextProps } from "@storybook/addon-docs/dist/ts3.9/blocks";
 import CustomSandpack from "./CustomSandpack";
 import { SANDPACK_STYLES } from "../constants";
 
+/**
+ * Component to override the default DocPage structure from the storybook
+ *
+ * @param param custom props and context
+ * @returns an Element with the DocPage new structure
+ */
 const DocPageStructure = ({
     context,
     code = "",

@@ -24,7 +24,21 @@ export default {
     title: "PayPal/VenmoButton",
     parameters: {
         controls: { expanded: true },
-        docs: { source: { type: "dynamic" } },
+        docs: {
+            source: { type: "dynamic" },
+            description: {
+                component: `Pay with Venmo offers a simplified mobile checkout experience at no additional cost to you.
+
+Your buyers get:
+
+- A streamlined checkout process
+- Splitting and sharing of purchases.
+
+It relies on the \`<PayPalScriptProvider />\` parent component for managing state related to loading the JS SDK script.
+For more information, see [Pay with Venmo](https://developer.paypal.com/docs/business/checkout/pay-with-venmo/)
+`,
+            },
+        },
     },
     argTypes: {
         style: {
@@ -102,11 +116,10 @@ export const Default: FC<{
     );
 };
 
-
 /********************
  * OVERRIDE STORIES *
  *******************/
- (Default as Story).parameters = {
+(Default as Story).parameters = {
     docs: {
         container: ({ context }: { context: StoryContext }) => (
             <DocPageStructure

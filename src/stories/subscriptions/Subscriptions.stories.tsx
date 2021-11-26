@@ -86,6 +86,16 @@ export default {
     id: "example/Subscriptions",
     title: "PayPal/Subscriptions",
     parameters: {
+        docs: {
+            description: {
+                component: `You can use billing plans and subscriptions to create subscriptions that process recurring PayPal payments for physical or digital goods, or services.
+A plan includes pricing and billing cycle information that defines the amount and frequency of charge for a subscription.
+You can also define a fixed plan, such as a $5 basic plan or a volume or graduated-based plan with pricing tiers based on the quantity purchased.
+
+It relies on the \`<PayPalScriptProvider />\` parent component for managing state related to loading the JS SDK script.
+For more information, see [Subscriptions](https://developer.paypal.com/docs/subscriptions/)`,
+            },
+        },
         controls: { expanded: true },
     },
     argTypes: {
@@ -100,7 +110,7 @@ export default {
                 },
             },
             description: "Change the PayPal checkout intent.",
-        }
+        },
     },
     args: {
         type: SUBSCRIPTION,
@@ -128,13 +138,12 @@ export default {
 
 const PLAN_ID = "P-3RX065706M3469222L5IFM4I";
 
-export const Default: FC<{ type: string; }> = ({
-    type,
-}) => {
+export const Default: FC<{ type: string }> = ({ type }) => {
     // Remember the type and amount props are received from the control panel
     const [_, dispatch] = usePayPalScriptReducer();
     const isSubscription = type === SUBSCRIPTION;
-    const buttonOptions = isSubscription ? buttonSubscriptionProps
+    const buttonOptions = isSubscription
+        ? buttonSubscriptionProps
         : buttonOrderProps();
     useEffect(() => {
         dispatch({
@@ -147,7 +156,7 @@ export const Default: FC<{ type: string; }> = ({
         <PayPalButtons
             forceReRender={[type]}
             {...(buttonOptions as PayPalButtonsComponentProps)}
-            style={{ label: isSubscription ? "subscribe": undefined }}
+            style={{ label: isSubscription ? "subscribe" : undefined }}
         >
             <InEligibleError />
         </PayPalButtons>
@@ -164,6 +173,6 @@ export const Default: FC<{ type: string; }> = ({
                 context={context}
                 code={getDefaultCode(context.args.type)}
             />
-        )
+        ),
     },
 };

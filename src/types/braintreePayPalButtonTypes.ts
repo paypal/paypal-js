@@ -31,7 +31,8 @@ export interface BraintreePayPalButtonsComponentProps
         "createOrder" | "onApprove" | "createBillingAgreement"
     > {
     /**
-     * The createOrder actions include the Braintree SDK paypalCheckoutInstance as `actions.braintree`
+     * The createOrder actions include the Braintree SDK paypalCheckoutInstance as `actions.braintree`.
+     * [createOrder docs](https://developer.paypal.com/sdk/js-sdk/reference/#createorder).
      */
     createOrder?: (
         data: Record<string, unknown>,
