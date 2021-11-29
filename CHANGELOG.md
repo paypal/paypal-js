@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.5.0](https://github.com/paypal/react-paypal-js/compare/v7.4.2...v7.5.0) (2021-11-29)
+
+### Features
+
+-   log loading errors for the JS SDK script ([#212](https://github.com/paypal/react-paypal-js/issues/212)) ([77973f0](https://github.com/paypal/react-paypal-js/commit/77973f0739e740ecbc4155cd79f733b9e2824484))
+
 ### [7.4.2](https://github.com/paypal/react-paypal-js/compare/v7.4.1...v7.4.2) (2021-10-15)
 
 ### Bug Fixes
