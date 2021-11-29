@@ -1,4 +1,4 @@
-import { FUNDING } from "../index";
+import { FUNDING, CURRENCY } from "@paypal/sdk-constants/dist/module";
 
 export const COMPONENT_PROPS_CATEGORY = { table: { category: "Props" } };
 export const COMPONENT_EVENTS = "Events";
@@ -40,16 +40,11 @@ export const ARG_TYPE_AMOUNT = {
 };
 
 export const ARG_TYPE_CURRENCY = {
-    options: ["USD", "EUR", "CAD"],
+    options: Object.values(CURRENCY),
     description:
         "This is not a property from PayPalButtons. It is custom control to change the currency create create a PayPal order.",
     control: {
         type: "select",
-        labels: {
-            USD: "United State Dollar",
-            EUR: "Euro",
-            CAD: "Canadian Dollar",
-        },
     },
     table: {
         category: "Custom",
@@ -59,22 +54,10 @@ export const ARG_TYPE_CURRENCY = {
 };
 
 export const FUNDING_SOURCE_ARG = {
-    options: [
-        FUNDING.PAYPAL,
-        FUNDING.CARD,
-        FUNDING.CREDIT,
-        FUNDING.PAYLATER,
-        FUNDING.VENMO,
-        undefined,
-    ],
+    options: [...Object.values(FUNDING), undefined],
     control: {
         type: "select",
         labels: {
-            [FUNDING.PAYPAL]: "paypal",
-            [FUNDING.CARD]: "card",
-            [FUNDING.CREDIT]: "credit",
-            [FUNDING.PAYLATER]: "paylater",
-            [FUNDING.VENMO]: "venmo",
             undefined: "all",
         },
     },
