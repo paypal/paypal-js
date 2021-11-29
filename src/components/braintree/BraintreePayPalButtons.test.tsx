@@ -16,6 +16,7 @@ import {
     EMPTY_PROVIDER_CONTEXT_CLIENT_TOKEN_ERROR_MESSAGE,
     BRAINTREE_SOURCE,
     BRAINTREE_PAYPAL_CHECKOUT_SOURCE,
+    LOAD_SCRIPT_ERROR,
 } from "../../constants";
 
 import { FUNDING } from "../../index";
@@ -208,8 +209,7 @@ describe("Braintree PayPal button fail in mount process", () => {
         await waitFor(() => expect(onError).toBeCalled());
         expect(onError.mock.calls[0][0]).toEqual(
             expect.objectContaining({
-                message:
-                    "An error occurred when loading the Braintree scripts: Error: Server Error",
+                message: `${LOAD_SCRIPT_ERROR} Error: Server Error`,
             })
         );
         spyConsoleError.mockRestore();
@@ -239,8 +239,7 @@ describe("Braintree PayPal button fail in mount process", () => {
         await waitFor(() => expect(onError).toBeCalled());
         expect(onError.mock.calls[0][0]).toEqual(
             expect.objectContaining({
-                message:
-                    "An error occurred when loading the Braintree scripts: Error: Cannot create the Braintree client",
+                message: `${LOAD_SCRIPT_ERROR} Error: Cannot create the Braintree client`,
             })
         );
         spyConsoleError.mockRestore();
@@ -268,8 +267,7 @@ describe("Braintree PayPal button fail in mount process", () => {
         await waitFor(() => expect(onError).toBeCalled());
         expect(onError.mock.calls[0][0]).toEqual(
             expect.objectContaining({
-                message:
-                    "An error occurred when loading the Braintree scripts: TypeError: Cannot read property 'client' of null",
+                message: `${LOAD_SCRIPT_ERROR} TypeError: Cannot read property 'client' of null`,
             })
         );
         spyConsoleError.mockRestore();
