@@ -1,29 +1,29 @@
 interface PayPalScriptQueryParameters {
+    "buyer-country"?: string;
     "client-id": string;
+    commit?: boolean;
+    components?: string;
+    currency?: string;
+    debug?: boolean | string;
+    "disable-card"?: string;
+    "disable-funding"?: string;
+    "enable-funding"?: string;
+    "integration-date"?: string;
+    intent?: string;
+    locale?: string;
     // loadScript() supports an array and will convert it
     // to the correct merchant-id and data-merchant-id string values
     "merchant-id"?: string[] | string;
-    currency?: string;
-    intent?: string;
-    commit?: boolean;
     vault?: boolean | string;
-    components?: string;
-    "disable-funding"?: string;
-    "enable-funding"?: string;
-    "disable-card"?: string;
-    "integration-date"?: string;
-    debug?: boolean | string;
-    "buyer-country"?: string;
-    locale?: string;
 }
 
 interface PayPalScriptDataAttributes {
-    "data-partner-attribution-id"?: string;
-    "data-csp-nonce"?: string;
-    "data-page-type"?: string;
     "data-client-token"?: string;
+    "data-csp-nonce"?: string;
     "data-merchant-id"?: string;
     "data-namespace"?: string;
+    "data-page-type"?: string;
+    "data-partner-attribution-id"?: string;
     "data-sdk-integration-source"?: string;
 }
 
