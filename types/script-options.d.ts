@@ -20,11 +20,13 @@ interface PayPalScriptQueryParameters {
 interface PayPalScriptDataAttributes {
     "data-client-token"?: string;
     "data-csp-nonce"?: string;
+    "data-client-metadata-id"?: string;
     "data-merchant-id"?: string;
     "data-namespace"?: string;
     "data-page-type"?: string;
     "data-partner-attribution-id"?: string;
     "data-sdk-integration-source"?: string;
+    "data-user-id-token"?: string;
 }
 
 export interface PayPalScriptOptions
