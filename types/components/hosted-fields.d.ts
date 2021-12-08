@@ -1,5 +1,3 @@
-import type { CreateOrderRequestBody } from "../apis/orders";
-
 type UnknownObject = Record<string, unknown>;
 
 type HostedFieldsCardTypes = {
@@ -59,12 +57,6 @@ type HostedFieldsTokenize = {
         countryCodeAlpha2?: string;
         countryCodeAlpha3?: string;
         countryName?: string;
-    };
-};
-
-export type CreateOrderActions = {
-    order: {
-        create: (options: CreateOrderRequestBody) => Promise<string>;
     };
 };
 
