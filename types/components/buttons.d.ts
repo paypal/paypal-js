@@ -52,21 +52,21 @@ export type OnCancelledActions = {
 };
 
 export type OnShippingChangeData = {
-    orderID?: string,
-    paymentID?: string,
-    paymentToken?: string,
-    shipping_address?: ShippingAddress,
-    selected_shipping_option?: SelectedShippingOption,
-    buyerAccessToken?: string,
-    forceRestAPI: boolean
+    orderID?: string;
+    paymentID?: string;
+    paymentToken?: string;
+    shipping_address?: ShippingAddress;
+    selected_shipping_option?: SelectedShippingOption;
+    buyerAccessToken?: string;
+    forceRestAPI: boolean;
 };
 
 export type OnShippingChangeActions = {
-    resolve: () => Promise<void>,
-    reject: () => Promise<void>,
+    resolve: () => Promise<void>;
+    reject: () => Promise<void>;
     order: {
-        patch: () => Promise<OrderResponseBody>
-    }
+        patch: () => Promise<OrderResponseBody>;
+    };
 };
 
 export interface PayPalButtonsComponentOptions {
