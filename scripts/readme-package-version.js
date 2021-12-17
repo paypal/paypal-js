@@ -1,6 +1,6 @@
 const { readFileSync, writeFileSync } = require("fs");
 const { join } = require("path");
-const { exec } = require("shelljs");
+const { exec } = require("child_process");
 
 const { version: newVersion } = require("../package.json");
 
@@ -12,4 +12,8 @@ const newReadmeText = readmeText.replace(
 );
 
 writeFileSync(readmeFile, newReadmeText, "utf-8");
-exec(`git add ${readmeFile}`);
+exec(`git add ${readmeFile}`, (error) => {
+    if (error) {
+        console.error(`exec error: ${error}`);
+    }
+});
