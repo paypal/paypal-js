@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.2](https://github.com/paypal/paypal-js/compare/v4.2.1...v4.2.2) (2021-12-17)
+
+### Bug Fixes
+
+-   **types:** add additional sdk attributes ([48abf67](https://github.com/paypal/paypal-js/commit/48abf672dd7ad6759d46116ee315da8735450e82))
+-   **types:** remove unused CreateOrderActions type for hostedFields ([#137](https://github.com/paypal/paypal-js/issues/137)) ([63b675c](https://github.com/paypal/paypal-js/commit/63b675c1da2017974f097f5bf2da077dbf6ff49a))
+
 ### [4.2.1](https://github.com/paypal/paypal-js/compare/v4.2.0...v4.2.1) (2021-11-24)
 
 ### Bug Fixes
