@@ -165,7 +165,45 @@ To learn more, check out the [dynamic currency example in storybook](https://pay
 
 ### PayPalButtons
 
-The `<PayPalButtons />` component is fully documented in Storybook. Checkout the docs page for the [PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default) to learn more about the available props.
+The `<PayPalButtons />` component is [documented in Storybook](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default).
+
+Here's an example:
+
+```jsx
+// App.js
+import {
+    PayPalScriptProvider,
+    PayPalButtons,
+} from "@paypal/react-paypal-js";
+
+export default function App() {
+  return (
+    <PayPalScriptProvider options={{ "client-id": "test" }}>
+        <PayPalButtons
+            createOrder={(data, actions) => {
+                return actions.order.create({
+                    purchase_units: [
+                        {
+                            amount: {
+                                value: "1.99",
+                            }
+                        }
+                    ]
+                });
+            }}
+            onApprove={(data, actions) => {
+                return actions.order.capture().then((details) => {
+                    const name = details.payer.name.given_name;
+                    alert(`Transaction completed by ${name}`);
+                });
+            }}
+        />
+    </PayPalScriptProvider>
+   );
+}
+```
+
+To learn more about other available props, see the [PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default) docs.
 
 ### BraintreePayPalButtons
 
@@ -208,7 +246,7 @@ export default function App() {
 }
 ```
 
-Checkout the docs page for the [BraintreePayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-braintreepaypalbuttons--default) to learn more about the available props.
+Check out the docs page for the [BraintreePayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-braintreepaypalbuttons--default) to learn more about the available props.
 
 ### PayPal Hosted Fields
 
