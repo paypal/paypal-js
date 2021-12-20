@@ -14,7 +14,7 @@ export const LOAD_SCRIPT_ERROR = "Failed to load the PayPal JS SDK script.";
 export const EMPTY_PROVIDER_CONTEXT_CLIENT_TOKEN_ERROR_MESSAGE =
     "A client token wasn't found in the provider parent component";
 
-const braintreeVersion = "3.81.0";
+const braintreeVersion = "3.84.0";
 export const BRAINTREE_SOURCE = `https://js.braintreegateway.com/web/${braintreeVersion}/js/client.min.js`;
 export const BRAINTREE_PAYPAL_CHECKOUT_SOURCE = `https://js.braintreegateway.com/web/${braintreeVersion}/js/paypal-checkout.min.js`;
 
