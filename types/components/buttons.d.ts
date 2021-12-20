@@ -1,6 +1,7 @@
 import type { CreateOrderRequestBody, OrderResponseBody } from "../apis/orders";
-import type { CreateSubscriptionRequestBody } from "../apis/subscriptions";
+import type { CreateSubscriptionRequestBody } from "../apis/subscriptions/subscriptions";
 import type { ShippingAddress, SelectedShippingOption } from "../apis/shipping";
+import type { SubscriptionDetail } from "../apis/subscriptions/subscriptions";
 
 type UnknownObject = Record<string, unknown>;
 
@@ -39,9 +40,13 @@ export type OnApproveData = {
 };
 
 export type OnApproveActions = {
-    order: {
+    order?: {
         capture: () => Promise<OrderResponseBody>;
         authorize: () => Promise<OrderResponseBody>;
+    };
+    subscription?: {
+        get: () => Promise<SubscriptionDetail>;
+        activate: () => Promise<void>;
     };
     redirect: (redirectURL: string) => void;
     restart: () => void;
