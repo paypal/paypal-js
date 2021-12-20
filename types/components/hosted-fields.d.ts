@@ -1,5 +1,3 @@
-type UnknownObject = Record<string, unknown>;
-
 type HostedFieldsCardTypes = {
     [key in
         | "amex"
@@ -62,9 +60,9 @@ type HostedFieldsTokenize = {
 
 export interface PayPalHostedFieldsComponentOptions {
     createOrder: () => Promise<string>;
-    onError?: (err: UnknownObject) => void;
-    styles?: UnknownObject;
-    fields?: UnknownObject;
+    onError?: (err: Record<string, unknown>) => void;
+    styles?: Record<string, unknown>;
+    fields?: Record<string, unknown>;
 }
 
 export interface HostedFieldsSubmitResponse {
@@ -140,7 +138,9 @@ export interface HostedFieldsHandler {
     /**
      * Submit the form if is valid
      */
-    submit: (options?: UnknownObject) => Promise<HostedFieldsSubmitResponse>;
+    submit: (
+        options?: Record<string, unknown>
+    ) => Promise<HostedFieldsSubmitResponse>;
     /**
      * Clean all the fields from the DOM
      */

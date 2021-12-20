@@ -16,18 +16,16 @@ import type {
 } from "./commons";
 import type { ShippingOptionType } from "../shipping";
 
-type UnknownObject = Record<string, unknown>;
-
 export type CreateSubscriptionRequestBody = {
     plan_id: string;
     start_time?: string;
     quantity?: string;
     shipping_amount?: AmountWithCurrencyCode;
-    subscriber?: UnknownObject;
+    subscriber?: Record<string, unknown>;
     auto_renewal?: boolean;
-    application_context?: UnknownObject;
+    application_context?: Record<string, unknown>;
     custom_id?: string;
-    plan?: UnknownObject;
+    plan?: Record<string, unknown>;
 };
 
 /**

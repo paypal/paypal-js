@@ -3,8 +3,6 @@ import type { CreateSubscriptionRequestBody } from "../apis/subscriptions/subscr
 import type { ShippingAddress, SelectedShippingOption } from "../apis/shipping";
 import type { SubscriptionDetail } from "../apis/subscriptions/subscriptions";
 
-type UnknownObject = Record<string, unknown>;
-
 export type CreateOrderActions = {
     order: {
         /** Used to create an order for client-side integrations. Accepts the same options as the request body of the [/v2/checkout/orders api](https://developer.paypal.com/docs/api/orders/v2/#orders-create-request-body). */
@@ -83,14 +81,14 @@ export interface PayPalButtonsComponentOptions {
      * Called on button click to set up a one-time payment. [createOrder docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#createorder).
      */
     createOrder?: (
-        data: UnknownObject,
+        data: Record<string, unknown>,
         actions: CreateOrderActions
     ) => Promise<string>;
     /**
      * Called on button click to set up a recurring payment. [createSubscription docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#createsubscription).
      */
     createSubscription?: (
-        data: UnknownObject,
+        data: Record<string, unknown>,
         actions: CreateSubscriptionActions
     ) => Promise<string>;
     /**
@@ -109,23 +107,26 @@ export interface PayPalButtonsComponentOptions {
      * Called when the buyer cancels the transaction.
      * Often used to show the buyer a [cancellation page](https://developer.paypal.com/docs/business/checkout/add-capabilities/buyer-experience/#3-show-cancellation-page).
      */
-    onCancel?: (data: UnknownObject, actions: OnCancelledActions) => void;
+    onCancel?: (
+        data: Record<string, unknown>,
+        actions: OnCancelledActions
+    ) => void;
     /**
      * Called when the button is clicked. Often used for [validation](https://developer.paypal.com/docs/checkout/integration-features/validation/).
      */
     onClick?: (
-        data: UnknownObject,
+        data: Record<string, unknown>,
         actions: OnClickActions
     ) => Promise<void> | void;
     /**
      * Catch all for errors preventing buyer checkout.
      * Often used to show the buyer an [error page](https://developer.paypal.com/docs/checkout/integration-features/handle-errors/).
      */
-    onError?: (err: UnknownObject) => void;
+    onError?: (err: Record<string, unknown>) => void;
     /**
      * Called when the buttons are initialized. The component is initialized after the iframe has successfully loaded.
      */
-    onInit?: (data: UnknownObject, actions: OnInitActions) => void;
+    onInit?: (data: Record<string, unknown>, actions: OnInitActions) => void;
     /**
      * Called when the buyer changes their shipping address on PayPal.
      */
