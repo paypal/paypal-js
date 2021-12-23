@@ -15,7 +15,7 @@ loadScript({
 
 loadScript({ "client-id": "test" })
     .then((paypal) => {
-        if (!(paypal && paypal.Buttons)) return;
+        if (!(paypal && paypal.Buttons) || !window.paypal?.Buttons) return;
 
         paypal.Buttons().render("#container");
         paypal.Buttons().render(document.createElement("div"));
@@ -37,6 +37,8 @@ loadScript({ "client-id": "test" })
                 });
             },
             onApprove: function (data, actions) {
+                if (!actions.order) return Promise.resolve();
+
                 return actions.order.capture().then((details) => {
                     console.log(details.payer.name.given_name);
                 });
@@ -61,7 +63,15 @@ loadScript({ "client-id": "test" })
             },
 
             onApprove: (data, actions) => {
+                if (!actions.order) return Promise.resolve();
+
                 return actions.order.authorize().then((authorization) => {
+                    if (
+                        !authorization.purchase_units[0].payments
+                            ?.authorizations
+                    )
+                        return Promise.resolve();
+
                     const authorizationID =
                         authorization.purchase_units[0].payments
                             .authorizations[0].id;
@@ -217,29 +227,23 @@ loadScript({ "client-id": "test" })
         paypal.Buttons({
             onInit: (data, actions) => {
                 actions.disable();
-
-                interface HandleChangeInterface extends Event {
-                    target: HTMLInputElement;
-                }
-
                 document
                     .querySelector("#check")
-                    .addEventListener(
-                        "change",
-                        (event: HandleChangeInterface) => {
-                            if (event.target.checked) {
-                                actions.enable();
-                            } else {
-                                actions.disable();
-                            }
+                    ?.addEventListener("change", (event) => {
+                        if ((event.target as HTMLInputElement).checked) {
+                            actions.enable();
+                        } else {
+                            actions.disable();
                         }
-                    );
+                    });
             },
             onClick: () => {
                 if (
-                    !document.querySelector<HTMLInputElement>("#check").checked
+                    !document.querySelector<HTMLInputElement>("#check")?.checked
                 ) {
-                    document.querySelector("#error").classList.remove("hidden");
+                    document
+                        .querySelector("#error")
+                        ?.classList.remove("hidden");
                 }
             },
         });
@@ -259,7 +263,7 @@ loadScript({ "client-id": "test" })
                             if (data.validationError) {
                                 document
                                     .querySelector("#error")
-                                    .classList.remove("hidden");
+                                    ?.classList.remove("hidden");
                                 return actions.reject();
                             } else {
                                 return actions.resolve();
@@ -271,7 +275,9 @@ loadScript({ "client-id": "test" })
 
         // standalone button integration
         // https://developer.paypal.com/docs/business/checkout/configure-payments/standalone-buttons/#2-render-all-eligible-buttons
+        if (!paypal.getFundingSources) return;
         paypal.getFundingSources().forEach((fundingSource) => {
+            if (!paypal.Buttons) return;
             const button = paypal.Buttons({
                 fundingSource: fundingSource,
             });
@@ -283,7 +289,9 @@ loadScript({ "client-id": "test" })
 
         // funding eligibility
         // https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#funding-eligibility
+        if (!paypal.rememberFunding || !paypal.FUNDING) return;
         paypal.rememberFunding([paypal.FUNDING.VENMO]);
+        if (!paypal.isFundingEligible) return;
         paypal.isFundingEligible(paypal.FUNDING.VENMO);
     })
     .catch((err) => {
@@ -292,13 +300,17 @@ loadScript({ "client-id": "test" })
 
 loadScript({ "client-id": "test", "data-namespace": "customName" }).then(
     (customObject) => {
-        customObject.Buttons();
-
         // example showing how to use the types with a custom namespace off window
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const customObjectFromWindow = (window as any)
             .customName as PayPalNamespace;
-        customObjectFromWindow.Buttons();
+
+        if (customObject?.Buttons) {
+            customObject.Buttons();
+        }
+        if (customObjectFromWindow?.Buttons) {
+            customObjectFromWindow.Buttons();
+        }
     }
 );
 
@@ -309,7 +321,7 @@ loadScript({
     components: "buttons,hosted-fields",
     "data-client-token": "123456789",
 }).then((paypal) => {
-    if (paypal.HostedFields.isEligible() === false) return;
+    if (!paypal?.HostedFields || !paypal?.HostedFields.isEligible()) return;
 
     paypal.HostedFields.render({
         createOrder: () => {
@@ -341,7 +353,7 @@ loadScript({
     }).then((cardFields) => {
         document
             .querySelector("#card-form")
-            .addEventListener("submit", (event) => {
+            ?.addEventListener("submit", (event) => {
                 event.preventDefault();
                 cardFields.submit({});
             });
