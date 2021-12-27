@@ -10,7 +10,7 @@
 
         // these are overridden by the Rollup plugin
         "outDir": "./dist",
-        "rootDir": "./src"
+        "rootDir": "./"
     },
-    "include": ["src"]
+    "include": ["src", "types"]
 }
