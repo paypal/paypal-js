@@ -20,7 +20,7 @@
         "test:bundle": "jest --env=jsdom e2e-tests/bundle/**",
         "test:e2e": "jest -c e2e-tests/jest.config.js",
         "test:e2e:start": "serve",
-        "typecheck": "tsc --noEmit && tsc types/*.ts --noEmit",
+        "typecheck": "tsc --noEmit",
         "validate": "npm run check-node-version && npm run typecheck && npm run build && npm run lint && npm test -- --coverage && npm run test:bundle"
     },
     "files": [

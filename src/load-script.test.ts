@@ -201,11 +201,11 @@ describe("loadCustomScript()", () => {
             "Expected client-id to be passed (debug id: f124435555fb3)";
         const serverMessage = `
         throw new Error("SDK Validation error: 'Expected client-id to be passed'");
-    
+
         /* Original Error:
-    
+
         ${errorMessage}
-    
+
         */`;
         window.fetch = jest.fn().mockResolvedValue({
             status: 400,
@@ -232,9 +232,9 @@ describe("loadCustomScript()", () => {
         const serverMessage = `throw new Error("SDK Validation error: 'client-id not recognized for either production or sandbox: djhhjfg'");
 
         /* Original Error:
-        
+
         ${errorMessage}
-        
+
         */`;
         window.fetch = jest.fn().mockResolvedValue({
             status: 400,
@@ -261,9 +261,9 @@ describe("loadCustomScript()", () => {
         const serverMessage = `Random text here we do not process it: 'This text is ignore'";
 
         /* Original Error:
-        
+
         ${errorMessage}
-        
+
         */`;
         window.fetch = jest.fn().mockResolvedValue({
             status: 400,
@@ -285,7 +285,6 @@ describe("loadCustomScript()", () => {
     });
 
     test("should throw an error when the script fails to load and fail fetching the error message", async () => {
-        // eslint-disable-next-line compat/compat
         window.fetch = jest.fn().mockResolvedValue({
             status: 500,
             text: jest.fn().mockResolvedValue("Internal Server Error"),
