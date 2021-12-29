@@ -19,7 +19,7 @@
         "test": "jest --env=jsdom src",
         "test:bundle": "jest --env=jsdom e2e-tests/bundle/**",
         "test:e2e": "jest -c e2e-tests/jest.config.js",
-        "test:e2e:start": "serve",
+        "test:e2e:start": "node e2e-tests/http-server.js",
         "typecheck": "tsc --noEmit",
         "validate": "npm run check-node-version && npm run typecheck && npm run build && npm run lint && npm test -- --coverage && npm run test:bundle"
     },
@@ -71,7 +71,6 @@
         "puppeteer": "^12.0.1",
         "rollup": "^2.61.1",
         "rollup-plugin-terser": "^7.0.2",
-        "serve": "^13.0.2",
         "standard-version": "^9.3.2",
         "tslib": "^2.3.1",
         "typescript": "^4.5.4"

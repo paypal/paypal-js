@@ -9,7 +9,7 @@ module.exports = {
         ],
     },
     server: {
-        command: `npm run test:e2e:start -- --listen=${port}`,
+        command: `npm run test:e2e:start -- ${port}`,
         port,
     },
 };
