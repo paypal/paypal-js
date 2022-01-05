@@ -267,7 +267,7 @@ describe("Braintree PayPal button fail in mount process", () => {
         await waitFor(() => expect(onError).toBeCalled());
         expect(onError.mock.calls[0][0]).toEqual(
             expect.objectContaining({
-                message: `${LOAD_SCRIPT_ERROR} TypeError: Cannot read property 'client' of null`,
+                message: `${LOAD_SCRIPT_ERROR} TypeError: Cannot read properties of null (reading 'client')`,
             })
         );
         spyConsoleError.mockRestore();
