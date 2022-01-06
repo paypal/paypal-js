@@ -8,8 +8,8 @@ import type {
 import { action } from "@storybook/addon-actions";
 
 import type { PayPalButtonsComponentOptions } from "@paypal/paypal-js/types/components/buttons";
-import type { Story } from "@storybook/react";
-import type { StoryContext } from "@storybook/addons/dist/ts3.9/types";
+import type { StoryFn } from "@storybook/react";
+import type { DocsContextProps } from "@storybook/addon-docs";
 import {
     PayPalScriptProvider,
     PayPalMarks,
@@ -156,34 +156,34 @@ export const RadioButtons: FC<{
 /********************
  * OVERRIDE STORIES *
  *******************/
-(Default as Story).parameters = {
+(Default as StoryFn).parameters = {
     docs: {
-        container: ({ context }: { context: StoryContext }) => (
+        container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getDefaultCode(context.args.fundingSource)}
+                code={getDefaultCode(context?.args?.fundingSource)}
             />
         ),
     },
 };
 
-(Default as Story).argTypes = {
+(Default as StoryFn).argTypes = {
     amount: { table: { disable: true } },
     currency: { table: { disable: true } },
     style: { table: { disable: true } },
 };
 
-(RadioButtons as Story).parameters = {
+(RadioButtons as StoryFn).parameters = {
     docs: {
-        container: ({ context }: { context: StoryContext }) => (
+        container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getRadioButtonsCode(context.args)}
+                code={getRadioButtonsCode(context.args || {})}
             />
         ),
     },
 };
 
-(RadioButtons as Story).argTypes = {
+(RadioButtons as StoryFn).argTypes = {
     fundingSource: { control: false },
 };

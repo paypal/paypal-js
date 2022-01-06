@@ -3,8 +3,8 @@ import type { FC } from "react";
 
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 import type { PayPalButtonsComponentOptions } from "@paypal/paypal-js/types/components/buttons";
-import type { Story } from "@storybook/react";
-import type { StoryContext } from "@storybook/addons/dist/ts3.9/types";
+import type { StoryFn } from "@storybook/react";
+import type { DocsContextProps } from "@storybook/addon-docs";
 import { action } from "@storybook/addon-actions";
 import type {
     CreateOrderBraintreeActions,
@@ -254,29 +254,29 @@ export const BillingAgreement: FC<StoryProps> = ({
 /********************
  * OVERRIDE STORIES *
  *******************/
-(Default as Story).parameters = {
+(Default as StoryFn).parameters = {
     docs: {
-        container: ({ context }: { context: StoryContext }) => (
+        container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getDefaultCode(context.args)}
+                code={getDefaultCode(context.args || {})}
             />
         ),
     },
 };
 
-(BillingAgreement as Story).parameters = {
+(BillingAgreement as StoryFn).parameters = {
     docs: {
-        container: ({ context }: { context: StoryContext }) => (
+        container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getBillingAgreementCode(context.args)}
+                code={getBillingAgreementCode(context.args || {})}
             />
         ),
     },
 };
 
-(BillingAgreement as Story).argTypes = {
+(BillingAgreement as StoryFn).argTypes = {
     amount: { table: { disable: true } },
     currency: { table: { disable: true } },
 };

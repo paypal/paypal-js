@@ -1,8 +1,8 @@
 import React, { FC, ReactElement } from "react";
 import { action } from "@storybook/addon-actions";
 
-import type { Story } from "@storybook/react";
-import type { StoryContext } from "@storybook/addons/dist/ts3.9/types";
+import type { StoryFn } from "@storybook/react";
+import type { DocsContextProps } from "@storybook/addon-docs";
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 
 import { getOptionsFromQueryString } from "../utils";
@@ -127,13 +127,13 @@ export const Default: FC<{ deferLoading: boolean }> = ({ deferLoading }) => {
 /********************
  * OVERRIDE STORIES *
  *******************/
-(Default as Story).parameters = {
+(Default as StoryFn).parameters = {
     docs: {
-        container: ({ context }: { context: StoryContext }) => (
+        container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getDefaultCode(context.args.deferLoading)}
+                code={getDefaultCode(context?.args?.deferLoading)}
             />
-        )
+        ),
     },
-}
+};

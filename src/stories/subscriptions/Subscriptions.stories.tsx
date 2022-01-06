@@ -1,8 +1,8 @@
 import React, { FC, ReactElement, useEffect } from "react";
 import { action } from "@storybook/addon-actions";
 
-import type { Story } from "@storybook/react";
-import type { StoryContext } from "@storybook/addons/dist/ts3.9/types";
+import type { StoryFn } from "@storybook/react";
+import type { DocsContextProps } from "@storybook/addon-docs";
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 import type { CreateSubscriptionActions } from "@paypal/paypal-js/types/components/buttons";
 import type {
@@ -166,12 +166,12 @@ export const Default: FC<{ type: string }> = ({ type }) => {
 /********************
  * OVERRIDE STORIES *
  *******************/
-(Default as Story).parameters = {
+(Default as StoryFn).parameters = {
     docs: {
-        container: ({ context }: { context: StoryContext }) => (
+        container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getDefaultCode(context.args.type)}
+                code={getDefaultCode(context?.args?.type)}
             />
         ),
     },

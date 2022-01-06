@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import type { FC, ReactElement } from "react";
 import { action } from "@storybook/addon-actions";
 
-import type { StoryContext } from "@storybook/addons/dist/ts3.9/types";
+import type { DocsContextProps } from "@storybook/addon-docs";
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 
 import {
@@ -62,13 +62,17 @@ export default {
     parameters: {
         controls: { expanded: true },
         docs: {
-            container: ({ context }: { context: StoryContext }): ReactElement => (
+            container: ({
+                context,
+            }: {
+                context: DocsContextProps;
+            }): ReactElement => (
                 <DocPageStructure
                     context={context}
-                    code={getDefaultCode(context.args.styles)}
+                    code={getDefaultCode(context?.args?.styles)}
                 />
-            )
-        }
+            ),
+        },
     },
     argTypes: {
         styles: {

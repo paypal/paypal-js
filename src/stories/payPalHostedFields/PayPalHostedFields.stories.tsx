@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef, CSSProperties } from "react";
 import { action } from "@storybook/addon-actions";
 import type { FC, ReactElement } from "react";
 
-import type { Story } from "@storybook/react";
-import type { StoryContext } from "@storybook/addons/dist/ts3.9/types";
+import type { StoryFn } from "@storybook/react";
+import type { DocsContextProps } from "@storybook/addon-docs";
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 
 import {
@@ -412,28 +412,36 @@ export const ExpirationDate: FC<{ amount: string }> = ({ amount }) => {
 /********************
  * OVERRIDE STORIES *
  *******************/
-(Default as Story).parameters = {
+(Default as StoryFn).parameters = {
     docs: {
-        container: ({ context }: { context: StoryContext }): ReactElement => (
+        container: ({
+            context,
+        }: {
+            context: DocsContextProps;
+        }): ReactElement => (
             <DocPageStructure
                 context={context}
-                code={getDefaultCode(context.args)}
+                code={getDefaultCode(context.args || {})}
             />
-        )
+        ),
     },
 };
 
-(ExpirationDate as Story).parameters = {
+(ExpirationDate as StoryFn).parameters = {
     docs: {
-        container: ({ context }: { context: StoryContext }): ReactElement => (
+        container: ({
+            context,
+        }: {
+            context: DocsContextProps;
+        }): ReactElement => (
             <DocPageStructure
                 context={context}
-                code={getExpirationDateCode(context.args)}
+                code={getExpirationDateCode(context.args || {})}
             />
-        )
+        ),
     },
 };
 
-(ExpirationDate as Story).args = {
-    style: {}
+(ExpirationDate as StoryFn).args = {
+    style: {},
 };

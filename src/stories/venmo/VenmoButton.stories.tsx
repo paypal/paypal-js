@@ -1,8 +1,8 @@
 import React, { FC } from "react";
 
 import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
-import type { Story } from "@storybook/react";
-import type { StoryContext } from "@storybook/addons/dist/ts3.9/types";
+import type { StoryFn } from "@storybook/react";
+import type { DocsContextProps } from "@storybook/addon-docs";
 
 import { PayPalScriptProvider, FUNDING, PayPalButtons } from "../../index";
 import { getOptionsFromQueryString, generateRandomString } from "../utils";
@@ -119,12 +119,12 @@ export const Default: FC<{
 /********************
  * OVERRIDE STORIES *
  *******************/
-(Default as Story).parameters = {
+(Default as StoryFn).parameters = {
     docs: {
-        container: ({ context }: { context: StoryContext }) => (
+        container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getDefaultCode(context.args.style)}
+                code={getDefaultCode(context?.args?.style)}
             />
         ),
     },
