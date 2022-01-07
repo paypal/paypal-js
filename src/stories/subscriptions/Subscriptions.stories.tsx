@@ -140,7 +140,7 @@ const PLAN_ID = "P-3RX065706M3469222L5IFM4I";
 
 export const Default: FC<{ type: string }> = ({ type }) => {
     // Remember the type and amount props are received from the control panel
-    const [_, dispatch] = usePayPalScriptReducer();
+    const [, dispatch] = usePayPalScriptReducer();
     const isSubscription = type === SUBSCRIPTION;
     const buttonOptions = isSubscription
         ? buttonSubscriptionProps

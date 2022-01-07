@@ -157,7 +157,7 @@ describe("<PayPalButtons />", () => {
                 <PayPalButtons
                     className="custom-class-name"
                     disabled={false}
-                    onInit={onInitActions as any}
+                    onInit={onInitActions.enable}
                 />
             </PayPalScriptProvider>
         );
@@ -219,7 +219,12 @@ describe("<PayPalButtons />", () => {
             return (
                 <>
                     <div data-testid="orderID">{orderID}</div>
-                    <PayPalButtons createOrder={() => setOrderID("2") as any} />
+                    <PayPalButtons
+                        createOrder={() => {
+                            setOrderID("2");
+                            return Promise.resolve("2");
+                        }}
+                    />
                 </>
             );
         }
@@ -236,7 +241,7 @@ describe("<PayPalButtons />", () => {
 
         expect(screen.getByTestId("orderID").innerHTML).toBe("1");
 
-        act(() =>
+        await act(() =>
             // call createOrder() to trigger a state change
             (window.paypal?.Buttons as jest.Mock).mock.calls[0][0].createOrder()
         );
@@ -327,6 +332,7 @@ describe("<PayPalButtons />", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         window.paypal!.Buttons = () => {
             return {
                 close: jest.fn().mockResolvedValue({}),
@@ -356,6 +362,7 @@ describe("<PayPalButtons />", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         window.paypal!.Buttons = (
             options?: PayPalButtonsComponentOptions | undefined
         ) => {
@@ -401,6 +408,7 @@ describe("<PayPalButtons />", () => {
         const mockRender = jest
             .fn()
             .mockRejectedValue(new Error("Unknown error"));
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         window.paypal!.Buttons = () => {
             return {
                 close: jest.fn().mockResolvedValue({}),

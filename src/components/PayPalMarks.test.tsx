@@ -35,7 +35,8 @@ describe("<PayPalMarks />", () => {
                 isEligible: jest.fn().mockReturnValue(true),
                 render: jest.fn().mockResolvedValue({}),
             })),
-        } as any;
+            version: "",
+        };
 
         render(
             <PayPalScriptProvider
@@ -58,7 +59,8 @@ describe("<PayPalMarks />", () => {
                 isEligible: jest.fn().mockReturnValue(true),
                 render: jest.fn().mockResolvedValue({}),
             })),
-        } as any;
+            version: "",
+        };
 
         render(
             <PayPalScriptProvider
@@ -135,6 +137,7 @@ describe("<PayPalMarks />", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         window.paypal!.Marks = () => {
             return {
                 isEligible: jest.fn().mockReturnValue(true),
@@ -166,6 +169,7 @@ describe("<PayPalMarks />", () => {
         const mockRender = jest
             .fn()
             .mockRejectedValue(new Error("Unknown error"));
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         window.paypal!.Marks = () => ({
             isEligible: jest.fn().mockReturnValue(true),
             render: mockRender,
@@ -184,6 +188,7 @@ describe("<PayPalMarks />", () => {
     test("should not render component when ineligible", async () => {
         const mockIsEligible = jest.fn().mockReturnValue(false);
         const mockRender = jest.fn().mockResolvedValue(true);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         window.paypal!.Marks = () => ({
             isEligible: mockIsEligible,
             render: mockRender,
@@ -215,6 +220,7 @@ describe("<PayPalMarks />", () => {
             element.append(markElement);
             return Promise.resolve();
         });
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         window.paypal!.Marks = () => ({
             isEligible: jest.fn().mockReturnValue(true),
             render: mockRender,
