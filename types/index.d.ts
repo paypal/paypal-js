@@ -34,23 +34,37 @@ export interface PayPalNamespace {
     version: string;
 }
 
-declare module "@paypal/paypal-js" {
-    export function loadScript(
-        options: PayPalScriptOptions,
-        PromisePonyfill?: PromiseConstructor
-    ): Promise<PayPalNamespace | null>;
+export function loadScript(
+    options: PayPalScriptOptions,
+    PromisePonyfill?: PromiseConstructor
+): Promise<PayPalNamespace | null>;
 
-    export function loadCustomScript(options: {
-        url: string;
-        attributes?: Record<string, string>;
-        PromisePonyfill?: PromiseConstructor;
-    }): Promise<void>;
+export function loadCustomScript(options: {
+    url: string;
+    attributes?: Record<string, string>;
+    PromisePonyfill?: PromiseConstructor;
+}): Promise<void>;
 
-    export const version: string;
-}
+export const version: string;
 
 declare global {
     interface Window {
-        paypal?: PayPalNamespace;
+        paypal?: PayPalNamespace | null;
     }
 }
+
+// Export components
+export * from "./components/buttons";
+export * from "./components/funding-eligibility";
+export * from "./components/hosted-fields";
+export * from "./components/marks";
+export * from "./components/messages";
+
+// Export apis
+export * from "./apis/commons";
+export * from "./apis/orders";
+export * from "./apis/shipping";
+
+// Export apis/subscriptions
+export * from "./apis/subscriptions/commons";
+export * from "./apis/subscriptions/subscriptions";
