@@ -149,6 +149,3 @@ export type OrderResponseBody = {
         | "PAYER_ACTION_REQUIRED";
     links: LinkDescription[];
 };
-
-// deprecated - remove `CaptureOrderResponseBody` in next major release
-export type CaptureOrderResponseBody = OrderResponseBody;
