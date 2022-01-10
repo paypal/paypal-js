@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0](https://github.com/paypal/paypal-js/compare/v4.2.2...v5.0.0) (2022-01-10)
+
+### ⚠ BREAKING CHANGES
+
+-   **types:** update `OnApproveActions` to support subscriptions (#140)
+
+### Features
+
+-   **types:** export all types ([#143](https://github.com/paypal/paypal-js/issues/143)) ([0542336](https://github.com/paypal/paypal-js/commit/054233643fcaa5628530d40ed04303be804cc7c9))
+-   **types:** remove deprecated order type ([#145](https://github.com/paypal/paypal-js/issues/145)) ([355ebaa](https://github.com/paypal/paypal-js/commit/355ebaac31c762cea2736f06daebf50d5233242a))
+
+### Bug Fixes
+
+-   **types:** update `OnApproveActions` to support subscriptions ([#140](https://github.com/paypal/paypal-js/issues/140)) ([3bdaaa2](https://github.com/paypal/paypal-js/commit/3bdaaa2cb8baaa7a1c677c9bac231950b311016d))
+
 ### [4.2.2](https://github.com/paypal/paypal-js/compare/v4.2.1...v4.2.2) (2021-12-17)
 
 ### Bug Fixes
