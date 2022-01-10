@@ -36,6 +36,7 @@ async function main() {
             });
         },
         onApprove: function (data, actions) {
+            if (!actions.order) return Promise.reject("Invalid actions object");
             return actions.order.capture().then((orderData) => {
                 const {
                     payer: {
@@ -110,6 +111,7 @@ async function main() {
         },
 
         onApprove: (data, actions) => {
+            if (!actions.order) return Promise.reject("Invalid actions object");
             return actions.order.authorize().then((authorization) => {
                 if (!authorization.purchase_units[0].payments?.authorizations) {
                     return Promise.reject();

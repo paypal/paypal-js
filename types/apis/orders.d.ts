@@ -1,19 +1,24 @@
+import type { Address, AmountWithCurrencyCode } from "./commons";
 // https://developer.paypal.com/docs/api/orders/v2/#orders-create-request-body
 // https://developer.paypal.com/docs/api/orders/v2/#orders-capture-response
+
+export interface AmountWithCurrencyCodeOptional {
+    /** The [three-character ISO-4217 currency code](/docs/integration/direct/rest/currency-codes/) that identifies the currency. */
+    currency_code?: string;
+    /**
+     * The value, which might be:
+     * - An integer for currencies like `JPY` that are not typically fractional.
+     * - A decimal fraction for currencies like `TND` that are subdivided into thousandths.
+     *
+     * For the required number of decimal places for a currency code, see [Currency Codes](/docs/integration/direct/rest/currency-codes/).
+     */
+    value: string;
+}
 
 export type SHIPPING_PREFERENCE =
     | "GET_FROM_FILE"
     | "NO_SHIPPING"
     | "SET_PROVIDED_ADDRESS";
-
-export type Address = {
-    address_line_1: string;
-    address_line_2: string;
-    admin_area_2: string;
-    admin_area_1: string;
-    postal_code: string;
-    country_code: string;
-};
 
 export type Payer = {
     name: {
@@ -38,30 +43,20 @@ export type Payee = {
     email_address?: string;
 };
 
-export interface Amount {
-    currency_code?: string;
-    value: string;
-}
-
-export interface AmountWithRequiredCurrencyCode {
-    currency_code: string;
-    value: string;
-}
-
-export interface AmountWithBreakdown extends Amount {
+export interface AmountWithBreakdown extends AmountWithCurrencyCodeOptional {
     breakdown?: {
-        item_total?: AmountWithRequiredCurrencyCode;
-        shipping?: AmountWithRequiredCurrencyCode;
-        handling?: AmountWithRequiredCurrencyCode;
-        tax_total?: AmountWithRequiredCurrencyCode;
-        insurance?: AmountWithRequiredCurrencyCode;
-        shipping_discount?: AmountWithRequiredCurrencyCode;
-        discount?: AmountWithRequiredCurrencyCode;
+        item_total?: AmountWithCurrencyCode;
+        shipping?: AmountWithCurrencyCode;
+        handling?: AmountWithCurrencyCode;
+        tax_total?: AmountWithCurrencyCode;
+        insurance?: AmountWithCurrencyCode;
+        shipping_discount?: AmountWithCurrencyCode;
+        discount?: AmountWithCurrencyCode;
     };
 }
 
 export type PlatformFee = {
-    amount: Amount;
+    amount: AmountWithCurrencyCodeOptional;
     payee?: Payee;
 };
 
@@ -80,8 +75,8 @@ export type ShippingInfo = {
 export type PurchaseItem = {
     name: string;
     quantity: string;
-    unit_amount: Amount;
-    tax?: Amount;
+    unit_amount: AmountWithCurrencyCodeOptional;
+    tax?: AmountWithCurrencyCodeOptional;
     description?: string;
     sku?: string;
     category?: "DIGITAL_GOODS" | "PHYSICAL_GOODS" | "DONATION";
