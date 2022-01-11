@@ -137,17 +137,20 @@ describe("<PayPalMarks />", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        window.paypal!.Marks = () => {
-            return {
-                isEligible: jest.fn().mockReturnValue(true),
-                render: jest.fn((element) => {
-                    // simulate adding markup for paypal mark
-                    if (typeof element != "string")
-                        element.append(document.createElement("div"));
-                    return Promise.reject("Unknown error");
-                }),
-            };
+        window.paypal = {
+            Marks() {
+                return {
+                    isEligible: jest.fn().mockReturnValue(true),
+                    render: jest.fn((element) => {
+                        // simulate adding markup for paypal mark
+                        if (typeof element !== "string") {
+                            element.append(document.createElement("div"));
+                        }
+                        return Promise.reject("Unknown error");
+                    }),
+                };
+            },
+            version: "",
         };
 
         render(
@@ -169,11 +172,15 @@ describe("<PayPalMarks />", () => {
         const mockRender = jest
             .fn()
             .mockRejectedValue(new Error("Unknown error"));
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        window.paypal!.Marks = () => ({
-            isEligible: jest.fn().mockReturnValue(true),
-            render: mockRender,
-        });
+        window.paypal = {
+            Marks() {
+                return {
+                    isEligible: jest.fn().mockReturnValue(true),
+                    render: mockRender,
+                };
+            },
+            version: "",
+        };
 
         render(
             <PayPalScriptProvider options={{ "client-id": "test" }}>
@@ -188,11 +195,15 @@ describe("<PayPalMarks />", () => {
     test("should not render component when ineligible", async () => {
         const mockIsEligible = jest.fn().mockReturnValue(false);
         const mockRender = jest.fn().mockResolvedValue(true);
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        window.paypal!.Marks = () => ({
-            isEligible: mockIsEligible,
-            render: mockRender,
-        });
+        window.paypal = {
+            Marks() {
+                return {
+                    isEligible: mockIsEligible,
+                    render: mockRender,
+                };
+            },
+            version: "",
+        };
 
         const { container } = render(
             <PayPalScriptProvider options={{ "client-id": "test" }}>
@@ -220,11 +231,15 @@ describe("<PayPalMarks />", () => {
             element.append(markElement);
             return Promise.resolve();
         });
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        window.paypal!.Marks = () => ({
-            isEligible: jest.fn().mockReturnValue(true),
-            render: mockRender,
-        });
+        window.paypal = {
+            Marks() {
+                return {
+                    isEligible: jest.fn().mockReturnValue(true),
+                    render: mockRender,
+                };
+            },
+            version: "",
+        };
 
         const { rerender } = render(
             <PayPalScriptProvider options={{ "client-id": "test" }}>

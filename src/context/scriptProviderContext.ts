@@ -35,7 +35,9 @@ export function destroySDKScript(reactPayPalScriptID: string): void {
         `script[${SCRIPT_ID}="${reactPayPalScriptID}"]`
     );
 
-    if (scriptNode?.parentNode) scriptNode.parentNode.removeChild(scriptNode);
+    if (scriptNode?.parentNode) {
+        scriptNode.parentNode.removeChild(scriptNode);
+    }
 }
 
 /**

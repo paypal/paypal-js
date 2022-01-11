@@ -48,7 +48,9 @@ export const PayPalScriptProvider: FC<ScriptProviderProps> = ({
             });
         }
 
-        if (state.loadingStatus !== SCRIPT_LOADING_STATE.PENDING) return;
+        if (state.loadingStatus !== SCRIPT_LOADING_STATE.PENDING) {
+            return;
+        }
 
         let isSubscribed = true;
 

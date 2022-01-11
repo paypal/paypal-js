@@ -332,18 +332,21 @@ describe("<PayPalButtons />", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        window.paypal!.Buttons = () => {
-            return {
-                close: jest.fn().mockResolvedValue({}),
-                isEligible: jest.fn().mockReturnValue(true),
-                render: jest.fn((element: string | HTMLElement) => {
-                    // simulate adding markup for paypal button
-                    if (typeof element != "string")
-                        element.append(document.createElement("div"));
-                    return Promise.reject("Unknown error");
-                }),
-            };
+        window.paypal = {
+            Buttons() {
+                return {
+                    close: jest.fn().mockResolvedValue({}),
+                    isEligible: jest.fn().mockReturnValue(true),
+                    render: jest.fn((element: string | HTMLElement) => {
+                        // simulate adding markup for paypal button
+                        if (typeof element !== "string") {
+                            element.append(document.createElement("div"));
+                        }
+                        return Promise.reject("Unknown error");
+                    }),
+                };
+            },
+            version: "",
         };
 
         render(
@@ -362,18 +365,19 @@ describe("<PayPalButtons />", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        window.paypal!.Buttons = (
-            options?: PayPalButtonsComponentOptions | undefined
-        ) => {
-            if (
-                options?.style?.color === "gold" &&
-                options?.fundingSource == "venmo"
-            )
-                throw new Error(
-                    "Unexpected style.color for venmo button: gold, expected blue, silver, black, white"
-                );
-            return mockPaypalButtonsComponent;
+        window.paypal = {
+            Buttons(options?: PayPalButtonsComponentOptions | undefined) {
+                if (
+                    options?.style?.color === "gold" &&
+                    options?.fundingSource === "venmo"
+                ) {
+                    throw new Error(
+                        "Unexpected style.color for venmo button: gold, expected blue, silver, black, white"
+                    );
+                }
+                return mockPaypalButtonsComponent;
+            },
+            version: "",
         };
 
         render(
@@ -408,13 +412,15 @@ describe("<PayPalButtons />", () => {
         const mockRender = jest
             .fn()
             .mockRejectedValue(new Error("Unknown error"));
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        window.paypal!.Buttons = () => {
-            return {
-                close: jest.fn().mockResolvedValue({}),
-                isEligible: jest.fn().mockReturnValue(true),
-                render: mockRender,
-            };
+        window.paypal = {
+            Buttons() {
+                return {
+                    close: jest.fn().mockResolvedValue({}),
+                    isEligible: jest.fn().mockReturnValue(true),
+                    render: mockRender,
+                };
+            },
+            version: "",
         };
 
         const { container } = render(

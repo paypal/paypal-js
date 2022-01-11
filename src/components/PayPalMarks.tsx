@@ -65,7 +65,9 @@ export const PayPalMarks: FC<PayPalMarksComponentProps> = ({
 
     useEffect(() => {
         // verify the sdk script has successfully loaded
-        if (isResolved === false) return;
+        if (isResolved === false) {
+            return;
+        }
 
         const paypalWindowNamespace = getPayPalWindowNamespace(
             options[DATA_NAMESPACE]

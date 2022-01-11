@@ -118,7 +118,7 @@ export default {
 
             return (
                 <div style={{ maxWidth: `${storyArg.args.size}%` }}>
-                    {clientToken != null && (
+                    {clientToken !== null && (
                         <div style={{ maxWidth: `${storyArg.args.size}px` }}>
                             <PayPalScriptProvider
                                 options={{
