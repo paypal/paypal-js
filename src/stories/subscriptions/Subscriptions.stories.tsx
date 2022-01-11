@@ -3,13 +3,13 @@ import { action } from "@storybook/addon-actions";
 
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
-import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
-import type { CreateSubscriptionActions } from "@paypal/paypal-js/types/components/buttons";
 import type {
+    PayPalScriptOptions,
+    CreateSubscriptionActions,
     CreateOrderActions,
     OnApproveData,
     OnApproveActions,
-} from "@paypal/paypal-js/types/components/buttons";
+} from "@paypal/paypal-js";
 
 import {
     PayPalScriptProvider,
@@ -18,7 +18,13 @@ import {
     DISPATCH_ACTION,
 } from "../../index";
 import { getOptionsFromQueryString, generateRandomString } from "../utils";
-import { ORDER_ID, APPROVE, SUBSCRIPTION } from "../constants";
+import {
+    ORDER_ID,
+    APPROVE,
+    SUBSCRIPTION,
+    ERROR,
+    ORDER_INSTANCE_ERROR,
+} from "../constants";
 import DocPageStructure from "../components/DocPageStructure";
 import { InEligibleError, defaultProps } from "../commons";
 import type { PayPalButtonsComponentProps } from "../../types/paypalButtonTypes";
@@ -69,6 +75,10 @@ const buttonOrderProps = () => ({
             });
     },
     onApprove(data: OnApproveData, actions: OnApproveActions) {
+        if (!actions.order) {
+            action(ERROR)(ORDER_INSTANCE_ERROR);
+            return Promise.reject(ORDER_INSTANCE_ERROR);
+        }
         return actions.order.capture().then(function (details) {
             action(APPROVE)(details);
         });

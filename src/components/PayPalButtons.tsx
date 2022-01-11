@@ -2,10 +2,7 @@ import React, { useEffect, useRef, useState, FunctionComponent } from "react";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
 import { DATA_NAMESPACE } from "../constants";
-import type {
-    PayPalButtonsComponent,
-    OnInitActions,
-} from "@paypal/paypal-js/types/components/buttons";
+import type { PayPalButtonsComponent, OnInitActions } from "@paypal/paypal-js";
 import type { PayPalButtonsComponentProps } from "../types";
 
 /**

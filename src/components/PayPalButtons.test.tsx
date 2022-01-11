@@ -13,10 +13,10 @@ import { PayPalButtons } from "./PayPalButtons";
 import { FUNDING } from "../index";
 import { loadScript, PayPalNamespace } from "@paypal/paypal-js";
 import { PayPalScriptProvider } from "./PayPalScriptProvider";
-import {
+import type {
     PayPalButtonsComponent,
     PayPalButtonsComponentOptions,
-} from "@paypal/paypal-js/types/components/buttons";
+} from "@paypal/paypal-js";
 
 jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),

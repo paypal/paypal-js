@@ -14,7 +14,7 @@ import type {
 } from "../types";
 import type { BraintreePayPalCheckout } from "../types/braintree/paypalCheckout";
 import { DISPATCH_ACTION, SCRIPT_LOADING_STATE } from "../types";
-import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
+import type { PayPalScriptOptions } from "@paypal/paypal-js";
 
 /**
  * Generate a new random identifier for react-paypal-js

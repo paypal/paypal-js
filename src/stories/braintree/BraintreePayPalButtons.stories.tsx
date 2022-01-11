@@ -1,8 +1,10 @@
 import React, { useState, useEffect, ReactElement } from "react";
 import type { FC } from "react";
 
-import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
-import type { PayPalButtonsComponentOptions } from "@paypal/paypal-js/types/components/buttons";
+import type {
+    PayPalScriptOptions,
+    PayPalButtonsComponentOptions,
+} from "@paypal/paypal-js";
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
 import { action } from "@storybook/addon-actions";

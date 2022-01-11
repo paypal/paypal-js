@@ -2,7 +2,7 @@ import { SCRIPT_ID } from "../constants";
 import { BraintreePayPalCheckout } from "./braintree/paypalCheckout";
 import { DISPATCH_ACTION, SCRIPT_LOADING_STATE } from "./enums";
 import type { ReactNode, Dispatch } from "react";
-import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
+import type { PayPalScriptOptions } from "@paypal/paypal-js";
 
 export interface ReactPayPalScriptOptions extends PayPalScriptOptions {
     [SCRIPT_ID]: string;

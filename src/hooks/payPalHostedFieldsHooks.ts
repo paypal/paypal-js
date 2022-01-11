@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
 import { PayPalHostedFieldsContext } from "../context/payPalHostedFieldsContext";
-import type { HostedFieldsHandler } from "@paypal/paypal-js/types/components/hosted-fields";
+import type { HostedFieldsHandler } from "@paypal/paypal-js";
 
 /**
  * Custom hook to get access to the PayPal Hosted Fields instance.

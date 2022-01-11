@@ -1,8 +1,5 @@
 import type { PayPalButtonsComponentProps } from "./paypalButtonTypes";
-import type {
-    CreateOrderActions,
-    OnApproveActions,
-} from "@paypal/paypal-js/types/components/buttons";
+import type { CreateOrderActions, OnApproveActions } from "@paypal/paypal-js";
 import type { BraintreeClient } from "./braintree/clientTypes";
 import type {
     BraintreePayPalCheckout,

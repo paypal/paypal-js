@@ -5,7 +5,7 @@ import { DATA_NAMESPACE } from "../constants";
 import type {
     PayPalMarksComponentOptions,
     PayPalMarksComponent,
-} from "@paypal/paypal-js/types/components/marks";
+} from "@paypal/paypal-js";
 
 export interface PayPalMarksComponentProps extends PayPalMarksComponentOptions {
     /**

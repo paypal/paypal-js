@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 
-import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
+import type { PayPalScriptOptions } from "@paypal/paypal-js";
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
 

@@ -1,13 +1,13 @@
 import React, { useState, FC, ChangeEvent } from "react";
-import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
+import type { PayPalScriptOptions } from "@paypal/paypal-js";
 import type {
     CreateOrderActions,
     OnApproveData,
     OnApproveActions,
-} from "@paypal/paypal-js/types/components/buttons";
+    PayPalButtonsComponentOptions,
+} from "@paypal/paypal-js";
 import { action } from "@storybook/addon-actions";
 
-import type { PayPalButtonsComponentOptions } from "@paypal/paypal-js/types/components/buttons";
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
 import {
@@ -23,6 +23,8 @@ import {
     ARG_TYPE_CURRENCY,
     ORDER_ID,
     APPROVE,
+    ERROR,
+    ORDER_INSTANCE_ERROR,
 } from "../constants";
 import { InEligibleError, defaultProps } from "../commons";
 import DocPageStructure from "../components/DocPageStructure";
@@ -141,6 +143,10 @@ export const RadioButtons: FC<{
                         });
                 }}
                 onApprove={(data: OnApproveData, actions: OnApproveActions) => {
+                    if (!actions.order) {
+                        action(ERROR)(ORDER_INSTANCE_ERROR);
+                        return Promise.reject(ORDER_INSTANCE_ERROR);
+                    }
                     return actions.order.capture().then(function (details) {
                         action(APPROVE)(details);
                     });

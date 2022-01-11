@@ -3,7 +3,7 @@ import { action } from "@storybook/addon-actions";
 
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
-import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
+import type { PayPalScriptOptions } from "@paypal/paypal-js";
 
 import { getOptionsFromQueryString } from "../utils";
 import {

@@ -15,7 +15,7 @@ import type { PayPalHostedFieldsComponentProps } from "../../types/payPalHostedF
 import type {
     PayPalHostedFieldsComponent,
     HostedFieldsHandler,
-} from "@paypal/paypal-js/types/components/hosted-fields";
+} from "@paypal/paypal-js";
 
 /**
 This `<PayPalHostedFieldsProvider />` provider component wraps the form field elements and accepts props like `createOrder()`.

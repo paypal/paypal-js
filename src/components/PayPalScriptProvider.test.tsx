@@ -8,7 +8,7 @@ import {
     DATA_SDK_INTEGRATION_SOURCE,
     DATA_SDK_INTEGRATION_SOURCE_VALUE,
 } from "../constants";
-import { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
+import { PayPalScriptOptions } from "@paypal/paypal-js";
 
 jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),

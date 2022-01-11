@@ -1,11 +1,10 @@
 import React, { FC, ReactElement, useEffect } from "react";
-import type { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 import type {
+    PayPalScriptOptions,
     CreateOrderActions,
-    OnApproveData,
     OnApproveActions,
-} from "@paypal/paypal-js/types/components/buttons";
-import type { PayPalButtonsComponentOptions } from "@paypal/paypal-js/types/components/buttons";
+    PayPalButtonsComponentOptions,
+} from "@paypal/paypal-js";
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
 
@@ -22,6 +21,8 @@ import {
     ORDER_ID,
     CONTAINER_SIZE,
     APPROVE,
+    ERROR,
+    ORDER_INSTANCE_ERROR,
 } from "../constants";
 import DocPageStructure from "../components/DocPageStructure";
 import { InEligibleError, defaultProps } from "../commons";
@@ -195,7 +196,11 @@ export const Default: FC<StoryProps> = ({
                             return orderId;
                         });
                 }}
-                onApprove={(data: OnApproveData, actions: OnApproveActions) => {
+                onApprove={(_, actions: OnApproveActions) => {
+                    if (!actions.order) {
+                        action(ERROR)(ORDER_INSTANCE_ERROR);
+                        return Promise.reject(ORDER_INSTANCE_ERROR);
+                    }
                     return actions.order.capture().then(function (details) {
                         action(APPROVE)(details);
                     });

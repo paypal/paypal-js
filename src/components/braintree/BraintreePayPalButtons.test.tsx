@@ -8,7 +8,7 @@ import {
 } from "@paypal/paypal-js";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { PayPalButtonsComponent } from "@paypal/paypal-js/types/components/buttons";
+import { PayPalButtonsComponent } from "@paypal/paypal-js";
 
 import { BraintreePayPalButtons } from "./BraintreePayPalButtons";
 import { PayPalScriptProvider } from "../PayPalScriptProvider";
