@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.1](https://github.com/paypal/paypal-js/compare/v5.0.0...v5.0.1) (2022-01-11)
+
+### Bug Fixes
+
+-   **types:** export type PayPalScriptOptions ([#147](https://github.com/paypal/paypal-js/issues/147)) ([8d36446](https://github.com/paypal/paypal-js/commit/8d36446cd3aee468511869a75b6503bc6d16846d))
+
 ## [5.0.0](https://github.com/paypal/paypal-js/compare/v4.2.2...v5.0.0) (2022-01-10)
 
 ### ⚠ BREAKING CHANGES
