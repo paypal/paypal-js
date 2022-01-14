@@ -69,7 +69,10 @@ export default {
             }): ReactElement => (
                 <DocPageStructure
                     context={context}
-                    code={getDefaultCode(context?.args?.styles)}
+                    code={getDefaultCode(
+                        context.getStoryContext(context.storyById(context.id))
+                            .args.styles
+                    )}
                 />
             ),
         },

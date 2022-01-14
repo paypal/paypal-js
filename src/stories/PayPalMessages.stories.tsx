@@ -98,7 +98,10 @@ export default function App() {
         container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getDefaultCode(context?.args?.style)}
+                code={getDefaultCode(
+                    context.getStoryContext(context.storyById(context.id)).args
+                        .style
+                )}
             />
         ),
     },

@@ -167,7 +167,10 @@ export const RadioButtons: FC<{
         container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getDefaultCode(context?.args?.fundingSource)}
+                code={getDefaultCode(
+                    context.getStoryContext(context.storyById(context.id)).args
+                        .fundingSource
+                )}
             />
         ),
     },
@@ -184,7 +187,9 @@ export const RadioButtons: FC<{
         container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getRadioButtonsCode(context.args || {})}
+                code={getRadioButtonsCode(
+                    context.getStoryContext(context.storyById(context.id)).args
+                )}
             />
         ),
     },

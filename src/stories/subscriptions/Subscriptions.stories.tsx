@@ -181,7 +181,10 @@ export const Default: FC<{ type: string }> = ({ type }) => {
         container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getDefaultCode(context?.args?.type)}
+                code={getDefaultCode(
+                    context.getStoryContext(context.storyById(context.id)).args
+                        .type
+                )}
             />
         ),
     },

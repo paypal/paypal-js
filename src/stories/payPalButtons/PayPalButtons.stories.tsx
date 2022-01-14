@@ -270,7 +270,9 @@ export const Donate: FC<Omit<StoryProps, "showSpinner" | "fundingSource">> = ({
         container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getDefaultCode(context.args || {})}
+                code={getDefaultCode(
+                    context.getStoryContext(context.storyById(context.id)).args
+                )}
             />
         ),
     },
@@ -282,7 +284,9 @@ export const Donate: FC<Omit<StoryProps, "showSpinner" | "fundingSource">> = ({
         container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getDonateCode(context.args || {})}
+                code={getDonateCode(
+                    context.getStoryContext(context.storyById(context.id)).args
+                )}
             />
         ),
     },

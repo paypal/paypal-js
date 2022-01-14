@@ -132,7 +132,10 @@ export const Default: FC<{ deferLoading: boolean }> = ({ deferLoading }) => {
         container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getDefaultCode(context?.args?.deferLoading)}
+                code={getDefaultCode(
+                    context.getStoryContext(context.storyById(context.id)).args
+                        .deferLoading
+                )}
             />
         ),
     },

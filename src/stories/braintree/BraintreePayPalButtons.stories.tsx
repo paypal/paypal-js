@@ -261,7 +261,9 @@ export const BillingAgreement: FC<StoryProps> = ({
         container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getDefaultCode(context.args || {})}
+                code={getDefaultCode(
+                    context.getStoryContext(context.storyById(context.id)).args
+                )}
             />
         ),
     },
@@ -272,7 +274,9 @@ export const BillingAgreement: FC<StoryProps> = ({
         container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getBillingAgreementCode(context.args || {})}
+                code={getBillingAgreementCode(
+                    context.getStoryContext(context.storyById(context.id)).args
+                )}
             />
         ),
     },

@@ -421,7 +421,9 @@ export const ExpirationDate: FC<{ amount: string }> = ({ amount }) => {
         }): ReactElement => (
             <DocPageStructure
                 context={context}
-                code={getDefaultCode(context.args || {})}
+                code={getDefaultCode(
+                    context.getStoryContext(context.storyById(context.id)).args
+                )}
             />
         ),
     },
@@ -436,7 +438,9 @@ export const ExpirationDate: FC<{ amount: string }> = ({ amount }) => {
         }): ReactElement => (
             <DocPageStructure
                 context={context}
-                code={getExpirationDateCode(context.args || {})}
+                code={getExpirationDateCode(
+                    context.getStoryContext(context.storyById(context.id)).args
+                )}
             />
         ),
     },
