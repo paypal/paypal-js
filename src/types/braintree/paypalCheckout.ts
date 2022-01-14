@@ -58,6 +58,7 @@ export interface BraintreePayPalCheckoutCreatePaymentOptions {
     billingAgreementDescription?: string | undefined;
     landingPageType?: string | undefined;
     lineItems?: BraintreeLineItem[] | undefined;
+    requestBillingAgreement?: boolean;
 }
 
 export interface BraintreePayPalCheckoutTokenizationOptions {
