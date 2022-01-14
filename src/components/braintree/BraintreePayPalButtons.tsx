@@ -20,6 +20,11 @@ import type {
 /**
 This `<BraintreePayPalButtons />` component renders the [Braintree PayPal Buttons](https://developer.paypal.com/braintree/docs/guides/paypal/overview) for Braintree Merchants.
 It relies on the `<PayPalScriptProvider />` parent component for managing state related to loading the JS SDK script.
+
+Note: You are able to make your integration using the client token or using the tokenization key.
+
+- To use the client token integration set the key `data-client-token` in the `PayPayScriptProvider` component's options.
+- To use the tokenization key integration set the key `data-user-id-token` in the `PayPayScriptProvider` component's options.
 */
 export const BraintreePayPalButtons: FC<BraintreePayPalButtonsComponentProps> =
     ({

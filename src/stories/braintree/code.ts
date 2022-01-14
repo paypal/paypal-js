@@ -86,6 +86,7 @@ const getProviderStatement = (args: { intent: string; vault: boolean }) =>
 						options={{
 							"client-id": "test",
 							components: "buttons",
+							// "data-user-id-token": "your-tokenization-key-here",
 							"data-client-token": clientToken,
 							intent: "${args.intent}",
 							vault: ${args.vault},
