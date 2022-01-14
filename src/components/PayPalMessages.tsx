@@ -80,26 +80,24 @@ export const PayPalMessages: FunctionComponent<
             ...messageProps,
         });
 
-        if (messagesContainerRef.current === null) {
-            return;
-        }
-
-        messages.current.render(messagesContainerRef.current).catch((err) => {
-            // component failed to render, possibly because it was closed or destroyed.
-            if (
-                messagesContainerRef.current === null ||
-                messagesContainerRef.current.children.length === 0
-            ) {
-                // paypal messages container is no longer in the DOM, we can safely ignore the error
-                return;
-            }
-            // paypal messages container is still in the DOM
-            setErrorState(() => {
-                throw new Error(
-                    `Failed to render <PayPalMessages /> component. ${err}`
-                );
+        messages.current
+            .render(messagesContainerRef.current as HTMLDivElement)
+            .catch((err) => {
+                // component failed to render, possibly because it was closed or destroyed.
+                if (
+                    messagesContainerRef.current === null ||
+                    messagesContainerRef.current.children.length === 0
+                ) {
+                    // paypal messages container is no longer in the DOM, we can safely ignore the error
+                    return;
+                }
+                // paypal messages container is still in the DOM
+                setErrorState(() => {
+                    throw new Error(
+                        `Failed to render <PayPalMessages /> component. ${err}`
+                    );
+                });
             });
-        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isResolved, ...forceReRender]);
 
