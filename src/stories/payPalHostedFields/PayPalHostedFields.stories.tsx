@@ -234,7 +234,6 @@ export default {
                                     "data-client-token": clientToken,
                                     "data-namespace": uid,
                                     "data-uid": uid,
-                                    debug: true,
                                 }}
                             >
                                 <Story />
