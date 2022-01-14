@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, FunctionComponent } from "react";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
-import { DATA_NAMESPACE } from "../constants";
+import { SDK_SETTINGS } from "../constants";
 import type { PayPalButtonsComponent, OnInitActions } from "@paypal/paypal-js";
 import type { PayPalButtonsComponentProps } from "../types";
 
@@ -44,7 +44,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
         }
 
         const paypalWindowNamespace = getPayPalWindowNamespace(
-            options[DATA_NAMESPACE]
+            options[SDK_SETTINGS.DATA_NAMESPACE]
         );
 
         // verify dependency on window object
@@ -58,7 +58,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
                         reactComponentName: PayPalButtons.displayName as string,
                         sdkComponentKey: "buttons",
                         sdkRequestedComponents: options.components,
-                        sdkDataNamespace: options[DATA_NAMESPACE],
+                        sdkDataNamespace: options[SDK_SETTINGS.DATA_NAMESPACE],
                     })
                 );
             });

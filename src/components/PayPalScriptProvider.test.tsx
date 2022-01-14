@@ -1,14 +1,11 @@
 import React from "react";
 import { render, waitFor, fireEvent, screen } from "@testing-library/react";
 import { loadScript } from "@paypal/paypal-js";
+
 import { PayPalScriptProvider } from "./PayPalScriptProvider";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
-import {
-    SCRIPT_ID,
-    DATA_SDK_INTEGRATION_SOURCE,
-    DATA_SDK_INTEGRATION_SOURCE_VALUE,
-} from "../constants";
-import { PayPalScriptOptions } from "@paypal/paypal-js";
+import { SCRIPT_ID, SDK_SETTINGS } from "../constants";
+import { PayPalScriptOptions } from "@paypal/paypal-js/types/script-options";
 
 jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),
@@ -51,7 +48,8 @@ describe("<PayPalScriptProvider />", () => {
         expect(loadScript).toHaveBeenCalledWith({
             "client-id": "test",
             [SCRIPT_ID]: expect.stringContaining("react-paypal-js"),
-            [DATA_SDK_INTEGRATION_SOURCE]: DATA_SDK_INTEGRATION_SOURCE_VALUE,
+            [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
+                SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE_VALUE,
         });
 
         // verify initial loading state
@@ -75,7 +73,8 @@ describe("<PayPalScriptProvider />", () => {
         expect(loadScript).toHaveBeenCalledWith({
             "client-id": "test",
             [SCRIPT_ID]: expect.stringContaining("react-paypal-js"),
-            [DATA_SDK_INTEGRATION_SOURCE]: DATA_SDK_INTEGRATION_SOURCE_VALUE,
+            [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
+                SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE_VALUE,
         });
 
         // verify initial loading state
@@ -138,7 +137,8 @@ describe("<PayPalScriptProvider />", () => {
         expect(loadScript).toHaveBeenCalledWith({
             "client-id": "test",
             [SCRIPT_ID]: expect.stringContaining("react-paypal-js"),
-            [DATA_SDK_INTEGRATION_SOURCE]: DATA_SDK_INTEGRATION_SOURCE_VALUE,
+            [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
+                SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE_VALUE,
         });
 
         expect(state.isPending).toBe(true);

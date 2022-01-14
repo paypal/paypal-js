@@ -6,12 +6,7 @@ import {
     ScriptContext,
     scriptReducer,
 } from "../context/scriptProviderContext";
-import {
-    SCRIPT_ID,
-    DATA_SDK_INTEGRATION_SOURCE,
-    DATA_SDK_INTEGRATION_SOURCE_VALUE,
-    LOAD_SCRIPT_ERROR,
-} from "../constants";
+import { SCRIPT_ID, SDK_SETTINGS, LOAD_SCRIPT_ERROR } from "../constants";
 import type { ScriptProviderProps } from "../types";
 import { SCRIPT_LOADING_STATE, DISPATCH_ACTION } from "../types";
 
@@ -30,7 +25,8 @@ export const PayPalScriptProvider: FC<ScriptProviderProps> = ({
         options: {
             ...options,
             [SCRIPT_ID]: `${getScriptID(options)}`,
-            [DATA_SDK_INTEGRATION_SOURCE]: DATA_SDK_INTEGRATION_SOURCE_VALUE,
+            [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
+                SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE_VALUE,
         },
         loadingStatus: deferLoading
             ? SCRIPT_LOADING_STATE.INITIAL

@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 
 import { ScriptContext } from "../context/scriptProviderContext";
 import {
-    contextNotEmptyValidator,
-    contextOptionClientTokenNotEmptyValidator,
+    validateReducer,
+    validateBraintreeAuthorizationData,
 } from "./contextValidator";
 import type {
     ScriptContextDerivedState,
@@ -23,7 +23,7 @@ export function usePayPalScriptReducer(): [
     ScriptContextDerivedState,
     React.Dispatch<ScriptReducerAction>
 ] {
-    const scriptContext = contextNotEmptyValidator(useContext(ScriptContext));
+    const scriptContext = validateReducer(useContext(ScriptContext));
 
     const derivedStatusContext = {
         ...scriptContext,
@@ -50,8 +50,8 @@ export function useScriptProviderContext(): [
     ScriptContextState,
     React.Dispatch<ScriptReducerAction>
 ] {
-    const scriptContext = contextOptionClientTokenNotEmptyValidator(
-        contextNotEmptyValidator(useContext(ScriptContext))
+    const scriptContext = validateBraintreeAuthorizationData(
+        validateReducer(useContext(ScriptContext))
     );
 
     return [

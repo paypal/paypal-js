@@ -2,7 +2,7 @@ import React, { FC, useState, useEffect } from "react";
 import { loadCustomScript } from "@paypal/paypal-js";
 
 import {
-    DATA_CLIENT_TOKEN,
+    SDK_SETTINGS,
     BRAINTREE_SOURCE,
     BRAINTREE_PAYPAL_CHECKOUT_SOURCE,
     LOAD_SCRIPT_ERROR,
@@ -38,14 +38,17 @@ export const BraintreePayPalButtons: FC<BraintreePayPalButtonsComponentProps> =
                 loadCustomScript({ url: BRAINTREE_PAYPAL_CHECKOUT_SOURCE }),
             ])
                 .then(() => {
-                    const clientToken = providerContext.options[
-                        DATA_CLIENT_TOKEN
-                    ] as string;
+                    const clientTokenizationKey: string =
+                        providerContext.options[
+                            SDK_SETTINGS.DATA_USER_ID_TOKEN
+                        ];
+                    const clientToken: string =
+                        providerContext.options[SDK_SETTINGS.DATA_CLIENT_TOKEN];
                     const braintreeNamespace = getBraintreeWindowNamespace();
 
                     return braintreeNamespace.client
                         .create({
-                            authorization: clientToken,
+                            authorization: clientTokenizationKey || clientToken,
                         })
                         .then((clientInstance) => {
                             return braintreeNamespace.paypalCheckout.create({

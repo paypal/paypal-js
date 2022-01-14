@@ -1,11 +1,7 @@
 import { createContext } from "react";
 
 import { hashStr } from "../utils";
-import {
-    SCRIPT_ID,
-    DATA_SDK_INTEGRATION_SOURCE,
-    DATA_SDK_INTEGRATION_SOURCE_VALUE,
-} from "../constants";
+import { SCRIPT_ID, SDK_SETTINGS } from "../constants";
 
 import type {
     ScriptContextState,
@@ -71,8 +67,8 @@ export function scriptReducer(
                     [SCRIPT_ID]: `${getScriptID(
                         action.value as PayPalScriptOptions
                     )}`,
-                    [DATA_SDK_INTEGRATION_SOURCE]:
-                        DATA_SDK_INTEGRATION_SOURCE_VALUE,
+                    [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
+                        SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE_VALUE,
                 },
             };
         case DISPATCH_ACTION.SET_BRAINTREE_INSTANCE:

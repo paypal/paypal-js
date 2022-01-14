@@ -1,4 +1,4 @@
-import { DEFAULT_PAYPAL_NAMESPACE, DATA_NAMESPACE } from "../../constants";
+import { DEFAULT_PAYPAL_NAMESPACE, SDK_SETTINGS } from "../../constants";
 
 import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types";
 import type {
@@ -31,7 +31,7 @@ type PayPalHostedFieldOption = {
  */
 export const generateMissingHostedFieldsError = ({
     components = "",
-    [DATA_NAMESPACE]: dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
+    [SDK_SETTINGS.DATA_NAMESPACE]: dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
 }: PayPalHostedFieldsNamespace): string => {
     const expectedComponents = components
         ? `${components},hosted-fields`

@@ -5,7 +5,7 @@ import {
     generateMissingHostedFieldsError,
     generateHostedFieldsFromChildren,
 } from "./utils";
-import { DATA_NAMESPACE } from "../../constants";
+import { SDK_SETTINGS } from "../../constants";
 import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types/enums";
 
 const exceptionMessagePayPalNamespace =
@@ -19,7 +19,7 @@ describe("generateMissingHostedFieldsError", () => {
         expect(
             generateMissingHostedFieldsError({
                 components: "marks",
-                [DATA_NAMESPACE]: "Braintree",
+                [SDK_SETTINGS.DATA_NAMESPACE]: "Braintree",
             })
         ).toEqual(exceptionMessage);
     });

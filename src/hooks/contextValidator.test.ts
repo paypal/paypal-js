@@ -1,14 +1,17 @@
 import {
-    contextNotEmptyValidator,
-    contextOptionClientTokenNotEmptyValidator,
+    validateReducer,
+    validateBraintreeAuthorizationData,
 } from "./contextValidator";
 import { SCRIPT_LOADING_STATE } from "../types/enums";
-import { SCRIPT_ID } from "../constants";
+import {
+    SCRIPT_ID,
+    EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE,
+} from "../constants";
 
-describe("contextNotEmptyValidator", () => {
+describe("validateReducer", () => {
     test("should throw an exception when called with no args", () => {
         expect(() => {
-            contextNotEmptyValidator(null);
+            validateReducer(null);
         }).toThrowError(
             new Error(
                 "usePayPalScriptReducer must be used within a PayPalScriptProvider"
@@ -19,7 +22,7 @@ describe("contextNotEmptyValidator", () => {
     test("should throw an exception when called with an empty object", () => {
         expect(() => {
             // @ts-expect-error - improper context test
-            contextNotEmptyValidator({});
+            validateReducer({});
         }).toThrowError(
             new Error(
                 "usePayPalScriptReducer must be used within a PayPalScriptProvider"
@@ -30,7 +33,7 @@ describe("contextNotEmptyValidator", () => {
     test("should throw an exception when the dispatch function is invalid", () => {
         expect(() => {
             // @ts-expect-error - improper dispatch test
-            contextNotEmptyValidator({ dispatch: 10 });
+            validateReducer({ dispatch: 10 });
         }).toThrowError(
             new Error(
                 "usePayPalScriptReducer must be used within a PayPalScriptProvider"
@@ -41,7 +44,7 @@ describe("contextNotEmptyValidator", () => {
     test("should return an exception when dispatch is a function with empty parameters", () => {
         expect(() => {
             // @ts-expect-error - improper dispatch test
-            contextNotEmptyValidator({ dispatch: jest.fn() });
+            validateReducer({ dispatch: jest.fn() });
         }).toThrowError(
             new Error(
                 "usePayPalScriptReducer must be used within a PayPalScriptProvider"
@@ -52,20 +55,16 @@ describe("contextNotEmptyValidator", () => {
     test("should return same object if dispatch is a function with one parameter", () => {
         const state = { dispatch: jest.fn((param) => param) };
         // @ts-expect-error - improper dispatch test
-        expect(contextNotEmptyValidator(state)).toEqual(state);
+        expect(validateReducer(state)).toEqual(state);
     });
 });
 
-describe("contextOptionClientTokenNotEmptyValidator", () => {
+describe("validateBraintreeAuthorizationData", () => {
     const state = null;
     test("should throw an exception when called with no args", () => {
         expect(() => {
-            contextOptionClientTokenNotEmptyValidator(state);
-        }).toThrowError(
-            new Error(
-                "A client token wasn't found in the provider parent component"
-            )
-        );
+            validateBraintreeAuthorizationData(state);
+        }).toThrowError(new Error(EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE));
     });
 
     test("should throw an exception when data-client-token is null", () => {
@@ -79,12 +78,8 @@ describe("contextOptionClientTokenNotEmptyValidator", () => {
         };
         expect(() => {
             // @ts-expect-error - data-client-token of null not expected in types
-            contextOptionClientTokenNotEmptyValidator(state);
-        }).toThrowError(
-            new Error(
-                "A client token wasn't found in the provider parent component"
-            )
-        );
+            validateBraintreeAuthorizationData(state);
+        }).toThrowError(new Error(EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE));
     });
 
     test("should throw an exception when data-client-token is an empty string", () => {
@@ -97,12 +92,22 @@ describe("contextOptionClientTokenNotEmptyValidator", () => {
             loadingStatus: SCRIPT_LOADING_STATE.RESOLVED,
         };
         expect(() => {
-            contextOptionClientTokenNotEmptyValidator(state);
-        }).toThrowError(
-            new Error(
-                "A client token wasn't found in the provider parent component"
-            )
-        );
+            validateBraintreeAuthorizationData(state);
+        }).toThrowError(new Error(EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE));
+    });
+
+    test("should throw an exception when data-user-id-token is an empty string", () => {
+        const state = {
+            options: {
+                "data-user-id-token": "",
+                [SCRIPT_ID]: "id",
+                "client-id": "123",
+            },
+            loadingStatus: SCRIPT_LOADING_STATE.RESOLVED,
+        };
+        expect(() => {
+            validateBraintreeAuthorizationData(state);
+        }).toThrowError(new Error(EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE));
     });
 
     test("should return object if data client token is a valid string", () => {
@@ -114,6 +119,6 @@ describe("contextOptionClientTokenNotEmptyValidator", () => {
             },
             loadingStatus: SCRIPT_LOADING_STATE.RESOLVED,
         };
-        expect(contextOptionClientTokenNotEmptyValidator(state)).toEqual(state);
+        expect(validateBraintreeAuthorizationData(state)).toEqual(state);
     });
 });

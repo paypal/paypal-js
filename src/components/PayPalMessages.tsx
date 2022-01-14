@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState, FunctionComponent } from "react";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
-import { DATA_NAMESPACE } from "../constants";
+import { SDK_SETTINGS } from "../constants";
 import type {
     PayPalMessagesComponentOptions,
     PayPalMessagesComponent,
@@ -29,15 +29,34 @@ export const PayPalMessages: FunctionComponent<
     const messages = useRef<PayPalMessagesComponent | null>(null);
     const [, setErrorState] = useState(null);
 
-    useEffect(() => {
-        // verify the sdk script has successfully loaded
-        if (isResolved === false) {
-            return;
-        }
+        useEffect(() => {
+            // verify the sdk script has successfully loaded
+            if (isResolved === false) {
+                return;
+            }
 
-        const paypalWindowNamespace = getPayPalWindowNamespace(
-            options[DATA_NAMESPACE]
-        );
+            const paypalWindowNamespace = getPayPalWindowNamespace(
+                options[SDK_SETTINGS.DATA_NAMESPACE]
+            );
+
+            // verify dependency on window object
+            if (
+                paypalWindowNamespace === undefined ||
+                paypalWindowNamespace.Messages === undefined
+            ) {
+                return setErrorState(() => {
+                    throw new Error(
+                        generateErrorMessage({
+                            reactComponentName:
+                                PayPalMessages.displayName as string,
+                            sdkComponentKey: "messages",
+                            sdkRequestedComponents: options.components,
+                            sdkDataNamespace:
+                                options[SDK_SETTINGS.DATA_NAMESPACE],
+                        })
+                    );
+                });
+            }
 
         // verify dependency on window object
         if (
@@ -51,7 +70,7 @@ export const PayPalMessages: FunctionComponent<
                             PayPalMessages.displayName as string,
                         sdkComponentKey: "messages",
                         sdkRequestedComponents: options.components,
-                        sdkDataNamespace: options[DATA_NAMESPACE],
+                        sdkDataNamespace: options[SDK_SETTINGS.DATA_NAMESPACE],
                     })
                 );
             });

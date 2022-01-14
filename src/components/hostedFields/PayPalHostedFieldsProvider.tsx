@@ -3,7 +3,7 @@ import type { FC } from "react";
 
 import { PayPalHostedFieldsContext } from "../../context/payPalHostedFieldsContext";
 import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
-import { DATA_NAMESPACE } from "../../constants";
+import { SDK_SETTINGS } from "../../constants";
 import {
     generateHostedFieldsFromChildren,
     generateMissingHostedFieldsError,
@@ -53,14 +53,14 @@ export const PayPalHostedFieldsProvider: FC<
         }
         // Get the hosted fields from the [window.paypal.HostedFields] SDK
         hostedFields.current = getPayPalWindowNamespace(
-            options[DATA_NAMESPACE]
+            options[SDK_SETTINGS.DATA_NAMESPACE]
         ).HostedFields;
 
         if (!hostedFields.current) {
             throw new Error(
                 generateMissingHostedFieldsError({
                     components: options.components,
-                    [DATA_NAMESPACE]: options[DATA_NAMESPACE],
+                    [SDK_SETTINGS.DATA_NAMESPACE]: options[SDK_SETTINGS.DATA_NAMESPACE],
                 })
             );
         }

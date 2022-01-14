@@ -6,7 +6,7 @@ import {
 } from "./utils";
 import type { PayPalNamespace } from "@paypal/paypal-js";
 import type { BraintreeNamespace } from "./types";
-import { DATA_NAMESPACE } from "./constants";
+import { SDK_SETTINGS } from "./constants";
 
 describe("getPayPalWindowNamespace", () => {
     const mockPayPalNamespace = mock<PayPalNamespace>();
@@ -64,7 +64,7 @@ describe("hashStr", () => {
                     debug: false,
                     vault: false,
                     locale: "US",
-                    [DATA_NAMESPACE]: "braintree",
+                    [SDK_SETTINGS.DATA_NAMESPACE]: "braintree",
                 })
             )
         ).toMatchInlineSnapshot(

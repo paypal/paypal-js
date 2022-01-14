@@ -13,7 +13,7 @@ import { PayPalButtonsComponent } from "@paypal/paypal-js";
 import { BraintreePayPalButtons } from "./BraintreePayPalButtons";
 import { PayPalScriptProvider } from "../PayPalScriptProvider";
 import {
-    EMPTY_PROVIDER_CONTEXT_CLIENT_TOKEN_ERROR_MESSAGE,
+    EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE,
     BRAINTREE_SOURCE,
     BRAINTREE_PAYPAL_CHECKOUT_SOURCE,
     LOAD_SCRIPT_ERROR,
@@ -108,7 +108,7 @@ describe("Braintree PayPal button fail in mount process", () => {
             errorMessage = (ex as Error).message;
         }
         expect(errorMessage).toEqual(
-            "A client token wasn't found in the provider parent component"
+            EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE
         );
         expect(console.error).toHaveBeenCalled();
     });
@@ -127,7 +127,7 @@ describe("Braintree PayPal button fail in mount process", () => {
             errorMessage = (ex as Error).message;
         }
         expect(errorMessage).toEqual(
-            EMPTY_PROVIDER_CONTEXT_CLIENT_TOKEN_ERROR_MESSAGE
+            EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE
         );
         expect(console.error).toHaveBeenCalled();
     });
@@ -152,7 +152,7 @@ describe("Braintree PayPal button fail in mount process", () => {
         }
 
         expect(errorMessage).toEqual(
-            EMPTY_PROVIDER_CONTEXT_CLIENT_TOKEN_ERROR_MESSAGE
+            EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE
         );
         expect(console.error).toHaveBeenCalled();
     });

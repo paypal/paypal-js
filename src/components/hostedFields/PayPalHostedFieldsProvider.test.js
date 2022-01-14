@@ -7,6 +7,7 @@ import { PayPalScriptProvider } from "../PayPalScriptProvider";
 import { PayPalHostedFieldsProvider } from "./PayPalHostedFieldsProvider";
 import { PayPalHostedField } from "./PayPalHostedField";
 import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types/enums";
+import { EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE } from "../../constants";
 
 const onError = jest.fn();
 const wrapper = ({ children }) => (
@@ -65,7 +66,7 @@ describe("PayPalHostedFieldsProvider", () => {
             { wrapper }
         );
         expect(onError.mock.calls[0][0].message).toEqual(
-            "A client token wasn't found in the provider parent component"
+            EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE
         );
         spyConsoleError.mockRestore();
     });
