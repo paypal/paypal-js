@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.5.1](https://github.com/paypal/react-paypal-js/compare/v7.5.0...v7.5.1) (2022-01-14)
+
+### Bug Fixes
+
+-   add type for Braintree billing agreement option ([#234](https://github.com/paypal/react-paypal-js/issues/234)) ([ddaced2](https://github.com/paypal/react-paypal-js/commit/ddaced241a6a243cbb51689619918ab93710233e))
+-   **braintree:** support Braintree integrations using tokenization keys ([#216](https://github.com/paypal/react-paypal-js/issues/216)) ([3985a13](https://github.com/paypal/react-paypal-js/commit/3985a1309bb6c98f15584dc0ca33fe09c7207910))
+
 ## [7.5.0](https://github.com/paypal/react-paypal-js/compare/v7.4.2...v7.5.0) (2021-11-29)
 
 ### Features
