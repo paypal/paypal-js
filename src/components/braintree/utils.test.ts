@@ -1,13 +1,21 @@
-import { decorateActions } from "./utils";
-
 import { mock } from "jest-mock-extended";
+
+import { decorateActions, getBraintreeNamespace } from "./utils";
 import { BraintreePayPalCheckout } from "../../types/braintree/paypalCheckout";
 import { CreateBillingAgreementActions } from "../..";
+import { getBraintreeWindowNamespace } from "../../utils";
+
+import type { BraintreeNamespace } from "./../../types/braintreePayPalButtonTypes";
 import type {
     CreateOrderBraintreeActions,
     OnApproveBraintreeActions,
     OnApproveBraintreeData,
 } from "../../types/braintreePayPalButtonTypes";
+
+jest.mock("@paypal/paypal-js", () => ({
+    loadCustomScript: jest.fn(),
+}));
+jest.mock("../../utils");
 
 describe("decorateActions", () => {
     test("shouldn't modify the button props", () => {
@@ -137,5 +145,53 @@ describe("decorateActions", () => {
         expect(
             buttonProps.onApprove(mockedOnApproveData, mockedOnApproveActions)
         ).toBeTruthy();
+    });
+});
+
+describe("getBraintreeNamespace", () => {
+    const braintreeNamespace = {
+        client: {
+            create: jest.fn(),
+            authorization: "",
+            VERSION: "",
+            getConfiguration: jest.fn(),
+            request: jest.fn(),
+            teardown: jest.fn(),
+        },
+        paypalCheckout: {
+            create: jest.fn(),
+            loadPayPalSDK: jest.fn(),
+            VERSION: "",
+            createPayment: jest.fn(),
+            tokenizePayment: jest.fn(),
+            getClientId: jest.fn(),
+            startVaultInitiatedCheckout: jest.fn(),
+            teardown: jest.fn(),
+        },
+    };
+    (getBraintreeWindowNamespace as jest.Mock).mockReturnValue(
+        braintreeNamespace
+    );
+
+    test("should return Braintree namespace from argument", async () => {
+        const result = await getBraintreeNamespace(braintreeNamespace);
+
+        expect(result).toMatchObject(braintreeNamespace);
+    });
+
+    test("should return Braintree namespace from the CDN", async () => {
+        const result = await getBraintreeNamespace();
+
+        expect(result).toMatchObject(braintreeNamespace);
+    });
+
+    test("should throw an Error when the braintreeeNamespace is an invalid property", () => {
+        try {
+            getBraintreeNamespace(mock<BraintreeNamespace>());
+        } catch (err) {
+            expect((err as Error).message).toEqual(
+                "The braintreeNamespace property is not a valid BraintreeNamespace type."
+            );
+        }
     });
 });

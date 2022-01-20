@@ -49,6 +49,14 @@ export interface BraintreePayPalButtonsComponentProps
         data: OnApproveBraintreeData,
         actions: OnApproveBraintreeActions
     ) => Promise<void>;
+    /**
+     * An optional Braintree namespace.
+     * Useful to provide your own implementation of the Braintree namespace loader
+     * and avoid the default behavior of loading it from the official CDN.
+     *
+     * @since 7.5.1
+     */
+    braintreeNamespace?: BraintreeNamespace;
 }
 
 export type BraintreeNamespace = {
