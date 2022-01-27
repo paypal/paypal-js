@@ -1,23 +1,12 @@
-import { DEFAULT_PAYPAL_NAMESPACE, SDK_SETTINGS } from "../../constants";
+import {
+    DEFAULT_PAYPAL_NAMESPACE,
+    SDK_SETTINGS,
+    HOSTED_FIELDS_CHILDREN_ERROR,
+    HOSTED_FIELDS_DUPLICATE_CHILDREN_ERROR,
+} from "../../constants";
+import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types/enums";
 
-import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types";
-import type {
-    ReactChild,
-    ReactFragment,
-    ReactPortal,
-    ReactElement,
-    FC,
-} from "react";
-import type {
-    PayPalHostedFieldsNamespace,
-    PayPalHostedFieldProps,
-    PayPalHostedFieldOptions,
-} from "../../types/payPalHostedFieldTypes";
-
-// Define the type of the fields object use in the HostedFields.render options
-type PayPalHostedFieldOption = {
-    [key: string]: PayPalHostedFieldOptions;
-};
+import type { PayPalHostedFieldsNamespace } from "../../types/payPalHostedFieldTypes";
 
 /**
  * Throw an exception if the HostedFields is not found in the paypal namespace
@@ -46,38 +35,65 @@ export const generateMissingHostedFieldsError = ({
 };
 
 /**
- * Identify all the valid hosted fields children and generate the valid options
- * to use in the HostedFields.render process
+ * Validate the expiration date component. Valid combinations are:
+ * 1- Only the `expirationDate` field exists.
+ * 2- Only the `expirationMonth` and `expirationYear` fields exist. Cannot be used with the `expirationDate` field.
  *
- * @param childrenList     the list of children received
- * @param possibleChildren a list of child type to transform into fields format
- * @returns the fields object required to render the HostedFields
+ * @param registerTypes
+ * @returns @type {true} when the children are valid
  */
-export const generateHostedFieldsFromChildren = (
-    childrenList: (ReactChild | ReactPortal | ReactFragment)[]
-): PayPalHostedFieldOption =>
-    childrenList.reduce<PayPalHostedFieldOption>((fields, child) => {
-        const {
-            props: { hostedFieldType, options },
-        } = child as ReactElement<PayPalHostedFieldProps, FC>;
+const validateExpirationDate = (
+    registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[]
+) => {
+    return (
+        !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE) &&
+        !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_MONTH) &&
+        !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_YEAR)
+    );
+};
 
-        if (
-            (Object.values(PAYPAL_HOSTED_FIELDS_TYPES) as string[]).includes(
-                hostedFieldType
-            )
-        ) {
-            fields[hostedFieldType] = {
-                selector: options.selector,
-                placeholder: options.placeholder,
-                type: options.type,
-                formatInput: options.formatInput,
-                maskInput: options.maskInput,
-                select: options.select,
-                maxlength: options.maxlength,
-                minlength: options.minlength,
-                prefill: options.prefill,
-                rejectUnsupportedCards: options.rejectUnsupportedCards,
-            };
-        }
-        return fields;
-    }, {});
+/**
+ * Check if we find the [number, expiration, cvv] in children
+ *
+ * @param requiredChildren the list with required children [number, expiration, cvv]
+ * @param registerTypes    the list of all the children types pass to the parent
+ * @throw an @type {Error} when not find the default children
+ */
+const hasDefaultChildren = (registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[]) => {
+    if (
+        !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.NUMBER) ||
+        !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.CVV) ||
+        validateExpirationDate(registerTypes)
+    ) {
+        throw new Error(HOSTED_FIELDS_CHILDREN_ERROR);
+    }
+};
+
+/**
+ * Check if we don't have duplicate children types
+ *
+ * @param registerTypes the list of all the children types pass to the parent
+ * @throw an @type {Error} when duplicate types was found
+ */
+const noDuplicateChildren = (registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[]) => {
+    if (registerTypes.length !== new Set(registerTypes).size) {
+        throw new Error(HOSTED_FIELDS_DUPLICATE_CHILDREN_ERROR);
+    }
+};
+
+/**
+ * Validate the hosted field children in the PayPalHostedFieldsProvider component.
+ * These are the rules:
+ * 1- We need to find 3 default children for number, expiration, cvv
+ * 2- No duplicate children are allowed
+ * 3- No invalid combinations of `expirationDate`, `expirationMonth`, and `expirationYear`
+ *
+ * @param childrenList     the list of children
+ * @param requiredChildren the list with required children [number, expiration, cvv]
+ */
+export const validateHostedFieldChildren = (
+    registeredFields: PAYPAL_HOSTED_FIELDS_TYPES[]
+): void => {
+    hasDefaultChildren(registeredFields);
+    noDuplicateChildren(registeredFields);
+};

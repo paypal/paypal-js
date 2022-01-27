@@ -1,8 +1,13 @@
 import type { CSSProperties, ReactNode } from "react";
+import type { HostedFieldsHandler } from "@paypal/paypal-js";
 
 export type PayPalHostedFieldsNamespace = {
     components: string | undefined;
     [DATA_NAMESPACE: string]: string | undefined;
+};
+
+export type PayPalHostedFieldsRegistered = {
+    [key: string]: PayPalHostedFieldOptions;
 };
 
 export type PayPalHostedFieldOptions = {
@@ -123,3 +128,8 @@ export interface PayPalHostedFieldsComponentProps {
      */
     notEligibleError?: ReactNode;
 }
+
+export type PayPalHostedFieldContext = {
+    cardFields?: HostedFieldsHandler;
+    registerHostedField?: (component: PayPalHostedFieldsRegistered) => void;
+};

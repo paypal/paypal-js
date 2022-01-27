@@ -1,6 +1,7 @@
-import React from "react";
-import type { FC } from "react";
+import React, { useContext, useEffect } from "react";
+import { PayPalHostedFieldsContext } from "../../context/payPalHostedFieldsContext";
 
+import type { FC } from "react";
 import type { PayPalHostedFieldProps } from "../../types/payPalHostedFieldTypes";
 
 /**
@@ -24,4 +25,31 @@ export const PayPalHostedField: FC<PayPalHostedFieldProps> = ({
     hostedFieldType, // eslint-disable-line @typescript-eslint/no-unused-vars
     options, // eslint-disable-line @typescript-eslint/no-unused-vars
     ...props
-}) => <div {...props} />;
+}) => {
+    const hostedFieldContext = useContext(PayPalHostedFieldsContext);
+
+    useEffect(() => {
+        if (!hostedFieldContext?.registerHostedField) {
+            throw new Error(
+                "The HostedField cannot be register in the PayPalHostedFieldsProvider parent component"
+            );
+        }
+        // Register in the parent provider
+        hostedFieldContext.registerHostedField({
+            [hostedFieldType]: {
+                selector: options.selector,
+                placeholder: options.placeholder,
+                type: options.type,
+                formatInput: options.formatInput,
+                maskInput: options.maskInput,
+                select: options.select,
+                maxlength: options.maxlength,
+                minlength: options.minlength,
+                prefill: options.prefill,
+                rejectUnsupportedCards: options.rejectUnsupportedCards,
+            },
+        });
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    return <div {...props} />;
+};

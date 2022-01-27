@@ -29,34 +29,15 @@ export const PayPalMessages: FunctionComponent<
     const messages = useRef<PayPalMessagesComponent | null>(null);
     const [, setErrorState] = useState(null);
 
-        useEffect(() => {
-            // verify the sdk script has successfully loaded
-            if (isResolved === false) {
-                return;
-            }
+    useEffect(() => {
+        // verify the sdk script has successfully loaded
+        if (isResolved === false) {
+            return;
+        }
 
-            const paypalWindowNamespace = getPayPalWindowNamespace(
-                options[SDK_SETTINGS.DATA_NAMESPACE]
-            );
-
-            // verify dependency on window object
-            if (
-                paypalWindowNamespace === undefined ||
-                paypalWindowNamespace.Messages === undefined
-            ) {
-                return setErrorState(() => {
-                    throw new Error(
-                        generateErrorMessage({
-                            reactComponentName:
-                                PayPalMessages.displayName as string,
-                            sdkComponentKey: "messages",
-                            sdkRequestedComponents: options.components,
-                            sdkDataNamespace:
-                                options[SDK_SETTINGS.DATA_NAMESPACE],
-                        })
-                    );
-                });
-            }
+        const paypalWindowNamespace = getPayPalWindowNamespace(
+            options[SDK_SETTINGS.DATA_NAMESPACE]
+        );
 
         // verify dependency on window object
         if (

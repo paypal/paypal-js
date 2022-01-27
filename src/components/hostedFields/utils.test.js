@@ -1,12 +1,11 @@
-import React from "react";
-
-import { PayPalHostedField } from "./PayPalHostedField";
+import { generateMissingHostedFieldsError } from "./utils";
 import {
-    generateMissingHostedFieldsError,
-    generateHostedFieldsFromChildren,
-} from "./utils";
-import { SDK_SETTINGS } from "../../constants";
+    SDK_SETTINGS,
+    HOSTED_FIELDS_CHILDREN_ERROR,
+    HOSTED_FIELDS_DUPLICATE_CHILDREN_ERROR,
+} from "../../constants";
 import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types/enums";
+import { validateHostedFieldChildren } from "./utils";
 
 const exceptionMessagePayPalNamespace =
     "Unable to render <PayPalHostedFieldsProvider /> because window.paypal.HostedFields is undefined.\nTo fix the issue, add 'hosted-fields' to the list of components passed to the parent PayPalScriptProvider: <PayPalScriptProvider options={{ components: 'hosted-fields'}}>";
@@ -41,50 +40,51 @@ describe("generateMissingHostedFieldsError", () => {
     });
 });
 
-describe("generateHostedFieldsFromChildren", () => {
-    test("should return empty object when children argument is an empty array", () => {
-        expect(generateHostedFieldsFromChildren([])).toEqual({});
+describe("validateHostedFieldChildren", () => {
+    test("should fail when empty children", () => {
+        expect(() => {
+            validateHostedFieldChildren([]);
+        }).toThrow(new Error(HOSTED_FIELDS_CHILDREN_ERROR));
     });
 
-    test("should return empty object when children argument doesn't have PayPalHostedField components", () => {
-        expect(
-            generateHostedFieldsFromChildren([
-                <div key="0"></div>,
-                <input key="1" />,
-                <button key="2">Submit</button>,
-            ])
-        ).toEqual({});
+    test("should fail when missing children for cvv and card number", () => {
+        expect(() => {
+            validateHostedFieldChildren([
+                PAYPAL_HOSTED_FIELDS_TYPES.NUMBER,
+                PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE,
+            ]);
+        }).toThrow(new Error(HOSTED_FIELDS_CHILDREN_ERROR));
     });
 
-    test("should return teh PayPalHostedField children components", () => {
-        expect(
-            generateHostedFieldsFromChildren([
-                <PayPalHostedField
-                    key="0"
-                    hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
-                    options={{ selector: ".car-number" }}
-                />,
-                <PayPalHostedField
-                    key="1"
-                    hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE}
-                    options={{ selector: ".expiration" }}
-                />,
-                <PayPalHostedField
-                    key="2"
-                    hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.CVV}
-                    options={{ selector: ".cvv" }}
-                />,
-            ])
-        ).toMatchObject({
-            number: {
-                selector: ".car-number",
-            },
-            expirationDate: {
-                selector: ".expiration",
-            },
-            cvv: {
-                selector: ".cvv",
-            },
-        });
+    test("should fail when missing children for expiration", () => {
+        expect(() => {
+            validateHostedFieldChildren([
+                PAYPAL_HOSTED_FIELDS_TYPES.NUMBER,
+                PAYPAL_HOSTED_FIELDS_TYPES.CVV,
+            ]);
+        }).toThrow(new Error(HOSTED_FIELDS_CHILDREN_ERROR));
+    });
+
+    test("should fail when using duplicate children", () => {
+        expect(() => {
+            validateHostedFieldChildren([
+                PAYPAL_HOSTED_FIELDS_TYPES.NUMBER,
+                PAYPAL_HOSTED_FIELDS_TYPES.CVV,
+                PAYPAL_HOSTED_FIELDS_TYPES.CVV,
+                PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE,
+            ]);
+        }).toThrow(new Error(HOSTED_FIELDS_DUPLICATE_CHILDREN_ERROR));
+    });
+
+    test("should pass the validation process and exclude children other than PayPalHostedField", () => {
+        expect(() => {
+            validateHostedFieldChildren([
+                PAYPAL_HOSTED_FIELDS_TYPES.NUMBER,
+                PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE,
+                PAYPAL_HOSTED_FIELDS_TYPES.CVV,
+                "custom_1",
+                "custom_2",
+            ]);
+        }).not.toThrow();
     });
 });

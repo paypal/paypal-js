@@ -1,17 +1,43 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, waitFor } from "@testing-library/react";
+import { ErrorBoundary } from "react-error-boundary";
 
 import { PayPalHostedField } from "./PayPalHostedField";
 import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types/enums";
+import { PayPalHostedFieldsContext } from "../../context/payPalHostedFieldsContext";
+
+const onError = jest.fn();
+const wrapper = ({ children }) => (
+    <ErrorBoundary fallback={<div>Error</div>} onError={onError}>
+        {children}
+    </ErrorBoundary>
+);
+
+const providerRender = (ui, { providerProps, ...renderOptions }) => {
+    return render(
+        <PayPalHostedFieldsContext.Provider {...providerProps}>
+            {ui}
+        </PayPalHostedFieldsContext.Provider>,
+        renderOptions
+    );
+};
+const defaultProviderValue = {
+    providerProps: { value: { registerHostedField: jest.fn() } },
+};
 
 describe("PayPalHostedField", () => {
     test("should render component using id as selector", () => {
-        const { container } = render(
-            <PayPalHostedField
-                id="number"
-                hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
-                options={{ selector: "#number" }}
-            />
+        const { container } = providerRender(
+            <PayPalHostedFieldsContext.Provider
+                value={{ registerHostedField: jest.fn() }}
+            >
+                <PayPalHostedField
+                    id="number"
+                    hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
+                    options={{ selector: "#number" }}
+                />
+            </PayPalHostedFieldsContext.Provider>,
+            defaultProviderValue
         );
 
         expect(
@@ -20,12 +46,13 @@ describe("PayPalHostedField", () => {
     });
 
     test("should render component with a list of classes", () => {
-        const { container } = render(
+        const { container } = providerRender(
             <PayPalHostedField
                 className="class1 class2 class3"
                 hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
                 options={{ selector: ".class1" }}
-            />
+            />,
+            defaultProviderValue
         );
         const renderedElement = container.querySelector(".class1");
 
@@ -34,7 +61,7 @@ describe("PayPalHostedField", () => {
     });
 
     test("should render component with specific style", () => {
-        const { container } = render(
+        const { container } = providerRender(
             <PayPalHostedField
                 className="number"
                 style={{
@@ -43,11 +70,36 @@ describe("PayPalHostedField", () => {
                 }}
                 hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
                 options={{ selector: ".number" }}
-            />
+            />,
+            defaultProviderValue
         );
         const renderedElement = container.querySelector(".number");
 
         expect(renderedElement.style.color).toEqual("black");
         expect(renderedElement.style.border).toEqual("1px solid");
+    });
+
+    test("should fail rendering the component when context is invalid", async () => {
+        const spyConsoleError = jest
+            .spyOn(console, "error")
+            .mockImplementation();
+        render(
+            <PayPalHostedField
+                className="number"
+                style={{
+                    color: "black",
+                    border: "1px solid",
+                }}
+                hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
+                options={{ selector: ".number" }}
+            />,
+            { wrapper }
+        );
+
+        await waitFor(() => expect(onError).toBeCalledTimes(1));
+        expect(onError.mock.calls[0][0].message).toBe(
+            "The HostedField cannot be register in the PayPalHostedFieldsProvider parent component"
+        );
+        spyConsoleError.mockRestore();
     });
 });

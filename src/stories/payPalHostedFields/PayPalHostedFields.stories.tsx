@@ -67,7 +67,7 @@ function captureOrderUrl(orderId: string): string {
 const SubmitPayment = ({ customStyle }: { customStyle?: CSSProperties }) => {
     const [paying, setPaying] = useState(false);
     const cardHolderName = useRef<HTMLInputElement>(null);
-    const hostedField = usePayPalHostedFields();
+    const { cardFields: hostedField } = usePayPalHostedFields();
 
     const handleClick = () => {
         if (hostedField) {

@@ -13,7 +13,6 @@ import type { BraintreePayPalButtonsComponentProps } from "../../types";
 /**
  * Simple check to determine if the Braintree is a valid namespace.
  *
- * @since 7.5.1
  * @param braintreeSource the source {@link BraintreeNamespace}
  * @returns a boolean representing if the namespace is valid.
  */
@@ -83,8 +82,6 @@ export const decorateActions = (
  * and the `BraintreePayPalButtons` won't be able to get access to the `window.braintree` namespace
  * from the global context.
  *
- *
- * @since 7.5.1
  * @param braintreeSource the source {@link BraintreeNamespace}
  * @returns the {@link BraintreeNamespace}
  */
