@@ -33,6 +33,15 @@ jobs:
               with:
                   useLockFile: false
 
+            - name: ▶️ Run linters
+              uses: wearerequired/lint-action@v1
+              with:
+                  eslint: true
+                  prettier: true
+                  eslint_args: "--max-warnings 0"
+                  prettier_args: "--max-warnings 0"
+                  continue_on_error: false
+
             - name: ▶️ Run validate script
               run: npm run validate
 
