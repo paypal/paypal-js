@@ -6,14 +6,23 @@ import { PayPalHostedField } from "./PayPalHostedField";
 import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types/enums";
 import { PayPalHostedFieldsContext } from "../../context/payPalHostedFieldsContext";
 
+import type { ReactNode, ProviderProps } from "react";
+import type { PayPalHostedFieldContext } from "../../types";
+
 const onError = jest.fn();
-const wrapper = ({ children }) => (
+const wrapper = ({ children }: { children: ReactNode }) => (
     <ErrorBoundary fallback={<div>Error</div>} onError={onError}>
         {children}
     </ErrorBoundary>
 );
 
-const providerRender = (ui, { providerProps, ...renderOptions }) => {
+const providerRender = (
+    ui: ReactNode,
+    {
+        providerProps,
+        ...renderOptions
+    }: { providerProps: ProviderProps<PayPalHostedFieldContext> }
+) => {
     return render(
         <PayPalHostedFieldsContext.Provider {...providerProps}>
             {ui}
@@ -56,8 +65,8 @@ describe("PayPalHostedField", () => {
         );
         const renderedElement = container.querySelector(".class1");
 
-        expect(renderedElement.classList.contains("class2")).toBeTruthy();
-        expect(renderedElement.classList.contains("class3")).toBeTruthy();
+        expect(renderedElement?.classList.contains("class2")).toBeTruthy();
+        expect(renderedElement?.classList.contains("class3")).toBeTruthy();
     });
 
     test("should render component with specific style", () => {
@@ -73,10 +82,11 @@ describe("PayPalHostedField", () => {
             />,
             defaultProviderValue
         );
-        const renderedElement = container.querySelector(".number");
+        const renderedElement =
+            container.querySelector<HTMLDivElement>(".number");
 
-        expect(renderedElement.style.color).toEqual("black");
-        expect(renderedElement.style.border).toEqual("1px solid");
+        expect(renderedElement?.style.color).toEqual("black");
+        expect(renderedElement?.style.border).toEqual("1px solid");
     });
 
     test("should fail rendering the component when context is invalid", async () => {

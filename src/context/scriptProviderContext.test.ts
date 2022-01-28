@@ -1,14 +1,22 @@
+import { mock } from "jest-mock-extended";
+
 import {
     getScriptID,
     destroySDKScript,
     scriptReducer,
-} from "./scriptProviderContext.ts";
+} from "./scriptProviderContext";
 import { SCRIPT_ID } from "../constants";
-import { DISPATCH_ACTION } from "../types/enums";
+import { DISPATCH_ACTION, SCRIPT_LOADING_STATE } from "../types/enums";
+
+import type { PayPalScriptOptions } from "@paypal/paypal-js";
+import type { ScriptContextState } from "./../types/scriptProviderTypes";
+import type { BraintreePayPalCheckout } from "./../types/braintree/paypalCheckout";
+
+const scriptHash = "react-paypal-js-iiuovjsqddgsesvd";
 
 describe("getScriptID", () => {
     test("should return simple hash using empty options object", () => {
-        expect(getScriptID({})).toEqual("react-paypal-js-vv");
+        expect(getScriptID({ "client-id": "" })).toEqual(scriptHash);
     });
 
     test("should return complex hash using real options object", () => {
@@ -59,28 +67,20 @@ describe("destroySDKScript", () => {
 });
 
 describe("scriptReducer", () => {
-    let state = {};
+    let state: ScriptContextState;
 
     beforeEach(() => {
         state = {
-            buttons: {
-                render: jest.fn(),
-            },
-            hostedFields: {
-                render: jest.fn(),
-            },
-            FUNDING: {
-                card: "CARD",
-                credit: "CREDIT",
-                venmo: "VENMO",
-            },
+            loadingStatus: "" as SCRIPT_LOADING_STATE,
             options: {
+                "client-id": "",
                 [SCRIPT_ID]: "script",
             },
         };
     });
 
     test("should return same state", () => {
+        // @ts-expect-error type not valid
         expect(scriptReducer(state, { type: "" })).toMatchObject(state);
     });
 
@@ -88,7 +88,7 @@ describe("scriptReducer", () => {
         expect(
             scriptReducer(state, {
                 type: DISPATCH_ACTION.LOADING_STATUS,
-                value: "resolve",
+                value: "resolve" as SCRIPT_LOADING_STATE,
             })
         ).toMatchObject({ ...state, loadingStatus: "resolve" });
     });
@@ -97,19 +97,22 @@ describe("scriptReducer", () => {
         expect(
             scriptReducer(state, {
                 type: DISPATCH_ACTION.RESET_OPTIONS,
-                value: { [SCRIPT_ID]: "script" },
+                value: {
+                    "client-id": "",
+                    [SCRIPT_ID]: "script",
+                } as PayPalScriptOptions,
             })
         ).toMatchObject({
             ...state,
             loadingStatus: "pending",
             options: {
-                [SCRIPT_ID]: "react-paypal-js-vv",
+                [SCRIPT_ID]: scriptHash,
             },
         });
     });
 
     test("should set the Braintree instance", () => {
-        const braintreeMockInstance = { render: jest.fn(), close: jest.fn() };
+        const braintreeMockInstance = mock<BraintreePayPalCheckout>();
 
         expect(
             scriptReducer(state, {

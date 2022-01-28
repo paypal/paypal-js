@@ -95,6 +95,8 @@ describe("<PayPalMarks />", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
+        (window.paypal as PayPalNamespace).Marks = undefined;
+
         render(
             <PayPalScriptProvider
                 options={{

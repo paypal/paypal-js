@@ -24,13 +24,13 @@ describe("generateMissingHostedFieldsError", () => {
     });
 
     test("should throw exception with default namespace", () => {
-        expect(generateMissingHostedFieldsError({})).toEqual(
+        expect(generateMissingHostedFieldsError({ components: "" })).toEqual(
             exceptionMessagePayPalNamespace
         );
     });
 
     test("should throw exception unknown exception ", () => {
-        window.paypal = {};
+        window.paypal = { version: "" };
 
         expect(
             generateMissingHostedFieldsError({ components: "hosted-fields" })
@@ -82,8 +82,8 @@ describe("validateHostedFieldChildren", () => {
                 PAYPAL_HOSTED_FIELDS_TYPES.NUMBER,
                 PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE,
                 PAYPAL_HOSTED_FIELDS_TYPES.CVV,
-                "custom_1",
-                "custom_2",
+                "custom_1" as PAYPAL_HOSTED_FIELDS_TYPES,
+                "custom_2" as PAYPAL_HOSTED_FIELDS_TYPES,
             ]);
         }).not.toThrow();
     });

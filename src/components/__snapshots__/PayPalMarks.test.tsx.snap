@@ -4,6 +4,10 @@ exports[`<PayPalMarks /> should catch and throw unexpected zoid render errors 1`
 
 exports[`<PayPalMarks /> should throw an error when no components are passed to the PayPalScriptProvider 1`] = `"Cannot read properties of undefined (reading 'isEligible')"`;
 
-exports[`<PayPalMarks /> should throw an error when the 'marks' component is in the components list but wasn't load in the paypal object 1`] = `"Cannot read properties of undefined (reading 'isEligible')"`;
+exports[`<PayPalMarks /> should throw an error when the 'marks' component is in the components list but wasn't load in the paypal object 1`] = `"Unable to render <PayPalMarks /> because window.paypal.Marks is undefined."`;
 
-exports[`<PayPalMarks /> should throw an error when the 'marks' component is missing from the components list passed to the PayPalScriptProvider 1`] = `"Cannot read properties of undefined (reading 'isEligible')"`;
+exports[`<PayPalMarks /> should throw an error when the 'marks' component is missing from the components list passed to the PayPalScriptProvider 1`] = `
+"Unable to render <PayPalMarks /> because window.paypal.Marks is undefined.
+To fix the issue, add 'marks' to the list of components passed to the parent PayPalScriptProvider:
+\`<PayPalScriptProvider options={{ components: 'buttons,messages,marks'}}>\`."
+`;

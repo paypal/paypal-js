@@ -2,6 +2,7 @@ import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import { ErrorBoundary } from "react-error-boundary";
 import { loadScript } from "@paypal/paypal-js";
+import { mock } from "jest-mock-extended";
 
 import { PayPalScriptProvider } from "../PayPalScriptProvider";
 import { PayPalHostedFieldsProvider } from "./PayPalHostedFieldsProvider";
@@ -9,8 +10,15 @@ import { PayPalHostedField } from "./PayPalHostedField";
 import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types/enums";
 import { EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE } from "../../constants";
 
+import type { ReactNode } from "react";
+import type {
+    PayPalNamespace,
+    PayPalHostedFieldsComponent,
+} from "@paypal/paypal-js";
+
+const mockCreateOrder = mock<() => Promise<string>>();
 const onError = jest.fn();
-const wrapper = ({ children }) => (
+const wrapper = ({ children }: { children: ReactNode }) => (
     <ErrorBoundary fallback={<div>Error</div>} onError={onError}>
         {children}
     </ErrorBoundary>
@@ -33,9 +41,10 @@ describe("PayPalHostedFieldsProvider", () => {
                     teardown: jest.fn(),
                 }),
             },
+            version: "",
         };
 
-        loadScript.mockResolvedValue(window.paypal);
+        (loadScript as jest.Mock).mockResolvedValue(window.paypal);
     });
 
     afterEach(() => {
@@ -47,7 +56,12 @@ describe("PayPalHostedFieldsProvider", () => {
             .spyOn(console, "error")
             .mockImplementation();
 
-        render(<PayPalHostedFieldsProvider />, { wrapper });
+        render(
+            <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
+                <></>
+            </PayPalHostedFieldsProvider>,
+            { wrapper }
+        );
         expect(onError.mock.calls[0][0].message).toEqual(
             "usePayPalScriptReducer must be used within a PayPalScriptProvider"
         );
@@ -60,8 +74,10 @@ describe("PayPalHostedFieldsProvider", () => {
             .mockImplementation();
 
         render(
-            <PayPalScriptProvider>
-                <PayPalHostedFieldsProvider />
+            <PayPalScriptProvider options={{ "client-id": "" }}>
+                <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
+                    <></>
+                </PayPalHostedFieldsProvider>
             </PayPalScriptProvider>,
             { wrapper }
         );
@@ -86,7 +102,9 @@ describe("PayPalHostedFieldsProvider", () => {
                     "data-client-token": "test-data-client-token",
                 }}
             >
-                <PayPalHostedFieldsProvider />
+                <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
+                    <></>
+                </PayPalHostedFieldsProvider>
             </PayPalScriptProvider>,
             { wrapper }
         );
@@ -100,7 +118,7 @@ describe("PayPalHostedFieldsProvider", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
-        window.paypal = {};
+        window.paypal = { version: "" };
 
         render(
             <PayPalScriptProvider
@@ -111,7 +129,7 @@ describe("PayPalHostedFieldsProvider", () => {
                     "data-client-token": "test-data-client-token",
                 }}
             >
-                <PayPalHostedFieldsProvider>
+                <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
                     <PayPalHostedField
                         hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
                         options={{ selector: "number" }}
@@ -145,7 +163,7 @@ describe("PayPalHostedFieldsProvider", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
-        loadScript.mockRejectedValue(new Error("Unknown error"));
+        (loadScript as jest.Mock).mockRejectedValue(new Error("Unknown error"));
 
         render(
             <PayPalScriptProvider
@@ -157,7 +175,7 @@ describe("PayPalHostedFieldsProvider", () => {
                     "data-client-token": "test-data-client-token",
                 }}
             >
-                <PayPalHostedFieldsProvider>
+                <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
                     <PayPalHostedField
                         hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
                         options={{ selector: "number" }}
@@ -194,7 +212,7 @@ describe("PayPalHostedFieldsProvider", () => {
                     "data-client-token": "test-data-client-token",
                 }}
             >
-                <PayPalHostedFieldsProvider>
+                <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
                     <PayPalHostedField
                         hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
                         options={{ selector: "number" }}
@@ -223,7 +241,10 @@ describe("PayPalHostedFieldsProvider", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
-        window.paypal.HostedFields.render = jest
+        (
+            (window.paypal as PayPalNamespace)
+                .HostedFields as PayPalHostedFieldsComponent
+        ).render = jest
             .fn()
             .mockRejectedValue(new Error("Failing rendering hostedFields"));
 
@@ -236,7 +257,7 @@ describe("PayPalHostedFieldsProvider", () => {
                     "data-client-token": "test-data-client-token",
                 }}
             >
-                <PayPalHostedFieldsProvider>
+                <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
                     <PayPalHostedField
                         hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
                         options={{ selector: "number" }}
@@ -275,7 +296,7 @@ describe("PayPalHostedFieldsProvider", () => {
                     components: "hosted-fields",
                 }}
             >
-                <PayPalHostedFieldsProvider>
+                <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
                     <PayPalHostedField
                         className="number"
                         hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
@@ -298,7 +319,7 @@ describe("PayPalHostedFieldsProvider", () => {
         );
 
         await waitFor(() => {
-            expect(window.paypal.HostedFields.render).toBeCalled();
+            expect(window?.paypal?.HostedFields?.render).toBeCalled();
         });
         expect(
             container.querySelector(".number") instanceof HTMLDivElement
@@ -320,6 +341,7 @@ describe("PayPalHostedFieldsProvider", () => {
                 }}
             >
                 <PayPalHostedFieldsProvider
+                    createOrder={mockCreateOrder}
                     styles={{
                         ".valid": { color: "#28a745" },
                         ".invalid": { color: "#dc3545" },
@@ -346,7 +368,63 @@ describe("PayPalHostedFieldsProvider", () => {
             </PayPalScriptProvider>
         );
         await waitFor(() => {
-            expect(window.paypal.HostedFields.render).toBeCalledTimes(2);
+            expect(window?.paypal?.HostedFields?.render).toBeCalledTimes(2);
         });
+    });
+    test("should not set context state if component is unmounted", async () => {
+        jest.useFakeTimers();
+
+        (
+            (window.paypal as PayPalNamespace)
+                .HostedFields as PayPalHostedFieldsComponent
+        ).render = jest
+            .fn()
+            .mockImplementation(
+                () =>
+                    new Promise((resolve) => setTimeout(() => resolve({}), 500))
+            );
+
+        const { container, unmount } = render(
+            <PayPalScriptProvider
+                options={{
+                    "client-id": "test-client",
+                    currency: "USD",
+                    intent: "authorize",
+                    "data-client-token": "test-data-client-token",
+                    components: "hosted-fields",
+                }}
+            >
+                <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
+                    <PayPalHostedField
+                        className="number"
+                        hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
+                        options={{ selector: ".number" }}
+                    />
+                    <PayPalHostedField
+                        className="expiration"
+                        hostedFieldType={
+                            PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE
+                        }
+                        options={{ selector: ".expiration" }}
+                    />
+                    <PayPalHostedField
+                        className="cvv"
+                        hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.CVV}
+                        options={{ selector: ".cvv" }}
+                    />
+                </PayPalHostedFieldsProvider>
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() => {
+            expect(window?.paypal?.HostedFields?.render).toBeCalled();
+        });
+        unmount();
+        jest.runAllTimers();
+
+        expect(
+            container.querySelector(".number") instanceof HTMLDivElement
+        ).toBeFalsy();
+        jest.useRealTimers();
     });
 });
