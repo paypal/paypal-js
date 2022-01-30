@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.0.2](https://github.com/paypal/paypal-js/compare/v5.0.1...v5.0.2) (2022-01-30)
+
+### Bug Fixes
+
+-   **types:** add missing style props for messages ([#167](https://github.com/paypal/paypal-js/issues/167)) ([e969f9a](https://github.com/paypal/paypal-js/commit/e969f9a65269a97645adc0dab685257f7f38ce96))
+
 ### [5.0.1](https://github.com/paypal/paypal-js/compare/v5.0.0...v5.0.1) (2022-01-11)
 
 ### Bug Fixes
