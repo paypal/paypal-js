@@ -10,7 +10,7 @@
         "check-node-version": "node scripts/check-node-version.js",
         "lint": "eslint .",
         "format": "prettier --write .",
-        "format:check": "prettier --write .",
+        "format:check": "prettier --check .",
         "postinstall": "husky install",
         "prepublishOnly": "pinst --disable",
         "postpublish": "pinst --enable",
