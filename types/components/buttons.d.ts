@@ -3,7 +3,7 @@ import type { CreateSubscriptionRequestBody } from "../apis/subscriptions/subscr
 import type { ShippingAddress, SelectedShippingOption } from "../apis/shipping";
 import type { SubscriptionDetail } from "../apis/subscriptions/subscriptions";
 
-export type CreateOrderActions = {
+      export type CreateOrderActions = {
     order: {
         /** Used to create an order for client-side integrations. Accepts the same options as the request body of the [/v2/checkout/orders api](https://developer.paypal.com/docs/api/orders/v2/#orders-create-request-body). */
         create: (options: CreateOrderRequestBody) => Promise<string>;
