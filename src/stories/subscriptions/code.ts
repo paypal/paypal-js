@@ -1,7 +1,6 @@
 import { SUBSCRIPTION } from "../constants";
 
-const SUBSCRIPTION_OPTIONS =
-`createSubscription={(data, actions) => {
+const SUBSCRIPTION_OPTIONS = `createSubscription={(data, actions) => {
 			return actions.subscription
 				.create({
 					plan_id: "P-3RX065706M3469222L5IFM4I",
@@ -15,8 +14,7 @@ const SUBSCRIPTION_OPTIONS =
 			label: "subscribe",
 		}}`;
 
-const CAPTURE_OPTIONS =
-`createOrder={function (data, actions) {
+const CAPTURE_OPTIONS = `createOrder={function (data, actions) {
 			return actions.order
 				.create({
 					purchase_units: [
