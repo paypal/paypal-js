@@ -19,6 +19,7 @@
         "build": "rollup --config",
         "check-node-version": "node scripts/check-node-version.js",
         "format": "prettier --write .",
+        "format:check": "prettier --check .",
         "lint": "eslint .",
         "postinstall": "husky install",
         "prepack": "rimraf dist && npm run build && npm run type-declarations",
@@ -34,7 +35,7 @@
         "postrelease": "git push && git push --follow-tags && npm run build && npm publish",
         "typecheck": "tsc --noEmit",
         "type-declarations": "tsc --emitDeclarationOnly --outDir dist/types --project tsconfig.declarations.json",
-        "validate": "npm run check-node-version && npm run typecheck && npm run build && npm run lint && npm test -- --coverage"
+        "validate": "npm run check-node-version && npm run format:check && npm run typecheck && npm run build && npm run lint && npm test -- --coverage"
     },
     "files": [
         "dist"
