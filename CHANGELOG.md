@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.6.0](https://github.com/paypal/react-paypal-js/compare/v7.5.1...v7.6.0) (2022-02-01)
+
+### Features
+
+-   **braintree:** add optional prop for braintree namespace ([#238](https://github.com/paypal/react-paypal-js/issues/238)) ([8deab76](https://github.com/paypal/react-paypal-js/commit/8deab76564181c5f2b1a08babf9d4316cae5720d))
+-   **hostedFields:** support deeply nested children ([#240](https://github.com/paypal/react-paypal-js/issues/240)) ([f5fa95d](https://github.com/paypal/react-paypal-js/commit/f5fa95db3cfe1c8797e6f1eccb4c0abfb1355aaf))
+
 ### [7.5.1](https://github.com/paypal/react-paypal-js/compare/v7.5.0...v7.5.1) (2022-01-14)
 
 ### Bug Fixes
