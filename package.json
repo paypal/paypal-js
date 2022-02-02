@@ -65,7 +65,7 @@
         "filesize": "8.0.7",
         "husky": "7.0.4",
         "jest": "27.4.7",
-        "jest-puppeteer": "6.0.3",
+        "jest-puppeteer": "6.1.0",
         "lint-staged": "12.3.2",
         "pinst": "2.1.6",
         "prettier": "2.5.1",
