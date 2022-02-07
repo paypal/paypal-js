@@ -1,9 +1,5 @@
-import React, { FC, ReactElement } from "react";
+import React, { type FC, type ReactElement } from "react";
 import { action } from "@storybook/addon-actions";
-
-import type { StoryFn } from "@storybook/react";
-import type { DocsContextProps } from "@storybook/addon-docs";
-import type { PayPalScriptOptions } from "@paypal/paypal-js";
 
 import { getOptionsFromQueryString } from "../utils";
 import {
@@ -18,6 +14,10 @@ import {
 import { usePayPalScriptReducer } from "../../hooks/scriptProviderHooks";
 import DocPageStructure from "../components/DocPageStructure";
 import { getDefaultCode } from "./code";
+
+import type { StoryFn } from "@storybook/react";
+import type { DocsContextProps } from "@storybook/addon-docs";
+import type { PayPalScriptOptions } from "@paypal/paypal-js";
 
 const scriptProviderOptions: PayPalScriptOptions = {
     "client-id": "test",

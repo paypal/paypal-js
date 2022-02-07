@@ -1,4 +1,4 @@
-import React from "react";
+import React, { type ReactNode } from "react";
 import { render, waitFor } from "@testing-library/react";
 import { ErrorBoundary } from "react-error-boundary";
 import { loadScript } from "@paypal/paypal-js";
@@ -10,7 +10,6 @@ import { PayPalHostedField } from "./PayPalHostedField";
 import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types/enums";
 import { EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE } from "../../constants";
 
-import type { ReactNode } from "react";
 import type {
     PayPalNamespace,
     PayPalHostedFieldsComponent,

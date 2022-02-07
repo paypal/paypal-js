@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { type ReactNode } from "react";
 import { render, waitFor } from "@testing-library/react";
 import { mock } from "jest-mock-extended";
 import { loadScript, PayPalNamespace } from "@paypal/paypal-js";

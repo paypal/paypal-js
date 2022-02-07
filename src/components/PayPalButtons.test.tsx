@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { useState, type ReactNode } from "react";
 import {
     render,
     waitFor,
@@ -8,15 +8,16 @@ import {
 } from "@testing-library/react";
 import { ErrorBoundary } from "react-error-boundary";
 import { mock } from "jest-mock-extended";
+import {
+    loadScript,
+    PayPalNamespace,
+    type PayPalButtonsComponent,
+    type PayPalButtonsComponentOptions,
+} from "@paypal/paypal-js";
 
 import { PayPalButtons } from "./PayPalButtons";
-import { FUNDING } from "../index";
-import { loadScript, PayPalNamespace } from "@paypal/paypal-js";
 import { PayPalScriptProvider } from "./PayPalScriptProvider";
-import type {
-    PayPalButtonsComponent,
-    PayPalButtonsComponentOptions,
-} from "@paypal/paypal-js";
+import { FUNDING } from "../index";
 
 jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),

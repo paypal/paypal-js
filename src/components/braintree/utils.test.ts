@@ -1,12 +1,12 @@
 import { mock } from "jest-mock-extended";
 
 import { decorateActions, getBraintreeNamespace } from "./utils";
-import { BraintreePayPalCheckout } from "../../types/braintree/paypalCheckout";
-import { CreateBillingAgreementActions } from "../..";
 import { getBraintreeWindowNamespace } from "../../utils";
 
-import type { BraintreeNamespace } from "./../../types/braintreePayPalButtonTypes";
+import type { BraintreePayPalCheckout } from "../../types/braintree/paypalCheckout";
+import type { CreateBillingAgreementActions } from "../..";
 import type {
+    BraintreeNamespace,
     CreateOrderBraintreeActions,
     OnApproveBraintreeActions,
     OnApproveBraintreeData,

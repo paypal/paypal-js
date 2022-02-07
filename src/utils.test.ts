@@ -1,12 +1,14 @@
 import { mock } from "jest-mock-extended";
+
+import { SDK_SETTINGS } from "./constants";
 import {
     getPayPalWindowNamespace,
     getBraintreeWindowNamespace,
     hashStr,
 } from "./utils";
+
 import type { PayPalNamespace } from "@paypal/paypal-js";
 import type { BraintreeNamespace } from "./types";
-import { SDK_SETTINGS } from "./constants";
 
 describe("getPayPalWindowNamespace", () => {
     const mockPayPalNamespace = mock<PayPalNamespace>();

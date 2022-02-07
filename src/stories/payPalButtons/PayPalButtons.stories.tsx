@@ -1,15 +1,7 @@
-import React, { FC, ReactElement, useEffect } from "react";
-import type {
-    PayPalScriptOptions,
-    CreateOrderActions,
-    OnApproveActions,
-    PayPalButtonsComponentOptions,
-} from "@paypal/paypal-js";
-import type { StoryFn } from "@storybook/react";
-import type { DocsContextProps } from "@storybook/addon-docs";
+import React, { useEffect, type FC, type ReactElement } from "react";
+import { action } from "@storybook/addon-actions";
 
 import { usePayPalScriptReducer, DISPATCH_ACTION } from "../../index";
-import { action } from "@storybook/addon-actions";
 import { PayPalScriptProvider, PayPalButtons, FUNDING } from "../../index";
 import { getOptionsFromQueryString, generateRandomString } from "../utils";
 import {
@@ -27,6 +19,15 @@ import {
 import DocPageStructure from "../components/DocPageStructure";
 import { InEligibleError, defaultProps } from "../commons";
 import { getDefaultCode, getDonateCode } from "./code";
+
+import type {
+    PayPalScriptOptions,
+    CreateOrderActions,
+    OnApproveActions,
+    PayPalButtonsComponentOptions,
+} from "@paypal/paypal-js";
+import type { StoryFn } from "@storybook/react";
+import type { DocsContextProps } from "@storybook/addon-docs";
 
 type StoryProps = {
     style: PayPalButtonsComponentOptions["style"];

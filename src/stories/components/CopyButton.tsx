@@ -1,5 +1,6 @@
-import React, { useState, ReactElement } from "react";
+import React, { useState, type ReactElement } from "react";
 import { useSandpack } from "@codesandbox/sandpack-react";
+
 import type {
     FontWeightProperty,
     FloatProperty,

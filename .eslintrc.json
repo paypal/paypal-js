@@ -1,6 +1,6 @@
 {
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"],
+    "plugins": ["@typescript-eslint", "import"],
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
@@ -30,7 +30,21 @@
         "react/prop-types": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "curly": "warn",
-        "eqeqeq": "warn"
+        "eqeqeq": "warn",
+        "import/order": [
+            1,
+            {
+                "groups": [
+                    "external",
+                    "builtin",
+                    ["internal", "sibling", "parent"],
+                    "index",
+                    "type",
+                    "object"
+                ],
+                "newlines-between": "always"
+            }
+        ]
     },
     "overrides": [
         {

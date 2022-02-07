@@ -1,15 +1,6 @@
-import React, { useState, FC, ChangeEvent } from "react";
-import type { PayPalScriptOptions } from "@paypal/paypal-js";
-import type {
-    CreateOrderActions,
-    OnApproveData,
-    OnApproveActions,
-    PayPalButtonsComponentOptions,
-} from "@paypal/paypal-js";
+import React, { useState, type FC, type ChangeEvent } from "react";
 import { action } from "@storybook/addon-actions";
 
-import type { StoryFn } from "@storybook/react";
-import type { DocsContextProps } from "@storybook/addon-docs";
 import {
     PayPalScriptProvider,
     PayPalMarks,
@@ -29,6 +20,16 @@ import {
 import { InEligibleError, defaultProps } from "../commons";
 import DocPageStructure from "../components/DocPageStructure";
 import { getDefaultCode, getRadioButtonsCode } from "./code";
+
+import type { StoryFn } from "@storybook/react";
+import type { DocsContextProps } from "@storybook/addon-docs";
+import type { PayPalScriptOptions } from "@paypal/paypal-js";
+import type {
+    CreateOrderActions,
+    OnApproveData,
+    OnApproveActions,
+    PayPalButtonsComponentOptions,
+} from "@paypal/paypal-js";
 
 const scriptProviderOptions: PayPalScriptOptions = {
     "client-id": "test",

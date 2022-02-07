@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { type FC } from "react";
 import { action } from "@storybook/addon-actions";
 
 import { ERROR, SDK } from "./constants";

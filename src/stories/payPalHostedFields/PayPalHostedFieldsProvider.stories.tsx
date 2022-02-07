@@ -1,9 +1,5 @@
-import React, { useState, useEffect } from "react";
-import type { FC, ReactElement } from "react";
+import React, { useState, useEffect, type FC, type ReactElement } from "react";
 import { action } from "@storybook/addon-actions";
-
-import type { DocsContextProps } from "@storybook/addon-docs";
-import type { PayPalScriptOptions } from "@paypal/paypal-js";
 
 import {
     PayPalScriptProvider,
@@ -21,6 +17,9 @@ import { COMPONENT_PROPS_CATEGORY, COMPONENT_EVENTS, SDK } from "../constants";
 import DocPageStructure from "../components/DocPageStructure";
 import { InEligibleError } from "../commons";
 import { getDefaultCode } from "./codeProvider";
+
+import type { DocsContextProps } from "@storybook/addon-docs";
+import type { PayPalScriptOptions } from "@paypal/paypal-js";
 
 const uid = generateRandomString();
 const TOKEN_URL = `${HEROKU_SERVER}/api/paypal/hosted-fields/auth`;

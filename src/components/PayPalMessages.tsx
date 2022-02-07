@@ -1,7 +1,14 @@
-import React, { useEffect, useRef, useState, FunctionComponent } from "react";
+import React, {
+    useEffect,
+    useRef,
+    useState,
+    type FunctionComponent,
+} from "react";
+
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
 import { SDK_SETTINGS } from "../constants";
+
 import type {
     PayPalMessagesComponentOptions,
     PayPalMessagesComponent,

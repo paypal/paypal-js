@@ -1,17 +1,18 @@
-import React, { ReactElement } from "react";
+import React, { type ReactElement } from "react";
 import {
     SandpackProvider,
     SandpackThemeProvider,
     SandpackPreview,
     SandpackCodeEditor,
 } from "@codesandbox/sandpack-react";
+
+import CopyButton from "./CopyButton";
+
 import type {
     SandpackPredefinedTemplate,
     SandpackFile,
 } from "@codesandbox/sandpack-react/dist/types/types";
 import "@codesandbox/sandpack-react/dist/index.css";
-
-import CopyButton from "./CopyButton";
 
 // Default styles
 const CUSTOM_STYLE = {

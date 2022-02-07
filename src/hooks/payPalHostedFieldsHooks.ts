@@ -1,6 +1,7 @@
 import { useContext } from "react";
 
 import { PayPalHostedFieldsContext } from "../context/payPalHostedFieldsContext";
+
 import type { PayPalHostedFieldContext } from "../types";
 
 /**

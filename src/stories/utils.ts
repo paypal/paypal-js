@@ -1,8 +1,8 @@
 import reactElementToJSXString from "react-element-to-jsx-string";
 import format from "string-template";
-
 import { SDK_QUERY_KEYS } from "@paypal/sdk-constants/dist/module";
-import { ReactNode } from "react";
+
+import type { ReactNode } from "react";
 
 // FIXME: problem with union on key
 type TokenResponse = {

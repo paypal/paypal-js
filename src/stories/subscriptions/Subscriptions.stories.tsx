@@ -1,15 +1,5 @@
-import React, { FC, ReactElement, useEffect } from "react";
+import React, { useEffect, type FC, type ReactElement } from "react";
 import { action } from "@storybook/addon-actions";
-
-import type { StoryFn } from "@storybook/react";
-import type { DocsContextProps } from "@storybook/addon-docs";
-import type {
-    PayPalScriptOptions,
-    CreateSubscriptionActions,
-    CreateOrderActions,
-    OnApproveData,
-    OnApproveActions,
-} from "@paypal/paypal-js";
 
 import {
     PayPalScriptProvider,
@@ -27,8 +17,18 @@ import {
 } from "../constants";
 import DocPageStructure from "../components/DocPageStructure";
 import { InEligibleError, defaultProps } from "../commons";
-import type { PayPalButtonsComponentProps } from "../../types/paypalButtonTypes";
 import { getDefaultCode } from "./code";
+
+import type { StoryFn } from "@storybook/react";
+import type { DocsContextProps } from "@storybook/addon-docs";
+import type { PayPalButtonsComponentProps } from "../../types/paypalButtonTypes";
+import type {
+    PayPalScriptOptions,
+    CreateSubscriptionActions,
+    CreateOrderActions,
+    OnApproveData,
+    OnApproveActions,
+} from "@paypal/paypal-js";
 
 const subscriptionOptions: PayPalScriptOptions = {
     "client-id": "test",

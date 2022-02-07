@@ -1,7 +1,7 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, type FC } from "react";
+
 import { PayPalHostedFieldsContext } from "../../context/payPalHostedFieldsContext";
 
-import type { FC } from "react";
 import type { PayPalHostedFieldProps } from "../../types/payPalHostedFieldTypes";
 
 /**

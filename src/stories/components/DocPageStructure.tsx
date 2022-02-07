@@ -9,10 +9,10 @@ import {
 } from "@storybook/addon-docs";
 import dedent from "ts-dedent";
 
-import type { DocsContextProps } from "@storybook/addon-docs/dist/ts3.9/blocks";
-
 import CustomSandpack from "./CustomSandpack";
 import { SANDPACK_STYLES } from "../constants";
+
+import type { DocsContextProps } from "@storybook/addon-docs/dist/ts3.9/blocks";
 
 /**
  * Component to override the default DocPage structure from the storybook

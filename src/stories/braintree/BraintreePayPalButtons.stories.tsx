@@ -1,18 +1,5 @@
-import React, { useState, useEffect, ReactElement } from "react";
-import type { FC } from "react";
-
-import type {
-    PayPalScriptOptions,
-    PayPalButtonsComponentOptions,
-} from "@paypal/paypal-js";
-import type { StoryFn } from "@storybook/react";
-import type { DocsContextProps } from "@storybook/addon-docs";
+import React, { useState, useEffect, ReactElement, type FC } from "react";
 import { action } from "@storybook/addon-actions";
-import type {
-    CreateOrderBraintreeActions,
-    OnApproveBraintreeActions,
-    OnApproveBraintreeData,
-} from "../../types";
 
 import { PayPalScriptProvider } from "../../index";
 import { BraintreePayPalButtons } from "../../components/braintree/BraintreePayPalButtons";
@@ -35,6 +22,18 @@ import {
 import DocPageStructure from "../components/DocPageStructure";
 import { InEligibleError, defaultProps } from "../commons";
 import { getDefaultCode, getBillingAgreementCode } from "./code";
+
+import type {
+    PayPalScriptOptions,
+    PayPalButtonsComponentOptions,
+} from "@paypal/paypal-js";
+import type { StoryFn } from "@storybook/react";
+import type { DocsContextProps } from "@storybook/addon-docs";
+import type {
+    CreateOrderBraintreeActions,
+    OnApproveBraintreeActions,
+    OnApproveBraintreeData,
+} from "../../types";
 
 type StoryProps = {
     style: PayPalButtonsComponentOptions["style"];

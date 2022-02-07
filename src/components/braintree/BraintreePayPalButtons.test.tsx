@@ -5,10 +5,9 @@ import {
     loadScript,
     loadCustomScript,
     PayPalNamespace,
+    PayPalButtonsComponent,
 } from "@paypal/paypal-js";
 import { ErrorBoundary } from "react-error-boundary";
-
-import { PayPalButtonsComponent } from "@paypal/paypal-js";
 
 import { BraintreePayPalButtons } from "./BraintreePayPalButtons";
 import { PayPalScriptProvider } from "../PayPalScriptProvider";
@@ -18,7 +17,6 @@ import {
     BRAINTREE_PAYPAL_CHECKOUT_SOURCE,
     LOAD_SCRIPT_ERROR,
 } from "../../constants";
-
 import { FUNDING } from "../../index";
 
 jest.mock("@paypal/paypal-js", () => ({

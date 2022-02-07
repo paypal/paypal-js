@@ -1,11 +1,13 @@
-import { generateMissingHostedFieldsError } from "./utils";
 import {
     SDK_SETTINGS,
     HOSTED_FIELDS_CHILDREN_ERROR,
     HOSTED_FIELDS_DUPLICATE_CHILDREN_ERROR,
 } from "../../constants";
 import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types/enums";
-import { validateHostedFieldChildren } from "./utils";
+import {
+    validateHostedFieldChildren,
+    generateMissingHostedFieldsError,
+} from "./utils";
 
 const exceptionMessagePayPalNamespace =
     "Unable to render <PayPalHostedFieldsProvider /> because window.paypal.HostedFields is undefined.\nTo fix the issue, add 'hosted-fields' to the list of components passed to the parent PayPalScriptProvider: <PayPalScriptProvider options={{ components: 'hosted-fields'}}>";

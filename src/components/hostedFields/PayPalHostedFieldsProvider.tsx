@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
-import type { FC } from "react";
+import React, { useState, useEffect, useRef, type FC } from "react";
 
 import { PayPalHostedFieldsContext } from "../../context/payPalHostedFieldsContext";
+import { useHostedFieldsRegister } from "./hooks";
 import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
 import { SDK_SETTINGS } from "../../constants";
 import {
@@ -13,7 +13,6 @@ import {
     SCRIPT_LOADING_STATE,
 } from "../../types/enums";
 import { getPayPalWindowNamespace } from "../../utils";
-import { useHostedFieldsRegister } from "./hooks";
 
 import type { PayPalHostedFieldsComponentProps } from "../../types/payPalHostedFieldTypes";
 import type {

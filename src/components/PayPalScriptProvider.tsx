@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, type FC } from "react";
 import { loadScript } from "@paypal/paypal-js";
 
 import {
@@ -7,8 +7,11 @@ import {
     scriptReducer,
 } from "../context/scriptProviderContext";
 import { SCRIPT_ID, SDK_SETTINGS, LOAD_SCRIPT_ERROR } from "../constants";
-import type { ScriptProviderProps } from "../types";
-import { SCRIPT_LOADING_STATE, DISPATCH_ACTION } from "../types";
+import {
+    SCRIPT_LOADING_STATE,
+    DISPATCH_ACTION,
+    type ScriptProviderProps,
+} from "../types";
 
 /**
 This `<PayPalScriptProvider />` component takes care of loading the JS SDK `<script>`.

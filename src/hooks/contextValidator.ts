@@ -3,6 +3,7 @@ import {
     EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE,
     SCRIPT_PROVIDER_REDUCER_ERROR,
 } from "../constants";
+
 import type { ScriptContextState } from "../types";
 
 /**

@@ -2,6 +2,7 @@ import {
     DEFAULT_PAYPAL_NAMESPACE,
     DEFAULT_BRAINTREE_NAMESPACE,
 } from "./constants";
+
 import type { PayPalNamespace } from "@paypal/paypal-js";
 import type { BraintreeNamespace } from "./types";
 
