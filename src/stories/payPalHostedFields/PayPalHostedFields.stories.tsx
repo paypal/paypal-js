@@ -37,7 +37,6 @@ import type { PayPalScriptOptions } from "@paypal/paypal-js";
 
 type StoryProps = {
     amount: string;
-    currency: string;
     styles: Record<string, unknown>;
     style: CSSProperties;
 };
@@ -252,12 +251,7 @@ export default {
     ],
 };
 
-export const Default: FC<StoryProps> = ({
-    amount,
-    currency,
-    styles,
-    style,
-}) => {
+export const Default: FC<StoryProps> = ({ amount, styles, style }) => {
     return (
         <PayPalHostedFieldsProvider
             createOrder={() => {
@@ -274,7 +268,7 @@ export const Default: FC<StoryProps> = ({
                             {
                                 amount: {
                                     value: amount,
-                                    currency_code: currency,
+                                    currency_code: "USD",
                                 },
                             },
                         ],
