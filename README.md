@@ -1,6 +1,6 @@
 # paypal-js
 
-> A client-side loader for the [PayPal JS SDK](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/)
+> A client-side loader for the [PayPal JS SDK](https://developer.paypal.com/sdk/js/reference/)
 
 [![build status][build-badge]][build]
 [![code coverage][coverage-badge]][coverage]
@@ -24,7 +24,7 @@
 
 ## Why use paypal-js?
 
-The [default JS SDK code snippet](https://developer.paypal.com/docs/business/checkout/set-up-standard-payments/#sample-javascript-sdk-code) blocks page rendering:
+The [default JS SDK code snippet](https://developer.paypal.com/docs/checkout/standard/integrate/#link-samplejavascriptsdkcode) blocks page rendering:
 
 ```html
 <script src="https://www.paypal.com/sdk/js?client-id=test"></script>
@@ -115,7 +115,7 @@ Which will load the following `<script>` asynchronously:
 <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=EUR"></script>
 ```
 
-View the [full list of supported query parameters](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-configuration/#query-parameters).
+View the [full list of supported query parameters](https://developer.paypal.com/sdk/js/configuration/#link-queryparameters).
 
 #### Data Attributes
 
@@ -137,7 +137,7 @@ Which will load the following `<script>` asynchronously:
 ></script>
 ```
 
-View the [full list of supported script parameters](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-configuration/#script-parameters).
+View the [full list of supported script parameters](https://developer.paypal.com/sdk/js/configuration/#link-scriptparameters).
 
 #### Merchant ID Array
 
