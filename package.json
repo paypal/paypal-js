@@ -44,7 +44,7 @@
         "url": "git://github.com/paypal/paypal-js.git"
     },
     "devDependencies": {
-        "@babel/core": "7.17.2",
+        "@babel/core": "7.17.5",
         "@babel/preset-env": "7.16.11",
         "@babel/preset-typescript": "7.16.7",
         "@commitlint/cli": "16.1.0",
