@@ -1,6 +1,5 @@
 const { readFileSync } = require("fs");
 const { join } = require("path");
-const chalk = require("chalk");
 const semver = require("semver");
 
 const expectedNodeVersion = readFileSync(
@@ -18,9 +17,9 @@ if (isValidNodeVersion) {
 }
 
 const output = `
-node: ${chalk.bold(process.version)}
-Wanted node version ${chalk.bold(expectedNodeVersion)}
+node: ${process.version}
+Wanted node version ${expectedNodeVersion}
 `;
 
-console.error(chalk.red(output));
+console.error(output);
 process.exit(1);
