@@ -63,7 +63,7 @@
         "husky": "7.0.4",
         "jest": "27.5.1",
         "jest-puppeteer": "6.1.0",
-        "lint-staged": "12.3.5",
+        "lint-staged": "12.3.7",
         "prettier": "2.5.1",
         "puppeteer": "13.4.1",
         "rollup": "2.69.2",
