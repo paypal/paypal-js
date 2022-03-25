@@ -1,13 +1,14 @@
-import { baseURL } from "../test-helper";
-
 describe("Reload script", () => {
     let sdkResponse, smartButtonsResponse;
 
     beforeEach(async () => {
         [, sdkResponse, smartButtonsResponse] = await Promise.all([
-            page.goto(`${baseURL}/e2e-tests/reload-script/index.html`, {
-                waitUntil: "networkidle2",
-            }),
+            page.goto(
+                `${process.env.BASE_URL}/e2e-tests/reload-script/index.html`,
+                {
+                    waitUntil: "networkidle2",
+                }
+            ),
             page.waitForResponse((response) =>
                 response.url().startsWith("https://www.paypal.com/sdk/js")
             ),

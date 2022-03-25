@@ -5,7 +5,7 @@
         "forceConsistentCasingInFileNames": true,
         "module": "esnext",
         "moduleResolution": "node",
-        "target": "esnext",
+        "target": "es5",
         "strict": true,
 
         // these are overridden by the Rollup plugin

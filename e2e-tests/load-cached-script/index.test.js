@@ -1,11 +1,12 @@
-import { baseURL } from "../test-helper";
-
 describe("Load cached script", () => {
     beforeEach(async () => {
         await Promise.all([
-            page.goto(`${baseURL}/e2e-tests/load-cached-script/index.html`, {
-                waitUntil: "networkidle2",
-            }),
+            page.goto(
+                `${process.env.BASE_URL}/e2e-tests/load-cached-script/index.html`,
+                {
+                    waitUntil: "networkidle2",
+                }
+            ),
             page.waitForResponse((response) =>
                 response.url().startsWith("https://www.paypal.com/sdk/js")
             ),

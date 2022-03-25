@@ -196,8 +196,9 @@ describe("insertScriptElement()", () => {
             onSuccess: jest.fn(),
         });
 
-        const [firstScript, secondScript] =
-            document.querySelectorAll<HTMLScriptElement>("head script");
+        const [firstScript, secondScript] = Array.from(
+            document.querySelectorAll<HTMLScriptElement>("head script")
+        );
 
         expect(firstScript.src).toBe(newScriptSrc);
         expect(secondScript.src).toBe(existingScript.src);

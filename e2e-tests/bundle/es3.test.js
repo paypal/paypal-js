@@ -1,4 +1,6 @@
-import childProcess from "child_process";
+/* eslint @typescript-eslint/no-var-requires: "off" */
+
+const childProcess = require("child_process");
 
 const command =
     'npx eslint dist/iife/paypal-js.js dist/iife/paypal-js.legacy.js --no-eslintrc --parser-options="{ ecmaVersion: 3 }"';
