@@ -1,4 +1,3 @@
-import babel from "@rollup/plugin-babel";
 import replace from "@rollup/plugin-replace";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
@@ -19,7 +18,6 @@ const outputConfigForBrowserBundle = {
 };
 const tsconfigOverride = {
     exclude: ["node_modules", "**/*.test.ts"],
-    target: "es5",
 };
 
 export default [
@@ -27,11 +25,6 @@ export default [
         input: "src/index.ts",
         plugins: [
             typescript({ ...tsconfigOverride }),
-            babel({
-                babelHelpers: "bundled",
-                exclude: /node_modules/,
-                extensions: [".ts", ".js"],
-            }),
             replace({
                 __VERSION__: pkg.version,
                 preventAssignment: true,
@@ -79,10 +72,6 @@ export default [
                 browser: true,
             }),
             commonjs(),
-            babel({
-                babelHelpers: "bundled",
-                exclude: /node_modules/,
-            }),
             replace({
                 __VERSION__: pkg.version,
                 preventAssignment: true,

@@ -1,4 +1,4 @@
-const port = 4444;
+const port = new URL(process.env.BASE_URL).port;
 
 module.exports = {
     launch: {

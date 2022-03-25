@@ -1,7 +1,0 @@
-# Copied from https://github.com/krakenjs/grumbler-scripts/blob/master/config/.babelrc-browser
-
-ie 11
-chrome 27
-firefox 30
-safari 7
-opera 23
