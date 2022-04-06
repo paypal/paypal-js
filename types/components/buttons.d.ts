@@ -39,8 +39,27 @@ export type OnApproveData = {
 
 export type OnApproveActions = {
     order?: {
+        /**
+         * Captures payment for an order.
+         * To successfully capture payment for an order,the buyer must first
+         * approve the order or a valid `payment_source` must be provided in the request
+         */
         capture: () => Promise<OrderResponseBody>;
+        /**
+         * Authorizes payment for an order.
+         * To successfully authorize payment for an order,
+         * the buyer must first approve the order or a valid payment_source must be provided in the request
+         */
         authorize: () => Promise<OrderResponseBody>;
+        /**
+         * Shows details for an order, by ID
+         */
+        get: () => Promise<OrderResponseBody>;
+        /**
+         * Updates an order with a `CREATED` or `APPROVED` status.
+         * You cannot update an order with the `COMPLETED` status
+         */
+        patch: () => Promise<void>;
     };
     subscription?: {
         get: () => Promise<SubscriptionDetail>;

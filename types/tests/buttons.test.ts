@@ -38,11 +38,8 @@ async function main() {
         onApprove: function (data, actions) {
             if (!actions.order) return Promise.reject("Invalid actions object");
             return actions.order.capture().then((orderData) => {
-                const {
-                    payer: {
-                        name: { given_name: buyerGivenName },
-                    },
-                } = orderData;
+                const buyerGivenName = orderData.payer.name?.given_name;
+
                 console.log(buyerGivenName);
             });
         },
