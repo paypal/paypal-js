@@ -1,6 +1,6 @@
 # paypal-js
 
-> A client-side loader for the [PayPal JS SDK](https://developer.paypal.com/sdk/js/reference/)
+> Loading wrapper and TypeScript types for the [PayPal JS SDK](https://developer.paypal.com/sdk/js/reference/)
 
 [![build status][build-badge]][build]
 [![code coverage][coverage-badge]][coverage]
