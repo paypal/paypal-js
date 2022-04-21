@@ -24,7 +24,7 @@
 
 ## Why use paypal-js?
 
-The [default JS SDK code snippet](https://developer.paypal.com/docs/checkout/standard/integrate/#link-samplejavascriptsdkcode) blocks page rendering:
+The [default JS SDK code snippet](https://developer.paypal.com/docs/checkout/standard/integrate/#link-addpaymentbuttons) blocks page rendering:
 
 ```html
 <script src="https://www.paypal.com/sdk/js?client-id=test"></script>
@@ -189,7 +189,7 @@ loadScript({
 
 ### Legacy Browser Support
 
-This library relies on [JavaScript Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). To support legacy browsers like IE 11, you must provide your own Promise polyfill. With a Promise polyfill this library will [support the same browsers as the JS SDK](https://developer.paypal.com/docs/business/checkout/reference/browser-support/#supported-browsers-by-platform).
+This library relies on [JavaScript Promises](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise). To support legacy browsers like IE 11, you must provide your own Promise polyfill. With a Promise polyfill this library will [support the same browsers as the JS SDK](https://developer.paypal.com/reference/guidelines/browser-support/#link-supportedbrowsersbyplatform).
 
 The `loadScript()` function takes in a second parameter for providing a Promise ponyfill. It defaults to the global `Promise` object if it exists. There are two options for polyfilling the Promise object:
 
