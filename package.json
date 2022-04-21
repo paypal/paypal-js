@@ -1,7 +1,7 @@
 {
     "name": "@paypal/paypal-js",
     "version": "5.0.4",
-    "description": "Client-side loader for the PayPal JS SDK",
+    "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
     "main": "index.js",
     "module": "dist/esm/paypal-js.js",
     "types": "types/index.d.ts",
