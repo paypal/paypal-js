@@ -1,7 +1,8 @@
 import { mock } from "jest-mock-extended";
 
-import { decorateActions, getBraintreeNamespace } from "./utils";
+import { decorateActions, getBraintreeNamespace, getMerchantId } from "./utils";
 import { getBraintreeWindowNamespace } from "../../utils";
+import { BRAINTREE_MULTIPLE_MERCHANT_IDS_ERROR_MESSAGE } from "../../constants";
 
 import type { BraintreePayPalCheckout } from "../../types/braintree/paypalCheckout";
 import type { CreateBillingAgreementActions } from "../..";
@@ -193,5 +194,30 @@ describe("getBraintreeNamespace", () => {
                 "The braintreeNamespace property is not a valid BraintreeNamespace type."
             );
         }
+    });
+});
+
+describe("getMerchantId", () => {
+    test("should return undefined", () => {
+        expect(getMerchantId(undefined)).toBeUndefined();
+    });
+
+    test("should return an empty string", () => {
+        expect(getMerchantId([])).toBe("");
+    });
+
+    test.each(["merchantId", ["merchantId"]])(
+        "should return the merchant when is string or an array with one value",
+        (value) => {
+            expect(getMerchantId(value)).toBe("merchantId");
+        }
+    );
+
+    test("should throw an error when source has more than 1 value", () => {
+        expect(() => {
+            getMerchantId(["1", "2"]);
+        }).toThrowError(
+            new Error(BRAINTREE_MULTIPLE_MERCHANT_IDS_ERROR_MESSAGE)
+        );
     });
 });

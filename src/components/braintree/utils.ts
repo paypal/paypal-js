@@ -4,6 +4,7 @@ import { getBraintreeWindowNamespace } from "../../utils";
 import {
     BRAINTREE_SOURCE,
     BRAINTREE_PAYPAL_CHECKOUT_SOURCE,
+    BRAINTREE_MULTIPLE_MERCHANT_IDS_ERROR_MESSAGE,
 } from "../../constants";
 
 import type { BraintreeNamespace } from "./../../types/braintreePayPalButtonTypes";
@@ -96,4 +97,23 @@ export const getBraintreeNamespace = (
         loadCustomScript({ url: BRAINTREE_SOURCE }),
         loadCustomScript({ url: BRAINTREE_PAYPAL_CHECKOUT_SOURCE }),
     ]).then(() => getBraintreeWindowNamespace());
+};
+
+/**
+ * Get the merchantId from the source list
+ *
+ * @param {Array|string} source - the source list with merchant identifiers
+ * @throws {Error} when the merchant list has more than 1 value
+ * @returns {string|undefined} the merchantId or an undefined value
+ */
+export const getMerchantId = (
+    source?: Array<string> | string
+): string | undefined => {
+    const isSourceArray = Array.isArray(source);
+
+    if (isSourceArray && source.length > 1) {
+        throw new Error(BRAINTREE_MULTIPLE_MERCHANT_IDS_ERROR_MESSAGE);
+    }
+
+    return source?.toString();
 };

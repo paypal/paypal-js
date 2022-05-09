@@ -3,7 +3,7 @@ import React, { useState, useEffect, type FC } from "react";
 import { SDK_SETTINGS, LOAD_SCRIPT_ERROR } from "../../constants";
 import { PayPalButtons } from "../PayPalButtons";
 import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
-import { decorateActions, getBraintreeNamespace } from "./utils";
+import { decorateActions, getBraintreeNamespace, getMerchantId } from "./utils";
 import {
     DISPATCH_ACTION,
     type BraintreePayPalButtonsComponentProps,
@@ -47,6 +47,11 @@ export const BraintreePayPalButtons: FC<
                     .then((clientInstance) => {
                         return braintree.paypalCheckout.create({
                             client: clientInstance,
+                            merchantAccountId: getMerchantId(
+                                providerContext.options[
+                                    SDK_SETTINGS.MERCHANT_CLIENT_ID
+                                ]
+                            ),
                         });
                     })
                     .then((paypalCheckoutInstance) => {
