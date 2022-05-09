@@ -3,7 +3,6 @@
  *********************************************/
 export const SCRIPT_ID = "data-react-paypal-script-id";
 export const SDK_SETTINGS = {
-    MERCHANT_CLIENT_ID: "merchant-id",
     DATA_CLIENT_TOKEN: "data-client-token",
     DATA_USER_ID_TOKEN: "data-user-id-token",
     DATA_SDK_INTEGRATION_SOURCE: "data-sdk-integration-source",
@@ -17,8 +16,6 @@ export const LOAD_SCRIPT_ERROR = "Failed to load the PayPal JS SDK script.";
  ****************************/
 export const EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE =
     "Invalid authorization data. Use data-client-token or data-user-id-token to authorize.";
-export const BRAINTREE_MULTIPLE_MERCHANT_IDS_ERROR_MESSAGE =
-    "Braintree does not support passing in multiple merchantId values.";
 
 const braintreeVersion = "3.84.0";
 export const BRAINTREE_SOURCE = `https://js.braintreegateway.com/web/${braintreeVersion}/js/client.min.js`;

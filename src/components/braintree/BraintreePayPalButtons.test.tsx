@@ -16,7 +16,6 @@ import {
     BRAINTREE_SOURCE,
     BRAINTREE_PAYPAL_CHECKOUT_SOURCE,
     LOAD_SCRIPT_ERROR,
-    BRAINTREE_MULTIPLE_MERCHANT_IDS_ERROR_MESSAGE,
 } from "../../constants";
 import { FUNDING } from "../../index";
 
@@ -335,65 +334,5 @@ describe("render Braintree PayPal button component", () => {
                 onInit: expect.any(Function),
             });
         });
-    });
-
-    test.each(["merchantId", ["merchantId"]])(
-        "should call paypalCheckout.create with merchantId option",
-        async (merchant) => {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const mockFuntion = (window as any).braintree.paypalCheckout.create;
-            const options = {
-                "client-id": "test",
-                "merchant-id": merchant,
-                "data-client-token": `${CLIENT_TOKEN}`,
-            };
-
-            render(
-                <PayPalScriptProvider options={options}>
-                    <BraintreePayPalButtons
-                        style={{ layout: "horizontal" }}
-                        fundingSource={FUNDING.CREDIT}
-                        createOrder={jest.fn()}
-                        onApprove={jest.fn()}
-                    />
-                </PayPalScriptProvider>
-            );
-
-            await waitFor(() => {
-                expect(mockFuntion).toBeCalledWith({
-                    client: expect.any(Object),
-                    merchantAccountId: "merchantId",
-                });
-            });
-        }
-    );
-
-    test("should throw and error when multiple merchantIds are configured", async () => {
-        const spyConsoleError = jest
-            .spyOn(console, "error")
-            .mockImplementation();
-        const options = {
-            "client-id": "test",
-            "merchant-id": ["merchant1", "merchant2"],
-            "data-client-token": `${CLIENT_TOKEN}`,
-        };
-        render(
-            <PayPalScriptProvider options={options}>
-                <BraintreePayPalButtons
-                    style={{ layout: "horizontal" }}
-                    fundingSource={FUNDING.CREDIT}
-                    createOrder={jest.fn()}
-                    onApprove={jest.fn()}
-                />
-            </PayPalScriptProvider>,
-            { wrapper }
-        );
-        await waitFor(() => expect(onError).toBeCalled());
-        expect(onError.mock.calls[0][0].message).toEqual(
-            expect.stringContaining(
-                BRAINTREE_MULTIPLE_MERCHANT_IDS_ERROR_MESSAGE
-            )
-        );
-        spyConsoleError.mockRestore();
     });
 });

@@ -89,9 +89,9 @@ export interface BraintreePayPalCheckout {
      * });
      */
     create(options: {
-        client?: BraintreeClient;
-        authorization?: string;
-        merchantAccountId?: string;
+        client?: BraintreeClient | undefined;
+        authorization?: string | undefined;
+        merchantAccountId?: string | undefined;
     }): Promise<BraintreePayPalCheckout>;
 
     /**
