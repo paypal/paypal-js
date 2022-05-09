@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.6.1](https://github.com/paypal/react-paypal-js/compare/v7.6.0...v7.6.1) (2022-05-09)
+
+### Bug Fixes
+
+-   **braintree:** pass merchant-id through to checkout session ([#265](https://github.com/paypal/react-paypal-js/issues/265)) ([1844fd5](https://github.com/paypal/react-paypal-js/commit/1844fd588c55de028656779e6ea3327f71b15d10))
+
 ## [7.6.0](https://github.com/paypal/react-paypal-js/compare/v7.5.1...v7.6.0) (2022-02-01)
 
 ### Features
