@@ -55,6 +55,7 @@ export interface BraintreePayPalButtonsComponentProps
      * and avoid the default behavior of loading it from the official CDN.
      */
     braintreeNamespace?: BraintreeNamespace;
+    merchantAccountId?: string;
 }
 
 export type BraintreeNamespace = {

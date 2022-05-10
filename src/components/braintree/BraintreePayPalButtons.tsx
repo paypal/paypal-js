@@ -27,6 +27,7 @@ export const BraintreePayPalButtons: FC<
     children,
     forceReRender = [],
     braintreeNamespace,
+    merchantAccountId,
     ...buttonProps
 }: BraintreePayPalButtonsComponentProps) => {
     const [, setErrorState] = useState(null);
@@ -45,7 +46,12 @@ export const BraintreePayPalButtons: FC<
                         authorization: clientTokenizationKey || clientToken,
                     })
                     .then((clientInstance) => {
+                        const merchantProp = merchantAccountId
+                            ? { merchantAccountId }
+                            : {};
+
                         return braintree.paypalCheckout.create({
+                            ...merchantProp,
                             client: clientInstance,
                         });
                     })

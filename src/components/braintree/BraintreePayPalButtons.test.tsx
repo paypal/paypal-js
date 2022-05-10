@@ -335,4 +335,32 @@ describe("render Braintree PayPal button component", () => {
             });
         });
     });
+
+    test("should call paypalCheckout.create with merchantAccountId value", async () => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mockFuntion = (window as any).braintree.paypalCheckout.create;
+        const options = {
+            "client-id": "test",
+            "data-client-token": CLIENT_TOKEN,
+        };
+
+        render(
+            <PayPalScriptProvider options={options}>
+                <BraintreePayPalButtons
+                    style={{ layout: "horizontal" }}
+                    merchantAccountId="merchantId"
+                    fundingSource={FUNDING.CREDIT}
+                    createOrder={jest.fn()}
+                    onApprove={jest.fn()}
+                />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() => {
+            expect(mockFuntion).toBeCalledWith({
+                client: expect.any(Object),
+                merchantAccountId: "merchantId",
+            });
+        });
+    });
 });
