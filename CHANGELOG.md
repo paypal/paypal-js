@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.7.0](https://github.com/paypal/react-paypal-js/compare/v7.6.2...v7.7.0) (2022-05-10)
+
+### Features
+
+-   **braintree:** add merchantAccountId prop ([#269](https://github.com/paypal/react-paypal-js/issues/269)) ([9ee701c](https://github.com/paypal/react-paypal-js/commit/9ee701caf3b2926e126a28d7a6a00c28912e7cf3))
+
 ### [7.6.2](https://github.com/paypal/react-paypal-js/compare/v7.6.1...v7.6.2) (2022-05-09)
 
 ### Bug Fixes
