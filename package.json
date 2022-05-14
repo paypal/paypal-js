@@ -43,8 +43,8 @@
         "url": "git://github.com/paypal/paypal-js.git"
     },
     "devDependencies": {
-        "@commitlint/cli": "16.2.3",
-        "@commitlint/config-conventional": "16.2.1",
+        "@commitlint/cli": "16.3.0",
+        "@commitlint/config-conventional": "16.2.4",
         "@rollup/plugin-commonjs": "21.1.0",
         "@rollup/plugin-node-resolve": "13.2.1",
         "@rollup/plugin-replace": "4.0.0",
