@@ -130,7 +130,7 @@ const INVALID_COLOR = {
 const SubmitPayment = ({ customStyle }) => {
 	const [paying, setPaying] = useState(false);
 	const cardHolderName = useRef(null);
-	const hostedField = usePayPalHostedFields();
+	const { cardFields: hostedField } = usePayPalHostedFields();
 
 	const handleClick = () => {
 		if (hostedField) {
