@@ -426,4 +426,57 @@ describe("PayPalHostedFieldsProvider", () => {
         ).toBeFalsy();
         jest.useRealTimers();
     });
+
+    test("should call render function with installments option", async () => {
+        render(
+            <PayPalScriptProvider
+                options={{
+                    "client-id": "test-client",
+                    currency: "USD",
+                    intent: "authorize",
+                    "data-client-token": "test-data-client-token",
+                    components: "hosted-fields",
+                }}
+            >
+                <PayPalHostedFieldsProvider
+                    createOrder={jest.fn()}
+                    installments={{
+                        onInstallmentsRequested: jest.fn(),
+                        onInstallmentsAvailable: jest.fn(),
+                        onInstallmentsError: jest.fn(),
+                    }}
+                >
+                    <PayPalHostedField
+                        className="number"
+                        hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
+                        options={{ selector: ".number" }}
+                    />
+                    <PayPalHostedField
+                        className="expiration"
+                        hostedFieldType={
+                            PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE
+                        }
+                        options={{ selector: ".expiration" }}
+                    />
+                    <PayPalHostedField
+                        className="cvv"
+                        hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.CVV}
+                        options={{ selector: ".cvv" }}
+                    />
+                </PayPalHostedFieldsProvider>
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() => {
+            expect(window?.paypal?.HostedFields?.render).toBeCalledWith(
+                expect.objectContaining({
+                    installments: {
+                        onInstallmentsRequested: expect.any(Function),
+                        onInstallmentsAvailable: expect.any(Function),
+                        onInstallmentsError: expect.any(Function),
+                    },
+                })
+            );
+        });
+    });
 });

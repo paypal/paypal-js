@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import type { HostedFieldsHandler } from "@paypal/paypal-js";
+import type { HostedFieldsHandler, Installments } from "@paypal/paypal-js";
 
 export type PayPalHostedFieldsNamespace = {
     components: string | undefined;
@@ -107,6 +107,7 @@ export interface PayPalHostedFieldsComponentProps {
      * Function to manually create the transaction from your server
      */
     createOrder: () => Promise<string>;
+    installments?: Installments;
     children: ReactNode;
     /**
      * [Styling options](https://developer.paypal.com/braintree/docs/guides/hosted-fields/styling/javascript/v3) for customizing the fields appearance

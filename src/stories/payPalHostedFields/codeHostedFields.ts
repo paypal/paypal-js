@@ -228,7 +228,7 @@ export default function App() {
 											{
 												amount: {
 													value: "${args.amount}", // Here change the amount if needed
-													currency_code: "${args.currency}", // Here change the currency if needed
+													currency_code: "USD", // Here change the currency if needed
 												},
 											},
 										],

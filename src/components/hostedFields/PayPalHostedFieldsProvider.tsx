@@ -31,7 +31,7 @@ Take a look to this link if that is the case: https://developer.paypal.com/docs/
 */
 export const PayPalHostedFieldsProvider: FC<
     PayPalHostedFieldsComponentProps
-> = ({ styles, createOrder, notEligibleError, children }) => {
+> = ({ styles, createOrder, notEligibleError, children, installments }) => {
     const [{ options, loadingStatus }] = useScriptProviderContext();
     const [isEligible, setIsEligible] = useState<boolean>(true);
     const [cardFields, setCardFields] = useState<HostedFieldsHandler>();
@@ -76,8 +76,9 @@ export const PayPalHostedFieldsProvider: FC<
             .render({
                 // Call your server to set up the transaction
                 createOrder: createOrder,
-                styles: styles,
                 fields: registeredFields.current,
+                installments,
+                styles,
             })
             .then((cardFieldsInstance) => {
                 if (hostedFieldsContainerRef.current) {
