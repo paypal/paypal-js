@@ -58,8 +58,38 @@ type HostedFieldsTokenize = {
     };
 };
 
+export type InstallmentsConfiguration = {
+    currencyCode: string;
+    amount: string;
+    financingCountryCode?: string;
+    billingCountryCode?: string;
+};
+
+export type AvailableInstallments = {
+    configuration_owner_account: string;
+    financing_options: Array<Record<string, unknown>>;
+};
+
+export interface Installments {
+    /**
+     * Defines the installments configuration
+     */
+    onInstallmentsRequested: () =>
+        | Promise<InstallmentsConfiguration>
+        | InstallmentsConfiguration;
+    /**
+     * Handle and use installments options
+     */
+    onInstallmentsAvailable: (installments: AvailableInstallments) => void;
+    /**
+     * Handle fetching installments errors
+     */
+    onInstallmentsError?: (error: Record<string, unknown>) => void;
+}
+
 export interface PayPalHostedFieldsComponentOptions {
     createOrder: () => Promise<string>;
+    installments?: Installments;
     onError?: (err: Record<string, unknown>) => void;
     styles?: Record<string, unknown>;
     fields?: Record<string, unknown>;
