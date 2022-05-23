@@ -130,46 +130,50 @@ const INVALID_COLOR = {
 const SubmitPayment = ({ customStyle }) => {
 	const [paying, setPaying] = useState(false);
 	const cardHolderName = useRef(null);
-	const { cardFields: hostedField } = usePayPalHostedFields();
+	const hostedField = usePayPalHostedFields();
 
 	const handleClick = () => {
-		if (hostedField) {
-			if (
-				Object.values(hostedField.getState().fields).some(
-					(field) => !field.isValid
-				) ||
-				!cardHolderName?.current?.value
-			) {
-				return alert(
-					"The payment form is invalid, please check it before execute the payment"
-				);
-			}
-			setPaying(true);
-			hostedField
-				.submit({
-					cardholderName: cardHolderName?.current?.value,
-				})
-				.then((data) => {
-					// Your logic to capture the transaction
-					fetch("url_to_capture_transaction", {
-						method: "post",
-					})
-						.then((response) => response.json())
-						.then((data) => {
-							// Here use the captured info
-						})
-						.catch((err) => {
-							// Here handle error
-						})
-						.finally(() => {
-							setPaying(false);
-						});
-				})
-				.catch((err) => {
-					// Here handle error
-					setPaying(false);
-				});
+		if (!hostedField?.cardFields) {
+            const childErrorMessage = 'Unable to find any child components in the <PayPalHostedFieldsProvider />';
+
+            action(ERROR)(childErrorMessage);
+            throw new Error(childErrorMessage);
+        }
+		const isFormInvalid =
+			Object.values(hostedField.cardFields.getState().fields).some(
+				(field) => !field.isValid
+			) || !cardHolderName?.current?.value;
+		
+		if (isFormInvalid) {
+			return alert(
+				"The payment form is invalid"
+			);
 		}
+		setPaying(true);
+		hostedField.cardFields
+			.submit({
+				cardholderName: cardHolderName?.current?.value,
+			})
+			.then((data) => {
+				// Your logic to capture the transaction
+				fetch("url_to_capture_transaction", {
+					method: "post",
+				})
+					.then((response) => response.json())
+					.then((data) => {
+						// Here use the captured info
+					})
+					.catch((err) => {
+						// Here handle error
+					})
+					.finally(() => {
+						setPaying(false);
+					});
+			})
+			.catch((err) => {
+				// Here handle error
+				setPaying(false);
+			});
 	};
 
 	return (

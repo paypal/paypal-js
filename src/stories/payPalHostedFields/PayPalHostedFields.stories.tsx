@@ -72,51 +72,54 @@ function captureOrderUrl(orderId: string): string {
 const SubmitPayment = ({ customStyle }: { customStyle?: CSSProperties }) => {
     const [paying, setPaying] = useState(false);
     const cardHolderName = useRef<HTMLInputElement>(null);
-    const { cardFields: hostedField } = usePayPalHostedFields();
+    const hostedField = usePayPalHostedFields();
 
     const handleClick = () => {
-        if (hostedField) {
-            if (
-                Object.values(hostedField.getState().fields).some(
-                    (field) => !field.isValid
-                ) ||
-                !cardHolderName?.current?.value
-            ) {
-                return alert(
-                    "The payment form is invalid, please check it before execute the payment"
-                );
-            }
-            action(SUBMIT_FORM)("Form is valid and submitted");
-            setPaying(true);
-            hostedField
-                .submit({
-                    cardholderName: cardHolderName?.current?.value,
-                })
-                .then((data) => {
-                    action(`Received ${ORDER_ID}`)(data.orderId);
-                    action(CAPTURE_ORDER)(
-                        `Sending ${ORDER_ID} to custom endpoint to capture the payment information`
-                    );
-                    fetch(captureOrderUrl(data.orderId), {
-                        method: "post",
-                    })
-                        .then((response) => response.json())
-                        .then((data) => {
-                            action(CAPTURE_ORDER)(data);
-                        })
-                        .catch((err) => {
-                            action(ERROR)(err.message);
-                            console.error(err);
-                        })
-                        .finally(() => {
-                            setPaying(false);
-                        });
-                })
-                .catch((err) => {
-                    action(ERROR)(err.message);
-                    setPaying(false);
-                });
+        if (!hostedField?.cardFields) {
+            const childErrorMessage =
+                "Unable to find any child components in the <PayPalHostedFieldsProvider />";
+
+            action(ERROR)(childErrorMessage);
+            throw new Error(childErrorMessage);
         }
+        const isFormInvalid =
+            Object.values(hostedField.cardFields.getState().fields).some(
+                (field) => !field.isValid
+            ) || !cardHolderName?.current?.value;
+
+        if (isFormInvalid) {
+            return alert("The payment form is invalid");
+        }
+        action(SUBMIT_FORM)("Form is valid and submitted");
+        setPaying(true);
+        hostedField.cardFields
+            .submit({
+                cardholderName: cardHolderName?.current?.value,
+            })
+            .then((data) => {
+                action(`Received ${ORDER_ID}`)(data.orderId);
+                action(CAPTURE_ORDER)(
+                    `Sending ${ORDER_ID} to custom endpoint to capture the payment information`
+                );
+                fetch(captureOrderUrl(data.orderId), {
+                    method: "post",
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        action(CAPTURE_ORDER)(data);
+                    })
+                    .catch((err) => {
+                        action(ERROR)(err.message);
+                        console.error(err);
+                    })
+                    .finally(() => {
+                        setPaying(false);
+                    });
+            })
+            .catch((err) => {
+                action(ERROR)(err.message);
+                setPaying(false);
+            });
     };
 
     return (
