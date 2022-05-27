@@ -1,14 +1,10 @@
-import React, {
-    useEffect,
-    useRef,
-    useState,
-    type FunctionComponent,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
 import { SDK_SETTINGS } from "../constants";
 
+import type { FC } from "react";
 import type {
     PayPalMessagesComponentOptions,
     PayPalMessagesComponent,
@@ -24,9 +20,7 @@ export interface PayPalMessagesComponentProps
 This `<PayPalMessages />` messages component renders a credit messaging on upstream merchant sites.
 It relies on the `<PayPalScriptProvider />` parent component for managing state related to loading the JS SDK script.
 */
-export const PayPalMessages: FunctionComponent<
-    PayPalMessagesComponentProps
-> = ({
+export const PayPalMessages: FC<PayPalMessagesComponentProps> = ({
     className = "",
     forceReRender = [],
     ...messageProps

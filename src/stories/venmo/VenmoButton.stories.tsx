@@ -1,4 +1,4 @@
-import React, { type FC } from "react";
+import React from "react";
 
 import { PayPalScriptProvider, FUNDING, PayPalButtons } from "../../index";
 import { getOptionsFromQueryString, generateRandomString } from "../utils";
@@ -6,6 +6,7 @@ import DocPageStructure from "../components/DocPageStructure";
 import { InEligibleError } from "../commons";
 import { getDefaultCode } from "./code";
 
+import type { FC } from "react";
 import type { PayPalScriptOptions } from "@paypal/paypal-js";
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";

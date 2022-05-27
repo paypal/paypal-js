@@ -1,4 +1,4 @@
-import React, { useEffect, type FC, type ReactElement } from "react";
+import React, { useEffect } from "react";
 import { action } from "@storybook/addon-actions";
 
 import { usePayPalScriptReducer, DISPATCH_ACTION } from "../../index";
@@ -20,6 +20,7 @@ import DocPageStructure from "../components/DocPageStructure";
 import { InEligibleError, defaultProps } from "../commons";
 import { getDefaultCode, getDonateCode } from "./code";
 
+import type { FC, ReactElement } from "react";
 import type {
     PayPalScriptOptions,
     CreateOrderActions,

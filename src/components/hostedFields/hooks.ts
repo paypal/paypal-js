@@ -1,5 +1,6 @@
-import { useRef, type MutableRefObject } from "react";
+import { useRef } from "react";
 
+import type { MutableRefObject } from "react";
 import type { PayPalHostedFieldsRegistered } from "../../types/payPalHostedFieldTypes";
 
 /**

@@ -1,7 +1,9 @@
-import React, { type FC } from "react";
+import React from "react";
 import { action } from "@storybook/addon-actions";
 
 import { ERROR, SDK } from "./constants";
+
+import type { FC } from "react";
 
 /**
  * Functional component to render a custom ineligible error UI

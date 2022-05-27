@@ -1,13 +1,15 @@
-import React, { useState, useEffect, type FC } from "react";
+import React, { useState, useEffect } from "react";
 
 import { SDK_SETTINGS, LOAD_SCRIPT_ERROR } from "../../constants";
 import { PayPalButtons } from "../PayPalButtons";
 import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
 import { decorateActions, getBraintreeNamespace } from "./utils";
-import {
-    DISPATCH_ACTION,
-    type BraintreePayPalButtonsComponentProps,
-    type PayPalButtonsComponentProps,
+import { DISPATCH_ACTION } from "../../types";
+
+import type { FC } from "react";
+import type {
+    BraintreePayPalButtonsComponentProps,
+    PayPalButtonsComponentProps,
 } from "../../types";
 
 /**

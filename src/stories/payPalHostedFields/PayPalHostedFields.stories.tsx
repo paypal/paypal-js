@@ -1,11 +1,4 @@
-import React, {
-    useState,
-    useEffect,
-    useRef,
-    type CSSProperties,
-    type FC,
-    type ReactElement,
-} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { action } from "@storybook/addon-actions";
 
 import {
@@ -31,6 +24,7 @@ import DocPageStructure from "../components/DocPageStructure";
 import { InEligibleError } from "../commons";
 import { getDefaultCode, getExpirationDateCode } from "./codeHostedFields";
 
+import type { CSSProperties, FC, ReactElement } from "react";
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
 import type { PayPalScriptOptions } from "@paypal/paypal-js";

@@ -1,4 +1,4 @@
-import React, { type ReactNode, type ProviderProps } from "react";
+import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import { ErrorBoundary } from "react-error-boundary";
 
@@ -6,6 +6,7 @@ import { PayPalHostedField } from "./PayPalHostedField";
 import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types/enums";
 import { PayPalHostedFieldsContext } from "../../context/payPalHostedFieldsContext";
 
+import type { ReactNode, ProviderProps } from "react";
 import type { PayPalHostedFieldContext } from "../../types";
 
 const onError = jest.fn();

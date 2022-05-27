@@ -1,4 +1,4 @@
-import React, { type ReactElement } from "react";
+import React from "react";
 import {
     SandpackProvider,
     SandpackThemeProvider,
@@ -8,6 +8,7 @@ import {
 
 import CopyButton from "./CopyButton";
 
+import type { ReactElement } from "react";
 import type {
     SandpackPredefinedTemplate,
     SandpackFile,

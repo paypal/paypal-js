@@ -1,4 +1,4 @@
-import React, { type FC, type ReactElement } from "react";
+import React from "react";
 import { action } from "@storybook/addon-actions";
 
 import { getOptionsFromQueryString } from "../utils";
@@ -15,6 +15,7 @@ import { usePayPalScriptReducer } from "../../hooks/scriptProviderHooks";
 import DocPageStructure from "../components/DocPageStructure";
 import { getDefaultCode } from "./code";
 
+import type { FC, ReactElement } from "react";
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
 import type { PayPalScriptOptions } from "@paypal/paypal-js";

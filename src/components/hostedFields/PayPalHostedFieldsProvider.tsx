@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, type FC } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import { PayPalHostedFieldsContext } from "../../context/payPalHostedFieldsContext";
 import { useHostedFieldsRegister } from "./hooks";
@@ -14,6 +14,7 @@ import {
 } from "../../types/enums";
 import { getPayPalWindowNamespace } from "../../utils";
 
+import type { FC } from "react";
 import type { PayPalHostedFieldsComponentProps } from "../../types/payPalHostedFieldTypes";
 import type {
     PayPalHostedFieldsComponent,

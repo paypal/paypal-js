@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement, type FC } from "react";
+import React, { useState, useEffect, ReactElement } from "react";
 import { action } from "@storybook/addon-actions";
 
 import { PayPalScriptProvider } from "../../index";
@@ -23,6 +23,7 @@ import DocPageStructure from "../components/DocPageStructure";
 import { InEligibleError, defaultProps } from "../commons";
 import { getDefaultCode, getBillingAgreementCode } from "./code";
 
+import type { FC } from "react";
 import type {
     PayPalScriptOptions,
     PayPalButtonsComponentOptions,

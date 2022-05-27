@@ -1,4 +1,4 @@
-import React, { useState, type FC, type ChangeEvent } from "react";
+import React, { useState } from "react";
 import { action } from "@storybook/addon-actions";
 
 import {
@@ -21,6 +21,7 @@ import { InEligibleError, defaultProps } from "../commons";
 import DocPageStructure from "../components/DocPageStructure";
 import { getDefaultCode, getRadioButtonsCode } from "./code";
 
+import type { FC, ChangeEvent } from "react";
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
 import type { PayPalScriptOptions } from "@paypal/paypal-js";

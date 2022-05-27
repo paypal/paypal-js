@@ -1,10 +1,11 @@
-import React, { type FC } from "react";
+import React from "react";
 
 import { PayPalScriptProvider, PayPalMessages } from "../index";
 import DocPageStructure from "./components/DocPageStructure";
 import { getOptionsFromQueryString } from "./utils";
 import { COMPONENT_PROPS_CATEGORY } from "./constants";
 
+import type { FC } from "react";
 import type { PayPalScriptOptions } from "@paypal/paypal-js";
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";

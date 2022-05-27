@@ -5,11 +5,12 @@ import {
     validateReducer,
     validateBraintreeAuthorizationData,
 } from "./contextValidator";
-import {
-    SCRIPT_LOADING_STATE,
-    type ScriptContextDerivedState,
-    type ScriptContextState,
-    type ScriptReducerAction,
+import { SCRIPT_LOADING_STATE } from "../types";
+
+import type {
+    ScriptContextDerivedState,
+    ScriptContextState,
+    ScriptReducerAction,
 } from "../types";
 
 /**

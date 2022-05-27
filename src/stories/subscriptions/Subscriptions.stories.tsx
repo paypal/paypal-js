@@ -1,4 +1,4 @@
-import React, { useEffect, type FC, type ReactElement } from "react";
+import React, { useEffect } from "react";
 import { action } from "@storybook/addon-actions";
 
 import {
@@ -19,6 +19,7 @@ import DocPageStructure from "../components/DocPageStructure";
 import { InEligibleError, defaultProps } from "../commons";
 import { getDefaultCode } from "./code";
 
+import type { FC, ReactElement } from "react";
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
 import type { PayPalButtonsComponentProps } from "../../types/paypalButtonTypes";

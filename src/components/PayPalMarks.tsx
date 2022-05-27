@@ -1,15 +1,10 @@
-import React, {
-    useEffect,
-    useRef,
-    useState,
-    type FC,
-    type ReactNode,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
 import { SDK_SETTINGS } from "../constants";
 
+import type { FC, ReactNode } from "react";
 import type {
     PayPalMarksComponentOptions,
     PayPalMarksComponent,
