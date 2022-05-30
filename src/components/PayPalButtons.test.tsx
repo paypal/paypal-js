@@ -8,7 +8,7 @@ import {
 } from "@testing-library/react";
 import { ErrorBoundary } from "react-error-boundary";
 import { mock } from "jest-mock-extended";
-import { loadScript, PayPalNamespace } from "@paypal/paypal-js";
+import { loadScript } from "@paypal/paypal-js";
 
 import { PayPalButtons } from "./PayPalButtons";
 import { PayPalScriptProvider } from "./PayPalScriptProvider";
@@ -18,6 +18,7 @@ import type { ReactNode } from "react";
 import type {
     PayPalButtonsComponent,
     PayPalButtonsComponentOptions,
+    PayPalNamespace,
 } from "@paypal/paypal-js";
 
 jest.mock("@paypal/paypal-js", () => ({

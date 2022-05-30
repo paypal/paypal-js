@@ -1,12 +1,7 @@
 import React from "react";
 import { mock } from "jest-mock-extended";
 import { render, waitFor } from "@testing-library/react";
-import {
-    loadScript,
-    loadCustomScript,
-    PayPalNamespace,
-    PayPalButtonsComponent,
-} from "@paypal/paypal-js";
+import { loadScript, loadCustomScript } from "@paypal/paypal-js";
 import { ErrorBoundary } from "react-error-boundary";
 
 import { BraintreePayPalButtons } from "./BraintreePayPalButtons";
@@ -18,6 +13,11 @@ import {
     LOAD_SCRIPT_ERROR,
 } from "../../constants";
 import { FUNDING } from "../../index";
+
+import type {
+    PayPalNamespace,
+    PayPalButtonsComponent,
+} from "@paypal/paypal-js";
 
 jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),
