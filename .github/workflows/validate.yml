@@ -37,7 +37,7 @@ jobs:
               run: npm run validate
 
             - name: 👕 Lint commit messages
-              uses: wagoid/commitlint-github-action@v4
+              uses: wagoid/commitlint-github-action@v5
 
             - name: ⬆️ Upload coverage report
               uses: codecov/codecov-action@v3
