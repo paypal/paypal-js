@@ -2,6 +2,11 @@ import type { CreateOrderRequestBody, OrderResponseBody } from "../apis/orders";
 import type { CreateSubscriptionRequestBody } from "../apis/subscriptions/subscriptions";
 import type { ShippingAddress, SelectedShippingOption } from "../apis/shipping";
 import type { SubscriptionDetail } from "../apis/subscriptions/subscriptions";
+import type { FUNDING_SOURCE } from "./funding-eligibility";
+
+export type CreateOrderData = {
+    paymentSource: FUNDING_SOURCE;
+};
 
 export type CreateOrderActions = {
     order: {
@@ -100,7 +105,7 @@ export interface PayPalButtonsComponentOptions {
      * Called on button click to set up a one-time payment. [createOrder docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#createorder).
      */
     createOrder?: (
-        data: Record<string, unknown>,
+        data: CreateOrderData,
         actions: CreateOrderActions
     ) => Promise<string>;
     /**
@@ -114,7 +119,7 @@ export interface PayPalButtonsComponentOptions {
      * Used for defining a standalone button.
      * Learn more about [configuring the funding source for standalone buttons](https://developer.paypal.com/docs/business/checkout/configure-payments/standalone-buttons/#4-funding-sources).
      */
-    fundingSource?: string;
+    fundingSource?: FUNDING_SOURCE;
     /**
      * Called when finalizing the transaction. Often used to inform the buyer that the transaction is complete. [onApprove docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#onapprove).
      */
