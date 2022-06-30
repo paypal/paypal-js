@@ -206,7 +206,7 @@ loadScript(options, PromisePonyfill).then((paypalObject) => {});
 We also provide a legacy build that includes the [promise-polyfill](https://github.com/taylorhakes/promise-polyfill) library. You can reference it from the CDN here:
 
 ```html
-<script src="https://unpkg.com/@paypal/paypal-js@5.0.6/dist/iife/paypal-js.legacy.min.js"></script>
+<script src="https://unpkg.com/@paypal/paypal-js@5.1.0/dist/iife/paypal-js.legacy.min.js"></script>
 ```
 
 ### Using a CDN
@@ -217,7 +217,7 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <script src="https://unpkg.com/@paypal/paypal-js@5.0.6/dist/iife/paypal-js.min.js"></script>
+        <script src="https://unpkg.com/@paypal/paypal-js@5.1.0/dist/iife/paypal-js.min.js"></script>
     </head>
     <body>
         <div id="paypal-buttons"></div>
