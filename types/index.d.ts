@@ -12,6 +12,7 @@ import type {
     PayPalMessagesComponent,
 } from "./components/messages";
 import type {
+    FUNDING_SOURCE,
     getFundingSources,
     isFundingEligible,
     rememberFunding,
@@ -30,7 +31,7 @@ export interface PayPalNamespace {
     getFundingSources?: getFundingSources;
     isFundingEligible?: isFundingEligible;
     rememberFunding?: rememberFunding;
-    FUNDING?: Record<string, string>;
+    FUNDING?: Record<string, FUNDING_SOURCE>;
     version: string;
 }
 
