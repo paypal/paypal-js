@@ -158,12 +158,12 @@ export type ShippingInfo = {
      * The method by which the payer wants to get their items from the payee e.g shipping, in-person pickup.
      * Either type or options but not both may be present
      */
-    type: string;
+    type?: string;
     /**
      * An array of shipping options that the payee or
      * merchant offers to the payer to ship or pick up their items
      */
-    options: ShippingInfoOption[];
+    options?: ShippingInfoOption[];
     address: Address;
 };
 
