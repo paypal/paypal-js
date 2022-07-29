@@ -16,9 +16,9 @@ export interface PayPalMessagesComponentOptions {
         ratio?: "1x1" | "1x4" | "8x1" | "20x1";
     };
     placement?: "home" | "category" | "product" | "cart" | "payment";
-    onApply?: Function;
-    onClick?: Function;
-    onRender?: Function;
+    onApply?: (data: Record<string, unknown>) => void;
+    onClick?: (data: Record<string, unknown>) => void;
+    onRender?: (data: Record<string, unknown>) => void;
 }
 
 export interface PayPalMessagesComponent {
