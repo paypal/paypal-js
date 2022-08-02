@@ -135,7 +135,7 @@ export type ShippingInfoOption = {
     selected: boolean;
 };
 
-export interface ShippingInfoBase {
+interface ShippingInfoBase {
     /**
      * The name of the party
      */
