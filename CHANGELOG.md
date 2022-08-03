@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.1](https://github.com/paypal/paypal-js/compare/v5.1.0...v5.1.1) (2022-08-03)
+
+### Bug Fixes
+
+-   **types:** add missing types for messaging component ([#274](https://github.com/paypal/paypal-js/issues/274)) ([dd6bc48](https://github.com/paypal/paypal-js/commit/dd6bc48d0755efcd5ad529e92322cd1ec051d84c))
+-   **types:** update order shipping options to match spec ([#276](https://github.com/paypal/paypal-js/issues/276)) ([e23c7d2](https://github.com/paypal/paypal-js/commit/e23c7d2c48a677ad64de97e9de2b1e954e06c192))
+
 ## [5.1.0](https://github.com/paypal/paypal-js/compare/v5.0.6...v5.1.0) (2022-06-30)
 
 ### Features
