@@ -135,18 +135,18 @@ export type ShippingInfoOption = {
     selected: boolean;
 };
 
-export type ShippingInfo = {
+interface ShippingInfoBase {
     /**
      * The name of the party
      */
-    name: Partial<{
+    name?: Partial<{
         /**
          * When the party is a person, the party's full name
          */
         full_name: string;
     }>;
-    email_address: string;
-    phone_number: {
+    email_address?: string;
+    phone_number?: {
         /**
          * The national number, in its canonical international [E.164 numbering plan format](https://www.itu.int/rec/T-REC-E.164/en).
          * The combined length of the country calling code (CC) and the national number must not be greater than 15 digits.
@@ -154,18 +154,20 @@ export type ShippingInfo = {
          */
         national_number: string;
     };
-    /**
-     * The method by which the payer wants to get their items from the payee e.g shipping, in-person pickup.
-     * Either type or options but not both may be present
-     */
-    type: string;
-    /**
-     * An array of shipping options that the payee or
-     * merchant offers to the payer to ship or pick up their items
-     */
+    address?: Address;
+}
+
+interface ShippingInfoWithType extends ShippingInfoBase {
+    type: "SHIPPING" | "PICKUP_IN_PERSON";
+    options?: never;
+}
+
+interface ShippingInfoWithOptions extends ShippingInfoBase {
     options: ShippingInfoOption[];
-    address: Address;
-};
+    type?: never;
+}
+
+export type ShippingInfo = ShippingInfoWithType | ShippingInfoWithOptions;
 
 export type PurchaseItem = {
     name: string;
