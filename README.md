@@ -268,7 +268,7 @@ const SubmitPayment = () => {
     const hostedFields = usePayPalHostedFields();
 
     const submitHandler = () => {
-        if (!typeof hostedFields.submit !== "function") return; // validate that `submit()` exists before using it
+        if (typeof hostedFields.submit !== "function") return; // validate that `submit()` exists before using it
         hostedFields
             .submit({
                 // The full name as shown in the card and billing address
