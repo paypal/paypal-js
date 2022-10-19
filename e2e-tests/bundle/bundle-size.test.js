@@ -1,7 +1,7 @@
 /* eslint @typescript-eslint/no-var-requires: "off" */
 
 const fs = require("fs");
-const filesize = require("filesize");
+const { filesize } = require("filesize");
 
 const maxBundleSizeInKiloBytes = 4;
 const maxLegacyBundleSizeInKiloBytes = 7.5;
