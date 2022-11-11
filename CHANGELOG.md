@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.2](https://github.com/paypal/paypal-js/compare/v5.1.1...v5.1.2) (2022-11-11)
+
+### Bug Fixes
+
+-   **types:** add missing on and off events for hostedFields ([#299](https://github.com/paypal/paypal-js/issues/299)) ([216356e](https://github.com/paypal/paypal-js/commit/216356e5ab1337dc14346170ee7a7589e549f5d3))
+
 ### [5.1.1](https://github.com/paypal/paypal-js/compare/v5.1.0...v5.1.1) (2022-08-03)
 
 ### Bug Fixes
