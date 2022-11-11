@@ -55,6 +55,18 @@ async function main() {
         },
     });
 
+    cardFields.on("validityChange", (event) => {
+        const field = event.fields[event.emittedBy];
+
+        if (field.isValid) {
+            console.log(event.emittedBy, "is fully valid");
+        } else if (field.isPotentiallyValid) {
+            console.log(event.emittedBy, "is potentially valid");
+        } else {
+            console.log(event.emittedBy, "is not valid");
+        }
+    });
+
     document
         .querySelector("#card-form")
         ?.addEventListener("submit", (event) => {
