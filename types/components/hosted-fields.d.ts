@@ -1,43 +1,54 @@
-type HostedFieldsCardTypes = {
-    [key in
-        | "amex"
-        | "discover"
-        | "elo"
-        | "hiper"
-        | "jcb"
-        | "mastercard"
-        | "visa"]: { eligible: boolean; valuable: boolean };
+export type HostedFieldsCardTypeName =
+    | "amex"
+    | "discover"
+    | "elo"
+    | "hiper"
+    | "jcb"
+    | "mastercard"
+    | "visa";
+
+export interface HostedFieldsCardTypeData {
+    eligible: boolean;
+    valuable: boolean;
+}
+
+export type HostedFieldsCardTypes = {
+    [key in HostedFieldsCardTypeName]: HostedFieldsCardTypeData;
 };
 
-type HostedFieldsCardState = {
-    fields: {
-        [key in
-            | "number"
-            | "cvv"
-            | "expirationDate"
-            | "expirationMonth"
-            | "expirationYear"
-            | "postalCode"]?: {
-            container: HTMLElement;
-            isEmpty: boolean;
-            isFocused: boolean;
-            isPotentiallyValid: boolean;
-            isValid: boolean;
-        };
-    };
-    cards: {
-        type: string;
-        niceType: string;
-        lengths: number[];
-        gaps: number[];
-        code: {
-            name: string;
-            size: number;
-        };
-    }[];
+export interface HostedFieldsCardCode {
+    name: string;
+    size: number;
+}
+
+export interface HostedFieldsHostedFieldsCard {
+    type: string;
+    niceType: string;
+    code: HostedFieldsCardCode;
+}
+
+export type HostedFieldsHostedFieldsFieldName =
+    | "number"
+    | "cvv"
+    | "expirationDate"
+    | "expirationMonth"
+    | "expirationYear"
+    | "postalCode"
+    | "cardholderName";
+
+export interface HostedFieldsHostedFieldsFieldData {
+    container: HTMLElement;
+    isEmpty: boolean;
+    isFocused: boolean;
+    isPotentiallyValid: boolean;
+    isValid: boolean;
+}
+
+export type HostedFieldsFieldDataFields = {
+    [key in HostedFieldsHostedFieldsFieldName]: HostedFieldsHostedFieldsFieldData;
 };
 
-type HostedFieldsTokenize = {
+export type HostedFieldsTokenize = {
     vault?: boolean;
     authenticationInsight?: unknown;
     fieldsToTokenize?: string[];
@@ -57,6 +68,27 @@ type HostedFieldsTokenize = {
         countryName?: string;
     };
 };
+
+export interface HostedFieldsState {
+    cards: HostedFieldsHostedFieldsCard[];
+    fields: HostedFieldsFieldDataFields;
+}
+
+export interface HostedFieldsEvent extends HostedFieldsState {
+    emittedBy: HostedFieldsHostedFieldsFieldName;
+}
+
+export interface HostedFieldsEventTypeMap {
+    blur: HostedFieldsEvent;
+    focus: HostedFieldsEvent;
+    empty: HostedFieldsEvent;
+    notEmpty: HostedFieldsEvent;
+    cardTypeChange: HostedFieldsEvent;
+    validityChange: HostedFieldsEvent;
+    inputSubmitRequest: HostedFieldsEvent;
+}
+
+export type HostedFieldEventType = keyof HostedFieldsEventTypeMap;
 
 export type InstallmentsConfiguration = {
     currencyCode: string;
@@ -129,7 +161,7 @@ export interface HostedFieldsHandler {
     /**
      * Get the state of all the rendered fields.
      */
-    getState: () => HostedFieldsCardState;
+    getState: () => HostedFieldsFieldDataFields;
     /**
      * Removes a supported attribute from a field.
      */
@@ -181,6 +213,15 @@ export interface HostedFieldsHandler {
     tokenize: (
         options: HostedFieldsTokenize
     ) => Promise<Record<string, unknown>>;
+
+    on<EventType extends HostedFieldEventType>(
+        event: EventType,
+        handler: (event: HostedFieldsEventTypeMap[EventType]) => void
+    ): void;
+    off<EventType extends HostedFieldEventType>(
+        event: EventType,
+        handler: (event: HostedFieldsEventTypeMap[EventType]) => void
+    ): void;
 }
 
 export interface PayPalHostedFieldsComponent {
