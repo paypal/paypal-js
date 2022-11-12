@@ -18,6 +18,7 @@
         "test": "jest src",
         "test:bundle": "jest bundle-tests/**",
         "test:e2e": "playwright test",
+        "test:e2e:debug": "PWDEBUG=1 playwright test --project=\"chromium\"",
         "test:e2e:start": "node e2e-tests/http-server.js",
         "typecheck": "tsc --noEmit",
         "validate": "npm run check-node-version && npm run format:check && npm run typecheck && npm run build && npm run lint && npm test -- --coverage && npm run test:bundle"

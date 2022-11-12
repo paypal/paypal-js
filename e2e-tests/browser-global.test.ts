@@ -20,5 +20,8 @@ test("Browser global window.paypalLoadScript", async ({ page }) => {
     );
     const uidFromDOM = await scriptElement.getAttribute("data-uid-auto");
 
-    await expect(uidFromDOM).toEqual("12345");
+    expect(uidFromDOM).toMatch(/^\d+$/);
+
+    const button = await page.locator(".paypal-button");
+    await expect(button).toBeVisible();
 });

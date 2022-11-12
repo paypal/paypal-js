@@ -1,8 +1,21 @@
 export function successfulSDKResponseMock() {
     return `
+    const button = document.createElement('button');
+    button.setAttribute('class', 'loaded');
+    button.setAttribute('class', 'paypal-button');
+    button.innerHTML = 'PayPal';
+
     window.paypal = {};
-    window.paypal.Buttons = () => { return  { render: () => {} }};
-    document.currentScript.setAttribute("data-uid-auto", 12345);
+    window.paypal.Buttons = () => {
+        return {
+            render: (container) => {
+                document.querySelector(container).appendChild(button);
+            }
+        }
+    };
+
+    const randomNumber = Math.floor(Math.random()*90000) + 10000;
+    document.currentScript.setAttribute("data-uid-auto", randomNumber);
     `.trim();
 }
 
