@@ -1,9 +1,15 @@
 import { test, expect } from "@playwright/test";
+import { validationErrorSDKResponseMock } from "./mocks";
 
 test("Validation errors", async ({ page }) => {
-    await page.goto("/e2e-tests/validation-errors.html", {
-        waitUntil: "networkidle",
-    });
+    page.route("https://www.paypal.com/sdk/js**", (route) =>
+        route.fulfill({
+            status: 400,
+            body: validationErrorSDKResponseMock(),
+        })
+    );
+
+    await page.goto("/e2e-tests/validation-errors.html");
     await expect(page).toHaveTitle("Validation Errors | PayPal JS");
     await page.locator("#btn-load-no-client-id").click();
 

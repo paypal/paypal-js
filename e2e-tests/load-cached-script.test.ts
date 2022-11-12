@@ -1,33 +1,31 @@
 import { test, expect } from "@playwright/test";
+import { successfulSDKResponseMock } from "./mocks";
 
 test("Load cached script", async ({ page }) => {
-    await page.goto("/e2e-tests/load-cached-script.html", {
-        waitUntil: "networkidle",
+    page.route("https://www.paypal.com/sdk/js?**", (route) =>
+        route.fulfill({
+            status: 200,
+            body: successfulSDKResponseMock(),
+        })
+    );
+
+    let sdkRequestCounter = 0;
+    await page.on("request", (request) => {
+        if (request.url().startsWith("https://www.paypal.com/sdk/js")) {
+            sdkRequestCounter++;
+        }
     });
+
+    await page.goto("/e2e-tests/load-cached-script.html");
     await expect(page).toHaveTitle("Load Cached Script | PayPal JS");
-    await expect(page.locator("iframe.component-frame.visible")).toBeVisible();
 
     // should not reload the script when the loadScript options have not changed
-
-    const scriptElement = await page.locator(
-        'script[src^="https://www.paypal.com/sdk/js"]'
-    );
-    const scriptUID = await scriptElement.getAttribute("data-uid-auto");
+    expect(sdkRequestCounter).toEqual(1);
 
     await page.locator("#btn-reload").click();
 
-    await page.waitForResponse((response) =>
-        response
-            .url()
-            .startsWith("https://www.sandbox.paypal.com/smart/buttons")
-    );
+    // wait 1 second
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    const latestScriptElement = await page.locator(
-        'script[src^="https://www.paypal.com/sdk/js"]'
-    );
-    const latestScriptUID = await latestScriptElement.getAttribute(
-        "data-uid-auto"
-    );
-
-    expect(latestScriptUID).toEqual(scriptUID);
+    expect(sdkRequestCounter).toEqual(1);
 });
