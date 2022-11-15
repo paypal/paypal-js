@@ -1,0 +1,51 @@
+name: playwright
+on:
+    # run on push but only for the main branch
+    push:
+        branches:
+            - main
+    # run for every pull request
+    pull_request: {}
+jobs:
+    test:
+        timeout-minutes: 60
+        runs-on: ubuntu-latest
+        steps:
+            - name: 🛑 Cancel Previous Runs
+              uses: styfle/cancel-workflow-action@0.11.0
+              with:
+                  access_token: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: ⬇️ Checkout repo
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - name: 🤝 Set Node version from .nvmrc
+              run: echo NVMRC=`cat .nvmrc` >> $GITHUB_ENV
+
+            - name: ⎔ Setup node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: ${{ env.NVMRC }}
+
+            - name: 📥 Download deps
+              uses: bahmutov/npm-install@v1
+              with:
+                  useLockFile: false
+
+            - name: 🌎 Install Playwright Browsers
+              run: npx playwright install --with-deps
+
+            - name: ▶️ Build the dist folder
+              run: npm run build
+
+            - name: ▶️ Run Playwright tests
+              run: npx playwright test
+
+            - uses: actions/upload-artifact@v3
+              if: always()
+              with:
+                  name: playwright-report
+                  path: playwright-report/
+                  retention-days: 30
