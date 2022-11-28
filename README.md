@@ -115,6 +115,21 @@ Which will load the following `<script>` asynchronously:
 <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=EUR"></script>
 ```
 
+By default, the JS SDK only loads the buttons component. The `components` query string parameter can be used to load multiple components:
+
+```js
+loadScript({
+    "client-id": "YOUR_CLIENT_ID",
+    components: "buttons,marks,messages",
+});
+```
+
+Which will load the following `<script>` asynchronously:
+
+```html
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&components=buttons,marks,messages"></script>
+```
+
 View the [full list of supported query parameters](https://developer.paypal.com/sdk/js/configuration/#link-queryparameters).
 
 #### Data Attributes
