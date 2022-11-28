@@ -134,12 +134,12 @@ View the [full list of supported query parameters](https://developer.paypal.com/
 
 #### Data Attributes
 
-All options prefixed with `data-` are considered attributes. The following example adds `data-client-token` as an attribute:
+All options prefixed with `data-` are considered attributes. The following example adds `data-page-type` as an attribute:
 
 ```js
 loadScript({
     "client-id": "YOUR_CLIENT_ID",
-    "data-client-token": "abc123xyz==",
+    "data-page-type": "checkout",
 });
 ```
 
@@ -147,7 +147,7 @@ Which will load the following `<script>` asynchronously:
 
 ```html
 <script
-    data-client-token="abc123xyz=="
+    data-page-type="checkout"
     src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"
 ></script>
 ```
