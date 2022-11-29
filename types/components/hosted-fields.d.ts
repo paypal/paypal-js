@@ -161,7 +161,7 @@ export interface HostedFieldsHandler {
     /**
      * Get the state of all the rendered fields.
      */
-    getState: () => HostedFieldsFieldDataFields;
+    getState: () => HostedFieldsState;
     /**
      * Removes a supported attribute from a field.
      */
