@@ -70,6 +70,13 @@ async function main() {
     document
         .querySelector("#card-form")
         ?.addEventListener("submit", (event) => {
+            const formFieldValues = Object.values(cardFields.getState().fields);
+            const isFormValid = formFieldValues.every((field) => field.isValid);
+
+            if (isFormValid === false) {
+                return alert("The payment form is invalid");
+            }
+
             event.preventDefault();
             cardFields.submit({});
         });
