@@ -28,6 +28,19 @@ export type CreateSubscriptionRequestBody = {
     plan?: Record<string, unknown>;
 };
 
+export type ReviseSubscriptionRequestBody = {
+    application_context?: Record<string, unknown>;
+    effective_time?: string;
+    plan?: Record<string, unknown>;
+    plan_id?: string;
+    quantity?: string;
+    shipping_address?: {
+        name?: string;
+        address?: Address;
+    };
+    shipping_amount?: AmountWithCurrencyCode;
+};
+
 /**
  * Contains all the information related to a subscription flow
  */
