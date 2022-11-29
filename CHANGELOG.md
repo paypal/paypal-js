@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.4](https://github.com/paypal/paypal-js/compare/v5.1.3...v5.1.4) (2022-11-29)
+
+### Bug Fixes
+
+-   **types:** fix type for hosted fields getState function ([#320](https://github.com/paypal/paypal-js/issues/320)) ([1ec2691](https://github.com/paypal/paypal-js/commit/1ec26918dec4a5549f72c33b09382122fef5f9b5))
+
 ### [5.1.3](https://github.com/paypal/paypal-js/compare/v5.1.2...v5.1.3) (2022-11-29)
 
 ### Bug Fixes
