@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.3](https://github.com/paypal/paypal-js/compare/v5.1.2...v5.1.3) (2022-11-29)
+
+### Bug Fixes
+
+-   **types:** add missing action for revising a subscription ([#318](https://github.com/paypal/paypal-js/issues/318)) ([48e720e](https://github.com/paypal/paypal-js/commit/48e720e10be9cb77b83a35f85de376e78fccdb89))
+
 ### [5.1.2](https://github.com/paypal/paypal-js/compare/v5.1.1...v5.1.2) (2022-11-11)
 
 ### Bug Fixes
