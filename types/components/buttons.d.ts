@@ -1,5 +1,8 @@
 import type { CreateOrderRequestBody, OrderResponseBody } from "../apis/orders";
-import type { CreateSubscriptionRequestBody } from "../apis/subscriptions/subscriptions";
+import type {
+    CreateSubscriptionRequestBody,
+    ReviseSubscriptionRequestBody,
+} from "../apis/subscriptions/subscriptions";
 import type { ShippingAddress, SelectedShippingOption } from "../apis/shipping";
 import type { SubscriptionDetail } from "../apis/subscriptions/subscriptions";
 import type { FUNDING_SOURCE } from "./funding-eligibility";
@@ -19,6 +22,11 @@ export type CreateSubscriptionActions = {
     subscription: {
         /** Used to create a subscription for client-side integrations. Accepts the same options as the request body of the [/v1/billing/subscription api](https://developer.paypal.com/docs/api/subscriptions/v1#subscriptions-create-request-body). */
         create: (options: CreateSubscriptionRequestBody) => Promise<string>;
+        /** Used to revise an existing subscription for client-side integrations. Accepts the same options as the request body of the [/v1/billing/subscription/{id}/revise api](https://developer.paypal.com/docs/api/subscriptions/v1/#subscriptions_revise). */
+        revise: (
+            subscriptionID: string,
+            options: ReviseSubscriptionRequestBody
+        ) => Promise<string>;
     };
 };
 
