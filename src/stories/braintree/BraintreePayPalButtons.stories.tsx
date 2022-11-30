@@ -27,6 +27,7 @@ import type { FC } from "react";
 import type {
     PayPalScriptOptions,
     PayPalButtonsComponentOptions,
+    FUNDING_SOURCE,
 } from "@paypal/paypal-js";
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
@@ -38,7 +39,7 @@ import type {
 
 type StoryProps = {
     style: PayPalButtonsComponentOptions["style"];
-    fundingSource: string;
+    fundingSource: FUNDING_SOURCE;
     disabled: boolean;
     amount: string;
     currency: string;

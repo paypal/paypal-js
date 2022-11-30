@@ -26,13 +26,14 @@ import type {
     CreateOrderActions,
     OnApproveActions,
     PayPalButtonsComponentOptions,
+    FUNDING_SOURCE,
 } from "@paypal/paypal-js";
 import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
 
 type StoryProps = {
     style: PayPalButtonsComponentOptions["style"];
-    fundingSource: string;
+    fundingSource: FUNDING_SOURCE;
     disabled: boolean;
     currency: string;
     amount: string;

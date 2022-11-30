@@ -30,6 +30,7 @@ import type {
     OnApproveData,
     OnApproveActions,
     PayPalButtonsComponentOptions,
+    FUNDING_SOURCE,
 } from "@paypal/paypal-js";
 
 const scriptProviderOptions: PayPalScriptOptions = {
@@ -99,7 +100,7 @@ export const RadioButtons: FC<{
     );
 
     function onChange(event: ChangeEvent<HTMLInputElement>) {
-        setSelectedFundingSource(event.target.value);
+        setSelectedFundingSource(event.target.value as FUNDING_SOURCE);
     }
 
     return (
