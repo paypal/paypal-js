@@ -20,8 +20,8 @@ export function loadScript(
 ): Promise<PayPalNamespace | null> {
     validateArguments(options, PromisePonyfill);
 
-    // resolve with null when running in Node
-    if (typeof window === "undefined") return PromisePonyfill.resolve(null);
+    // resolve with null when running in Node or Deno
+    if (typeof document === "undefined") return PromisePonyfill.resolve(null);
 
     const { url, dataAttributes } = processOptions(options);
     const namespace = dataAttributes["data-namespace"] || "paypal";
@@ -78,8 +78,8 @@ export function loadCustomScript(
     }
 
     return new PromisePonyfill((resolve, reject) => {
-        // resolve with undefined when running in Node
-        if (typeof window === "undefined") return resolve();
+        // resolve with undefined when running in Node or Deno
+        if (typeof document === "undefined") return resolve();
 
         insertScriptElement({
             url,
