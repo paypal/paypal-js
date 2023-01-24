@@ -102,7 +102,7 @@ Use the optional PayPalScriptProvider `deferLoading` prop to control when the JS
 </PayPalScriptProvider>
 ```
 
-To learn more, check out the [defer loading example in storybook](https://paypal.github.io/react-paypal-js/?path=/story/example-paypalscriptprovider--defer-loading).
+To learn more, check out the [defer loading example in storybook](https://paypal.github.io/react-paypal-js/?path=/story/example-paypalscriptprovider--default&args=deferLoading:true).
 
 #### Tracking loading state
 
@@ -128,7 +128,7 @@ return (
 );
 ```
 
-To learn more, check out the [loading spinner example in storybook](https://paypal.github.io/react-paypal-js/?path=/story/example-usepaypalscriptreducer--loading-spinner).
+To learn more, check out the [loading spinner example in storybook](https://paypal.github.io/react-paypal-js/?path=/story/example-paypalbuttons--default&args=showSpinner:true).
 
 #### Reloading when parameters change
 
@@ -161,7 +161,7 @@ return (
 );
 ```
 
-To learn more, check out the [dynamic currency example in storybook](https://paypal.github.io/react-paypal-js/?path=/story/example-usepaypalscriptreducer--currency).
+To learn more, check out the [dynamic currency example in storybook](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default).
 
 ### PayPalButtons
 
@@ -243,7 +243,7 @@ export default function App() {
 }
 ```
 
-Check out the docs page for the [BraintreePayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-braintreepaypalbuttons--default) to learn more about the available props.
+Check out the docs page for the [BraintreePayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/braintree-braintreepaypalbuttons--default) to learn more about the available props.
 
 ### PayPal Hosted Fields
 
