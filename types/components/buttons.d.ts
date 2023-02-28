@@ -100,7 +100,7 @@ export type OnShippingChangeActions = {
     resolve: () => Promise<void>;
     reject: () => Promise<void>;
     order: {
-        patch: () => Promise<OrderResponseBody>;
+        patch: () => Promise<void>;
     };
 };
 
