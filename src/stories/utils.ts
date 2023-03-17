@@ -9,9 +9,9 @@ type TokenResponse = {
     [key in "clientToken" | "client_token"]: string;
 } & { success?: boolean };
 
-export const HEROKU_SERVER = "https://braintree-sdk-demo.herokuapp.com";
-const CLIENT_TOKEN_URL = `${HEROKU_SERVER}/api/braintree/auth`;
-const SALE_URL = `${HEROKU_SERVER}/api/braintree/sale`;
+export const FLY_SERVER = "https://react-paypal-js-storybook.fly.dev";
+const CLIENT_TOKEN_URL = `${FLY_SERVER}/api/braintree/auth`;
+const SALE_URL = `${FLY_SERVER}/api/braintree/sale`;
 const allowedSDKQueryParams = Object.keys(SDK_QUERY_KEYS).map(
     (key) => SDK_QUERY_KEYS[key]
 );

@@ -13,7 +13,7 @@ const AUTH_TOKEN_STATEMENT = `const [clientToken, setClientToken] = useState(nul
 		(async () => {
 			const response = await (
 				await fetch(
-					"https://braintree-sdk-demo.herokuapp.com/api/braintree/auth"
+					"https://react-paypal-js-storybook.fly.dev/api/braintree/auth"
 				)
 			).json();
 			setClientToken(response?.client_token || response?.clientToken);
@@ -147,7 +147,7 @@ export default function App() {
 								return actions.braintree.createPayment({
 									// Required
 									flow: "vault",
-					
+
 									// The following are optional params
 									billingAgreementDescription:
 										"Your agreement description",

@@ -143,7 +143,7 @@ const SubmitPayment = ({ customStyle }) => {
 			Object.values(hostedField.cardFields.getState().fields).some(
 				(field) => !field.isValid
 			) || !cardHolderName?.current?.value;
-		
+
 		if (isFormInvalid) {
 			return alert(
 				"The payment form is invalid"
@@ -157,7 +157,7 @@ const SubmitPayment = ({ customStyle }) => {
 			.then((data) => {
 				// Your logic to capture the transaction
 				fetch("url_to_capture_transaction", {
-					method: "post",
+					method: "POST",
 				})
 					.then((response) => response.json())
 					.then((data) => {
@@ -197,7 +197,7 @@ export default function App() {
 		(async () => {
 			const response = await (
 				await fetch(
-					"https://braintree-sdk-demo.herokuapp.com/api/paypal/hosted-fields/auth"
+					"https://react-paypal-js-storybook.fly.dev/api/paypal/generate-client-token"
 				)
 			).json();
 			setClientToken(response?.client_token || response?.clientToken);
@@ -223,7 +223,7 @@ export default function App() {
 							return fetch(
 								"your_custom_server_to_create_orders",
 								{
-									method: "post",
+									method: "POST",
 									headers: {
 										"Content-Type": "application/json",
 									},

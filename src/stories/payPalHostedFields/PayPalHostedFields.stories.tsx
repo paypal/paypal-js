@@ -11,7 +11,7 @@ import {
     getOptionsFromQueryString,
     generateRandomString,
     getClientToken,
-    HEROKU_SERVER,
+    FLY_SERVER,
 } from "../utils";
 import {
     COMPONENT_PROPS_CATEGORY,
@@ -36,8 +36,8 @@ type StoryProps = {
 };
 
 const uid = generateRandomString();
-const TOKEN_URL = `${HEROKU_SERVER}/api/paypal/hosted-fields/auth`;
-const CREATE_ORDER_URL = `${HEROKU_SERVER}/api/paypal/checkout/orders`;
+const TOKEN_URL = `${FLY_SERVER}/api/paypal/generate-client-token`;
+const CREATE_ORDER_URL = `${FLY_SERVER}/api/paypal/create-order`;
 const RED_COLOR = "#dc3545";
 const GREEN_COLOR = "#28a745";
 const scriptProviderOptions: PayPalScriptOptions = {
@@ -56,8 +56,8 @@ const CAPTURE_ORDER = "captureOrder";
  * @param orderId the order identifier
  * @returns an URL string
  */
-function captureOrderUrl(orderId: string): string {
-    return `${HEROKU_SERVER}/api/paypal/checkout/orders/${orderId}/capture`;
+function captureOrderUrl(): string {
+    return `${FLY_SERVER}/api/paypal/capture-order`;
 }
 
 /**
@@ -95,8 +95,12 @@ const SubmitPayment = ({ customStyle }: { customStyle?: CSSProperties }) => {
                 action(CAPTURE_ORDER)(
                     `Sending ${ORDER_ID} to custom endpoint to capture the payment information`
                 );
-                fetch(captureOrderUrl(data.orderId), {
-                    method: "post",
+                fetch(captureOrderUrl(), {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ orderID: data.orderId }),
                 })
                     .then((response) => response.json())
                     .then((data) => {
@@ -256,20 +260,17 @@ export const Default: FC<StoryProps> = ({ amount, styles, style }) => {
                     "Start creating the order in custom endpoint"
                 );
                 return fetch(CREATE_ORDER_URL, {
-                    method: "post",
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                        purchase_units: [
+                        cart: [
                             {
-                                amount: {
-                                    value: amount,
-                                    currency_code: "USD",
-                                },
+                                sku: "1blwyeo8",
+                                quantity: 2,
                             },
                         ],
-                        intent: "CAPTURE",
                     }),
                 })
                     .then((response) => response.json())
@@ -336,7 +337,7 @@ export const ExpirationDate: FC<{ amount: string }> = ({ amount }) => {
         <PayPalHostedFieldsProvider
             createOrder={() =>
                 fetch(CREATE_ORDER_URL, {
-                    method: "post",
+                    method: "POST",
                     headers: {
                         "Content-Type": "application/json",
                     },

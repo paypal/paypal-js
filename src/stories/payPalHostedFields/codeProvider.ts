@@ -13,7 +13,7 @@ export default function App() {
 		(async () => {
 			const response = await (
 				await fetch(
-					"https://braintree-sdk-demo.herokuapp.com/api/paypal/hosted-fields/auth"
+					"https://react-paypal-js-storybook.fly.dev/api/paypal/generate-client-token"
 				)
 			).json();
 			setClientToken(response?.client_token || response?.clientToken);
