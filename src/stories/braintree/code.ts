@@ -13,7 +13,8 @@ const AUTH_TOKEN_STATEMENT = `const [clientToken, setClientToken] = useState(nul
 		(async () => {
 			const response = await (
 				await fetch(
-					"https://react-paypal-js-storybook.fly.dev/api/braintree/auth"
+					"https://react-paypal-js-storybook.fly.dev/api/braintree/generate-client-token",
+					{ method: "POST" }
 				)
 			).json();
 			setClientToken(response?.client_token || response?.clientToken);

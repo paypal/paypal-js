@@ -10,7 +10,7 @@ type TokenResponse = {
 } & { success?: boolean };
 
 export const FLY_SERVER = "https://react-paypal-js-storybook.fly.dev";
-const CLIENT_TOKEN_URL = `${FLY_SERVER}/api/braintree/auth`;
+const CLIENT_TOKEN_URL = `${FLY_SERVER}/api/braintree/generate-client-token`;
 const SALE_URL = `${FLY_SERVER}/api/braintree/sale`;
 const allowedSDKQueryParams = Object.keys(SDK_QUERY_KEYS).map(
     (key) => SDK_QUERY_KEYS[key]
@@ -33,7 +33,9 @@ export function getOptionsFromQueryString(): Record<string, string> {
 }
 
 export async function getClientToken(url = CLIENT_TOKEN_URL): Promise<string> {
-    const response: TokenResponse = await (await fetch(url)).json();
+    const response: TokenResponse = await (
+        await fetch(url, { method: "POST" })
+    ).json();
 
     return response?.client_token || response?.clientToken;
 }
