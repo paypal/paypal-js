@@ -13,7 +13,8 @@ export default function App() {
 		(async () => {
 			const response = await (
 				await fetch(
-					"https://react-paypal-js-storybook.fly.dev/api/paypal/generate-client-token"
+					"https://react-paypal-js-storybook.fly.dev/api/paypal/generate-client-token",
+					{ method: "POST" }
 				)
 			).json();
 			setClientToken(response?.client_token || response?.clientToken);
