@@ -26,6 +26,7 @@ interface PayPalScriptDataAttributes {
     "data-page-type"?: string;
     "data-partner-attribution-id"?: string;
     "data-sdk-integration-source"?: string;
+    "data-uid"?: string;
     "data-user-id-token"?: string;
 }
 
