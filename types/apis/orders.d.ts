@@ -219,9 +219,6 @@ export type LinkDescription = {
     href: string;
     rel: string;
     method?: string;
-    title?: string;
-    mediaType?: string;
-    encType?: string;
 };
 
 /**
@@ -238,7 +235,29 @@ export type CreateOrderRequestBody = {
     application_context?: OrderApplicationContext;
 };
 
-export type OrderResponseBody = {
+export type OrderResponseBodyMinimal = {
+    /**
+     * The ID of the order
+     * @readonly
+     */
+    id: string;
+    /**
+     * The order status
+     */
+    status:
+        | "CREATED"
+        | "SAVED"
+        | "APPROVED"
+        | "VOIDED"
+        | "COMPLETED"
+        | "PAYER_ACTION_REQUIRED";
+    /**
+     * An array of request-related HATEOAS links
+     */
+    links: LinkDescription[];
+};
+
+export type OrderResponseBody = OrderResponseBodyMinimal & {
     /**
      * The date and time, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6).
      * Seconds are required while fractional seconds are optional
@@ -254,11 +273,6 @@ export type OrderResponseBody = {
      */
     update_time: string;
     /**
-     * The ID of the order
-     * @readonly
-     */
-    id: string;
-    /**
      * @type {INTENT}
      */
     intent: INTENT;
@@ -267,20 +281,6 @@ export type OrderResponseBody = {
      */
     payer: Partial<Payer>;
     purchase_units: PurchaseUnit[];
-    /**
-     * The order status
-     */
-    status:
-        | "COMPLETED"
-        | "SAVED"
-        | "APPROVED"
-        | "VOIDED"
-        | "COMPLETED"
-        | "PAYER_ACTION_REQUIRED";
-    /**
-     * An array of request-related HATEOAS links
-     */
-    links: LinkDescription[];
     /**
      * The instruction to process an order
      */
