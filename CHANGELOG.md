@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.5](https://github.com/paypal/paypal-js/compare/v5.1.4...v5.1.5) (2023-03-21)
+
+### Bug Fixes
+
+-   **types:** add optional data-uid script attribute ([#346](https://github.com/paypal/paypal-js/issues/346)) ([c845035](https://github.com/paypal/paypal-js/commit/c845035dbc923b9da005aad1956869ce025a2686))
+-   **types:** add type for minimal response from orders api ([#347](https://github.com/paypal/paypal-js/issues/347)) ([562a5fc](https://github.com/paypal/paypal-js/commit/562a5fc72302604d6bb26d0a36a5fba9bee6d520))
+-   **types:** update response type for actions.order.patch() ([#333](https://github.com/paypal/paypal-js/issues/333)) ([7eebb58](https://github.com/paypal/paypal-js/commit/7eebb586a775e07618d4f9df87012b1c691e4eef))
+-   update load-script.js ([a195e79](https://github.com/paypal/paypal-js/commit/a195e79278f65fada5a8fb7c4ff4aa19ab5a63b4))
+
 ### [5.1.4](https://github.com/paypal/paypal-js/compare/v5.1.3...v5.1.4) (2022-11-29)
 
 ### Bug Fixes
