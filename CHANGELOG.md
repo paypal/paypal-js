@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.1.6](https://github.com/paypal/paypal-js/compare/v5.1.5...v5.1.6) (2023-03-27)
+
 ### [5.1.5](https://github.com/paypal/paypal-js/compare/v5.1.4...v5.1.5) (2023-03-21)
 
 ### Bug Fixes
