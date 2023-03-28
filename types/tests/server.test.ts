@@ -4,6 +4,7 @@ import type {
 } from "../index";
 
 function createOrder(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createOrderRequestBody: CreateOrderRequestBody
 ): Promise<OrderResponseBodyMinimal> {
     return Promise.resolve({ id: "123456", status: "CREATED", links: [] });
