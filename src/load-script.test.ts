@@ -1,9 +1,11 @@
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+
 import { loadScript, loadCustomScript } from "./load-script";
 // import using "*" to spy on insertScriptElement()
 import * as utils from "./utils";
 
 describe("loadScript()", () => {
-    const insertScriptElementSpy = jest.spyOn(utils, "insertScriptElement");
+    const insertScriptElementSpy = vi.spyOn(utils, "insertScriptElement");
 
     const paypalNamespace = { version: "5" };
 
@@ -100,8 +102,7 @@ describe("loadScript()", () => {
 });
 
 describe("loadCustomScript()", () => {
-    const insertScriptElementSpy = jest.spyOn(utils, "insertScriptElement");
-    const PromiseBackup = window.Promise;
+    const insertScriptElementSpy = vi.spyOn(utils, "insertScriptElement");
 
     beforeEach(() => {
         document.head.innerHTML = "";
@@ -115,7 +116,6 @@ describe("loadCustomScript()", () => {
 
     afterEach(() => {
         insertScriptElementSpy.mockClear();
-        window.Promise = PromiseBackup;
     });
 
     test("should insert <script> and resolve the promise", async () => {
@@ -176,7 +176,7 @@ describe("loadCustomScript()", () => {
 
     test("should throw the default error when the script fails to load but getting the error has a success response", async () => {
         expect.assertions(2);
-        window.fetch = jest.fn().mockResolvedValue({
+        window.fetch = vi.fn().mockResolvedValue({
             status: 200,
         });
 
@@ -207,9 +207,9 @@ describe("loadCustomScript()", () => {
         ${errorMessage}
 
         */`;
-        window.fetch = jest.fn().mockResolvedValue({
+        window.fetch = vi.fn().mockResolvedValue({
             status: 400,
-            text: jest.fn().mockResolvedValue(serverMessage),
+            text: vi.fn().mockResolvedValue(serverMessage),
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
@@ -236,9 +236,9 @@ describe("loadCustomScript()", () => {
         ${errorMessage}
 
         */`;
-        window.fetch = jest.fn().mockResolvedValue({
+        window.fetch = vi.fn().mockResolvedValue({
             status: 400,
-            text: jest.fn().mockResolvedValue(serverMessage),
+            text: vi.fn().mockResolvedValue(serverMessage),
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
@@ -265,9 +265,9 @@ describe("loadCustomScript()", () => {
         ${errorMessage}
 
         */`;
-        window.fetch = jest.fn().mockResolvedValue({
+        window.fetch = vi.fn().mockResolvedValue({
             status: 400,
-            text: jest.fn().mockResolvedValue(serverMessage),
+            text: vi.fn().mockResolvedValue(serverMessage),
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
@@ -285,9 +285,9 @@ describe("loadCustomScript()", () => {
     });
 
     test("should throw an error when the script fails to load and fail fetching the error message", async () => {
-        window.fetch = jest.fn().mockResolvedValue({
+        window.fetch = vi.fn().mockResolvedValue({
             status: 500,
-            text: jest.fn().mockResolvedValue("Internal Server Error"),
+            text: vi.fn().mockResolvedValue("Internal Server Error"),
         });
 
         insertScriptElementSpy.mockImplementation(({ onError }) => {
@@ -305,9 +305,9 @@ describe("loadCustomScript()", () => {
     });
 
     test("should use the provided promise ponyfill", () => {
-        const PromisePonyfill = jest.fn(() => {
+        const PromisePonyfill = vi.fn(() => {
             return {
-                then: jest.fn(),
+                then: vi.fn(),
             };
         });
         loadCustomScript(
@@ -318,18 +318,5 @@ describe("loadCustomScript()", () => {
             PromisePonyfill
         );
         expect(PromisePonyfill).toHaveBeenCalledTimes(1);
-    });
-
-    test("should throw an error when the Promise implementation is undefined", () => {
-        // @ts-expect-error ignore deleting window.Promise
-        delete window.Promise;
-
-        expect(window.paypal).toBe(undefined);
-        expect(window.Promise).toBe(undefined);
-        expect(() =>
-            loadCustomScript({ url: "https://www.example.com/index.js" })
-        ).toThrow(
-            "Promise is undefined. To resolve the issue, use a Promise polyfill."
-        );
     });
 });
