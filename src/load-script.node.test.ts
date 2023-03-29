@@ -1,6 +1,6 @@
-/**
- * @jest-environment node
- */
+// @vitest-environment node
+
+import { test, expect } from "vitest";
 
 import { loadScript, loadCustomScript } from "./load-script";
 

@@ -1,11 +1,13 @@
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+
+vi.useFakeTimers();
+
 import {
     findScript,
     insertScriptElement,
     objectToQueryString,
     processOptions,
 } from "./utils";
-
-jest.useFakeTimers();
 
 describe("objectToQueryString()", () => {
     test("coverts an object to a query string", () => {
@@ -163,14 +165,16 @@ describe("insertScriptElement()", () => {
         insertScriptElement({
             url,
             attributes: { "data-client-token": "12345" },
-            onError: jest.fn(),
-            onSuccess: jest.fn(),
+            onError: vi.fn(),
+            onSuccess: vi.fn(),
         });
 
         const scriptFromDOM =
             document.querySelector<HTMLScriptElement>("head script");
-        if (!scriptFromDOM)
+
+        if (!scriptFromDOM) {
             throw new Error("Expected to find <script> element");
+        }
 
         expect(scriptFromDOM.src).toBe(url);
         expect(scriptFromDOM.getAttribute("data-client-token")).toBe("12345");
@@ -180,8 +184,8 @@ describe("insertScriptElement()", () => {
         insertScriptElement({
             url,
             attributes: { "data-csp-nonce": "12345" },
-            onError: jest.fn(),
-            onSuccess: jest.fn(),
+            onError: vi.fn(),
+            onSuccess: vi.fn(),
         });
 
         const scriptFromDOM =
@@ -203,8 +207,8 @@ describe("insertScriptElement()", () => {
         const newScriptSrc = `${url}&currency=EUR`;
         insertScriptElement({
             url: newScriptSrc,
-            onError: jest.fn(),
-            onSuccess: jest.fn(),
+            onError: vi.fn(),
+            onSuccess: vi.fn(),
         });
 
         const [firstScript, secondScript] = Array.from(
@@ -219,7 +223,7 @@ describe("insertScriptElement()", () => {
         const loadFailureSrcKey = "http://localhost/error";
 
         beforeEach(() => {
-            const insertBeforeSpy = jest.spyOn(document.head, "insertBefore");
+            const insertBeforeSpy = vi.spyOn(document.head, "insertBefore");
             interface MockHTMLScriptElement extends Node {
                 src: string;
                 onerror: () => void;
@@ -237,36 +241,36 @@ describe("insertScriptElement()", () => {
         });
 
         afterEach(() => {
-            jest.clearAllMocks();
+            vi.clearAllMocks();
         });
 
         test("onload() event", () => {
             expect.assertions(1);
-            const onloadMock = jest.fn();
+            const onloadMock = vi.fn();
 
             const url = "https://www.paypal.com/sdk/js";
             insertScriptElement({
                 url,
-                onError: jest.fn(),
+                onError: vi.fn(),
                 onSuccess: onloadMock,
             });
 
-            jest.runAllTimers();
+            vi.runAllTimers();
             expect(onloadMock).toBeCalled();
         });
 
         test("onerror() event", () => {
             expect.assertions(1);
-            const onErrorMock = jest.fn();
+            const onErrorMock = vi.fn();
             const url = loadFailureSrcKey;
 
             insertScriptElement({
                 url,
                 onError: onErrorMock,
-                onSuccess: jest.fn(),
+                onSuccess: vi.fn(),
             });
 
-            jest.runAllTimers();
+            vi.runAllTimers();
             expect(onErrorMock).toBeCalled();
         });
     });
