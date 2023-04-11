@@ -235,6 +235,31 @@ export type CreateOrderRequestBody = {
     application_context?: OrderApplicationContext;
 };
 
+export type UpdateOrderOperation =
+    | {
+          op: "add" | "replace" | "copy" | "test";
+          /**
+           * The JSON Pointer to the target document location at which to complete the operation.
+           */
+          path: string;
+          value: Record<string, unknown>;
+      }
+    | {
+          op: "move";
+          path: string;
+          value: Record<string, unknown>;
+          /**
+           * The JSON Pointer to the target document location from which to move the value.
+           */
+          from: string;
+      }
+    | {
+          op: "remove";
+          path: string;
+      };
+
+export type UpdateOrderRequestBody = UpdateOrderOperation[];
+
 export type OrderResponseBodyMinimal = {
     /**
      * The ID of the order
