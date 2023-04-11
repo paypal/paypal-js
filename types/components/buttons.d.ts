@@ -1,4 +1,8 @@
-import type { CreateOrderRequestBody, OrderResponseBody } from "../apis/orders";
+import type {
+    CreateOrderRequestBody,
+    OrderResponseBody,
+    UpdateOrderRequestBody,
+} from "../apis/orders";
 import type {
     CreateSubscriptionRequestBody,
     ReviseSubscriptionRequestBody,
@@ -100,7 +104,7 @@ export type OnShippingChangeActions = {
     resolve: () => Promise<void>;
     reject: () => Promise<void>;
     order: {
-        patch: () => Promise<void>;
+        patch: (options: UpdateOrderRequestBody) => Promise<void>;
     };
 };
 
