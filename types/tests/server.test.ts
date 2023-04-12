@@ -1,6 +1,7 @@
 import type {
     CreateOrderRequestBody,
     OrderResponseBodyMinimal,
+    UpdateOrderRequestBody,
 } from "../index";
 
 function createOrder(
@@ -8,6 +9,14 @@ function createOrder(
     createOrderRequestBody: CreateOrderRequestBody
 ): Promise<OrderResponseBodyMinimal> {
     return Promise.resolve({ id: "123456", status: "CREATED", links: [] });
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function updateOrder(options: {
+    orderID: string;
+    requestBody: UpdateOrderRequestBody;
+}): Promise<void> {
+    return Promise.resolve();
 }
 
 // capture
@@ -142,6 +151,20 @@ createOrder({
                     category: "DONATION",
                 },
             ],
+        },
+    ],
+});
+
+updateOrder({
+    orderID: "42P22220TW111111R",
+    requestBody: [
+        {
+            op: "replace",
+            path: "/purchase_units/@reference_id=='default'/amount",
+            value: {
+                value: "10.25",
+                currency: "USD",
+            },
         },
     ],
 });
