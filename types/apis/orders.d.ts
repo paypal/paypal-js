@@ -245,15 +245,6 @@ export type UpdateOrderOperation =
           value: Record<string, unknown>;
       }
     | {
-          op: "move";
-          path: string;
-          value: Record<string, unknown>;
-          /**
-           * The JSON Pointer to the target document location from which to move the value.
-           */
-          from: string;
-      }
-    | {
           op: "remove";
           path: string;
       };
