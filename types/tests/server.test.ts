@@ -168,3 +168,13 @@ updateOrder({
         },
     ],
 });
+
+updateOrder({
+    orderID: "42P22220TW111111R",
+    requestBody: [
+        {
+            op: "remove",
+            path: "/purchase_units/@reference_id=='default'/invoice_id",
+        },
+    ],
+});
