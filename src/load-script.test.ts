@@ -34,7 +34,7 @@ describe("loadScript()", () => {
     test("should insert <script> and resolve the promise", async () => {
         expect(window.paypal).toBe(undefined);
 
-        const response = await loadScript({ "client-id": "test" });
+        const response = await loadScript({ clientId: "test" });
         expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
         expect(response).toEqual(window.paypal);
     });
@@ -47,7 +47,7 @@ describe("loadScript()", () => {
             '<script src="https://www.paypal.com/sdk/js?client-id=test"></script>';
         window.paypal = paypalNamespace;
 
-        const response = await loadScript({ "client-id": "test" });
+        const response = await loadScript({ clientId: "test" });
         expect(insertScriptElementSpy).not.toHaveBeenCalled();
         expect(response).toEqual(window.paypal);
     });
@@ -59,8 +59,8 @@ describe("loadScript()", () => {
         expect(windowObject.paypal2).toBe(undefined);
 
         const response = await Promise.all([
-            loadScript({ "client-id": "test", "data-namespace": "paypal1" }),
-            loadScript({ "client-id": "test", "data-namespace": "paypal2" }),
+            loadScript({ clientId: "test", dataNamespace: "paypal1" }),
+            loadScript({ clientId: "test", dataNamespace: "paypal2" }),
         ]);
 
         expect(insertScriptElementSpy).toHaveBeenCalledTimes(2);
@@ -78,7 +78,7 @@ describe("loadScript()", () => {
         expect(window.paypal).toBe(undefined);
 
         try {
-            await loadScript({ "client-id": "test" });
+            await loadScript({ clientId: "test" });
         } catch (err) {
             expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
             const { message: errorMessage } = err as Record<string, string>;

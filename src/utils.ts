@@ -1,5 +1,10 @@
 import type { PayPalScriptOptions } from "../types/script-options";
 
+interface PayPalScriptOptionsWithStringIndex
+    extends PayPalScriptOptions,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        Record<string, any> {}
+
 type StringMap = Record<string, string>;
 
 export function findScript(
@@ -61,28 +66,30 @@ export function processOptions(options: PayPalScriptOptions): {
     url: string;
     dataAttributes: StringMap;
 } {
-    let sdkBaseURL = "https://www.paypal.com/sdk/js";
+    let sdkBaseUrl = "https://www.paypal.com/sdk/js";
 
-    if (options.sdkBaseURL) {
-        sdkBaseURL = options.sdkBaseURL;
-        delete options.sdkBaseURL;
+    if (options.sdkBaseUrl) {
+        sdkBaseUrl = options.sdkBaseUrl;
+        delete options.sdkBaseUrl;
     }
 
-    processMerchantID(options);
+    const optionsWithStringIndex =
+        options as PayPalScriptOptionsWithStringIndex;
 
-    const { queryParams, dataAttributes } = Object.keys(options)
+    const { queryParams, dataAttributes } = Object.keys(optionsWithStringIndex)
         .filter((key) => {
             return (
-                typeof options[key] !== "undefined" &&
-                options[key] !== null &&
-                options[key] !== ""
+                typeof optionsWithStringIndex[key] !== "undefined" &&
+                optionsWithStringIndex[key] !== null &&
+                optionsWithStringIndex[key] !== ""
             );
         })
         .reduce(
             (accumulator, key) => {
-                const value = options[key].toString();
+                const value = optionsWithStringIndex[key].toString();
+                key = camelCaseToKebabCase(key);
 
-                if (key.substring(0, 5) === "data-") {
+                if (key.substring(0, 4) === "data") {
                     accumulator.dataAttributes[key] = value;
                 } else {
                     accumulator.queryParams[key] = value;
@@ -95,10 +102,24 @@ export function processOptions(options: PayPalScriptOptions): {
             }
         );
 
+    if (
+        queryParams["merchant-id"] &&
+        queryParams["merchant-id"].indexOf(",") !== -1
+    ) {
+        dataAttributes["data-merchant-id"] = queryParams["merchant-id"];
+        queryParams["merchant-id"] = "*";
+    }
+
     return {
-        url: `${sdkBaseURL}?${objectToQueryString(queryParams)}`,
+        url: `${sdkBaseUrl}?${objectToQueryString(queryParams)}`,
         dataAttributes,
     };
+}
+
+export function camelCaseToKebabCase(str: string): string {
+    const replacer = (match: string, indexOfMatch?: number) =>
+        (indexOfMatch ? "-" : "") + match.toLowerCase();
+    return str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, replacer);
 }
 
 export function objectToQueryString(params: StringMap): string {
@@ -143,34 +164,4 @@ function createScriptElement(
     });
 
     return newScript;
-}
-
-function processMerchantID(options: PayPalScriptOptions): PayPalScriptOptions {
-    const { "merchant-id": merchantID, "data-merchant-id": dataMerchantID } =
-        options;
-
-    let newMerchantID = "";
-    let newDataMerchantID = "";
-
-    if (Array.isArray(merchantID)) {
-        if (merchantID.length > 1) {
-            newMerchantID = "*";
-            newDataMerchantID = merchantID.toString();
-        } else {
-            newMerchantID = merchantID.toString();
-        }
-    } else if (typeof merchantID === "string" && merchantID.length > 0) {
-        newMerchantID = merchantID;
-    } else if (
-        typeof dataMerchantID === "string" &&
-        dataMerchantID.length > 0
-    ) {
-        newMerchantID = "*";
-        newDataMerchantID = dataMerchantID;
-    }
-
-    options["merchant-id"] = newMerchantID;
-    options["data-merchant-id"] = newDataMerchantID;
-
-    return options;
 }

@@ -8,17 +8,17 @@ async function main() {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const loadScriptPromise: Promise<PayPalNamespace | null> = loadScript({
-        "client-id": "test",
+        clientId: "test",
     });
 
     let paypal: PayPalNamespace | null;
 
     try {
         paypal = await loadScript({
-            "client-id": "test",
+            clientId: "test",
             currency: "USD",
-            "data-page-type": "checkout",
-            "disable-funding": "card",
+            dataPageType: "checkout",
+            disableFunding: "card",
         });
     } catch (err) {
         throw new Error(`Failed to load the paypal sdk script: ${err}`);
