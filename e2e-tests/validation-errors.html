@@ -34,7 +34,7 @@
                 .addEventListener("click", () => {
                     // Error: client-id not recognized for either production or sandbox: invalid-client-id-value
                     loadScript({
-                        "client-id": "invalid-client-id-value",
+                        clientId: "invalid-client-id-value",
                     }).catch((err) => setErrorMessage(err));
                 });
         </script>

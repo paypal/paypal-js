@@ -10,9 +10,9 @@ async function main() {
 
     try {
         paypal = await loadScript({
-            "client-id": "test",
+            clientId: "test",
             components: "buttons,hosted-fields",
-            "data-client-token": "123456789",
+            dataClientToken: "123456789",
         });
     } catch (err) {
         throw new Error(`Failed to load the paypal sdk script: ${err}`);

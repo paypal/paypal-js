@@ -7,7 +7,7 @@ async function main() {
 
     try {
         paypal = await loadScript({
-            "client-id": "test",
+            clientId: "test",
             components: "buttons",
         });
     } catch (err) {

@@ -64,7 +64,7 @@ import { loadScript } from "@paypal/paypal-js";
 let paypal;
 
 try {
-    paypal = await loadScript({ "client-id": "test" });
+    paypal = await loadScript({ clientId: "test" });
 } catch (error) {
     console.error("failed to load the PayPal JS SDK script", error);
 }
@@ -83,7 +83,7 @@ if (paypal) {
 ```js
 import { loadScript } from "@paypal/paypal-js";
 
-loadScript({ "client-id": "test" })
+loadScript({ clientId: "test" })
     .then((paypal) => {
         paypal
             .Buttons()
@@ -99,14 +99,14 @@ loadScript({ "client-id": "test" })
 
 ### Passing Arguments
 
-The `loadScript` function accepts an object for configuring the JS SDK. It's used for setting query parameters and script attributes.
+The `loadScript` function accepts an object for configuring the JS SDK. It's used for setting query parameters and script attributes. It accepts parameters in camelCase or kebab-case.
 
 #### Query Parameters
 
 The following example adds `client-id` and `currency` as query string parameters:
 
 ```js
-loadScript({ "client-id": "YOUR_CLIENT_ID", currency: "EUR" });
+loadScript({ clientId: "YOUR_CLIENT_ID", currency: "EUR" });
 ```
 
 Which will load the following `<script>` asynchronously:
@@ -119,7 +119,7 @@ By default, the JS SDK only loads the buttons component. The `components` query 
 
 ```js
 loadScript({
-    "client-id": "YOUR_CLIENT_ID",
+    clientId: "YOUR_CLIENT_ID",
     components: "buttons,marks,messages",
 });
 ```
@@ -134,12 +134,12 @@ View the [full list of supported query parameters](https://developer.paypal.com/
 
 #### Data Attributes
 
-All options prefixed with `data-` are considered attributes. The following example adds `data-page-type` as an attribute:
+All options prefixed with `data` are considered attributes. The following example adds `data-page-type` as an attribute:
 
 ```js
 loadScript({
-    "client-id": "YOUR_CLIENT_ID",
-    "data-page-type": "checkout",
+    clientId: "YOUR_CLIENT_ID",
+    dataPageType: "checkout",
 });
 ```
 
@@ -154,16 +154,16 @@ Which will load the following `<script>` asynchronously:
 
 View the [full list of supported script parameters](https://developer.paypal.com/sdk/js/configuration/#link-scriptparameters).
 
-#### Merchant ID Array
+#### Merchant Id Array
 
-The `merchant-id` option accepts an array to simplify the implementation for Multi-Seller Payments. With this approach the caller doesn't have to worry about managing the two different merchant id values (`data-merchant-id` and `merchant-id`).
+The `merchantId` option accepts an array to simplify the implementation for Multi-Seller Payments. With this approach the caller doesn't have to worry about managing the two different merchant id values (`data-merchant-id` and `merchant-id`).
 
-**Here's an example with multiple `merchant-id` values:**
+**Here's an example with multiple `merchantId` values:**
 
 ```js
 loadScript({
-    "client-id": "YOUR_CLIENT_ID",
-    "merchant-id": ["123", "456", "789"],
+    clientId: "YOUR_CLIENT_ID",
+    merchantId: ["123", "456", "789"],
 });
 ```
 
@@ -180,8 +180,8 @@ Which will load the following `<script>` and use `merchant-id=*` to properly con
 
 ```js
 loadScript({
-    "client-id": "YOUR_CLIENT_ID",
-    "merchant-id": ["123"],
+    clientId: "YOUR_CLIENT_ID",
+    merchantId: ["123"],
 });
 ```
 
@@ -191,14 +191,14 @@ When there's only one, the merchant-id is passed in using the query string.
 <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&merchant-id=123"></script>
 ```
 
-#### sdkBaseURL
+#### sdkBaseUrl
 
-For local development, the `sdkBaseURL` option can be used to set the base url of the JS SDK:
+For local development, the `sdkBaseUrl` option can be used to set the base url of the JS SDK:
 
 ```js
 loadScript({
-    "client-id": "YOUR_CLIENT_ID",
-    sdkBaseURL: "http://localhost.paypal.com:8000/sdk/js",
+    clientId: "YOUR_CLIENT_ID",
+    sdkBaseUrl: "http://localhost.paypal.com:8000/sdk/js",
 });
 ```
 
@@ -237,7 +237,7 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
     <body>
         <div id="paypal-buttons"></div>
         <script>
-            window.paypalLoadScript({ "client-id": "test" }).then((paypal) => {
+            window.paypalLoadScript({ clientId: "test" }).then((paypal) => {
                 paypal.Buttons().render("#paypal-buttons");
             });
         </script>
