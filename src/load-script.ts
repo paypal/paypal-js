@@ -16,7 +16,7 @@ import type { PayPalNamespace } from "../types/index";
  */
 export function loadScript(
     options: PayPalScriptOptions,
-    PromisePonyfill: PromiseConstructor = getDefaultPromiseImplementation()
+    PromisePonyfill: PromiseConstructor = Promise
 ): Promise<PayPalNamespace | null> {
     validateArguments(options, PromisePonyfill);
 
@@ -63,7 +63,7 @@ export function loadCustomScript(
         url: string;
         attributes?: Record<string, string>;
     },
-    PromisePonyfill: PromiseConstructor = getDefaultPromiseImplementation()
+    PromisePonyfill: PromiseConstructor = Promise
 ): Promise<void> {
     validateArguments(options, PromisePonyfill);
 
@@ -111,15 +111,6 @@ export function loadCustomScript(
             },
         });
     });
-}
-
-function getDefaultPromiseImplementation() {
-    if (typeof Promise === "undefined") {
-        throw new Error(
-            "Promise is undefined. To resolve the issue, use a Promise polyfill."
-        );
-    }
-    return Promise;
 }
 
 function getPayPalWindowNamespace(namespace: string): PayPalNamespace {
