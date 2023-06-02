@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.0.0](https://github.com/paypal/paypal-js/compare/v5.1.6...v6.0.0) (2023-06-02)
+
+### ⚠ BREAKING CHANGES
+
+-   this is a breaking change for the TypeScript types.
+
+### Features
+
+-   camelCase instead of kebab-case for params ([#375](https://github.com/paypal/paypal-js/issues/375)) ([f73df41](https://github.com/paypal/paypal-js/commit/f73df412c8a1ef65d3b3db132e50e79566a341fe))
+
+### Bug Fixes
+
+-   **types:** remove deprecated disable-card param ([#379](https://github.com/paypal/paypal-js/issues/379)) ([a4abfc2](https://github.com/paypal/paypal-js/commit/a4abfc246df9fee9525ea894e0501d626b555052))
+-   **types:** update patch request body for order actions ([#360](https://github.com/paypal/paypal-js/issues/360)) ([6b45244](https://github.com/paypal/paypal-js/commit/6b45244f94564117b3ba66918b6d979faad43edf))
+
 ### [5.1.6](https://github.com/paypal/paypal-js/compare/v5.1.5...v5.1.6) (2023-03-27)
 
 ### [5.1.5](https://github.com/paypal/paypal-js/compare/v5.1.4...v5.1.5) (2023-03-21)
