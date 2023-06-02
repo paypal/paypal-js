@@ -5,7 +5,6 @@ interface PayPalScriptQueryParameters {
     components?: string;
     currency?: string;
     debug?: boolean | string;
-    disableCard?: string;
     disableFunding?: string;
     enableFunding?: string;
     integrationDate?: string;
