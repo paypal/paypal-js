@@ -12,7 +12,7 @@ import {
 const getPayPalScripProvider = (currency: string) =>
     `<PayPalScriptProvider
                 options={{
-                    "client-id": "test",
+                    "clientId": "test",
                     components: "buttons",
                     currency: "${currency}"
                 }}
@@ -99,7 +99,7 @@ export const getDonateCode = (args: Args): string =>
 
 const ButtonWrapper = ({ currency }) => {
     ${buttonWrapperEffect("currency")}
- 
+
      return (<PayPalButtons
         fundingSource="paypal"
         style={${JSON.stringify({
@@ -142,7 +142,7 @@ const ButtonWrapper = ({ currency }) => {
         }}
     />
      );
-} 
+}
 
  export default function App() {
      return (

@@ -66,7 +66,7 @@ export default function App() {
 	return (
 		<PayPalScriptProvider
 			options={{
-				"client-id": "test",
+				clientId: "test",
 				components: "buttons",
 				intent: "${type}",
 				vault: ${type === SUBSCRIPTION},

@@ -47,7 +47,7 @@ type StoryProps = {
 
 const uid = generateRandomString();
 const scriptProviderOptions: PayPalScriptOptions = {
-    "client-id": "test",
+    clientId: "test",
     components: "buttons",
     ...getOptionsFromQueryString(),
 };
@@ -126,9 +126,9 @@ export default {
                             <PayPalScriptProvider
                                 options={{
                                     ...scriptProviderOptions,
-                                    "data-client-token": clientToken,
-                                    "data-namespace": uid,
-                                    "data-uid": uid,
+                                    dataClientToken: clientToken,
+                                    dataNamespace: uid,
+                                    dataUid: uid,
                                     intent: isBillingAggrement
                                         ? "tokenize"
                                         : "capture",

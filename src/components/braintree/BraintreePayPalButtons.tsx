@@ -18,8 +18,8 @@ It relies on the `<PayPalScriptProvider />` parent component for managing state 
 
 Note: You are able to make your integration using the client token or using the tokenization key.
 
-- To use the client token integration set the key `data-client-token` in the `PayPayScriptProvider` component's options.
-- To use the tokenization key integration set the key `data-user-id-token` in the `PayPayScriptProvider` component's options.
+- To use the client token integration set the key `dataClientToken` in the `PayPayScriptProvider` component's options.
+- To use the tokenization key integration set the key `dataUserIdToken` in the `PayPayScriptProvider` component's options.
 */
 export const BraintreePayPalButtons: FC<
     BraintreePayPalButtonsComponentProps

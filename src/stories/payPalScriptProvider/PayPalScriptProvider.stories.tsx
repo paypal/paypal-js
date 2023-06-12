@@ -21,7 +21,7 @@ import type { DocsContextProps } from "@storybook/addon-docs";
 import type { PayPalScriptOptions } from "@paypal/paypal-js";
 
 const scriptProviderOptions: PayPalScriptOptions = {
-    "client-id": "test",
+    clientId: "test",
     ...getOptionsFromQueryString(),
 };
 

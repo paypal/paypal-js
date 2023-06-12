@@ -58,7 +58,7 @@ describe("<PayPalButtons />", () => {
 
     test("should pass props to window.paypal.Buttons()", async () => {
         render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons
                     fundingSource={FUNDING.CREDIT}
                     style={{ layout: "horizontal" }}
@@ -77,7 +77,7 @@ describe("<PayPalButtons />", () => {
 
     test("should use className prop and add to div container", async () => {
         render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons className="custom-class-name" />
             </PayPalScriptProvider>
         );
@@ -91,7 +91,7 @@ describe("<PayPalButtons />", () => {
         const onInitCallbackMock = jest.fn();
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons
                     className="custom-class-name"
                     disabled={true}
@@ -127,7 +127,7 @@ describe("<PayPalButtons />", () => {
 
     test("should enable the Buttons when disabled=true", async () => {
         const { container, rerender } = render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons
                     className="custom-class-name"
                     disabled={true}
@@ -156,7 +156,7 @@ describe("<PayPalButtons />", () => {
             )
         );
         rerender(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons
                     className="custom-class-name"
                     disabled={false}
@@ -192,7 +192,7 @@ describe("<PayPalButtons />", () => {
         }
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <ButtonWrapper initialAmount="1" />
             </PayPalScriptProvider>
         );
@@ -233,7 +233,7 @@ describe("<PayPalButtons />", () => {
         }
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <ButtonWrapper initialOrderID="1" />
             </PayPalScriptProvider>
         );
@@ -267,7 +267,7 @@ describe("<PayPalButtons />", () => {
         } as any;
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons className="test-button" />
             </PayPalScriptProvider>
         );
@@ -295,7 +295,7 @@ describe("<PayPalButtons />", () => {
         window.paypal = {} as any;
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons />
             </PayPalScriptProvider>,
             { wrapper }
@@ -317,7 +317,7 @@ describe("<PayPalButtons />", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test",
+                    clientId: "test",
                     components: "marks,messages",
                 }}
             >
@@ -353,7 +353,7 @@ describe("<PayPalButtons />", () => {
         };
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons />
             </PayPalScriptProvider>,
             { wrapper }
@@ -386,7 +386,7 @@ describe("<PayPalButtons />", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test",
+                    clientId: "test",
                     components: "marks,messages",
                 }}
             >
@@ -427,7 +427,7 @@ describe("<PayPalButtons />", () => {
         };
 
         const { container } = render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons className="test-children" />
             </PayPalScriptProvider>
         );

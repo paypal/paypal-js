@@ -57,7 +57,7 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 export default function App() {
     return (
-        <PayPalScriptProvider options={{ "client-id": "test" }}>
+        <PayPalScriptProvider options={{ clientId: "test" }}>
             <PayPalButtons style={{ layout: "horizontal" }} />
         </PayPalScriptProvider>
     );
@@ -68,14 +68,13 @@ export default function App() {
 
 #### Options
 
-Use the PayPalScriptProvider `options` prop to configure the JS SDK. It accepts an object for passing query parameters and data attributes to the JS SDK script.
+Use the PayPalScriptProvider `options` prop to configure the JS SDK. It accepts an object for passing query parameters and data attributes to the JS SDK script. Use camelCase for the object keys (clientId, dataClientToken, dataNamespace, etc...).
 
 ```jsx
 const initialOptions = {
-    "client-id": "test",
+    clientId: "test",
     currency: "USD",
     intent: "capture",
-    "data-client-token": "abc123xyz==",
 };
 
 export default function App() {
@@ -175,7 +174,7 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 export default function App() {
     return (
-        <PayPalScriptProvider options={{ "client-id": "test" }}>
+        <PayPalScriptProvider options={{ clientId: "test" }}>
             <PayPalButtons
                 createOrder={(data, actions) => {
                     return actions.order.create({
@@ -217,8 +216,8 @@ export default function App() {
     return (
         <PayPalScriptProvider
             options={{
-                "client-id": "test",
-                "data-client-token": "abc123xyz==",
+                clientId: "test",
+                dataClientToken: "abc123xyz==",
             }}
         >
             <BraintreePayPalButtons
@@ -295,8 +294,8 @@ export default function App() {
     return (
         <PayPalScriptProvider
             options={{
-                "client-id": "your-client-id",
-                "data-client-token": "your-data-client-token",
+                clientId: "your-client-id",
+                dataClientToken: "your-data-client-token",
             }}
         >
             <PayPalHostedFieldsProvider

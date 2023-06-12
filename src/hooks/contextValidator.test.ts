@@ -67,27 +67,27 @@ describe("validateBraintreeAuthorizationData", () => {
         }).toThrowError(new Error(EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE));
     });
 
-    test("should throw an exception when data-client-token is null", () => {
+    test("should throw an exception when dataClientToken is null", () => {
         const state = {
             options: {
-                "data-client-token": null,
+                dataClientToken: null,
                 [SCRIPT_ID]: "id",
-                "client-id": "123",
+                clientId: "123",
             },
             loadingStatus: SCRIPT_LOADING_STATE.RESOLVED,
         };
         expect(() => {
-            // @ts-expect-error - data-client-token of null not expected in types
+            // @ts-expect-error - dataClientToken of null not expected in types
             validateBraintreeAuthorizationData(state);
         }).toThrowError(new Error(EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE));
     });
 
-    test("should throw an exception when data-client-token is an empty string", () => {
+    test("should throw an exception when dataClientToken is an empty string", () => {
         const state = {
             options: {
-                "data-client-token": "",
+                dataClientToken: "",
                 [SCRIPT_ID]: "id",
-                "client-id": "123",
+                clientId: "123",
             },
             loadingStatus: SCRIPT_LOADING_STATE.RESOLVED,
         };
@@ -96,12 +96,12 @@ describe("validateBraintreeAuthorizationData", () => {
         }).toThrowError(new Error(EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE));
     });
 
-    test("should throw an exception when data-user-id-token is an empty string", () => {
+    test("should throw an exception when dataUserIdToken is an empty string", () => {
         const state = {
             options: {
-                "data-user-id-token": "",
+                dataUserIdToken: "",
                 [SCRIPT_ID]: "id",
-                "client-id": "123",
+                clientId: "123",
             },
             loadingStatus: SCRIPT_LOADING_STATE.RESOLVED,
         };
@@ -113,9 +113,9 @@ describe("validateBraintreeAuthorizationData", () => {
     test("should return object if data client token is a valid string", () => {
         const state = {
             options: {
-                "data-client-token": "JKHFGDHJ657",
+                dataClientToken: "JKHFGDHJ657",
                 [SCRIPT_ID]: "id",
-                "client-id": "123",
+                clientId: "123",
             },
             loadingStatus: SCRIPT_LOADING_STATE.RESOLVED,
         };

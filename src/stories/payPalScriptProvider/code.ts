@@ -7,7 +7,7 @@ export const getDefaultCode = (deferLoading: boolean): string =>
 } from "@paypal/react-paypal-js";
 
 const SCRIPT_PROVIDER_OPTIONS = {
-	"client-id": "test",
+	clientId: "test",
 };
 
 // Custom loader component

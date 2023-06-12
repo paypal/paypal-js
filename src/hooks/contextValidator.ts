@@ -26,13 +26,13 @@ export function validateReducer(
 }
 
 /**
- * Check if the data-client-token or the data-user-id-token are
+ * Check if the dataClientToken or the dataUserIdToken are
  * set in the options of the context.
- * @type data-client-token is use to pass a client token
- * @type data-user-id-token is use to pass a client tokenization key
+ * @type dataClientToken is use to pass a client token
+ * @type dataUserIdToken is use to pass a client tokenization key
  *
  * @param scriptContext the result of connecting to the context provider
- * @throws an {@link Error} if both data-client-token and the data-user-id-token keys are null or undefine
+ * @throws an {@link Error} if both dataClientToken and the dataUserIdToken keys are null or undefined
  * @returns strict context if one of the keys are defined
  */
 export const validateBraintreeAuthorizationData = (

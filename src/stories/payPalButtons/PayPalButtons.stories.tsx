@@ -41,7 +41,7 @@ type StoryProps = {
 };
 
 const scriptProviderOptions: PayPalScriptOptions = {
-    "client-id": "test",
+    clientId: "test",
     components: "buttons",
     ...getOptionsFromQueryString(),
 };
@@ -127,8 +127,8 @@ export default {
                     <PayPalScriptProvider
                         options={{
                             ...scriptProviderOptions,
-                            "data-namespace": uid,
-                            "data-uid": uid,
+                            dataNamespace: uid,
+                            dataUid: uid,
                         }}
                     >
                         <Story />

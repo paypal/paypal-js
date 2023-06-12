@@ -34,7 +34,7 @@ import type {
 } from "@paypal/paypal-js";
 
 const scriptProviderOptions: PayPalScriptOptions = {
-    "client-id": "test",
+    clientId: "test",
     components: "buttons,marks,funding-eligibility",
     ...getOptionsFromQueryString(),
 };

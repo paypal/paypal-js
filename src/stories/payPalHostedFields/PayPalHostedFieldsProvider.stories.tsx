@@ -25,7 +25,7 @@ import type { PayPalScriptOptions } from "@paypal/paypal-js";
 const uid = generateRandomString();
 const TOKEN_URL = `${FLY_SERVER}/api/paypal/hosted-fields/auth`;
 const scriptProviderOptions: PayPalScriptOptions = {
-    "client-id":
+    clientId:
         "AdOu-W3GPkrfuTbJNuW9dWVijxvhaXHFIRuKrLDwu14UDwTTHWMFkUwuu9D8I1MAQluERl9cFOd7Mfqe",
     components: "buttons,hosted-fields",
     ...getOptionsFromQueryString(),
@@ -116,9 +116,9 @@ export default {
                             <PayPalScriptProvider
                                 options={{
                                     ...scriptProviderOptions,
-                                    "data-client-token": clientToken,
-                                    "data-namespace": uid,
-                                    "data-uid": uid,
+                                    dataClientToken: clientToken,
+                                    dataNamespace: uid,
+                                    dataUid: uid,
                                 }}
                             >
                                 <Story />

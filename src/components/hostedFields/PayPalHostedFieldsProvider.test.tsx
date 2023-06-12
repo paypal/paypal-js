@@ -68,13 +68,13 @@ describe("PayPalHostedFieldsProvider", () => {
         spyConsoleError.mockRestore();
     });
 
-    test("should throw an Error using the component with PayPalScriptProvider without data-client-token", () => {
+    test("should throw an Error using the component with PayPalScriptProvider without dataClientToken", () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "" }}>
+            <PayPalScriptProvider options={{ clientId: "" }}>
                 <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
                     <></>
                 </PayPalHostedFieldsProvider>
@@ -95,11 +95,11 @@ describe("PayPalHostedFieldsProvider", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test-client",
+                    clientId: "test-client",
                     currency: "USD",
                     intent: "authorize",
                     components: "hosted-fields",
-                    "data-client-token": "test-data-client-token",
+                    dataClientToken: "test-data-client-token",
                 }}
             >
                 <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
@@ -123,10 +123,10 @@ describe("PayPalHostedFieldsProvider", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test-client",
+                    clientId: "test-client",
                     currency: "USD",
                     intent: "authorize",
-                    "data-client-token": "test-data-client-token",
+                    dataClientToken: "test-data-client-token",
                 }}
             >
                 <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
@@ -168,11 +168,11 @@ describe("PayPalHostedFieldsProvider", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test-client",
+                    clientId: "test-client",
                     currency: "USD",
                     intent: "authorize",
                     components: "hosted-fields",
-                    "data-client-token": "test-data-client-token",
+                    dataClientToken: "test-data-client-token",
                 }}
             >
                 <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
@@ -205,11 +205,11 @@ describe("PayPalHostedFieldsProvider", () => {
         const { container } = render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test-client",
+                    clientId: "test-client",
                     currency: "USD",
                     intent: "authorize",
                     components: "hosted-fields",
-                    "data-client-token": "test-data-client-token",
+                    dataClientToken: "test-data-client-token",
                 }}
             >
                 <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
@@ -251,10 +251,10 @@ describe("PayPalHostedFieldsProvider", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test-client",
+                    clientId: "test-client",
                     currency: "USD",
                     intent: "authorize",
-                    "data-client-token": "test-data-client-token",
+                    dataClientToken: "test-data-client-token",
                 }}
             >
                 <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
@@ -289,10 +289,10 @@ describe("PayPalHostedFieldsProvider", () => {
         const { container, rerender } = render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test-client",
+                    clientId: "test-client",
                     currency: "USD",
                     intent: "authorize",
-                    "data-client-token": "test-data-client-token",
+                    dataClientToken: "test-data-client-token",
                     components: "hosted-fields",
                 }}
             >
@@ -334,10 +334,10 @@ describe("PayPalHostedFieldsProvider", () => {
         rerender(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test-client",
+                    clientId: "test-client",
                     currency: "USD",
                     intent: "authorize",
-                    "data-client-token": "test-data-client-token",
+                    dataClientToken: "test-data-client-token",
                 }}
             >
                 <PayPalHostedFieldsProvider
@@ -387,10 +387,10 @@ describe("PayPalHostedFieldsProvider", () => {
         const { container, unmount } = render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test-client",
+                    clientId: "test-client",
                     currency: "USD",
                     intent: "authorize",
-                    "data-client-token": "test-data-client-token",
+                    dataClientToken: "test-data-client-token",
                     components: "hosted-fields",
                 }}
             >
@@ -432,10 +432,10 @@ describe("PayPalHostedFieldsProvider", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test-client",
+                    clientId: "test-client",
                     currency: "USD",
                     intent: "authorize",
-                    "data-client-token": "test-data-client-token",
+                    dataClientToken: "test-data-client-token",
                     components: "hosted-fields",
                 }}
             >

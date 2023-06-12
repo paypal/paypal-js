@@ -12,23 +12,23 @@ import type { PayPalScriptOptions } from "@paypal/paypal-js";
 import type { ScriptContextState } from "./../types/scriptProviderTypes";
 import type { BraintreePayPalCheckout } from "./../types/braintree/paypalCheckout";
 
-const scriptHash = "react-paypal-js-iiuovjsqddgsesvd";
+const scriptHash = "react-paypal-js-iiuovjsckceqcsi";
 
 describe("getScriptID", () => {
     test("should return simple hash using empty options object", () => {
-        expect(getScriptID({ "client-id": "" })).toEqual(scriptHash);
+        expect(getScriptID({ clientId: "" })).toEqual(scriptHash);
     });
 
     test("should return complex hash using real options object", () => {
         expect(
             getScriptID({
-                "client-id": "client_id",
+                clientId: "client_id",
                 intent: "capture",
                 currency: "USD",
-                "data-client-token": "long_JWT_client_token",
+                dataClientToken: "long_JWT_client_token",
             })
         ).toEqual(
-            "react-paypal-js-iiuovjsqddgsesiwxtaovtcisqugvdioamddcabdxpishjiubldxsiumrlgisobrphthbvwsdpvtdrsiuglhfrekoctjrzqiltjzdlqca"
+            "react-paypal-js-iiuovjsckceqpjrzqildwyishnomaqumyapbgcgqkiseblauicltugxfqiiskmmkdjrzqiggpdicseweuqvrvvljmcfhgckevdcatp"
         );
     });
 });
@@ -73,7 +73,7 @@ describe("scriptReducer", () => {
         state = {
             loadingStatus: "" as SCRIPT_LOADING_STATE,
             options: {
-                "client-id": "",
+                clientId: "",
                 [SCRIPT_ID]: "script",
             },
         };
@@ -98,7 +98,7 @@ describe("scriptReducer", () => {
             scriptReducer(state, {
                 type: DISPATCH_ACTION.RESET_OPTIONS,
                 value: {
-                    "client-id": "",
+                    clientId: "",
                     [SCRIPT_ID]: "script",
                 } as PayPalScriptOptions,
             })

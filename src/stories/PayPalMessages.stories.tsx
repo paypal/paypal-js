@@ -11,7 +11,7 @@ import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
 
 const scriptProviderOptions: PayPalScriptOptions = {
-    "client-id": "test",
+    clientId: "test",
     components: "messages",
     ...getOptionsFromQueryString(),
 };
@@ -82,7 +82,7 @@ export default function App() {
 	return (
 		<PayPalScriptProvider
 			options={{
-				"client-id": "test",
+				clientId: "test",
 				components: "messages",
 			}}
 		>

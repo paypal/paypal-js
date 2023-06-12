@@ -32,7 +32,7 @@ import type {
 } from "@paypal/paypal-js";
 
 const subscriptionOptions: PayPalScriptOptions = {
-    "client-id": "test",
+    clientId: "test",
     components: "buttons",
     vault: true,
     ...getOptionsFromQueryString(),
@@ -88,7 +88,7 @@ const buttonOrderProps = () => ({
 });
 
 const orderOptions: PayPalScriptOptions = {
-    "client-id": "test",
+    clientId: "test",
     components: "buttons",
     ...getOptionsFromQueryString(),
 };
@@ -133,8 +133,8 @@ For more information, see [Subscriptions](https://developer.paypal.com/docs/subs
                 <PayPalScriptProvider
                     options={{
                         ...subscriptionOptions,
-                        "data-namespace": uid,
-                        "data-uid": uid,
+                        dataNamespace: uid,
+                        dataUid: uid,
                         intent: storyArgs.args.type,
                     }}
                 >

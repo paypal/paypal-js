@@ -14,7 +14,7 @@ export default function App() {
 	return (
 		<PayPalScriptProvider
 			options={{
-				"client-id":
+				clientId:
 					"AdLzRW18VHoABXiBhpX2gf0qhXwiW4MmFVHL69V90vciCg_iBLGyJhlf7EuWtFcdNjGiDfrwe7rmhvMZ",
 				components: "buttons,funding-eligibility",
 				"enable-funding": "venmo",

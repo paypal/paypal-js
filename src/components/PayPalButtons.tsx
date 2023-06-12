@@ -47,7 +47,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
         }
 
         const paypalWindowNamespace = getPayPalWindowNamespace(
-            options[SDK_SETTINGS.DATA_NAMESPACE]
+            options.dataNamespace
         );
 
         // verify dependency on window object

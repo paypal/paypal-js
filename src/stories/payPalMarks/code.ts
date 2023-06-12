@@ -9,7 +9,7 @@ export default function App() {
 	return (
 		<PayPalScriptProvider
 			options={{
-				"client-id": "test",
+				clientId: "test",
 				components: "buttons,marks,funding-eligibility",
 			}}
 		>
@@ -45,7 +45,7 @@ export default function App() {
 	return (
 		<PayPalScriptProvider
 			options={{
-				"client-id": "test",
+				clientId: "test",
 				components: "buttons,marks,funding-eligibility"
 			}}
 		>

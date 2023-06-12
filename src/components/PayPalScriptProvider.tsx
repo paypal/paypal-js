@@ -19,7 +19,7 @@ It manages state for script loading so children components like `<PayPalButtons 
 Note: You always should use this component as a wrapper for  `PayPalButtons`, `PayPalMarks`, `PayPalMessages` and `BraintreePayPalButtons` components.
  */
 export const PayPalScriptProvider: FC<ScriptProviderProps> = ({
-    options = { "client-id": "test" },
+    options = { clientId: "test" },
     children,
     deferLoading = false,
 }: ScriptProviderProps) => {

@@ -59,7 +59,7 @@ describe("hashStr", () => {
         expect(
             hashStr(
                 JSON.stringify({
-                    "client-id":
+                    clientId:
                         "AfmdXiQAZD1rldTeFe9RNvsz8eBBG-Mltqh6h-iocQ1GUNuXIDnCie9tHcueD_NrMWB9dTlWl34xEK7V",
                     currency: "USD",
                     intent: "authorize",
@@ -70,7 +70,7 @@ describe("hashStr", () => {
                 })
             )
         ).toMatchInlineSnapshot(
-            `"iiuovjsqddgseaaouopvvtcqciewjblfycugmepzoirvygvhquvfthtdttqasyqcdzbzaepjvxhbwsrjhhcurjzroipxqyishjiubldxsiumrlgiscmehhggkwzxusrrdpdxisuuektdeudjrtosskdpcksyhttbqsqsvdsoaugkffisgkusjvhthnqmlzgqccmutvqaztoqu"`
+            `"iiuovjsckceqfpltierfuadvueugmwdpyghjioombfdvqayoscllfvddtjnvtfgijdxjyablkakmjjmogakewwsybbxfiiseblauicltugxfqiistfmyeomwiyrvgkaswosisqbndhwqqmmclzswdxymqeuqwetbsehtpvnvgsvtsiscvpnvvxdxekjpwoayeofhgilfeke"`
         );
     });
 });

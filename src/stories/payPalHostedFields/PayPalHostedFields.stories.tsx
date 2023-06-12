@@ -41,7 +41,7 @@ const CREATE_ORDER_URL = `${FLY_SERVER}/api/paypal/create-order`;
 const RED_COLOR = "#dc3545";
 const GREEN_COLOR = "#28a745";
 const scriptProviderOptions: PayPalScriptOptions = {
-    "client-id":
+    clientId:
         "AdOu-W3GPkrfuTbJNuW9dWVijxvhaXHFIRuKrLDwu14UDwTTHWMFkUwuu9D8I1MAQluERl9cFOd7Mfqe",
     components: "buttons,hosted-fields",
     ...getOptionsFromQueryString(),
@@ -237,9 +237,9 @@ export default {
                             <PayPalScriptProvider
                                 options={{
                                     ...scriptProviderOptions,
-                                    "data-client-token": clientToken,
-                                    "data-namespace": uid,
-                                    "data-uid": uid,
+                                    dataClientToken: clientToken,
+                                    dataNamespace: uid,
+                                    dataUid: uid,
                                 }}
                             >
                                 <Story />

@@ -12,10 +12,10 @@ import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
 
 const scriptProviderOptions: PayPalScriptOptions = {
-    "client-id":
+    clientId:
         "AdLzRW18VHoABXiBhpX2gf0qhXwiW4MmFVHL69V90vciCg_iBLGyJhlf7EuWtFcdNjGiDfrwe7rmhvMZ",
     components: "buttons,funding-eligibility",
-    "enable-funding": "venmo",
+    enableFunding: "venmo",
     ...getOptionsFromQueryString(),
 };
 
@@ -101,8 +101,8 @@ export const Default: FC<{
         <PayPalScriptProvider
             options={{
                 ...scriptProviderOptions,
-                "data-namespace": uid,
-                "data-uid": uid,
+                dataNamespace: uid,
+                dataUid: uid,
             }}
         >
             <PayPalButtons

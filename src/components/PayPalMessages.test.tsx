@@ -44,7 +44,7 @@ describe("<PayPalMessages />", () => {
 
         render(
             <PayPalScriptProvider
-                options={{ "client-id": "test", components: "messages" }}
+                options={{ clientId: "test", components: "messages" }}
             >
                 <PayPalMessages style={style} className="customClass" />
             </PayPalScriptProvider>
@@ -65,7 +65,7 @@ describe("<PayPalMessages />", () => {
 
         const { container } = render(
             <PayPalScriptProvider
-                options={{ "client-id": "test", components: "messages" }}
+                options={{ clientId: "test", components: "messages" }}
             >
                 <PayPalMessages className="custom-class-name" />
             </PayPalScriptProvider>
@@ -85,7 +85,7 @@ describe("<PayPalMessages />", () => {
         window.paypal = undefined;
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalMessages />
             </PayPalScriptProvider>,
             { wrapper }
@@ -108,7 +108,7 @@ describe("<PayPalMessages />", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test",
+                    clientId: "test",
                     components: "messages",
                 }}
             >
@@ -139,7 +139,7 @@ describe("<PayPalMessages />", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test",
+                    clientId: "test",
                     components: "messages",
                 }}
             >
@@ -174,7 +174,7 @@ describe("<PayPalMessages />", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test",
+                    clientId: "test",
                     components: "messages",
                 }}
             >

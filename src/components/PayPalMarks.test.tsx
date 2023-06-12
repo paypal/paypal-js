@@ -44,7 +44,7 @@ describe("<PayPalMarks />", () => {
 
         render(
             <PayPalScriptProvider
-                options={{ "client-id": "test", components: "marks" }}
+                options={{ clientId: "test", components: "marks" }}
             >
                 <PayPalMarks fundingSource={FUNDING.CREDIT} />
             </PayPalScriptProvider>
@@ -68,7 +68,7 @@ describe("<PayPalMarks />", () => {
 
         render(
             <PayPalScriptProvider
-                options={{ "client-id": "test", components: "marks" }}
+                options={{ clientId: "test", components: "marks" }}
             >
                 <PayPalMarks className="custom-class-name" />
             </PayPalScriptProvider>
@@ -84,7 +84,7 @@ describe("<PayPalMarks />", () => {
             .spyOn(console, "error")
             .mockImplementation();
         render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalMarks />
             </PayPalScriptProvider>,
             { wrapper }
@@ -104,7 +104,7 @@ describe("<PayPalMarks />", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test",
+                    clientId: "test",
                     components: "buttons,messages",
                 }}
             >
@@ -125,7 +125,7 @@ describe("<PayPalMarks />", () => {
         render(
             <PayPalScriptProvider
                 options={{
-                    "client-id": "test",
+                    clientId: "test",
                     components: "buttons,messages,marks",
                 }}
             >
@@ -160,7 +160,7 @@ describe("<PayPalMarks />", () => {
         };
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalMarks />
             </PayPalScriptProvider>,
             { wrapper }
@@ -189,7 +189,7 @@ describe("<PayPalMarks />", () => {
         };
 
         render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalMarks className="test-class" />
             </PayPalScriptProvider>
         );
@@ -212,7 +212,7 @@ describe("<PayPalMarks />", () => {
         };
 
         const { container } = render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalMarks className="mark-container">
                     <div className="ineligible"></div>
                 </PayPalMarks>
@@ -248,7 +248,7 @@ describe("<PayPalMarks />", () => {
         };
 
         const { rerender } = render(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalMarks fundingSource="paypal" />
             </PayPalScriptProvider>
         );
@@ -256,7 +256,7 @@ describe("<PayPalMarks />", () => {
         await waitFor(() => expect(mockRender).toBeCalledTimes(1));
 
         rerender(
-            <PayPalScriptProvider options={{ "client-id": "test" }}>
+            <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalMarks fundingSource="card" />
             </PayPalScriptProvider>
         );
