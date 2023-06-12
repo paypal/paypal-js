@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.0.0](https://github.com/paypal/react-paypal-js/compare/v7.8.3...v8.0.0) (2023-06-12)
+
+### ⚠ BREAKING CHANGES
+
+-   this is a breaking change for PayPalScriptProvider options.
+
+### Features
+
+-   use camelCase for PayPalScriptProvider options ([#360](https://github.com/paypal/react-paypal-js/issues/360)) ([168764e](https://github.com/paypal/react-paypal-js/commit/168764e4fb89be8717f256d4f9817bdf8e0a6eed))
+
 ### [7.8.3](https://github.com/paypal/react-paypal-js/compare/v7.8.2...v7.8.3) (2023-03-27)
 
 ### [7.8.2](https://github.com/paypal/react-paypal-js/compare/v7.8.1...v7.8.2) (2022-11-30)
