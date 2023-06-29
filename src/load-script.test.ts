@@ -14,9 +14,7 @@ vi.mock("./utils", async () => {
             .mockImplementation(
                 ({ onSuccess, attributes = {} }: ScriptElement) => {
                     const namespace = attributes["data-namespace"] || "paypal";
-
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    (window as any)[namespace] = { version: "5" };
+                    vi.stubGlobal(namespace, { version: "5" });
                     process.nextTick(() => onSuccess());
                 }
             ),
@@ -28,15 +26,11 @@ const mockedInsertScriptElement = vi.mocked(insertScriptElement);
 describe("loadScript()", () => {
     beforeEach(() => {
         document.head.innerHTML = "";
-
-        Object.defineProperty(window, "paypal", {
-            writable: true,
-            value: undefined,
-        });
     });
 
     afterEach(() => {
         vi.clearAllMocks();
+        vi.unstubAllGlobals();
     });
 
     test("should insert <script> and resolve the promise", async () => {
@@ -53,7 +47,7 @@ describe("loadScript()", () => {
         // simulate the script already being loaded
         document.head.innerHTML =
             '<script src="https://www.paypal.com/sdk/js?client-id=test"></script>';
-        window.paypal = { version: "5" };
+        vi.stubGlobal("paypal", { version: "5" });
 
         const response = await loadScript({ clientId: "test" });
         expect(mockedInsertScriptElement).not.toHaveBeenCalled();
