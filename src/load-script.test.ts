@@ -1,27 +1,33 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { loadScript, loadCustomScript } from "./load-script";
-// import using "*" to spy on insertScriptElement()
-import * as utils from "./utils";
+import { insertScriptElement, type ScriptElement } from "./utils";
+
+vi.mock("./utils", async () => {
+    const actual = await vi.importActual<typeof import("./utils")>("./utils");
+
+    return {
+        ...actual,
+        // default mock for insertScriptElement
+        insertScriptElement: vi
+            .fn()
+            .mockImplementation(
+                ({ onSuccess, attributes = {} }: ScriptElement) => {
+                    const namespace = attributes["data-namespace"] || "paypal";
+
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (window as any)[namespace] = { version: "5" };
+                    process.nextTick(() => onSuccess());
+                }
+            ),
+    };
+});
+
+const mockedInsertScriptElement = vi.mocked(insertScriptElement);
 
 describe("loadScript()", () => {
-    const insertScriptElementSpy = vi.spyOn(utils, "insertScriptElement");
-
-    const paypalNamespace = { version: "5" };
-
     beforeEach(() => {
         document.head.innerHTML = "";
-
-        insertScriptElementSpy.mockImplementation(
-            ({ onSuccess, attributes = {} }: utils.ScriptElement) => {
-                const namespace = attributes["data-namespace"] || "paypal";
-
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (window as any)[namespace] = paypalNamespace;
-
-                process.nextTick(() => onSuccess());
-            }
-        );
 
         Object.defineProperty(window, "paypal", {
             writable: true,
@@ -30,14 +36,14 @@ describe("loadScript()", () => {
     });
 
     afterEach(() => {
-        insertScriptElementSpy.mockClear();
+        vi.clearAllMocks();
     });
 
     test("should insert <script> and resolve the promise", async () => {
         expect(window.paypal).toBe(undefined);
 
         const response = await loadScript({ clientId: "test" });
-        expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+        expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
         expect(response).toEqual(window.paypal);
     });
 
@@ -47,10 +53,10 @@ describe("loadScript()", () => {
         // simulate the script already being loaded
         document.head.innerHTML =
             '<script src="https://www.paypal.com/sdk/js?client-id=test"></script>';
-        window.paypal = paypalNamespace;
+        window.paypal = { version: "5" };
 
         const response = await loadScript({ clientId: "test" });
-        expect(insertScriptElementSpy).not.toHaveBeenCalled();
+        expect(mockedInsertScriptElement).not.toHaveBeenCalled();
         expect(response).toEqual(window.paypal);
     });
 
@@ -65,14 +71,14 @@ describe("loadScript()", () => {
             loadScript({ clientId: "test", dataNamespace: "paypal2" }),
         ]);
 
-        expect(insertScriptElementSpy).toHaveBeenCalledTimes(2);
+        expect(mockedInsertScriptElement).toHaveBeenCalledTimes(2);
         expect(response).toEqual([windowObject.paypal1, windowObject.paypal2]);
     });
 
     test("should reject the promise when window.paypal is undefined after loading the <script>", async () => {
         expect.assertions(3);
 
-        insertScriptElementSpy.mockImplementation(({ onSuccess }) => {
+        mockedInsertScriptElement.mockImplementation(({ onSuccess }) => {
             // do not set window.paypal in the mock implementation
             process.nextTick(() => onSuccess());
         });
@@ -82,7 +88,7 @@ describe("loadScript()", () => {
         try {
             await loadScript({ clientId: "test" });
         } catch (err) {
-            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
             const { message: errorMessage } = err as Record<string, string>;
 
             expect(errorMessage).toBe(
@@ -102,20 +108,13 @@ describe("loadScript()", () => {
 });
 
 describe("loadCustomScript()", () => {
-    const insertScriptElementSpy = vi.spyOn(utils, "insertScriptElement");
-
     beforeEach(() => {
         document.head.innerHTML = "";
-
-        insertScriptElementSpy.mockImplementation(
-            ({ onSuccess }: utils.ScriptElement) => {
-                process.nextTick(() => onSuccess());
-            }
-        );
     });
 
     afterEach(() => {
-        insertScriptElementSpy.mockClear();
+        vi.clearAllMocks();
+        vi.unstubAllGlobals();
     });
 
     test("should insert <script> and resolve the promise", async () => {
@@ -125,7 +124,7 @@ describe("loadCustomScript()", () => {
         };
 
         await loadCustomScript(options);
-        expect(insertScriptElementSpy).toHaveBeenCalledWith(
+        expect(mockedInsertScriptElement).toHaveBeenCalledWith(
             expect.objectContaining(options)
         );
     });
@@ -158,14 +157,17 @@ describe("loadCustomScript()", () => {
     test("should throw an error when the script fails to load", async () => {
         expect.assertions(2);
 
-        insertScriptElementSpy.mockImplementation(({ onError }) => {
+        // avoid the window.fetch() error lookup call to return the default error
+        vi.stubGlobal("fetch", undefined);
+
+        mockedInsertScriptElement.mockImplementation(({ onError }) => {
             process.nextTick(() => onError && onError("failed to load"));
         });
 
         try {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
-            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
             const { message } = err as Record<string, string>;
 
             expect(message).toBe(
@@ -180,14 +182,14 @@ describe("loadCustomScript()", () => {
             status: 200,
         });
 
-        insertScriptElementSpy.mockImplementation(({ onError }) => {
+        mockedInsertScriptElement.mockImplementation(({ onError }) => {
             process.nextTick(() => onError && onError("failed to load"));
         });
 
         try {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
-            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
             const { message } = err as Record<string, string>;
 
             expect(message).toBe(
@@ -212,14 +214,14 @@ describe("loadCustomScript()", () => {
             text: vi.fn().mockResolvedValue(serverMessage),
         });
 
-        insertScriptElementSpy.mockImplementation(({ onError }) => {
+        mockedInsertScriptElement.mockImplementation(({ onError }) => {
             process.nextTick(() => onError && onError("failed to load"));
         });
 
         try {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
-            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
             const { message } = err as Record<string, string>;
 
             expect(message).toBe(errorMessage);
@@ -241,14 +243,14 @@ describe("loadCustomScript()", () => {
             text: vi.fn().mockResolvedValue(serverMessage),
         });
 
-        insertScriptElementSpy.mockImplementation(({ onError }) => {
+        mockedInsertScriptElement.mockImplementation(({ onError }) => {
             process.nextTick(() => onError && onError("failed to load"));
         });
 
         try {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
-            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
             const { message } = err as Record<string, string>;
 
             expect(message).toBe(errorMessage);
@@ -270,14 +272,14 @@ describe("loadCustomScript()", () => {
             text: vi.fn().mockResolvedValue(serverMessage),
         });
 
-        insertScriptElementSpy.mockImplementation(({ onError }) => {
+        mockedInsertScriptElement.mockImplementation(({ onError }) => {
             process.nextTick(() => onError && onError("failed to load"));
         });
 
         try {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
-            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
             const { message } = err as Record<string, string>;
 
             expect(message).toBe(errorMessage);
@@ -290,14 +292,14 @@ describe("loadCustomScript()", () => {
             text: vi.fn().mockResolvedValue("Internal Server Error"),
         });
 
-        insertScriptElementSpy.mockImplementation(({ onError }) => {
+        mockedInsertScriptElement.mockImplementation(({ onError }) => {
             process.nextTick(() => onError && onError("failed to load"));
         });
 
         try {
             await loadCustomScript({ url: "https://www.example.com/index.js" });
         } catch (err) {
-            expect(insertScriptElementSpy).toHaveBeenCalledTimes(1);
+            expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
             const { message } = err as Record<string, string>;
 
             expect(message).toBe("Internal Server Error");
