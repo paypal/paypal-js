@@ -26,7 +26,7 @@ const uid = generateRandomString();
 const TOKEN_URL = `${FLY_SERVER}/api/paypal/hosted-fields/auth`;
 const scriptProviderOptions: PayPalScriptOptions = {
     clientId:
-        "AdOu-W3GPkrfuTbJNuW9dWVijxvhaXHFIRuKrLDwu14UDwTTHWMFkUwuu9D8I1MAQluERl9cFOd7Mfqe",
+        "AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
     components: "buttons,hosted-fields",
     ...getOptionsFromQueryString(),
 };

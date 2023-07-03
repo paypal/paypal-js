@@ -211,7 +211,7 @@ export default function App() {
 				<PayPalScriptProvider
 					options={{
 						clientId:
-							"AdOu-W3GPkrfuTbJNuW9dWVijxvhaXHFIRuKrLDwu14UDwTTHWMFkUwuu9D8I1MAQluERl9cFOd7Mfqe",
+							"AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
 						components: "buttons,hosted-fields",
 						dataClientToken: clientToken,
 						intent: "capture",
