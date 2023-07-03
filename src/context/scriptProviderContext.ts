@@ -51,6 +51,14 @@ export function scriptReducer(
 ): ScriptContextState {
     switch (action.type) {
         case DISPATCH_ACTION.LOADING_STATUS:
+            if (typeof action.value === "object") {
+                return {
+                    ...state,
+                    loadingStatus: action.value.state as SCRIPT_LOADING_STATE,
+                    loadingStatusErrorMessage: action.value.message,
+                };
+            }
+
             return {
                 ...state,
                 loadingStatus: action.value as SCRIPT_LOADING_STATE,
