@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.1.0](https://github.com/paypal/react-paypal-js/compare/v8.0.0...v8.1.0) (2023-07-03)
+
+### Features
+
+-   add loadingStatusErrorMessage to state ([#366](https://github.com/paypal/react-paypal-js/issues/366)) ([e1b9068](https://github.com/paypal/react-paypal-js/commit/e1b9068931c0fb832d884a0879d22deeca8304c2))
+
 ## [8.0.0](https://github.com/paypal/react-paypal-js/compare/v7.8.3...v8.0.0) (2023-06-12)
 
 ### ⚠ BREAKING CHANGES
