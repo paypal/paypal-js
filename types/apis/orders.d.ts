@@ -215,6 +215,18 @@ export type OrderApplicationContext = {
     stored_payment_source?: Record<string, unknown>;
 };
 
+export type OrderPaymentSource = {
+    // support any key until all the payment_source options are typed
+    [key: string]: unknown;
+    paypal?: {
+        experience_context?: {
+            user_action?: "CONTINUE" | "PAY_NOW";
+            return_url?: string;
+            cancel_url?: string;
+        };
+    };
+};
+
 export type LinkDescription = {
     href: string;
     rel: string;
@@ -233,6 +245,7 @@ export type CreateOrderRequestBody = {
     purchase_units: PurchaseUnit[];
     payer?: Payer;
     application_context?: OrderApplicationContext;
+    payment_source?: OrderPaymentSource;
 };
 
 export type UpdateOrderOperation =
