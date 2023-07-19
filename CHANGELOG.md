@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.1](https://github.com/paypal/paypal-js/compare/v6.0.0...v6.0.1) (2023-07-19)
+
+### Bug Fixes
+
+-   **types:** add types for payment_source with order creation ([#402](https://github.com/paypal/paypal-js/issues/402)) ([f27b895](https://github.com/paypal/paypal-js/commit/f27b8955b0b6e77efd09dc1df17b67f45e97d243))
+
 ## [6.0.0](https://github.com/paypal/paypal-js/compare/v5.1.6...v6.0.0) (2023-06-02)
 
 ### ⚠ BREAKING CHANGES
