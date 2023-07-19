@@ -155,6 +155,27 @@ createOrder({
     ],
 });
 
+// paypal payment_source
+createOrder({
+    intent: "CAPTURE",
+    purchase_units: [
+        {
+            amount: {
+                value: "88.44",
+            },
+        },
+    ],
+    payment_source: {
+        paypal: {
+            experience_context: {
+                user_action: "CONTINUE",
+                return_url: "https://www.example.com/capture-checkout",
+                cancel_url: "https://www.example.com/cancel-checkout",
+            },
+        },
+    },
+});
+
 updateOrder({
     orderID: "42P22220TW111111R",
     requestBody: [
