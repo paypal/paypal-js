@@ -8,7 +8,7 @@ const readmeFile = join(__dirname, "../", "README.md");
 const readmeText = readFileSync(readmeFile, "utf-8");
 const newReadmeText = readmeText.replace(
     /[0-9]+\.[0-9]+\.[0-9]+\/dist\//g,
-    `${newVersion}/dist/`
+    `${newVersion}/dist/`,
 );
 
 writeFileSync(readmeFile, newReadmeText, "utf-8");

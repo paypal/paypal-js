@@ -201,7 +201,7 @@ export interface HostedFieldsHandler {
      * Submit the form if is valid
      */
     submit: (
-        options?: Record<string, unknown>
+        options?: Record<string, unknown>,
     ) => Promise<HostedFieldsSubmitResponse>;
     /**
      * Clean all the fields from the DOM
@@ -211,22 +211,22 @@ export interface HostedFieldsHandler {
      * Tokenize fields and returns a nonce payload.
      */
     tokenize: (
-        options: HostedFieldsTokenize
+        options: HostedFieldsTokenize,
     ) => Promise<Record<string, unknown>>;
 
     on<EventType extends HostedFieldEventType>(
         event: EventType,
-        handler: (event: HostedFieldsEventTypeMap[EventType]) => void
+        handler: (event: HostedFieldsEventTypeMap[EventType]) => void,
     ): void;
     off<EventType extends HostedFieldEventType>(
         event: EventType,
-        handler: (event: HostedFieldsEventTypeMap[EventType]) => void
+        handler: (event: HostedFieldsEventTypeMap[EventType]) => void,
     ): void;
 }
 
 export interface PayPalHostedFieldsComponent {
     isEligible: () => boolean;
     render: (
-        options: PayPalHostedFieldsComponentOptions
+        options: PayPalHostedFieldsComponentOptions,
     ) => Promise<HostedFieldsHandler>;
 }

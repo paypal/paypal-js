@@ -16,7 +16,7 @@ import type { PayPalNamespace } from "../types/index";
  */
 export function loadScript(
     options: PayPalScriptOptions,
-    PromisePonyfill: PromiseConstructor = Promise
+    PromisePonyfill: PromiseConstructor = Promise,
 ): Promise<PayPalNamespace | null> {
     validateArguments(options, PromisePonyfill);
 
@@ -37,7 +37,7 @@ export function loadScript(
             url,
             attributes: dataAttributes,
         },
-        PromisePonyfill
+        PromisePonyfill,
     ).then(() => {
         const newWindowNamespace = getPayPalWindowNamespace(namespace);
 
@@ -46,7 +46,7 @@ export function loadScript(
         }
 
         throw new Error(
-            `The window.${namespace} global variable is not available.`
+            `The window.${namespace} global variable is not available.`,
         );
     });
 }
@@ -63,7 +63,7 @@ export function loadCustomScript(
         url: string;
         attributes?: Record<string, string>;
     },
-    PromisePonyfill: PromiseConstructor = Promise
+    PromisePonyfill: PromiseConstructor = Promise,
 ): Promise<void> {
     validateArguments(options, PromisePonyfill);
 
@@ -87,7 +87,7 @@ export function loadCustomScript(
             onSuccess: () => resolve(),
             onError: () => {
                 const defaultError = new Error(
-                    `The script "${url}" failed to load.`
+                    `The script "${url}" failed to load.`,
                 );
 
                 if (!window.fetch) {

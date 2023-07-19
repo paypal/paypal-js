@@ -21,11 +21,11 @@ import type { PayPalHostedFieldsComponent } from "./components/hosted-fields";
 
 export interface PayPalNamespace {
     Buttons?: (
-        options?: PayPalButtonsComponentOptions
+        options?: PayPalButtonsComponentOptions,
     ) => PayPalButtonsComponent;
     Marks?: (options?: PayPalMarksComponentOptions) => PayPalMarksComponent;
     Messages?: (
-        options?: PayPalMessagesComponentOptions
+        options?: PayPalMessagesComponentOptions,
     ) => PayPalMessagesComponent;
     HostedFields?: PayPalHostedFieldsComponent;
     getFundingSources?: getFundingSources;
@@ -37,7 +37,7 @@ export interface PayPalNamespace {
 
 export function loadScript(
     options: PayPalScriptOptions,
-    PromisePonyfill?: PromiseConstructor
+    PromisePonyfill?: PromiseConstructor,
 ): Promise<PayPalNamespace | null>;
 
 export function loadCustomScript(options: {

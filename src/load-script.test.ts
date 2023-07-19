@@ -16,7 +16,7 @@ vi.mock("./utils", async () => {
                     const namespace = attributes["data-namespace"] || "paypal";
                     vi.stubGlobal(namespace, { version: "5" });
                     process.nextTick(() => onSuccess());
-                }
+                },
             ),
     };
 });
@@ -86,7 +86,7 @@ describe("loadScript()", () => {
             const { message: errorMessage } = err as Record<string, string>;
 
             expect(errorMessage).toBe(
-                "The window.paypal global variable is not available."
+                "The window.paypal global variable is not available.",
             );
         }
     });
@@ -96,7 +96,7 @@ describe("loadScript()", () => {
         expect(() => loadScript()).toThrow("Expected an options object.");
         // @ts-expect-error ignore invalid arguments error
         expect(() => loadScript({}, {})).toThrow(
-            "Expected PromisePonyfill to be a function."
+            "Expected PromisePonyfill to be a function.",
         );
     });
 });
@@ -119,7 +119,7 @@ describe("loadCustomScript()", () => {
 
         await loadCustomScript(options);
         expect(mockedInsertScriptElement).toHaveBeenCalledWith(
-            expect.objectContaining(options)
+            expect.objectContaining(options),
         );
     });
 
@@ -135,7 +135,7 @@ describe("loadCustomScript()", () => {
                 url: "https://www.example.com/index.js",
                 // @ts-expect-error ignore invalid arguments error
                 attributes: "",
-            })
+            }),
         ).toThrow("Expected attributes to be an object.");
         expect(() =>
             loadCustomScript(
@@ -143,8 +143,8 @@ describe("loadCustomScript()", () => {
                     url: "https://www.example.com/index.js",
                 },
                 // @ts-expect-error ignore invalid arguments error
-                {}
-            )
+                {},
+            ),
         ).toThrow("Expected PromisePonyfill to be a function.");
     });
 
@@ -165,7 +165,7 @@ describe("loadCustomScript()", () => {
             const { message } = err as Record<string, string>;
 
             expect(message).toBe(
-                'The script "https://www.example.com/index.js" failed to load.'
+                'The script "https://www.example.com/index.js" failed to load.',
             );
         }
     });
@@ -187,7 +187,7 @@ describe("loadCustomScript()", () => {
             const { message } = err as Record<string, string>;
 
             expect(message).toBe(
-                'The script "https://www.example.com/index.js" failed to load.'
+                'The script "https://www.example.com/index.js" failed to load.',
             );
         }
     });
@@ -311,7 +311,7 @@ describe("loadCustomScript()", () => {
                 url: "https://www.example.com/index.js",
             },
             // @ts-expect-error ignore mock error
-            PromisePonyfill
+            PromisePonyfill,
         );
         expect(PromisePonyfill).toHaveBeenCalledTimes(1);
     });
