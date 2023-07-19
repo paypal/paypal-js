@@ -229,7 +229,7 @@ We also provide a legacy build that includes the [promise-polyfill](https://gith
 The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). The iife/paypal-js.js build assigns the `loadScript` function to the window object as `window.paypalLoadScript`. Here's an example:
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
         <script src="https://unpkg.com/@paypal/paypal-js@6.0.0/dist/iife/paypal-js.min.js"></script>

@@ -6,7 +6,7 @@ test("Validation errors", async ({ page }) => {
         route.fulfill({
             status: 400,
             body: validationErrorSDKResponseMock(),
-        })
+        }),
     );
 
     await page.goto("/e2e-tests/validation-errors.html");
@@ -14,11 +14,11 @@ test("Validation errors", async ({ page }) => {
     await page.locator("#btn-load-no-client-id").click();
 
     await page.waitForResponse((response) =>
-        response.url().startsWith("https://www.paypal.com/sdk/js")
+        response.url().startsWith("https://www.paypal.com/sdk/js"),
     );
 
     await page.waitForFunction(
-        'document.querySelector("#error-message").innerText.length'
+        'document.querySelector("#error-message").innerText.length',
     );
 
     const errorMessage = await page.locator("#error-message").innerText();
