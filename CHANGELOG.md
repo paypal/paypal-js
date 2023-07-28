@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [8.1.1](https://github.com/paypal/react-paypal-js/compare/v8.1.0...v8.1.1) (2023-07-28)
+
 ## [8.1.0](https://github.com/paypal/react-paypal-js/compare/v8.0.0...v8.1.0) (2023-07-03)
 
 ### Features
