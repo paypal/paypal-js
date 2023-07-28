@@ -7,16 +7,8 @@ import {
     PayPalButtons,
     FUNDING,
 } from "../../index";
-import { getOptionsFromQueryString } from "../utils";
-import {
-    COMPONENT_PROPS_CATEGORY,
-    ARG_TYPE_AMOUNT,
-    ARG_TYPE_CURRENCY,
-    ORDER_ID,
-    APPROVE,
-    ERROR,
-    ORDER_INSTANCE_ERROR,
-} from "../constants";
+import { getOptionsFromQueryString, createOrder, onApprove } from "../utils";
+import { COMPONENT_PROPS_CATEGORY, ORDER_ID, APPROVE } from "../constants";
 import { InEligibleError, defaultProps } from "../commons";
 import DocPageStructure from "../components/DocPageStructure";
 import { getDefaultCode, getRadioButtonsCode } from "./code";
@@ -26,9 +18,6 @@ import type { StoryFn } from "@storybook/react";
 import type { DocsContextProps } from "@storybook/addon-docs";
 import type { PayPalScriptOptions } from "@paypal/paypal-js";
 import type {
-    CreateOrderActions,
-    OnApproveData,
-    OnApproveActions,
     PayPalButtonsComponentOptions,
     FUNDING_SOURCE,
 } from "@paypal/paypal-js";
@@ -49,8 +38,6 @@ export default {
         controls: { expanded: true },
     },
     argTypes: {
-        amount: ARG_TYPE_AMOUNT,
-        currency: ARG_TYPE_CURRENCY,
         style: {
             control: { type: "object" },
             ...COMPONENT_PROPS_CATEGORY,
@@ -76,8 +63,6 @@ export default {
         },
     },
     args: {
-        amount: "2",
-        currency: "USD",
         style: {
             color: "white",
         },
@@ -91,10 +76,8 @@ export const Default: FC<{ fundingSource: string }> = ({ fundingSource }) => (
 );
 
 export const RadioButtons: FC<{
-    amount: string;
     style: PayPalButtonsComponentOptions["style"];
-}> = ({ amount, style }) => {
-    // Remember the amount props is received from the control panel
+}> = ({ style }) => {
     const [selectedFundingSource, setSelectedFundingSource] = useState(
         fundingSources[0]
     );
@@ -124,36 +107,21 @@ export const RadioButtons: FC<{
             <br />
             <PayPalButtons
                 fundingSource={selectedFundingSource}
-                forceReRender={[selectedFundingSource, amount]}
+                forceReRender={[selectedFundingSource]}
                 style={style}
-                createOrder={(
-                    data: Record<string, unknown>,
-                    actions: CreateOrderActions
-                ) => {
-                    return actions.order
-                        .create({
-                            purchase_units: [
-                                {
-                                    amount: {
-                                        value: amount,
-                                    },
-                                },
-                            ],
-                        })
-                        .then((orderId) => {
-                            action(ORDER_ID)(orderId);
-                            return orderId;
-                        });
-                }}
-                onApprove={(data: OnApproveData, actions: OnApproveActions) => {
-                    if (!actions.order) {
-                        action(ERROR)(ORDER_INSTANCE_ERROR);
-                        return Promise.reject(ORDER_INSTANCE_ERROR);
-                    }
-                    return actions.order.capture().then(function (details) {
-                        action(APPROVE)(details);
-                    });
-                }}
+                createOrder={() =>
+                    createOrder([{ sku: "1blwyeo8", quantity: 1 }]).then(
+                        (orderData) => {
+                            action(ORDER_ID)(orderData.id);
+                            return orderData.id;
+                        }
+                    )
+                }
+                onApprove={(data) =>
+                    onApprove(data).then((orderData) =>
+                        action(APPROVE)(orderData)
+                    )
+                }
                 {...defaultProps}
             >
                 <InEligibleError />
@@ -180,8 +148,6 @@ export const RadioButtons: FC<{
 };
 
 (Default as StoryFn).argTypes = {
-    amount: { table: { disable: true } },
-    currency: { table: { disable: true } },
     style: { table: { disable: true } },
 };
 

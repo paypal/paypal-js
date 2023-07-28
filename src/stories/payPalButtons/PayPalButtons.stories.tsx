@@ -3,18 +3,19 @@ import { action } from "@storybook/addon-actions";
 
 import { usePayPalScriptReducer, DISPATCH_ACTION } from "../../index";
 import { PayPalScriptProvider, PayPalButtons, FUNDING } from "../../index";
-import { getOptionsFromQueryString, generateRandomString } from "../utils";
+import {
+    getOptionsFromQueryString,
+    generateRandomString,
+    createOrder,
+    onApprove,
+} from "../utils";
 import {
     COMPONENT_PROPS_CATEGORY,
     COMPONENT_EVENTS,
-    ARG_TYPE_CURRENCY,
-    ARG_TYPE_AMOUNT,
     FUNDING_SOURCE_ARG,
     ORDER_ID,
     CONTAINER_SIZE,
     APPROVE,
-    ERROR,
-    ORDER_INSTANCE_ERROR,
 } from "../constants";
 import DocPageStructure from "../components/DocPageStructure";
 import { InEligibleError, defaultProps } from "../commons";
@@ -23,8 +24,6 @@ import { getDefaultCode, getDonateCode } from "./code";
 import type { FC, ReactElement } from "react";
 import type {
     PayPalScriptOptions,
-    CreateOrderActions,
-    OnApproveActions,
     PayPalButtonsComponentOptions,
     FUNDING_SOURCE,
 } from "@paypal/paypal-js";
@@ -35,8 +34,6 @@ type StoryProps = {
     style: PayPalButtonsComponentOptions["style"];
     fundingSource: FUNDING_SOURCE;
     disabled: boolean;
-    currency: string;
-    amount: string;
     showSpinner: boolean;
 };
 
@@ -60,8 +57,6 @@ export default {
         controls: { expanded: true, sort: "requiredFirst" },
     },
     argTypes: {
-        currency: ARG_TYPE_CURRENCY,
-        amount: ARG_TYPE_AMOUNT,
         size: CONTAINER_SIZE,
         showSpinner: {
             description:
@@ -104,8 +99,6 @@ export default {
         // This turns on the `onShippingChange()` feature which uses the popup experience with the Standard Card button.
         // We pass null to opt-out so the inline guest feature works as expected with the Standard Card button.
         onShippingChange: null,
-        amount: "2",
-        currency: "USD",
         size: 750,
         showSpinner: false,
         style: {
@@ -143,23 +136,9 @@ export const Default: FC<StoryProps> = ({
     style,
     fundingSource,
     disabled,
-    currency,
-    amount,
     showSpinner,
 }) => {
     const [{ options }, dispatch] = usePayPalScriptReducer();
-
-    useEffect(() => {
-        dispatch({
-            type: DISPATCH_ACTION.RESET_OPTIONS,
-            value: {
-                ...options,
-                currency: currency,
-            },
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currency]);
-
     useEffect(() => {
         dispatch({
             type: DISPATCH_ACTION.RESET_OPTIONS,
@@ -178,36 +157,20 @@ export const Default: FC<StoryProps> = ({
                 style={style}
                 disabled={disabled}
                 fundingSource={fundingSource}
-                forceReRender={[style, currency, amount]}
-                createOrder={(
-                    data: Record<string, unknown>,
-                    actions: CreateOrderActions
-                ) => {
-                    return actions.order
-                        .create({
-                            purchase_units: [
-                                {
-                                    amount: {
-                                        currency_code: currency,
-                                        value: amount,
-                                    },
-                                },
-                            ],
-                        })
-                        .then((orderId) => {
-                            action(ORDER_ID)(orderId);
-                            return orderId;
-                        });
-                }}
-                onApprove={(_, actions: OnApproveActions) => {
-                    if (!actions.order) {
-                        action(ERROR)(ORDER_INSTANCE_ERROR);
-                        return Promise.reject(ORDER_INSTANCE_ERROR);
-                    }
-                    return actions.order.capture().then(function (details) {
-                        action(APPROVE)(details);
-                    });
-                }}
+                forceReRender={[style]}
+                createOrder={() =>
+                    createOrder([{ sku: "1blwyeo8", quantity: 1 }]).then(
+                        (orderData) => {
+                            action(ORDER_ID)(orderData.id);
+                            return orderData.id;
+                        }
+                    )
+                }
+                onApprove={(data) =>
+                    onApprove(data).then((orderData) =>
+                        action(APPROVE)(orderData)
+                    )
+                }
                 {...defaultProps}
             >
                 <InEligibleError />
@@ -219,47 +182,23 @@ export const Default: FC<StoryProps> = ({
 export const Donate: FC<Omit<StoryProps, "showSpinner" | "fundingSource">> = ({
     style,
     disabled,
-    currency,
-    amount,
 }) => (
     <PayPalButtons
         fundingSource={FUNDING.PAYPAL}
-        forceReRender={[style, currency, amount]}
+        forceReRender={[style]}
         disabled={disabled}
         style={{ ...style, label: "donate" }}
-        createOrder={(data, actions) => {
-            return actions.order
-                .create({
-                    purchase_units: [
-                        {
-                            amount: {
-                                value: amount,
-                                breakdown: {
-                                    item_total: {
-                                        currency_code: currency,
-                                        value: amount,
-                                    },
-                                },
-                            },
-                            items: [
-                                {
-                                    name: "donation-example",
-                                    quantity: "1",
-                                    unit_amount: {
-                                        currency_code: currency,
-                                        value: amount,
-                                    },
-                                    category: "DONATION",
-                                },
-                            ],
-                        },
-                    ],
-                })
-                .then((orderId) => {
-                    action(ORDER_ID)(orderId);
-                    return orderId;
-                });
-        }}
+        createOrder={() =>
+            createOrder([{ sku: "etanod01", quantity: 1 }]).then(
+                (orderData) => {
+                    action(ORDER_ID)(orderData.id);
+                    return orderData.id;
+                }
+            )
+        }
+        onApprove={(data) =>
+            onApprove(data).then((orderData) => action(APPROVE)(orderData))
+        }
     >
         <InEligibleError />
     </PayPalButtons>

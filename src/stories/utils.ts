@@ -3,6 +3,7 @@ import format from "string-template";
 import { SDK_QUERY_KEYS } from "@paypal/sdk-constants/dist/module";
 
 import type { ReactNode } from "react";
+import type { OrderResponseBody } from "@paypal/paypal-js";
 
 // FIXME: problem with union on key
 type TokenResponse = {
@@ -10,6 +11,9 @@ type TokenResponse = {
 } & { success?: boolean };
 
 export const FLY_SERVER = "https://react-paypal-js-storybook.fly.dev";
+export const CREATE_ORDER_URL = `${FLY_SERVER}/api/paypal/create-order`;
+export const CAPTURE_ORDER_URL = `${FLY_SERVER}/api/paypal/capture-order`;
+
 const CLIENT_TOKEN_URL = `${FLY_SERVER}/api/braintree/generate-client-token`;
 const SALE_URL = `${FLY_SERVER}/api/braintree/sale`;
 const allowedSDKQueryParams = Object.keys(SDK_QUERY_KEYS).map(
@@ -74,4 +78,32 @@ export function generateFundingSource(fundingSource?: string): string {
     return `fundingSource=${
         fundingSource ? `"${fundingSource}"` : "{undefined}"
     }`;
+}
+
+export function createOrder(
+    cart: { sku: string; quantity: number }[]
+): Promise<OrderResponseBody> {
+    return fetch(CREATE_ORDER_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        // use the "body" param to optionally pass additional order information
+        // like product ids and quantities
+        body: JSON.stringify({ cart }),
+    }).then((response) => response.json());
+}
+
+export function onApprove(data: {
+    orderID: string;
+}): Promise<OrderResponseBody> {
+    return fetch(CAPTURE_ORDER_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            orderID: data.orderID,
+        }),
+    }).then((response) => response.json());
 }

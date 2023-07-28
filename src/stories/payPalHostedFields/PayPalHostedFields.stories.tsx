@@ -12,6 +12,8 @@ import {
     generateRandomString,
     getClientToken,
     FLY_SERVER,
+    CREATE_ORDER_URL,
+    CAPTURE_ORDER_URL,
 } from "../utils";
 import {
     COMPONENT_PROPS_CATEGORY,
@@ -37,7 +39,6 @@ type StoryProps = {
 
 const uid = generateRandomString();
 const TOKEN_URL = `${FLY_SERVER}/api/paypal/generate-client-token`;
-const CREATE_ORDER_URL = `${FLY_SERVER}/api/paypal/create-order`;
 const RED_COLOR = "#dc3545";
 const GREEN_COLOR = "#28a745";
 const scriptProviderOptions: PayPalScriptOptions = {
@@ -49,16 +50,6 @@ const scriptProviderOptions: PayPalScriptOptions = {
 const CREATE_ORDER = "createOrder";
 const SUBMIT_FORM = "submitForm";
 const CAPTURE_ORDER = "captureOrder";
-
-/**
- * Get dynamically the capture order URL to fetch the payment info
- *
- * @param orderId the order identifier
- * @returns an URL string
- */
-function captureOrderUrl(): string {
-    return `${FLY_SERVER}/api/paypal/capture-order`;
-}
 
 /**
  * Functional component to submit the hosted fields form
@@ -95,7 +86,7 @@ const SubmitPayment = ({ customStyle }: { customStyle?: CSSProperties }) => {
                 action(CAPTURE_ORDER)(
                     `Sending ${ORDER_ID} to custom endpoint to capture the payment information`
                 );
-                fetch(captureOrderUrl(), {
+                fetch(CAPTURE_ORDER_URL, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
