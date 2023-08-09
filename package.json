@@ -63,7 +63,7 @@
         "jsdom": "^22.1.0",
         "lint-staged": "13.2.3",
         "prettier": "3.0.0",
-        "rollup": "3.26.3",
+        "rollup": "3.28.0",
         "semver": "7.5.4",
         "standard-version": "9.5.0",
         "tslib": "2.6.0",
