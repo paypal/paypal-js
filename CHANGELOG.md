@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.0.0](https://github.com/paypal/paypal-js/compare/v6.0.1...v7.0.0) (2023-08-16)
+
+### ⚠ BREAKING CHANGES
+
+-   The logic for fetching and parsing the plain text error
+    message for the JS SDK script is being removed. We replaced this
+    logic with a general error message recommending the developer
+    check the http response to learn why the JS SDK failed to load.
+
+### Bug Fixes
+
+-   remove custom fetch error parsing ([#412](https://github.com/paypal/paypal-js/issues/412)) ([48b1820](https://github.com/paypal/paypal-js/commit/48b1820cb27172858dddb2d8d9bf3d2df1db6946))
+
 ### [6.0.1](https://github.com/paypal/paypal-js/compare/v6.0.0...v6.0.1) (2023-07-19)
 
 ### Bug Fixes
