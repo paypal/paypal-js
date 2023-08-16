@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [8.1.2](https://github.com/paypal/react-paypal-js/compare/v8.1.1...v8.1.2) (2023-08-16)
+
+### Bug Fixes
+
+-   allow users to change data-sdk-integration-source ([#378](https://github.com/paypal/react-paypal-js/issues/378)) ([0feef3e](https://github.com/paypal/react-paypal-js/commit/0feef3e834fb2b9aaf23029855447715915bd1b2))
+
 ### [8.1.1](https://github.com/paypal/react-paypal-js/compare/v8.1.0...v8.1.1) (2023-07-28)
 
 ## [8.1.0](https://github.com/paypal/react-paypal-js/compare/v8.0.0...v8.1.0) (2023-07-03)
