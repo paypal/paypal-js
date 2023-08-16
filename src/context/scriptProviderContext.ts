@@ -71,10 +71,10 @@ export function scriptReducer(
                 ...state,
                 loadingStatus: SCRIPT_LOADING_STATE.PENDING,
                 options: {
-                    ...action.value,
-                    [SCRIPT_ID]: `${getScriptID(action.value)}`,
                     [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
                         SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE_VALUE,
+                    ...action.value,
+                    [SCRIPT_ID]: `${getScriptID(action.value)}`,
                 },
             };
         case DISPATCH_ACTION.SET_BRAINTREE_INSTANCE:

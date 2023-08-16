@@ -25,10 +25,10 @@ export const PayPalScriptProvider: FC<ScriptProviderProps> = ({
 }: ScriptProviderProps) => {
     const [state, dispatch] = useReducer(scriptReducer, {
         options: {
-            ...options,
-            [SCRIPT_ID]: `${getScriptID(options)}`,
             [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
                 SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE_VALUE,
+            ...options,
+            [SCRIPT_ID]: `${getScriptID(options)}`,
         },
         loadingStatus: deferLoading
             ? SCRIPT_LOADING_STATE.INITIAL
