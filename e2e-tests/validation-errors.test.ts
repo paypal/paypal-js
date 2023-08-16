@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { validationErrorSDKResponseMock } from "./mocks";
 
 test("Validation errors", async ({ page }) => {
-    page.route("https://www.paypal.com/sdk/js**", (route) =>
+    page.route("https://www.paypal.com/sdk/js?", (route) =>
         route.fulfill({
             status: 400,
             body: validationErrorSDKResponseMock(),
