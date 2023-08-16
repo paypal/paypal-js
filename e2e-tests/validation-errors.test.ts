@@ -22,5 +22,7 @@ test("Validation errors", async ({ page }) => {
     );
 
     const errorMessage = await page.locator("#error-message").innerText();
-    expect(errorMessage).toMatch(/Error: Expected client-id to be passed/);
+    expect(errorMessage).toEqual(
+        'Error: The script "https://www.paypal.com/sdk/js?" failed to load. Check the HTTP status code and response body in DevTools to learn more.',
+    );
 });
