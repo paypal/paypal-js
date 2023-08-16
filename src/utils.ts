@@ -132,22 +132,6 @@ export function objectToQueryString(params: StringMap): string {
     return queryString;
 }
 
-/**
- * Parse the error message code received from the server during the script load.
- * This function search for the occurrence of this specific string "/* Original Error:".
- *
- * @param message the received error response from the server
- * @returns the content of the message if the string string was found.
- *          The whole message otherwise
- */
-export function parseErrorMessage(message: string): string {
-    const originalErrorText = message.split("/* Original Error:")[1];
-
-    return originalErrorText
-        ? originalErrorText.replace(/\n/g, "").replace("*/", "").trim()
-        : message;
-}
-
 function createScriptElement(
     url: string,
     attributes: StringMap = {},
