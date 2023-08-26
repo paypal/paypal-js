@@ -10,9 +10,7 @@ interface PayPalScriptQueryParameters {
     integrationDate?: string;
     intent?: string;
     locale?: string;
-    // loadScript() supports an array and will convert it
-    // to the correct merchant-id and data-merchant-id string values
-    merchantId?: string[] | string;
+    merchantId?: string;
     vault?: boolean | string;
 }
 
@@ -20,7 +18,9 @@ interface PayPalScriptDataAttributes {
     dataClientToken?: string;
     dataCspNonce?: string;
     dataClientMetadataId?: string;
-    dataMerchantId?: string;
+    // loadScript() supports an array and will convert it
+    // to the correct merchant-id and data-merchant-id string values
+    dataMerchantId?: string[] | string;
     dataNamespace?: string;
     dataPageType?: string;
     dataPartnerAttributionId?: string;
