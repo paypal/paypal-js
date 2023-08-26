@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.0.2](https://github.com/paypal/paypal-js/compare/v7.0.1...v7.0.2) (2023-08-26)
+
+### Bug Fixes
+
+-   **types:** query params as an array or string ([#420](https://github.com/paypal/paypal-js/issues/420)) ([f829bb8](https://github.com/paypal/paypal-js/commit/f829bb8a2a9cfda3b1abfd07ecb6a8170af5624b))
+
 ### [7.0.1](https://github.com/paypal/paypal-js/compare/v7.0.0...v7.0.1) (2023-08-26)
 
 ### Bug Fixes
