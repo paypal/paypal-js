@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.0.1](https://github.com/paypal/paypal-js/compare/v7.0.0...v7.0.1) (2023-08-26)
+
+### Bug Fixes
+
+-   **tests:** update e2e test mock url ([#414](https://github.com/paypal/paypal-js/issues/414)) ([240e9fe](https://github.com/paypal/paypal-js/commit/240e9fef08f1599a61952160b29324293753e536))
+-   **types:** update ScriptOptions to support array or string values ([380d04e](https://github.com/paypal/paypal-js/commit/380d04ecc5547f72e51df2c736d2a43856fc8bae))
+
 ## [7.0.0](https://github.com/paypal/paypal-js/compare/v6.0.1...v7.0.0) (2023-08-16)
 
 ### ⚠ BREAKING CHANGES
