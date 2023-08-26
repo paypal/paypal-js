@@ -5,13 +5,17 @@ interface PayPalScriptQueryParameters {
     components?: string;
     currency?: string;
     debug?: boolean | string;
+    // loadScript() supports an array and will convert it
+    // to the correct disable-funding and enable-funding string values
     disableFunding?: string;
-    enableFunding?: string;
-    integrationDate?: string;
+    enableFunding?: string[] | string;
+    integrationDate?: string[] | string;
     intent?: string;
     locale?: string;
-    // loadScript() supports an array and will convert it
-    // to the correct merchant-id and data-merchant-id string values
+    // loadScript() supports an array for merchantId, even though
+    // merchant-id technically may not contain multiple values.
+    // For an array with a length of > 1 it automatically sets
+    // merchantId to "*" and moves the actual values to dataMerchantId
     merchantId?: string[] | string;
     vault?: boolean | string;
 }
@@ -20,7 +24,9 @@ interface PayPalScriptDataAttributes {
     dataClientToken?: string;
     dataCspNonce?: string;
     dataClientMetadataId?: string;
-    dataMerchantId?: string;
+    // loadScript() supports an array and will convert it
+    // to the correct dataMerchantId string values
+    dataMerchantId?: string[] | string;
     dataNamespace?: string;
     dataPageType?: string;
     dataPartnerAttributionId?: string;
