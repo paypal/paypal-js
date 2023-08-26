@@ -55,6 +55,20 @@ describe("processOptions()", () => {
         expect(dataAttributes).toEqual({});
     });
 
+    test("support passing arrays for query string params", () => {
+        const { url, dataAttributes } = processOptions({
+            clientId: "test",
+            components: ["buttons", "marks", "messages"],
+            enableFunding: ["venmo", "paylater"],
+            disableFunding: ["card"],
+        });
+
+        expect(url).toBe(
+            "https://www.paypal.com/sdk/js?client-id=test&components=buttons,marks,messages&enable-funding=venmo,paylater&disable-funding=card",
+        );
+        expect(dataAttributes).toEqual({});
+    });
+
     test("supports passing an array of merchant ids", () => {
         const { url, dataAttributes } = processOptions({
             clientId: "test",

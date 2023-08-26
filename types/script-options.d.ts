@@ -2,14 +2,14 @@ interface PayPalScriptQueryParameters {
     buyerCountry?: string;
     clientId: string;
     commit?: boolean;
-    components?: string;
+    components?: string[] | string;
     currency?: string;
     debug?: boolean | string;
     // loadScript() supports an array and will convert it
     // to the correct disable-funding and enable-funding string values
-    disableFunding?: string;
+    disableFunding?: string[] | string;
     enableFunding?: string[] | string;
-    integrationDate?: string[] | string;
+    integrationDate?: string;
     intent?: string;
     locale?: string;
     // loadScript() supports an array for merchantId, even though

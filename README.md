@@ -120,7 +120,7 @@ By default, the JS SDK only loads the buttons component. The `components` query 
 ```js
 loadScript({
     clientId: "YOUR_CLIENT_ID",
-    components: "buttons,marks,messages",
+    components: ["buttons", "marks", "messages"],
 });
 ```
 
