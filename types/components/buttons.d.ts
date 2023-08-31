@@ -175,6 +175,7 @@ export interface PayPalButtonsComponentOptions {
      */
     style?: {
         color?: "gold" | "blue" | "silver" | "white" | "black";
+        disableMaxWidth?: boolean;
         height?: number;
         label?:
             | "paypal"
