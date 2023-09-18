@@ -108,6 +108,81 @@ export type OnShippingChangeActions = {
     };
 };
 
+type CurrencyCodeAndValue = {
+    currencyCode: string;
+    value: string;
+};
+
+type ShippingOption = {
+    amount: CurrencyCodeAndValue;
+    id?: string;
+    label: string;
+    selected: boolean;
+    type: "SHIPPING" | "PICKUP";
+};
+
+export type OnShippingOptionsChangeData = {
+    orderID?: string;
+    paymentID?: string;
+    paymentToken?: string;
+    selectedShippingOption?: ShippingOption;
+};
+
+type BuildOrderPatchPayloadOptions = {
+    discount?: string;
+    handling?: string;
+    insurance?: string;
+    itemTotal?: string;
+    option?: ShippingOption;
+    shippingOptions?: ShippingOption[];
+    shippingDiscount?: string;
+    taxTotal?: string;
+};
+
+export type OnShippingOptionsChangeActions = {
+    buildOrderPatchPayload: ({
+        discount,
+        handling,
+        insurance,
+        itemTotal,
+        shippingOptions,
+        shippingDiscount,
+        taxTotal,
+    }: BuildOrderPatchPayloadOptions) => UpdateOrderRequestBody;
+    reject: () => Promise<void>;
+};
+
+export type OnShippingAddressChangeData = {
+    amount: CurrencyCodeAndValue;
+    orderID?: string;
+    paymentID?: string;
+    paymentToken?: string;
+    shippingAddress: {
+        city: string;
+        state: string;
+        /** The [two-character ISO 3166-1 code](/docs/integration/direct/rest/country-codes/) that identifies the country or region. */
+        countryCode: string;
+        /**
+         * The postal code, which is the zip code or equivalent.
+         * Typically required for countries with a postal code or an equivalent.
+         */
+        postalCode: string;
+    };
+};
+
+export type OnShippingAddressChangeActions = {
+    buildOrderPatchPayload: ({
+        discount,
+        handling,
+        insurance,
+        itemTotal,
+        shippingOptions,
+        shippingDiscount,
+        taxTotal,
+    }: BuildOrderPatchPayloadOptions) => UpdateOrderRequestBody;
+    reject: () => Promise<void>;
+};
+
 export interface PayPalButtonsComponentOptions {
     /**
      * Called on button click. Often used for [Braintree vault integrations](https://developers.braintreepayments.com/guides/paypal/vault/javascript/v3).
@@ -165,10 +240,25 @@ export interface PayPalButtonsComponentOptions {
     onInit?: (data: Record<string, unknown>, actions: OnInitActions) => void;
     /**
      * Called when the buyer changes their shipping address on PayPal.
+     * @deprecated Use `onShippingAddressChange` or `onShippingOptionsChange` instead.
      */
     onShippingChange?: (
         data: OnShippingChangeData,
         actions: OnShippingChangeActions,
+    ) => Promise<void>;
+    /**
+     * Called when the buyer selects a new shipping option on PayPal.
+     */
+    onShippingOptionsChange?: (
+        data: OnShippingOptionsChangeData,
+        actions: OnShippingOptionsChangeActions,
+    ) => Promise<void>;
+    /**
+     * Called when the buyer their shipping address on PayPal.
+     */
+    onShippingAddressChange?: (
+        data: OnShippingAddressChangeData,
+        actions: OnShippingAddressChangeActions,
     ) => Promise<void>;
     /**
      * [Styling options](https://developer.paypal.com/docs/business/checkout/reference/style-guide/#customize-the-payment-buttons) for customizing the button appearance.
