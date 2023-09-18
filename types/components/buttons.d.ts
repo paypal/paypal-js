@@ -121,38 +121,47 @@ type ShippingOption = {
     type: "SHIPPING" | "PICKUP";
 };
 
-export type OnShippingOptionsChangeData = {
+type OnShippingOptionsChangeData = {
     orderID?: string;
     paymentID?: string;
     paymentToken?: string;
     selectedShippingOption?: ShippingOption;
 };
 
-type BuildOrderPatchPayloadOptions = {
+type BuildOrderPatchPayloadArgs = {
     discount?: string;
     handling?: string;
     insurance?: string;
     itemTotal?: string;
     option?: ShippingOption;
-    shippingOptions?: ShippingOption[];
     shippingDiscount?: string;
     taxTotal?: string;
 };
 
-export type OnShippingOptionsChangeActions = {
+type OnShippingOptionsChangeBuildOrderPatchPayloadArgs =
+    BuildOrderPatchPayloadArgs & {
+        shippingOption?: ShippingOption;
+    };
+
+type OnShippingAddressChangeBuildOrderPatchPayloadArgs =
+    BuildOrderPatchPayloadArgs & {
+        shippingOptions?: ShippingOption[];
+    };
+
+type OnShippingOptionsChangeActions = {
     buildOrderPatchPayload: ({
         discount,
         handling,
         insurance,
         itemTotal,
-        shippingOptions,
+        shippingOption,
         shippingDiscount,
         taxTotal,
-    }: BuildOrderPatchPayloadOptions) => UpdateOrderRequestBody;
+    }: OnShippingOptionsChangeBuildOrderPatchPayloadArgs) => UpdateOrderRequestBody;
     reject: () => Promise<void>;
 };
 
-export type OnShippingAddressChangeData = {
+type OnShippingAddressChangeData = {
     amount: CurrencyCodeAndValue;
     orderID?: string;
     paymentID?: string;
@@ -170,7 +179,7 @@ export type OnShippingAddressChangeData = {
     };
 };
 
-export type OnShippingAddressChangeActions = {
+type OnShippingAddressChangeActions = {
     buildOrderPatchPayload: ({
         discount,
         handling,
@@ -179,7 +188,7 @@ export type OnShippingAddressChangeActions = {
         shippingOptions,
         shippingDiscount,
         taxTotal,
-    }: BuildOrderPatchPayloadOptions) => UpdateOrderRequestBody;
+    }: OnShippingAddressChangeBuildOrderPatchPayloadArgs) => UpdateOrderRequestBody;
     reject: () => Promise<void>;
 };
 
