@@ -113,7 +113,7 @@ type CurrencyCodeAndValue = {
     value: string;
 };
 
-type ShippingOption = {
+type CheckoutShippingOption = {
     amount: CurrencyCodeAndValue;
     id?: string;
     label: string;
@@ -125,7 +125,7 @@ type OnShippingOptionsChangeData = {
     orderID?: string;
     paymentID?: string;
     paymentToken?: string;
-    selectedShippingOption?: ShippingOption;
+    selectedShippingOption?: CheckoutShippingOption;
 };
 
 type BuildOrderPatchPayloadArgs = {
@@ -133,19 +133,19 @@ type BuildOrderPatchPayloadArgs = {
     handling?: string;
     insurance?: string;
     itemTotal?: string;
-    option?: ShippingOption;
+    option?: CheckoutShippingOption;
     shippingDiscount?: string;
     taxTotal?: string;
 };
 
 type OnShippingOptionsChangeBuildOrderPatchPayloadArgs =
     BuildOrderPatchPayloadArgs & {
-        shippingOption?: ShippingOption;
+        shippingOption?: CheckoutShippingOption;
     };
 
 type OnShippingAddressChangeBuildOrderPatchPayloadArgs =
     BuildOrderPatchPayloadArgs & {
-        shippingOptions?: ShippingOption[];
+        shippingOptions?: CheckoutShippingOption[];
     };
 
 type OnShippingOptionsChangeActions = {
