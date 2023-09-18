@@ -254,7 +254,7 @@ export interface PayPalButtonsComponentOptions {
         actions: OnShippingOptionsChangeActions,
     ) => Promise<void>;
     /**
-     * Called when the buyer their shipping address on PayPal.
+     * Called when the buyer updates their shipping address on PayPal.
      */
     onShippingAddressChange?: (
         data: OnShippingAddressChangeData,
