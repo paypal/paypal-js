@@ -88,6 +88,8 @@ export default {
         createBillingAgreement: { table: { category: COMPONENT_EVENTS } },
         createSubscription: { table: { category: COMPONENT_EVENTS } },
         onShippingChange: { table: { category: COMPONENT_EVENTS } },
+        onShippingAddressChange: { table: { category: COMPONENT_EVENTS } },
+        onShippingOptionsChange: { table: { category: COMPONENT_EVENTS } },
         onApprove: { table: { category: COMPONENT_EVENTS } },
         onCancel: { table: { category: COMPONENT_EVENTS } },
         onClick: { table: { category: COMPONENT_EVENTS } },
