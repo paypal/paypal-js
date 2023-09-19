@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.0.3](https://github.com/paypal/paypal-js/compare/v7.0.2...v7.0.3) (2023-09-19)
+
+### Bug Fixes
+
+-   **types:** add new disableMaxWidth style option ([#423](https://github.com/paypal/paypal-js/issues/423)) ([aa10eff](https://github.com/paypal/paypal-js/commit/aa10eff7be5b7cad8d3bd0b446ceec29fcfd736a))
+-   **types:** add types for new shipping callbacks ([#427](https://github.com/paypal/paypal-js/issues/427)) ([0602040](https://github.com/paypal/paypal-js/commit/060204076aa2387c98fd544e69e76b1dc884e70f))
+
 ### [7.0.2](https://github.com/paypal/paypal-js/compare/v7.0.1...v7.0.2) (2023-08-26)
 
 ### Bug Fixes
