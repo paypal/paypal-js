@@ -290,7 +290,6 @@ export interface PayPalButtonsComponentOptions {
         shape?: "rect" | "pill";
         tagline?: boolean;
     };
-
     /**
      * Used for displaying only vaultable buttons.
      */
