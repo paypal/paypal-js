@@ -192,6 +192,8 @@ type OnShippingAddressChangeActions = {
     reject: () => Promise<void>;
 };
 
+export type DisplayOnlyOptions = "vaultable";
+
 export interface PayPalButtonsComponentOptions {
     /**
      * Called on button click. Often used for [Braintree vault integrations](https://developers.braintreepayments.com/guides/paypal/vault/javascript/v3).
@@ -288,6 +290,10 @@ export interface PayPalButtonsComponentOptions {
         shape?: "rect" | "pill";
         tagline?: boolean;
     };
+    /**
+     * Used for displaying only vaultable buttons.
+     */
+    displayOnly?: DisplayOnlyOptions[];
 }
 
 export interface PayPalButtonsComponent {
