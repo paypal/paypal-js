@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.1.0](https://github.com/paypal/paypal-js/compare/v7.0.3...v7.1.0) (2023-11-13)
+
+### Features
+
+-   add support for crossorigin attribute ([#435](https://github.com/paypal/paypal-js/issues/435)) ([d504cc7](https://github.com/paypal/paypal-js/commit/d504cc755b497616aff455d0c376378cda3ae3e8))
+
+### Bug Fixes
+
+-   **types:** add displayOnly option for Buttons ([#431](https://github.com/paypal/paypal-js/issues/431)) ([1acba3f](https://github.com/paypal/paypal-js/commit/1acba3f869ed14cd867d3ea33e6657df3d2b820f))
+
 ### [7.0.3](https://github.com/paypal/paypal-js/compare/v7.0.2...v7.0.3) (2023-09-19)
 
 ### Bug Fixes
