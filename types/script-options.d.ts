@@ -35,8 +35,13 @@ interface PayPalScriptDataAttributes {
     dataUserIdToken?: string;
 }
 
+interface ScriptAttributes {
+    crossorigin?: "anonymous" | "use-credentials";
+}
+
 export interface PayPalScriptOptions
     extends PayPalScriptQueryParameters,
-        PayPalScriptDataAttributes {
+        PayPalScriptDataAttributes,
+        ScriptAttributes {
     sdkBaseUrl?: string;
 }
