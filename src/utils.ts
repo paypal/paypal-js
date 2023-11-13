@@ -64,7 +64,7 @@ export function insertScriptElement({
 
 export function processOptions(options: PayPalScriptOptions): {
     url: string;
-    dataAttributes: StringMap;
+    attributes: StringMap;
 } {
     let sdkBaseUrl = "https://www.paypal.com/sdk/js";
 
@@ -76,7 +76,7 @@ export function processOptions(options: PayPalScriptOptions): {
     const optionsWithStringIndex =
         options as PayPalScriptOptionsWithStringIndex;
 
-    const { queryParams, dataAttributes } = Object.keys(optionsWithStringIndex)
+    const { queryParams, attributes } = Object.keys(optionsWithStringIndex)
         .filter((key) => {
             return (
                 typeof optionsWithStringIndex[key] !== "undefined" &&
@@ -89,8 +89,8 @@ export function processOptions(options: PayPalScriptOptions): {
                 const value = optionsWithStringIndex[key].toString();
                 key = camelCaseToKebabCase(key);
 
-                if (key.substring(0, 4) === "data") {
-                    accumulator.dataAttributes[key] = value;
+                if (key.substring(0, 4) === "data" || key === "crossorigin") {
+                    accumulator.attributes[key] = value;
                 } else {
                     accumulator.queryParams[key] = value;
                 }
@@ -98,7 +98,7 @@ export function processOptions(options: PayPalScriptOptions): {
             },
             {
                 queryParams: {} as StringMap,
-                dataAttributes: {} as StringMap,
+                attributes: {} as StringMap,
             },
         );
 
@@ -106,13 +106,13 @@ export function processOptions(options: PayPalScriptOptions): {
         queryParams["merchant-id"] &&
         queryParams["merchant-id"].indexOf(",") !== -1
     ) {
-        dataAttributes["data-merchant-id"] = queryParams["merchant-id"];
+        attributes["data-merchant-id"] = queryParams["merchant-id"];
         queryParams["merchant-id"] = "*";
     }
 
     return {
         url: `${sdkBaseUrl}?${objectToQueryString(queryParams)}`,
-        dataAttributes,
+        attributes,
     };
 }
 

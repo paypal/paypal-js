@@ -18,19 +18,19 @@ export function loadScript(
     // resolve with null when running in Node or Deno
     if (typeof document === "undefined") return PromisePonyfill.resolve(null);
 
-    const { url, dataAttributes } = processOptions(options);
-    const namespace = dataAttributes["data-namespace"] || "paypal";
+    const { url, attributes } = processOptions(options);
+    const namespace = attributes["data-namespace"] || "paypal";
     const existingWindowNamespace = getPayPalWindowNamespace(namespace);
 
     // resolve with the existing global paypal namespace when a script with the same params already exists
-    if (findScript(url, dataAttributes) && existingWindowNamespace) {
+    if (findScript(url, attributes) && existingWindowNamespace) {
         return PromisePonyfill.resolve(existingWindowNamespace);
     }
 
     return loadCustomScript(
         {
             url,
-            attributes: dataAttributes,
+            attributes: attributes,
         },
         PromisePonyfill,
     ).then(() => {

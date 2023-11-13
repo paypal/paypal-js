@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
+import type { PayPalScriptOptions } from "../types/script-options";
+
 vi.useFakeTimers();
 
 import {
@@ -21,7 +23,7 @@ describe("objectToQueryString()", () => {
 });
 
 describe("processOptions()", () => {
-    test("returns dataAttributes and url", () => {
+    test("returns attributes and url", () => {
         const options = {
             clientId: "test",
             currency: "USD",
@@ -29,12 +31,24 @@ describe("processOptions()", () => {
             someRandomKey: "some-random-value",
         };
 
-        const { url, dataAttributes } = processOptions(options);
+        const { url, attributes } = processOptions(options);
 
         expect(url).toBe(
             "https://www.paypal.com/sdk/js?client-id=test&currency=USD&some-random-key=some-random-value",
         );
-        expect(dataAttributes).toEqual({ "data-page-type": "checkout" });
+        expect(attributes).toEqual({ "data-page-type": "checkout" });
+    });
+
+    test("supports the crossorigin attribute", () => {
+        const options: PayPalScriptOptions = {
+            clientId: "test",
+            crossorigin: "anonymous",
+        };
+
+        const { url, attributes } = processOptions(options);
+
+        expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
+        expect(attributes).toEqual({ crossorigin: "anonymous" });
     });
 
     test("sets a custom base url", () => {
@@ -49,14 +63,14 @@ describe("processOptions()", () => {
     });
 
     test("default values when only client-id is passed in", () => {
-        const { url, dataAttributes } = processOptions({ clientId: "test" });
+        const { url, attributes } = processOptions({ clientId: "test" });
 
         expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
-        expect(dataAttributes).toEqual({});
+        expect(attributes).toEqual({});
     });
 
     test("support passing arrays for query string params", () => {
-        const { url, dataAttributes } = processOptions({
+        const { url, attributes } = processOptions({
             clientId: "test",
             components: ["buttons", "marks", "messages"],
             enableFunding: ["venmo", "paylater"],
@@ -66,11 +80,11 @@ describe("processOptions()", () => {
         expect(url).toBe(
             "https://www.paypal.com/sdk/js?client-id=test&components=buttons,marks,messages&enable-funding=venmo,paylater&disable-funding=card",
         );
-        expect(dataAttributes).toEqual({});
+        expect(attributes).toEqual({});
     });
 
     test("supports passing an array of merchant ids", () => {
-        const { url, dataAttributes } = processOptions({
+        const { url, attributes } = processOptions({
             clientId: "test",
             merchantId: ["123", "456", "789"],
         });
@@ -78,11 +92,11 @@ describe("processOptions()", () => {
         expect(url).toBe(
             "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*",
         );
-        expect(dataAttributes).toEqual({ "data-merchant-id": "123,456,789" });
+        expect(attributes).toEqual({ "data-merchant-id": "123,456,789" });
     });
 
     test("supports passing a single merchant id", () => {
-        const { url, dataAttributes } = processOptions({
+        const { url, attributes } = processOptions({
             clientId: "test",
             merchantId: "123",
         });
@@ -90,9 +104,9 @@ describe("processOptions()", () => {
         expect(url).toBe(
             "https://www.paypal.com/sdk/js?client-id=test&merchant-id=123",
         );
-        expect(dataAttributes).toEqual({});
+        expect(attributes).toEqual({});
 
-        const { url: url2, dataAttributes: dataAttributes2 } = processOptions({
+        const { url: url2, attributes: attributes2 } = processOptions({
             clientId: "test",
             merchantId: ["123"],
         });
@@ -100,11 +114,11 @@ describe("processOptions()", () => {
         expect(url2).toBe(
             "https://www.paypal.com/sdk/js?client-id=test&merchant-id=123",
         );
-        expect(dataAttributes2).toEqual({});
+        expect(attributes2).toEqual({});
     });
 
     test("supports passing options in kebab-case or camelCase format", () => {
-        const { url, dataAttributes } = processOptions({
+        const { url, attributes } = processOptions({
             // @ts-expect-error ignore invalid arguments error
             "client-id": "test",
             "merchant-id": ["123", "456", "789"],
@@ -113,9 +127,9 @@ describe("processOptions()", () => {
         expect(url).toBe(
             "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*",
         );
-        expect(dataAttributes).toEqual({ "data-merchant-id": "123,456,789" });
+        expect(attributes).toEqual({ "data-merchant-id": "123,456,789" });
 
-        const { url: url2, dataAttributes: dataAttributes2 } = processOptions({
+        const { url: url2, attributes: attributes2 } = processOptions({
             clientId: "test",
             merchantId: ["123", "456", "789"],
         });
@@ -123,7 +137,7 @@ describe("processOptions()", () => {
         expect(url2).toBe(
             "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*",
         );
-        expect(dataAttributes2).toEqual({ "data-merchant-id": "123,456,789" });
+        expect(attributes2).toEqual({ "data-merchant-id": "123,456,789" });
     });
 });
 
