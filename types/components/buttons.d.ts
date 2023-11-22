@@ -214,7 +214,7 @@ export interface PayPalButtonsComponentOptions {
         actions: CreateSubscriptionActions,
     ) => Promise<string>;
     /**
-     * Save payment methods to charge payers after a set amount of time. For example, you can offer a free trial and charge payers after the trial expires. Payers don't need to be present when charged. No checkout required.a
+     * Save payment methods to charge payers after a set amount of time. For example, you can offer a free trial and charge payers after the trial expires. Payers don't need to be present when charged. No checkout required.
      * https://developer.paypal.com/docs/checkout/save-payment-methods/purchase-later/js-sdk/paypal/#link-clientsidecodesample
      */
     createVaultSetupToken?: () => Promise<string>;
