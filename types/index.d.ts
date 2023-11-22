@@ -18,11 +18,18 @@ import type {
     rememberFunding,
 } from "./components/funding-eligibility";
 import type { PayPalHostedFieldsComponent } from "./components/hosted-fields";
+import type {
+    PayPalHostedButtonsComponentOptions,
+    PayPalHostedButtonsComponent,
+} from "./components/hosted-buttons";
 
 export interface PayPalNamespace {
     Buttons?: (
         options?: PayPalButtonsComponentOptions,
     ) => PayPalButtonsComponent;
+    HostedButtons?: (
+        options?: PayPalHostedButtonsComponentOptions,
+    ) => PayPalHostedButtonsComponent;
     Marks?: (options?: PayPalMarksComponentOptions) => PayPalMarksComponent;
     Messages?: (
         options?: PayPalMessagesComponentOptions,
