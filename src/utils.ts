@@ -9,7 +9,7 @@ import type { BraintreeNamespace } from "./types";
 type ErrorMessageParams = {
     reactComponentName: string;
     sdkComponentKey: string;
-    sdkRequestedComponents?: string;
+    sdkRequestedComponents?: string | string[];
     sdkDataNamespace?: string;
 };
 
@@ -79,8 +79,12 @@ export function generateErrorMessage({
 
     // The JS SDK only loads the buttons component by default.
     // All other components like messages and marks must be requested using the "components" query parameter
-    if (!sdkRequestedComponents.includes(sdkComponentKey)) {
-        const expectedComponents = [sdkRequestedComponents, sdkComponentKey]
+    const requestedComponents =
+        typeof sdkRequestedComponents === "string"
+            ? sdkRequestedComponents
+            : sdkRequestedComponents.join(",");
+    if (!requestedComponents.includes(sdkComponentKey)) {
+        const expectedComponents = [requestedComponents, sdkComponentKey]
             .filter(Boolean)
             .join();
 
