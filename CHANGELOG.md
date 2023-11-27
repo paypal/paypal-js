@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.1.1](https://github.com/paypal/paypal-js/compare/v7.1.0...v7.1.1) (2023-11-27)
+
+### Bug Fixes
+
+-   **types:** add type definition for createVaultSetupToken ([#439](https://github.com/paypal/paypal-js/issues/439)) ([a5e9424](https://github.com/paypal/paypal-js/commit/a5e94245d98e1e052484443be002df7ef4b121e0))
+
 ## [7.1.0](https://github.com/paypal/paypal-js/compare/v7.0.3...v7.1.0) (2023-11-13)
 
 ### Features
