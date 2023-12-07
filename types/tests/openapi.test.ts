@@ -1,17 +1,14 @@
-import type {
-    CreateOrderRequestBody,
-    OrderResponseBodyMinimal,
-    UpdateOrderRequestBody,
-} from "../index";
+import type { components } from "../apis/openapi/checkout_orders_v2";
 
-import type {
-    components
-} from "../apis/openapi/checkout_orders_v2";
+type CreateOrderRequestBody = components["schemas"]["order_request"];
+// TODO: figure out how to differentiate between full response and minimal response
+type OrderResponseBody = components["schemas"]["order"];
+type UpdateOrderRequestBody = components["schemas"]["patch_request"];
 
 function createOrder(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    createOrderRequestBody: components["schemas"]["order_request"],
-): Promise<OrderResponseBodyMinimal> {
+    createOrderRequestBody: CreateOrderRequestBody,
+): Promise<OrderResponseBody> {
     return Promise.resolve({ id: "123456", status: "CREATED", links: [] });
 }
 
@@ -78,6 +75,7 @@ createOrder({
 
 // shipping.options array
 createOrder({
+    intent: "CAPTURE",
     purchase_units: [
         {
             amount: {
@@ -115,6 +113,7 @@ createOrder({
 
 // shipping info
 createOrder({
+    intent: "CAPTURE",
     purchase_units: [
         {
             amount: {
@@ -125,8 +124,7 @@ createOrder({
                 name: {
                     full_name: "Jon Doe",
                 },
-                email_address: "jon@test.com",
-                type: "SHIPPING",
+                type: "PICKUP_IN_PERSON",
             },
         },
     ],
@@ -134,9 +132,11 @@ createOrder({
 
 // donation
 createOrder({
+    intent: "CAPTURE",
     purchase_units: [
         {
             amount: {
+                currency_code: "USD",
                 value: "2.00",
                 breakdown: {
                     item_total: {
@@ -166,6 +166,7 @@ createOrder({
     purchase_units: [
         {
             amount: {
+                currency_code: "USD",
                 value: "88.44",
             },
         },
@@ -176,6 +177,9 @@ createOrder({
                 user_action: "CONTINUE",
                 return_url: "https://www.example.com/capture-checkout",
                 cancel_url: "https://www.example.com/cancel-checkout",
+                shipping_preference: "GET_FROM_FILE",
+                landing_page: "NO_PREFERENCE",
+                payment_method_preference: "IMMEDIATE_PAYMENT_REQUIRED",
             },
         },
     },

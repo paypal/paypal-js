@@ -153,57 +153,68 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         400: {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "INVALID_ARRAY_MAX_ITEMS";
-                /** @enum {string} */
-                description?: "The number of items in an array parameter is too large.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_ARRAY_MIN_ITEMS";
-                /** @enum {string} */
-                description?: "The number of items in an array parameter is too small.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_COUNTRY_CODE";
-                /** @enum {string} */
-                description?: "Country code is invalid. Please refer to https://developer.paypal.com/api/rest/reference/country-codes/ for a list of supported country codes.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER_SYNTAX";
-                /** @enum {string} */
-                description?: "The value of a field does not conform to the expected format.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_STRING_LENGTH";
-                /** @enum {string} */
-                description?: "The value of a field is either too short or too long";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER_VALUE";
-                /** @enum {string} */
-                description?: "A parameter value is not valid.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_REQUIRED_PARAMETER";
-                /** @enum {string} */
-                description?: "A required parameter is missing.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "This field is not currently supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYPAL_REQUEST_ID_REQUIRED";
-                /** @enum {string} */
-                description?: "A PayPal-Request-Id is required if you are trying to process payment for an Order. Please specify a PayPal-Request-Id or Create the Order without a 'payment_source' specified.";
-            } | {
-                /** @enum {string} */
-                issue?: "MALFORMED_REQUEST_JSON";
-                /** @enum {string} */
-                description?: "The request JSON is not well formed.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_ARRAY_MAX_ITEMS";
+                      /** @enum {string} */
+                      description?: "The number of items in an array parameter is too large.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_ARRAY_MIN_ITEMS";
+                      /** @enum {string} */
+                      description?: "The number of items in an array parameter is too small.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_COUNTRY_CODE";
+                      /** @enum {string} */
+                      description?: "Country code is invalid. Please refer to https://developer.paypal.com/api/rest/reference/country-codes/ for a list of supported country codes.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER_SYNTAX";
+                      /** @enum {string} */
+                      description?: "The value of a field does not conform to the expected format.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_STRING_LENGTH";
+                      /** @enum {string} */
+                      description?: "The value of a field is either too short or too long";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER_VALUE";
+                      /** @enum {string} */
+                      description?: "A parameter value is not valid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_REQUIRED_PARAMETER";
+                      /** @enum {string} */
+                      description?: "A required parameter is missing.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "This field is not currently supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYPAL_REQUEST_ID_REQUIRED";
+                      /** @enum {string} */
+                      description?: "A PayPal-Request-Id is required if you are trying to process payment for an Order. Please specify a PayPal-Request-Id or Create the Order without a 'payment_source' specified.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MALFORMED_REQUEST_JSON";
+                      /** @enum {string} */
+                      description?: "The request JSON is not well formed.";
+                  }
+            )[];
         };
         401: {
             issues?: {
@@ -214,22 +225,26 @@ export interface components {
             }[];
         };
         403: {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "PERMISSION_DENIED";
-                /** @enum {string} */
-                description?: "You do not have permission to access or perform operations on this resource.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ENABLED_FOR_CARD_PROCESSING";
-                /** @enum {string} */
-                description?: "The recipient for which the API call is made on behalf of is not enabled for card processing. Please contact PayPal customer support.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_ACCOUNT_NOT_VERIFIED";
-                /** @enum {string} */
-                description?: "Payee has not verified their account with PayPal. The selected payment method requires the recipient to have a verified PayPal account before transactions can be processed on their behalf.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "PERMISSION_DENIED";
+                      /** @enum {string} */
+                      description?: "You do not have permission to access or perform operations on this resource.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ENABLED_FOR_CARD_PROCESSING";
+                      /** @enum {string} */
+                      description?: "The recipient for which the API call is made on behalf of is not enabled for card processing. Please contact PayPal customer support.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_ACCOUNT_NOT_VERIFIED";
+                      /** @enum {string} */
+                      description?: "Payee has not verified their account with PayPal. The selected payment method requires the recipient to have a verified PayPal account before transactions can be processed on their behalf.";
+                  }
+            )[];
         };
         404: {
             issues?: {
@@ -240,502 +255,602 @@ export interface components {
             }[];
         };
         422: {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "AMOUNT_MISMATCH";
-                /** @enum {string} */
-                description?: "Should equal item_total + tax_total + shipping + handling + insurance - shipping_discount - discount.";
-            } | {
-                /** @enum {string} */
-                issue?: "CANNOT_BE_NEGATIVE";
-                /** @enum {string} */
-                description?: "Must be greater than or equal to 0. If the currency supports decimals, only two decimal place precision is supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "CANNOT_BE_ZERO_OR_NEGATIVE";
-                /** @enum {string} */
-                description?: "Must be greater than zero. If the currency supports decimals, only two decimal place precision is supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "CARD_EXPIRED";
-                /** @enum {string} */
-                description?: "The card is expired";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_PREVIOUS_REFERENCE";
-                /** @enum {string} */
-                description?: "For Merchant initiated network token transactions, either the payment_source.card.stored_credential.previous_network_transaction_reference or payment_source.card.stored_credential.previous_transaction_reference must be included in the request.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_CRYPTOGRAM";
-                /** @enum {string} */
-                description?: "Cryptogram is mandatory for any customer initiated network token transactions.";
-            } | {
-                /** @enum {string} */
-                issue?: "CITY_REQUIRED";
-                /** @enum {string} */
-                description?: "The specified country requires a city (address.admin_area_2).";
-            } | {
-                /** @enum {string} */
-                issue?: "DECIMAL_PRECISION";
-                /** @enum {string} */
-                description?: "If the currency supports decimals, only two decimal place precision is supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "DONATION_ITEMS_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "If 'purchase_unit' has \"DONATION\" as the 'items.category' then the Order can at most have one purchase_unit. Multiple purchase_units are not supported if either of them have at least one items with category as \"DONATION\".";
-            } | {
-                /** @enum {string} */
-                issue?: "DUPLICATE_REFERENCE_ID";
-                /** @enum {string} */
-                description?: "`reference_id` must be unique if multiple `purchase_unit` are provided.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_CURRENCY_CODE";
-                /** @enum {string} */
-                description?: "Currency code is invalid or is not currently supported. Please refer https://developer.paypal.com/api/rest/reference/currency-codes/ for list of supported currency codes.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PAYER_ID";
-                /** @enum {string} */
-                description?: "The payer ID is not valid.";
-            } | {
-                /** @enum {string} */
-                issue?: "ITEM_TOTAL_MISMATCH";
-                /** @enum {string} */
-                description?: "Should equal sum of (unit_amount * quantity) across all items for a given purchase_unit.";
-            } | {
-                /** @enum {string} */
-                issue?: "ITEM_TOTAL_REQUIRED";
-                /** @enum {string} */
-                description?: "If item details are specified (items.unit_amount and items.quantity) corresponding amount.breakdown.item_total is required.";
-            } | {
-                /** @enum {string} */
-                issue?: "MAX_VALUE_EXCEEDED";
-                /** @enum {string} */
-                description?: "Should be less than or equal to 999999999999999.99.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_PICKUP_ADDRESS";
-                /** @enum {string} */
-                description?: "A pickup address(`shipping.address`) is required for the provided `shipping.type`.";
-            } | {
-                /** @enum {string} */
-                issue?: "MULTI_CURRENCY_ORDER";
-                /** @enum {string} */
-                description?: "Multiple differing values of currency_code are not supported. Entire Order request must have the same currency_code.";
-            } | {
-                /** @enum {string} */
-                issue?: "MULTIPLE_ITEM_CATEGORIES";
-                /** @enum {string} */
-                description?: "For a given 'purchase_unit' the 'items.category' could be either \"PHYSICAL_GOODS\" and/or \"DIGITAL_GOODS\" or just \"DONATION\".  'items.category' as \"DONATION\" cannot be combined with items with either \"PHYSICAL_GOODS\" or \"DIGITAL_GOODS\".";
-            } | {
-                /** @enum {string} */
-                issue?: "MULTIPLE_SHIPPING_ADDRESS_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "Multiple shipping addresses are not supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "MULTIPLE_SHIPPING_TYPE_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "Different `shipping.type` are not supported across purchase units.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_ACCOUNT_INVALID";
-                /** @enum {string} */
-                description?: "Payee account specified is invalid. Please check the `payee.email_address` or `payee.merchant_id` specified and try again. Ensure that either  `payee.merchant_id` or `payee.email_address` is specified.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_ACCOUNT_LOCKED_OR_CLOSED";
-                /** @enum {string} */
-                description?: "The merchant account is locked or closed.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_ACCOUNT_RESTRICTED";
-                /** @enum {string} */
-                description?: "The merchant account is restricted.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_PRICING_TIER_ID_NOT_ENABLED";
-                /** @enum {string} */
-                description?: "The API Caller is not enabled to process transactions by specifying a 'payee_pricing_tier_id'. Please work with your Account Manager to enable this option for your account.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PAYEE_PRICING_TIER_ID";
-                /** @enum {string} */
-                description?: "Please check the value specified or confirm with your Account Manager that the 'payee_pricing_tier_id' specified has been setup for the account.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_FX_RATE_ID_EXPIRED";
-                /** @enum {string} */
-                description?: "The specified FX Rate ID has expired. Please specify a different FX Rate Id and try the request again. Alternately, remove the FX Rate ID to process the request using the default exchange rate.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_FX_RATE_ID_CURRENCY_MISMATCH";
-                /** @enum {string} */
-                description?: "The specified FX Rate ID is for a currency that does not match with the currency of this request. Please specify a different FX Rate ID and try the request again. Alternately, remove the FX Rate ID to process the request using the default exchange rate.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_FX_RATE_ID";
-                /** @enum {string} */
-                description?: "The specific FX Rate ID is not valid. This could be either because we are not able to look up the FX Rate based on this ID or it could be because the ID belongs to another API Caller.";
-            } | {
-                /** @enum {string} */
-                issue?: "PLATFORM_FEES_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "The API Caller is not enabled to process transactions by specifying 'platform_fees'. Please work with your PayPal Account Manager to enable this option for your account.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PLATFORM_FEES_ACCOUNT";
-                /** @enum {string} */
-                description?: "The specified platform_fees payee account is either invalid or account setup is incomplete.Please work with your PayPal Account Manager to enable this option for your account.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PLATFORM_FEES_AMOUNT";
-                /** @enum {string} */
-                description?: "The platform_fees amount cannot be greater than order amount.";
-            } | {
-                /** @enum {string} */
-                issue?: "POSTAL_CODE_REQUIRED";
-                /** @enum {string} */
-                description?: "The specified country requires a postal code.";
-            } | {
-                /** @enum {string} */
-                issue?: "REFERENCE_ID_REQUIRED";
-                /** @enum {string} */
-                description?: "'reference_id' is required for each 'purchase_unit' if multiple 'purchase_unit' are provided.";
-            } | {
-                /** @enum {string} */
-                issue?: "SHIPPING_OPTIONS_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "Shipping options are not supported when `shipping.type` is specified or when 'application_context.shipping_preference' is set as 'NO_SHIPPING' or 'SET_PROVIDED_ADDRESS'.";
-            } | {
-                /** @enum {string} */
-                issue?: "TAX_TOTAL_MISMATCH";
-                /** @enum {string} */
-                description?: "Should equal sum of (tax * quantity) across all items for a given purchase_unit.";
-            } | {
-                /** @enum {string} */
-                issue?: "TAX_TOTAL_REQUIRED";
-                /** @enum {string} */
-                description?: "If item details are specified (items.tax_total and items.quantity) corresponding amount.breakdown.tax_total is required.";
-            } | {
-                /** @enum {string} */
-                issue?: "UNSUPPORTED_INTENT";
-                /** @enum {string} */
-                description?: "`intent=AUTHORIZE` is not supported for multiple purchase units. Only `intent=CAPTURE` is supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "UNSUPPORTED_PAYMENT_INSTRUCTION";
-                /** @enum {string} */
-                description?: "You must provide the payment instruction when you capture an authorized payment for `intent=AUTHORIZE`. For details, see <a href=\"/docs/api/payments/v2/#authorizations_capture\">Capture authorization</a>. For `intent=CAPTURE`, send the payment instruction when you create the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "SHIPPING_TYPE_NOT_SUPPORTED_FOR_CLIENT";
-                /** @enum {string} */
-                description?: "The API Caller account is not setup to be able to support a `shipping.type`=`PICKUP_IN_PERSON`. This feature is only supported for <a href=\"https://www.paypal.com/us/business/platforms-and-marketplaces\">PayPal Commerce Platform for Platforms and Marketplaces</a>.";
-            } | {
-                /** @enum {string} */
-                issue?: "UNSUPPORTED_SHIPPING_TYPE";
-                /** @enum {string} */
-                description?: "The provided `shipping.type` is only supported for `application_context.shipping_preference`=`SET_PROVIDED_ADDRESS` or `NO_SHIPPING`.";
-            } | {
-                /** @enum {string} */
-                issue?: "SHIPPING_OPTION_NOT_SELECTED";
-                /** @enum {string} */
-                description?: "At least one of the shipping.option should be set to 'selected = true'.";
-            } | {
-                /** @enum {string} */
-                issue?: "SHIPPING_OPTIONS_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "Shipping options are not supported when 'application_context.shipping_preference' is set as 'NO_SHIPPING' or 'SET_PROVIDED_ADDRESS'.";
-            } | {
-                /** @enum {string} */
-                issue?: "MULTIPLE_SHIPPING_OPTION_SELECTED";
-                /** @enum {string} */
-                description?: "Only one shipping.option can be set to 'selected = true'.";
-            } | {
-                /** @enum {string} */
-                issue?: "PREFERRED_SHIPPING_OPTION_AMOUNT_MISMATCH";
-                /** @enum {string} */
-                description?: "The amount provided in the preferred shipping option should match the amount provided in amount breakdown";
-            } | {
-                /** @enum {string} */
-                issue?: "AGREEMENT_ALREADY_CANCELLED";
-                /** @enum {string} */
-                description?: "The requested agreement is already canceled.";
-            } | {
-                /** @enum {string} */
-                issue?: "BILLING_AGREEMENT_NOT_FOUND";
-                /** @enum {string} */
-                description?: "The requested Billing Agreement token was not found.";
-            } | {
-                /** @enum {string} */
-                issue?: "COMPLIANCE_VIOLATION";
-                /** @enum {string} */
-                description?: "Transaction is declined due to compliance violation.";
-            } | {
-                /** @enum {string} */
-                issue?: "DOMESTIC_TRANSACTION_REQUIRED";
-                /** @enum {string} */
-                description?: "This transaction requires the payee and payer to be resident in the same country, a domestic transaction is required to create this payment.";
-            } | {
-                /** @enum {string} */
-                issue?: "DUPLICATE_INVOICE_ID";
-                /** @enum {string} */
-                description?: "Duplicate Invoice ID detected. To avoid a potential duplicate transaction your account setting requires that Invoice Id be unique for each transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "INSTRUMENT_DECLINED";
-                /** @enum {string} */
-                description?: "The instrument presented  was either declined by the processor or bank, or it can't be used for this payment.";
-            } | {
-                /** @enum {string} */
-                issue?: "MAX_NUMBER_OF_PAYMENT_ATTEMPTS_EXCEEDED";
-                /** @enum {string} */
-                description?: "You have exceeded the maximum number of payment attempts.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ENABLED_FOR_CARD_PROCESSING";
-                /** @enum {string} */
-                description?: "The API Caller account is not setup to be able to process card payments. Please contact PayPal customer support.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_BLOCKED_TRANSACTION";
-                /** @enum {string} */
-                description?: "The Fraud settings for this seller are such that this payment cannot be executed.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYER_ACCOUNT_LOCKED_OR_CLOSED";
-                /** @enum {string} */
-                description?: "The payer account cannot be used for this transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYER_ACCOUNT_RESTRICTED";
-                /** @enum {string} */
-                description?: "PAYER_ACCOUNT_RESTRICTED";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYER_CANNOT_PAY";
-                /** @enum {string} */
-                description?: "Combination of payer and payee settings mean that this buyer cannot pay this seller.";
-            } | {
-                /** @enum {string} */
-                issue?: "TRANSACTION_BLOCKED_BY_PAYEE";
-                /** @enum {string} */
-                description?: "Transaction blocked by Payee\u2019s Fraud Protection settings.";
-            } | {
-                /** @enum {string} */
-                issue?: "TRANSACTION_LIMIT_EXCEEDED";
-                /** @enum {string} */
-                description?: "Total payment amount exceeded transaction limit.";
-            } | {
-                /** @enum {string} */
-                issue?: "TRANSACTION_RECEIVING_LIMIT_EXCEEDED";
-                /** @enum {string} */
-                description?: "The transaction exceeds the receiver's receiving limit.";
-            } | {
-                /** @enum {string} */
-                issue?: "TRANSACTION_REFUSED";
-                /** @enum {string} */
-                description?: "The request was refused.";
-            } | {
-                /** @enum {string} */
-                issue?: "AUTH_CAPTURE_NOT_ENABLED";
-                /** @enum {string} */
-                description?: "Authorization and Capture feature is not enabled for the merchant. Make sure that the recipient of the funds is a verified business account.";
-            } | {
-                /** @enum {string} */
-                issue?: "UNSUPPORTED_PROCESSING_INSTRUCTION";
-                /** @enum {string} */
-                description?: "The specified processing_instruction is not supported for the given payment_source. Please refer to https://developer.paypal.com/api/orders/v2/#definition-processing_instruction for the list of payment_source that can be specified with this value.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_COMPLETE_ON_PAYMENT_APPROVAL";
-                /** @enum {string} */
-                description?: "A processing_instruction of `ORDER_COMPLETE_ON_PAYMENT_APPROVAL` is required for the specified payment_source. Please refer to the integration guide https://developer.paypal.com/docs/limited-release/alternative-payment-methods-with-orders/ for more details";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_EXPIRY_DATE";
-                /** @enum {string} */
-                description?: "Expiry date is invalid. Expiry date should be a date in future and within the threshold for the payment source.";
-            } | {
-                /** @enum {string} */
-                issue?: "INCOMPATIBLE_PARAMETER_VALUE";
-                /** @enum {string} */
-                description?: "The value of the field is incompatible/redundant with other fields in the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PREVIOUS_TRANSACTION_REFERENCE";
-                /** @enum {string} */
-                description?: "The authorization or capture referenced by `previous_transaction_reference` is not valid. This could be either because the previous_transaction_reference is not found or doesn't belong to the payee. Please use a valid `previous_transaction_reference`.";
-            } | {
-                /** @enum {string} */
-                issue?: "PREVIOUS_TRANSACTION_REFERENCE_HAS_CHARGEBACK";
-                /** @enum {string} */
-                description?: "The capture referenced by `previous_transaction_reference` has a chargeback and hence cannot be used for this order. Please use a `previous_transaction_reference` which does not have a chargeback.";
-            } | {
-                /** @enum {string} */
-                issue?: "PREVIOUS_TRANSACTION_REFERENCE_VOIDED";
-                /** @enum {string} */
-                description?: "The status of authorization referenced by `previous_transaction_reference` is `VOIDED` and hence cannot be used for this order. Please use a `previous_transaction_reference` whose status is not `VOIDED`.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYMENT_SOURCE_MISMATCH";
-                /** @enum {string} */
-                description?: "The `payment_source` in the request must match the `payment_source` used for the authorization or capture referenced by `previous_transaction_reference`. Please use `previous_transaction_reference` whose `payment_source` matches with the `payment_source` specified in the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "MERCHANT_INITIATED_WITH_SECURITY_CODE";
-                /** @enum {string} */
-                description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if `payment_source.card.security_code` is present in the order. `security_code` can be present in the order only when customer is the payment initiator. It is semantically incorrect to perform a merchant initiated payment with `security_code` is the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "MERCHANT_INITIATED_WITH_AUTHENTICATION_RESULTS";
-                /** @enum {string} */
-                description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if 3D-Secure authentication results are present in the order. 3D-Secure authentication results can be present in the order only when customer is the payment initiator. It is semantically incorrect to perform a merchant initiated payment with 3D-Secure authentication results is the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "MERCHANT_INITIATED_WITH_MULTIPLE_PURCHASE_UNITS";
-                /** @enum {string} */
-                description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if more than one purchase_unit is present in the Order. Merchant initiated payments are not supported from orders with more than one purchase_unit. Please retry the request with multiple Order requests (one for each purchase_unit).";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYMENT_SOURCE_INFO_CANNOT_BE_VERIFIED";
-                /** @enum {string} */
-                description?: "The combination of the payment_source name, billing address, shipping name and shipping address could not be verified. Please correct this information and try again by creating a new order.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYMENT_SOURCE_DECLINED_BY_PROCESSOR";
-                /** @enum {string} */
-                description?: "The provided payment source is declined by the processor. Please try again with a different payment source by creating a new order.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYMENT_SOURCE_CANNOT_BE_USED";
-                /** @enum {string} */
-                description?: "The provided payment source cannot be used to pay for the order. Please try again with a different payment source by creating a new order.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ENABLED_FOR_APPLE_PAY";
-                /** @enum {string} */
-                description?: "The 'API caller' and/or 'payee' is not setup to be able to process apple pay. Please contact your Account Manager.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ENABLED_FOR_GOOGLE_PAY";
-                /** @enum {string} */
-                description?: "The 'API caller' and/or 'payee' is not setup to be able to process google pay. Please contact your Account Manager.";
-            } | {
-                /** @enum {string} */
-                issue?: "APPLE_PAY_AMOUNT_MISMATCH";
-                /** @enum {string} */
-                description?: "The 'amount' specified in the Order should match the amount that was viewed and authorized by the payer/buyer on Apple Pay. If the amount has changed, please redirect the buyer to authorize the order again via Apple Pay.";
-            } | {
-                /** @enum {string} */
-                issue?: "BILLING_ADDRESS_INVALID";
-                /** @enum {string} */
-                description?: "Provided billing address is invalid.";
-            } | {
-                /** @enum {string} */
-                issue?: "SHIPPING_ADDRESS_INVALID";
-                /** @enum {string} */
-                description?: "Provided shipping address is invalid.";
-            } | {
-                /** @enum {string} */
-                issue?: "VAULT_INSTRUCTION_DUPLICATED";
-                /** @enum {string} */
-                description?: "Only one vault instruction is allowed. Please use `vault.store_in_vault` to provide vault instruction.";
-            } | {
-                /** @enum {string} */
-                issue?: "VAULT_INSTRUCTION_REQUIRED";
-                /** @enum {string} */
-                description?: "Vault instruction is required. Please use `vault.store_in_vault` to provide vault instruction.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISMATCHED_VAULT_ID_TO_PAYMENT_SOURCE";
-                /** @enum {string} */
-                description?: "The vault_id does not match the payment_source provided. Please verify that the vault_id token used refers to the matching payment_source and try again. For example, a PayPal token cannot be passed in the vault_id field in the payment_source.card object.";
-            } | {
-                /** @enum {string} */
-                issue?: "CRYPTOGRAM_REQUIRED";
-                /** @enum {string} */
-                description?: "Cryptogram is required if authentication method is CRYPTOGRAM 3DS.";
-            } | {
-                /** @enum {string} */
-                issue?: "EMV_DATA_REQUIRED";
-                /** @enum {string} */
-                description?: "EMV Data is required if authentication method is EMV.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ELIGIBLE_FOR_PNREF_PROCESSING";
-                /** @enum {string} */
-                description?: "API caller is not enabled to process payments with the `pnref`. Please contact customer support to request permissions to process transactions with PNREF.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ELIGIBLE_FOR_PAYPAL_TRANSACTION_ID_PROCESSING";
-                /** @enum {string} */
-                description?: "API caller is not enable to process payments using `paypal_transaction_id`. Please contact customer support to request permissions to process transactions with PayPal transaction ID.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYPAL_TRANSACTION_ID_NOT_FOUND";
-                /** @enum {string} */
-                description?: "Specified `paypal_transaction_id` was not found. Verify the value and try the request again.";
-            } | {
-                /** @enum {string} */
-                issue?: "PNREF_NOT_FOUND";
-                /** @enum {string} */
-                description?: "Specified `pnref` was not found. Verify the value and try the request again.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_SECURITY_CODE_LENGTH";
-                /** @enum {string} */
-                description?: "The security_code length is invalid for the specified card brand.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ENABLED_TO_VAULT_PAYMENT_SOURCE";
-                /** @enum {string} */
-                description?: "The API caller or the merchant on whose behalf the API call is initiated is not allowed to vault the given source. Please contact PayPal customer support for assistance.";
-            } | {
-                /** @enum {string} */
-                issue?: "REQUIRED_PARAMETER_FOR_CUSTOMER_INITIATED_PAYMENT";
-                /** @enum {string} */
-                description?: "This parameter is required when the customer is present. If the customer is not present, indicate so by sending payment_initiator=`MERCHANT`. For details, see <a href=\"https://developer.paypal.com/docs/api/orders/v2/#definition-card_stored_credential\">Stored Credential</a>.";
-            } | {
-                /** @enum {string} */
-                issue?: "TOKEN_EXPIRED";
-                /** @enum {string} */
-                description?: "The token is expired and cannot be used for payment.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_GOOGLE_PAY_TOKEN";
-                /** @enum {string} */
-                description?: "The google pay token is invalid. PayPal was not able to decrypt the googlepay token or PayPal was not able to find the necessary data in the token after decryption.";
-            } | {
-                /** @enum {string} */
-                issue?: "GOOGLE_PAY_GATEWAY_MERCHANT_ID_MISMATCH";
-                /** @enum {string} */
-                description?: "The gateway merchant ID in Google Pay token is not valid. This could be because the gateway merchant Id that was authorized by payer/buyer on Google Pay does not match with the API caller of the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "CRYPTOGRAM_REQUIRED";
-                /** @enum {string} */
-                description?: "Cryptogram is required if authentication method is CRYPTOGRAM 3DS.";
-            } | {
-                /** @enum {string} */
-                issue?: "ONE_OF_PARAMETERS_REQUIRED";
-                /** @enum {string} */
-                description?: "One or more field is required to continue with this request.";
-            } | {
-                /** @enum {string} */
-                issue?: "ALIAS_DECLINED_BY_PROCESSOR";
-                /** @enum {string} */
-                description?: "The provided alias was declined by the processor. Please create a new order with a different alias_key and/or alias_label and try again.";
-            } | {
-                /** @enum {string} */
-                issue?: "BLIK_ONE_CLICK_MISSING_REQUIRED_PARAMETER";
-                /** @enum {string} */
-                description?: "Blik's one_click flow requires one_click.auth_code and one_click.alias_label parameters for the buyer's first transaction. For all subsequent transactions,only the one_click.alias_key parameter is required.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "AMOUNT_MISMATCH";
+                      /** @enum {string} */
+                      description?: "Should equal item_total + tax_total + shipping + handling + insurance - shipping_discount - discount.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CANNOT_BE_NEGATIVE";
+                      /** @enum {string} */
+                      description?: "Must be greater than or equal to 0. If the currency supports decimals, only two decimal place precision is supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CANNOT_BE_ZERO_OR_NEGATIVE";
+                      /** @enum {string} */
+                      description?: "Must be greater than zero. If the currency supports decimals, only two decimal place precision is supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CARD_EXPIRED";
+                      /** @enum {string} */
+                      description?: "The card is expired";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_PREVIOUS_REFERENCE";
+                      /** @enum {string} */
+                      description?: "For Merchant initiated network token transactions, either the payment_source.card.stored_credential.previous_network_transaction_reference or payment_source.card.stored_credential.previous_transaction_reference must be included in the request.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_CRYPTOGRAM";
+                      /** @enum {string} */
+                      description?: "Cryptogram is mandatory for any customer initiated network token transactions.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CITY_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The specified country requires a city (address.admin_area_2).";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DECIMAL_PRECISION";
+                      /** @enum {string} */
+                      description?: "If the currency supports decimals, only two decimal place precision is supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DONATION_ITEMS_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "If 'purchase_unit' has \"DONATION\" as the 'items.category' then the Order can at most have one purchase_unit. Multiple purchase_units are not supported if either of them have at least one items with category as \"DONATION\".";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DUPLICATE_REFERENCE_ID";
+                      /** @enum {string} */
+                      description?: "`reference_id` must be unique if multiple `purchase_unit` are provided.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_CURRENCY_CODE";
+                      /** @enum {string} */
+                      description?: "Currency code is invalid or is not currently supported. Please refer https://developer.paypal.com/api/rest/reference/currency-codes/ for list of supported currency codes.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PAYER_ID";
+                      /** @enum {string} */
+                      description?: "The payer ID is not valid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ITEM_TOTAL_MISMATCH";
+                      /** @enum {string} */
+                      description?: "Should equal sum of (unit_amount * quantity) across all items for a given purchase_unit.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ITEM_TOTAL_REQUIRED";
+                      /** @enum {string} */
+                      description?: "If item details are specified (items.unit_amount and items.quantity) corresponding amount.breakdown.item_total is required.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MAX_VALUE_EXCEEDED";
+                      /** @enum {string} */
+                      description?: "Should be less than or equal to 999999999999999.99.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_PICKUP_ADDRESS";
+                      /** @enum {string} */
+                      description?: "A pickup address(`shipping.address`) is required for the provided `shipping.type`.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MULTI_CURRENCY_ORDER";
+                      /** @enum {string} */
+                      description?: "Multiple differing values of currency_code are not supported. Entire Order request must have the same currency_code.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MULTIPLE_ITEM_CATEGORIES";
+                      /** @enum {string} */
+                      description?: 'For a given \'purchase_unit\' the \'items.category\' could be either "PHYSICAL_GOODS" and/or "DIGITAL_GOODS" or just "DONATION".  \'items.category\' as "DONATION" cannot be combined with items with either "PHYSICAL_GOODS" or "DIGITAL_GOODS".';
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MULTIPLE_SHIPPING_ADDRESS_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "Multiple shipping addresses are not supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MULTIPLE_SHIPPING_TYPE_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "Different `shipping.type` are not supported across purchase units.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_ACCOUNT_INVALID";
+                      /** @enum {string} */
+                      description?: "Payee account specified is invalid. Please check the `payee.email_address` or `payee.merchant_id` specified and try again. Ensure that either  `payee.merchant_id` or `payee.email_address` is specified.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_ACCOUNT_LOCKED_OR_CLOSED";
+                      /** @enum {string} */
+                      description?: "The merchant account is locked or closed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_ACCOUNT_RESTRICTED";
+                      /** @enum {string} */
+                      description?: "The merchant account is restricted.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_PRICING_TIER_ID_NOT_ENABLED";
+                      /** @enum {string} */
+                      description?: "The API Caller is not enabled to process transactions by specifying a 'payee_pricing_tier_id'. Please work with your Account Manager to enable this option for your account.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PAYEE_PRICING_TIER_ID";
+                      /** @enum {string} */
+                      description?: "Please check the value specified or confirm with your Account Manager that the 'payee_pricing_tier_id' specified has been setup for the account.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_FX_RATE_ID_EXPIRED";
+                      /** @enum {string} */
+                      description?: "The specified FX Rate ID has expired. Please specify a different FX Rate Id and try the request again. Alternately, remove the FX Rate ID to process the request using the default exchange rate.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_FX_RATE_ID_CURRENCY_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The specified FX Rate ID is for a currency that does not match with the currency of this request. Please specify a different FX Rate ID and try the request again. Alternately, remove the FX Rate ID to process the request using the default exchange rate.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_FX_RATE_ID";
+                      /** @enum {string} */
+                      description?: "The specific FX Rate ID is not valid. This could be either because we are not able to look up the FX Rate based on this ID or it could be because the ID belongs to another API Caller.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PLATFORM_FEES_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "The API Caller is not enabled to process transactions by specifying 'platform_fees'. Please work with your PayPal Account Manager to enable this option for your account.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PLATFORM_FEES_ACCOUNT";
+                      /** @enum {string} */
+                      description?: "The specified platform_fees payee account is either invalid or account setup is incomplete.Please work with your PayPal Account Manager to enable this option for your account.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PLATFORM_FEES_AMOUNT";
+                      /** @enum {string} */
+                      description?: "The platform_fees amount cannot be greater than order amount.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "POSTAL_CODE_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The specified country requires a postal code.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "REFERENCE_ID_REQUIRED";
+                      /** @enum {string} */
+                      description?: "'reference_id' is required for each 'purchase_unit' if multiple 'purchase_unit' are provided.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "SHIPPING_OPTIONS_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "Shipping options are not supported when `shipping.type` is specified or when 'application_context.shipping_preference' is set as 'NO_SHIPPING' or 'SET_PROVIDED_ADDRESS'.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TAX_TOTAL_MISMATCH";
+                      /** @enum {string} */
+                      description?: "Should equal sum of (tax * quantity) across all items for a given purchase_unit.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TAX_TOTAL_REQUIRED";
+                      /** @enum {string} */
+                      description?: "If item details are specified (items.tax_total and items.quantity) corresponding amount.breakdown.tax_total is required.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "UNSUPPORTED_INTENT";
+                      /** @enum {string} */
+                      description?: "`intent=AUTHORIZE` is not supported for multiple purchase units. Only `intent=CAPTURE` is supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "UNSUPPORTED_PAYMENT_INSTRUCTION";
+                      /** @enum {string} */
+                      description?: 'You must provide the payment instruction when you capture an authorized payment for `intent=AUTHORIZE`. For details, see <a href="/docs/api/payments/v2/#authorizations_capture">Capture authorization</a>. For `intent=CAPTURE`, send the payment instruction when you create the order.';
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "SHIPPING_TYPE_NOT_SUPPORTED_FOR_CLIENT";
+                      /** @enum {string} */
+                      description?: 'The API Caller account is not setup to be able to support a `shipping.type`=`PICKUP_IN_PERSON`. This feature is only supported for <a href="https://www.paypal.com/us/business/platforms-and-marketplaces">PayPal Commerce Platform for Platforms and Marketplaces</a>.';
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "UNSUPPORTED_SHIPPING_TYPE";
+                      /** @enum {string} */
+                      description?: "The provided `shipping.type` is only supported for `application_context.shipping_preference`=`SET_PROVIDED_ADDRESS` or `NO_SHIPPING`.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "SHIPPING_OPTION_NOT_SELECTED";
+                      /** @enum {string} */
+                      description?: "At least one of the shipping.option should be set to 'selected = true'.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "SHIPPING_OPTIONS_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "Shipping options are not supported when 'application_context.shipping_preference' is set as 'NO_SHIPPING' or 'SET_PROVIDED_ADDRESS'.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MULTIPLE_SHIPPING_OPTION_SELECTED";
+                      /** @enum {string} */
+                      description?: "Only one shipping.option can be set to 'selected = true'.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PREFERRED_SHIPPING_OPTION_AMOUNT_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The amount provided in the preferred shipping option should match the amount provided in amount breakdown";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "AGREEMENT_ALREADY_CANCELLED";
+                      /** @enum {string} */
+                      description?: "The requested agreement is already canceled.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "BILLING_AGREEMENT_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "The requested Billing Agreement token was not found.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "COMPLIANCE_VIOLATION";
+                      /** @enum {string} */
+                      description?: "Transaction is declined due to compliance violation.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DOMESTIC_TRANSACTION_REQUIRED";
+                      /** @enum {string} */
+                      description?: "This transaction requires the payee and payer to be resident in the same country, a domestic transaction is required to create this payment.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DUPLICATE_INVOICE_ID";
+                      /** @enum {string} */
+                      description?: "Duplicate Invoice ID detected. To avoid a potential duplicate transaction your account setting requires that Invoice Id be unique for each transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INSTRUMENT_DECLINED";
+                      /** @enum {string} */
+                      description?: "The instrument presented  was either declined by the processor or bank, or it can't be used for this payment.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MAX_NUMBER_OF_PAYMENT_ATTEMPTS_EXCEEDED";
+                      /** @enum {string} */
+                      description?: "You have exceeded the maximum number of payment attempts.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ENABLED_FOR_CARD_PROCESSING";
+                      /** @enum {string} */
+                      description?: "The API Caller account is not setup to be able to process card payments. Please contact PayPal customer support.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_BLOCKED_TRANSACTION";
+                      /** @enum {string} */
+                      description?: "The Fraud settings for this seller are such that this payment cannot be executed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYER_ACCOUNT_LOCKED_OR_CLOSED";
+                      /** @enum {string} */
+                      description?: "The payer account cannot be used for this transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYER_ACCOUNT_RESTRICTED";
+                      /** @enum {string} */
+                      description?: "PAYER_ACCOUNT_RESTRICTED";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYER_CANNOT_PAY";
+                      /** @enum {string} */
+                      description?: "Combination of payer and payee settings mean that this buyer cannot pay this seller.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TRANSACTION_BLOCKED_BY_PAYEE";
+                      /** @enum {string} */
+                      description?: "Transaction blocked by Payee\u2019s Fraud Protection settings.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TRANSACTION_LIMIT_EXCEEDED";
+                      /** @enum {string} */
+                      description?: "Total payment amount exceeded transaction limit.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TRANSACTION_RECEIVING_LIMIT_EXCEEDED";
+                      /** @enum {string} */
+                      description?: "The transaction exceeds the receiver's receiving limit.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TRANSACTION_REFUSED";
+                      /** @enum {string} */
+                      description?: "The request was refused.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "AUTH_CAPTURE_NOT_ENABLED";
+                      /** @enum {string} */
+                      description?: "Authorization and Capture feature is not enabled for the merchant. Make sure that the recipient of the funds is a verified business account.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "UNSUPPORTED_PROCESSING_INSTRUCTION";
+                      /** @enum {string} */
+                      description?: "The specified processing_instruction is not supported for the given payment_source. Please refer to https://developer.paypal.com/api/orders/v2/#definition-processing_instruction for the list of payment_source that can be specified with this value.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_COMPLETE_ON_PAYMENT_APPROVAL";
+                      /** @enum {string} */
+                      description?: "A processing_instruction of `ORDER_COMPLETE_ON_PAYMENT_APPROVAL` is required for the specified payment_source. Please refer to the integration guide https://developer.paypal.com/docs/limited-release/alternative-payment-methods-with-orders/ for more details";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_EXPIRY_DATE";
+                      /** @enum {string} */
+                      description?: "Expiry date is invalid. Expiry date should be a date in future and within the threshold for the payment source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INCOMPATIBLE_PARAMETER_VALUE";
+                      /** @enum {string} */
+                      description?: "The value of the field is incompatible/redundant with other fields in the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PREVIOUS_TRANSACTION_REFERENCE";
+                      /** @enum {string} */
+                      description?: "The authorization or capture referenced by `previous_transaction_reference` is not valid. This could be either because the previous_transaction_reference is not found or doesn't belong to the payee. Please use a valid `previous_transaction_reference`.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PREVIOUS_TRANSACTION_REFERENCE_HAS_CHARGEBACK";
+                      /** @enum {string} */
+                      description?: "The capture referenced by `previous_transaction_reference` has a chargeback and hence cannot be used for this order. Please use a `previous_transaction_reference` which does not have a chargeback.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PREVIOUS_TRANSACTION_REFERENCE_VOIDED";
+                      /** @enum {string} */
+                      description?: "The status of authorization referenced by `previous_transaction_reference` is `VOIDED` and hence cannot be used for this order. Please use a `previous_transaction_reference` whose status is not `VOIDED`.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYMENT_SOURCE_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The `payment_source` in the request must match the `payment_source` used for the authorization or capture referenced by `previous_transaction_reference`. Please use `previous_transaction_reference` whose `payment_source` matches with the `payment_source` specified in the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MERCHANT_INITIATED_WITH_SECURITY_CODE";
+                      /** @enum {string} */
+                      description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if `payment_source.card.security_code` is present in the order. `security_code` can be present in the order only when customer is the payment initiator. It is semantically incorrect to perform a merchant initiated payment with `security_code` is the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MERCHANT_INITIATED_WITH_AUTHENTICATION_RESULTS";
+                      /** @enum {string} */
+                      description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if 3D-Secure authentication results are present in the order. 3D-Secure authentication results can be present in the order only when customer is the payment initiator. It is semantically incorrect to perform a merchant initiated payment with 3D-Secure authentication results is the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MERCHANT_INITIATED_WITH_MULTIPLE_PURCHASE_UNITS";
+                      /** @enum {string} */
+                      description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if more than one purchase_unit is present in the Order. Merchant initiated payments are not supported from orders with more than one purchase_unit. Please retry the request with multiple Order requests (one for each purchase_unit).";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYMENT_SOURCE_INFO_CANNOT_BE_VERIFIED";
+                      /** @enum {string} */
+                      description?: "The combination of the payment_source name, billing address, shipping name and shipping address could not be verified. Please correct this information and try again by creating a new order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYMENT_SOURCE_DECLINED_BY_PROCESSOR";
+                      /** @enum {string} */
+                      description?: "The provided payment source is declined by the processor. Please try again with a different payment source by creating a new order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYMENT_SOURCE_CANNOT_BE_USED";
+                      /** @enum {string} */
+                      description?: "The provided payment source cannot be used to pay for the order. Please try again with a different payment source by creating a new order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ENABLED_FOR_APPLE_PAY";
+                      /** @enum {string} */
+                      description?: "The 'API caller' and/or 'payee' is not setup to be able to process apple pay. Please contact your Account Manager.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ENABLED_FOR_GOOGLE_PAY";
+                      /** @enum {string} */
+                      description?: "The 'API caller' and/or 'payee' is not setup to be able to process google pay. Please contact your Account Manager.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "APPLE_PAY_AMOUNT_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The 'amount' specified in the Order should match the amount that was viewed and authorized by the payer/buyer on Apple Pay. If the amount has changed, please redirect the buyer to authorize the order again via Apple Pay.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "BILLING_ADDRESS_INVALID";
+                      /** @enum {string} */
+                      description?: "Provided billing address is invalid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "SHIPPING_ADDRESS_INVALID";
+                      /** @enum {string} */
+                      description?: "Provided shipping address is invalid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "VAULT_INSTRUCTION_DUPLICATED";
+                      /** @enum {string} */
+                      description?: "Only one vault instruction is allowed. Please use `vault.store_in_vault` to provide vault instruction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "VAULT_INSTRUCTION_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Vault instruction is required. Please use `vault.store_in_vault` to provide vault instruction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISMATCHED_VAULT_ID_TO_PAYMENT_SOURCE";
+                      /** @enum {string} */
+                      description?: "The vault_id does not match the payment_source provided. Please verify that the vault_id token used refers to the matching payment_source and try again. For example, a PayPal token cannot be passed in the vault_id field in the payment_source.card object.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CRYPTOGRAM_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Cryptogram is required if authentication method is CRYPTOGRAM 3DS.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "EMV_DATA_REQUIRED";
+                      /** @enum {string} */
+                      description?: "EMV Data is required if authentication method is EMV.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ELIGIBLE_FOR_PNREF_PROCESSING";
+                      /** @enum {string} */
+                      description?: "API caller is not enabled to process payments with the `pnref`. Please contact customer support to request permissions to process transactions with PNREF.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ELIGIBLE_FOR_PAYPAL_TRANSACTION_ID_PROCESSING";
+                      /** @enum {string} */
+                      description?: "API caller is not enable to process payments using `paypal_transaction_id`. Please contact customer support to request permissions to process transactions with PayPal transaction ID.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYPAL_TRANSACTION_ID_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "Specified `paypal_transaction_id` was not found. Verify the value and try the request again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PNREF_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "Specified `pnref` was not found. Verify the value and try the request again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_SECURITY_CODE_LENGTH";
+                      /** @enum {string} */
+                      description?: "The security_code length is invalid for the specified card brand.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ENABLED_TO_VAULT_PAYMENT_SOURCE";
+                      /** @enum {string} */
+                      description?: "The API caller or the merchant on whose behalf the API call is initiated is not allowed to vault the given source. Please contact PayPal customer support for assistance.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "REQUIRED_PARAMETER_FOR_CUSTOMER_INITIATED_PAYMENT";
+                      /** @enum {string} */
+                      description?: 'This parameter is required when the customer is present. If the customer is not present, indicate so by sending payment_initiator=`MERCHANT`. For details, see <a href="https://developer.paypal.com/docs/api/orders/v2/#definition-card_stored_credential">Stored Credential</a>.';
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TOKEN_EXPIRED";
+                      /** @enum {string} */
+                      description?: "The token is expired and cannot be used for payment.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_GOOGLE_PAY_TOKEN";
+                      /** @enum {string} */
+                      description?: "The google pay token is invalid. PayPal was not able to decrypt the googlepay token or PayPal was not able to find the necessary data in the token after decryption.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "GOOGLE_PAY_GATEWAY_MERCHANT_ID_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The gateway merchant ID in Google Pay token is not valid. This could be because the gateway merchant Id that was authorized by payer/buyer on Google Pay does not match with the API caller of the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CRYPTOGRAM_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Cryptogram is required if authentication method is CRYPTOGRAM 3DS.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ONE_OF_PARAMETERS_REQUIRED";
+                      /** @enum {string} */
+                      description?: "One or more field is required to continue with this request.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ALIAS_DECLINED_BY_PROCESSOR";
+                      /** @enum {string} */
+                      description?: "The provided alias was declined by the processor. Please create a new order with a different alias_key and/or alias_label and try again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "BLIK_ONE_CLICK_MISSING_REQUIRED_PARAMETER";
+                      /** @enum {string} */
+                      description?: "Blik's one_click flow requires one_click.auth_code and one_click.alias_label parameters for the buyer's first transaction. For all subsequent transactions,only the one_click.alias_key parameter is required.";
+                  }
+            )[];
         };
         /**
          * Error Details
@@ -757,7 +872,16 @@ export interface components {
             description?: string;
         };
         /** @description The default error response. */
-        error_default: components["schemas"]["error_400"] | components["schemas"]["error_401"] | components["schemas"]["error_403"] | components["schemas"]["error_404"] | components["schemas"]["error_409"] | components["schemas"]["error_415"] | components["schemas"]["error_422"] | components["schemas"]["error_500"] | components["schemas"]["error_503"];
+        error_default:
+            | components["schemas"]["error_400"]
+            | components["schemas"]["error_401"]
+            | components["schemas"]["error_403"]
+            | components["schemas"]["error_404"]
+            | components["schemas"]["error_409"]
+            | components["schemas"]["error_415"]
+            | components["schemas"]["error_422"]
+            | components["schemas"]["error_500"]
+            | components["schemas"]["error_503"];
         /**
          * 400 Error
          * @description Error response for 400
@@ -1312,7 +1436,23 @@ export interface components {
          * @description The card network or brand. Applies to credit, debit, gift, and payment cards.
          * @enum {string}
          */
-        card_brand: "VISA" | "MASTERCARD" | "DISCOVER" | "AMEX" | "SOLO" | "JCB" | "STAR" | "DELTA" | "SWITCH" | "MAESTRO" | "CB_NATIONALE" | "CONFIGOGA" | "CONFIDIS" | "ELECTRON" | "CETELEM" | "CHINA_UNION_PAY";
+        card_brand:
+            | "VISA"
+            | "MASTERCARD"
+            | "DISCOVER"
+            | "AMEX"
+            | "SOLO"
+            | "JCB"
+            | "STAR"
+            | "DELTA"
+            | "SWITCH"
+            | "MAESTRO"
+            | "CB_NATIONALE"
+            | "CONFIGOGA"
+            | "CONFIDIS"
+            | "ELECTRON"
+            | "CETELEM"
+            | "CHINA_UNION_PAY";
         /**
          * Card Type
          * @description Type of card. i.e Credit, Debit and so on.
@@ -1395,7 +1535,10 @@ export interface components {
          * @description Indicates the type of the stored payment_source payment.
          * @enum {string}
          */
-        stored_payment_source_payment_type: "ONE_TIME" | "RECURRING" | "UNSCHEDULED";
+        stored_payment_source_payment_type:
+            | "ONE_TIME"
+            | "RECURRING"
+            | "UNSCHEDULED";
         /**
          * @description Indicates if this is a `first` or `subsequent` payment using a stored payment source (also referred to as stored credential or card on file).
          * @default DERIVED
@@ -1430,7 +1573,13 @@ export interface components {
          * @description Electronic Commerce Indicator (ECI). The ECI value is part of the 2 data elements that indicate the transaction was processed electronically. This should be passed on the authorization transaction to the Gateway/Processor.
          * @enum {string}
          */
-        eci_flag: "MASTERCARD_NON_3D_SECURE_TRANSACTION" | "MASTERCARD_ATTEMPTED_AUTHENTICATION_TRANSACTION" | "MASTERCARD_FULLY_AUTHENTICATED_TRANSACTION" | "FULLY_AUTHENTICATED_TRANSACTION" | "ATTEMPTED_AUTHENTICATION_TRANSACTION" | "NON_3D_SECURE_TRANSACTION";
+        eci_flag:
+            | "MASTERCARD_NON_3D_SECURE_TRANSACTION"
+            | "MASTERCARD_ATTEMPTED_AUTHENTICATION_TRANSACTION"
+            | "MASTERCARD_FULLY_AUTHENTICATED_TRANSACTION"
+            | "FULLY_AUTHENTICATED_TRANSACTION"
+            | "ATTEMPTED_AUTHENTICATION_TRANSACTION"
+            | "NON_3D_SECURE_TRANSACTION";
         /**
          * Network Token
          * @description The Third Party Network token used to fund a payment.
@@ -1567,7 +1716,13 @@ export interface components {
              * @description Expected business/pricing model for the billing agreement.
              * @enum {string}
              */
-            usage_pattern?: "IMMEDIATE" | "DEFERRED" | "RECURRING_PREPAID" | "RECURRING_POSTPAID" | "THRESHOLD_PREPAID" | "THRESHOLD_POSTPAID";
+            usage_pattern?:
+                | "IMMEDIATE"
+                | "DEFERRED"
+                | "RECURRING_PREPAID"
+                | "RECURRING_POSTPAID"
+                | "THRESHOLD_PREPAID"
+                | "THRESHOLD_POSTPAID";
             /** @description The shipping address for the Payer. */
             shipping?: components["schemas"]["shipping_detail"];
             /**
@@ -1615,7 +1770,10 @@ export interface components {
              * @default GET_FROM_FILE
              * @enum {string}
              */
-            shipping_preference: "GET_FROM_FILE" | "NO_SHIPPING" | "SET_PROVIDED_ADDRESS";
+            shipping_preference:
+                | "GET_FROM_FILE"
+                | "NO_SHIPPING"
+                | "SET_PROVIDED_ADDRESS";
             /**
              * Format: uri
              * @description The URL where the customer will be redirected upon approving a payment.
@@ -1643,7 +1801,9 @@ export interface components {
              * @default UNRESTRICTED
              * @enum {string}
              */
-            payment_method_preference: "UNRESTRICTED" | "IMMEDIATE_PAYMENT_REQUIRED";
+            payment_method_preference:
+                | "UNRESTRICTED"
+                | "IMMEDIATE_PAYMENT_REQUIRED";
         };
         /** @description The PayPal billing agreement ID. References an approved recurring payment for goods or services. */
         billing_agreement_id: string;
@@ -1687,7 +1847,10 @@ export interface components {
              * @default GET_FROM_FILE
              * @enum {string}
              */
-            shipping_preference: "GET_FROM_FILE" | "NO_SHIPPING" | "SET_PROVIDED_ADDRESS";
+            shipping_preference:
+                | "GET_FROM_FILE"
+                | "NO_SHIPPING"
+                | "SET_PROVIDED_ADDRESS";
             /**
              * Format: uri
              * @description The URL where the customer is redirected after the customer approves the payment.
@@ -1951,7 +2114,10 @@ export interface components {
              * @default GET_FROM_FILE
              * @enum {string}
              */
-            shipping_preference: "GET_FROM_FILE" | "NO_SHIPPING" | "SET_PROVIDED_ADDRESS";
+            shipping_preference:
+                | "GET_FROM_FILE"
+                | "NO_SHIPPING"
+                | "SET_PROVIDED_ADDRESS";
         };
         /**
          * Base Vault Instruction Parameters
@@ -1971,7 +2137,13 @@ export interface components {
              * @description Expected business/pricing model for the billing agreement.
              * @enum {string}
              */
-            usage_pattern?: "IMMEDIATE" | "DEFERRED" | "RECURRING_PREPAID" | "RECURRING_POSTPAID" | "THRESHOLD_PREPAID" | "THRESHOLD_POSTPAID";
+            usage_pattern?:
+                | "IMMEDIATE"
+                | "DEFERRED"
+                | "RECURRING_PREPAID"
+                | "RECURRING_POSTPAID"
+                | "THRESHOLD_PREPAID"
+                | "THRESHOLD_POSTPAID";
             /**
              * @description The usage type associated with the Venmo payment token.
              * @enum {string}
@@ -2050,7 +2222,9 @@ export interface components {
          * @default UNRESTRICTED
          * @enum {string}
          */
-        payee_payment_method_preference: "UNRESTRICTED" | "IMMEDIATE_PAYMENT_REQUIRED";
+        payee_payment_method_preference:
+            | "UNRESTRICTED"
+            | "IMMEDIATE_PAYMENT_REQUIRED";
         /**
          * Payment Method
          * @description The customer and merchant payment preferences.
@@ -2096,7 +2270,10 @@ export interface components {
              * @default GET_FROM_FILE
              * @enum {string}
              */
-            shipping_preference: "GET_FROM_FILE" | "NO_SHIPPING" | "SET_PROVIDED_ADDRESS";
+            shipping_preference:
+                | "GET_FROM_FILE"
+                | "NO_SHIPPING"
+                | "SET_PROVIDED_ADDRESS";
             /**
              * @description DEPRECATED. Configures a <strong>Continue</strong> or <strong>Pay Now</strong> checkout flow.  The fields in `application_context` are now available in the `experience_context` object under the `payment_source` which supports them (eg. `payment_source.paypal.experience_context.user_action`). Please specify this field in the `experience_context` object instead of the `application_context` object.
              * @default CONTINUE
@@ -2204,7 +2381,15 @@ export interface components {
              * @description The HTTP method required to make the related call.
              * @enum {string}
              */
-            method?: "GET" | "POST" | "PUT" | "DELETE" | "HEAD" | "CONNECT" | "OPTIONS" | "PATCH";
+            method?:
+                | "GET"
+                | "POST"
+                | "PUT"
+                | "DELETE"
+                | "HEAD"
+                | "CONNECT"
+                | "OPTIONS"
+                | "PATCH";
         };
         /**
          * Saved Payment Source Response
@@ -2530,7 +2715,9 @@ export interface components {
          * @default NO_INSTRUCTION
          * @enum {string}
          */
-        processing_instruction: "ORDER_COMPLETE_ON_PAYMENT_APPROVAL" | "NO_INSTRUCTION";
+        processing_instruction:
+            | "ORDER_COMPLETE_ON_PAYMENT_APPROVAL"
+            | "NO_INSTRUCTION";
         tracker_status: unknown;
         universal_product_code: unknown;
         /**
@@ -2593,7 +2780,13 @@ export interface components {
              * @description The status for the authorized payment.
              * @enum {string}
              */
-            readonly status?: "CREATED" | "CAPTURED" | "DENIED" | "PARTIALLY_CAPTURED" | "VOIDED" | "PENDING";
+            readonly status?:
+                | "CREATED"
+                | "CAPTURED"
+                | "DENIED"
+                | "PARTIALLY_CAPTURED"
+                | "VOIDED"
+                | "PENDING";
             /** @description The details of the authorized order pending status. */
             readonly status_details?: components["schemas"]["authorization_status_details"];
         };
@@ -2606,9 +2799,15 @@ export interface components {
              * @description Indicates whether the transaction is eligible for seller protection. For information, see [PayPal Seller Protection for Merchants](https://www.paypal.com/us/webapps/mpp/security/seller-protection).
              * @enum {string}
              */
-            readonly status?: "ELIGIBLE" | "PARTIALLY_ELIGIBLE" | "NOT_ELIGIBLE";
+            readonly status?:
+                | "ELIGIBLE"
+                | "PARTIALLY_ELIGIBLE"
+                | "NOT_ELIGIBLE";
             /** @description An array of conditions that are covered for the transaction. */
-            readonly dispute_categories?: ("ITEM_NOT_RECEIVED" | "UNAUTHORIZED_TRANSACTION")[];
+            readonly dispute_categories?: (
+                | "ITEM_NOT_RECEIVED"
+                | "UNAUTHORIZED_TRANSACTION"
+            )[];
         };
         /**
          * Authorization
@@ -2639,17 +2838,209 @@ export interface components {
              * @description The address verification code for Visa, Discover, Mastercard, or American Express transactions.
              * @enum {string}
              */
-            readonly avs_code?: "A" | "B" | "C" | "D" | "E" | "F" | "G" | "I" | "M" | "N" | "P" | "R" | "S" | "U" | "W" | "X" | "Y" | "Z" | "Null" | "0" | "1" | "2" | "3" | "4";
+            readonly avs_code?:
+                | "A"
+                | "B"
+                | "C"
+                | "D"
+                | "E"
+                | "F"
+                | "G"
+                | "I"
+                | "M"
+                | "N"
+                | "P"
+                | "R"
+                | "S"
+                | "U"
+                | "W"
+                | "X"
+                | "Y"
+                | "Z"
+                | "Null"
+                | "0"
+                | "1"
+                | "2"
+                | "3"
+                | "4";
             /**
              * @description The card verification value code for for Visa, Discover, Mastercard, or American Express.
              * @enum {string}
              */
-            readonly cvv_code?: "E" | "I" | "M" | "N" | "P" | "S" | "U" | "X" | "All others" | "0" | "1" | "2" | "3" | "4";
+            readonly cvv_code?:
+                | "E"
+                | "I"
+                | "M"
+                | "N"
+                | "P"
+                | "S"
+                | "U"
+                | "X"
+                | "All others"
+                | "0"
+                | "1"
+                | "2"
+                | "3"
+                | "4";
             /**
              * @description Processor response code for the non-PayPal payment processor errors.
              * @enum {string}
              */
-            readonly response_code?: "0000" | "00N7" | "0100" | "0390" | "0500" | "0580" | "0800" | "0880" | "0890" | "0960" | "0R00" | "1000" | "10BR" | "1300" | "1310" | "1312" | "1317" | "1320" | "1330" | "1335" | "1340" | "1350" | "1352" | "1360" | "1370" | "1380" | "1382" | "1384" | "1390" | "1393" | "5100" | "5110" | "5120" | "5130" | "5135" | "5140" | "5150" | "5160" | "5170" | "5180" | "5190" | "5200" | "5210" | "5400" | "5500" | "5650" | "5700" | "5710" | "5800" | "5900" | "5910" | "5920" | "5930" | "5950" | "6300" | "7600" | "7700" | "7710" | "7800" | "7900" | "8000" | "8010" | "8020" | "8030" | "8100" | "8110" | "8220" | "9100" | "9500" | "9510" | "9520" | "9530" | "9540" | "9600" | "PCNR" | "PCVV" | "PP06" | "PPRN" | "PPAD" | "PPAB" | "PPAE" | "PPAG" | "PPAI" | "PPAR" | "PPAU" | "PPAV" | "PPAX" | "PPBG" | "PPC2" | "PPCE" | "PPCO" | "PPCR" | "PPCT" | "PPCU" | "PPD3" | "PPDC" | "PPDI" | "PPDV" | "PPDT" | "PPEF" | "PPEL" | "PPER" | "PPEX" | "PPFE" | "PPFI" | "PPFR" | "PPFV" | "PPGR" | "PPH1" | "PPIF" | "PPII" | "PPIM" | "PPIT" | "PPLR" | "PPLS" | "PPMB" | "PPMC" | "PPMD" | "PPNC" | "PPNL" | "PPNM" | "PPNT" | "PPPH" | "PPPI" | "PPPM" | "PPQC" | "PPRE" | "PPRF" | "PPRR" | "PPS0" | "PPS1" | "PPS2" | "PPS3" | "PPS4" | "PPS5" | "PPS6" | "PPSC" | "PPSD" | "PPSE" | "PPTE" | "PPTF" | "PPTI" | "PPTR" | "PPTT" | "PPTV" | "PPUA" | "PPUC" | "PPUE" | "PPUI" | "PPUP" | "PPUR" | "PPVC" | "PPVE" | "PPVT";
+            readonly response_code?:
+                | "0000"
+                | "00N7"
+                | "0100"
+                | "0390"
+                | "0500"
+                | "0580"
+                | "0800"
+                | "0880"
+                | "0890"
+                | "0960"
+                | "0R00"
+                | "1000"
+                | "10BR"
+                | "1300"
+                | "1310"
+                | "1312"
+                | "1317"
+                | "1320"
+                | "1330"
+                | "1335"
+                | "1340"
+                | "1350"
+                | "1352"
+                | "1360"
+                | "1370"
+                | "1380"
+                | "1382"
+                | "1384"
+                | "1390"
+                | "1393"
+                | "5100"
+                | "5110"
+                | "5120"
+                | "5130"
+                | "5135"
+                | "5140"
+                | "5150"
+                | "5160"
+                | "5170"
+                | "5180"
+                | "5190"
+                | "5200"
+                | "5210"
+                | "5400"
+                | "5500"
+                | "5650"
+                | "5700"
+                | "5710"
+                | "5800"
+                | "5900"
+                | "5910"
+                | "5920"
+                | "5930"
+                | "5950"
+                | "6300"
+                | "7600"
+                | "7700"
+                | "7710"
+                | "7800"
+                | "7900"
+                | "8000"
+                | "8010"
+                | "8020"
+                | "8030"
+                | "8100"
+                | "8110"
+                | "8220"
+                | "9100"
+                | "9500"
+                | "9510"
+                | "9520"
+                | "9530"
+                | "9540"
+                | "9600"
+                | "PCNR"
+                | "PCVV"
+                | "PP06"
+                | "PPRN"
+                | "PPAD"
+                | "PPAB"
+                | "PPAE"
+                | "PPAG"
+                | "PPAI"
+                | "PPAR"
+                | "PPAU"
+                | "PPAV"
+                | "PPAX"
+                | "PPBG"
+                | "PPC2"
+                | "PPCE"
+                | "PPCO"
+                | "PPCR"
+                | "PPCT"
+                | "PPCU"
+                | "PPD3"
+                | "PPDC"
+                | "PPDI"
+                | "PPDV"
+                | "PPDT"
+                | "PPEF"
+                | "PPEL"
+                | "PPER"
+                | "PPEX"
+                | "PPFE"
+                | "PPFI"
+                | "PPFR"
+                | "PPFV"
+                | "PPGR"
+                | "PPH1"
+                | "PPIF"
+                | "PPII"
+                | "PPIM"
+                | "PPIT"
+                | "PPLR"
+                | "PPLS"
+                | "PPMB"
+                | "PPMC"
+                | "PPMD"
+                | "PPNC"
+                | "PPNL"
+                | "PPNM"
+                | "PPNT"
+                | "PPPH"
+                | "PPPI"
+                | "PPPM"
+                | "PPQC"
+                | "PPRE"
+                | "PPRF"
+                | "PPRR"
+                | "PPS0"
+                | "PPS1"
+                | "PPS2"
+                | "PPS3"
+                | "PPS4"
+                | "PPS5"
+                | "PPS6"
+                | "PPSC"
+                | "PPSD"
+                | "PPSE"
+                | "PPTE"
+                | "PPTF"
+                | "PPTI"
+                | "PPTR"
+                | "PPTT"
+                | "PPTV"
+                | "PPUA"
+                | "PPUC"
+                | "PPUE"
+                | "PPUI"
+                | "PPUP"
+                | "PPUR"
+                | "PPVC"
+                | "PPVE"
+                | "PPVT";
             /**
              * @description The declined payment transactions might have payment advice codes. The card networks, like Visa and Mastercard, return payment advice codes.
              * @enum {string}
@@ -2673,7 +3064,18 @@ export interface components {
              * @description The reason why the captured payment status is `PENDING` or `DENIED`.
              * @enum {string}
              */
-            reason?: "BUYER_COMPLAINT" | "CHARGEBACK" | "ECHECK" | "INTERNATIONAL_WITHDRAWAL" | "OTHER" | "PENDING_REVIEW" | "RECEIVING_PREFERENCE_MANDATES_MANUAL_ACTION" | "REFUNDED" | "TRANSACTION_APPROVED_AWAITING_FUNDING" | "UNILATERAL" | "VERIFICATION_REQUIRED";
+            reason?:
+                | "BUYER_COMPLAINT"
+                | "CHARGEBACK"
+                | "ECHECK"
+                | "INTERNATIONAL_WITHDRAWAL"
+                | "OTHER"
+                | "PENDING_REVIEW"
+                | "RECEIVING_PREFERENCE_MANDATES_MANUAL_ACTION"
+                | "REFUNDED"
+                | "TRANSACTION_APPROVED_AWAITING_FUNDING"
+                | "UNILATERAL"
+                | "VERIFICATION_REQUIRED";
         };
         /**
          * Capture Status
@@ -2684,7 +3086,13 @@ export interface components {
              * @description The status of the captured payment.
              * @enum {string}
              */
-            readonly status?: "COMPLETED" | "DECLINED" | "PARTIALLY_REFUNDED" | "PENDING" | "REFUNDED" | "FAILED";
+            readonly status?:
+                | "COMPLETED"
+                | "DECLINED"
+                | "PARTIALLY_REFUNDED"
+                | "PENDING"
+                | "REFUNDED"
+                | "FAILED";
             /** @description The details of the captured payment status. */
             readonly status_details?: components["schemas"]["capture_status_details"];
         };
@@ -2874,7 +3282,13 @@ export interface components {
          * @description The order status.
          * @enum {string}
          */
-        order_status: "CREATED" | "SAVED" | "APPROVED" | "VOIDED" | "COMPLETED" | "PAYER_ACTION_REQUIRED";
+        order_status:
+            | "CREATED"
+            | "SAVED"
+            | "APPROVED"
+            | "VOIDED"
+            | "COMPLETED"
+            | "PAYER_ACTION_REQUIRED";
         /**
          * Order
          * @description The order details.
@@ -2922,245 +3336,294 @@ export interface components {
          */
         patch_request: components["schemas"]["patch"][];
         "orders.patch-400": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "FIELD_NOT_PATCHABLE";
-                /** @enum {string} */
-                description?: "Field cannot be patched.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_ARRAY_MAX_ITEMS";
-                /** @enum {string} */
-                description?: "The number of items in an array parameter is too large.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER_SYNTAX";
-                /** @enum {string} */
-                description?: "The value of a field does not conform to the expected format.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_STRING_LENGTH";
-                /** @enum {string} */
-                description?: "The value of a field is either too short or too long";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER_VALUE";
-                /** @enum {string} */
-                description?: "The value of a field is invalid.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_REQUIRED_PARAMETER";
-                /** @enum {string} */
-                description?: "A required field / parameter is missing.";
-            } | {
-                /** @enum {string} */
-                issue?: "AMOUNT_NOT_PATCHABLE";
-                /** @enum {string} */
-                description?: "The amount cannot be updated as the 'payer' has chosen and approved a specific financing offer for a given amount. Please Create a new Order with the updated Order amount and have the 'payer' approve the new payment terms.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PATCH_OPERATION";
-                /** @enum {string} */
-                description?: "The operation cannot be honored. Cannot add a property that's already present, use replace. Cannot remove a property thats not present, use add. Cannot replace a property thats not present, use add.";
-            } | {
-                /** @enum {string} */
-                issue?: "MALFORMED_REQUEST_JSON";
-                /** @enum {string} */
-                description?: "The request JSON is not well formed.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "FIELD_NOT_PATCHABLE";
+                      /** @enum {string} */
+                      description?: "Field cannot be patched.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_ARRAY_MAX_ITEMS";
+                      /** @enum {string} */
+                      description?: "The number of items in an array parameter is too large.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER_SYNTAX";
+                      /** @enum {string} */
+                      description?: "The value of a field does not conform to the expected format.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_STRING_LENGTH";
+                      /** @enum {string} */
+                      description?: "The value of a field is either too short or too long";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER_VALUE";
+                      /** @enum {string} */
+                      description?: "The value of a field is invalid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_REQUIRED_PARAMETER";
+                      /** @enum {string} */
+                      description?: "A required field / parameter is missing.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "AMOUNT_NOT_PATCHABLE";
+                      /** @enum {string} */
+                      description?: "The amount cannot be updated as the 'payer' has chosen and approved a specific financing offer for a given amount. Please Create a new Order with the updated Order amount and have the 'payer' approve the new payment terms.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PATCH_OPERATION";
+                      /** @enum {string} */
+                      description?: "The operation cannot be honored. Cannot add a property that's already present, use replace. Cannot remove a property thats not present, use add. Cannot replace a property thats not present, use add.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MALFORMED_REQUEST_JSON";
+                      /** @enum {string} */
+                      description?: "The request JSON is not well formed.";
+                  }
+            )[];
         };
         "orders.patch-422": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "AMOUNT_MISMATCH";
-                /** @enum {string} */
-                description?: "Should equal item_total + tax_total + shipping + handling + insurance - shipping_discount - discount.";
-            } | {
-                /** @enum {string} */
-                issue?: "CANNOT_BE_NEGATIVE";
-                /** @enum {string} */
-                description?: "Must be greater than or equal to 0. If the currency supports decimals, only two decimal place precision is supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "CANNOT_BE_ZERO_OR_NEGATIVE";
-                /** @enum {string} */
-                description?: "Must be greater than zero. If the currency supports decimals, only two decimal place precision is supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "CITY_REQUIRED";
-                /** @enum {string} */
-                description?: "The specified country requires a city (address.admin_area_2).";
-            } | {
-                /** @enum {string} */
-                issue?: "DECIMAL_PRECISION";
-                /** @enum {string} */
-                description?: "If the currency supports decimals, only two decimal place precision is supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "DONATION_ITEMS_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "If 'purchase_unit' has \"DONATION\" as the 'items.category' then the Order can at most have one purchase_unit. Multiple purchase_units are not supported if either of them have at least one items with category as \"DONATION\".";
-            } | {
-                /** @enum {string} */
-                issue?: "DUPLICATE_REFERENCE_ID";
-                /** @enum {string} */
-                description?: "`reference_id` must be unique if multiple `purchase_unit` are provided.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_CURRENCY_CODE";
-                /** @enum {string} */
-                description?: "Currency code is invalid or is not currently supported. Please refer https://developer.paypal.com/api/rest/reference/currency-codes/ for list of supported currency codes.";
-            } | {
-                /** @enum {string} */
-                issue?: "ITEM_TOTAL_MISMATCH";
-                /** @enum {string} */
-                description?: "Should equal sum of (unit_amount * quantity) across all items for a given purchase_unit.";
-            } | {
-                /** @enum {string} */
-                issue?: "ITEM_TOTAL_REQUIRED";
-                /** @enum {string} */
-                description?: "If item details are specified (items.unit_amount and items.quantity) corresponding amount.breakdown.item_total is required.";
-            } | {
-                /** @enum {string} */
-                issue?: "MAX_VALUE_EXCEEDED";
-                /** @enum {string} */
-                description?: "Should be less than or equal to 999999999999999.99.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_JSON_POINTER_FORMAT";
-                /** @enum {string} */
-                description?: "Path should be a valid JSON Pointer https://tools.ietf.org/html/rfc6901 that references a location within the request where the operation is performed.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER";
-                /** @enum {string} */
-                description?: "Cannot be specified as part of the request.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_PATCHABLE";
-                /** @enum {string} */
-                description?: "Cannot be patched.";
-            } | {
-                /** @enum {string} */
-                issue?: "TAX_TOTAL_MISMATCH";
-                /** @enum {string} */
-                description?: "Should equal sum of (tax * quantity) across all items for a given purchase_unit.";
-            } | {
-                /** @enum {string} */
-                issue?: "TAX_TOTAL_REQUIRED";
-                /** @enum {string} */
-                description?: "If item details are specified (items.tax_total and items.quantity) corresponding amount.breakdown.tax_total is required.";
-            } | {
-                /** @enum {string} */
-                issue?: "UNSUPPORTED_INTENT";
-                /** @enum {string} */
-                description?: "`intent=AUTHORIZE` is not supported for multiple purchase units. Only `intent=CAPTURE` is supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "UNSUPPORTED_PATCH_PARAMETER_VALUE";
-                /** @enum {string} */
-                description?: "The value specified for this field is not currently supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "PATCH_VALUE_REQUIRED";
-                /** @enum {string} */
-                description?: "Please specify a 'value' to for the field that is being patched.";
-            } | {
-                /** @enum {string} */
-                issue?: "PATCH_PATH_REQUIRED";
-                /** @enum {string} */
-                description?: "Please specify a 'path' for the field for which the operation needs to be performed.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_ACCOUNT_LOCKED_OR_CLOSED";
-                /** @enum {string} */
-                description?: "The merchant account is locked or closed.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_ACCOUNT_RESTRICTED";
-                /** @enum {string} */
-                description?: "The merchant account is restricted.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_FX_RATE_ID_EXPIRED";
-                /** @enum {string} */
-                description?: "The specified FX Rate ID has expired. Please specify a different FX Rate Id and try the request again. Alternately, remove the FX Rate ID to process the request using the default exchange rate.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_FX_RATE_ID_CURRENCY_MISMATCH";
-                /** @enum {string} */
-                description?: "The specified FX Rate ID is for a currency that does not match with the currency of this request. Please specify a different FX Rate ID and try the request again. Alternately, remove the FX Rate ID to process the request using the default exchange rate.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_FX_RATE_ID";
-                /** @enum {string} */
-                description?: "The specific FX Rate ID is not valid. This could be either because we are not able to look up the FX Rate based on this ID or it could be because the ID belongs to another API Caller.";
-            } | {
-                /** @enum {string} */
-                issue?: "PLATFORM_FEES_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "The API Caller is not enabled to process transactions by specifying 'platform_fees'. Please work with your PayPal Account Manager to enable this option for your account.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PLATFORM_FEES_ACCOUNT";
-                /** @enum {string} */
-                description?: "The specified platform_fees payee account is either invalid or account setup is incomplete.Please work with your PayPal Account Manager to enable this option for your account.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PLATFORM_FEES_AMOUNT";
-                /** @enum {string} */
-                description?: "The platform_fees amount cannot be greater than order amount.";
-            } | {
-                /** @enum {string} */
-                issue?: "POSTAL_CODE_REQUIRED";
-                /** @enum {string} */
-                description?: "The specified country requires a postal code.";
-            } | {
-                /** @enum {string} */
-                issue?: "REFERENCE_ID_NOT_FOUND";
-                /** @enum {string} */
-                description?: "Filter expression value is incorrect. Please check the value of the reference_id and try again.";
-            } | {
-                /** @enum {string} */
-                issue?: "REFERENCE_ID_REQUIRED";
-                /** @enum {string} */
-                description?: "'reference_id' is required for each 'purchase_unit' if multiple 'purchase_unit' are provided.";
-            } | {
-                /** @enum {string} */
-                issue?: "MULTI_CURRENCY_ORDER";
-                /** @enum {string} */
-                description?: "Multiple differing values of currency_code are not supported. Entire Order request must have the same currency_code.";
-            } | {
-                /** @enum {string} */
-                issue?: "SHIPPING_OPTION_NOT_SELECTED";
-                /** @enum {string} */
-                description?: "At least one of the shipping.option should be set to 'selected = true'.";
-            } | {
-                /** @enum {string} */
-                issue?: "SHIPPING_OPTIONS_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "Shipping options are not supported when 'application_context.shipping_preference' is set as 'NO_SHIPPING' or 'SET_PROVIDED_ADDRESS'.";
-            } | {
-                /** @enum {string} */
-                issue?: "MULTIPLE_SHIPPING_OPTION_SELECTED";
-                /** @enum {string} */
-                description?: "Only one shipping.option can be set to 'selected = true'.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_ALREADY_COMPLETED";
-                /** @enum {string} */
-                description?: "The order cannot be patched after it is completed.";
-            } | {
-                /** @enum {string} */
-                issue?: "PREFERRED_SHIPPING_OPTION_AMOUNT_MISMATCH";
-                /** @enum {string} */
-                description?: "The amount provided in the preferred shipping option should match the amount provided in amount breakdown";
-            } | {
-                /** @enum {string} */
-                issue?: "AMOUNT_CHANGE_NOT_ALLOWED";
-                /** @enum {string} */
-                description?: "The amount specified is different from the amount authorized by payer.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "AMOUNT_MISMATCH";
+                      /** @enum {string} */
+                      description?: "Should equal item_total + tax_total + shipping + handling + insurance - shipping_discount - discount.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CANNOT_BE_NEGATIVE";
+                      /** @enum {string} */
+                      description?: "Must be greater than or equal to 0. If the currency supports decimals, only two decimal place precision is supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CANNOT_BE_ZERO_OR_NEGATIVE";
+                      /** @enum {string} */
+                      description?: "Must be greater than zero. If the currency supports decimals, only two decimal place precision is supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CITY_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The specified country requires a city (address.admin_area_2).";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DECIMAL_PRECISION";
+                      /** @enum {string} */
+                      description?: "If the currency supports decimals, only two decimal place precision is supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DONATION_ITEMS_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "If 'purchase_unit' has \"DONATION\" as the 'items.category' then the Order can at most have one purchase_unit. Multiple purchase_units are not supported if either of them have at least one items with category as \"DONATION\".";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DUPLICATE_REFERENCE_ID";
+                      /** @enum {string} */
+                      description?: "`reference_id` must be unique if multiple `purchase_unit` are provided.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_CURRENCY_CODE";
+                      /** @enum {string} */
+                      description?: "Currency code is invalid or is not currently supported. Please refer https://developer.paypal.com/api/rest/reference/currency-codes/ for list of supported currency codes.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ITEM_TOTAL_MISMATCH";
+                      /** @enum {string} */
+                      description?: "Should equal sum of (unit_amount * quantity) across all items for a given purchase_unit.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ITEM_TOTAL_REQUIRED";
+                      /** @enum {string} */
+                      description?: "If item details are specified (items.unit_amount and items.quantity) corresponding amount.breakdown.item_total is required.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MAX_VALUE_EXCEEDED";
+                      /** @enum {string} */
+                      description?: "Should be less than or equal to 999999999999999.99.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_JSON_POINTER_FORMAT";
+                      /** @enum {string} */
+                      description?: "Path should be a valid JSON Pointer https://tools.ietf.org/html/rfc6901 that references a location within the request where the operation is performed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER";
+                      /** @enum {string} */
+                      description?: "Cannot be specified as part of the request.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_PATCHABLE";
+                      /** @enum {string} */
+                      description?: "Cannot be patched.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TAX_TOTAL_MISMATCH";
+                      /** @enum {string} */
+                      description?: "Should equal sum of (tax * quantity) across all items for a given purchase_unit.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TAX_TOTAL_REQUIRED";
+                      /** @enum {string} */
+                      description?: "If item details are specified (items.tax_total and items.quantity) corresponding amount.breakdown.tax_total is required.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "UNSUPPORTED_INTENT";
+                      /** @enum {string} */
+                      description?: "`intent=AUTHORIZE` is not supported for multiple purchase units. Only `intent=CAPTURE` is supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "UNSUPPORTED_PATCH_PARAMETER_VALUE";
+                      /** @enum {string} */
+                      description?: "The value specified for this field is not currently supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PATCH_VALUE_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Please specify a 'value' to for the field that is being patched.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PATCH_PATH_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Please specify a 'path' for the field for which the operation needs to be performed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_ACCOUNT_LOCKED_OR_CLOSED";
+                      /** @enum {string} */
+                      description?: "The merchant account is locked or closed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_ACCOUNT_RESTRICTED";
+                      /** @enum {string} */
+                      description?: "The merchant account is restricted.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_FX_RATE_ID_EXPIRED";
+                      /** @enum {string} */
+                      description?: "The specified FX Rate ID has expired. Please specify a different FX Rate Id and try the request again. Alternately, remove the FX Rate ID to process the request using the default exchange rate.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_FX_RATE_ID_CURRENCY_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The specified FX Rate ID is for a currency that does not match with the currency of this request. Please specify a different FX Rate ID and try the request again. Alternately, remove the FX Rate ID to process the request using the default exchange rate.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_FX_RATE_ID";
+                      /** @enum {string} */
+                      description?: "The specific FX Rate ID is not valid. This could be either because we are not able to look up the FX Rate based on this ID or it could be because the ID belongs to another API Caller.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PLATFORM_FEES_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "The API Caller is not enabled to process transactions by specifying 'platform_fees'. Please work with your PayPal Account Manager to enable this option for your account.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PLATFORM_FEES_ACCOUNT";
+                      /** @enum {string} */
+                      description?: "The specified platform_fees payee account is either invalid or account setup is incomplete.Please work with your PayPal Account Manager to enable this option for your account.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PLATFORM_FEES_AMOUNT";
+                      /** @enum {string} */
+                      description?: "The platform_fees amount cannot be greater than order amount.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "POSTAL_CODE_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The specified country requires a postal code.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "REFERENCE_ID_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "Filter expression value is incorrect. Please check the value of the reference_id and try again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "REFERENCE_ID_REQUIRED";
+                      /** @enum {string} */
+                      description?: "'reference_id' is required for each 'purchase_unit' if multiple 'purchase_unit' are provided.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MULTI_CURRENCY_ORDER";
+                      /** @enum {string} */
+                      description?: "Multiple differing values of currency_code are not supported. Entire Order request must have the same currency_code.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "SHIPPING_OPTION_NOT_SELECTED";
+                      /** @enum {string} */
+                      description?: "At least one of the shipping.option should be set to 'selected = true'.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "SHIPPING_OPTIONS_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "Shipping options are not supported when 'application_context.shipping_preference' is set as 'NO_SHIPPING' or 'SET_PROVIDED_ADDRESS'.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MULTIPLE_SHIPPING_OPTION_SELECTED";
+                      /** @enum {string} */
+                      description?: "Only one shipping.option can be set to 'selected = true'.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_ALREADY_COMPLETED";
+                      /** @enum {string} */
+                      description?: "The order cannot be patched after it is completed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PREFERRED_SHIPPING_OPTION_AMOUNT_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The amount provided in the preferred shipping option should match the amount provided in amount breakdown";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "AMOUNT_CHANGE_NOT_ALLOWED";
+                      /** @enum {string} */
+                      description?: "The amount specified is different from the amount authorized by payer.";
+                  }
+            )[];
         };
         /**
          * Confirm Application Context
@@ -3193,330 +3656,396 @@ export interface components {
             application_context?: components["schemas"]["order_confirm_application_context"];
         };
         "orders.confirm-400": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER_SYNTAX";
-                /** @enum {string} */
-                description?: "The value of the field does not conform to the expected format.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER_VALUE";
-                /** @enum {string} */
-                description?: "A parameter value is not valid.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_REQUIRED_PARAMETER";
-                /** @enum {string} */
-                description?: "A required field / parameter is missing";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_STRING_LENGTH";
-                /** @enum {string} */
-                description?: "The value of a field is either too short or too long";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_STRING_MAX_LENGTH";
-                /** @enum {string} */
-                description?: "The value of a field is too long.";
-            } | {
-                /** @enum {string} */
-                issue?: "MALFORMED_REQUEST_JSON";
-                /** @enum {string} */
-                description?: "The request JSON is not well formed.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER_SYNTAX";
+                      /** @enum {string} */
+                      description?: "The value of the field does not conform to the expected format.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER_VALUE";
+                      /** @enum {string} */
+                      description?: "A parameter value is not valid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_REQUIRED_PARAMETER";
+                      /** @enum {string} */
+                      description?: "A required field / parameter is missing";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_STRING_LENGTH";
+                      /** @enum {string} */
+                      description?: "The value of a field is either too short or too long";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_STRING_MAX_LENGTH";
+                      /** @enum {string} */
+                      description?: "The value of a field is too long.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MALFORMED_REQUEST_JSON";
+                      /** @enum {string} */
+                      description?: "The request JSON is not well formed.";
+                  }
+            )[];
         };
         "orders.confirm-422": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "ORDER_ALREADY_CAPTURED";
-                /** @enum {string} */
-                description?: "Order already captured. If 'intent=CAPTURE' only one capture per order is allowed.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_ALREADY_AUTHORIZED";
-                /** @enum {string} */
-                description?: "Order already captured. If 'intent=CAPTURE' only one capture per order is allowed.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_CANNOT_BE_CONFIRMED";
-                /** @enum {string} */
-                description?: "An order with status = 'COMPLETED' cannot be confirmed again.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_PREVIOUS_REFERENCE";
-                /** @enum {string} */
-                description?: "For Merchant initiated network token transactions, either the payment_source.card.stored_credential.previous_network_transaction_reference or payment_source.card.stored_credential.previous_transaction_reference must be included in the request.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_CRYPTOGRAM";
-                /** @enum {string} */
-                description?: "Cryptogram is mandatory for any customer initiated network token transactions.";
-            } | {
-                /** @enum {string} */
-                issue?: "CURRENCY_NOT_SUPPORTED_FOR_COUNTRY";
-                /** @enum {string} */
-                description?: " For the payment_source specified, the currency of the Order is restricted by the country in which the payee account is based. Please refer https://developer.paypal.com/api/rest/reference/currency-codes/ for list of supported currency codes.";
-            } | {
-                /** @enum {string} */
-                issue?: "CARD_EXPIRED";
-                /** @enum {string} */
-                description?: "The card is expired";
-            } | {
-                /** @enum {string} */
-                issue?: "CARD_TYPE_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "Processing of this card type is not supported. Use another card type.";
-            } | {
-                /** @enum {string} */
-                issue?: "CURRENCY_NOT_SUPPORTED_FOR_CARD_TYPE";
-                /** @enum {string} */
-                description?: "The issued currency code of this card is not supported for direct card payments. Please refer https://developer.paypal.com/api/rest/reference/currency-codes/ for list of supported currency codes.";
-            } | {
-                /** @enum {string} */
-                issue?: "ONLY_ONE_PAYMENT_SOURCE_ALLOWED";
-                /** @enum {string} */
-                description?: "More than one payment method within the payment source is not supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "NO_PAYMENT_SOURCE_PROVIDED";
-                /** @enum {string} */
-                description?: "At least one payment method is required within the payment source.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYMENT_ALREADY_APPROVED";
-                /** @enum {string} */
-                description?: "The payment has already been approved.  Please capture the order, or create and confirm a new order with this payment source.";
-            } | {
-                /** @enum {string} */
-                issue?: "UNSUPPORTED_PROCESSING_INSTRUCTION";
-                /** @enum {string} */
-                description?: "The specified processing_instruction is not supported for the given payment_source. Please refer to https://developer.paypal.com/api/orders/v2/#definition-processing_instruction for the list of payment_source that can be specified with this value.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_COMPLETE_ON_PAYMENT_APPROVAL";
-                /** @enum {string} */
-                description?: "A processing_instruction of `ORDER_COMPLETE_ON_PAYMENT_APPROVAL` is required for the specified payment_source.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_EXPIRY_DATE";
-                /** @enum {string} */
-                description?: "Expiry date is invalid. Expiry date should be a date in future and within the threshold for the payment source.";
-            } | {
-                /** @enum {string} */
-                issue?: "TOKEN_EXPIRED";
-                /** @enum {string} */
-                description?: "The token is expired and cannot be used for payment.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_GOOGLE_PAY_TOKEN";
-                /** @enum {string} */
-                description?: "The google pay token is invalid. PayPal was not able to decrypt the googlepay token or PayPal was not able to find the necessary data in the token after decryption.";
-            } | {
-                /** @enum {string} */
-                issue?: "GOOGLE_PAY_GATEWAY_MERCHANT_ID_MISMATCH";
-                /** @enum {string} */
-                description?: "The gateway merchant ID in Google Pay token is not valid. This could be because the gateway merchant Id that was authorized by payer/buyer on Google Pay does not match with the API caller of the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "CRYPTOGRAM_REQUIRED";
-                /** @enum {string} */
-                description?: "Cryptogram is required if authentication method is CRYPTOGRAM 3DS.";
-            } | {
-                /** @enum {string} */
-                issue?: "ONE_OF_PARAMETERS_REQUIRED";
-                /** @enum {string} */
-                description?: "One or more field is required to continue with this request.";
-            } | {
-                /** @enum {string} */
-                issue?: "RETURN_URL_REQUIRED";
-                /** @enum {string} */
-                description?: "The return url is required when attempting to vault this source.";
-            } | {
-                /** @enum {string} */
-                issue?: "CANCEL_URL_REQUIRED";
-                /** @enum {string} */
-                description?: "The cancel url is required when attempting to vault this source.";
-            } | {
-                /** @enum {string} */
-                issue?: "COUNTRY_NOT_SUPPORTED_BY_PAYMENT_SOURCE";
-                /** @enum {string} */
-                description?: "Country code provided is not supported by the provided payment source.";
-            } | {
-                /** @enum {string} */
-                issue?: "REQUIRED_PARAMETER_FOR_PAYMENT_SOURCE";
-                /** @enum {string} */
-                description?: "The parameter is required for provided payment source.";
-            } | {
-                /** @enum {string} */
-                issue?: "REQUIRED_PARAMETER_FOR_CUSTOMER_INITIATED_PAYMENT";
-                /** @enum {string} */
-                description?: "This parameter is required when the customer is present. If the customer is not present, indicate so by sending payment_initiator=`MERCHANT`. For details, see <a href=\"https://developer.paypal.com/docs/api/orders/v2/#definition-card_stored_credential\">Stored Credential</a>.";
-            } | {
-                /** @enum {string} */
-                issue?: "ITEM_CATEGORY_NOT_SUPPORTED_BY_PAYMENT_SOURCE";
-                /** @enum {string} */
-                description?: "The provided payment source does not support provided item category.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYMENT_SOURCE_INFO_CANNOT_BE_VERIFIED";
-                /** @enum {string} */
-                description?: "The combination of the payment_source name, billing address, shipping name and shipping address could not be verified. Please correct this information and try again by creating a new order.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYMENT_SOURCE_DECLINED_BY_PROCESSOR";
-                /** @enum {string} */
-                description?: "The provided payment source is declined by the processor. Please try again with a different payment source by creating a new order.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYMENT_SOURCE_CANNOT_BE_USED";
-                /** @enum {string} */
-                description?: "The provided payment source cannot be used to pay for the order. Please try again with a different payment source by creating a new order.";
-            } | {
-                /** @enum {string} */
-                issue?: "SETUP_ERROR_FOR_BANK";
-                /** @enum {string} */
-                description?: "The API Caller account setup, for bank payments, is incomplete or incorrect. Please contact your PayPal account manager.";
-            } | {
-                /** @enum {string} */
-                issue?: "BANK_NOT_SUPPORTED_FOR_VERIFICATION";
-                /** @enum {string} */
-                description?: "Verification for this bank account is not supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "APPLE_PAY_AMOUNT_MISMATCH";
-                /** @enum {string} */
-                description?: "The 'amount' specified in the Order should match the amount that was viewed and authorized by the payer/buyer on Apple Pay. If the amount has changed, please redirect the buyer to authorize the order again via Apple Pay.";
-            } | {
-                /** @enum {string} */
-                issue?: "ONE_OF_THE_PARAMETERS_REQUIRED";
-                /** @enum {string} */
-                description?: "One or more field is required to continue with this request.";
-            } | {
-                /** @enum {string} */
-                issue?: "BILLING_ADDRESS_INVALID";
-                /** @enum {string} */
-                description?: "Provided billing address is invalid.";
-            } | {
-                /** @enum {string} */
-                issue?: "SHIPPING_ADDRESS_INVALID";
-                /** @enum {string} */
-                description?: "Provided shipping address is invalid.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_IS_PENDING_APPROVAL";
-                /** @enum {string} */
-                description?: "The order was confirmed and payer action completed but order approval processing from PayPal is pending. No action is needed from Payee or Payer. Please wait until order status changes to 'APPROVED'.";
-            } | {
-                /** @enum {string} */
-                issue?: "DEVICE_DATA_NOT_AVAILABLE";
-                /** @enum {string} */
-                description?: "Device Data is not available for processing this order. The PayPal-Client-Metadata-Id header value sent during `Create Order` api call is either missing or incorrect or there was an error in collecting required data. Please verify if appropriate value for PayPal-Client-Metadata-Id header is being sent during 'Create Order' api call. Please note this error only applies to payment_source.pay_upon_invoice at the moment.";
-            } | {
-                /** @enum {string} */
-                issue?: "CURRENCY_NOT_SUPPORTED_FOR_BANK";
-                /** @enum {string} */
-                description?: "The payment_source does not support the currency of the Order. For ACH debit, only USD is supported and for SEPA debit, only EUR is supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "ONLY_ONE_BANK_SOURCE_ALLOWED";
-                /** @enum {string} */
-                description?: "More than one payment method within the bank payment object is not supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_IBAN";
-                /** @enum {string} */
-                description?: "IBAN provided is not a valid bank account number.";
-            } | {
-                /** @enum {string} */
-                issue?: "IBAN_COUNTRY_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "Country code of issuer bank for the provided IBAN is not supported for SEPA debit payments.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_COUNTRY_NOT_SUPPORTED_FOR_PAYMENT_SOURCE";
-                /** @enum {string} */
-                description?: "Payee country code is not supported by the provided payment source.";
-            } | {
-                /** @enum {string} */
-                issue?: "CARD_NUMBER_REQUIRED";
-                /** @enum {string} */
-                description?: "The card number is required when attempting to process payment with card.";
-            } | {
-                /** @enum {string} */
-                issue?: "CARD_EXPIRY_REQUIRED";
-                /** @enum {string} */
-                description?: "The card expiry is required when attempting to process payment with card.";
-            } | {
-                /** @enum {string} */
-                issue?: "INCOMPATIBLE_PARAMETER_VALUE";
-                /** @enum {string} */
-                description?: "The value of the field is incompatible/redundant with other fields in the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "VAULT_INSTRUCTION_DUPLICATED";
-                /** @enum {string} */
-                description?: "Only one vault instruction is allowed. Please use `vault.store_in_vault` to provide vault instruction.";
-            } | {
-                /** @enum {string} */
-                issue?: "VAULT_INSTRUCTION_REQUIRED";
-                /** @enum {string} */
-                description?: "Vault instruction is required. Please use `vault.store_in_vault` to provide vault instruction.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISMATCHED_VAULT_ID_TO_PAYMENT_SOURCE";
-                /** @enum {string} */
-                description?: "The vault_id does not match the payment_source provided. Please verify that the vault_id token used refers to the matching payment_source and try again. For example, a PayPal token cannot be passed in the vault_id field in the payment_source.card object.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ELIGIBLE_FOR_PNREF_PROCESSING";
-                /** @enum {string} */
-                description?: "API caller is not enabled to process payments with the `pnref`. Please contact customer support to request permissions to process transactions with PNREF.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ELIGIBLE_FOR_PAYPAL_TRANSACTION_ID_PROCESSING";
-                /** @enum {string} */
-                description?: "API caller is not enable to process payments using `paypal_transaction_id`. Please contact customer support to request permissions to process transactions with PayPal transaction ID.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYPAL_TRANSACTION_ID_NOT_FOUND";
-                /** @enum {string} */
-                description?: "Specified `paypal_transaction_id` was not found. Verify the value and try the request again.";
-            } | {
-                /** @enum {string} */
-                issue?: "PNREF_NOT_FOUND";
-                /** @enum {string} */
-                description?: "Specified `pnref` was not found. Verify the value and try the request again.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_SECURITY_CODE_LENGTH";
-                /** @enum {string} */
-                description?: "The security_code length is invalid for the specified card brand.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ENABLED_TO_VAULT_PAYMENT_SOURCE";
-                /** @enum {string} */
-                description?: "The API caller or the merchant on whose behalf the API call is initiated is not allowed to vault the given source. Please contact PayPal customer support for assistance.";
-            } | {
-                /** @enum {string} */
-                issue?: "CRYPTOGRAM_REQUIRED";
-                /** @enum {string} */
-                description?: "Cryptogram is required if authentication method is CRYPTOGRAM 3DS.";
-            } | {
-                /** @enum {string} */
-                issue?: "EMV_DATA_REQUIRED";
-                /** @enum {string} */
-                description?: "EMV Data is required if authentication method is EMV.";
-            } | {
-                /** @enum {string} */
-                issue?: "ALIAS_DECLINED_BY_PROCESSOR";
-                /** @enum {string} */
-                description?: "The provided alias was declined by the processor. Please create a new order with a different alias_key and/or alias_label and try again.";
-            } | {
-                /** @enum {string} */
-                issue?: "BLIK_ONE_CLICK_MISSING_REQUIRED_PARAMETER";
-                /** @enum {string} */
-                description?: "Blik's one_click flow requires one_click.auth_code and one_click.alias_label parameters for the buyer's first transaction. For all subsequent transactions,only the one_click.alias_key parameter is required.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_ALREADY_CAPTURED";
+                      /** @enum {string} */
+                      description?: "Order already captured. If 'intent=CAPTURE' only one capture per order is allowed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_ALREADY_AUTHORIZED";
+                      /** @enum {string} */
+                      description?: "Order already captured. If 'intent=CAPTURE' only one capture per order is allowed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_CANNOT_BE_CONFIRMED";
+                      /** @enum {string} */
+                      description?: "An order with status = 'COMPLETED' cannot be confirmed again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_PREVIOUS_REFERENCE";
+                      /** @enum {string} */
+                      description?: "For Merchant initiated network token transactions, either the payment_source.card.stored_credential.previous_network_transaction_reference or payment_source.card.stored_credential.previous_transaction_reference must be included in the request.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_CRYPTOGRAM";
+                      /** @enum {string} */
+                      description?: "Cryptogram is mandatory for any customer initiated network token transactions.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CURRENCY_NOT_SUPPORTED_FOR_COUNTRY";
+                      /** @enum {string} */
+                      description?: " For the payment_source specified, the currency of the Order is restricted by the country in which the payee account is based. Please refer https://developer.paypal.com/api/rest/reference/currency-codes/ for list of supported currency codes.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CARD_EXPIRED";
+                      /** @enum {string} */
+                      description?: "The card is expired";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CARD_TYPE_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "Processing of this card type is not supported. Use another card type.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CURRENCY_NOT_SUPPORTED_FOR_CARD_TYPE";
+                      /** @enum {string} */
+                      description?: "The issued currency code of this card is not supported for direct card payments. Please refer https://developer.paypal.com/api/rest/reference/currency-codes/ for list of supported currency codes.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ONLY_ONE_PAYMENT_SOURCE_ALLOWED";
+                      /** @enum {string} */
+                      description?: "More than one payment method within the payment source is not supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NO_PAYMENT_SOURCE_PROVIDED";
+                      /** @enum {string} */
+                      description?: "At least one payment method is required within the payment source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYMENT_ALREADY_APPROVED";
+                      /** @enum {string} */
+                      description?: "The payment has already been approved.  Please capture the order, or create and confirm a new order with this payment source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "UNSUPPORTED_PROCESSING_INSTRUCTION";
+                      /** @enum {string} */
+                      description?: "The specified processing_instruction is not supported for the given payment_source. Please refer to https://developer.paypal.com/api/orders/v2/#definition-processing_instruction for the list of payment_source that can be specified with this value.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_COMPLETE_ON_PAYMENT_APPROVAL";
+                      /** @enum {string} */
+                      description?: "A processing_instruction of `ORDER_COMPLETE_ON_PAYMENT_APPROVAL` is required for the specified payment_source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_EXPIRY_DATE";
+                      /** @enum {string} */
+                      description?: "Expiry date is invalid. Expiry date should be a date in future and within the threshold for the payment source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TOKEN_EXPIRED";
+                      /** @enum {string} */
+                      description?: "The token is expired and cannot be used for payment.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_GOOGLE_PAY_TOKEN";
+                      /** @enum {string} */
+                      description?: "The google pay token is invalid. PayPal was not able to decrypt the googlepay token or PayPal was not able to find the necessary data in the token after decryption.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "GOOGLE_PAY_GATEWAY_MERCHANT_ID_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The gateway merchant ID in Google Pay token is not valid. This could be because the gateway merchant Id that was authorized by payer/buyer on Google Pay does not match with the API caller of the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CRYPTOGRAM_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Cryptogram is required if authentication method is CRYPTOGRAM 3DS.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ONE_OF_PARAMETERS_REQUIRED";
+                      /** @enum {string} */
+                      description?: "One or more field is required to continue with this request.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "RETURN_URL_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The return url is required when attempting to vault this source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CANCEL_URL_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The cancel url is required when attempting to vault this source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "COUNTRY_NOT_SUPPORTED_BY_PAYMENT_SOURCE";
+                      /** @enum {string} */
+                      description?: "Country code provided is not supported by the provided payment source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "REQUIRED_PARAMETER_FOR_PAYMENT_SOURCE";
+                      /** @enum {string} */
+                      description?: "The parameter is required for provided payment source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "REQUIRED_PARAMETER_FOR_CUSTOMER_INITIATED_PAYMENT";
+                      /** @enum {string} */
+                      description?: 'This parameter is required when the customer is present. If the customer is not present, indicate so by sending payment_initiator=`MERCHANT`. For details, see <a href="https://developer.paypal.com/docs/api/orders/v2/#definition-card_stored_credential">Stored Credential</a>.';
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ITEM_CATEGORY_NOT_SUPPORTED_BY_PAYMENT_SOURCE";
+                      /** @enum {string} */
+                      description?: "The provided payment source does not support provided item category.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYMENT_SOURCE_INFO_CANNOT_BE_VERIFIED";
+                      /** @enum {string} */
+                      description?: "The combination of the payment_source name, billing address, shipping name and shipping address could not be verified. Please correct this information and try again by creating a new order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYMENT_SOURCE_DECLINED_BY_PROCESSOR";
+                      /** @enum {string} */
+                      description?: "The provided payment source is declined by the processor. Please try again with a different payment source by creating a new order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYMENT_SOURCE_CANNOT_BE_USED";
+                      /** @enum {string} */
+                      description?: "The provided payment source cannot be used to pay for the order. Please try again with a different payment source by creating a new order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "SETUP_ERROR_FOR_BANK";
+                      /** @enum {string} */
+                      description?: "The API Caller account setup, for bank payments, is incomplete or incorrect. Please contact your PayPal account manager.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "BANK_NOT_SUPPORTED_FOR_VERIFICATION";
+                      /** @enum {string} */
+                      description?: "Verification for this bank account is not supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "APPLE_PAY_AMOUNT_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The 'amount' specified in the Order should match the amount that was viewed and authorized by the payer/buyer on Apple Pay. If the amount has changed, please redirect the buyer to authorize the order again via Apple Pay.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ONE_OF_THE_PARAMETERS_REQUIRED";
+                      /** @enum {string} */
+                      description?: "One or more field is required to continue with this request.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "BILLING_ADDRESS_INVALID";
+                      /** @enum {string} */
+                      description?: "Provided billing address is invalid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "SHIPPING_ADDRESS_INVALID";
+                      /** @enum {string} */
+                      description?: "Provided shipping address is invalid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_IS_PENDING_APPROVAL";
+                      /** @enum {string} */
+                      description?: "The order was confirmed and payer action completed but order approval processing from PayPal is pending. No action is needed from Payee or Payer. Please wait until order status changes to 'APPROVED'.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DEVICE_DATA_NOT_AVAILABLE";
+                      /** @enum {string} */
+                      description?: "Device Data is not available for processing this order. The PayPal-Client-Metadata-Id header value sent during `Create Order` api call is either missing or incorrect or there was an error in collecting required data. Please verify if appropriate value for PayPal-Client-Metadata-Id header is being sent during 'Create Order' api call. Please note this error only applies to payment_source.pay_upon_invoice at the moment.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CURRENCY_NOT_SUPPORTED_FOR_BANK";
+                      /** @enum {string} */
+                      description?: "The payment_source does not support the currency of the Order. For ACH debit, only USD is supported and for SEPA debit, only EUR is supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ONLY_ONE_BANK_SOURCE_ALLOWED";
+                      /** @enum {string} */
+                      description?: "More than one payment method within the bank payment object is not supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_IBAN";
+                      /** @enum {string} */
+                      description?: "IBAN provided is not a valid bank account number.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "IBAN_COUNTRY_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "Country code of issuer bank for the provided IBAN is not supported for SEPA debit payments.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_COUNTRY_NOT_SUPPORTED_FOR_PAYMENT_SOURCE";
+                      /** @enum {string} */
+                      description?: "Payee country code is not supported by the provided payment source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CARD_NUMBER_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The card number is required when attempting to process payment with card.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CARD_EXPIRY_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The card expiry is required when attempting to process payment with card.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INCOMPATIBLE_PARAMETER_VALUE";
+                      /** @enum {string} */
+                      description?: "The value of the field is incompatible/redundant with other fields in the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "VAULT_INSTRUCTION_DUPLICATED";
+                      /** @enum {string} */
+                      description?: "Only one vault instruction is allowed. Please use `vault.store_in_vault` to provide vault instruction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "VAULT_INSTRUCTION_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Vault instruction is required. Please use `vault.store_in_vault` to provide vault instruction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISMATCHED_VAULT_ID_TO_PAYMENT_SOURCE";
+                      /** @enum {string} */
+                      description?: "The vault_id does not match the payment_source provided. Please verify that the vault_id token used refers to the matching payment_source and try again. For example, a PayPal token cannot be passed in the vault_id field in the payment_source.card object.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ELIGIBLE_FOR_PNREF_PROCESSING";
+                      /** @enum {string} */
+                      description?: "API caller is not enabled to process payments with the `pnref`. Please contact customer support to request permissions to process transactions with PNREF.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ELIGIBLE_FOR_PAYPAL_TRANSACTION_ID_PROCESSING";
+                      /** @enum {string} */
+                      description?: "API caller is not enable to process payments using `paypal_transaction_id`. Please contact customer support to request permissions to process transactions with PayPal transaction ID.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYPAL_TRANSACTION_ID_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "Specified `paypal_transaction_id` was not found. Verify the value and try the request again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PNREF_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "Specified `pnref` was not found. Verify the value and try the request again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_SECURITY_CODE_LENGTH";
+                      /** @enum {string} */
+                      description?: "The security_code length is invalid for the specified card brand.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ENABLED_TO_VAULT_PAYMENT_SOURCE";
+                      /** @enum {string} */
+                      description?: "The API caller or the merchant on whose behalf the API call is initiated is not allowed to vault the given source. Please contact PayPal customer support for assistance.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CRYPTOGRAM_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Cryptogram is required if authentication method is CRYPTOGRAM 3DS.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "EMV_DATA_REQUIRED";
+                      /** @enum {string} */
+                      description?: "EMV Data is required if authentication method is EMV.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ALIAS_DECLINED_BY_PROCESSOR";
+                      /** @enum {string} */
+                      description?: "The provided alias was declined by the processor. Please create a new order with a different alias_key and/or alias_label and try again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "BLIK_ONE_CLICK_MISSING_REQUIRED_PARAMETER";
+                      /** @enum {string} */
+                      description?: "Blik's one_click flow requires one_click.auth_code and one_click.alias_label parameters for the buyer's first transaction. For all subsequent transactions,only the one_click.alias_key parameter is required.";
+                  }
+            )[];
         };
         /**
          * Authorize Request
@@ -3544,368 +4073,442 @@ export interface components {
             readonly links?: components["schemas"]["link_description"][];
         };
         "orders.authorize-400": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "INVALID_COUNTRY_CODE";
-                /** @enum {string} */
-                description?: "Country code is invalid. Please refer to https://developer.paypal.com/api/rest/reference/country-codes/ for a list of supported country codes.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER_VALUE";
-                /** @enum {string} */
-                description?: "A parameter value is not valid.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_REQUIRED_PARAMETER";
-                /** @enum {string} */
-                description?: "A required field / parameter is missing";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_STRING_LENGTH";
-                /** @enum {string} */
-                description?: "The value of a field is either too short or too long";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER_SYNTAX";
-                /** @enum {string} */
-                description?: "The value of a field does not conform to the expected format.";
-            } | {
-                /** @enum {string} */
-                issue?: "MALFORMED_REQUEST_JSON";
-                /** @enum {string} */
-                description?: "The request JSON is not well formed.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_COUNTRY_CODE";
+                      /** @enum {string} */
+                      description?: "Country code is invalid. Please refer to https://developer.paypal.com/api/rest/reference/country-codes/ for a list of supported country codes.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER_VALUE";
+                      /** @enum {string} */
+                      description?: "A parameter value is not valid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_REQUIRED_PARAMETER";
+                      /** @enum {string} */
+                      description?: "A required field / parameter is missing";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_STRING_LENGTH";
+                      /** @enum {string} */
+                      description?: "The value of a field is either too short or too long";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER_SYNTAX";
+                      /** @enum {string} */
+                      description?: "The value of a field does not conform to the expected format.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MALFORMED_REQUEST_JSON";
+                      /** @enum {string} */
+                      description?: "The request JSON is not well formed.";
+                  }
+            )[];
         };
         "orders.authorize-403": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "NOT_ELIGIBLE_FOR_TOKEN_PROCESSING";
-                /** @enum {string} */
-                description?: "API caller is not enabled to process payments with the specified type of token. Please contact customer support to request permissions to process transactions with this type of token.";
-            } | {
-                /** @enum {string} */
-                issue?: "PERMISSION_DENIED";
-                /** @enum {string} */
-                description?: "You do not have permission to access or perform operations on this resource.";
-            } | {
-                /** @enum {string} */
-                issue?: "PERMISSION_DENIED_FOR_DONATION_ITEMS";
-                /** @enum {string} */
-                description?: "The API Caller or Payee have not been granted appropriate permissions to send 'items.category' as 'DONATION'. Please speak to your account manager if you want to process these type of items.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ELIGIBLE_FOR_TOKEN_PROCESSING";
+                      /** @enum {string} */
+                      description?: "API caller is not enabled to process payments with the specified type of token. Please contact customer support to request permissions to process transactions with this type of token.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PERMISSION_DENIED";
+                      /** @enum {string} */
+                      description?: "You do not have permission to access or perform operations on this resource.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PERMISSION_DENIED_FOR_DONATION_ITEMS";
+                      /** @enum {string} */
+                      description?: "The API Caller or Payee have not been granted appropriate permissions to send 'items.category' as 'DONATION'. Please speak to your account manager if you want to process these type of items.";
+                  }
+            )[];
         };
         "orders.authorize-422": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "ACTION_DOES_NOT_MATCH_INTENT";
-                /** @enum {string} */
-                description?: "Order was created with an intent to 'CAPTURE'. Please use v2/checkout/orders/order_id/capture to complete the transaction or alternately Create an order with an intent of 'AUTHORIZE'.";
-            } | {
-                /** @enum {string} */
-                issue?: "AGREEMENT_ALREADY_CANCELLED";
-                /** @enum {string} */
-                description?: "The requested agreement is already canceled.";
-            } | {
-                /** @enum {string} */
-                issue?: "BILLING_AGREEMENT_NOT_FOUND";
-                /** @enum {string} */
-                description?: "The requested Billing Agreement token was not found.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_PREVIOUS_REFERENCE";
-                /** @enum {string} */
-                description?: "For Merchant initiated network token transactions, either the payment_source.card.stored_credential.previous_network_transaction_reference or payment_source.card.stored_credential.previous_transaction_reference must be included in the request.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_CRYPTOGRAM";
-                /** @enum {string} */
-                description?: "Cryptogram is mandatory for any customer initiated network token transactions.";
-            } | {
-                /** @enum {string} */
-                issue?: "CARD_BRAND_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "Processing of this card brand is not supported. Please use another card to continue with this transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "DECLINED_DUE_TO_RELATED_TXN";
-                /** @enum {string} */
-                description?: "One or more transactions in this Order did not succeed. Since this Order is being processed as an All or None Order, if one or more transactions in this Order do not succeed, then all purchase units are marked declined and will not be processed.";
-            } | {
-                /** @enum {string} */
-                issue?: "DOMESTIC_TRANSACTION_REQUIRED";
-                /** @enum {string} */
-                description?: "This transaction requires the payee and payer to be resident in the same country, a domestic transaction is required to create this payment.";
-            } | {
-                /** @enum {string} */
-                issue?: "DUPLICATE_INVOICE_ID";
-                /** @enum {string} */
-                description?: "Duplicate Invoice ID detected. To avoid a potential duplicate transaction your account setting requires that Invoice Id be unique for each transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_NOT_APPROVED";
-                /** @enum {string} */
-                description?: "Payer has not yet approved the Order for payment. Please redirect the payer to the 'rel':'approve' url returned as part of the HATEOAS links within the Create Order call.";
-            } | {
-                /** @enum {string} */
-                issue?: "MAX_NUMBER_OF_PAYMENT_ATTEMPTS_EXCEEDED";
-                /** @enum {string} */
-                description?: "You have exceeded the maximum number of payment attempts.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_BLOCKED_TRANSACTION";
-                /** @enum {string} */
-                description?: "The Fraud settings for this seller are such that this payment cannot be executed.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_FX_RATE_ID_EXPIRED";
-                /** @enum {string} */
-                description?: "The specified FX Rate ID has expired. Please specify a different FX Rate Id and try the request again. Alternately, remove the FX Rate ID to process the request using the default exchange rate.";
-            } | {
-                /** @enum {string} */
-                issue?: "UNSUPPORTED_INTENT_FOR_PAYMENT_SOURCE";
-                /** @enum {string} */
-                description?: "`intent=AUTHORIZE` is not supported for the specified payment_source. Only `intent=CAPTURE` is supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYER_ACCOUNT_LOCKED_OR_CLOSED";
-                /** @enum {string} */
-                description?: "The payer account cannot be used for this transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYER_ACCOUNT_RESTRICTED";
-                /** @enum {string} */
-                description?: "PAYER_ACCOUNT_RESTRICTED";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYER_CANNOT_PAY";
-                /** @enum {string} */
-                description?: "Payer cannot pay for this transaction. Please contact the payer to find other ways to pay for this transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYPAL_TRANSACTION_ID_EXPIRED";
-                /** @enum {string} */
-                description?: "Specified `paypal_transaction_id` has expired. PayPal transaction ID expires 4 years after the date of the initial transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "PNREF_EXPIRED";
-                /** @enum {string} */
-                description?: "Specified `pnref` has expired. PNREF expires 15 months after the date of the initial transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "REFERENCED_CARD_EXPIRED";
-                /** @enum {string} */
-                description?: "The card underlying the token has expired and hence cannot be used to process a payment.";
-            } | {
-                /** @enum {string} */
-                issue?: "TOKEN_EXPIRED";
-                /** @enum {string} */
-                description?: "The token is expired and cannot be used for payment.";
-            } | {
-                /** @enum {string} */
-                issue?: "TOKEN_ID_NOT_FOUND";
-                /** @enum {string} */
-                description?: "Specified token was not found. Verify the token and try the request again.";
-            } | {
-                /** @enum {string} */
-                issue?: "TRANSACTION_LIMIT_EXCEEDED";
-                /** @enum {string} */
-                description?: "Total payment amount exceeded transaction limit.";
-            } | {
-                /** @enum {string} */
-                issue?: "TRANSACTION_RECEIVING_LIMIT_EXCEEDED";
-                /** @enum {string} */
-                description?: "The transaction exceeds the receiver's receiving limit.";
-            } | {
-                /** @enum {string} */
-                issue?: "TRANSACTION_REFUSED";
-                /** @enum {string} */
-                description?: "The request was refused.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_ALREADY_AUTHORIZED";
-                /** @enum {string} */
-                description?: "Order already authorized.If 'intent=AUTHORIZE' only one authorization per order is allowed.";
-            } | {
-                /** @enum {string} */
-                issue?: "AUTH_CAPTURE_NOT_ENABLED";
-                /** @enum {string} */
-                description?: "Authorization and Capture feature is not enabled for the merchant. Make sure that the recipient of the funds is a verified business account.";
-            } | {
-                /** @enum {string} */
-                issue?: "AMOUNT_CANNOT_BE_SPECIFIED";
-                /** @enum {string} */
-                description?: "An authorization amount can only be specified if an Order has been saved by calling /v2/checkout/orders/{order_id}/save.  Please save the order and try again.";
-            } | {
-                /** @enum {string} */
-                issue?: "AUTHORIZATION_AMOUNT_EXCEEDED";
-                /** @enum {string} */
-                description?: "Authorization amount specified exceeded allowable limit. Specify a different amount and try the request again. Alternately, contact Customer Support to increase your limits. Local regulations (e.g. in PSD2 countries) prohibit overages above the amount authorized by the payer.";
-            } | {
-                /** @enum {string} */
-                issue?: "AUTHORIZATION_CURRENCY_MISMATCH";
-                /** @enum {string} */
-                description?: "The currency of the authorization should be same as that in which the Order was created and approved by the Payer. Please check the 'currency_code' and try again.";
-            } | {
-                /** @enum {string} */
-                issue?: "MAX_AUTHORIZATION_COUNT_EXCEEDED";
-                /** @enum {string} */
-                description?: "Maximum number of authorization allowed for the order is reached. Please contact Customer Support if you need to increase your limit.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_COMPLETED_OR_VOIDED";
-                /** @enum {string} */
-                description?: "Order is voided or completed and hence cannot be authorized.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_EXPIRED";
-                /** @enum {string} */
-                description?: "Order is expired and hence cannot be authorized. Please contact Customer Support if you need to increase your order validity period.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PICKUP_ADDRESS";
-                /** @enum {string} */
-                description?: "If the 'shipping_option.type' is set as 'PICKUP' then the 'shipping_detail.name.full_name' should start with 'S2S' meaning Ship To Store. Example: 'S2S My Store'.";
-            } | {
-                /** @enum {string} */
-                issue?: "SHIPPING_ADDRESS_INVALID";
-                /** @enum {string} */
-                description?: "Provided shipping address is invalid.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYMENT_TYPE_NOT_SUPPORTED_FOR_INTENT";
-                /** @enum {string} */
-                description?: "Provided payment type not supported for order intent. Payment authorizations are supported only for order with `intent=AUTHORIZE` and payment captures are supported only for order with `intent=CAPTURE`.";
-            } | {
-                /** @enum {string} */
-                issue?: "BILLING_AGREEMENT_ID_MISMATCH";
-                /** @enum {string} */
-                description?: "Billing Agreement ID must exactly match the Billing Agreement ID that was provided during order creation.";
-            } | {
-                /** @enum {string} */
-                issue?: "PREFERRED_PAYMENT_SOURCE_MISMATCH";
-                /** @enum {string} */
-                description?: "Payment Source must exactly match the Preferred Payment Source that was provided during order creation.";
-            } | {
-                /** @enum {string} */
-                issue?: "INCOMPATIBLE_PARAMETER_VALUE";
-                /** @enum {string} */
-                description?: "The value of the field is incompatible/redundant with other fields in the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PREVIOUS_TRANSACTION_REFERENCE";
-                /** @enum {string} */
-                description?: "The authorization or capture referenced by `previous_transaction_reference` is not valid. This could be either because the previous_transaction_reference is not found or doesn't belong to the payee. Please use a valid `previous_transaction_reference`.";
-            } | {
-                /** @enum {string} */
-                issue?: "PREVIOUS_TRANSACTION_REFERENCE_HAS_CHARGEBACK";
-                /** @enum {string} */
-                description?: "The capture referenced by `previous_transaction_reference` has a chargeback and hence cannot be used for this order. Please use a `previous_transaction_reference` which does not have a chargeback.";
-            } | {
-                /** @enum {string} */
-                issue?: "PREVIOUS_TRANSACTION_REFERENCE_VOIDED";
-                /** @enum {string} */
-                description?: "The status of authorization referenced by `previous_transaction_reference` is `VOIDED` and hence cannot be used for this order. Please use a `previous_transaction_reference` whose status is not `VOIDED`.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYMENT_SOURCE_MISMATCH";
-                /** @enum {string} */
-                description?: "The `payment_source` in the request must match the `payment_source` used for the authorization or capture referenced by `previous_transaction_reference`. Please use `previous_transaction_reference` whose `payment_source` matches with the `payment_source` specified in the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "MERCHANT_INITIATED_WITH_SECURITY_CODE";
-                /** @enum {string} */
-                description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if `payment_source.card.security_code` is present in the order. `security_code` can be present in the order only when customer is the payment initiator. It is semantically incorrect to perform a merchant initiated payment with `security_code` is the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "MERCHANT_INITIATED_WITH_AUTHENTICATION_RESULTS";
-                /** @enum {string} */
-                description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if 3D-Secure authentication results are present in the order. 3D-Secure authentication results can be present in the order only when customer is the payment initiator. It is semantically incorrect to perform a merchant initiated payment with 3D-Secure authentication results is the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "MERCHANT_INITIATED_WITH_MULTIPLE_PURCHASE_UNITS";
-                /** @enum {string} */
-                description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if more than one purchase_unit is present in the Order. Merchant initiated payments are not supported from orders with more than one purchase_unit. Please retry the request with multiple Order requests (one for each purchase_unit).";
-            } | {
-                /** @enum {string} */
-                issue?: "RETURN_URL_REQUIRED";
-                /** @enum {string} */
-                description?: "The return url is required when attempting to vault this source.";
-            } | {
-                /** @enum {string} */
-                issue?: "CANCEL_URL_REQUIRED";
-                /** @enum {string} */
-                description?: "The cancel url is required when attempting to vault this source.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYER_ACTION_REQUIRED";
-                /** @enum {string} */
-                description?: "Transaction cannot complete successfully, instruct the buyer to return to PayPal.";
-            } | {
-                /** @enum {string} */
-                issue?: "APPLE_PAY_AMOUNT_MISMATCH";
-                /** @enum {string} */
-                description?: "The 'amount' specified in the Order should match the amount that was viewed and authorized by the payer/buyer on Apple Pay. If the amount has changed, please redirect the buyer to authorize the order again via Apple Pay.";
-            } | {
-                /** @enum {string} */
-                issue?: "CARD_NUMBER_REQUIRED";
-                /** @enum {string} */
-                description?: "The card number is required when attempting to process payment with card.";
-            } | {
-                /** @enum {string} */
-                issue?: "CARD_EXPIRY_REQUIRED";
-                /** @enum {string} */
-                description?: "The card expiry is required when attempting to process payment with card.";
-            } | {
-                /** @enum {string} */
-                issue?: "VAULT_INSTRUCTION_REQUIRED";
-                /** @enum {string} */
-                description?: "Vault instruction is required. Please use `vault.store_in_vault` to provide vault instruction.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISMATCHED_VAULT_ID_TO_PAYMENT_SOURCE";
-                /** @enum {string} */
-                description?: "The vault_id does not match the payment_source provided. Please verify that the vault_id token used refers to the matching payment_source and try again. For example, a PayPal token cannot be passed in the vault_id field in the payment_source.card object.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_CANNOT_BE_SAVED";
-                /** @enum {string} */
-                description?: "The option to save an order is only available if the `intent` is AUTHORIZE and `processing_instruction` uses one of the `ORDER_SAVED` options. For example, `intent`=AUTHORIZE, `processing_instruction`=ORDER_SAVED_EXPLICITLY. Please change the intent and/or processing_instruction` and try again.";
-            } | {
-                /** @enum {string} */
-                issue?: "SAVE_ORDER_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "The API caller account is setup in a way that does not allow it to be used for saving the order. This functionality is not available for PayPal Commerce Platform for Platforms & Marketplaces.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ELIGIBLE_FOR_PNREF_PROCESSING";
-                /** @enum {string} */
-                description?: "API caller is not enabled to process payments with the `pnref`. Please contact customer support to request permissions to process transactions with PNREF.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ELIGIBLE_FOR_PAYPAL_TRANSACTION_ID_PROCESSING";
-                /** @enum {string} */
-                description?: "API caller is not enable to process payments using `paypal_transaction_id`. Please contact customer support to request permissions to process transactions with PayPal transaction ID.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYPAL_TRANSACTION_ID_NOT_FOUND";
-                /** @enum {string} */
-                description?: "Specified `paypal_transaction_id` was not found. Verify the value and try the request again.";
-            } | {
-                /** @enum {string} */
-                issue?: "PNREF_NOT_FOUND";
-                /** @enum {string} */
-                description?: "Specified `pnref` was not found. Verify the value and try the request again.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_SECURITY_CODE_LENGTH";
-                /** @enum {string} */
-                description?: "The security_code length is invalid for the specified card brand.";
-            } | {
-                /** @enum {string} */
-                issue?: "REQUIRED_PARAMETER_FOR_CUSTOMER_INITIATED_PAYMENT";
-                /** @enum {string} */
-                description?: "This parameter is required when the customer is present. If the customer is not present, indicate so by sending payment_initiator=`MERCHANT`. For details, see <a href=\"https://developer.paypal.com/docs/api/orders/v2/#definition-card_stored_credential\">Stored Credential</a>.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "ACTION_DOES_NOT_MATCH_INTENT";
+                      /** @enum {string} */
+                      description?: "Order was created with an intent to 'CAPTURE'. Please use v2/checkout/orders/order_id/capture to complete the transaction or alternately Create an order with an intent of 'AUTHORIZE'.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "AGREEMENT_ALREADY_CANCELLED";
+                      /** @enum {string} */
+                      description?: "The requested agreement is already canceled.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "BILLING_AGREEMENT_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "The requested Billing Agreement token was not found.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_PREVIOUS_REFERENCE";
+                      /** @enum {string} */
+                      description?: "For Merchant initiated network token transactions, either the payment_source.card.stored_credential.previous_network_transaction_reference or payment_source.card.stored_credential.previous_transaction_reference must be included in the request.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_CRYPTOGRAM";
+                      /** @enum {string} */
+                      description?: "Cryptogram is mandatory for any customer initiated network token transactions.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CARD_BRAND_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "Processing of this card brand is not supported. Please use another card to continue with this transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DECLINED_DUE_TO_RELATED_TXN";
+                      /** @enum {string} */
+                      description?: "One or more transactions in this Order did not succeed. Since this Order is being processed as an All or None Order, if one or more transactions in this Order do not succeed, then all purchase units are marked declined and will not be processed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DOMESTIC_TRANSACTION_REQUIRED";
+                      /** @enum {string} */
+                      description?: "This transaction requires the payee and payer to be resident in the same country, a domestic transaction is required to create this payment.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DUPLICATE_INVOICE_ID";
+                      /** @enum {string} */
+                      description?: "Duplicate Invoice ID detected. To avoid a potential duplicate transaction your account setting requires that Invoice Id be unique for each transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_NOT_APPROVED";
+                      /** @enum {string} */
+                      description?: "Payer has not yet approved the Order for payment. Please redirect the payer to the 'rel':'approve' url returned as part of the HATEOAS links within the Create Order call.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MAX_NUMBER_OF_PAYMENT_ATTEMPTS_EXCEEDED";
+                      /** @enum {string} */
+                      description?: "You have exceeded the maximum number of payment attempts.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_BLOCKED_TRANSACTION";
+                      /** @enum {string} */
+                      description?: "The Fraud settings for this seller are such that this payment cannot be executed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_FX_RATE_ID_EXPIRED";
+                      /** @enum {string} */
+                      description?: "The specified FX Rate ID has expired. Please specify a different FX Rate Id and try the request again. Alternately, remove the FX Rate ID to process the request using the default exchange rate.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "UNSUPPORTED_INTENT_FOR_PAYMENT_SOURCE";
+                      /** @enum {string} */
+                      description?: "`intent=AUTHORIZE` is not supported for the specified payment_source. Only `intent=CAPTURE` is supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYER_ACCOUNT_LOCKED_OR_CLOSED";
+                      /** @enum {string} */
+                      description?: "The payer account cannot be used for this transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYER_ACCOUNT_RESTRICTED";
+                      /** @enum {string} */
+                      description?: "PAYER_ACCOUNT_RESTRICTED";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYER_CANNOT_PAY";
+                      /** @enum {string} */
+                      description?: "Payer cannot pay for this transaction. Please contact the payer to find other ways to pay for this transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYPAL_TRANSACTION_ID_EXPIRED";
+                      /** @enum {string} */
+                      description?: "Specified `paypal_transaction_id` has expired. PayPal transaction ID expires 4 years after the date of the initial transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PNREF_EXPIRED";
+                      /** @enum {string} */
+                      description?: "Specified `pnref` has expired. PNREF expires 15 months after the date of the initial transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "REFERENCED_CARD_EXPIRED";
+                      /** @enum {string} */
+                      description?: "The card underlying the token has expired and hence cannot be used to process a payment.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TOKEN_EXPIRED";
+                      /** @enum {string} */
+                      description?: "The token is expired and cannot be used for payment.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TOKEN_ID_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "Specified token was not found. Verify the token and try the request again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TRANSACTION_LIMIT_EXCEEDED";
+                      /** @enum {string} */
+                      description?: "Total payment amount exceeded transaction limit.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TRANSACTION_RECEIVING_LIMIT_EXCEEDED";
+                      /** @enum {string} */
+                      description?: "The transaction exceeds the receiver's receiving limit.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TRANSACTION_REFUSED";
+                      /** @enum {string} */
+                      description?: "The request was refused.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_ALREADY_AUTHORIZED";
+                      /** @enum {string} */
+                      description?: "Order already authorized.If 'intent=AUTHORIZE' only one authorization per order is allowed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "AUTH_CAPTURE_NOT_ENABLED";
+                      /** @enum {string} */
+                      description?: "Authorization and Capture feature is not enabled for the merchant. Make sure that the recipient of the funds is a verified business account.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "AMOUNT_CANNOT_BE_SPECIFIED";
+                      /** @enum {string} */
+                      description?: "An authorization amount can only be specified if an Order has been saved by calling /v2/checkout/orders/{order_id}/save.  Please save the order and try again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "AUTHORIZATION_AMOUNT_EXCEEDED";
+                      /** @enum {string} */
+                      description?: "Authorization amount specified exceeded allowable limit. Specify a different amount and try the request again. Alternately, contact Customer Support to increase your limits. Local regulations (e.g. in PSD2 countries) prohibit overages above the amount authorized by the payer.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "AUTHORIZATION_CURRENCY_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The currency of the authorization should be same as that in which the Order was created and approved by the Payer. Please check the 'currency_code' and try again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MAX_AUTHORIZATION_COUNT_EXCEEDED";
+                      /** @enum {string} */
+                      description?: "Maximum number of authorization allowed for the order is reached. Please contact Customer Support if you need to increase your limit.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_COMPLETED_OR_VOIDED";
+                      /** @enum {string} */
+                      description?: "Order is voided or completed and hence cannot be authorized.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_EXPIRED";
+                      /** @enum {string} */
+                      description?: "Order is expired and hence cannot be authorized. Please contact Customer Support if you need to increase your order validity period.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PICKUP_ADDRESS";
+                      /** @enum {string} */
+                      description?: "If the 'shipping_option.type' is set as 'PICKUP' then the 'shipping_detail.name.full_name' should start with 'S2S' meaning Ship To Store. Example: 'S2S My Store'.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "SHIPPING_ADDRESS_INVALID";
+                      /** @enum {string} */
+                      description?: "Provided shipping address is invalid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYMENT_TYPE_NOT_SUPPORTED_FOR_INTENT";
+                      /** @enum {string} */
+                      description?: "Provided payment type not supported for order intent. Payment authorizations are supported only for order with `intent=AUTHORIZE` and payment captures are supported only for order with `intent=CAPTURE`.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "BILLING_AGREEMENT_ID_MISMATCH";
+                      /** @enum {string} */
+                      description?: "Billing Agreement ID must exactly match the Billing Agreement ID that was provided during order creation.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PREFERRED_PAYMENT_SOURCE_MISMATCH";
+                      /** @enum {string} */
+                      description?: "Payment Source must exactly match the Preferred Payment Source that was provided during order creation.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INCOMPATIBLE_PARAMETER_VALUE";
+                      /** @enum {string} */
+                      description?: "The value of the field is incompatible/redundant with other fields in the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PREVIOUS_TRANSACTION_REFERENCE";
+                      /** @enum {string} */
+                      description?: "The authorization or capture referenced by `previous_transaction_reference` is not valid. This could be either because the previous_transaction_reference is not found or doesn't belong to the payee. Please use a valid `previous_transaction_reference`.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PREVIOUS_TRANSACTION_REFERENCE_HAS_CHARGEBACK";
+                      /** @enum {string} */
+                      description?: "The capture referenced by `previous_transaction_reference` has a chargeback and hence cannot be used for this order. Please use a `previous_transaction_reference` which does not have a chargeback.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PREVIOUS_TRANSACTION_REFERENCE_VOIDED";
+                      /** @enum {string} */
+                      description?: "The status of authorization referenced by `previous_transaction_reference` is `VOIDED` and hence cannot be used for this order. Please use a `previous_transaction_reference` whose status is not `VOIDED`.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYMENT_SOURCE_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The `payment_source` in the request must match the `payment_source` used for the authorization or capture referenced by `previous_transaction_reference`. Please use `previous_transaction_reference` whose `payment_source` matches with the `payment_source` specified in the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MERCHANT_INITIATED_WITH_SECURITY_CODE";
+                      /** @enum {string} */
+                      description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if `payment_source.card.security_code` is present in the order. `security_code` can be present in the order only when customer is the payment initiator. It is semantically incorrect to perform a merchant initiated payment with `security_code` is the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MERCHANT_INITIATED_WITH_AUTHENTICATION_RESULTS";
+                      /** @enum {string} */
+                      description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if 3D-Secure authentication results are present in the order. 3D-Secure authentication results can be present in the order only when customer is the payment initiator. It is semantically incorrect to perform a merchant initiated payment with 3D-Secure authentication results is the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MERCHANT_INITIATED_WITH_MULTIPLE_PURCHASE_UNITS";
+                      /** @enum {string} */
+                      description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if more than one purchase_unit is present in the Order. Merchant initiated payments are not supported from orders with more than one purchase_unit. Please retry the request with multiple Order requests (one for each purchase_unit).";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "RETURN_URL_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The return url is required when attempting to vault this source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CANCEL_URL_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The cancel url is required when attempting to vault this source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYER_ACTION_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Transaction cannot complete successfully, instruct the buyer to return to PayPal.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "APPLE_PAY_AMOUNT_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The 'amount' specified in the Order should match the amount that was viewed and authorized by the payer/buyer on Apple Pay. If the amount has changed, please redirect the buyer to authorize the order again via Apple Pay.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CARD_NUMBER_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The card number is required when attempting to process payment with card.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CARD_EXPIRY_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The card expiry is required when attempting to process payment with card.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "VAULT_INSTRUCTION_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Vault instruction is required. Please use `vault.store_in_vault` to provide vault instruction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISMATCHED_VAULT_ID_TO_PAYMENT_SOURCE";
+                      /** @enum {string} */
+                      description?: "The vault_id does not match the payment_source provided. Please verify that the vault_id token used refers to the matching payment_source and try again. For example, a PayPal token cannot be passed in the vault_id field in the payment_source.card object.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_CANNOT_BE_SAVED";
+                      /** @enum {string} */
+                      description?: "The option to save an order is only available if the `intent` is AUTHORIZE and `processing_instruction` uses one of the `ORDER_SAVED` options. For example, `intent`=AUTHORIZE, `processing_instruction`=ORDER_SAVED_EXPLICITLY. Please change the intent and/or processing_instruction` and try again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "SAVE_ORDER_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "The API caller account is setup in a way that does not allow it to be used for saving the order. This functionality is not available for PayPal Commerce Platform for Platforms & Marketplaces.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ELIGIBLE_FOR_PNREF_PROCESSING";
+                      /** @enum {string} */
+                      description?: "API caller is not enabled to process payments with the `pnref`. Please contact customer support to request permissions to process transactions with PNREF.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ELIGIBLE_FOR_PAYPAL_TRANSACTION_ID_PROCESSING";
+                      /** @enum {string} */
+                      description?: "API caller is not enable to process payments using `paypal_transaction_id`. Please contact customer support to request permissions to process transactions with PayPal transaction ID.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYPAL_TRANSACTION_ID_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "Specified `paypal_transaction_id` was not found. Verify the value and try the request again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PNREF_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "Specified `pnref` was not found. Verify the value and try the request again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_SECURITY_CODE_LENGTH";
+                      /** @enum {string} */
+                      description?: "The security_code length is invalid for the specified card brand.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "REQUIRED_PARAMETER_FOR_CUSTOMER_INITIATED_PAYMENT";
+                      /** @enum {string} */
+                      description?: 'This parameter is required when the customer is present. If the customer is not present, indicate so by sending payment_initiator=`MERCHANT`. For details, see <a href="https://developer.paypal.com/docs/api/orders/v2/#definition-card_stored_credential">Stored Credential</a>.';
+                  }
+            )[];
         };
         /**
          * Order Capture Request
@@ -3915,417 +4518,1798 @@ export interface components {
             payment_source?: components["schemas"]["payment_source"];
         };
         "orders.capture-400": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER_VALUE";
-                /** @enum {string} */
-                description?: "A parameter value is not valid.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_REQUIRED_PARAMETER";
-                /** @enum {string} */
-                description?: "A required field / parameter is missing";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_STRING_LENGTH";
-                /** @enum {string} */
-                description?: "The value of a field is either too short or too long";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER_SYNTAX";
-                /** @enum {string} */
-                description?: "The value of a field does not conform to the expected format.";
-            } | {
-                /** @enum {string} */
-                issue?: "MALFORMED_REQUEST_JSON";
-                /** @enum {string} */
-                description?: "The request JSON is not well formed.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER_VALUE";
+                      /** @enum {string} */
+                      description?: "A parameter value is not valid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_REQUIRED_PARAMETER";
+                      /** @enum {string} */
+                      description?: "A required field / parameter is missing";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_STRING_LENGTH";
+                      /** @enum {string} */
+                      description?: "The value of a field is either too short or too long";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER_SYNTAX";
+                      /** @enum {string} */
+                      description?: "The value of a field does not conform to the expected format.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MALFORMED_REQUEST_JSON";
+                      /** @enum {string} */
+                      description?: "The request JSON is not well formed.";
+                  }
+            )[];
         };
         "orders.capture-403": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "CONSENT_NEEDED";
-                /** @enum {string} */
-                description?: "CONSENT_NEEDED";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ELIGIBLE_FOR_TOKEN_PROCESSING";
-                /** @enum {string} */
-                description?: "API caller is not enabled to process payments with the specified type of token. Please contact customer support to request permissions to process transactions with this type of token.";
-            } | {
-                /** @enum {string} */
-                issue?: "PERMISSION_DENIED";
-                /** @enum {string} */
-                description?: "You do not have permission to access or perform operations on this resource.";
-            } | {
-                /** @enum {string} */
-                issue?: "PERMISSION_DENIED_FOR_DONATION_ITEMS";
-                /** @enum {string} */
-                description?: "The API Caller or Payee have not been granted appropriate permissions to send 'items.category' as 'DONATION'. Please speak to your account manager if you want to process these type of items.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "CONSENT_NEEDED";
+                      /** @enum {string} */
+                      description?: "CONSENT_NEEDED";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ELIGIBLE_FOR_TOKEN_PROCESSING";
+                      /** @enum {string} */
+                      description?: "API caller is not enabled to process payments with the specified type of token. Please contact customer support to request permissions to process transactions with this type of token.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PERMISSION_DENIED";
+                      /** @enum {string} */
+                      description?: "You do not have permission to access or perform operations on this resource.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PERMISSION_DENIED_FOR_DONATION_ITEMS";
+                      /** @enum {string} */
+                      description?: "The API Caller or Payee have not been granted appropriate permissions to send 'items.category' as 'DONATION'. Please speak to your account manager if you want to process these type of items.";
+                  }
+            )[];
         };
         "orders.capture-422": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "AGREEMENT_ALREADY_CANCELLED";
-                /** @enum {string} */
-                description?: "The requested agreement is already canceled.";
-            } | {
-                /** @enum {string} */
-                issue?: "BILLING_AGREEMENT_NOT_FOUND";
-                /** @enum {string} */
-                description?: "The requested Billing Agreement token was not found.";
-            } | {
-                /** @enum {string} */
-                issue?: "DECLINED_DUE_TO_RELATED_TXN";
-                /** @enum {string} */
-                description?: "One or more transactions in this Order did not succeed. Since this Order is being processed as an All or None Order, if one or more transactions in this Order do not succeed, then all purchase units are marked declined and will not be processed.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_PREVIOUS_REFERENCE";
-                /** @enum {string} */
-                description?: "For Merchant initiated network token transactions, either the payment_source.card.stored_credential.previous_network_transaction_reference or payment_source.card.stored_credential.previous_transaction_reference must be included in the request.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_CRYPTOGRAM";
-                /** @enum {string} */
-                description?: "Cryptogram is mandatory for any customer initiated network token transactions.";
-            } | {
-                /** @enum {string} */
-                issue?: "CARD_BRAND_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "Processing of this card brand is not supported. Please use another card to continue with this transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "COMPLIANCE_VIOLATION";
-                /** @enum {string} */
-                description?: "Transaction is declined due to compliance violation.";
-            } | {
-                /** @enum {string} */
-                issue?: "DOMESTIC_TRANSACTION_REQUIRED";
-                /** @enum {string} */
-                description?: "This transaction requires the payee and payer to be resident in the same country, a domestic transaction is required to create this payment.";
-            } | {
-                /** @enum {string} */
-                issue?: "DUPLICATE_INVOICE_ID";
-                /** @enum {string} */
-                description?: "Duplicate Invoice ID detected. To avoid a potential duplicate transaction your account setting requires that Invoice Id be unique for each transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "INSTRUMENT_DECLINED";
-                /** @enum {string} */
-                description?: "The instrument presented  was either declined by the processor or bank, or it can't be used for this payment.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_NOT_APPROVED";
-                /** @enum {string} */
-                description?: "Payer has not yet approved the Order for payment. Please redirect the payer to the 'rel':'approve' url returned as part of the HATEOAS links within the Create Order call or provide a valid `payment_source` in the request.";
-            } | {
-                /** @enum {string} */
-                issue?: "MAX_NUMBER_OF_PAYMENT_ATTEMPTS_EXCEEDED";
-                /** @enum {string} */
-                description?: "You have exceeded the maximum number of payment attempts.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_BLOCKED_TRANSACTION";
-                /** @enum {string} */
-                description?: "The Fraud settings for this seller are such that this payment cannot be executed.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_FX_RATE_ID_EXPIRED";
-                /** @enum {string} */
-                description?: "The specified FX Rate ID has expired. Please specify a different FX Rate Id and try the request again. Alternately, remove the FX Rate ID to process the request using the default exchange rate.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYER_ACCOUNT_LOCKED_OR_CLOSED";
-                /** @enum {string} */
-                description?: "The payer account cannot be used for this transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYER_ACCOUNT_RESTRICTED";
-                /** @enum {string} */
-                description?: "PAYER_ACCOUNT_RESTRICTED";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYER_CANNOT_PAY";
-                /** @enum {string} */
-                description?: "Payer cannot pay for this transaction. Please contact the payer to find other ways to pay for this transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYPAL_TRANSACTION_ID_EXPIRED";
-                /** @enum {string} */
-                description?: "Specified `paypal_transaction_id` has expired. PayPal transaction ID expires 4 years after the date of the initial transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "PNREF_EXPIRED";
-                /** @enum {string} */
-                description?: "Specified `pnref` has expired. PNREF expires 15 months after the date of the initial transaction.";
-            } | {
-                /** @enum {string} */
-                issue?: "REFERENCED_CARD_EXPIRED";
-                /** @enum {string} */
-                description?: "The card underlying the token has expired and hence cannot be used to process a payment.";
-            } | {
-                /** @enum {string} */
-                issue?: "TOKEN_ID_NOT_FOUND";
-                /** @enum {string} */
-                description?: "Specified token was not found. Verify the token and try the request again.";
-            } | {
-                /** @enum {string} */
-                issue?: "TRANSACTION_LIMIT_EXCEEDED";
-                /** @enum {string} */
-                description?: "Total payment amount exceeded transaction limit.";
-            } | {
-                /** @enum {string} */
-                issue?: "TRANSACTION_RECEIVING_LIMIT_EXCEEDED";
-                /** @enum {string} */
-                description?: "The transaction exceeds the receiver's receiving limit.";
-            } | {
-                /** @enum {string} */
-                issue?: "TRANSACTION_REFUSED";
-                /** @enum {string} */
-                description?: "The request was refused.";
-            } | {
-                /** @enum {string} */
-                issue?: "REDIRECT_PAYER_FOR_ALTERNATE_FUNDING";
-                /** @enum {string} */
-                description?: "Transaction failed. Redirect the payer to select another funding source.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_ALREADY_CAPTURED";
-                /** @enum {string} */
-                description?: "Order already captured.If 'intent=CAPTURE' only one capture per order is allowed.";
-            } | {
-                /** @enum {string} */
-                issue?: "TRANSACTION_BLOCKED_BY_PAYEE";
-                /** @enum {string} */
-                description?: "Transaction blocked by Payee\u2019s Fraud Protection settings.";
-            } | {
-                /** @enum {string} */
-                issue?: "AUTH_CAPTURE_NOT_ENABLED";
-                /** @enum {string} */
-                description?: "Authorization and Capture feature is not enabled for the merchant. Make sure that the recipient of the funds is a verified business account.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ENABLED_FOR_BANK_PROCESSING";
-                /** @enum {string} */
-                description?: "The API Caller account is not setup to be able to process bank payments. Please contact your PayPal account manager.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ENABLED_FOR_CARD_PROCESSING";
-                /** @enum {string} */
-                description?: "The API Caller account is not setup to be able to process card payments. Please contact PayPal customer support.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_NOT_ENABLED_FOR_BANK_PROCESSING";
-                /** @enum {string} */
-                description?: "Payee account is not setup to be able to process bank payments. Please contact your PayPal account manager.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYEE_NOT_ENABLED_FOR_CARD_PROCESSING";
-                /** @enum {string} */
-                description?: "Payee account is not setup to be able to process card payments. Please contact PayPal customer support.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PICKUP_ADDRESS";
-                /** @enum {string} */
-                description?: "If the 'shipping_option.type' is set as 'PICKUP' then the 'shipping_detail.name.full_name' should start with 'S2S' meaning Ship To Store. Example: 'S2S My Store'.";
-            } | {
-                /** @enum {string} */
-                issue?: "SHIPPING_ADDRESS_INVALID";
-                /** @enum {string} */
-                description?: "Provided shipping address is invalid.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYMENT_SOURCE_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "The payer selected method of payment is not supported when multiple purchase units are specified for an Order.";
-            } | {
-                /** @enum {string} */
-                issue?: "ORDER_COMPLETION_IN_PROGRESS";
-                /** @enum {string} */
-                description?: "The order was created with processing_instruction of ORDER_COMPLETE_ON_PAYMENT_APPROVAL. The customer has approved the payment and PayPal is still in the process of capturing the order on your behalf as instructed. Please try your request again.";
-            } | {
-                /** @enum {string} */
-                issue?: "BILLING_AGREEMENT_ID_MISMATCH";
-                /** @enum {string} */
-                description?: "Billing Agreement ID must exactly match the Billing Agreement ID that was provided during order creation.";
-            } | {
-                /** @enum {string} */
-                issue?: "PREFERRED_PAYMENT_SOURCE_MISMATCH";
-                /** @enum {string} */
-                description?: "Payment Source must exactly match the Preferred Payment Source that was provided during order creation.";
-            } | {
-                /** @enum {string} */
-                issue?: "INCOMPATIBLE_PARAMETER_VALUE";
-                /** @enum {string} */
-                description?: "The value of the field is incompatible/redundant with other fields in the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PREVIOUS_TRANSACTION_REFERENCE";
-                /** @enum {string} */
-                description?: "The authorization or capture referenced by `previous_transaction_reference` is not valid. This could be either because the previous_transaction_reference is not found or doesn't belong to the payee. Please use a valid `previous_transaction_reference`.";
-            } | {
-                /** @enum {string} */
-                issue?: "PREVIOUS_TRANSACTION_REFERENCE_HAS_CHARGEBACK";
-                /** @enum {string} */
-                description?: "The capture referenced by `previous_transaction_reference` has a chargeback and hence cannot be used for this order. Please use a `previous_transaction_reference` which does not have a chargeback.";
-            } | {
-                /** @enum {string} */
-                issue?: "PREVIOUS_TRANSACTION_REFERENCE_VOIDED";
-                /** @enum {string} */
-                description?: "The status of authorization referenced by `previous_transaction_reference` is `VOIDED` and hence cannot be used for this order. Please use a `previous_transaction_reference` whose status is not `VOIDED`.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYMENT_SOURCE_MISMATCH";
-                /** @enum {string} */
-                description?: "The `payment_source` in the request must match the `payment_source` used for the authorization or capture referenced by `previous_transaction_reference`. Please use `previous_transaction_reference` whose `payment_source` matches with the `payment_source` specified in the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "MERCHANT_INITIATED_WITH_SECURITY_CODE";
-                /** @enum {string} */
-                description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if `payment_source.card.security_code` is present in the order. `security_code` can be present in the order only when customer is the payment initiator. It is semantically incorrect to perform a merchant initiated payment with `security_code` is the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "MERCHANT_INITIATED_WITH_AUTHENTICATION_RESULTS";
-                /** @enum {string} */
-                description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if 3D-Secure authentication results are present in the order. 3D-Secure authentication results can be present in the order only when customer is the payment initiator. It is semantically incorrect to perform a merchant initiated payment with 3D-Secure authentication results is the order.";
-            } | {
-                /** @enum {string} */
-                issue?: "MERCHANT_INITIATED_WITH_MULTIPLE_PURCHASE_UNITS";
-                /** @enum {string} */
-                description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if more than one purchase_unit is present in the Order. Merchant initiated payments are not supported from orders with more than one purchase_unit. Please retry the request with multiple Order requests (one for each purchase_unit).";
-            } | {
-                /** @enum {string} */
-                issue?: "RETURN_URL_REQUIRED";
-                /** @enum {string} */
-                description?: "The return url is required when attempting to vault this source.";
-            } | {
-                /** @enum {string} */
-                issue?: "CANCEL_URL_REQUIRED";
-                /** @enum {string} */
-                description?: "The cancel url is required when attempting to vault this source.";
-            } | {
-                /** @enum {string} */
-                issue?: "SETUP_ERROR_FOR_BANK";
-                /** @enum {string} */
-                description?: "The API Caller account setup, for bank payments, is incomplete or incorrect. Please contact your PayPal account manager.";
-            } | {
-                /** @enum {string} */
-                issue?: "BANK_NOT_SUPPORTED_FOR_VERIFICATION";
-                /** @enum {string} */
-                description?: "Verification for this bank account is not supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYER_ACTION_REQUIRED";
-                /** @enum {string} */
-                description?: "Transaction cannot complete successfully, instruct the buyer to return to PayPal.";
-            } | {
-                /** @enum {string} */
-                issue?: "APPLE_PAY_AMOUNT_MISMATCH";
-                /** @enum {string} */
-                description?: "The 'amount' specified in the Order should match the amount that was viewed and authorized by the payer/buyer on Apple Pay. If the amount has changed, please redirect the buyer to authorize the order again via Apple Pay.";
-            } | {
-                /** @enum {string} */
-                issue?: "CURRENCY_NOT_SUPPORTED_FOR_BANK";
-                /** @enum {string} */
-                description?: "The payment_source does not support the currency of the Order. For ACH debit, only USD is supported and for SEPA debit, only EUR is supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "ONLY_ONE_BANK_SOURCE_ALLOWED";
-                /** @enum {string} */
-                description?: "More than one payment method within the bank payment object is not supported.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_IBAN";
-                /** @enum {string} */
-                description?: "IBAN provided is not a valid bank account number.";
-            } | {
-                /** @enum {string} */
-                issue?: "IBAN_COUNTRY_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "Country code of issuer bank for the provided IBAN is not supported for SEPA debit payments.";
-            } | {
-                /** @enum {string} */
-                issue?: "CARD_NUMBER_REQUIRED";
-                /** @enum {string} */
-                description?: "The card number is required when attempting to process payment with card.";
-            } | {
-                /** @enum {string} */
-                issue?: "CARD_EXPIRY_REQUIRED";
-                /** @enum {string} */
-                description?: "The card expiry is required when attempting to process payment with card.";
-            } | {
-                /** @enum {string} */
-                issue?: "VAULT_INSTRUCTION_REQUIRED";
-                /** @enum {string} */
-                description?: "Vault instruction is required. Please use `vault.store_in_vault` to provide vault instruction.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISMATCHED_VAULT_ID_TO_PAYMENT_SOURCE";
-                /** @enum {string} */
-                description?: "The vault_id does not match the payment_source provided. Please verify that the vault_id token used refers to the matching payment_source and try again. For example, a PayPal token cannot be passed in the vault_id field in the payment_source.card object.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ELIGIBLE_FOR_PNREF_PROCESSING";
-                /** @enum {string} */
-                description?: "API caller is not enabled to process payments with the `pnref`. Please contact customer support to request permissions to process transactions with PNREF.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_ELIGIBLE_FOR_PAYPAL_TRANSACTION_ID_PROCESSING";
-                /** @enum {string} */
-                description?: "API caller is not enable to process payments using `paypal_transaction_id`. Please contact customer support to request permissions to process transactions with PayPal transaction ID.";
-            } | {
-                /** @enum {string} */
-                issue?: "PAYPAL_TRANSACTION_ID_NOT_FOUND";
-                /** @enum {string} */
-                description?: "Specified `paypal_transaction_id` was not found. Verify the value and try the request again.";
-            } | {
-                /** @enum {string} */
-                issue?: "PNREF_NOT_FOUND";
-                /** @enum {string} */
-                description?: "Specified `pnref` was not found. Verify the value and try the request again.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_SECURITY_CODE_LENGTH";
-                /** @enum {string} */
-                description?: "The security_code length is invalid for the specified card brand.";
-            } | {
-                /** @enum {string} */
-                issue?: "PLATFORM_FEE_PAYEE_CANNOT_BE_SAME_AS_PAYER";
-                /** @enum {string} */
-                description?: "The payer cannot pay themselves. The recipient account of the platform fees must be different from the payer account.";
-            } | {
-                /** @enum {string} */
-                issue?: "REQUIRED_PARAMETER_FOR_CUSTOMER_INITIATED_PAYMENT";
-                /** @enum {string} */
-                description?: "This parameter is required when the customer is present. If the customer is not present, indicate so by sending payment_initiator=`MERCHANT`. For details, see <a href=\"https://developer.paypal.com/docs/api/orders/v2/#definition-card_stored_credential\">Stored Credential</a>.";
-            } | {
-                /** @enum {string} */
-                issue?: "IDENTIFIER_NOT_FOUND";
-                /** @enum {string} */
-                description?: "Specified identifier was not found. Please verify the correct identifier was used and try the request again.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "AGREEMENT_ALREADY_CANCELLED";
+                      /** @enum {string} */
+                      description?: "The requested agreement is already canceled.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "BILLING_AGREEMENT_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "The requested Billing Agreement token was not found.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DECLINED_DUE_TO_RELATED_TXN";
+                      /** @enum {string} */
+                      description?: "One or more transactions in this Order did not succeed. Since this Order is being processed as an All or None Order, if one or more transactions in this Order do not succeed, then all purchase units are marked declined and will not be processed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_PREVIOUS_REFERENCE";
+                      /** @enum {string} */
+                      description?: "For Merchant initiated network token transactions, either the payment_source.card.stored_credential.previous_network_transaction_reference or payment_source.card.stored_credential.previous_transaction_reference must be included in the request.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_CRYPTOGRAM";
+                      /** @enum {string} */
+                      description?: "Cryptogram is mandatory for any customer initiated network token transactions.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CARD_BRAND_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "Processing of this card brand is not supported. Please use another card to continue with this transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "COMPLIANCE_VIOLATION";
+                      /** @enum {string} */
+                      description?: "Transaction is declined due to compliance violation.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DOMESTIC_TRANSACTION_REQUIRED";
+                      /** @enum {string} */
+                      description?: "This transaction requires the payee and payer to be resident in the same country, a domestic transaction is required to create this payment.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "DUPLICATE_INVOICE_ID";
+                      /** @enum {string} */
+                      description?: "Duplicate Invoice ID detected. To avoid a potential duplicate transaction your account setting requires that Invoice Id be unique for each transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INSTRUMENT_DECLINED";
+                      /** @enum {string} */
+                      description?: "The instrument presented  was either declined by the processor or bank, or it can't be used for this payment.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_NOT_APPROVED";
+                      /** @enum {string} */
+                      description?: "Payer has not yet approved the Order for payment. Please redirect the payer to the 'rel':'approve' url returned as part of the HATEOAS links within the Create Order call or provide a valid `payment_source` in the request.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MAX_NUMBER_OF_PAYMENT_ATTEMPTS_EXCEEDED";
+                      /** @enum {string} */
+                      description?: "You have exceeded the maximum number of payment attempts.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_BLOCKED_TRANSACTION";
+                      /** @enum {string} */
+                      description?: "The Fraud settings for this seller are such that this payment cannot be executed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_FX_RATE_ID_EXPIRED";
+                      /** @enum {string} */
+                      description?: "The specified FX Rate ID has expired. Please specify a different FX Rate Id and try the request again. Alternately, remove the FX Rate ID to process the request using the default exchange rate.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYER_ACCOUNT_LOCKED_OR_CLOSED";
+                      /** @enum {string} */
+                      description?: "The payer account cannot be used for this transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYER_ACCOUNT_RESTRICTED";
+                      /** @enum {string} */
+                      description?: "PAYER_ACCOUNT_RESTRICTED";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYER_CANNOT_PAY";
+                      /** @enum {string} */
+                      description?: "Payer cannot pay for this transaction. Please contact the payer to find other ways to pay for this transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYPAL_TRANSACTION_ID_EXPIRED";
+                      /** @enum {string} */
+                      description?: "Specified `paypal_transaction_id` has expired. PayPal transaction ID expires 4 years after the date of the initial transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PNREF_EXPIRED";
+                      /** @enum {string} */
+                      description?: "Specified `pnref` has expired. PNREF expires 15 months after the date of the initial transaction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "REFERENCED_CARD_EXPIRED";
+                      /** @enum {string} */
+                      description?: "The card underlying the token has expired and hence cannot be used to process a payment.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TOKEN_ID_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "Specified token was not found. Verify the token and try the request again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TRANSACTION_LIMIT_EXCEEDED";
+                      /** @enum {string} */
+                      description?: "Total payment amount exceeded transaction limit.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TRANSACTION_RECEIVING_LIMIT_EXCEEDED";
+                      /** @enum {string} */
+                      description?: "The transaction exceeds the receiver's receiving limit.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TRANSACTION_REFUSED";
+                      /** @enum {string} */
+                      description?: "The request was refused.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "REDIRECT_PAYER_FOR_ALTERNATE_FUNDING";
+                      /** @enum {string} */
+                      description?: "Transaction failed. Redirect the payer to select another funding source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_ALREADY_CAPTURED";
+                      /** @enum {string} */
+                      description?: "Order already captured.If 'intent=CAPTURE' only one capture per order is allowed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "TRANSACTION_BLOCKED_BY_PAYEE";
+                      /** @enum {string} */
+                      description?: "Transaction blocked by Payee\u2019s Fraud Protection settings.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "AUTH_CAPTURE_NOT_ENABLED";
+                      /** @enum {string} */
+                      description?: "Authorization and Capture feature is not enabled for the merchant. Make sure that the recipient of the funds is a verified business account.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ENABLED_FOR_BANK_PROCESSING";
+                      /** @enum {string} */
+                      description?: "The API Caller account is not setup to be able to process bank payments. Please contact your PayPal account manager.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ENABLED_FOR_CARD_PROCESSING";
+                      /** @enum {string} */
+                      description?: "The API Caller account is not setup to be able to process card payments. Please contact PayPal customer support.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_NOT_ENABLED_FOR_BANK_PROCESSING";
+                      /** @enum {string} */
+                      description?: "Payee account is not setup to be able to process bank payments. Please contact your PayPal account manager.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYEE_NOT_ENABLED_FOR_CARD_PROCESSING";
+                      /** @enum {string} */
+                      description?: "Payee account is not setup to be able to process card payments. Please contact PayPal customer support.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PICKUP_ADDRESS";
+                      /** @enum {string} */
+                      description?: "If the 'shipping_option.type' is set as 'PICKUP' then the 'shipping_detail.name.full_name' should start with 'S2S' meaning Ship To Store. Example: 'S2S My Store'.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "SHIPPING_ADDRESS_INVALID";
+                      /** @enum {string} */
+                      description?: "Provided shipping address is invalid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYMENT_SOURCE_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "The payer selected method of payment is not supported when multiple purchase units are specified for an Order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ORDER_COMPLETION_IN_PROGRESS";
+                      /** @enum {string} */
+                      description?: "The order was created with processing_instruction of ORDER_COMPLETE_ON_PAYMENT_APPROVAL. The customer has approved the payment and PayPal is still in the process of capturing the order on your behalf as instructed. Please try your request again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "BILLING_AGREEMENT_ID_MISMATCH";
+                      /** @enum {string} */
+                      description?: "Billing Agreement ID must exactly match the Billing Agreement ID that was provided during order creation.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PREFERRED_PAYMENT_SOURCE_MISMATCH";
+                      /** @enum {string} */
+                      description?: "Payment Source must exactly match the Preferred Payment Source that was provided during order creation.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INCOMPATIBLE_PARAMETER_VALUE";
+                      /** @enum {string} */
+                      description?: "The value of the field is incompatible/redundant with other fields in the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PREVIOUS_TRANSACTION_REFERENCE";
+                      /** @enum {string} */
+                      description?: "The authorization or capture referenced by `previous_transaction_reference` is not valid. This could be either because the previous_transaction_reference is not found or doesn't belong to the payee. Please use a valid `previous_transaction_reference`.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PREVIOUS_TRANSACTION_REFERENCE_HAS_CHARGEBACK";
+                      /** @enum {string} */
+                      description?: "The capture referenced by `previous_transaction_reference` has a chargeback and hence cannot be used for this order. Please use a `previous_transaction_reference` which does not have a chargeback.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PREVIOUS_TRANSACTION_REFERENCE_VOIDED";
+                      /** @enum {string} */
+                      description?: "The status of authorization referenced by `previous_transaction_reference` is `VOIDED` and hence cannot be used for this order. Please use a `previous_transaction_reference` whose status is not `VOIDED`.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYMENT_SOURCE_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The `payment_source` in the request must match the `payment_source` used for the authorization or capture referenced by `previous_transaction_reference`. Please use `previous_transaction_reference` whose `payment_source` matches with the `payment_source` specified in the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MERCHANT_INITIATED_WITH_SECURITY_CODE";
+                      /** @enum {string} */
+                      description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if `payment_source.card.security_code` is present in the order. `security_code` can be present in the order only when customer is the payment initiator. It is semantically incorrect to perform a merchant initiated payment with `security_code` is the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MERCHANT_INITIATED_WITH_AUTHENTICATION_RESULTS";
+                      /** @enum {string} */
+                      description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if 3D-Secure authentication results are present in the order. 3D-Secure authentication results can be present in the order only when customer is the payment initiator. It is semantically incorrect to perform a merchant initiated payment with 3D-Secure authentication results is the order.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MERCHANT_INITIATED_WITH_MULTIPLE_PURCHASE_UNITS";
+                      /** @enum {string} */
+                      description?: "`stored_payment_source.payment_initiator` = `MERCHANT` is not supported if more than one purchase_unit is present in the Order. Merchant initiated payments are not supported from orders with more than one purchase_unit. Please retry the request with multiple Order requests (one for each purchase_unit).";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "RETURN_URL_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The return url is required when attempting to vault this source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CANCEL_URL_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The cancel url is required when attempting to vault this source.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "SETUP_ERROR_FOR_BANK";
+                      /** @enum {string} */
+                      description?: "The API Caller account setup, for bank payments, is incomplete or incorrect. Please contact your PayPal account manager.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "BANK_NOT_SUPPORTED_FOR_VERIFICATION";
+                      /** @enum {string} */
+                      description?: "Verification for this bank account is not supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYER_ACTION_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Transaction cannot complete successfully, instruct the buyer to return to PayPal.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "APPLE_PAY_AMOUNT_MISMATCH";
+                      /** @enum {string} */
+                      description?: "The 'amount' specified in the Order should match the amount that was viewed and authorized by the payer/buyer on Apple Pay. If the amount has changed, please redirect the buyer to authorize the order again via Apple Pay.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CURRENCY_NOT_SUPPORTED_FOR_BANK";
+                      /** @enum {string} */
+                      description?: "The payment_source does not support the currency of the Order. For ACH debit, only USD is supported and for SEPA debit, only EUR is supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ONLY_ONE_BANK_SOURCE_ALLOWED";
+                      /** @enum {string} */
+                      description?: "More than one payment method within the bank payment object is not supported.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_IBAN";
+                      /** @enum {string} */
+                      description?: "IBAN provided is not a valid bank account number.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "IBAN_COUNTRY_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "Country code of issuer bank for the provided IBAN is not supported for SEPA debit payments.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CARD_NUMBER_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The card number is required when attempting to process payment with card.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CARD_EXPIRY_REQUIRED";
+                      /** @enum {string} */
+                      description?: "The card expiry is required when attempting to process payment with card.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "VAULT_INSTRUCTION_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Vault instruction is required. Please use `vault.store_in_vault` to provide vault instruction.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISMATCHED_VAULT_ID_TO_PAYMENT_SOURCE";
+                      /** @enum {string} */
+                      description?: "The vault_id does not match the payment_source provided. Please verify that the vault_id token used refers to the matching payment_source and try again. For example, a PayPal token cannot be passed in the vault_id field in the payment_source.card object.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ELIGIBLE_FOR_PNREF_PROCESSING";
+                      /** @enum {string} */
+                      description?: "API caller is not enabled to process payments with the `pnref`. Please contact customer support to request permissions to process transactions with PNREF.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_ELIGIBLE_FOR_PAYPAL_TRANSACTION_ID_PROCESSING";
+                      /** @enum {string} */
+                      description?: "API caller is not enable to process payments using `paypal_transaction_id`. Please contact customer support to request permissions to process transactions with PayPal transaction ID.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PAYPAL_TRANSACTION_ID_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "Specified `paypal_transaction_id` was not found. Verify the value and try the request again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PNREF_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "Specified `pnref` was not found. Verify the value and try the request again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_SECURITY_CODE_LENGTH";
+                      /** @enum {string} */
+                      description?: "The security_code length is invalid for the specified card brand.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PLATFORM_FEE_PAYEE_CANNOT_BE_SAME_AS_PAYER";
+                      /** @enum {string} */
+                      description?: "The payer cannot pay themselves. The recipient account of the platform fees must be different from the payer account.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "REQUIRED_PARAMETER_FOR_CUSTOMER_INITIATED_PAYMENT";
+                      /** @enum {string} */
+                      description?: 'This parameter is required when the customer is present. If the customer is not present, indicate so by sending payment_initiator=`MERCHANT`. For details, see <a href="https://developer.paypal.com/docs/api/orders/v2/#definition-card_stored_credential">Stored Credential</a>.';
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "IDENTIFIER_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "Specified identifier was not found. Please verify the correct identifier was used and try the request again.";
+                  }
+            )[];
         };
         /**
          * Shipment Tracking Number Type.
          * @description The tracking number type.
          * @enum {string}
          */
-        shipment_tracking_number_type: "CARRIER_PROVIDED" | "E2E_PARTNER_PROVIDED";
+        shipment_tracking_number_type:
+            | "CARRIER_PROVIDED"
+            | "E2E_PARTNER_PROVIDED";
         /**
          * Shipment Tracking Status.
          * @description The status of the item shipment. For allowed values, see <a href="/docs/tracking/reference/shipping-status/">Shipping Statuses</a>.
          * @enum {string}
          */
-        shipment_tracking_status: "CANCELLED" | "DELIVERED" | "LOCAL_PICKUP" | "ON_HOLD" | "SHIPPED" | "SHIPMENT_CREATED" | "DROPPED_OFF" | "IN_TRANSIT" | "RETURNED" | "LABEL_PRINTED" | "ERROR" | "UNCONFIRMED" | "PICKUP_FAILED" | "DELIVERY_DELAYED" | "DELIVERY_SCHEDULED" | "DELIVERY_FAILED" | "INRETURN" | "IN_PROCESS" | "NEW" | "VOID" | "PROCESSED" | "NOT_SHIPPED" | "COMPLETED";
+        shipment_tracking_status:
+            | "CANCELLED"
+            | "DELIVERED"
+            | "LOCAL_PICKUP"
+            | "ON_HOLD"
+            | "SHIPPED"
+            | "SHIPMENT_CREATED"
+            | "DROPPED_OFF"
+            | "IN_TRANSIT"
+            | "RETURNED"
+            | "LABEL_PRINTED"
+            | "ERROR"
+            | "UNCONFIRMED"
+            | "PICKUP_FAILED"
+            | "DELIVERY_DELAYED"
+            | "DELIVERY_SCHEDULED"
+            | "DELIVERY_FAILED"
+            | "INRETURN"
+            | "IN_PROCESS"
+            | "NEW"
+            | "VOID"
+            | "PROCESSED"
+            | "NOT_SHIPPED"
+            | "COMPLETED";
         /**
          * Carrier.
          * @description The carrier for the shipment. Some carriers have a global version as well as local subsidiaries. The subsidiaries are repeated over many countries and might also have an entry in the global list. Choose the carrier for your country. If the carrier is not available for your country, choose the global version of the carrier. If your carrier name is not in the list, set `carrier` to `OTHER` and set carrier name in `carrier_name_other`. For allowed values, see <a href="/docs/tracking/reference/carriers/">Carriers</a>.
          * @enum {string}
          */
-        shipment_carrier: "DPD_RU" | "BG_BULGARIAN_POST" | "KR_KOREA_POST" | "ZA_COURIERIT" | "FR_EXAPAQ" | "ARE_EMIRATES_POST" | "GAC" | "GEIS" | "SF_EX" | "PAGO" | "MYHERMES" | "DIAMOND_EUROGISTICS" | "CORPORATECOURIERS_WEBHOOK" | "BOND" | "OMNIPARCEL" | "SK_POSTA" | "PUROLATOR" | "FETCHR_WEBHOOK" | "THEDELIVERYGROUP" | "CELLO_SQUARE" | "TARRIVE" | "COLLIVERY" | "MAINFREIGHT" | "IND_FIRSTFLIGHT" | "ACSWORLDWIDE" | "AMSTAN" | "OKAYPARCEL" | "ENVIALIA_REFERENCE" | "SEUR_ES" | "CONTINENTAL" | "FDSEXPRESS" | "AMAZON_FBA_SWISHIP" | "WYNGS" | "DHL_ACTIVE_TRACING" | "ZYLLEM" | "RUSTON" | "XPOST" | "CORREOS_ES" | "DHL_FR" | "PAN_ASIA" | "BRT_IT" | "SRE_KOREA" | "SPEEDEE" | "TNT_UK" | "VENIPAK" | "SHREENANDANCOURIER" | "CROSHOT" | "NIPOST_NG" | "EPST_GLBL" | "NEWGISTICS" | "POST_SLOVENIA" | "JERSEY_POST" | "BOMBINOEXP" | "WMG" | "XQ_EXPRESS" | "FURDECO" | "LHT_EXPRESS" | "SOUTH_AFRICAN_POST_OFFICE" | "SPOTON" | "DIMERCO" | "CYPRUS_POST_CYP" | "ABCUSTOM" | "IND_DELIVREE" | "CN_BESTEXPRESS" | "DX_SFTP" | "PICKUPP_MYS" | "FMX" | "HELLMANN" | "SHIP_IT_ASIA" | "KERRY_ECOMMERCE" | "FRETERAPIDO" | "PITNEY_BOWES" | "XPRESSEN_DK" | "SEUR_SP_API" | "DELIVERYONTIME" | "JINSUNG" | "TRANS_KARGO" | "SWISHIP_DE" | "IVOY_WEBHOOK" | "AIRMEE_WEBHOOK" | "DHL_BENELUX" | "FIRSTMILE" | "FASTWAY_IR" | "HH_EXP" | "MYS_MYPOST_ONLINE" | "TNT_NL" | "TIPSA" | "TAQBIN_MY" | "KGMHUB" | "INTEXPRESS" | "OVERSE_EXP" | "ONECLICK" | "ROADRUNNER_FREIGHT" | "GLS_CROTIA" | "MRW_FTP" | "BLUEX" | "DYLT" | "DPD_IR" | "SIN_GLBL" | "TUFFNELLS_REFERENCE" | "CJPACKET" | "MILKMAN" | "ASIGNA" | "ONEWORLDEXPRESS" | "ROYAL_MAIL" | "VIA_EXPRESS" | "TIGFREIGHT" | "ZTO_EXPRESS" | "TWO_GO" | "IML" | "INTEL_VALLEY" | "EFS" | "UK_UK_MAIL" | "RAM" | "ALLIEDEXPRESS" | "APC_OVERNIGHT" | "SHIPPIT" | "TFM" | "M_XPRESS" | "HDB_BOX" | "CLEVY_LINKS" | "IBEONE" | "FIEGE_NL" | "KWE_GLOBAL" | "CTC_EXPRESS" | "LAO_POST" | "AMAZON" | "MORE_LINK" | "JX" | "EASY_MAIL" | "ADUIEPYLE" | "GB_PANTHER" | "EXPRESSSALE" | "SG_DETRACK" | "TRUNKRS_WEBHOOK" | "MATDESPATCH" | "DICOM" | "MBW" | "KHM_CAMBODIA_POST" | "SINOTRANS" | "BRT_IT_PARCELID" | "DHL_SUPPLY_CHAIN" | "DHL_PL" | "TOPYOU" | "PALEXPRESS" | "DHL_SG" | "CN_WEDO" | "FULFILLME" | "DPD_DELISTRACK" | "UPS_REFERENCE" | "CARIBOU" | "LOCUS_WEBHOOK" | "DSV" | "CN_GOFLY" | "P2P_TRC" | "DIRECTPARCELS" | "NOVA_POSHTA_INT" | "FEDEX_POLAND" | "CN_JCEX" | "FAR_INTERNATIONAL" | "IDEXPRESS" | "GANGBAO" | "NEWAY" | "POSTNL_INT_3_S" | "RPX_ID" | "DESIGNERTRANSPORT_WEBHOOK" | "GLS_SLOVEN" | "PARCELLED_IN" | "GSI_EXPRESS" | "CON_WAY" | "BROUWER_TRANSPORT" | "CPEX" | "ISRAEL_POST" | "DTDC_IN" | "PTT_POST" | "XDE_WEBHOOK" | "TOLOS" | "GIAO_HANG" | "GEODIS_ESPACE" | "MAGYAR_HU" | "DOORDASH_WEBHOOK" | "TIKI_ID" | "CJ_HK_INTERNATIONAL" | "STAR_TRACK_EXPRESS" | "HELTHJEM" | "SFB2C" | "FREIGHTQUOTE" | "LANDMARK_GLOBAL_REFERENCE" | "PARCEL2GO" | "DELNEXT" | "RCL" | "CGS_EXPRESS" | "HK_POST" | "SAP_EXPRESS" | "PARCELPOST_SG" | "HERMES" | "IND_SAFEEXPRESS" | "TOPHATTEREXPRESS" | "MGLOBAL" | "AVERITT" | "LEADER" | "_2EBOX" | "SG_SPEEDPOST" | "DBSCHENKER_SE" | "ISR_POST_DOMESTIC" | "BESTWAYPARCEL" | "ASENDIA_DE" | "NIGHTLINE_UK" | "TAQBIN_SG" | "TCK_EXPRESS" | "ENDEAVOUR_DELIVERY" | "NANJINGWOYUAN" | "HEPPNER_FR" | "EMPS_CN" | "FONSEN" | "PICKRR" | "APC_OVERNIGHT_CONNUM" | "STAR_TRACK_NEXT_FLIGHT" | "DAJIN" | "UPS_FREIGHT" | "POSTA_PLUS" | "CEVA" | "ANSERX" | "JS_EXPRESS" | "PADTF" | "UPS_MAIL_INNOVATIONS" | "EZSHIP" | "SYPOST" | "AMAZON_SHIP_MCF" | "YUSEN" | "BRING" | "SDA_IT" | "GBA" | "NEWEGGEXPRESS" | "SPEEDCOURIERS_GR" | "FORRUN" | "PICKUP" | "ECMS" | "INTELIPOST" | "FLASHEXPRESS" | "CN_STO" | "SEKO_SFTP" | "HOME_DELIVERY_SOLUTIONS" | "DPD_HGRY" | "KERRYTTC_VN" | "JOYING_BOX" | "TOTAL_EXPRESS" | "ZJS_EXPRESS" | "STARKEN" | "DEMANDSHIP" | "CN_DPEX" | "AUPOST_CN" | "LOGISTERS" | "GOGLOBALPOST" | "GLS_CZ" | "PAACK_WEBHOOK" | "GRAB_WEBHOOK" | "PARCELPOINT" | "ICUMULUS" | "DAIGLOBALTRACK" | "GLOBAL_IPARCEL" | "YURTICI_KARGO" | "CN_PAYPAL_PACKAGE" | "PARCEL_2_POST" | "GLS_IT" | "PIL_LOGISTICS" | "HEPPNER" | "GENERAL_OVERNIGHT" | "HAPPY2POINT" | "CHITCHATS" | "SMOOTH" | "CLE_LOGISTICS" | "FIEGE" | "MX_CARGO" | "ZIINGFINALMILE" | "DAYTON_FREIGHT" | "TCS" | "AEX" | "HERMES_DE" | "ROUTIFIC_WEBHOOK" | "GLOBAVEND" | "CJ_LOGISTICS" | "PALLET_NETWORK" | "RAF_PH" | "UK_XDP" | "PAPER_EXPRESS" | "LA_POSTE_SUIVI" | "PAQUETEXPRESS" | "LIEFERY" | "STRECK_TRANSPORT" | "PONY_EXPRESS" | "ALWAYS_EXPRESS" | "GBS_BROKER" | "CITYLINK_MY" | "ALLJOY" | "YODEL" | "YODEL_DIR" | "STONE3PL" | "PARCELPAL_WEBHOOK" | "DHL_ECOMERCE_ASA" | "SIMPLYPOST" | "KY_EXPRESS" | "SHENZHEN" | "US_LASERSHIP" | "UC_EXPRE" | "DIDADI" | "CJ_KR" | "DBSCHENKER_B2B" | "MXE" | "CAE_DELIVERS" | "PFCEXPRESS" | "WHISTL" | "WEPOST" | "DHL_PARCEL_ES" | "DDEXPRESS" | "ARAMEX_AU" | "BNEED" | "HK_TGX" | "LATVIJAS_PASTS" | "VIAEUROPE" | "CORREO_UY" | "CHRONOPOST_FR" | "J_NET" | "_6LS" | "BLR_BELPOST" | "BIRDSYSTEM" | "DOBROPOST" | "WAHANA_ID" | "WEASHIP" | "SONICTL" | "KWT" | "AFLLOG_FTP" | "SKYNET_WORLDWIDE" | "NOVA_POSHTA" | "SEINO" | "SZENDEX" | "BPOST_INT" | "DBSCHENKER_SV" | "AO_DEUTSCHLAND" | "EU_FLEET_SOLUTIONS" | "PCFCORP" | "LINKBRIDGE" | "PRIMAMULTICIPTA" | "COUREX" | "ZAJIL_EXPRESS" | "COLLECTCO" | "JTEXPRESS" | "FEDEX_UK" | "USHIP" | "PIXSELL" | "SHIPTOR" | "CDEK" | "VNM_VIETTELPOST" | "CJ_CENTURY" | "GSO" | "VIWO" | "SKYBOX" | "KERRYTJ" | "NTLOGISTICS_VN" | "SDH_SCM" | "ZINC" | "DPE_SOUTH_AFRC" | "CESKA_CZ" | "ACS_GR" | "DEALERSEND" | "JOCOM" | "CSE" | "TFORCE_FINALMILE" | "SHIP_GATE" | "SHIPTER" | "NATIONAL_SAMEDAY" | "YUNEXPRESS" | "CAINIAO" | "DMS_MATRIX" | "DIRECTLOG" | "ASENDIA_US" | "_3JMSLOGISTICS" | "LICCARDI_EXPRESS" | "SKY_POSTAL" | "CNWANGTONG" | "POSTNORD_LOGISTICS_DK" | "LOGISTIKA" | "CELERITAS" | "PRESSIODE" | "SHREE_MARUTI" | "LOGISTICSWORLDWIDE_HK" | "EFEX" | "LOTTE" | "LONESTAR" | "APRISAEXPRESS" | "BEL_RS" | "OSM_WORLDWIDE" | "WESTGATE_GL" | "FASTRACK" | "DTD_EXPR" | "ALFATREX" | "PROMEDDELIVERY" | "THABIT_LOGISTICS" | "HCT_LOGISTICS" | "CARRY_FLAP" | "US_OLD_DOMINION" | "ANICAM_BOX" | "WANBEXPRESS" | "AN_POST" | "DPD_LOCAL" | "STALLIONEXPRESS" | "RAIDEREX" | "SHOPFANS" | "KYUNGDONG_PARCEL" | "CHAMPION_LOGISTICS" | "PICKUPP_SGP" | "MORNING_EXPRESS" | "NACEX" | "THENILE_WEBHOOK" | "HOLISOL" | "LBCEXPRESS_FTP" | "KURASI" | "USF_REDDAWAY" | "APG" | "CN_BOXC" | "ECOSCOOTING" | "MAINWAY" | "PAPERFLY" | "HOUNDEXPRESS" | "BOX_BERRY" | "EP_BOX" | "PLUS_LOG_UK" | "FULFILLA" | "ASE" | "MAIL_PLUS" | "XPO_LOGISTICS" | "WNDIRECT" | "CLOUDWISH_ASIA" | "ZELERIS" | "GIO_EXPRESS" | "OCS_WORLDWIDE" | "ARK_LOGISTICS" | "AQUILINE" | "PILOT_FREIGHT" | "QWINTRY" | "DANSKE_FRAGT" | "CARRIERS" | "AIR_CANADA_GLOBAL" | "PRESIDENT_TRANS" | "STEPFORWARDFS" | "SKYNET_UK" | "PITTOHIO" | "CORREOS_EXPRESS" | "RL_US" | "MARA_XPRESS" | "DESTINY" | "UK_YODEL" | "COMET_TECH" | "DHL_PARCEL_RU" | "TNT_REFR" | "SHREE_ANJANI_COURIER" | "MIKROPAKKET_BE" | "ETS_EXPRESS" | "COLIS_PRIVE" | "CN_YUNDA" | "AAA_COOPER" | "ROCKET_PARCEL" | "_360LION" | "PANDU" | "PROFESSIONAL_COURIERS" | "FLYTEXPRESS" | "LOGISTICSWORLDWIDE_MY" | "CORREOS_DE_ESPANA" | "IMX" | "FOUR_PX_EXPRESS" | "XPRESSBEES" | "PICKUPP_VNM" | "STARTRACK_EXPRESS" | "FR_COLISSIMO" | "NACEX_SPAIN_REFERENCE" | "DHL_SUPPLY_CHAIN_AU" | "ESHIPPING" | "SHREETIRUPATI" | "HX_EXPRESS" | "INDOPAKET" | "CN_17POST" | "K1_EXPRESS" | "CJ_GLS" | "MYS_GDEX" | "NATIONEX" | "ANJUN" | "FARGOOD" | "SMG_EXPRESS" | "RZYEXPRESS" | "SEFL" | "TNT_CLICK_IT" | "HDB" | "HIPSHIPPER" | "RPXLOGISTICS" | "KUEHNE" | "IT_NEXIVE" | "PTS" | "SWISS_POST_FTP" | "FASTRK_SERV" | "_4_72" | "US_YRC" | "POSTNL_INTL_3S" | "ELIAN_POST" | "CUBYN" | "SAU_SAUDI_POST" | "ABXEXPRESS_MY" | "HUAHAN_EXPRESS" | "IND_JAYONEXPRESS" | "ZES_EXPRESS" | "ZEPTO_EXPRESS" | "SKYNET_ZA" | "ZEEK_2_DOOR" | "BLINKLASTMILE" | "POSTA_UKR" | "CHROBINSON" | "CN_POST56" | "COURANT_PLUS" | "SCUDEX_EXPRESS" | "SHIPENTEGRA" | "B_TWO_C_EUROPE" | "COPE" | "IND_GATI" | "CN_WISHPOST" | "NACEX_ES" | "TAQBIN_HK" | "GLOBALTRANZ" | "HKD" | "BJSHOMEDELIVERY" | "OMNIVA" | "SUTTON" | "PANTHER_REFERENCE" | "SFCSERVICE" | "LTL" | "PARKNPARCEL" | "SPRING_GDS" | "ECEXPRESS" | "INTERPARCEL_AU" | "AGILITY" | "XL_EXPRESS" | "ADERONLINE" | "DIRECTCOURIERS" | "PLANZER" | "SENDING" | "NINJAVAN_WB" | "NATIONWIDE_MY" | "SENDIT" | "GB_ARROW" | "IND_GOJAVAS" | "KPOST" | "DHL_FREIGHT" | "BLUECARE" | "JINDOUYUN" | "TRACKON" | "GB_TUFFNELLS" | "TRUMPCARD" | "ETOTAL" | "SFPLUS_WEBHOOK" | "SEKOLOGISTICS" | "HERMES_2MANN_HANDLING" | "DPD_LOCAL_REF" | "UDS" | "ZA_SPECIALISED_FREIGHT" | "THA_KERRY" | "PRT_INT_SEUR" | "BRA_CORREIOS" | "NZ_NZ_POST" | "CN_EQUICK" | "MYS_EMS" | "GB_NORSK" | "ESP_MRW" | "ESP_PACKLINK" | "KANGAROO_MY" | "RPX" | "XDP_UK_REFERENCE" | "NINJAVAN_MY" | "ADICIONAL" | "NINJAVAN_ID" | "ROADBULL" | "YAKIT" | "MAILAMERICAS" | "MIKROPAKKET" | "DYNALOGIC" | "DHL_ES" | "DHL_PARCEL_NL" | "DHL_GLOBAL_MAIL_ASIA" | "DAWN_WING" | "GENIKI_GR" | "HERMESWORLD_UK" | "ALPHAFAST" | "BUYLOGIC" | "EKART" | "MEX_SENDA" | "SFC_LOGISTICS" | "POST_SERBIA" | "IND_DELHIVERY" | "DE_DPD_DELISTRACK" | "RPD2MAN" | "CN_SF_EXPRESS" | "YANWEN" | "MYS_SKYNET" | "CORREOS_DE_MEXICO" | "CBL_LOGISTICA" | "MEX_ESTAFETA" | "AU_AUSTRIAN_POST" | "RINCOS" | "NLD_DHL" | "RUSSIAN_POST" | "COURIERS_PLEASE" | "POSTNORD_LOGISTICS" | "FEDEX" | "DPE_EXPRESS" | "DPD" | "ADSONE" | "IDN_JNE" | "THECOURIERGUY" | "CNEXPS" | "PRT_CHRONOPOST" | "LANDMARK_GLOBAL" | "IT_DHL_ECOMMERCE" | "ESP_NACEX" | "PRT_CTT" | "BE_KIALA" | "ASENDIA_UK" | "GLOBAL_TNT" | "POSTUR_IS" | "EPARCEL_KR" | "INPOST_PACZKOMATY" | "IT_POSTE_ITALIA" | "BE_BPOST" | "PL_POCZTA_POLSKA" | "MYS_MYS_POST" | "SG_SG_POST" | "THA_THAILAND_POST" | "LEXSHIP" | "FASTWAY_NZ" | "DHL_AU" | "COSTMETICSNOW" | "PFLOGISTICS" | "LOOMIS_EXPRESS" | "GLS_ITALY" | "LINE" | "GEL_EXPRESS" | "HUODULL" | "NINJAVAN_SG" | "JANIO" | "AO_COURIER" | "BRT_IT_SENDER_REF" | "SAILPOST" | "LALAMOVE" | "NEWZEALAND_COURIERS" | "ETOMARS" | "VIRTRANSPORT" | "WIZMO" | "PALLETWAYS" | "I_DIKA" | "CFL_LOGISTICS" | "GEMWORLDWIDE" | "GLOBAL_EXPRESS" | "LOGISTYX_TRANSGROUP" | "WESTBANK_COURIER" | "ARCO_SPEDIZIONI" | "YDH_EXPRESS" | "PARCELINKLOGISTICS" | "CNDEXPRESS" | "NOX_NIGHT_TIME_EXPRESS" | "AERONET" | "LTIANEXP" | "INTEGRA2_FTP" | "PARCELONE" | "NOX_NACHTEXPRESS" | "CN_CHINA_POST_EMS" | "CHUKOU1" | "GLS_SLOV" | "ORANGE_DS" | "JOOM_LOGIS" | "AUS_STARTRACK" | "DHL" | "GB_APC" | "BONDSCOURIERS" | "JPN_JAPAN_POST" | "USPS" | "WINIT" | "ARG_OCA" | "TW_TAIWAN_POST" | "DMM_NETWORK" | "TNT" | "BH_POSTA" | "SWE_POSTNORD" | "CA_CANADA_POST" | "WISELOADS" | "ASENDIA_HK" | "NLD_GLS" | "MEX_REDPACK" | "JET_SHIP" | "DE_DHL_EXPRESS" | "NINJAVAN_THAI" | "RABEN_GROUP" | "ESP_ASM" | "HRV_HRVATSKA" | "GLOBAL_ESTES" | "LTU_LIETUVOS" | "BEL_DHL" | "AU_AU_POST" | "SPEEDEXCOURIER" | "FR_COLIS" | "ARAMEX" | "DPEX" | "MYS_AIRPAK" | "CUCKOOEXPRESS" | "DPD_POLAND" | "NLD_POSTNL" | "NIM_EXPRESS" | "QUANTIUM" | "SENDLE" | "ESP_REDUR" | "MATKAHUOLTO" | "CPACKET" | "POSTI" | "HUNTER_EXPRESS" | "CHOIR_EXP" | "LEGION_EXPRESS" | "AUSTRIAN_POST_EXPRESS" | "GRUPO" | "POSTA_RO" | "INTERPARCEL_UK" | "GLOBAL_ABF" | "POSTEN_NORGE" | "XPERT_DELIVERY" | "DHL_REFR" | "DHL_HK" | "SKYNET_UAE" | "GOJEK" | "YODEL_INTNL" | "JANCO" | "YTO" | "WISE_EXPRESS" | "JTEXPRESS_VN" | "FEDEX_INTL_MLSERV" | "VAMOX" | "AMS_GRP" | "DHL_JP" | "HRPARCEL" | "GESWL" | "BLUESTAR" | "CDEK_TR" | "DESCARTES" | "DELTEC_UK" | "DTDC_EXPRESS" | "TOURLINE" | "BH_WORLDWIDE" | "OCS" | "YINGNUO_LOGISTICS" | "UPS" | "TOLL" | "PRT_SEUR" | "DTDC_AU" | "THA_DYNAMIC_LOGISTICS" | "UBI_LOGISTICS" | "FEDEX_CROSSBORDER" | "A1POST" | "TAZMANIAN_FREIGHT" | "CJ_INT_MY" | "SAIA_FREIGHT" | "SG_QXPRESS" | "NHANS_SOLUTIONS" | "DPD_FR" | "COORDINADORA" | "ANDREANI" | "DOORA" | "INTERPARCEL_NZ" | "PHL_JAMEXPRESS" | "BEL_BELGIUM_POST" | "US_APC" | "IDN_POS" | "FR_MONDIAL" | "DE_DHL" | "HK_RPX" | "DHL_PIECEID" | "VNPOST_EMS" | "RRDONNELLEY" | "DPD_DE" | "DELCART_IN" | "IMEXGLOBALSOLUTIONS" | "ACOMMERCE" | "EURODIS" | "CANPAR" | "GLS" | "IND_ECOM" | "ESP_ENVIALIA" | "DHL_UK" | "SMSA_EXPRESS" | "TNT_FR" | "DEX_I" | "BUDBEE_WEBHOOK" | "COPA_COURIER" | "VNM_VIETNAM_POST" | "DPD_HK" | "TOLL_NZ" | "ECHO" | "FEDEX_FR" | "BORDEREXPRESS" | "MAILPLUS_JPN" | "TNT_UK_REFR" | "KEC" | "DPD_RO" | "TNT_JP" | "TH_CJ" | "EC_CN" | "FASTWAY_UK" | "FASTWAY_US" | "GLS_DE" | "GLS_ES" | "GLS_FR" | "MONDIAL_BE" | "SGT_IT" | "TNT_CN" | "TNT_DE" | "TNT_ES" | "TNT_PL" | "PARCELFORCE" | "SWISS_POST" | "TOLL_IPEC" | "AIR_21" | "AIRSPEED" | "BERT" | "BLUEDART" | "COLLECTPLUS" | "COURIERPLUS" | "COURIER_POST" | "DHL_GLOBAL_MAIL" | "DPD_UK" | "DELTEC_DE" | "DEUTSCHE_DE" | "DOTZOT" | "ELTA_GR" | "EMS_CN" | "ECARGO" | "ENSENDA" | "FERCAM_IT" | "FASTWAY_ZA" | "FASTWAY_AU" | "FIRST_LOGISITCS" | "GEODIS" | "GLOBEGISTICS" | "GREYHOUND" | "JETSHIP_MY" | "LION_PARCEL" | "AEROFLASH" | "ONTRAC" | "SAGAWA" | "SIODEMKA" | "STARTRACK" | "TNT_AU" | "TNT_IT" | "TRANSMISSION" | "YAMATO" | "DHL_IT" | "DHL_AT" | "LOGISTICSWORLDWIDE_KR" | "GLS_SPAIN" | "AMAZON_UK_API" | "DPD_FR_REFERENCE" | "DHLPARCEL_UK" | "MEGASAVE" | "QUALITYPOST" | "IDS_LOGISTICS" | "JOYINGBOX" | "PANTHER_ORDER_NUMBER" | "WATKINS_SHEPARD" | "FASTTRACK" | "UP_EXPRESS" | "ELOGISTICA" | "ECOURIER" | "CJ_PHILIPPINES" | "SPEEDEX" | "ORANGECONNEX" | "TECOR" | "SAEE" | "GLS_ITALY_FTP" | "DELIVERE" | "YYCOM" | "ADICIONAL_PT" | "DKSH" | "NIPPON_EXPRESS_FTP" | "GOLS" | "FUJEXP" | "QTRACK" | "OMLOGISTICS_API" | "GDPHARM" | "MISUMI_CN" | "AIR_CANADA" | "CITY56_WEBHOOK" | "SAGAWA_API" | "KEDAEX" | "PGEON_API" | "WEWORLDEXPRESS" | "JT_LOGISTICS" | "TRUSK" | "VIAXPRESS" | "DHL_SUPPLYCHAIN_ID" | "ZUELLIGPHARMA_SFTP" | "MEEST" | "TOLL_PRIORITY" | "MOTHERSHIP_API" | "CAPITAL" | "EUROPAKET_API" | "HFD" | "TOURLINE_REFERENCE" | "GIO_ECOURIER" | "CN_LOGISTICS" | "PANDION" | "BPOST_API" | "PASSPORTSHIPPING" | "PAKAJO" | "DACHSER" | "YUSEN_SFTP" | "SHYPLITE" | "XYY" | "MWD" | "FAXECARGO" | "MAZET" | "FIRST_LOGISTICS_API" | "SPRINT_PACK" | "HERMES_DE_FTP" | "CONCISE" | "KERRY_EXPRESS_TW_API" | "EWE" | "FASTDESPATCH" | "ABCUSTOM_SFTP" | "CHAZKI" | "SHIPPIE" | "GEODIS_API" | "NAQEL_EXPRESS" | "PAPA_WEBHOOK" | "FORWARDAIR" | "DIALOGO_LOGISTICA_API" | "LALAMOVE_API" | "TOMYDOOR" | "KRONOS_WEBHOOK" | "JTCARGO" | "T_CAT" | "CONCISE_WEBHOOK" | "TELEPORT_WEBHOOK" | "CUSTOMCO_API" | "SPX_TH" | "BOLLORE_LOGISTICS" | "CLICKLINK_SFTP" | "M3LOGISTICS" | "VNPOST_API" | "AXLEHIRE_FTP" | "SHADOWFAX" | "MYHERMES_UK_API" | "DAIICHI" | "MENSAJEROSURBANOS_API" | "POLARSPEED" | "IDEXPRESS_ID" | "PAYO" | "WHISTL_SFTP" | "INTEX_DE" | "TRANS2U" | "PRODUCTCAREGROUP_SFTP" | "BIGSMART" | "EXPEDITORS_API_REF" | "AITWORLDWIDE_API" | "WORLDCOURIER" | "QUIQUP" | "AGEDISS_SFTP" | "ANDREANI_API" | "CRLEXPRESS" | "SMARTCAT" | "CROSSFLIGHT" | "PROCARRIER" | "DHL_REFERENCE_API" | "SEINO_API" | "WSPEXPRESS" | "KRONOS" | "TOTAL_EXPRESS_API" | "PARCLL" | "XPEDIGO" | "STAR_TRACK_WEBHOOK" | "GPOST" | "UCS" | "DMFGROUP" | "COORDINADORA_API" | "MARKEN" | "NTL" | "REDJEPAKKETJE" | "ALLIED_EXPRESS_FTP" | "MONDIALRELAY_ES" | "NAEKO_FTP" | "MHI" | "SHIPPIFY" | "MALCA_AMIT_API" | "JTEXPRESS_SG_API" | "DACHSER_WEB" | "FLIGHTLG" | "CAGO" | "COM1EXPRESS" | "TONAMI_FTP" | "PACKFLEET" | "PUROLATOR_INTERNATIONAL" | "WINESHIPPING_WEBHOOK" | "DHL_ES_SFTP" | "PCHOME_API" | "CESKAPOSTA_API" | "GORUSH" | "HOMERUNNER" | "AMAZON_ORDER" | "EFWNOW_API" | "CBL_LOGISTICA_API" | "NIMBUSPOST" | "LOGWIN_LOGISTICS" | "NOWLOG_API" | "DPD_NL" | "GODEPENDABLE" | "ESDEX" | "LOGISYSTEMS_SFTP" | "EXPEDITORS" | "SNTGLOBAL_API" | "SHIPX" | "QINTL_API" | "PACKS" | "POSTNL_INTERNATIONAL" | "AMAZON_EMAIL_PUSH" | "DHL_API" | "SPX" | "AXLEHIRE" | "ICSCOURIER" | "DIALOGO_LOGISTICA" | "SHUNBANG_EXPRESS" | "TCS_API" | "SF_EXPRESS_CN" | "PACKETA" | "SIC_TELIWAY" | "MONDIALRELAY_FR" | "INTIME_FTP" | "JD_EXPRESS" | "FASTBOX" | "PATHEON" | "INDIA_POST" | "TIPSA_REF" | "ECOFREIGHT" | "VOX" | "DIRECTFREIGHT_AU_REF" | "BESTTRANSPORT_SFTP" | "AUSTRALIA_POST_API" | "FRAGILEPAK_SFTP" | "FLIPXP" | "VALUE_WEBHOOK" | "DAESHIN" | "SHERPA" | "MWD_API" | "SMARTKARGO" | "DNJ_EXPRESS" | "GOPEOPLE" | "MYSENDLE_API" | "ARAMEX_API" | "PIDGE" | "THAIPARCELS" | "PANTHER_REFERENCE_API" | "POSTAPLUS" | "BUFFALO" | "U_ENVIOS" | "ELITE_CO" | "BARQEXP" | "ROCHE_INTERNAL_SFTP" | "DBSCHENKER_ICELAND" | "TNT_FR_REFERENCE" | "NEWGISTICSAPI" | "GLOVO" | "GWLOGIS_API" | "SPREETAIL_API" | "MOOVA" | "PLYCONGROUP" | "USPS_WEBHOOK" | "REIMAGINEDELIVERY" | "EDF_FTP" | "DAO365" | "BIOCAIR_FTP" | "RANSA_WEBHOOK" | "SHIPXPRES" | "COURANT_PLUS_API" | "SHIPA" | "HOMELOGISTICS" | "DX" | "POSTE_ITALIANE_PACCOCELERE" | "TOLL_WEBHOOK" | "LCTBR_API" | "DX_FREIGHT" | "DHL_SFTP" | "SHIPROCKET" | "UBER_WEBHOOK" | "STATOVERNIGHT" | "BURD" | "FASTSHIP" | "IBVENTURE_WEBHOOK" | "GATI_KWE_API" | "CRYOPDP_FTP" | "HUBBED" | "TIPSA_API" | "ARASKARGO" | "THIJS_NL" | "ATSHEALTHCARE_REFERENCE" | "99MINUTOS" | "HELLENIC_POST" | "HSM_GLOBAL" | "MNX" | "NMTRANSFER" | "LOGYSTO" | "INDIA_POST_INT" | "AMAZON_FBA_SWISHIP_IN" | "SRT_TRANSPORT" | "BOMI" | "DELIVERR_SFTP" | "HSDEXPRESS" | "SIMPLETIRE_WEBHOOK" | "HUNTER_EXPRESS_SFTP" | "UPS_API" | "WOOYOUNG_LOGISTICS_SFTP" | "PHSE_API" | "WISH_EMAIL_PUSH" | "NORTHLINE" | "MEDAFRICA" | "DPD_AT_SFTP" | "ANTERAJA" | "DHL_GLOBAL_FORWARDING_API" | "LBCEXPRESS_API" | "SIMSGLOBAL" | "CDLDELIVERS" | "TYP" | "TESTING_COURIER_WEBHOOK" | "PANDAGO_API" | "ROYAL_MAIL_FTP" | "THUNDEREXPRESS" | "SECRETLAB_WEBHOOK" | "SETEL" | "JD_WORLDWIDE" | "DPD_RU_API" | "ARGENTS_WEBHOOK" | "POSTONE" | "TUSKLOGISTICS" | "RHENUS_UK_API" | "TAQBIN_SG_API" | "INNTRALOG_SFTP" | "DAYROSS" | "CORREOSEXPRESS_API" | "INTERNATIONAL_SEUR_API" | "YODEL_API" | "HEROEXPRESS" | "DHL_SUPPLYCHAIN_IN" | "URGENT_CARGUS" | "FRONTDOORCORP" | "JTEXPRESS_PH" | "PARCELSTARS_WEBHOOK" | "DPD_SK_SFTP" | "MOVIANTO" | "OZEPARTS_SHIPPING" | "KARGOMKOLAY" | "TRUNKRS" | "OMNIRPS_WEBHOOK" | "CHILEXPRESS" | "TESTING_COURIER" | "JNE_API" | "BJSHOMEDELIVERY_FTP" | "DEXPRESS_WEBHOOK" | "USPS_API" | "TRANSVIRTUAL" | "SOLISTICA_API" | "CHIENVENTURE_WEBHOOK" | "DPD_UK_SFTP" | "INPOST_UK" | "JAVIT" | "ZTO_DOMESTIC" | "DHL_GT_API" | "CEVA_TRACKING" | "KOMON_EXPRESS" | "EASTWESTCOURIER_FTP" | "DANNIAO" | "SPECTRAN" | "DELIVER_IT" | "RELAISCOLIS" | "GLS_SPAIN_API" | "POSTPLUS" | "AIRTERRA" | "GIO_ECOURIER_API" | "DPD_CH_SFTP" | "FEDEX_API" | "INTERSMARTTRANS" | "HERMES_UK_SFTP" | "EXELOT_FTP" | "DHL_PA_API" | "VIRTRANSPORT_SFTP" | "WORLDNET" | "INSTABOX_WEBHOOK" | "KNG" | "FLASHEXPRESS_WEBHOOK" | "MAGYAR_POSTA_API" | "WESHIP_API" | "OHI_WEBHOOK" | "MUDITA" | "BLUEDART_API" | "T_CAT_API" | "ADS" | "HERMES_IT" | "FITZMARK_API" | "POSTI_API" | "SMSA_EXPRESS_WEBHOOK" | "TAMERGROUP_WEBHOOK" | "LIVRAPIDE" | "NIPPON_EXPRESS" | "BETTERTRUCKS" | "FAN" | "PB_USPSFLATS_FTP" | "PARCELRIGHT" | "ITHINKLOGISTICS" | "KERRY_EXPRESS_TH_WEBHOOK" | "ECOUTIER" | "SHOWL" | "BRT_IT_API" | "RIXONHK_API" | "DBSCHENKER_API" | "ILYANGLOGIS" | "MAIL_BOX_ETC" | "WESHIP" | "DHL_GLOBAL_MAIL_API" | "ACTIVOS24_API" | "ATSHEALTHCARE" | "LUWJISTIK" | "GW_WORLD" | "FAIRSENDEN_API" | "SERVIP_WEBHOOK" | "SWISHIP" | "TANET" | "HOTSIN_CARGO" | "DIREX" | "HUANTONG" | "IMILE_API" | "BDMNET" | "AUEXPRESS" | "NYTLOGISTICS" | "DSV_REFERENCE" | "NOVOFARMA_WEBHOOK" | "AITWORLDWIDE_SFTP" | "SHOPOLIVE" | "FNF_ZA" | "DHL_ECOMMERCE_GC" | "FETCHR" | "STARLINKS_API" | "YYEXPRESS" | "SERVIENTREGA" | "HANJIN" | "SPANISH_SEUR_FTP" | "DX_B2B_CONNUM" | "HELTHJEM_API" | "INEXPOST" | "A2B_BA" | "RHENUS_GROUP" | "SBERLOGISTICS_RU" | "MALCA_AMIT" | "PPL" | "OSM_WORLDWIDE_SFTP" | "ACILOGISTIX" | "OPTIMACOURIER" | "NOVA_POSHTA_API" | "LOGGI" | "YIFAN" | "MYDYNALOGIC" | "MORNINGLOBAL" | "CONCISE_API" | "FXTRAN" | "DELIVERYOURPARCEL_ZA" | "UPARCEL" | "MOBI_BR" | "LOGINEXT_WEBHOOK" | "EMS" | "SPEEDY";
+        shipment_carrier:
+            | "DPD_RU"
+            | "BG_BULGARIAN_POST"
+            | "KR_KOREA_POST"
+            | "ZA_COURIERIT"
+            | "FR_EXAPAQ"
+            | "ARE_EMIRATES_POST"
+            | "GAC"
+            | "GEIS"
+            | "SF_EX"
+            | "PAGO"
+            | "MYHERMES"
+            | "DIAMOND_EUROGISTICS"
+            | "CORPORATECOURIERS_WEBHOOK"
+            | "BOND"
+            | "OMNIPARCEL"
+            | "SK_POSTA"
+            | "PUROLATOR"
+            | "FETCHR_WEBHOOK"
+            | "THEDELIVERYGROUP"
+            | "CELLO_SQUARE"
+            | "TARRIVE"
+            | "COLLIVERY"
+            | "MAINFREIGHT"
+            | "IND_FIRSTFLIGHT"
+            | "ACSWORLDWIDE"
+            | "AMSTAN"
+            | "OKAYPARCEL"
+            | "ENVIALIA_REFERENCE"
+            | "SEUR_ES"
+            | "CONTINENTAL"
+            | "FDSEXPRESS"
+            | "AMAZON_FBA_SWISHIP"
+            | "WYNGS"
+            | "DHL_ACTIVE_TRACING"
+            | "ZYLLEM"
+            | "RUSTON"
+            | "XPOST"
+            | "CORREOS_ES"
+            | "DHL_FR"
+            | "PAN_ASIA"
+            | "BRT_IT"
+            | "SRE_KOREA"
+            | "SPEEDEE"
+            | "TNT_UK"
+            | "VENIPAK"
+            | "SHREENANDANCOURIER"
+            | "CROSHOT"
+            | "NIPOST_NG"
+            | "EPST_GLBL"
+            | "NEWGISTICS"
+            | "POST_SLOVENIA"
+            | "JERSEY_POST"
+            | "BOMBINOEXP"
+            | "WMG"
+            | "XQ_EXPRESS"
+            | "FURDECO"
+            | "LHT_EXPRESS"
+            | "SOUTH_AFRICAN_POST_OFFICE"
+            | "SPOTON"
+            | "DIMERCO"
+            | "CYPRUS_POST_CYP"
+            | "ABCUSTOM"
+            | "IND_DELIVREE"
+            | "CN_BESTEXPRESS"
+            | "DX_SFTP"
+            | "PICKUPP_MYS"
+            | "FMX"
+            | "HELLMANN"
+            | "SHIP_IT_ASIA"
+            | "KERRY_ECOMMERCE"
+            | "FRETERAPIDO"
+            | "PITNEY_BOWES"
+            | "XPRESSEN_DK"
+            | "SEUR_SP_API"
+            | "DELIVERYONTIME"
+            | "JINSUNG"
+            | "TRANS_KARGO"
+            | "SWISHIP_DE"
+            | "IVOY_WEBHOOK"
+            | "AIRMEE_WEBHOOK"
+            | "DHL_BENELUX"
+            | "FIRSTMILE"
+            | "FASTWAY_IR"
+            | "HH_EXP"
+            | "MYS_MYPOST_ONLINE"
+            | "TNT_NL"
+            | "TIPSA"
+            | "TAQBIN_MY"
+            | "KGMHUB"
+            | "INTEXPRESS"
+            | "OVERSE_EXP"
+            | "ONECLICK"
+            | "ROADRUNNER_FREIGHT"
+            | "GLS_CROTIA"
+            | "MRW_FTP"
+            | "BLUEX"
+            | "DYLT"
+            | "DPD_IR"
+            | "SIN_GLBL"
+            | "TUFFNELLS_REFERENCE"
+            | "CJPACKET"
+            | "MILKMAN"
+            | "ASIGNA"
+            | "ONEWORLDEXPRESS"
+            | "ROYAL_MAIL"
+            | "VIA_EXPRESS"
+            | "TIGFREIGHT"
+            | "ZTO_EXPRESS"
+            | "TWO_GO"
+            | "IML"
+            | "INTEL_VALLEY"
+            | "EFS"
+            | "UK_UK_MAIL"
+            | "RAM"
+            | "ALLIEDEXPRESS"
+            | "APC_OVERNIGHT"
+            | "SHIPPIT"
+            | "TFM"
+            | "M_XPRESS"
+            | "HDB_BOX"
+            | "CLEVY_LINKS"
+            | "IBEONE"
+            | "FIEGE_NL"
+            | "KWE_GLOBAL"
+            | "CTC_EXPRESS"
+            | "LAO_POST"
+            | "AMAZON"
+            | "MORE_LINK"
+            | "JX"
+            | "EASY_MAIL"
+            | "ADUIEPYLE"
+            | "GB_PANTHER"
+            | "EXPRESSSALE"
+            | "SG_DETRACK"
+            | "TRUNKRS_WEBHOOK"
+            | "MATDESPATCH"
+            | "DICOM"
+            | "MBW"
+            | "KHM_CAMBODIA_POST"
+            | "SINOTRANS"
+            | "BRT_IT_PARCELID"
+            | "DHL_SUPPLY_CHAIN"
+            | "DHL_PL"
+            | "TOPYOU"
+            | "PALEXPRESS"
+            | "DHL_SG"
+            | "CN_WEDO"
+            | "FULFILLME"
+            | "DPD_DELISTRACK"
+            | "UPS_REFERENCE"
+            | "CARIBOU"
+            | "LOCUS_WEBHOOK"
+            | "DSV"
+            | "CN_GOFLY"
+            | "P2P_TRC"
+            | "DIRECTPARCELS"
+            | "NOVA_POSHTA_INT"
+            | "FEDEX_POLAND"
+            | "CN_JCEX"
+            | "FAR_INTERNATIONAL"
+            | "IDEXPRESS"
+            | "GANGBAO"
+            | "NEWAY"
+            | "POSTNL_INT_3_S"
+            | "RPX_ID"
+            | "DESIGNERTRANSPORT_WEBHOOK"
+            | "GLS_SLOVEN"
+            | "PARCELLED_IN"
+            | "GSI_EXPRESS"
+            | "CON_WAY"
+            | "BROUWER_TRANSPORT"
+            | "CPEX"
+            | "ISRAEL_POST"
+            | "DTDC_IN"
+            | "PTT_POST"
+            | "XDE_WEBHOOK"
+            | "TOLOS"
+            | "GIAO_HANG"
+            | "GEODIS_ESPACE"
+            | "MAGYAR_HU"
+            | "DOORDASH_WEBHOOK"
+            | "TIKI_ID"
+            | "CJ_HK_INTERNATIONAL"
+            | "STAR_TRACK_EXPRESS"
+            | "HELTHJEM"
+            | "SFB2C"
+            | "FREIGHTQUOTE"
+            | "LANDMARK_GLOBAL_REFERENCE"
+            | "PARCEL2GO"
+            | "DELNEXT"
+            | "RCL"
+            | "CGS_EXPRESS"
+            | "HK_POST"
+            | "SAP_EXPRESS"
+            | "PARCELPOST_SG"
+            | "HERMES"
+            | "IND_SAFEEXPRESS"
+            | "TOPHATTEREXPRESS"
+            | "MGLOBAL"
+            | "AVERITT"
+            | "LEADER"
+            | "_2EBOX"
+            | "SG_SPEEDPOST"
+            | "DBSCHENKER_SE"
+            | "ISR_POST_DOMESTIC"
+            | "BESTWAYPARCEL"
+            | "ASENDIA_DE"
+            | "NIGHTLINE_UK"
+            | "TAQBIN_SG"
+            | "TCK_EXPRESS"
+            | "ENDEAVOUR_DELIVERY"
+            | "NANJINGWOYUAN"
+            | "HEPPNER_FR"
+            | "EMPS_CN"
+            | "FONSEN"
+            | "PICKRR"
+            | "APC_OVERNIGHT_CONNUM"
+            | "STAR_TRACK_NEXT_FLIGHT"
+            | "DAJIN"
+            | "UPS_FREIGHT"
+            | "POSTA_PLUS"
+            | "CEVA"
+            | "ANSERX"
+            | "JS_EXPRESS"
+            | "PADTF"
+            | "UPS_MAIL_INNOVATIONS"
+            | "EZSHIP"
+            | "SYPOST"
+            | "AMAZON_SHIP_MCF"
+            | "YUSEN"
+            | "BRING"
+            | "SDA_IT"
+            | "GBA"
+            | "NEWEGGEXPRESS"
+            | "SPEEDCOURIERS_GR"
+            | "FORRUN"
+            | "PICKUP"
+            | "ECMS"
+            | "INTELIPOST"
+            | "FLASHEXPRESS"
+            | "CN_STO"
+            | "SEKO_SFTP"
+            | "HOME_DELIVERY_SOLUTIONS"
+            | "DPD_HGRY"
+            | "KERRYTTC_VN"
+            | "JOYING_BOX"
+            | "TOTAL_EXPRESS"
+            | "ZJS_EXPRESS"
+            | "STARKEN"
+            | "DEMANDSHIP"
+            | "CN_DPEX"
+            | "AUPOST_CN"
+            | "LOGISTERS"
+            | "GOGLOBALPOST"
+            | "GLS_CZ"
+            | "PAACK_WEBHOOK"
+            | "GRAB_WEBHOOK"
+            | "PARCELPOINT"
+            | "ICUMULUS"
+            | "DAIGLOBALTRACK"
+            | "GLOBAL_IPARCEL"
+            | "YURTICI_KARGO"
+            | "CN_PAYPAL_PACKAGE"
+            | "PARCEL_2_POST"
+            | "GLS_IT"
+            | "PIL_LOGISTICS"
+            | "HEPPNER"
+            | "GENERAL_OVERNIGHT"
+            | "HAPPY2POINT"
+            | "CHITCHATS"
+            | "SMOOTH"
+            | "CLE_LOGISTICS"
+            | "FIEGE"
+            | "MX_CARGO"
+            | "ZIINGFINALMILE"
+            | "DAYTON_FREIGHT"
+            | "TCS"
+            | "AEX"
+            | "HERMES_DE"
+            | "ROUTIFIC_WEBHOOK"
+            | "GLOBAVEND"
+            | "CJ_LOGISTICS"
+            | "PALLET_NETWORK"
+            | "RAF_PH"
+            | "UK_XDP"
+            | "PAPER_EXPRESS"
+            | "LA_POSTE_SUIVI"
+            | "PAQUETEXPRESS"
+            | "LIEFERY"
+            | "STRECK_TRANSPORT"
+            | "PONY_EXPRESS"
+            | "ALWAYS_EXPRESS"
+            | "GBS_BROKER"
+            | "CITYLINK_MY"
+            | "ALLJOY"
+            | "YODEL"
+            | "YODEL_DIR"
+            | "STONE3PL"
+            | "PARCELPAL_WEBHOOK"
+            | "DHL_ECOMERCE_ASA"
+            | "SIMPLYPOST"
+            | "KY_EXPRESS"
+            | "SHENZHEN"
+            | "US_LASERSHIP"
+            | "UC_EXPRE"
+            | "DIDADI"
+            | "CJ_KR"
+            | "DBSCHENKER_B2B"
+            | "MXE"
+            | "CAE_DELIVERS"
+            | "PFCEXPRESS"
+            | "WHISTL"
+            | "WEPOST"
+            | "DHL_PARCEL_ES"
+            | "DDEXPRESS"
+            | "ARAMEX_AU"
+            | "BNEED"
+            | "HK_TGX"
+            | "LATVIJAS_PASTS"
+            | "VIAEUROPE"
+            | "CORREO_UY"
+            | "CHRONOPOST_FR"
+            | "J_NET"
+            | "_6LS"
+            | "BLR_BELPOST"
+            | "BIRDSYSTEM"
+            | "DOBROPOST"
+            | "WAHANA_ID"
+            | "WEASHIP"
+            | "SONICTL"
+            | "KWT"
+            | "AFLLOG_FTP"
+            | "SKYNET_WORLDWIDE"
+            | "NOVA_POSHTA"
+            | "SEINO"
+            | "SZENDEX"
+            | "BPOST_INT"
+            | "DBSCHENKER_SV"
+            | "AO_DEUTSCHLAND"
+            | "EU_FLEET_SOLUTIONS"
+            | "PCFCORP"
+            | "LINKBRIDGE"
+            | "PRIMAMULTICIPTA"
+            | "COUREX"
+            | "ZAJIL_EXPRESS"
+            | "COLLECTCO"
+            | "JTEXPRESS"
+            | "FEDEX_UK"
+            | "USHIP"
+            | "PIXSELL"
+            | "SHIPTOR"
+            | "CDEK"
+            | "VNM_VIETTELPOST"
+            | "CJ_CENTURY"
+            | "GSO"
+            | "VIWO"
+            | "SKYBOX"
+            | "KERRYTJ"
+            | "NTLOGISTICS_VN"
+            | "SDH_SCM"
+            | "ZINC"
+            | "DPE_SOUTH_AFRC"
+            | "CESKA_CZ"
+            | "ACS_GR"
+            | "DEALERSEND"
+            | "JOCOM"
+            | "CSE"
+            | "TFORCE_FINALMILE"
+            | "SHIP_GATE"
+            | "SHIPTER"
+            | "NATIONAL_SAMEDAY"
+            | "YUNEXPRESS"
+            | "CAINIAO"
+            | "DMS_MATRIX"
+            | "DIRECTLOG"
+            | "ASENDIA_US"
+            | "_3JMSLOGISTICS"
+            | "LICCARDI_EXPRESS"
+            | "SKY_POSTAL"
+            | "CNWANGTONG"
+            | "POSTNORD_LOGISTICS_DK"
+            | "LOGISTIKA"
+            | "CELERITAS"
+            | "PRESSIODE"
+            | "SHREE_MARUTI"
+            | "LOGISTICSWORLDWIDE_HK"
+            | "EFEX"
+            | "LOTTE"
+            | "LONESTAR"
+            | "APRISAEXPRESS"
+            | "BEL_RS"
+            | "OSM_WORLDWIDE"
+            | "WESTGATE_GL"
+            | "FASTRACK"
+            | "DTD_EXPR"
+            | "ALFATREX"
+            | "PROMEDDELIVERY"
+            | "THABIT_LOGISTICS"
+            | "HCT_LOGISTICS"
+            | "CARRY_FLAP"
+            | "US_OLD_DOMINION"
+            | "ANICAM_BOX"
+            | "WANBEXPRESS"
+            | "AN_POST"
+            | "DPD_LOCAL"
+            | "STALLIONEXPRESS"
+            | "RAIDEREX"
+            | "SHOPFANS"
+            | "KYUNGDONG_PARCEL"
+            | "CHAMPION_LOGISTICS"
+            | "PICKUPP_SGP"
+            | "MORNING_EXPRESS"
+            | "NACEX"
+            | "THENILE_WEBHOOK"
+            | "HOLISOL"
+            | "LBCEXPRESS_FTP"
+            | "KURASI"
+            | "USF_REDDAWAY"
+            | "APG"
+            | "CN_BOXC"
+            | "ECOSCOOTING"
+            | "MAINWAY"
+            | "PAPERFLY"
+            | "HOUNDEXPRESS"
+            | "BOX_BERRY"
+            | "EP_BOX"
+            | "PLUS_LOG_UK"
+            | "FULFILLA"
+            | "ASE"
+            | "MAIL_PLUS"
+            | "XPO_LOGISTICS"
+            | "WNDIRECT"
+            | "CLOUDWISH_ASIA"
+            | "ZELERIS"
+            | "GIO_EXPRESS"
+            | "OCS_WORLDWIDE"
+            | "ARK_LOGISTICS"
+            | "AQUILINE"
+            | "PILOT_FREIGHT"
+            | "QWINTRY"
+            | "DANSKE_FRAGT"
+            | "CARRIERS"
+            | "AIR_CANADA_GLOBAL"
+            | "PRESIDENT_TRANS"
+            | "STEPFORWARDFS"
+            | "SKYNET_UK"
+            | "PITTOHIO"
+            | "CORREOS_EXPRESS"
+            | "RL_US"
+            | "MARA_XPRESS"
+            | "DESTINY"
+            | "UK_YODEL"
+            | "COMET_TECH"
+            | "DHL_PARCEL_RU"
+            | "TNT_REFR"
+            | "SHREE_ANJANI_COURIER"
+            | "MIKROPAKKET_BE"
+            | "ETS_EXPRESS"
+            | "COLIS_PRIVE"
+            | "CN_YUNDA"
+            | "AAA_COOPER"
+            | "ROCKET_PARCEL"
+            | "_360LION"
+            | "PANDU"
+            | "PROFESSIONAL_COURIERS"
+            | "FLYTEXPRESS"
+            | "LOGISTICSWORLDWIDE_MY"
+            | "CORREOS_DE_ESPANA"
+            | "IMX"
+            | "FOUR_PX_EXPRESS"
+            | "XPRESSBEES"
+            | "PICKUPP_VNM"
+            | "STARTRACK_EXPRESS"
+            | "FR_COLISSIMO"
+            | "NACEX_SPAIN_REFERENCE"
+            | "DHL_SUPPLY_CHAIN_AU"
+            | "ESHIPPING"
+            | "SHREETIRUPATI"
+            | "HX_EXPRESS"
+            | "INDOPAKET"
+            | "CN_17POST"
+            | "K1_EXPRESS"
+            | "CJ_GLS"
+            | "MYS_GDEX"
+            | "NATIONEX"
+            | "ANJUN"
+            | "FARGOOD"
+            | "SMG_EXPRESS"
+            | "RZYEXPRESS"
+            | "SEFL"
+            | "TNT_CLICK_IT"
+            | "HDB"
+            | "HIPSHIPPER"
+            | "RPXLOGISTICS"
+            | "KUEHNE"
+            | "IT_NEXIVE"
+            | "PTS"
+            | "SWISS_POST_FTP"
+            | "FASTRK_SERV"
+            | "_4_72"
+            | "US_YRC"
+            | "POSTNL_INTL_3S"
+            | "ELIAN_POST"
+            | "CUBYN"
+            | "SAU_SAUDI_POST"
+            | "ABXEXPRESS_MY"
+            | "HUAHAN_EXPRESS"
+            | "IND_JAYONEXPRESS"
+            | "ZES_EXPRESS"
+            | "ZEPTO_EXPRESS"
+            | "SKYNET_ZA"
+            | "ZEEK_2_DOOR"
+            | "BLINKLASTMILE"
+            | "POSTA_UKR"
+            | "CHROBINSON"
+            | "CN_POST56"
+            | "COURANT_PLUS"
+            | "SCUDEX_EXPRESS"
+            | "SHIPENTEGRA"
+            | "B_TWO_C_EUROPE"
+            | "COPE"
+            | "IND_GATI"
+            | "CN_WISHPOST"
+            | "NACEX_ES"
+            | "TAQBIN_HK"
+            | "GLOBALTRANZ"
+            | "HKD"
+            | "BJSHOMEDELIVERY"
+            | "OMNIVA"
+            | "SUTTON"
+            | "PANTHER_REFERENCE"
+            | "SFCSERVICE"
+            | "LTL"
+            | "PARKNPARCEL"
+            | "SPRING_GDS"
+            | "ECEXPRESS"
+            | "INTERPARCEL_AU"
+            | "AGILITY"
+            | "XL_EXPRESS"
+            | "ADERONLINE"
+            | "DIRECTCOURIERS"
+            | "PLANZER"
+            | "SENDING"
+            | "NINJAVAN_WB"
+            | "NATIONWIDE_MY"
+            | "SENDIT"
+            | "GB_ARROW"
+            | "IND_GOJAVAS"
+            | "KPOST"
+            | "DHL_FREIGHT"
+            | "BLUECARE"
+            | "JINDOUYUN"
+            | "TRACKON"
+            | "GB_TUFFNELLS"
+            | "TRUMPCARD"
+            | "ETOTAL"
+            | "SFPLUS_WEBHOOK"
+            | "SEKOLOGISTICS"
+            | "HERMES_2MANN_HANDLING"
+            | "DPD_LOCAL_REF"
+            | "UDS"
+            | "ZA_SPECIALISED_FREIGHT"
+            | "THA_KERRY"
+            | "PRT_INT_SEUR"
+            | "BRA_CORREIOS"
+            | "NZ_NZ_POST"
+            | "CN_EQUICK"
+            | "MYS_EMS"
+            | "GB_NORSK"
+            | "ESP_MRW"
+            | "ESP_PACKLINK"
+            | "KANGAROO_MY"
+            | "RPX"
+            | "XDP_UK_REFERENCE"
+            | "NINJAVAN_MY"
+            | "ADICIONAL"
+            | "NINJAVAN_ID"
+            | "ROADBULL"
+            | "YAKIT"
+            | "MAILAMERICAS"
+            | "MIKROPAKKET"
+            | "DYNALOGIC"
+            | "DHL_ES"
+            | "DHL_PARCEL_NL"
+            | "DHL_GLOBAL_MAIL_ASIA"
+            | "DAWN_WING"
+            | "GENIKI_GR"
+            | "HERMESWORLD_UK"
+            | "ALPHAFAST"
+            | "BUYLOGIC"
+            | "EKART"
+            | "MEX_SENDA"
+            | "SFC_LOGISTICS"
+            | "POST_SERBIA"
+            | "IND_DELHIVERY"
+            | "DE_DPD_DELISTRACK"
+            | "RPD2MAN"
+            | "CN_SF_EXPRESS"
+            | "YANWEN"
+            | "MYS_SKYNET"
+            | "CORREOS_DE_MEXICO"
+            | "CBL_LOGISTICA"
+            | "MEX_ESTAFETA"
+            | "AU_AUSTRIAN_POST"
+            | "RINCOS"
+            | "NLD_DHL"
+            | "RUSSIAN_POST"
+            | "COURIERS_PLEASE"
+            | "POSTNORD_LOGISTICS"
+            | "FEDEX"
+            | "DPE_EXPRESS"
+            | "DPD"
+            | "ADSONE"
+            | "IDN_JNE"
+            | "THECOURIERGUY"
+            | "CNEXPS"
+            | "PRT_CHRONOPOST"
+            | "LANDMARK_GLOBAL"
+            | "IT_DHL_ECOMMERCE"
+            | "ESP_NACEX"
+            | "PRT_CTT"
+            | "BE_KIALA"
+            | "ASENDIA_UK"
+            | "GLOBAL_TNT"
+            | "POSTUR_IS"
+            | "EPARCEL_KR"
+            | "INPOST_PACZKOMATY"
+            | "IT_POSTE_ITALIA"
+            | "BE_BPOST"
+            | "PL_POCZTA_POLSKA"
+            | "MYS_MYS_POST"
+            | "SG_SG_POST"
+            | "THA_THAILAND_POST"
+            | "LEXSHIP"
+            | "FASTWAY_NZ"
+            | "DHL_AU"
+            | "COSTMETICSNOW"
+            | "PFLOGISTICS"
+            | "LOOMIS_EXPRESS"
+            | "GLS_ITALY"
+            | "LINE"
+            | "GEL_EXPRESS"
+            | "HUODULL"
+            | "NINJAVAN_SG"
+            | "JANIO"
+            | "AO_COURIER"
+            | "BRT_IT_SENDER_REF"
+            | "SAILPOST"
+            | "LALAMOVE"
+            | "NEWZEALAND_COURIERS"
+            | "ETOMARS"
+            | "VIRTRANSPORT"
+            | "WIZMO"
+            | "PALLETWAYS"
+            | "I_DIKA"
+            | "CFL_LOGISTICS"
+            | "GEMWORLDWIDE"
+            | "GLOBAL_EXPRESS"
+            | "LOGISTYX_TRANSGROUP"
+            | "WESTBANK_COURIER"
+            | "ARCO_SPEDIZIONI"
+            | "YDH_EXPRESS"
+            | "PARCELINKLOGISTICS"
+            | "CNDEXPRESS"
+            | "NOX_NIGHT_TIME_EXPRESS"
+            | "AERONET"
+            | "LTIANEXP"
+            | "INTEGRA2_FTP"
+            | "PARCELONE"
+            | "NOX_NACHTEXPRESS"
+            | "CN_CHINA_POST_EMS"
+            | "CHUKOU1"
+            | "GLS_SLOV"
+            | "ORANGE_DS"
+            | "JOOM_LOGIS"
+            | "AUS_STARTRACK"
+            | "DHL"
+            | "GB_APC"
+            | "BONDSCOURIERS"
+            | "JPN_JAPAN_POST"
+            | "USPS"
+            | "WINIT"
+            | "ARG_OCA"
+            | "TW_TAIWAN_POST"
+            | "DMM_NETWORK"
+            | "TNT"
+            | "BH_POSTA"
+            | "SWE_POSTNORD"
+            | "CA_CANADA_POST"
+            | "WISELOADS"
+            | "ASENDIA_HK"
+            | "NLD_GLS"
+            | "MEX_REDPACK"
+            | "JET_SHIP"
+            | "DE_DHL_EXPRESS"
+            | "NINJAVAN_THAI"
+            | "RABEN_GROUP"
+            | "ESP_ASM"
+            | "HRV_HRVATSKA"
+            | "GLOBAL_ESTES"
+            | "LTU_LIETUVOS"
+            | "BEL_DHL"
+            | "AU_AU_POST"
+            | "SPEEDEXCOURIER"
+            | "FR_COLIS"
+            | "ARAMEX"
+            | "DPEX"
+            | "MYS_AIRPAK"
+            | "CUCKOOEXPRESS"
+            | "DPD_POLAND"
+            | "NLD_POSTNL"
+            | "NIM_EXPRESS"
+            | "QUANTIUM"
+            | "SENDLE"
+            | "ESP_REDUR"
+            | "MATKAHUOLTO"
+            | "CPACKET"
+            | "POSTI"
+            | "HUNTER_EXPRESS"
+            | "CHOIR_EXP"
+            | "LEGION_EXPRESS"
+            | "AUSTRIAN_POST_EXPRESS"
+            | "GRUPO"
+            | "POSTA_RO"
+            | "INTERPARCEL_UK"
+            | "GLOBAL_ABF"
+            | "POSTEN_NORGE"
+            | "XPERT_DELIVERY"
+            | "DHL_REFR"
+            | "DHL_HK"
+            | "SKYNET_UAE"
+            | "GOJEK"
+            | "YODEL_INTNL"
+            | "JANCO"
+            | "YTO"
+            | "WISE_EXPRESS"
+            | "JTEXPRESS_VN"
+            | "FEDEX_INTL_MLSERV"
+            | "VAMOX"
+            | "AMS_GRP"
+            | "DHL_JP"
+            | "HRPARCEL"
+            | "GESWL"
+            | "BLUESTAR"
+            | "CDEK_TR"
+            | "DESCARTES"
+            | "DELTEC_UK"
+            | "DTDC_EXPRESS"
+            | "TOURLINE"
+            | "BH_WORLDWIDE"
+            | "OCS"
+            | "YINGNUO_LOGISTICS"
+            | "UPS"
+            | "TOLL"
+            | "PRT_SEUR"
+            | "DTDC_AU"
+            | "THA_DYNAMIC_LOGISTICS"
+            | "UBI_LOGISTICS"
+            | "FEDEX_CROSSBORDER"
+            | "A1POST"
+            | "TAZMANIAN_FREIGHT"
+            | "CJ_INT_MY"
+            | "SAIA_FREIGHT"
+            | "SG_QXPRESS"
+            | "NHANS_SOLUTIONS"
+            | "DPD_FR"
+            | "COORDINADORA"
+            | "ANDREANI"
+            | "DOORA"
+            | "INTERPARCEL_NZ"
+            | "PHL_JAMEXPRESS"
+            | "BEL_BELGIUM_POST"
+            | "US_APC"
+            | "IDN_POS"
+            | "FR_MONDIAL"
+            | "DE_DHL"
+            | "HK_RPX"
+            | "DHL_PIECEID"
+            | "VNPOST_EMS"
+            | "RRDONNELLEY"
+            | "DPD_DE"
+            | "DELCART_IN"
+            | "IMEXGLOBALSOLUTIONS"
+            | "ACOMMERCE"
+            | "EURODIS"
+            | "CANPAR"
+            | "GLS"
+            | "IND_ECOM"
+            | "ESP_ENVIALIA"
+            | "DHL_UK"
+            | "SMSA_EXPRESS"
+            | "TNT_FR"
+            | "DEX_I"
+            | "BUDBEE_WEBHOOK"
+            | "COPA_COURIER"
+            | "VNM_VIETNAM_POST"
+            | "DPD_HK"
+            | "TOLL_NZ"
+            | "ECHO"
+            | "FEDEX_FR"
+            | "BORDEREXPRESS"
+            | "MAILPLUS_JPN"
+            | "TNT_UK_REFR"
+            | "KEC"
+            | "DPD_RO"
+            | "TNT_JP"
+            | "TH_CJ"
+            | "EC_CN"
+            | "FASTWAY_UK"
+            | "FASTWAY_US"
+            | "GLS_DE"
+            | "GLS_ES"
+            | "GLS_FR"
+            | "MONDIAL_BE"
+            | "SGT_IT"
+            | "TNT_CN"
+            | "TNT_DE"
+            | "TNT_ES"
+            | "TNT_PL"
+            | "PARCELFORCE"
+            | "SWISS_POST"
+            | "TOLL_IPEC"
+            | "AIR_21"
+            | "AIRSPEED"
+            | "BERT"
+            | "BLUEDART"
+            | "COLLECTPLUS"
+            | "COURIERPLUS"
+            | "COURIER_POST"
+            | "DHL_GLOBAL_MAIL"
+            | "DPD_UK"
+            | "DELTEC_DE"
+            | "DEUTSCHE_DE"
+            | "DOTZOT"
+            | "ELTA_GR"
+            | "EMS_CN"
+            | "ECARGO"
+            | "ENSENDA"
+            | "FERCAM_IT"
+            | "FASTWAY_ZA"
+            | "FASTWAY_AU"
+            | "FIRST_LOGISITCS"
+            | "GEODIS"
+            | "GLOBEGISTICS"
+            | "GREYHOUND"
+            | "JETSHIP_MY"
+            | "LION_PARCEL"
+            | "AEROFLASH"
+            | "ONTRAC"
+            | "SAGAWA"
+            | "SIODEMKA"
+            | "STARTRACK"
+            | "TNT_AU"
+            | "TNT_IT"
+            | "TRANSMISSION"
+            | "YAMATO"
+            | "DHL_IT"
+            | "DHL_AT"
+            | "LOGISTICSWORLDWIDE_KR"
+            | "GLS_SPAIN"
+            | "AMAZON_UK_API"
+            | "DPD_FR_REFERENCE"
+            | "DHLPARCEL_UK"
+            | "MEGASAVE"
+            | "QUALITYPOST"
+            | "IDS_LOGISTICS"
+            | "JOYINGBOX"
+            | "PANTHER_ORDER_NUMBER"
+            | "WATKINS_SHEPARD"
+            | "FASTTRACK"
+            | "UP_EXPRESS"
+            | "ELOGISTICA"
+            | "ECOURIER"
+            | "CJ_PHILIPPINES"
+            | "SPEEDEX"
+            | "ORANGECONNEX"
+            | "TECOR"
+            | "SAEE"
+            | "GLS_ITALY_FTP"
+            | "DELIVERE"
+            | "YYCOM"
+            | "ADICIONAL_PT"
+            | "DKSH"
+            | "NIPPON_EXPRESS_FTP"
+            | "GOLS"
+            | "FUJEXP"
+            | "QTRACK"
+            | "OMLOGISTICS_API"
+            | "GDPHARM"
+            | "MISUMI_CN"
+            | "AIR_CANADA"
+            | "CITY56_WEBHOOK"
+            | "SAGAWA_API"
+            | "KEDAEX"
+            | "PGEON_API"
+            | "WEWORLDEXPRESS"
+            | "JT_LOGISTICS"
+            | "TRUSK"
+            | "VIAXPRESS"
+            | "DHL_SUPPLYCHAIN_ID"
+            | "ZUELLIGPHARMA_SFTP"
+            | "MEEST"
+            | "TOLL_PRIORITY"
+            | "MOTHERSHIP_API"
+            | "CAPITAL"
+            | "EUROPAKET_API"
+            | "HFD"
+            | "TOURLINE_REFERENCE"
+            | "GIO_ECOURIER"
+            | "CN_LOGISTICS"
+            | "PANDION"
+            | "BPOST_API"
+            | "PASSPORTSHIPPING"
+            | "PAKAJO"
+            | "DACHSER"
+            | "YUSEN_SFTP"
+            | "SHYPLITE"
+            | "XYY"
+            | "MWD"
+            | "FAXECARGO"
+            | "MAZET"
+            | "FIRST_LOGISTICS_API"
+            | "SPRINT_PACK"
+            | "HERMES_DE_FTP"
+            | "CONCISE"
+            | "KERRY_EXPRESS_TW_API"
+            | "EWE"
+            | "FASTDESPATCH"
+            | "ABCUSTOM_SFTP"
+            | "CHAZKI"
+            | "SHIPPIE"
+            | "GEODIS_API"
+            | "NAQEL_EXPRESS"
+            | "PAPA_WEBHOOK"
+            | "FORWARDAIR"
+            | "DIALOGO_LOGISTICA_API"
+            | "LALAMOVE_API"
+            | "TOMYDOOR"
+            | "KRONOS_WEBHOOK"
+            | "JTCARGO"
+            | "T_CAT"
+            | "CONCISE_WEBHOOK"
+            | "TELEPORT_WEBHOOK"
+            | "CUSTOMCO_API"
+            | "SPX_TH"
+            | "BOLLORE_LOGISTICS"
+            | "CLICKLINK_SFTP"
+            | "M3LOGISTICS"
+            | "VNPOST_API"
+            | "AXLEHIRE_FTP"
+            | "SHADOWFAX"
+            | "MYHERMES_UK_API"
+            | "DAIICHI"
+            | "MENSAJEROSURBANOS_API"
+            | "POLARSPEED"
+            | "IDEXPRESS_ID"
+            | "PAYO"
+            | "WHISTL_SFTP"
+            | "INTEX_DE"
+            | "TRANS2U"
+            | "PRODUCTCAREGROUP_SFTP"
+            | "BIGSMART"
+            | "EXPEDITORS_API_REF"
+            | "AITWORLDWIDE_API"
+            | "WORLDCOURIER"
+            | "QUIQUP"
+            | "AGEDISS_SFTP"
+            | "ANDREANI_API"
+            | "CRLEXPRESS"
+            | "SMARTCAT"
+            | "CROSSFLIGHT"
+            | "PROCARRIER"
+            | "DHL_REFERENCE_API"
+            | "SEINO_API"
+            | "WSPEXPRESS"
+            | "KRONOS"
+            | "TOTAL_EXPRESS_API"
+            | "PARCLL"
+            | "XPEDIGO"
+            | "STAR_TRACK_WEBHOOK"
+            | "GPOST"
+            | "UCS"
+            | "DMFGROUP"
+            | "COORDINADORA_API"
+            | "MARKEN"
+            | "NTL"
+            | "REDJEPAKKETJE"
+            | "ALLIED_EXPRESS_FTP"
+            | "MONDIALRELAY_ES"
+            | "NAEKO_FTP"
+            | "MHI"
+            | "SHIPPIFY"
+            | "MALCA_AMIT_API"
+            | "JTEXPRESS_SG_API"
+            | "DACHSER_WEB"
+            | "FLIGHTLG"
+            | "CAGO"
+            | "COM1EXPRESS"
+            | "TONAMI_FTP"
+            | "PACKFLEET"
+            | "PUROLATOR_INTERNATIONAL"
+            | "WINESHIPPING_WEBHOOK"
+            | "DHL_ES_SFTP"
+            | "PCHOME_API"
+            | "CESKAPOSTA_API"
+            | "GORUSH"
+            | "HOMERUNNER"
+            | "AMAZON_ORDER"
+            | "EFWNOW_API"
+            | "CBL_LOGISTICA_API"
+            | "NIMBUSPOST"
+            | "LOGWIN_LOGISTICS"
+            | "NOWLOG_API"
+            | "DPD_NL"
+            | "GODEPENDABLE"
+            | "ESDEX"
+            | "LOGISYSTEMS_SFTP"
+            | "EXPEDITORS"
+            | "SNTGLOBAL_API"
+            | "SHIPX"
+            | "QINTL_API"
+            | "PACKS"
+            | "POSTNL_INTERNATIONAL"
+            | "AMAZON_EMAIL_PUSH"
+            | "DHL_API"
+            | "SPX"
+            | "AXLEHIRE"
+            | "ICSCOURIER"
+            | "DIALOGO_LOGISTICA"
+            | "SHUNBANG_EXPRESS"
+            | "TCS_API"
+            | "SF_EXPRESS_CN"
+            | "PACKETA"
+            | "SIC_TELIWAY"
+            | "MONDIALRELAY_FR"
+            | "INTIME_FTP"
+            | "JD_EXPRESS"
+            | "FASTBOX"
+            | "PATHEON"
+            | "INDIA_POST"
+            | "TIPSA_REF"
+            | "ECOFREIGHT"
+            | "VOX"
+            | "DIRECTFREIGHT_AU_REF"
+            | "BESTTRANSPORT_SFTP"
+            | "AUSTRALIA_POST_API"
+            | "FRAGILEPAK_SFTP"
+            | "FLIPXP"
+            | "VALUE_WEBHOOK"
+            | "DAESHIN"
+            | "SHERPA"
+            | "MWD_API"
+            | "SMARTKARGO"
+            | "DNJ_EXPRESS"
+            | "GOPEOPLE"
+            | "MYSENDLE_API"
+            | "ARAMEX_API"
+            | "PIDGE"
+            | "THAIPARCELS"
+            | "PANTHER_REFERENCE_API"
+            | "POSTAPLUS"
+            | "BUFFALO"
+            | "U_ENVIOS"
+            | "ELITE_CO"
+            | "BARQEXP"
+            | "ROCHE_INTERNAL_SFTP"
+            | "DBSCHENKER_ICELAND"
+            | "TNT_FR_REFERENCE"
+            | "NEWGISTICSAPI"
+            | "GLOVO"
+            | "GWLOGIS_API"
+            | "SPREETAIL_API"
+            | "MOOVA"
+            | "PLYCONGROUP"
+            | "USPS_WEBHOOK"
+            | "REIMAGINEDELIVERY"
+            | "EDF_FTP"
+            | "DAO365"
+            | "BIOCAIR_FTP"
+            | "RANSA_WEBHOOK"
+            | "SHIPXPRES"
+            | "COURANT_PLUS_API"
+            | "SHIPA"
+            | "HOMELOGISTICS"
+            | "DX"
+            | "POSTE_ITALIANE_PACCOCELERE"
+            | "TOLL_WEBHOOK"
+            | "LCTBR_API"
+            | "DX_FREIGHT"
+            | "DHL_SFTP"
+            | "SHIPROCKET"
+            | "UBER_WEBHOOK"
+            | "STATOVERNIGHT"
+            | "BURD"
+            | "FASTSHIP"
+            | "IBVENTURE_WEBHOOK"
+            | "GATI_KWE_API"
+            | "CRYOPDP_FTP"
+            | "HUBBED"
+            | "TIPSA_API"
+            | "ARASKARGO"
+            | "THIJS_NL"
+            | "ATSHEALTHCARE_REFERENCE"
+            | "99MINUTOS"
+            | "HELLENIC_POST"
+            | "HSM_GLOBAL"
+            | "MNX"
+            | "NMTRANSFER"
+            | "LOGYSTO"
+            | "INDIA_POST_INT"
+            | "AMAZON_FBA_SWISHIP_IN"
+            | "SRT_TRANSPORT"
+            | "BOMI"
+            | "DELIVERR_SFTP"
+            | "HSDEXPRESS"
+            | "SIMPLETIRE_WEBHOOK"
+            | "HUNTER_EXPRESS_SFTP"
+            | "UPS_API"
+            | "WOOYOUNG_LOGISTICS_SFTP"
+            | "PHSE_API"
+            | "WISH_EMAIL_PUSH"
+            | "NORTHLINE"
+            | "MEDAFRICA"
+            | "DPD_AT_SFTP"
+            | "ANTERAJA"
+            | "DHL_GLOBAL_FORWARDING_API"
+            | "LBCEXPRESS_API"
+            | "SIMSGLOBAL"
+            | "CDLDELIVERS"
+            | "TYP"
+            | "TESTING_COURIER_WEBHOOK"
+            | "PANDAGO_API"
+            | "ROYAL_MAIL_FTP"
+            | "THUNDEREXPRESS"
+            | "SECRETLAB_WEBHOOK"
+            | "SETEL"
+            | "JD_WORLDWIDE"
+            | "DPD_RU_API"
+            | "ARGENTS_WEBHOOK"
+            | "POSTONE"
+            | "TUSKLOGISTICS"
+            | "RHENUS_UK_API"
+            | "TAQBIN_SG_API"
+            | "INNTRALOG_SFTP"
+            | "DAYROSS"
+            | "CORREOSEXPRESS_API"
+            | "INTERNATIONAL_SEUR_API"
+            | "YODEL_API"
+            | "HEROEXPRESS"
+            | "DHL_SUPPLYCHAIN_IN"
+            | "URGENT_CARGUS"
+            | "FRONTDOORCORP"
+            | "JTEXPRESS_PH"
+            | "PARCELSTARS_WEBHOOK"
+            | "DPD_SK_SFTP"
+            | "MOVIANTO"
+            | "OZEPARTS_SHIPPING"
+            | "KARGOMKOLAY"
+            | "TRUNKRS"
+            | "OMNIRPS_WEBHOOK"
+            | "CHILEXPRESS"
+            | "TESTING_COURIER"
+            | "JNE_API"
+            | "BJSHOMEDELIVERY_FTP"
+            | "DEXPRESS_WEBHOOK"
+            | "USPS_API"
+            | "TRANSVIRTUAL"
+            | "SOLISTICA_API"
+            | "CHIENVENTURE_WEBHOOK"
+            | "DPD_UK_SFTP"
+            | "INPOST_UK"
+            | "JAVIT"
+            | "ZTO_DOMESTIC"
+            | "DHL_GT_API"
+            | "CEVA_TRACKING"
+            | "KOMON_EXPRESS"
+            | "EASTWESTCOURIER_FTP"
+            | "DANNIAO"
+            | "SPECTRAN"
+            | "DELIVER_IT"
+            | "RELAISCOLIS"
+            | "GLS_SPAIN_API"
+            | "POSTPLUS"
+            | "AIRTERRA"
+            | "GIO_ECOURIER_API"
+            | "DPD_CH_SFTP"
+            | "FEDEX_API"
+            | "INTERSMARTTRANS"
+            | "HERMES_UK_SFTP"
+            | "EXELOT_FTP"
+            | "DHL_PA_API"
+            | "VIRTRANSPORT_SFTP"
+            | "WORLDNET"
+            | "INSTABOX_WEBHOOK"
+            | "KNG"
+            | "FLASHEXPRESS_WEBHOOK"
+            | "MAGYAR_POSTA_API"
+            | "WESHIP_API"
+            | "OHI_WEBHOOK"
+            | "MUDITA"
+            | "BLUEDART_API"
+            | "T_CAT_API"
+            | "ADS"
+            | "HERMES_IT"
+            | "FITZMARK_API"
+            | "POSTI_API"
+            | "SMSA_EXPRESS_WEBHOOK"
+            | "TAMERGROUP_WEBHOOK"
+            | "LIVRAPIDE"
+            | "NIPPON_EXPRESS"
+            | "BETTERTRUCKS"
+            | "FAN"
+            | "PB_USPSFLATS_FTP"
+            | "PARCELRIGHT"
+            | "ITHINKLOGISTICS"
+            | "KERRY_EXPRESS_TH_WEBHOOK"
+            | "ECOUTIER"
+            | "SHOWL"
+            | "BRT_IT_API"
+            | "RIXONHK_API"
+            | "DBSCHENKER_API"
+            | "ILYANGLOGIS"
+            | "MAIL_BOX_ETC"
+            | "WESHIP"
+            | "DHL_GLOBAL_MAIL_API"
+            | "ACTIVOS24_API"
+            | "ATSHEALTHCARE"
+            | "LUWJISTIK"
+            | "GW_WORLD"
+            | "FAIRSENDEN_API"
+            | "SERVIP_WEBHOOK"
+            | "SWISHIP"
+            | "TANET"
+            | "HOTSIN_CARGO"
+            | "DIREX"
+            | "HUANTONG"
+            | "IMILE_API"
+            | "BDMNET"
+            | "AUEXPRESS"
+            | "NYTLOGISTICS"
+            | "DSV_REFERENCE"
+            | "NOVOFARMA_WEBHOOK"
+            | "AITWORLDWIDE_SFTP"
+            | "SHOPOLIVE"
+            | "FNF_ZA"
+            | "DHL_ECOMMERCE_GC"
+            | "FETCHR"
+            | "STARLINKS_API"
+            | "YYEXPRESS"
+            | "SERVIENTREGA"
+            | "HANJIN"
+            | "SPANISH_SEUR_FTP"
+            | "DX_B2B_CONNUM"
+            | "HELTHJEM_API"
+            | "INEXPOST"
+            | "A2B_BA"
+            | "RHENUS_GROUP"
+            | "SBERLOGISTICS_RU"
+            | "MALCA_AMIT"
+            | "PPL"
+            | "OSM_WORLDWIDE_SFTP"
+            | "ACILOGISTIX"
+            | "OPTIMACOURIER"
+            | "NOVA_POSHTA_API"
+            | "LOGGI"
+            | "YIFAN"
+            | "MYDYNALOGIC"
+            | "MORNINGLOBAL"
+            | "CONCISE_API"
+            | "FXTRAN"
+            | "DELIVERYOURPARCEL_ZA"
+            | "UPARCEL"
+            | "MOBI_BR"
+            | "LOGINEXT_WEBHOOK"
+            | "EMS"
+            | "SPEEDY";
         /**
          * Shipment Tracker.
          * @description The tracking information for a shipment.
@@ -4383,27 +6367,32 @@ export interface components {
             items?: components["schemas"]["tracker_item"][];
         };
         "orders.track.create-400": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "MISSING_REQUIRED_PARAMETER";
-                /** @enum {string} */
-                description?: "A required field / parameter is missing.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_STRING_LENGTH";
-                /** @enum {string} */
-                description?: "The value of a field is either too short or too long.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER_VALUE";
-                /** @enum {string} */
-                description?: "A parameter value is not valid.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER_SYNTAX";
-                /** @enum {string} */
-                description?: "The value of a field does not conform to the expected format.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_REQUIRED_PARAMETER";
+                      /** @enum {string} */
+                      description?: "A required field / parameter is missing.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_STRING_LENGTH";
+                      /** @enum {string} */
+                      description?: "The value of a field is either too short or too long.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER_VALUE";
+                      /** @enum {string} */
+                      description?: "A parameter value is not valid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER_SYNTAX";
+                      /** @enum {string} */
+                      description?: "The value of a field does not conform to the expected format.";
+                  }
+            )[];
         };
         "orders.track.create-403": {
             issues?: {
@@ -4414,60 +6403,72 @@ export interface components {
             }[];
         };
         "orders.track.create-422": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "CAPTURE_STATUS_NOT_VALID";
-                /** @enum {string} */
-                description?: "Invalid capture status. Tracker information can only be added to captures in `COMPLETED` state.";
-            } | {
-                /** @enum {string} */
-                issue?: "ITEM_SKU_MISMATCH";
-                /** @enum {string} */
-                description?: "Item sku must match one of the items sku that was provided during order creation.";
-            } | {
-                /** @enum {string} */
-                issue?: "CAPTURE_ID_NOT_FOUND";
-                /** @enum {string} */
-                description?: "Specified capture ID does not exist. Check the capture ID and try again.";
-            } | {
-                /** @enum {string} */
-                issue?: "MSP_NOT_SUPPORTED";
-                /** @enum {string} */
-                description?: "Multiple purchase units are not supported for this operation.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "CAPTURE_STATUS_NOT_VALID";
+                      /** @enum {string} */
+                      description?: "Invalid capture status. Tracker information can only be added to captures in `COMPLETED` state.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ITEM_SKU_MISMATCH";
+                      /** @enum {string} */
+                      description?: "Item sku must match one of the items sku that was provided during order creation.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "CAPTURE_ID_NOT_FOUND";
+                      /** @enum {string} */
+                      description?: "Specified capture ID does not exist. Check the capture ID and try again.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MSP_NOT_SUPPORTED";
+                      /** @enum {string} */
+                      description?: "Multiple purchase units are not supported for this operation.";
+                  }
+            )[];
         };
         "orders.trackers.patch-400": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "FIELD_NOT_PATCHABLE";
-                /** @enum {string} */
-                description?: "Field cannot be patched.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PARAMETER_VALUE";
-                /** @enum {string} */
-                description?: "The value of a field is invalid.";
-            } | {
-                /** @enum {string} */
-                issue?: "MISSING_REQUIRED_PARAMETER";
-                /** @enum {string} */
-                description?: "A required field or parameter is missing.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_STRING_LENGTH";
-                /** @enum {string} */
-                description?: "The value of a field is either too short or too long.";
-            } | {
-                /** @enum {string} */
-                issue?: "INVALID_PATCH_OPERATION";
-                /** @enum {string} */
-                description?: "The operation cannot be honored. Cannot add a property that's already present, use replace. Cannot remove a property thats not present, use add. Cannot replace a property thats not present, use add.";
-            } | {
-                /** @enum {string} */
-                issue?: "MALFORMED_REQUEST_JSON";
-                /** @enum {string} */
-                description?: "The request JSON is not well formed.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "FIELD_NOT_PATCHABLE";
+                      /** @enum {string} */
+                      description?: "Field cannot be patched.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PARAMETER_VALUE";
+                      /** @enum {string} */
+                      description?: "The value of a field is invalid.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MISSING_REQUIRED_PARAMETER";
+                      /** @enum {string} */
+                      description?: "A required field or parameter is missing.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_STRING_LENGTH";
+                      /** @enum {string} */
+                      description?: "The value of a field is either too short or too long.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_PATCH_OPERATION";
+                      /** @enum {string} */
+                      description?: "The operation cannot be honored. Cannot add a property that's already present, use replace. Cannot remove a property thats not present, use add. Cannot replace a property thats not present, use add.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "MALFORMED_REQUEST_JSON";
+                      /** @enum {string} */
+                      description?: "The request JSON is not well formed.";
+                  }
+            )[];
         };
         "orders.trackers.patch-403": {
             issues?: {
@@ -4486,32 +6487,38 @@ export interface components {
             }[];
         };
         "orders.trackers.patch-422": {
-            issues?: ({
-                /** @enum {string} */
-                issue?: "INVALID_JSON_POINTER_FORMAT";
-                /** @enum {string} */
-                description?: "Path should be a valid [JSON Pointer](https://tools.ietf.org/html/rfc6901) that references a location within the request where the operation is performed.";
-            } | {
-                /** @enum {string} */
-                issue?: "NOT_PATCHABLE";
-                /** @enum {string} */
-                description?: "Cannot be patched.";
-            } | {
-                /** @enum {string} */
-                issue?: "PATCH_VALUE_REQUIRED";
-                /** @enum {string} */
-                description?: "Specify a `value` for the field being patched.";
-            } | {
-                /** @enum {string} */
-                issue?: "PATCH_PATH_REQUIRED";
-                /** @enum {string} */
-                description?: "Specify a `value` for the field in which the operation needs to be performed.";
-            } | {
-                /** @enum {string} */
-                issue?: "ITEM_SKU_MISMATCH";
-                /** @enum {string} */
-                description?: "Item sku must match one of the items sku that was provided during order creation.";
-            })[];
+            issues?: (
+                | {
+                      /** @enum {string} */
+                      issue?: "INVALID_JSON_POINTER_FORMAT";
+                      /** @enum {string} */
+                      description?: "Path should be a valid [JSON Pointer](https://tools.ietf.org/html/rfc6901) that references a location within the request where the operation is performed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "NOT_PATCHABLE";
+                      /** @enum {string} */
+                      description?: "Cannot be patched.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PATCH_VALUE_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Specify a `value` for the field being patched.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "PATCH_PATH_REQUIRED";
+                      /** @enum {string} */
+                      description?: "Specify a `value` for the field in which the operation needs to be performed.";
+                  }
+                | {
+                      /** @enum {string} */
+                      issue?: "ITEM_SKU_MISMATCH";
+                      /** @enum {string} */
+                      description?: "Item sku must match one of the items sku that was provided during order creation.";
+                  }
+            )[];
         };
     };
     responses: {
@@ -4601,7 +6608,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_400"] & components["schemas"]["400"];
+                    "application/json": components["schemas"]["error_400"] &
+                        components["schemas"]["400"];
                 };
             };
             /** @description Authentication failed due to missing authorization header, or invalid authentication credentials. */
@@ -4610,7 +6618,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_401"] & components["schemas"]["401"];
+                    "application/json": components["schemas"]["error_401"] &
+                        components["schemas"]["401"];
                 };
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
@@ -4619,7 +6628,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_422"] & components["schemas"]["422"];
+                    "application/json": components["schemas"]["error_422"] &
+                        components["schemas"]["422"];
                 };
             };
             default: components["responses"]["default"];
@@ -4658,7 +6668,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_401"] & components["schemas"]["401"];
+                    "application/json": components["schemas"]["error_401"] &
+                        components["schemas"]["401"];
                 };
             };
             /** @description The specified resource does not exist. */
@@ -4667,7 +6678,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_404"] & components["schemas"]["404"];
+                    "application/json": components["schemas"]["error_404"] &
+                        components["schemas"]["404"];
                 };
             };
             default: components["responses"]["default"];
@@ -4701,7 +6713,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_400"] & components["schemas"]["orders.patch-400"];
+                    "application/json": components["schemas"]["error_400"] &
+                        components["schemas"]["orders.patch-400"];
                 };
             };
             /** @description Authentication failed due to missing authorization header, or invalid authentication credentials. */
@@ -4710,7 +6723,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_401"] & components["schemas"]["401"];
+                    "application/json": components["schemas"]["error_401"] &
+                        components["schemas"]["401"];
                 };
             };
             /** @description The specified resource does not exist. */
@@ -4719,7 +6733,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_404"] & components["schemas"]["404"];
+                    "application/json": components["schemas"]["error_404"] &
+                        components["schemas"]["404"];
                 };
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
@@ -4728,7 +6743,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_422"] & components["schemas"]["orders.patch-422"];
+                    "application/json": components["schemas"]["error_422"] &
+                        components["schemas"]["orders.patch-422"];
                 };
             };
             default: components["responses"]["default"];
@@ -4771,7 +6787,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_400"] & components["schemas"]["orders.confirm-400"];
+                    "application/json": components["schemas"]["error_400"] &
+                        components["schemas"]["orders.confirm-400"];
                 };
             };
             /** @description Authorization failed due to insufficient permissions. */
@@ -4780,7 +6797,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_403"] & components["schemas"]["403"];
+                    "application/json": components["schemas"]["error_403"] &
+                        components["schemas"]["403"];
                 };
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
@@ -4789,7 +6807,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_422"] & components["schemas"]["orders.confirm-422"];
+                    "application/json": components["schemas"]["error_422"] &
+                        components["schemas"]["orders.confirm-422"];
                 };
             };
             /** @description An internal server error has occurred. */
@@ -4854,7 +6873,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_400"] & components["schemas"]["orders.authorize-400"];
+                    "application/json": components["schemas"]["error_400"] &
+                        components["schemas"]["orders.authorize-400"];
                 };
             };
             /** @description Authentication failed due to missing authorization header, or invalid authentication credentials. */
@@ -4863,7 +6883,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_401"] & components["schemas"]["401"];
+                    "application/json": components["schemas"]["error_401"] &
+                        components["schemas"]["401"];
                 };
             };
             /** @description The authorized payment failed due to insufficient permissions. */
@@ -4872,7 +6893,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_403"] & components["schemas"]["orders.authorize-403"];
+                    "application/json": components["schemas"]["error_403"] &
+                        components["schemas"]["orders.authorize-403"];
                 };
             };
             /** @description The specified resource does not exist. */
@@ -4881,7 +6903,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_404"] & components["schemas"]["404"];
+                    "application/json": components["schemas"]["error_404"] &
+                        components["schemas"]["404"];
                 };
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
@@ -4890,7 +6913,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_422"] & components["schemas"]["orders.authorize-422"];
+                    "application/json": components["schemas"]["error_422"] &
+                        components["schemas"]["orders.authorize-422"];
                 };
             };
             /** @description An internal server error has occurred. */
@@ -4955,7 +6979,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_400"] & components["schemas"]["orders.capture-400"];
+                    "application/json": components["schemas"]["error_400"] &
+                        components["schemas"]["orders.capture-400"];
                 };
             };
             /** @description Authentication failed due to missing authorization header, or invalid authentication credentials. */
@@ -4964,7 +6989,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_401"] & components["schemas"]["401"];
+                    "application/json": components["schemas"]["error_401"] &
+                        components["schemas"]["401"];
                 };
             };
             /** @description The authorized payment failed due to insufficient permissions. */
@@ -4973,7 +6999,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_403"] & components["schemas"]["orders.capture-403"];
+                    "application/json": components["schemas"]["error_403"] &
+                        components["schemas"]["orders.capture-403"];
                 };
             };
             /** @description The specified resource does not exist. */
@@ -4982,7 +7009,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_404"] & components["schemas"]["404"];
+                    "application/json": components["schemas"]["error_404"] &
+                        components["schemas"]["404"];
                 };
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
@@ -4991,7 +7019,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_422"] & components["schemas"]["orders.capture-422"];
+                    "application/json": components["schemas"]["error_422"] &
+                        components["schemas"]["orders.capture-422"];
                 };
             };
             /** @description An internal server error has occurred. */
@@ -5051,7 +7080,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_400"] & components["schemas"]["orders.track.create-400"];
+                    "application/json": components["schemas"]["error_400"] &
+                        components["schemas"]["orders.track.create-400"];
                 };
             };
             /** @description Authorization failed due to insufficient permissions. */
@@ -5060,7 +7090,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_403"] & components["schemas"]["orders.track.create-403"];
+                    "application/json": components["schemas"]["error_403"] &
+                        components["schemas"]["orders.track.create-403"];
                 };
             };
             /** @description The specified resource does not exist. */
@@ -5069,7 +7100,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_404"] & components["schemas"]["404"];
+                    "application/json": components["schemas"]["error_404"] &
+                        components["schemas"]["404"];
                 };
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
@@ -5078,7 +7110,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_422"] & components["schemas"]["orders.track.create-422"];
+                    "application/json": components["schemas"]["error_422"] &
+                        components["schemas"]["orders.track.create-422"];
                 };
             };
             /** @description An internal server error has occurred. */
@@ -5123,7 +7156,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_400"] & components["schemas"]["orders.trackers.patch-400"];
+                    "application/json": components["schemas"]["error_400"] &
+                        components["schemas"]["orders.trackers.patch-400"];
                 };
             };
             /** @description Authorization failed due to insufficient permissions. */
@@ -5132,7 +7166,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_403"] & components["schemas"]["orders.trackers.patch-403"];
+                    "application/json": components["schemas"]["error_403"] &
+                        components["schemas"]["orders.trackers.patch-403"];
                 };
             };
             /** @description The specified resource does not exist. */
@@ -5141,7 +7176,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_404"] & components["schemas"]["orders.trackers.patch-404"];
+                    "application/json": components["schemas"]["error_404"] &
+                        components["schemas"]["orders.trackers.patch-404"];
                 };
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
@@ -5150,7 +7186,8 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["error_422"] & components["schemas"]["orders.trackers.patch-422"];
+                    "application/json": components["schemas"]["error_422"] &
+                        components["schemas"]["orders.trackers.patch-422"];
                 };
             };
             /** @description An internal server error has occurred. */
