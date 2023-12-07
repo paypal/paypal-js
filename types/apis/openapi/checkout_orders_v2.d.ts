@@ -3,153 +3,68 @@
  * Do not make direct changes to the file.
  */
 
+/** WithRequired type helpers */
+type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
+
 export interface paths {
     "/v2/checkout/orders": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
         /**
          * Create order
          * @description Creates an order. Merchants and partners can add Level 2 and 3 data to payments to reduce risk and payment processing costs. For more information about processing payments, see <a href="https://developer.paypal.com/docs/checkout/advanced/processing/">checkout</a> or <a href="https://developer.paypal.com/docs/multiparty/checkout/advanced/processing/">multiparty checkout</a>.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href="/api/rest/reference/orders/v2/errors/#create-order">Orders v2 errors</a>.</blockquote>
          */
         post: operations["orders.create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
     };
     "/v2/checkout/orders/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
         /**
          * Show order details
          * @description Shows details for an order, by ID.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href="/api/rest/reference/orders/v2/errors/#get-order">Orders v2 errors</a>.</blockquote>
          */
         get: operations["orders.get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
         /**
          * Update order
          * @description Updates an order with a `CREATED` or `APPROVED` status. You cannot update an order with the `COMPLETED` status.<br/><br/>To make an update, you must provide a `reference_id`. If you omit this value with an order that contains only one purchase unit, PayPal sets the value to `default` which enables you to use the path: <code>\"/purchase_units/@reference_id=='default'/{attribute-or-object}\"</code>. Merchants and partners can add Level 2 and 3 data to payments to reduce risk and payment processing costs. For more information about processing payments, see <a href="https://developer.paypal.com/docs/checkout/advanced/processing/">checkout</a> or <a href="https://developer.paypal.com/docs/multiparty/checkout/advanced/processing/">multiparty checkout</a>.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href=\"/api/rest/reference/orders/v2/errors/#patch-order\">Orders v2 errors</a>.</blockquote>Patchable attributes or objects:<br/><br/><table><thead><th>Attribute</th><th>Op</th><th>Notes</th></thead><tbody><tr><td><code>intent</code></td><td>replace</td><td></td></tr><tr><td><code>payer</code></td><td>replace, add</td><td>Using replace op for <code>payer</code> will replace the whole <code>payer</code> object with the value sent in request.</td></tr><tr><td><code>purchase_units</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].custom_id</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].description</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].payee.email</code></td><td>replace</td><td></td></tr><tr><td><code>purchase_units[].shipping.name</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].shipping.address</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].shipping.type</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].soft_descriptor</code></td><td>replace, remove</td><td></td></tr><tr><td><code>purchase_units[].amount</code></td><td>replace</td><td></td></tr><tr><td><code>purchase_units[].items</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].invoice_id</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].payment_instruction</code></td><td>replace</td><td></td></tr><tr><td><code>purchase_units[].payment_instruction.disbursement_mode</code></td><td>replace</td><td>By default, <code>disbursement_mode</code> is <code>INSTANT</code>.</td></tr><tr><td><code>purchase_units[].payment_instruction.platform_fees</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].supplementary_data.airline</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].supplementary_data.card</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>application_context.client_configuration</code></td><td>replace, add</td><td></td></tr></tbody></table>
          */
         patch: operations["orders.patch"];
-        trace?: never;
     };
     "/v2/checkout/orders/{id}/confirm-payment-source": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
         /**
          * Confirm the Order
          * @description Payer confirms their intent to pay for the the Order with the given payment source.
          */
         post: operations["orders.confirm"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
     };
     "/v2/checkout/orders/{id}/authorize": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
         /**
          * Authorize payment for order
          * @description Authorizes payment for an order. To successfully authorize payment for an order, the buyer must first approve the order or a valid payment_source must be provided in the request. A buyer can approve the order upon being redirected to the rel:approve URL that was returned in the HATEOAS links in the create order response.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href="/api/rest/reference/orders/v2/errors/#authorize-order">Orders v2 errors</a>.</blockquote>
          */
         post: operations["orders.authorize"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
     };
     "/v2/checkout/orders/{id}/capture": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
         /**
          * Capture payment for order
          * @description Captures payment for an order. To successfully capture payment for an order, the buyer must first approve the order or a valid payment_source must be provided in the request. A buyer can approve the order upon being redirected to the rel:approve URL that was returned in the HATEOAS links in the create order response.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href="/api/rest/reference/orders/v2/errors/#capture-order">Orders v2 errors</a>.</blockquote>
          */
         post: operations["orders.capture"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
     };
     "/v2/checkout/orders/{id}/track": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
         /**
          * Add tracking information for an Order.
          * @description Adds tracking information for an Order.
          */
         post: operations["orders.track.create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
     };
     "/v2/checkout/orders/{id}/trackers/{tracker_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
         /**
          * Update or cancel tracking information for a PayPal order
          * @description Updates or cancels the tracking information for a PayPal order, by ID. Updatable attributes or objects:<br/><br/><table><thead><th>Attribute</th><th>Op</th><th>Notes</th></thead><tbody></tr><tr><td><code>items</code></td><td>replace</td><td>Using replace op for <code>items</code> will replace the entire <code>items</code> object with the value sent in request.</td></tr><tr><td><code>notify_payer</code></td><td>replace, add</td><td></td></tr><tr><td><code>status</code></td><td>replace</td><td>Only patching status to CANCELLED is currently supported.</td></tr></tbody></table>
          */
         patch: operations["orders.trackers.patch"];
-        trace?: never;
     };
 }
+
 export type webhooks = Record<string, never>;
+
 export interface components {
     schemas: {
         400: {
@@ -596,7 +511,7 @@ export interface components {
                       /** @enum {string} */
                       issue?: "TRANSACTION_BLOCKED_BY_PAYEE";
                       /** @enum {string} */
-                      description?: "Transaction blocked by Payee\u2019s Fraud Protection settings.";
+                      description?: "Transaction blocked by Payee’s Fraud Protection settings.";
                   }
                 | {
                       /** @enum {string} */
@@ -828,12 +743,6 @@ export interface components {
                   }
                 | {
                       /** @enum {string} */
-                      issue?: "CRYPTOGRAM_REQUIRED";
-                      /** @enum {string} */
-                      description?: "Cryptogram is required if authentication method is CRYPTOGRAM 3DS.";
-                  }
-                | {
-                      /** @enum {string} */
                       issue?: "ONE_OF_PARAMETERS_REQUIRED";
                       /** @enum {string} */
                       description?: "One or more field is required to continue with this request.";
@@ -865,7 +774,7 @@ export interface components {
              * @description The location of the field that caused the error. Value is `body`, `path`, or `query`.
              * @default body
              */
-            location: string;
+            location?: string;
             /** @description The unique, fine-grained application-level error code. */
             issue: string;
             /** @description The human-readable description for an issue. The description can change over the lifetime of an API, so clients must not depend on this value. */
@@ -895,7 +804,7 @@ export interface components {
             /** @description The PayPal internal ID. Used for correlation purposes. */
             debug_id?: string;
             /** @description The information link, or URI, that shows detailed information about this error for the developer. */
-            readonly information_link?: string;
+            information_link?: string;
         };
         /**
          * 401 Error
@@ -910,7 +819,7 @@ export interface components {
             /** @description The PayPal internal ID. Used for correlation purposes. */
             debug_id?: string;
             /** @description The information link, or URI, that shows detailed information about this error for the developer. */
-            readonly information_link?: string;
+            information_link?: string;
         };
         /**
          * 403 Error
@@ -925,7 +834,7 @@ export interface components {
             /** @description The PayPal internal ID. Used for correlation purposes. */
             debug_id?: string;
             /** @description The information link, or URI, that shows detailed information about this error for the developer. */
-            readonly information_link?: string;
+            information_link?: string;
         };
         /**
          * 404 Error
@@ -940,7 +849,7 @@ export interface components {
             /** @description The PayPal internal ID. Used for correlation purposes. */
             debug_id?: string;
             /** @description The information link, or URI, that shows detailed information about this error for the developer. */
-            readonly information_link?: string;
+            information_link?: string;
         };
         /**
          * 409 Error
@@ -955,7 +864,7 @@ export interface components {
             /** @description The PayPal internal ID. Used for correlation purposes. */
             debug_id?: string;
             /** @description The information link, or URI, that shows detailed information about this error for the developer. */
-            readonly information_link?: string;
+            information_link?: string;
         };
         /**
          * 409 Error
@@ -970,7 +879,7 @@ export interface components {
             /** @description The PayPal internal ID. Used for correlation purposes. */
             debug_id?: string;
             /** @description The information link, or URI, that shows detailed information about this error for the developer. */
-            readonly information_link?: string;
+            information_link?: string;
         };
         /**
          * 422 Error
@@ -985,17 +894,17 @@ export interface components {
             /** @description The PayPal internal ID. Used for correlation purposes. */
             debug_id?: string;
             /** @description The information link, or URI, that shows detailed information about this error for the developer. */
-            readonly information_link?: string;
+            information_link?: string;
         };
         /**
          * 500 Error
          * @description Error response for 500
          * @example {
-         *       "name": "INTERNAL_SERVER_ERROR",
-         *       "message": "An internal server error occurred.",
-         *       "debug_id": "90957fca61718",
-         *       "information_link": "https://developer.paypal.com/api/orders/v2/#error-INTERNAL_SERVER_ERROR"
-         *     }
+         *   "name": "INTERNAL_SERVER_ERROR",
+         *   "message": "An internal server error occurred.",
+         *   "debug_id": "90957fca61718",
+         *   "information_link": "https://developer.paypal.com/api/orders/v2/#error-INTERNAL_SERVER_ERROR"
+         * }
          */
         error_500: {
             /** @enum {string} */
@@ -1008,17 +917,17 @@ export interface components {
              * @description The information link, or URI, that shows detailed information about this error for the developer.
              * @enum {string}
              */
-            readonly information_link?: "https://developer.paypal.com/api/orders/v2/#error-INTERNAL_SERVER_ERROR";
+            information_link?: "https://developer.paypal.com/api/orders/v2/#error-INTERNAL_SERVER_ERROR";
         };
         /**
          * 503 Error
          * @description Error response for 503
          * @example {
-         *       "name": "SERVICE_UNAVAILABLE",
-         *       "message": "Service Unavailable.",
-         *       "debug_id": "90957fca61718",
-         *       "information_link": "https://developer.paypal.com/docs/api/orders/v2/#error-SERVICE_UNAVAILABLE"
-         *     }
+         *   "name": "SERVICE_UNAVAILABLE",
+         *   "message": "Service Unavailable.",
+         *   "debug_id": "90957fca61718",
+         *   "information_link": "https://developer.paypal.com/docs/api/orders/v2/#error-SERVICE_UNAVAILABLE"
+         * }
          */
         error_503: {
             /** @enum {string} */
@@ -1028,7 +937,7 @@ export interface components {
             /** @description The PayPal internal ID. Used for correlation purposes. */
             debug_id?: string;
             /** @description The information link, or URI, that shows detailed information about this error for the developer. */
-            readonly information_link?: string;
+            information_link?: string;
         };
         /**
          * Checkout Payment Intent
@@ -1055,7 +964,7 @@ export interface components {
             /** @description The email address of the payer. */
             email_address?: components["schemas"]["email"];
             /** @description The PayPal-assigned ID for the payer. */
-            readonly payer_id?: components["schemas"]["account_id"];
+            payer_id?: components["schemas"]["account_id"];
         };
         /**
          * Name
@@ -1240,7 +1149,7 @@ export interface components {
          * Payee
          * @description The merchant who receives the funds and fulfills the order. The merchant is also known as the payee.
          */
-        payee: components["schemas"]["payee_base"] & unknown;
+        payee: components["schemas"]["payee_base"];
         /**
          * Platform Fee
          * @description The platform or partner fee, commission, or brokerage fee that is associated with the transaction. Not a separate or isolated transaction leg from the external perspective. The platform fee is limited in scope and is always associated with the original payment for the purchase unit.
@@ -1341,15 +1250,16 @@ export interface components {
         level_2_card_processing_data: {
             /** @description Use this field to pass a purchase identification value of up to 12 ASCII characters for AIB and 17 ASCII characters for all other processors. */
             invoice_id?: string;
-            /** @description Use this field to break down the amount of tax included in the total purchase amount. The value provided here will not add to the total purchase amount. The value can't be negative, and in most cases, it must be greater than zero in order to qualify for lower interchange rates.
-             *      Value, by country, is:
+            /**
+             * @description Use this field to break down the amount of tax included in the total purchase amount. The value provided here will not add to the total purchase amount. The value can't be negative, and in most cases, it must be greater than zero in order to qualify for lower interchange rates.
+             *  Value, by country, is:
              *
-             *         UK. A county.
-             *         US. A state.
-             *         Canada. A province.
-             *         Japan. A prefecture.
-             *         Switzerland. A kanton.
-             *      */
+             *     UK. A county.
+             *     US. A state.
+             *     Canada. A province.
+             *     Japan. A prefecture.
+             *     Switzerland. A kanton.
+             */
             tax_total?: components["schemas"]["money"];
         };
         /**
@@ -1499,7 +1409,7 @@ export interface components {
          */
         card: {
             /** @description The PayPal-generated ID for the card. */
-            readonly id?: components["schemas"]["instrument_id"];
+            id?: components["schemas"]["instrument_id"];
             /** @description The card holder's name as it appears on the card. */
             name?: string;
             /** @description The primary account number (PAN) for the payment card. */
@@ -1509,12 +1419,12 @@ export interface components {
             /** @description The three- or four-digit security code of the card. Also known as the CVV, CVC, CVN, CVE, or CID. This parameter cannot be present in the request when `payment_initiator=MERCHANT`. */
             security_code?: string;
             /** @description The last digits of the payment card. */
-            readonly last_digits?: string;
+            last_digits?: string;
             /**
              * @deprecated
              * @description The card brand or network. Typically used in the response.
              */
-            readonly card_type?: components["schemas"]["card_brand"];
+            card_type?: components["schemas"]["card_brand"];
             /** @description The payment card type. */
             type?: components["schemas"]["card_type"];
             /** @description The card brand or network. Typically used in the response. */
@@ -1709,39 +1619,42 @@ export interface components {
          * Vaulted PayPal Wallet Common Attributes
          * @description Resource consolidating common request and response attributes for vaulting PayPal Wallet.
          */
-        vault_paypal_wallet_base: components["schemas"]["vault_instruction_base"] & {
-            /** @description The description displayed to PayPal consumer on the approval flow for PayPal, as well as on the PayPal payment token management experience on PayPal.com. */
-            description?: string;
-            /**
-             * @description Expected business/pricing model for the billing agreement.
-             * @enum {string}
-             */
-            usage_pattern?:
-                | "IMMEDIATE"
-                | "DEFERRED"
-                | "RECURRING_PREPAID"
-                | "RECURRING_POSTPAID"
-                | "THRESHOLD_PREPAID"
-                | "THRESHOLD_POSTPAID";
-            /** @description The shipping address for the Payer. */
-            shipping?: components["schemas"]["shipping_detail"];
-            /**
-             * @description The usage type associated with the PayPal payment token.
-             * @enum {string}
-             */
-            usage_type: "MERCHANT" | "PLATFORM";
-            /**
-             * @description The customer type associated with the PayPal payment token. This is to indicate whether the customer acting on the merchant / platform is either a business or a consumer.
-             * @default CONSUMER
-             * @enum {string}
-             */
-            customer_type: "CONSUMER" | "BUSINESS";
-            /**
-             * @description Create multiple payment tokens for the same payer, merchant/platform combination. Use this when the customer has not logged in at merchant/platform. The payment token thus generated, can then also be used to create the customer account at merchant/platform. Use this also when multiple payment tokens are required for the same payer, different customer at merchant/platform. This helps to identify customers distinctly even though they may share the same PayPal account. This only applies to PayPal payment source.
-             * @default false
-             */
-            permit_multiple_payment_tokens: boolean;
-        };
+        vault_paypal_wallet_base: WithRequired<
+            components["schemas"]["vault_instruction_base"] & {
+                /** @description The description displayed to PayPal consumer on the approval flow for PayPal, as well as on the PayPal payment token management experience on PayPal.com. */
+                description?: string;
+                /**
+                 * @description Expected business/pricing model for the billing agreement.
+                 * @enum {string}
+                 */
+                usage_pattern?:
+                    | "IMMEDIATE"
+                    | "DEFERRED"
+                    | "RECURRING_PREPAID"
+                    | "RECURRING_POSTPAID"
+                    | "THRESHOLD_PREPAID"
+                    | "THRESHOLD_POSTPAID";
+                /** @description The shipping address for the Payer. */
+                shipping?: components["schemas"]["shipping_detail"];
+                /**
+                 * @description The usage type associated with the PayPal payment token.
+                 * @enum {string}
+                 */
+                usage_type?: "MERCHANT" | "PLATFORM";
+                /**
+                 * @description The customer type associated with the PayPal payment token. This is to indicate whether the customer acting on the merchant / platform is either a business or a consumer.
+                 * @default CONSUMER
+                 * @enum {string}
+                 */
+                customer_type?: "CONSUMER" | "BUSINESS";
+                /**
+                 * @description Create multiple payment tokens for the same payer, merchant/platform combination. Use this when the customer has not logged in at merchant/platform. The payment token thus generated, can then also be used to create the customer account at merchant/platform. Use this also when multiple payment tokens are required for the same payer, different customer at merchant/platform. This helps to identify customers distinctly even though they may share the same PayPal account. This only applies to PayPal payment source.
+                 * @default false
+                 */
+                permit_multiple_payment_tokens?: boolean;
+            },
+            "usage_type"
+        >;
         /**
          * PayPal Wallet Attributes
          * @description Additional attributes associated with the use of this PayPal Wallet.
@@ -1770,7 +1683,7 @@ export interface components {
              * @default GET_FROM_FILE
              * @enum {string}
              */
-            shipping_preference:
+            shipping_preference?:
                 | "GET_FROM_FILE"
                 | "NO_SHIPPING"
                 | "SET_PROVIDED_ADDRESS";
@@ -1789,19 +1702,19 @@ export interface components {
              * @default NO_PREFERENCE
              * @enum {string}
              */
-            landing_page: "LOGIN" | "GUEST_CHECKOUT" | "NO_PREFERENCE";
+            landing_page?: "LOGIN" | "GUEST_CHECKOUT" | "NO_PREFERENCE";
             /**
              * @description Configures a <strong>Continue</strong> or <strong>Pay Now</strong> checkout flow.
              * @default CONTINUE
              * @enum {string}
              */
-            user_action: "CONTINUE" | "PAY_NOW";
+            user_action?: "CONTINUE" | "PAY_NOW";
             /**
              * @description The merchant-preferred payment methods.
              * @default UNRESTRICTED
              * @enum {string}
              */
-            payment_method_preference:
+            payment_method_preference?:
                 | "UNRESTRICTED"
                 | "IMMEDIATE_PAYMENT_REQUIRED";
         };
@@ -1847,7 +1760,7 @@ export interface components {
              * @default GET_FROM_FILE
              * @enum {string}
              */
-            shipping_preference:
+            shipping_preference?:
                 | "GET_FROM_FILE"
                 | "NO_SHIPPING"
                 | "SET_PROVIDED_ADDRESS";
@@ -2114,7 +2027,7 @@ export interface components {
              * @default GET_FROM_FILE
              * @enum {string}
              */
-            shipping_preference:
+            shipping_preference?:
                 | "GET_FROM_FILE"
                 | "NO_SHIPPING"
                 | "SET_PROVIDED_ADDRESS";
@@ -2130,37 +2043,40 @@ export interface components {
          * Vaulted Venmo Wallet Common Attributes
          * @description Resource consolidating common request and response attirbutes for vaulting Venmo Wallet.
          */
-        vault_venmo_wallet_base: components["schemas"]["v3_vault_instruction_base"] & {
-            /** @description The description displayed to Venmo consumer on the approval flow for Venmo, as well as on the Venmo payment token management experience on Venmo.com. */
-            description?: string;
-            /**
-             * @description Expected business/pricing model for the billing agreement.
-             * @enum {string}
-             */
-            usage_pattern?:
-                | "IMMEDIATE"
-                | "DEFERRED"
-                | "RECURRING_PREPAID"
-                | "RECURRING_POSTPAID"
-                | "THRESHOLD_PREPAID"
-                | "THRESHOLD_POSTPAID";
-            /**
-             * @description The usage type associated with the Venmo payment token.
-             * @enum {string}
-             */
-            usage_type: "MERCHANT" | "PLATFORM";
-            /**
-             * @description The customer type associated with the Venmo payment token. This is to indicate whether the customer acting on the merchant / platform is either a business or a consumer.
-             * @default CONSUMER
-             * @enum {string}
-             */
-            customer_type: "CONSUMER" | "BUSINESS";
-            /**
-             * @description Create multiple payment tokens for the same payer, merchant/platform combination. Use this when the customer has not logged in at merchant/platform. The payment token thus generated, can then also be used to create the customer account at merchant/platform. Use this also when multiple payment tokens are required for the same payer, different customer at merchant/platform. This helps to identify customers distinctly even though they may share the same Venmo account.
-             * @default false
-             */
-            permit_multiple_payment_tokens: boolean;
-        };
+        vault_venmo_wallet_base: WithRequired<
+            components["schemas"]["v3_vault_instruction_base"] & {
+                /** @description The description displayed to Venmo consumer on the approval flow for Venmo, as well as on the Venmo payment token management experience on Venmo.com. */
+                description?: string;
+                /**
+                 * @description Expected business/pricing model for the billing agreement.
+                 * @enum {string}
+                 */
+                usage_pattern?:
+                    | "IMMEDIATE"
+                    | "DEFERRED"
+                    | "RECURRING_PREPAID"
+                    | "RECURRING_POSTPAID"
+                    | "THRESHOLD_PREPAID"
+                    | "THRESHOLD_POSTPAID";
+                /**
+                 * @description The usage type associated with the Venmo payment token.
+                 * @enum {string}
+                 */
+                usage_type?: "MERCHANT" | "PLATFORM";
+                /**
+                 * @description The customer type associated with the Venmo payment token. This is to indicate whether the customer acting on the merchant / platform is either a business or a consumer.
+                 * @default CONSUMER
+                 * @enum {string}
+                 */
+                customer_type?: "CONSUMER" | "BUSINESS";
+                /**
+                 * @description Create multiple payment tokens for the same payer, merchant/platform combination. Use this when the customer has not logged in at merchant/platform. The payment token thus generated, can then also be used to create the customer account at merchant/platform. Use this also when multiple payment tokens are required for the same payer, different customer at merchant/platform. This helps to identify customers distinctly even though they may share the same Venmo account.
+                 * @default false
+                 */
+                permit_multiple_payment_tokens?: boolean;
+            },
+            "usage_type"
+        >;
         /**
          * Venmo Wallet Attributes
          * @description Additional attributes associated with the use of this Venmo Wallet.
@@ -2236,7 +2152,7 @@ export interface components {
              * @default WEB
              * @enum {string}
              */
-            standard_entry_class_code: "TEL" | "WEB" | "CCD" | "PPD";
+            standard_entry_class_code?: "TEL" | "WEB" | "CCD" | "PPD";
         };
         /**
          * Stored Payment Source
@@ -2263,14 +2179,14 @@ export interface components {
              * @default NO_PREFERENCE
              * @enum {string}
              */
-            landing_page: "LOGIN" | "BILLING" | "NO_PREFERENCE";
+            landing_page?: "LOGIN" | "BILLING" | "NO_PREFERENCE";
             /**
              * @deprecated
              * @description DEPRECATED. DEPRECATED. The shipping preference:<ul><li>Displays the shipping address to the customer.</li><li>Enables the customer to choose an address on the PayPal site.</li><li>Restricts the customer from changing the address during the payment-approval process.</li></ul>.  The fields in `application_context` are now available in the `experience_context` object under the `payment_source` which supports them (eg. `payment_source.paypal.experience_context.shipping_preference`). Please specify this field in the `experience_context` object instead of the `application_context` object.
              * @default GET_FROM_FILE
              * @enum {string}
              */
-            shipping_preference:
+            shipping_preference?:
                 | "GET_FROM_FILE"
                 | "NO_SHIPPING"
                 | "SET_PROVIDED_ADDRESS";
@@ -2279,7 +2195,7 @@ export interface components {
              * @default CONTINUE
              * @enum {string}
              */
-            user_action: "CONTINUE" | "PAY_NOW";
+            user_action?: "CONTINUE" | "PAY_NOW";
             /** @description DEPRECATED. The customer and merchant payment preferences. The fields in `application_context` are now available in the `experience_context` object under the `payment_source` which supports them (eg. `payment_source.paypal.experience_context.payment_method_selected`). Please specify this field in the `experience_context` object instead of the `application_context` object.. */
             payment_method?: components["schemas"]["payment_method"];
             /**
@@ -2326,9 +2242,9 @@ export interface components {
          */
         activity_timestamps: {
             /** @description The date and time when the transaction occurred, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). */
-            readonly create_time?: components["schemas"]["date_time"];
+            create_time?: components["schemas"]["date_time"];
             /** @description The date and time when the transaction was last updated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). */
-            readonly update_time?: components["schemas"]["date_time"];
+            update_time?: components["schemas"]["date_time"];
         };
         /**
          * @description Liability shift indicator. The outcome of the issuer's authentication.
@@ -2406,7 +2322,7 @@ export interface components {
             status?: "VAULTED" | "CREATED" | "APPROVED";
             customer?: components["schemas"]["customer"];
             /** @description An array of request-related HATEOAS links. */
-            readonly links?: components["schemas"]["link_description"][];
+            links?: readonly components["schemas"]["link_description"][];
         };
         /**
          * Card Attributes Response
@@ -2423,7 +2339,7 @@ export interface components {
             /** @description The card expiration year and month, in [Internet date format](https://tools.ietf.org/html/rfc3339#section-5.6). */
             expiry?: components["schemas"]["date_year_month"];
             /** @description The last digits of the payment card. */
-            readonly last_digits?: string;
+            last_digits?: string;
         };
         /**
          * Bin Details
@@ -2447,16 +2363,16 @@ export interface components {
             /** @description The card holder's name as it appears on the card. */
             name?: string;
             /** @description The last digits of the payment card. */
-            readonly last_digits?: string;
+            last_digits?: string;
             /** @description The card brand or network. Typically used in the response. */
-            readonly brand?: components["schemas"]["card_brand"];
+            brand?: components["schemas"]["card_brand"];
             /** @description Array of brands or networks associated with the card. */
-            readonly available_networks?: components["schemas"]["card_brand"][];
+            available_networks?: readonly components["schemas"]["card_brand"][];
             /**
              * @description The payment card type.
              * @enum {string}
              */
-            readonly type?: "CREDIT" | "DEBIT" | "PREPAID" | "UNKNOWN";
+            type?: "CREDIT" | "DEBIT" | "PREPAID" | "UNKNOWN";
             authentication_result?: components["schemas"]["authentication_response"];
             attributes?: components["schemas"]["card_attributes_response"];
             from_request?: components["schemas"]["card_from_request"];
@@ -2513,7 +2429,7 @@ export interface components {
             /** @description The email address of the PayPal account holder. */
             email_address?: components["schemas"]["email"];
             /** @description The PayPal-assigned ID for the PayPal account holder. */
-            readonly account_id?: components["schemas"]["account_id-2"];
+            account_id?: components["schemas"]["account_id-2"];
             /** @description The name of the PayPal account holder. Supports only the `given_name` and `surname` properties. */
             name?: components["schemas"]["name-2"];
             phone_type?: components["schemas"]["phone_type-2"];
@@ -2680,7 +2596,7 @@ export interface components {
             /** @description The email address of the payer. */
             email_address?: components["schemas"]["email"];
             /** @description This is an immutable system-generated id for a user's Venmo account. */
-            readonly account_id?: components["schemas"]["account_id-2"];
+            account_id?: components["schemas"]["account_id-2"];
             /** @description The Venmo user name chosen by the user, also know as a Venmo handle. */
             user_name?: string;
             /** @description The name associated with the Venmo account. Supports only the `given_name` and `surname` properties. */
@@ -2745,12 +2661,12 @@ export interface components {
          */
         tracker: {
             /** @description The tracker id. */
-            readonly id?: string;
+            id?: string;
             status?: components["schemas"]["tracker_status"];
             /** @description An array of details of items in the shipment. */
             items?: components["schemas"]["tracker_item"][];
             /** @description An array of request-related HATEOAS links. */
-            readonly links?: components["schemas"]["link_description"][];
+            links?: readonly components["schemas"]["link_description"][];
         } & components["schemas"]["activity_timestamps"];
         /**
          * Order Shipping Details
@@ -2780,7 +2696,7 @@ export interface components {
              * @description The status for the authorized payment.
              * @enum {string}
              */
-            readonly status?:
+            status?:
                 | "CREATED"
                 | "CAPTURED"
                 | "DENIED"
@@ -2788,7 +2704,7 @@ export interface components {
                 | "VOIDED"
                 | "PENDING";
             /** @description The details of the authorized order pending status. */
-            readonly status_details?: components["schemas"]["authorization_status_details"];
+            status_details?: components["schemas"]["authorization_status_details"];
         };
         /**
          * Seller Protection
@@ -2799,12 +2715,9 @@ export interface components {
              * @description Indicates whether the transaction is eligible for seller protection. For information, see [PayPal Seller Protection for Merchants](https://www.paypal.com/us/webapps/mpp/security/seller-protection).
              * @enum {string}
              */
-            readonly status?:
-                | "ELIGIBLE"
-                | "PARTIALLY_ELIGIBLE"
-                | "NOT_ELIGIBLE";
+            status?: "ELIGIBLE" | "PARTIALLY_ELIGIBLE" | "NOT_ELIGIBLE";
             /** @description An array of conditions that are covered for the transaction. */
-            readonly dispute_categories?: (
+            dispute_categories?: readonly (
                 | "ITEM_NOT_RECEIVED"
                 | "UNAUTHORIZED_TRANSACTION"
             )[];
@@ -2815,19 +2728,19 @@ export interface components {
          */
         authorization: components["schemas"]["authorization_status"] & {
             /** @description The PayPal-generated ID for the authorized payment. */
-            readonly id?: string;
+            id?: string;
             /** @description The amount for this authorized payment. */
-            readonly amount?: components["schemas"]["money"];
+            amount?: components["schemas"]["money"];
             /** @description The API caller-provided external invoice number for this order. Appears in both the payer's transaction history and the emails that the payer receives. */
-            readonly invoice_id?: string;
+            invoice_id?: string;
             /** @description The API caller-provided external ID. Used to reconcile API caller-initiated transactions with PayPal transactions. Appears in transaction and settlement reports. */
             custom_id?: string;
             network_transaction_reference?: components["schemas"]["network_transaction_reference"];
-            readonly seller_protection?: components["schemas"]["seller_protection"];
+            seller_protection?: components["schemas"]["seller_protection"];
             /** @description The date and time when the authorized payment expires, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). */
-            readonly expiration_time?: components["schemas"]["date_time"];
+            expiration_time?: components["schemas"]["date_time"];
             /** @description An array of related [HATEOAS links](/docs/api/reference/api-responses/#hateoas-links). */
-            readonly links?: components["schemas"]["link_description"][];
+            links?: readonly components["schemas"]["link_description"][];
         } & components["schemas"]["activity_timestamps"];
         /**
          * Processor Response
@@ -2838,7 +2751,7 @@ export interface components {
              * @description The address verification code for Visa, Discover, Mastercard, or American Express transactions.
              * @enum {string}
              */
-            readonly avs_code?:
+            avs_code?:
                 | "A"
                 | "B"
                 | "C"
@@ -2867,7 +2780,7 @@ export interface components {
              * @description The card verification value code for for Visa, Discover, Mastercard, or American Express.
              * @enum {string}
              */
-            readonly cvv_code?:
+            cvv_code?:
                 | "E"
                 | "I"
                 | "M"
@@ -2886,7 +2799,7 @@ export interface components {
              * @description Processor response code for the non-PayPal payment processor errors.
              * @enum {string}
              */
-            readonly response_code?:
+            response_code?:
                 | "0000"
                 | "00N7"
                 | "0100"
@@ -3045,7 +2958,7 @@ export interface components {
              * @description The declined payment transactions might have payment advice codes. The card networks, like Visa and Mastercard, return payment advice codes.
              * @enum {string}
              */
-            readonly payment_advice_code?: "01" | "02" | "03" | "21";
+            payment_advice_code?: "01" | "02" | "03" | "21";
         };
         /**
          * Authorization with Additional Data
@@ -3053,7 +2966,7 @@ export interface components {
          */
         authorization_with_additional_data: components["schemas"]["authorization"] & {
             /** @description The processor response for card transactions. */
-            readonly processor_response?: components["schemas"]["processor_response"];
+            processor_response?: components["schemas"]["processor_response"];
         };
         /**
          * Capture Status Details
@@ -3086,7 +2999,7 @@ export interface components {
              * @description The status of the captured payment.
              * @enum {string}
              */
-            readonly status?:
+            status?:
                 | "COMPLETED"
                 | "DECLINED"
                 | "PARTIALLY_REFUNDED"
@@ -3094,19 +3007,19 @@ export interface components {
                 | "REFUNDED"
                 | "FAILED";
             /** @description The details of the captured payment status. */
-            readonly status_details?: components["schemas"]["capture_status_details"];
+            status_details?: components["schemas"]["capture_status_details"];
         };
         /**
          * Exchange Rate
          * @description The exchange rate that determines the amount to convert from one currency to another currency.
          */
-        exchange_rate: {
+        readonly exchange_rate: {
             /** @description The source currency from which to convert an amount. */
-            source_currency?: components["schemas"]["currency_code"];
+            readonly source_currency?: components["schemas"]["currency_code"];
             /** @description The target currency to which to convert an amount. */
-            target_currency?: components["schemas"]["currency_code"];
+            readonly target_currency?: components["schemas"]["currency_code"];
             /** @description The target currency amount. Equivalent to one unit of the source currency. Formatted as integer or decimal value with one to 15 digits to the right of the decimal point. */
-            value?: string;
+            readonly value?: string;
         };
         /**
          * Seller Receivable Breakdown
@@ -3134,24 +3047,24 @@ export interface components {
          */
         capture: components["schemas"]["capture_status"] & {
             /** @description The PayPal-generated ID for the captured payment. */
-            readonly id?: string;
+            id?: string;
             /** @description The amount for this captured payment. */
-            readonly amount?: components["schemas"]["money"];
+            amount?: components["schemas"]["money"];
             /** @description The API caller-provided external invoice number for this order. Appears in both the payer's transaction history and the emails that the payer receives. */
-            readonly invoice_id?: string;
+            invoice_id?: string;
             /** @description The API caller-provided external ID. Used to reconcile API caller-initiated transactions with PayPal transactions. Appears in transaction and settlement reports. */
             custom_id?: string;
             network_transaction_reference?: components["schemas"]["network_transaction_reference"];
-            readonly seller_protection?: components["schemas"]["seller_protection"];
+            seller_protection?: components["schemas"]["seller_protection"];
             /**
              * @description Indicates whether you can make additional captures against the authorized payment. Set to `true` if you do not intend to capture additional payments against the authorization. Set to `false` if you intend to capture additional payments against the authorization.
              * @default false
              */
-            readonly final_capture: boolean;
-            readonly seller_receivable_breakdown?: components["schemas"]["seller_receivable_breakdown"];
+            final_capture?: boolean;
+            seller_receivable_breakdown?: components["schemas"]["seller_receivable_breakdown"];
             disbursement_mode?: components["schemas"]["disbursement_mode"];
             /** @description An array of related [HATEOAS links](/docs/api/reference/api-responses/#hateoas-links). */
-            readonly links?: components["schemas"]["link_description"][];
+            links?: readonly components["schemas"]["link_description"][];
             /** @description An object that provides additional processor information for a direct credit card transaction. */
             processor_response?: components["schemas"]["processor_response"];
         } & components["schemas"]["activity_timestamps"];
@@ -3175,9 +3088,9 @@ export interface components {
              * @description The status of the refund.
              * @enum {string}
              */
-            readonly status?: "CANCELLED" | "FAILED" | "PENDING" | "COMPLETED";
+            status?: "CANCELLED" | "FAILED" | "PENDING" | "COMPLETED";
             /** @description The details of the refund status. */
-            readonly status_details?: components["schemas"]["refund_status_details"];
+            status_details?: components["schemas"]["refund_status_details"];
         };
         /**
          * Net Amount Breakdown Item
@@ -3185,11 +3098,11 @@ export interface components {
          */
         net_amount_breakdown_item: {
             /** @description The net amount debited from the merchant's PayPal account. */
-            readonly payable_amount?: components["schemas"]["money"];
+            payable_amount?: components["schemas"]["money"];
             /** @description The converted payable amount. */
-            readonly converted_amount?: components["schemas"]["money"];
+            converted_amount?: components["schemas"]["money"];
             /** @description The exchange rate that determines the amount that was debited from the merchant's PayPal account. */
-            readonly exchange_rate?: components["schemas"]["exchange_rate"];
+            exchange_rate?: components["schemas"]["exchange_rate"];
         };
         /**
          * Refund
@@ -3197,22 +3110,22 @@ export interface components {
          */
         refund: components["schemas"]["refund_status"] & {
             /** @description The PayPal-generated ID for the refund. */
-            readonly id?: string;
+            id?: string;
             /** @description The amount that the payee refunded to the payer. */
-            readonly amount?: components["schemas"]["money"];
+            amount?: components["schemas"]["money"];
             /** @description The API caller-provided external invoice number for this order. Appears in both the payer's transaction history and the emails that the payer receives. */
-            readonly invoice_id?: string;
+            invoice_id?: string;
             /** @description The API caller-provided external ID. Used to reconcile API caller-initiated transactions with PayPal transactions. Appears in transaction and settlement reports. */
             custom_id?: string;
             /** @description Reference ID issued for the card transaction. This ID can be used to track the transaction across processors, card brands and issuing banks. */
             acquirer_reference_number?: string;
             /** @description The reason for the refund. Appears in both the payer's transaction history and the emails that the payer receives. */
-            readonly note_to_payer?: string;
+            note_to_payer?: string;
             /**
              * Merchant Payable Breakdown
              * @description The breakdown of the refund.
              */
-            readonly seller_payable_breakdown?: {
+            seller_payable_breakdown?: {
                 /** @description The amount that the payee refunded to the payer. */
                 readonly gross_amount?: components["schemas"]["money"];
                 /** @description The PayPal fee that was refunded to the payer in the currency of the transaction. This fee might not match the PayPal fee that the payee paid when the payment was captured. */
@@ -3224,16 +3137,16 @@ export interface components {
                 /** @description The net amount that the payee's account is debited in the receivable currency. Returned only in cases when the receivable currency is different from transaction currency. Example 'CNY'. */
                 readonly net_amount_in_receivable_currency?: components["schemas"]["money"];
                 /** @description An array of platform or partner fees, commissions, or brokerage fees for the refund. */
-                platform_fees?: components["schemas"]["platform_fee"][];
+                readonly platform_fees?: components["schemas"]["platform_fee"][];
                 /** @description An array of breakdown values for the net amount. Returned when the currency of the refund is different from the currency of the PayPal account where the payee holds their funds. */
-                readonly net_amount_breakdown?: components["schemas"]["net_amount_breakdown_item"][];
+                readonly net_amount_breakdown?: readonly components["schemas"]["net_amount_breakdown_item"][];
                 /** @description The total amount refunded from the original capture to date. For example, if a payer makes a $100 purchase and was refunded $20 a week ago and was refunded $30 in this refund, the `gross_amount` is $30 for this refund and the `total_refunded_amount` is $50. */
-                total_refunded_amount?: components["schemas"]["money"];
+                readonly total_refunded_amount?: components["schemas"]["money"];
             };
             /** @description The details associated with the merchant for this transaction. */
-            readonly payer?: components["schemas"]["payee_base"];
+            payer?: components["schemas"]["payee_base"];
             /** @description An array of related [HATEOAS links](/docs/api/reference/api-responses/#hateoas-links). */
-            readonly links?: components["schemas"]["link_description"][];
+            links?: readonly components["schemas"]["link_description"][];
         } & components["schemas"]["activity_timestamps"];
         /**
          * Payment Collection
@@ -3275,7 +3188,7 @@ export interface components {
             /** @description Supplementary data about this payment. Merchants and partners can add Level 2 and 3 data to payments to reduce risk and payment processing costs. For more information about processing payments, see <a href="https://developer.paypal.com/docs/checkout/advanced/processing/">checkout</a> or <a href="https://developer.paypal.com/docs/multiparty/checkout/advanced/processing/">multiparty checkout</a>. */
             supplementary_data?: components["schemas"]["supplementary_data"];
             /** @description The comprehensive history of payments for the purchase unit. */
-            readonly payments?: components["schemas"]["payment_collection"];
+            payments?: components["schemas"]["payment_collection"];
         };
         /**
          * Order Status
@@ -3295,7 +3208,7 @@ export interface components {
          */
         order: components["schemas"]["activity_timestamps"] & {
             /** @description The ID of the order. */
-            readonly id?: string;
+            id?: string;
             payment_source?: components["schemas"]["payment_source_response"];
             intent?: components["schemas"]["checkout_payment_intent"];
             processing_instruction?: components["schemas"]["processing_instruction"];
@@ -3306,9 +3219,9 @@ export interface components {
             payer?: components["schemas"]["payer"];
             /** @description An array of purchase units. Each purchase unit establishes a contract between a customer and merchant. Each purchase unit represents either a full or partial order that the customer intends to purchase from the merchant. */
             purchase_units?: components["schemas"]["purchase_unit"][];
-            readonly status?: components["schemas"]["order_status"];
+            status?: components["schemas"]["order_status"];
             /** @description An array of request-related HATEOAS links. To complete payer approval, use the `approve` link to redirect the payer. The API caller has 3 hours (default setting, this which can be changed by your account manager to 24/48/72 hours to accommodate your use case) from the time the order is created, to redirect your payer. Once redirected, the API caller has 3 hours for the payer to approve the order and either authorize or capture the order. If you are not using the PayPal JavaScript SDK to initiate PayPal Checkout (in context) ensure that you include `application_context.return_url` is specified or you will get "We're sorry, Things don't appear to be working at the moment" after the payer approves the payment. */
-            readonly links?: components["schemas"]["link_description"][];
+            links?: readonly components["schemas"]["link_description"][];
         };
         /**
          * Patch
@@ -4023,12 +3936,6 @@ export interface components {
                   }
                 | {
                       /** @enum {string} */
-                      issue?: "CRYPTOGRAM_REQUIRED";
-                      /** @enum {string} */
-                      description?: "Cryptogram is required if authentication method is CRYPTOGRAM 3DS.";
-                  }
-                | {
-                      /** @enum {string} */
                       issue?: "EMV_DATA_REQUIRED";
                       /** @enum {string} */
                       description?: "EMV Data is required if authentication method is EMV.";
@@ -4061,16 +3968,16 @@ export interface components {
          */
         order_authorize_response: components["schemas"]["activity_timestamps"] & {
             /** @description The ID of the order. */
-            readonly id?: string;
+            id?: string;
             payment_source?: components["schemas"]["payment_source_response"];
             intent?: components["schemas"]["checkout_payment_intent"];
             processing_instruction?: components["schemas"]["processing_instruction"];
             payer?: components["schemas"]["payer"];
             /** @description An array of purchase units. Each purchase unit establishes a contract between a customer and merchant. Each purchase unit represents either a full or partial order that the customer intends to purchase from the merchant. */
             purchase_units?: components["schemas"]["purchase_unit"][];
-            readonly status?: components["schemas"]["order_status"];
+            status?: components["schemas"]["order_status"];
             /** @description An array of request-related HATEOAS links. To complete payer approval, use the `approve` link to redirect the payer. The API caller has 3 hours (default setting, this which can be changed by your account manager to 24/48/72 hours to accommodate your use case) from the time the order is created, to redirect your payer. Once redirected, the API caller has 3 hours for the payer to approve the order and either authorize or capture the order. If you are not using the PayPal JavaScript SDK to initiate PayPal Checkout (in context) ensure that you include `application_context.return_url` is specified or you will get "We're sorry, Things don't appear to be working at the moment" after the payer approves the payment. */
-            readonly links?: components["schemas"]["link_description"][];
+            links?: readonly components["schemas"]["link_description"][];
         };
         "orders.authorize-400": {
             issues?: (
@@ -4741,7 +4648,7 @@ export interface components {
                       /** @enum {string} */
                       issue?: "TRANSACTION_BLOCKED_BY_PAYEE";
                       /** @enum {string} */
-                      description?: "Transaction blocked by Payee\u2019s Fraud Protection settings.";
+                      description?: "Transaction blocked by Payee’s Fraud Protection settings.";
                   }
                 | {
                       /** @enum {string} */
@@ -6328,16 +6235,16 @@ export interface components {
             /** @description The name of the carrier for the shipment. Provide this value only if the carrier parameter is OTHER. This property supports Unicode. */
             carrier_name_other?: string;
             /** @description The postage payment ID. This property supports Unicode. */
-            readonly postage_payment_id?: string;
+            postage_payment_id?: string;
             /**
              * @description If true, sends an email notification to the buyer of the PayPal transaction. The email contains the tracking information that was uploaded through the API.
              * @default false
              */
-            notify_buyer: boolean;
+            notify_buyer?: boolean;
             /** @description The quantity of items shipped. */
-            readonly quantity?: number;
+            quantity?: number;
             /** @description Indicates whether the carrier validated the tracking number. */
-            readonly tracking_number_validated?: boolean;
+            tracking_number_validated?: boolean;
             /** @description The date and time when the tracking information was last updated, in [Internet date and time format](https://tools.ietf.org/html/rfc3339#section-5.6). */
             last_updated_time?: components["schemas"]["date_time"];
             /**
@@ -6349,7 +6256,7 @@ export interface components {
              * @description To denote which party uploaded the shipment tracking info.
              * @enum {string}
              */
-            readonly shipment_uploader?: "MERCHANT" | "CONSUMER" | "PARTNER";
+            shipment_uploader?: "MERCHANT" | "CONSUMER" | "PARTNER";
         };
         /**
          * Order Tracker Request.
@@ -6362,7 +6269,7 @@ export interface components {
              * @description If true, sends an email notification to the payer of the PayPal transaction. The email contains the tracking information that was uploaded through the API.
              * @default false
              */
-            notify_payer: boolean;
+            notify_payer?: boolean;
             /** @description An array of details of items in the shipment. */
             items?: components["schemas"]["tracker_item"][];
         };
@@ -6524,9 +6431,6 @@ export interface components {
     responses: {
         /** @description The default response. */
         default: {
-            headers: {
-                [name: string]: unknown;
-            };
             content: {
                 "application/json": components["schemas"]["error_default"];
             };
@@ -6535,23 +6439,23 @@ export interface components {
     parameters: {
         /** @description The server stores keys for 6 hours. The API callers can request the times to up to 72 hours by speaking to their Account Manager. */
         paypal_request_id: string;
-        paypal_partner_attribution_id: string;
-        paypal_client_metadata_id: string;
+        paypal_partner_attribution_id?: string;
+        paypal_client_metadata_id?: string;
         /** @description The preferred server response upon successful completion of the request. Value is:<ul><li><code>return=minimal</code>. The server returns a minimal response to optimize communication between the API caller and the server. A minimal response includes the <code>id</code>, <code>status</code> and HATEOAS links.</li><li><code>return=representation</code>. The server returns a complete resource representation, including the current state of the resource.</li></ul> */
-        prefer: string;
+        prefer?: string;
         /** @description The media type. Required for operations with a request body. The value is `application/<format>`, where `format` is `json`. */
         content_type: string;
         /** @description The ID of the order for which to update payment details. */
         id: string;
         /** @description A comma-separated list of fields that should be returned for the order. Valid filter field is `payment_source`. */
-        fields: string;
+        fields?: string;
         /** @description An API-caller-provided JSON Web Token (JWT) assertion that identifies the merchant. For details, see <a href="/api/rest/requests/#paypal-auth-assertion">PayPal-Auth-Assertion</a>. */
-        paypal_auth_assertion: string;
+        paypal_auth_assertion?: string;
         /** @description The order tracking ID. */
         tracker_id: string;
     };
     requestBodies: {
-        patch_request: {
+        patch_request?: {
             content: {
                 "application/json": components["schemas"]["patch_request"];
             };
@@ -6560,23 +6464,25 @@ export interface components {
     headers: never;
     pathItems: never;
 }
+
 export type $defs = Record<string, never>;
+
+export type external = Record<string, never>;
+
 export interface operations {
+    /**
+     * Create order
+     * @description Creates an order. Merchants and partners can add Level 2 and 3 data to payments to reduce risk and payment processing costs. For more information about processing payments, see <a href="https://developer.paypal.com/docs/checkout/advanced/processing/">checkout</a> or <a href="https://developer.paypal.com/docs/multiparty/checkout/advanced/processing/">multiparty checkout</a>.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href="/api/rest/reference/orders/v2/errors/#create-order">Orders v2 errors</a>.</blockquote>
+     */
     "orders.create": {
         parameters: {
-            query?: never;
             header: {
-                /** @description The server stores keys for 6 hours. The API callers can request the times to up to 72 hours by speaking to their Account Manager. */
                 "PayPal-Request-Id": components["parameters"]["paypal_request_id"];
                 "PayPal-Partner-Attribution-Id"?: components["parameters"]["paypal_partner_attribution_id"];
                 "PayPal-Client-Metadata-Id"?: components["parameters"]["paypal_client_metadata_id"];
-                /** @description The preferred server response upon successful completion of the request. Value is:<ul><li><code>return=minimal</code>. The server returns a minimal response to optimize communication between the API caller and the server. A minimal response includes the <code>id</code>, <code>status</code> and HATEOAS links.</li><li><code>return=representation</code>. The server returns a complete resource representation, including the current state of the resource.</li></ul> */
                 Prefer?: components["parameters"]["prefer"];
-                /** @description The media type. Required for operations with a request body. The value is `application/<format>`, where `format` is `json`. */
                 "Content-Type": components["parameters"]["content_type"];
             };
-            path?: never;
-            cookie?: never;
         };
         requestBody: {
             content: {
@@ -6586,27 +6492,18 @@ export interface operations {
         responses: {
             /** @description A successful response to an idempotent request returns the HTTP `200 OK` status code with a JSON response body that shows order details. */
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["order"];
                 };
             };
             /** @description A successful request returns the HTTP `201 Created` status code and a JSON response body that includes by default a minimal response with the ID, status, and HATEOAS links. If you require the complete order resource representation, you must pass the <a href="/docs/api/orders/v2/#orders-create-header-parameters"><code>Prefer: return=representation</code> request header</a>. This header value is not the default. */
             201: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["order"];
                 };
             };
             /** @description Request is not well-formed, syntactically incorrect, or violates schema. */
             400: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_400"] &
                         components["schemas"]["400"];
@@ -6614,9 +6511,6 @@ export interface operations {
             };
             /** @description Authentication failed due to missing authorization header, or invalid authentication credentials. */
             401: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_401"] &
                         components["schemas"]["401"];
@@ -6624,9 +6518,6 @@ export interface operations {
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
             422: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_422"] &
                         components["schemas"]["422"];
@@ -6635,38 +6526,31 @@ export interface operations {
             default: components["responses"]["default"];
         };
     };
+    /**
+     * Show order details
+     * @description Shows details for an order, by ID.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href="/api/rest/reference/orders/v2/errors/#get-order">Orders v2 errors</a>.</blockquote>
+     */
     "orders.get": {
         parameters: {
             query?: {
-                /** @description A comma-separated list of fields that should be returned for the order. Valid filter field is `payment_source`. */
                 fields?: components["parameters"]["fields"];
             };
             header: {
-                /** @description The media type. Required for operations with a request body. The value is `application/<format>`, where `format` is `json`. */
                 "Content-Type": components["parameters"]["content_type"];
             };
             path: {
-                /** @description The ID of the order for which to update payment details. */
                 id: components["parameters"]["id"];
             };
-            cookie?: never;
         };
-        requestBody?: never;
         responses: {
             /** @description A successful request returns the HTTP `200 OK` status code and a JSON response body that shows order details. */
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["order"];
                 };
             };
             /** @description Authentication failed due to missing authorization header, or invalid authentication credentials. */
             401: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_401"] &
                         components["schemas"]["401"];
@@ -6674,9 +6558,6 @@ export interface operations {
             };
             /** @description The specified resource does not exist. */
             404: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_404"] &
                         components["schemas"]["404"];
@@ -6685,33 +6566,27 @@ export interface operations {
             default: components["responses"]["default"];
         };
     };
+    /**
+     * Update order
+     * @description Updates an order with a `CREATED` or `APPROVED` status. You cannot update an order with the `COMPLETED` status.<br/><br/>To make an update, you must provide a `reference_id`. If you omit this value with an order that contains only one purchase unit, PayPal sets the value to `default` which enables you to use the path: <code>\"/purchase_units/@reference_id=='default'/{attribute-or-object}\"</code>. Merchants and partners can add Level 2 and 3 data to payments to reduce risk and payment processing costs. For more information about processing payments, see <a href="https://developer.paypal.com/docs/checkout/advanced/processing/">checkout</a> or <a href="https://developer.paypal.com/docs/multiparty/checkout/advanced/processing/">multiparty checkout</a>.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href=\"/api/rest/reference/orders/v2/errors/#patch-order\">Orders v2 errors</a>.</blockquote>Patchable attributes or objects:<br/><br/><table><thead><th>Attribute</th><th>Op</th><th>Notes</th></thead><tbody><tr><td><code>intent</code></td><td>replace</td><td></td></tr><tr><td><code>payer</code></td><td>replace, add</td><td>Using replace op for <code>payer</code> will replace the whole <code>payer</code> object with the value sent in request.</td></tr><tr><td><code>purchase_units</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].custom_id</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].description</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].payee.email</code></td><td>replace</td><td></td></tr><tr><td><code>purchase_units[].shipping.name</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].shipping.address</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].shipping.type</code></td><td>replace, add</td><td></td></tr><tr><td><code>purchase_units[].soft_descriptor</code></td><td>replace, remove</td><td></td></tr><tr><td><code>purchase_units[].amount</code></td><td>replace</td><td></td></tr><tr><td><code>purchase_units[].items</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].invoice_id</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].payment_instruction</code></td><td>replace</td><td></td></tr><tr><td><code>purchase_units[].payment_instruction.disbursement_mode</code></td><td>replace</td><td>By default, <code>disbursement_mode</code> is <code>INSTANT</code>.</td></tr><tr><td><code>purchase_units[].payment_instruction.platform_fees</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].supplementary_data.airline</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>purchase_units[].supplementary_data.card</code></td><td>replace, add, remove</td><td></td></tr><tr><td><code>application_context.client_configuration</code></td><td>replace, add</td><td></td></tr></tbody></table>
+     */
     "orders.patch": {
         parameters: {
-            query?: never;
             header: {
-                /** @description The media type. Required for operations with a request body. The value is `application/<format>`, where `format` is `json`. */
                 "Content-Type": components["parameters"]["content_type"];
             };
             path: {
-                /** @description The ID of the order for which to update payment details. */
                 id: components["parameters"]["id"];
             };
-            cookie?: never;
         };
-        requestBody?: components["requestBodies"]["patch_request"];
+        requestBody: components["requestBodies"]["patch_request"];
         responses: {
             /** @description A successful request returns the HTTP `204 No Content` status code with an empty object in the JSON response body. */
             204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
+                content: never;
             };
             /** @description Request is not well-formed, syntactically incorrect, or violates schema. */
             400: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_400"] &
                         components["schemas"]["orders.patch-400"];
@@ -6719,9 +6594,6 @@ export interface operations {
             };
             /** @description Authentication failed due to missing authorization header, or invalid authentication credentials. */
             401: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_401"] &
                         components["schemas"]["401"];
@@ -6729,9 +6601,6 @@ export interface operations {
             };
             /** @description The specified resource does not exist. */
             404: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_404"] &
                         components["schemas"]["404"];
@@ -6739,9 +6608,6 @@ export interface operations {
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
             422: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_422"] &
                         components["schemas"]["orders.patch-422"];
@@ -6750,21 +6616,20 @@ export interface operations {
             default: components["responses"]["default"];
         };
     };
+    /**
+     * Confirm the Order
+     * @description Payer confirms their intent to pay for the the Order with the given payment source.
+     */
     "orders.confirm": {
         parameters: {
-            query?: never;
             header: {
                 "PayPal-Client-Metadata-Id"?: components["parameters"]["paypal_client_metadata_id"];
-                /** @description The media type. Required for operations with a request body. The value is `application/<format>`, where `format` is `json`. */
                 "Content-Type": components["parameters"]["content_type"];
-                /** @description The preferred server response upon successful completion of the request. Value is:<ul><li><code>return=minimal</code>. The server returns a minimal response to optimize communication between the API caller and the server. A minimal response includes the <code>id</code>, <code>status</code> and HATEOAS links.</li><li><code>return=representation</code>. The server returns a complete resource representation, including the current state of the resource.</li></ul> */
                 Prefer?: components["parameters"]["prefer"];
             };
             path: {
-                /** @description The ID of the order for which to update payment details. */
                 id: components["parameters"]["id"];
             };
-            cookie?: never;
         };
         requestBody?: {
             content: {
@@ -6774,18 +6639,12 @@ export interface operations {
         responses: {
             /** @description A successful request indicates that the payment source was added to the Order. A successful request returns the HTTP `200 OK` status code with a JSON response body that shows order details. */
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["order"];
                 };
             };
             /** @description Request is not well-formed, syntactically incorrect, or violates schema. */
             400: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_400"] &
                         components["schemas"]["orders.confirm-400"];
@@ -6793,9 +6652,6 @@ export interface operations {
             };
             /** @description Authorization failed due to insufficient permissions. */
             403: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_403"] &
                         components["schemas"]["403"];
@@ -6803,9 +6659,6 @@ export interface operations {
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
             422: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_422"] &
                         components["schemas"]["orders.confirm-422"];
@@ -6813,9 +6666,6 @@ export interface operations {
             };
             /** @description An internal server error has occurred. */
             500: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_500"];
                 };
@@ -6823,25 +6673,22 @@ export interface operations {
             default: components["responses"]["default"];
         };
     };
+    /**
+     * Authorize payment for order
+     * @description Authorizes payment for an order. To successfully authorize payment for an order, the buyer must first approve the order or a valid payment_source must be provided in the request. A buyer can approve the order upon being redirected to the rel:approve URL that was returned in the HATEOAS links in the create order response.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href="/api/rest/reference/orders/v2/errors/#authorize-order">Orders v2 errors</a>.</blockquote>
+     */
     "orders.authorize": {
         parameters: {
-            query?: never;
             header: {
-                /** @description The server stores keys for 6 hours. The API callers can request the times to up to 72 hours by speaking to their Account Manager. */
                 "PayPal-Request-Id": components["parameters"]["paypal_request_id"];
-                /** @description The preferred server response upon successful completion of the request. Value is:<ul><li><code>return=minimal</code>. The server returns a minimal response to optimize communication between the API caller and the server. A minimal response includes the <code>id</code>, <code>status</code> and HATEOAS links.</li><li><code>return=representation</code>. The server returns a complete resource representation, including the current state of the resource.</li></ul> */
                 Prefer?: components["parameters"]["prefer"];
                 "PayPal-Client-Metadata-Id"?: components["parameters"]["paypal_client_metadata_id"];
-                /** @description An API-caller-provided JSON Web Token (JWT) assertion that identifies the merchant. For details, see <a href="/api/rest/requests/#paypal-auth-assertion">PayPal-Auth-Assertion</a>. */
                 "PayPal-Auth-Assertion"?: components["parameters"]["paypal_auth_assertion"];
-                /** @description The media type. Required for operations with a request body. The value is `application/<format>`, where `format` is `json`. */
                 "Content-Type": components["parameters"]["content_type"];
             };
             path: {
-                /** @description The ID of the order for which to update payment details. */
                 id: components["parameters"]["id"];
             };
-            cookie?: never;
         };
         requestBody?: {
             content: {
@@ -6851,27 +6698,18 @@ export interface operations {
         responses: {
             /** @description A successful response to an idempotent request returns the HTTP `200 OK` status code with a JSON response body that shows authorized payment details. */
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["order_authorize_response"];
                 };
             };
             /** @description A successful response to a non-idempotent request returns the HTTP `201 Created` status code with a JSON response body that shows authorized payment details. If a duplicate response is retried, returns the HTTP `200 OK` status code. By default, the response is minimal. If you need the complete resource representation, you must pass the <a href="/docs/api/orders/v2/#orders-authorize-header-parameters"><code>Prefer: return=representation</code> request header</a>. */
             201: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["order_authorize_response"];
                 };
             };
             /** @description Request is not well-formed, syntactically incorrect, or violates schema. */
             400: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_400"] &
                         components["schemas"]["orders.authorize-400"];
@@ -6879,9 +6717,6 @@ export interface operations {
             };
             /** @description Authentication failed due to missing authorization header, or invalid authentication credentials. */
             401: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_401"] &
                         components["schemas"]["401"];
@@ -6889,9 +6724,6 @@ export interface operations {
             };
             /** @description The authorized payment failed due to insufficient permissions. */
             403: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_403"] &
                         components["schemas"]["orders.authorize-403"];
@@ -6899,9 +6731,6 @@ export interface operations {
             };
             /** @description The specified resource does not exist. */
             404: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_404"] &
                         components["schemas"]["404"];
@@ -6909,9 +6738,6 @@ export interface operations {
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
             422: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_422"] &
                         components["schemas"]["orders.authorize-422"];
@@ -6919,9 +6745,6 @@ export interface operations {
             };
             /** @description An internal server error has occurred. */
             500: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_500"];
                 };
@@ -6929,25 +6752,22 @@ export interface operations {
             default: components["responses"]["default"];
         };
     };
+    /**
+     * Capture payment for order
+     * @description Captures payment for an order. To successfully capture payment for an order, the buyer must first approve the order or a valid payment_source must be provided in the request. A buyer can approve the order upon being redirected to the rel:approve URL that was returned in the HATEOAS links in the create order response.<blockquote><strong>Note:</strong> For error handling and troubleshooting, see <a href="/api/rest/reference/orders/v2/errors/#capture-order">Orders v2 errors</a>.</blockquote>
+     */
     "orders.capture": {
         parameters: {
-            query?: never;
             header: {
-                /** @description The server stores keys for 6 hours. The API callers can request the times to up to 72 hours by speaking to their Account Manager. */
                 "PayPal-Request-Id": components["parameters"]["paypal_request_id"];
-                /** @description The preferred server response upon successful completion of the request. Value is:<ul><li><code>return=minimal</code>. The server returns a minimal response to optimize communication between the API caller and the server. A minimal response includes the <code>id</code>, <code>status</code> and HATEOAS links.</li><li><code>return=representation</code>. The server returns a complete resource representation, including the current state of the resource.</li></ul> */
                 Prefer?: components["parameters"]["prefer"];
                 "PayPal-Client-Metadata-Id"?: components["parameters"]["paypal_client_metadata_id"];
-                /** @description An API-caller-provided JSON Web Token (JWT) assertion that identifies the merchant. For details, see <a href="/api/rest/requests/#paypal-auth-assertion">PayPal-Auth-Assertion</a>. */
                 "PayPal-Auth-Assertion"?: components["parameters"]["paypal_auth_assertion"];
-                /** @description The media type. Required for operations with a request body. The value is `application/<format>`, where `format` is `json`. */
                 "Content-Type": components["parameters"]["content_type"];
             };
             path: {
-                /** @description The ID of the order for which to update payment details. */
                 id: components["parameters"]["id"];
             };
-            cookie?: never;
         };
         requestBody?: {
             content: {
@@ -6957,27 +6777,18 @@ export interface operations {
         responses: {
             /** @description A successful response to an idempotent request returns the HTTP `200 OK` status code with a JSON response body that shows captured payment details. */
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["order"];
                 };
             };
             /** @description A successful response to a non-idempotent request returns the HTTP `201 Created` status code with a JSON response body that shows captured payment details. If a duplicate response is retried, returns the HTTP `200 OK` status code. By default, the response is minimal. If you need the complete resource representation, pass the <a href="/docs/api/orders/v2/#orders-authorize-header-parameters"><code>Prefer: return=representation</code> request header</a>. */
             201: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["order"];
                 };
             };
             /** @description Request is not well-formed, syntactically incorrect, or violates schema. */
             400: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_400"] &
                         components["schemas"]["orders.capture-400"];
@@ -6985,9 +6796,6 @@ export interface operations {
             };
             /** @description Authentication failed due to missing authorization header, or invalid authentication credentials. */
             401: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_401"] &
                         components["schemas"]["401"];
@@ -6995,9 +6803,6 @@ export interface operations {
             };
             /** @description The authorized payment failed due to insufficient permissions. */
             403: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_403"] &
                         components["schemas"]["orders.capture-403"];
@@ -7005,9 +6810,6 @@ export interface operations {
             };
             /** @description The specified resource does not exist. */
             404: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_404"] &
                         components["schemas"]["404"];
@@ -7015,9 +6817,6 @@ export interface operations {
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
             422: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_422"] &
                         components["schemas"]["orders.capture-422"];
@@ -7025,9 +6824,6 @@ export interface operations {
             };
             /** @description An internal server error has occurred. */
             500: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_500"];
                 };
@@ -7035,20 +6831,19 @@ export interface operations {
             default: components["responses"]["default"];
         };
     };
+    /**
+     * Add tracking information for an Order.
+     * @description Adds tracking information for an Order.
+     */
     "orders.track.create": {
         parameters: {
-            query?: never;
             header: {
-                /** @description An API-caller-provided JSON Web Token (JWT) assertion that identifies the merchant. For details, see <a href="/api/rest/requests/#paypal-auth-assertion">PayPal-Auth-Assertion</a>. */
                 "PayPal-Auth-Assertion"?: components["parameters"]["paypal_auth_assertion"];
-                /** @description The media type. Required for operations with a request body. The value is `application/<format>`, where `format` is `json`. */
                 "Content-Type": components["parameters"]["content_type"];
             };
             path: {
-                /** @description The ID of the order for which to update payment details. */
                 id: components["parameters"]["id"];
             };
-            cookie?: never;
         };
         requestBody: {
             content: {
@@ -7058,27 +6853,18 @@ export interface operations {
         responses: {
             /** @description A successful response to an idempotent request returns the HTTP `200 OK` status code with a JSON response body that shows tracker details. */
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["order"];
                 };
             };
             /** @description A successful response to a non-idempotent request returns the HTTP `201 Created` status code with a JSON response body that shows tracker details. If a duplicate response is retried, returns the HTTP `200 OK` status code. */
             201: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["order"];
                 };
             };
             /** @description Request is not well-formed, syntactically incorrect, or violates schema. */
             400: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_400"] &
                         components["schemas"]["orders.track.create-400"];
@@ -7086,9 +6872,6 @@ export interface operations {
             };
             /** @description Authorization failed due to insufficient permissions. */
             403: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_403"] &
                         components["schemas"]["orders.track.create-403"];
@@ -7096,9 +6879,6 @@ export interface operations {
             };
             /** @description The specified resource does not exist. */
             404: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_404"] &
                         components["schemas"]["404"];
@@ -7106,9 +6886,6 @@ export interface operations {
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
             422: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_422"] &
                         components["schemas"]["orders.track.create-422"];
@@ -7116,9 +6893,6 @@ export interface operations {
             };
             /** @description An internal server error has occurred. */
             500: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_500"];
                 };
@@ -7126,35 +6900,28 @@ export interface operations {
             default: components["responses"]["default"];
         };
     };
+    /**
+     * Update or cancel tracking information for a PayPal order
+     * @description Updates or cancels the tracking information for a PayPal order, by ID. Updatable attributes or objects:<br/><br/><table><thead><th>Attribute</th><th>Op</th><th>Notes</th></thead><tbody></tr><tr><td><code>items</code></td><td>replace</td><td>Using replace op for <code>items</code> will replace the entire <code>items</code> object with the value sent in request.</td></tr><tr><td><code>notify_payer</code></td><td>replace, add</td><td></td></tr><tr><td><code>status</code></td><td>replace</td><td>Only patching status to CANCELLED is currently supported.</td></tr></tbody></table>
+     */
     "orders.trackers.patch": {
         parameters: {
-            query?: never;
             header: {
-                /** @description The media type. Required for operations with a request body. The value is `application/<format>`, where `format` is `json`. */
                 "Content-Type": components["parameters"]["content_type"];
             };
             path: {
-                /** @description The ID of the order for which to update payment details. */
                 id: components["parameters"]["id"];
-                /** @description The order tracking ID. */
                 tracker_id: components["parameters"]["tracker_id"];
             };
-            cookie?: never;
         };
-        requestBody?: components["requestBodies"]["patch_request"];
+        requestBody: components["requestBodies"]["patch_request"];
         responses: {
             /** @description A successful request returns the HTTP `204 No Content` status code with an empty object in the JSON response body. */
             204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
+                content: never;
             };
             /** @description Request is not well-formed, syntactically incorrect, or violates schema. */
             400: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_400"] &
                         components["schemas"]["orders.trackers.patch-400"];
@@ -7162,9 +6929,6 @@ export interface operations {
             };
             /** @description Authorization failed due to insufficient permissions. */
             403: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_403"] &
                         components["schemas"]["orders.trackers.patch-403"];
@@ -7172,9 +6936,6 @@ export interface operations {
             };
             /** @description The specified resource does not exist. */
             404: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_404"] &
                         components["schemas"]["orders.trackers.patch-404"];
@@ -7182,9 +6943,6 @@ export interface operations {
             };
             /** @description The requested action could not be performed, semantically incorrect, or failed business validation. */
             422: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_422"] &
                         components["schemas"]["orders.trackers.patch-422"];
@@ -7192,9 +6950,6 @@ export interface operations {
             };
             /** @description An internal server error has occurred. */
             500: {
-                headers: {
-                    [name: string]: unknown;
-                };
                 content: {
                     "application/json": components["schemas"]["error_500"];
                 };
