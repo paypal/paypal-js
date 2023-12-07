@@ -22,7 +22,8 @@
         "test:e2e:start": "node e2e-tests/http-server.js",
         "typecheck": "tsc --noEmit",
         "validate": "npm run check-node-version && npm run format:check && npm run typecheck && npm run build && npm run lint && npm test -- --coverage --watch=false && npm run test:bundle -- --watch=false",
-        "openapi": "npx openapi-typescript node_modules/@paypal/paypal-rest-api-specifications/openapi/checkout_orders_v2.json -o types/apis/openapi/checkout_orders_v2.d.ts"
+        "openapi-orders": "npx openapi-typescript node_modules/@paypal/paypal-rest-api-specifications/openapi/checkout_orders_v2.json -o types/apis/openapi/checkout_orders_v2.d.ts",
+        "openapi-subscriptions": "npx openapi-typescript node_modules/@paypal/paypal-rest-api-specifications/openapi/billing_subscriptions_v1.json -o types/apis/openapi/billing_subscriptions_v1.d.ts"
     },
     "files": [
         "dist",

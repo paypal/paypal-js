@@ -2,9 +2,9 @@ import type {
     components,
     operations,
     paths,
-} from "./openapi/checkout_orders_v2";
+} from "./openapi/billing_subscriptions_v1";
 
-export interface CheckoutOrdersV2 {
+export interface BillingSubscriptionsV1 {
     components: components;
     operations: operations;
     paths: paths;

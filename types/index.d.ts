@@ -62,13 +62,12 @@ export * from "./components/marks";
 export * from "./components/messages";
 
 // Export apis
-export * from "./apis/commons";
 export * from "./apis/orders";
-export * from "./apis/shipping";
+export * from "./apis/subscriptions";
 
-// Export apis/subscriptions
-export * from "./apis/subscriptions/commons";
-export * from "./apis/subscriptions/subscriptions";
+// TODO: use openapi
+export * from "./apis/commons";
+export * from "./apis/shipping";
 
 // Export script-options
 export * from "./script-options";

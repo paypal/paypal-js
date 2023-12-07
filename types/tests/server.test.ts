@@ -1,20 +1,22 @@
-import type {
-    CreateOrderRequestBody,
-    OrderResponseBodyMinimal,
-    UpdateOrderRequestBody,
-} from "../index";
+import type { CheckoutOrdersV2 } from "../index";
+
+type CreateOrderRequestBody =
+    CheckoutOrdersV2["components"]["schemas"]["order_request"];
+type OrderResponseBody = CheckoutOrdersV2["components"]["schemas"]["order"];
+type PatchOrderRequestBody =
+    CheckoutOrdersV2["components"]["schemas"]["patch_request"];
 
 function createOrder(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createOrderRequestBody: CreateOrderRequestBody,
-): Promise<OrderResponseBodyMinimal> {
+): Promise<OrderResponseBody> {
     return Promise.resolve({ id: "123456", status: "CREATED", links: [] });
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function updateOrder(options: {
     orderID: string;
-    requestBody: UpdateOrderRequestBody;
+    requestBody: PatchOrderRequestBody;
 }): Promise<void> {
     return Promise.resolve();
 }
@@ -25,6 +27,7 @@ createOrder({
     purchase_units: [
         {
             amount: {
+                currency_code: "USD",
                 value: "88.44",
             },
         },
@@ -73,6 +76,7 @@ createOrder({
 
 // shipping.options array
 createOrder({
+    intent: "CAPTURE",
     purchase_units: [
         {
             amount: {
@@ -110,6 +114,7 @@ createOrder({
 
 // shipping info
 createOrder({
+    intent: "CAPTURE",
     purchase_units: [
         {
             amount: {
@@ -120,8 +125,7 @@ createOrder({
                 name: {
                     full_name: "Jon Doe",
                 },
-                email_address: "jon@test.com",
-                type: "SHIPPING",
+                type: "PICKUP_IN_PERSON",
             },
         },
     ],
@@ -129,9 +133,11 @@ createOrder({
 
 // donation
 createOrder({
+    intent: "CAPTURE",
     purchase_units: [
         {
             amount: {
+                currency_code: "USD",
                 value: "2.00",
                 breakdown: {
                     item_total: {
@@ -161,6 +167,7 @@ createOrder({
     purchase_units: [
         {
             amount: {
+                currency_code: "USD",
                 value: "88.44",
             },
         },
@@ -171,6 +178,9 @@ createOrder({
                 user_action: "CONTINUE",
                 return_url: "https://www.example.com/capture-checkout",
                 cancel_url: "https://www.example.com/cancel-checkout",
+                shipping_preference: "GET_FROM_FILE",
+                landing_page: "NO_PREFERENCE",
+                payment_method_preference: "IMMEDIATE_PAYMENT_REQUIRED",
             },
         },
     },

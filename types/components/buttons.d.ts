@@ -1,15 +1,20 @@
-import type {
-    CreateOrderRequestBody,
-    OrderResponseBody,
-    UpdateOrderRequestBody,
-} from "../apis/orders";
-import type {
-    CreateSubscriptionRequestBody,
-    ReviseSubscriptionRequestBody,
-} from "../apis/subscriptions/subscriptions";
+import type { CheckoutOrdersV2 } from "../apis/orders";
+import type { BillingSubscriptionsV1 } from "../apis/subscriptions";
 import type { ShippingAddress, SelectedShippingOption } from "../apis/shipping";
-import type { SubscriptionDetail } from "../apis/subscriptions/subscriptions";
 import type { FUNDING_SOURCE } from "./funding-eligibility";
+
+type CreateOrderRequestBody =
+    CheckoutOrdersV2["components"]["schemas"]["order_request"];
+type OrderResponseBody = CheckoutOrdersV2["components"]["schemas"]["order"];
+type PatchOrderRequestBody =
+    CheckoutOrdersV2["components"]["schemas"]["patch_request"];
+
+type CreateSubscriptionRequestBody =
+    BillingSubscriptionsV1["components"]["schemas"]["subscription_request_post"];
+type ReviseSubscriptionRequestBody =
+    BillingSubscriptionsV1["components"]["schemas"]["subscription_revise_request"];
+type SubscriptionDetail =
+    BillingSubscriptionsV1["components"]["schemas"]["plan"];
 
 export type CreateOrderData = {
     paymentSource: FUNDING_SOURCE;
@@ -18,7 +23,9 @@ export type CreateOrderData = {
 export type CreateOrderActions = {
     order: {
         /** Used to create an order for client-side integrations. Accepts the same options as the request body of the [/v2/checkout/orders api](https://developer.paypal.com/docs/api/orders/v2/#orders-create-request-body). */
-        create: (options: CreateOrderRequestBody) => Promise<string>;
+        create: (
+            options: CheckoutOrdersV2["components"]["schemas"][],
+        ) => Promise<string>;
     };
 };
 
@@ -104,7 +111,7 @@ export type OnShippingChangeActions = {
     resolve: () => Promise<void>;
     reject: () => Promise<void>;
     order: {
-        patch: (options: UpdateOrderRequestBody) => Promise<void>;
+        patch: (options: PatchOrderRequestBody) => Promise<void>;
     };
 };
 
@@ -157,7 +164,7 @@ type OnShippingOptionsChangeActions = {
         shippingOption,
         shippingDiscount,
         taxTotal,
-    }: OnShippingOptionsChangeBuildOrderPatchPayloadArgs) => UpdateOrderRequestBody;
+    }: OnShippingOptionsChangeBuildOrderPatchPayloadArgs) => PatchOrderRequestBody;
     reject: () => Promise<void>;
 };
 
@@ -188,7 +195,7 @@ type OnShippingAddressChangeActions = {
         shippingOptions,
         shippingDiscount,
         taxTotal,
-    }: OnShippingAddressChangeBuildOrderPatchPayloadArgs) => UpdateOrderRequestBody;
+    }: OnShippingAddressChangeBuildOrderPatchPayloadArgs) => PatchOrderRequestBody;
     reject: () => Promise<void>;
 };
 
