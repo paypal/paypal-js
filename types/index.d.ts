@@ -65,9 +65,5 @@ export * from "./components/messages";
 export * from "./apis/orders";
 export * from "./apis/subscriptions";
 
-// TODO: use openapi
-export * from "./apis/commons";
-export * from "./apis/shipping";
-
 // Export script-options
 export * from "./script-options";

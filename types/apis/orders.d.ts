@@ -16,3 +16,6 @@ export type OrderResponseBody =
     CheckoutOrdersV2["components"]["schemas"]["order"];
 export type PatchOrderRequestBody =
     CheckoutOrdersV2["components"]["schemas"]["patch_request"];
+
+export type ShippingAddress = components["schemas"]["address_portable"];
+export type ShippingOption = components["schemas"]["shipping_option"];

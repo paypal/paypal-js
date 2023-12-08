@@ -2,13 +2,13 @@ import type {
     CreateOrderRequestBody,
     OrderResponseBody,
     PatchOrderRequestBody,
+    ShippingOption,
 } from "../apis/orders";
 import type {
     CreateSubscriptionRequestBody,
     ReviseSubscriptionRequestBody,
     SubscriptionResponseBody,
 } from "../apis/subscriptions";
-import type { ShippingAddress, SelectedShippingOption } from "../apis/shipping";
 import type { FUNDING_SOURCE } from "./funding-eligibility";
 
 export type CreateOrderData = {
@@ -91,12 +91,19 @@ export type OnCancelledActions = {
     redirect: () => void;
 };
 
+type PartialShippingAddress = {
+    city: string;
+    state: string;
+    country_code: string;
+    postal_code: string;
+};
+
 export type OnShippingChangeData = {
     orderID?: string;
     paymentID?: string;
     paymentToken?: string;
-    shipping_address?: ShippingAddress;
-    selected_shipping_option?: SelectedShippingOption;
+    shipping_address?: PartialShippingAddress;
+    selected_shipping_option?: ShippingOption;
     buyerAccessToken?: string;
     forceRestAPI: boolean;
 };
