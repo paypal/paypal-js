@@ -1,10 +1,8 @@
-import type { CheckoutOrdersV2 } from "../index";
-
-type CreateOrderRequestBody =
-    CheckoutOrdersV2["components"]["schemas"]["order_request"];
-type OrderResponseBody = CheckoutOrdersV2["components"]["schemas"]["order"];
-type PatchOrderRequestBody =
-    CheckoutOrdersV2["components"]["schemas"]["patch_request"];
+import type {
+    CreateOrderRequestBody,
+    OrderResponseBody,
+    PatchOrderRequestBody,
+} from "../index";
 
 function createOrder(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
