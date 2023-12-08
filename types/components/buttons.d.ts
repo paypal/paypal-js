@@ -79,7 +79,6 @@ export type OnApproveActions = {
         patch: () => Promise<void>;
     };
     subscription?: {
-        // TODO: investigate what get() returns
         get: () => Promise<SubscriptionResponseBody>;
         activate: () => Promise<void>;
     };

@@ -22,8 +22,9 @@
         "test:e2e:start": "node e2e-tests/http-server.js",
         "typecheck": "tsc --noEmit",
         "validate": "npm run check-node-version && npm run format:check && npm run typecheck && npm run build && npm run lint && npm test -- --coverage --watch=false && npm run test:bundle -- --watch=false",
-        "openapi-orders": "npx openapi-typescript node_modules/@paypal/paypal-rest-api-specifications/openapi/checkout_orders_v2.json -o types/apis/openapi/checkout_orders_v2.d.ts",
-        "openapi-subscriptions": "npx openapi-typescript node_modules/@paypal/paypal-rest-api-specifications/openapi/billing_subscriptions_v1.json -o types/apis/openapi/billing_subscriptions_v1.d.ts"
+        "openapi": "npm run openapi-orders && npm run openapi-subscriptions",
+        "openapi-orders": "openapi-typescript node_modules/@paypal/paypal-rest-api-specifications/openapi/checkout_orders_v2.json -o types/apis/openapi/checkout_orders_v2.d.ts",
+        "openapi-subscriptions": "openapi-typescript node_modules/@paypal/paypal-rest-api-specifications/openapi/billing_subscriptions_v1.json -o types/apis/openapi/billing_subscriptions_v1.d.ts"
     },
     "files": [
         "dist",
@@ -65,6 +66,7 @@
         "husky": "8.0.3",
         "jsdom": "^23.0.0",
         "lint-staged": "15.1.0",
+        "openapi-typescript": "^6.7.2",
         "prettier": "3.1.0",
         "rollup": "4.6.0",
         "semver": "7.5.4",
