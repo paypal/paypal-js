@@ -18,5 +18,6 @@ export type PatchOrderRequestBody =
     CheckoutOrdersV2["components"]["schemas"]["patch_request"];
 
 export type PurchaseUnit = components["schemas"]["purchase_unit_request"];
+export type PurchaseUnitItem = components["schemas"]["item"];
 export type ShippingAddress = components["schemas"]["address_portable"];
 export type ShippingOption = components["schemas"]["shipping_option"];
