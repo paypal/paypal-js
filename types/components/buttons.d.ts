@@ -90,7 +90,7 @@ export type OnCancelledActions = {
     redirect: () => void;
 };
 
-type PartialShippingAddress = {
+export type PartialShippingAddress = {
     city: string;
     state: string;
     country_code: string;
