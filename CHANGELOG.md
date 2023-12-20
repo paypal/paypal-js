@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.0.0](https://github.com/paypal/paypal-js/compare/v7.1.1...v8.0.0) (2023-12-20)
+
+### ⚠ BREAKING CHANGES
+
+-   **types:** The TypeScript types for the PayPal APIs have changed.
+    Now they are auto generated based on the Open API 3.0 specs.
+
+### Features
+
+-   **types:** auto generate api types with openapi specs ([#443](https://github.com/paypal/paypal-js/issues/443)) ([efb26f8](https://github.com/paypal/paypal-js/commit/efb26f867da604a4ca043c070e51caa460cb5a26))
+
+### Bug Fixes
+
+-   use bundler module resoluion ts strategy ([3bceb9e](https://github.com/paypal/paypal-js/commit/3bceb9e692a1fbc7c53bbcab86b6e042abcbded1))
+
 ### [7.1.1](https://github.com/paypal/paypal-js/compare/v7.1.0...v7.1.1) (2023-11-27)
 
 ### Bug Fixes
