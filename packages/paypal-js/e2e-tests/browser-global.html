@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Demo with window.paypalLoadScript | PayPal JS</title>
+  </head>
+  <body>
+    <h1>Demo with window.paypalLoadScript</h1>
+
+    <script src="../../dist/iife/paypal-js.min.js"></script>
+    <script>
+      var options = {
+        clientId: "test",
+        dataPageType: "checkout",
+      };
+
+      window.paypalLoadScript(options).then(function (paypal) {
+        paypal.Buttons().render("body");
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "env": {
+    "browser": true,
+    "es2020": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 11,
+    "sourceType": "module"
+  },
+  "globals": {
+    "page": "readonly"
+  },
+  "ignorePatterns": ["dist/*.js"],
+  "rules": {
+    "indent": ["error", 4],
+    "semi": ["error", "always"]
+  },
+  "settings": {
+    "polyfills": ["Promise", "fetch"]
+  }
+}
