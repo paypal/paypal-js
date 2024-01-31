@@ -1,0 +1,39 @@
+name: build
+on:
+  push:
+    branches:
+      - main
+  pull_request: {}
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{github.event.pull_request.head.sha}}
+          fetch-depth: 0
+
+      - name: 🤝 Set Node version from .nvmrc
+        run: echo NVMRC=`cat .nvmrc` >> $GITHUB_ENV
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NVMRC }}
+
+      - name: 📥 Download deps
+        uses: bahmutov/npm-install@v1
+
+      - name: 🧾 Check for changeset
+        # blocks PRs without changesets
+        run: npx changeset status --since=origin/main
+
+      - name: 🚧 Run build script
+        run: npm run build
+
+      - name: 📖 Run lint script
+        run: npm run lint
+
+      - name: 🧪 Run test script
+        run: npm run test
