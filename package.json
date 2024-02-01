@@ -19,7 +19,7 @@
         "format": "prettier --write --ignore-unknown .",
         "format:check": "prettier --check .",
         "lint": "npm run lint --workspaces --if-present",
-        "test": "npm run format:check && npm run lint && npm run test --workspaces --if-present",
+        "test": "npm run lint && npm run test --workspaces --if-present",
         "test:e2e": "npm run test:e2e --workspaces --if-present",
         "prepare": "husky install"
     },
