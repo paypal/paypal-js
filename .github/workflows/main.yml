@@ -32,6 +32,9 @@ jobs:
             - name: 🚧 Run build script
               run: npm run build
 
+            - name: 📐 Run format script
+              run: npm run format
+
             - name: 📖 Run lint script
               run: npm run lint
 
