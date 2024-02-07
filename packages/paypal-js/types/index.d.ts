@@ -18,16 +18,23 @@ import type {
     rememberFunding,
 } from "./components/funding-eligibility";
 import type { PayPalHostedFieldsComponent } from "./components/hosted-fields";
+import type {
+    PayPalCardFieldsComponentOptions,
+    PayPalCardFieldsComponent,
+} from "./components/card-fields";
 
 export interface PayPalNamespace {
     Buttons?: (
-        options?: PayPalButtonsComponentOptions
+        options?: PayPalButtonsComponentOptions,
     ) => PayPalButtonsComponent;
     Marks?: (options?: PayPalMarksComponentOptions) => PayPalMarksComponent;
     Messages?: (
-        options?: PayPalMessagesComponentOptions
+        options?: PayPalMessagesComponentOptions,
     ) => PayPalMessagesComponent;
     HostedFields?: PayPalHostedFieldsComponent;
+    CardFields?: (
+        options?: PayPalCardFieldsComponentOptions,
+    ) => PayPalCardFieldsComponent;
     getFundingSources?: getFundingSources;
     isFundingEligible?: isFundingEligible;
     rememberFunding?: rememberFunding;
@@ -37,7 +44,7 @@ export interface PayPalNamespace {
 
 export function loadScript(
     options: PayPalScriptOptions,
-    PromisePonyfill?: PromiseConstructor
+    PromisePonyfill?: PromiseConstructor,
 ): Promise<PayPalNamespace | null>;
 
 export function loadCustomScript(options: {
