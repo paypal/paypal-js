@@ -18,6 +18,10 @@ import type {
     rememberFunding,
 } from "./components/funding-eligibility";
 import type { PayPalHostedFieldsComponent } from "./components/hosted-fields";
+import type {
+    PayPalCardFieldsComponentOptions,
+    PayPalCardFieldsComponent,
+} from "./components/card-fields";
 
 export interface PayPalNamespace {
     Buttons?: (
@@ -28,6 +32,9 @@ export interface PayPalNamespace {
         options?: PayPalMessagesComponentOptions,
     ) => PayPalMessagesComponent;
     HostedFields?: PayPalHostedFieldsComponent;
+    CardFields?: (
+        options?: PayPalCardFieldsComponentOptions,
+    ) => PayPalCardFieldsComponent;
     getFundingSources?: getFundingSources;
     isFundingEligible?: isFundingEligible;
     rememberFunding?: rememberFunding;
