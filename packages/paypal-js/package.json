@@ -5,6 +5,9 @@
     "main": "index.js",
     "module": "dist/esm/paypal-js.js",
     "types": "types/index.d.ts",
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "build": "rm -rf dist && rollup --config --bundleConfigAsCjs",
         "lint": "eslint .",
