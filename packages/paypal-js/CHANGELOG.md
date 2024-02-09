@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.0.2
+
+### Patch Changes
+
+-   a59d626: Ensure publish config is set to public
+
 ## 8.0.1
 
 ### Patch Changes
