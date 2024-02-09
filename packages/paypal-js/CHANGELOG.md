@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.0.1
+
+### Patch Changes
+
+-   082bd2f: move to monorepo
+
 NOTE: Previous to v8.0.0, `standard-version` was used for changelog generation. Starting from 8.0.1, changesets is being used to generate changelog
 
 ## [8.0.0](https://github.com/paypal/paypal-js/compare/v7.1.1...v8.0.0) (2023-12-20)
