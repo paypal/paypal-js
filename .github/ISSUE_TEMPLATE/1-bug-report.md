@@ -1,12 +1,16 @@
 ---
 name: 🐞 Bug report
 about:
-    Report a bug with paypal-js. Before you create a new issue, please search for similar issues.
+    Report a bug with the PayPal JS SDK. Before you create a new issue, please search for similar issues.
     It's possible somebody has encountered this bug already.
 title: "[Bug] Bug report"
 labels: "bug"
 assignees: ""
 ---
+
+### Library used
+
+<!-- paypal-js, react-paypal-js, direct script integration -->
 
 ### 🐞 Describe the Bug
 
