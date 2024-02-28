@@ -112,8 +112,12 @@ export const RadioButtons: FC<{
                 createOrder={() =>
                     createOrder([{ sku: "1blwyeo8", quantity: 1 }]).then(
                         (orderData) => {
-                            action(ORDER_ID)(orderData.id);
-                            return orderData.id;
+                            if (orderData.id) {
+                                action(ORDER_ID)(orderData.id);
+                                return orderData.id;
+                            } else {
+                                throw new Error("failed to create Order Id");
+                            }
                         }
                     )
                 }

@@ -62,9 +62,11 @@ const buttonOrderProps = () => ({
     createOrder(data: Record<string, unknown>, actions: CreateOrderActions) {
         return actions.order
             .create({
+                intent: "CAPTURE",
                 purchase_units: [
                     {
                         amount: {
+                            currency_code: "USD",
                             value: "2",
                         },
                     },
