@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [8.1.4](https://github.com/paypal/react-paypal-js/compare/v8.1.3...v8.1.4) (2024-02-28)
+
+### Bug Fixes
+
+-   failing typecheck ([#408](https://github.com/paypal/react-paypal-js/issues/408)) ([df8f63b](https://github.com/paypal/react-paypal-js/commit/df8f63b05585c51a7eef9d9296bdcb76e13fa4a8))
+
 ### [8.1.3](https://github.com/paypal/react-paypal-js/compare/v8.1.2...v8.1.3) (2023-08-16)
 
 ### [8.1.2](https://github.com/paypal/react-paypal-js/compare/v8.1.1...v8.1.2) (2023-08-16)
