@@ -5,9 +5,9 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: ⬇️ Checkout repo
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
               with:
-                  token: ${{ secrets.ACCESS_TOKEN }}
+                  ref: ${{github.event.pull_request.head.sha}}
                   fetch-depth: 0
 
             - name: 🤝 Set Node version from .nvmrc

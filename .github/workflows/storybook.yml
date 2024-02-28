@@ -12,8 +12,9 @@ jobs:
 
         steps:
             - name: ⬇️ Checkout repo
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
               with:
+                  ref: ${{github.event.pull_request.head.sha}}
                   fetch-depth: 0
 
             - name: 🤝 Set Node version from .nvmrc
