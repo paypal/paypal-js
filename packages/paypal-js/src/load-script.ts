@@ -19,6 +19,14 @@ export function loadScript(
     if (typeof document === "undefined") return PromisePonyfill.resolve(null);
 
     const { url, attributes } = processOptions(options);
+
+    if (
+        attributes["data-js-sdk-library"] &&
+        attributes["data-js-sdk-library"] !== "react-paypal-js"
+    ) {
+        attributes["data-js-sdk-library"] = "paypal-js";
+    }
+
     const namespace = attributes["data-namespace"] || "paypal";
     const existingWindowNamespace = getPayPalWindowNamespace(namespace);
 
