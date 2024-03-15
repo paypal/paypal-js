@@ -24,7 +24,6 @@ interface PayPalScriptDataAttributes {
     dataClientToken?: string;
     dataCspNonce?: string;
     dataClientMetadataId?: string;
-    dataJsSdkLibrary?: string;
     // loadScript() supports an array and will convert it
     // to the correct dataMerchantId string values
     dataMerchantId?: string[] | string;
