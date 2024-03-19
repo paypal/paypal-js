@@ -46,7 +46,7 @@ describe("loadScript()", () => {
 
         // simulate the script already being loaded
         document.head.innerHTML =
-            '<script src="https://www.paypal.com/sdk/js?client-id=test"></script>';
+            '<script src="https://www.paypal.com/sdk/js?client-id=test" data-js-sdk-library="paypal-js"></script>';
         vi.stubGlobal("paypal", { version: "5" });
 
         const response = await loadScript({ clientId: "test" });
