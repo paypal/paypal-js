@@ -27,10 +27,6 @@ export function loadScript(
         return PromisePonyfill.resolve(existingWindowNamespace);
     }
 
-    if (!attributes["data-js-sdk-library"]) {
-        attributes["data-js-sdk-library"] = "paypal-js";
-    }
-
     return loadCustomScript(
         {
             url,
@@ -67,6 +63,10 @@ export function loadCustomScript(
     validateArguments(options, PromisePonyfill);
 
     const { url, attributes } = options;
+
+    if (attributes && !attributes["data-js-sdk-library"]) {
+        attributes["data-js-sdk-library"] = "paypal-js";
+    }
 
     if (typeof url !== "string" || url.length === 0) {
         throw new Error("Invalid url.");
