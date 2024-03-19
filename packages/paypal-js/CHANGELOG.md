@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.0.3
+
+### Patch Changes
+
+-   99822f5: Set default data-js-sdk-library value
+
 ## 8.0.2
 
 ### Patch Changes
