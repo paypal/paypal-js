@@ -123,6 +123,20 @@ describe("loadCustomScript()", () => {
         );
     });
 
+    test("should set data-js-sdk-library to paypal-js when undefined", async () => {
+        const options = {
+            url: "https://www.example.com/index.js",
+            attributes: {},
+        };
+
+        await loadCustomScript(options);
+        expect(mockedInsertScriptElement).toHaveBeenCalledWith(
+            expect.objectContaining({
+                attributes: { "data-js-sdk-library": "paypal-js" },
+            })
+        );
+    });
+
     test("should throw an error from invalid arguments", () => {
         // @ts-expect-error ignore invalid arguments error
         expect(() => loadCustomScript()).toThrow("Expected an options object.");
