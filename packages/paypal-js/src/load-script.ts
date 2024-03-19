@@ -19,20 +19,16 @@ export function loadScript(
     if (typeof document === "undefined") return PromisePonyfill.resolve(null);
 
     const { url, attributes } = processOptions(options);
-
-    if (
-        attributes["data-js-sdk-library"] &&
-        attributes["data-js-sdk-library"] !== "react-paypal-js"
-    ) {
-        attributes["data-js-sdk-library"] = "paypal-js";
-    }
-
     const namespace = attributes["data-namespace"] || "paypal";
     const existingWindowNamespace = getPayPalWindowNamespace(namespace);
 
     // resolve with the existing global paypal namespace when a script with the same params already exists
     if (findScript(url, attributes) && existingWindowNamespace) {
         return PromisePonyfill.resolve(existingWindowNamespace);
+    }
+
+    if (!attributes["data-js-sdk-library"]) {
+        attributes["data-js-sdk-library"] = "paypal-js";
     }
 
     return loadCustomScript(
