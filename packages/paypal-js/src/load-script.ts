@@ -22,6 +22,10 @@ export function loadScript(
     const namespace = attributes["data-namespace"] || "paypal";
     const existingWindowNamespace = getPayPalWindowNamespace(namespace);
 
+    if (!attributes["data-js-sdk-library"]) {
+        attributes["data-js-sdk-library"] = "paypal-js";
+    }
+
     // resolve with the existing global paypal namespace when a script with the same params already exists
     if (findScript(url, attributes) && existingWindowNamespace) {
         return PromisePonyfill.resolve(existingWindowNamespace);
@@ -63,10 +67,6 @@ export function loadCustomScript(
     validateArguments(options, PromisePonyfill);
 
     const { url, attributes } = options;
-
-    if (attributes && !attributes["data-js-sdk-library"]) {
-        attributes["data-js-sdk-library"] = "paypal-js";
-    }
 
     if (typeof url !== "string" || url.length === 0) {
         throw new Error("Invalid url.");

@@ -46,7 +46,7 @@ describe("loadScript()", () => {
 
         // simulate the script already being loaded
         document.head.innerHTML =
-            '<script src="https://www.paypal.com/sdk/js?client-id=test"></script>';
+            '<script src="https://www.paypal.com/sdk/js?client-id=test" data-js-sdk-library="paypal-js"></script>';
         vi.stubGlobal("paypal", { version: "5" });
 
         const response = await loadScript({ clientId: "test" });
@@ -120,20 +120,6 @@ describe("loadCustomScript()", () => {
         await loadCustomScript(options);
         expect(mockedInsertScriptElement).toHaveBeenCalledWith(
             expect.objectContaining(options)
-        );
-    });
-
-    test("should set data-js-sdk-library to paypal-js when undefined", async () => {
-        const options = {
-            url: "https://www.example.com/index.js",
-            attributes: {},
-        };
-
-        await loadCustomScript(options);
-        expect(mockedInsertScriptElement).toHaveBeenCalledWith(
-            expect.objectContaining({
-                attributes: { "data-js-sdk-library": "paypal-js" },
-            })
         );
     });
 
