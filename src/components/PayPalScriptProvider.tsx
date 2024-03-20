@@ -26,7 +26,7 @@ export const PayPalScriptProvider: FC<ScriptProviderProps> = ({
     const [state, dispatch] = useReducer(scriptReducer, {
         options: {
             [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
-                SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE_VALUE,
+                SDK_SETTINGS.DATA_LIBRARY_VALUE,
             ...options,
             [SCRIPT_ID]: `${getScriptID(options)}`,
         },
@@ -52,10 +52,7 @@ export const PayPalScriptProvider: FC<ScriptProviderProps> = ({
 
         let isSubscribed = true;
 
-        loadScript({
-            ...state.options,
-            dataJsSdkLibrary: "react-paypal-js",
-        })
+        loadScript(state.options)
             .then(() => {
                 if (isSubscribed) {
                     dispatch({

@@ -72,7 +72,7 @@ export function scriptReducer(
                 loadingStatus: SCRIPT_LOADING_STATE.PENDING,
                 options: {
                     [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
-                        SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE_VALUE,
+                        SDK_SETTINGS.DATA_LIBRARY_VALUE,
                     ...action.value,
                     [SCRIPT_ID]: `${getScriptID(action.value)}`,
                 },
