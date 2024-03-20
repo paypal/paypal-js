@@ -52,7 +52,10 @@ export const PayPalScriptProvider: FC<ScriptProviderProps> = ({
 
         let isSubscribed = true;
 
-        loadScript(state.options)
+        loadScript({
+            ...state.options,
+            dataJsSdkLibrary: "react-paypal-js",
+        })
             .then(() => {
                 if (isSubscribed) {
                     dispatch({
