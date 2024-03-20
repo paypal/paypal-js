@@ -7,6 +7,7 @@ export const SCRIPT_ID = "data-react-paypal-script-id";
 
 export const SDK_SETTINGS = {
     DATA_CLIENT_TOKEN: "dataClientToken",
+    DATA_JS_SDK_LIBRARY: "dataJsSdkLibrary",
     DATA_LIBRARY_VALUE: "react-paypal-js",
     DATA_NAMESPACE: "dataNamespace",
     DATA_SDK_INTEGRATION_SOURCE: "dataSdkIntegrationSource",
