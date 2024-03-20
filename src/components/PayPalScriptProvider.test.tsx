@@ -49,6 +49,7 @@ describe("<PayPalScriptProvider />", () => {
             [SCRIPT_ID]: expect.stringContaining("react-paypal-js"),
             [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
                 SDK_SETTINGS.DATA_LIBRARY_VALUE,
+            [SDK_SETTINGS.DATA_JS_SDK_LIBRARY]: SDK_SETTINGS.DATA_LIBRARY_VALUE,
         });
 
         // verify initial loading state
@@ -75,6 +76,7 @@ describe("<PayPalScriptProvider />", () => {
             [SCRIPT_ID]: expect.stringContaining("react-paypal-js"),
             [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
                 SDK_SETTINGS.DATA_LIBRARY_VALUE,
+            [SDK_SETTINGS.DATA_JS_SDK_LIBRARY]: SDK_SETTINGS.DATA_LIBRARY_VALUE,
         });
 
         // verify initial loading state
@@ -141,6 +143,7 @@ describe("<PayPalScriptProvider />", () => {
             [SCRIPT_ID]: expect.stringContaining("react-paypal-js"),
             [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
                 SDK_SETTINGS.DATA_LIBRARY_VALUE,
+            [SDK_SETTINGS.DATA_JS_SDK_LIBRARY]: SDK_SETTINGS.DATA_LIBRARY_VALUE,
         });
 
         expect(state.isPending).toBe(true);

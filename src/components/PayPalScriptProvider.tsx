@@ -25,6 +25,7 @@ export const PayPalScriptProvider: FC<ScriptProviderProps> = ({
 }: ScriptProviderProps) => {
     const [state, dispatch] = useReducer(scriptReducer, {
         options: {
+            [SDK_SETTINGS.DATA_JS_SDK_LIBRARY]: SDK_SETTINGS.DATA_LIBRARY_VALUE,
             [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
                 SDK_SETTINGS.DATA_LIBRARY_VALUE,
             ...options,
