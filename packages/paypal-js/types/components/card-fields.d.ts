@@ -1,3 +1,5 @@
+import { OnApproveData } from "./buttons";
+
 export interface PayPalCardFieldsStyleOptions {
     appearance?: string;
     color?: string;
@@ -124,7 +126,7 @@ export interface PayPalCardFieldsIndividualField {
 
 export interface PayPalCardFieldsComponentOptions {
     createOrder: () => Promise<string>;
-    onApprove: (err: Record<string, unknown>) => void;
+    onApprove: (data: OnApproveData) => void;
     onError: (err: Record<string, unknown>) => void;
     inputEvents?: PayPalCardFieldsInputEvents;
     style?: Record<string, PayPalCardFieldsStyleOptions>;
