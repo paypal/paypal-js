@@ -36,6 +36,10 @@ export interface PayPalCardFieldsStyleOptions {
     "-webkit-transition"?: string;
 }
 
+export type CardFieldsOnApproveData = {
+    orderID: string;
+};
+
 export interface PayPalCardFieldsInputEvents {
     onChange?: (data: PayPalCardFieldsStateObject) => void;
     onFocus?: (data: PayPalCardFieldsStateObject) => void;
@@ -115,7 +119,7 @@ export interface PayPalCardFieldsIndividualField {
     clear: () => void;
     focus: () => void;
     removeAttribute: (
-        name: "aria-invalid" | "aria-required" | "disabled" | "placeholder",
+        name: "aria-invalid" | "aria-required" | "disabled" | "placeholder"
     ) => Promise<void>;
     removeClass: (className: string) => Promise<void>;
     setAttribute: (name: string, value: string) => Promise<void>;
@@ -124,7 +128,7 @@ export interface PayPalCardFieldsIndividualField {
 
 export interface PayPalCardFieldsComponentOptions {
     createOrder: () => Promise<string>;
-    onApprove: (err: Record<string, unknown>) => void;
+    onApprove: (data: CardFieldsOnApproveData) => void;
     onError: (err: Record<string, unknown>) => void;
     inputEvents?: PayPalCardFieldsInputEvents;
     style?: Record<string, PayPalCardFieldsStyleOptions>;
@@ -135,15 +139,15 @@ export interface PayPalCardFieldsComponent {
     isEligible: () => boolean;
     submit: () => Promise<void>;
     NameField: (
-        options: PayPalCardFieldsIndividualFieldOptions,
+        options: PayPalCardFieldsIndividualFieldOptions
     ) => PayPalCardFieldsIndividualField;
     NumberField: (
-        options: PayPalCardFieldsIndividualFieldOptions,
+        options: PayPalCardFieldsIndividualFieldOptions
     ) => PayPalCardFieldsIndividualField;
     CVVField: (
-        options: PayPalCardFieldsIndividualFieldOptions,
+        options: PayPalCardFieldsIndividualFieldOptions
     ) => PayPalCardFieldsIndividualField;
     ExpiryField: (
-        options: PayPalCardFieldsIndividualFieldOptions,
+        options: PayPalCardFieldsIndividualFieldOptions
     ) => PayPalCardFieldsIndividualField;
 }
