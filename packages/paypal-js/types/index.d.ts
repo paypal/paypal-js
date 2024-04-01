@@ -67,6 +67,7 @@ export * from "./components/funding-eligibility";
 export * from "./components/hosted-fields";
 export * from "./components/marks";
 export * from "./components/messages";
+export * from "./components/card-fields"
 
 // Export apis
 export * from "./apis/orders";
