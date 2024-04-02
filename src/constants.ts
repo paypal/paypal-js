@@ -43,3 +43,14 @@ export const HOSTED_FIELDS_DUPLICATE_CHILDREN_ERROR =
  *******************/
 export const SCRIPT_PROVIDER_REDUCER_ERROR =
     "usePayPalScriptReducer must be used within a PayPalScriptProvider";
+
+/*******************
+ * Card Fields *
+ *******************/
+export const CARD_ERRORS = {
+    INELIGIBLE_CARD_VENDOR: "INELIGIBLE_CARD_VENDOR",
+    INVALID_NUMBER: "INVALID_NUMBER",
+    INVALID_EXPIRY: "INVALID_EXPIRY",
+    INVALID_CVV: "INVALID_CVV",
+    INVALID_NAME: "INVALID_NAME",
+} as const;
