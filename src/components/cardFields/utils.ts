@@ -1,6 +1,9 @@
 import { DEFAULT_PAYPAL_NAMESPACE, SDK_SETTINGS } from "../../constants";
 
-import type { PayPalCardFieldsNamespace } from "../../types/payPalCardFieldsTypes";
+import type {
+    PayPalCardFieldsIndividualField,
+    PayPalCardFieldsNamespace,
+} from "../../types/payPalCardFieldsTypes";
 
 /**
  * Throw an exception if the CardFields is not found in the paypal namespace
@@ -27,3 +30,16 @@ export const generateMissingCardFieldsError = ({
 
     return errorMessage;
 };
+
+export function closeField(
+    field: PayPalCardFieldsIndividualField | null
+): void {
+    const x = field
+        ?.close()
+        .then((el) => console.log({ el }))
+        .catch(() => {
+            // noop
+        });
+
+    console.log({ x });
+}

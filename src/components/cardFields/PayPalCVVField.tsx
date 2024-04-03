@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import {
     PayPalCardFieldsIndividualField,
@@ -10,32 +10,29 @@ export const PayPalCVVField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = ({ style, inputEvents, placeholder }) => {
     const { cardFields } = usePayPalCardFieldsContext();
-    const [cvvField, setCvvField] = useState<PayPalCardFieldsIndividualField>();
+
+    function close(field: PayPalCardFieldsIndividualField | null) {
+        field?.close().catch(() => {
+            // noop
+        });
+    }
 
     useEffect(() => {
-        const cvvFieldContainer = document.getElementById("paypal-cvv-field");
-        console.log({
-            cvvField,
-        });
-        if (cardFields && cvvField && cvvField.close) {
-            cvvField.close().then(() => {
-                setCvvField(() => {
-                    const temp = cardFields?.CVVField();
-                    if (cvvFieldContainer) {
-                        temp?.render(cvvFieldContainer);
-                    }
-                    return temp;
-                });
-            });
-        } else {
-            setCvvField(() => {
-                const temp = cardFields?.CVVField();
-                if (cvvFieldContainer) {
-                    temp?.render(cvvFieldContainer);
-                }
-                return temp;
-            });
+        if (!cardFields) {
+            return;
         }
+        const cvvFieldContainer = document.getElementById("paypal-cvv-field");
+        const cvvField = cardFields.CVVField({
+            style,
+            inputEvents,
+            placeholder,
+        });
+
+        if (cvvFieldContainer) {
+            cvvField.render(cvvFieldContainer);
+        }
+        return () => close(cvvField ?? null);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
     return <div id="paypal-cvv-field" />;
 };

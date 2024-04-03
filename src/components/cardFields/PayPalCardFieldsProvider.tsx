@@ -16,11 +16,45 @@ import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace } from "../../utils";
 import { SDK_SETTINGS } from "../../constants";
 import { generateMissingCardFieldsError } from "./utils";
-
-// Create the React context to use in the PayPal card fields provider
-const PayPalCardFieldsContext = createContext<{
+type ContextState = {
     cardFields: PayPalCardFieldsRef | null;
-}>({ cardFields: null });
+    // nameField: PayPalCardFieldsIndividualField | null;
+    // setNameField: React.Dispatch<
+    //     React.SetStateAction<PayPalCardFieldsIndividualField | null>
+    // >;
+    // expiryField: PayPalCardFieldsIndividualField | null;
+    // setExpiryField: React.Dispatch<
+    //     React.SetStateAction<PayPalCardFieldsIndividualField | null>
+    // >;
+    // cvvField: PayPalCardFieldsIndividualField | null;
+    // setCvvField: React.Dispatch<
+    //     React.SetStateAction<PayPalCardFieldsIndividualField | null>
+    // >;
+    // numberField: PayPalCardFieldsIndividualField | null;
+    // setNumberField: React.Dispatch<
+    //     React.SetStateAction<PayPalCardFieldsIndividualField | null>
+    // >;
+};
+// Create the React context to use in the PayPal card fields provider
+const PayPalCardFieldsContext = createContext<ContextState>({
+    cardFields: null,
+    // nameField: null,
+    // expiryField: null,
+    // cvvField: null,
+    // numberField: null,
+    // setCvvField: () => {
+    //     return;
+    // },
+    // setNameField: () => {
+    //     return;
+    // },
+    // setNumberField: () => {
+    //     return;
+    // },
+    // setExpiryField: () => {
+    //     return;
+    // },
+});
 
 export const PayPalCardFieldsProvider = ({
     children,
@@ -29,35 +63,19 @@ export const PayPalCardFieldsProvider = ({
 }): JSX.Element => {
     const [{ options, loadingStatus }] = useScriptProviderContext();
     const cardFieldsRef = useRef<PayPalCardFieldsRef | null>(null);
-    const [cardFields, setCardFields] = useState<PayPalCardFieldsRef | null>(
-        null
-    );
+    // const [cardFields, setCardFields] = useState<PayPalCardFieldsRef | null>(
+    //     null
+    // );
     const [isEligible, setIsEligible] = useState(false);
-    const [nameField, setNameField] =
-        useState<PayPalCardFieldsIndividualField>();
-    const [numberField, setNumberField] =
-        useState<PayPalCardFieldsIndividualField>();
-    const [cvvField, setCvvField] = useState<PayPalCardFieldsIndividualField>();
-    const [expiryield, setExpiryield] =
-        useState<PayPalCardFieldsIndividualField>();
-    const [shouldMount, setShouldMount] = useState(false);
-
-    async function closeAll() {
-        const promises: Promise<void>[] = [];
-        if (nameField) {
-            promises.push(nameField.close());
-        }
-        if (numberField) {
-            promises.push(numberField.close());
-        }
-        if (cvvField) {
-            promises.push(cvvField.close());
-        }
-        if (expiryield) {
-            promises.push(expiryield.close());
-        }
-        return await Promise.all(promises);
-    }
+    // const [nameField, setNameField] =
+    //     useState<PayPalCardFieldsIndividualField | null>(null);
+    // const [numberField, setNumberField] =
+    //     useState<PayPalCardFieldsIndividualField | null>(null);
+    // const [cvvField, setCvvField] =
+    //     useState<PayPalCardFieldsIndividualField | null>(null);
+    // const [expiryField, setExpiryField] =
+    //     useState<PayPalCardFieldsIndividualField | null>(null);
+    // const [shouldMount, setShouldMount] = useState(false);
 
     // async function closeAll() {
     //     const promises: Promise<void>[] = [];
@@ -70,8 +88,25 @@ export const PayPalCardFieldsProvider = ({
     //     if (cvvField) {
     //         promises.push(cvvField.close());
     //     }
-    //     if (expiryield) {
-    //         promises.push(expiryield.close());
+    //     if (expiryField) {
+    //         promises.push(expiryField.close());
+    //     }
+    //     return await Promise.all(promises);
+    // }
+
+    // async function closeAll() {
+    //     const promises: Promise<void>[] = [];
+    //     if (nameField) {
+    //         promises.push(nameField.close());
+    //     }
+    //     if (numberField) {
+    //         promises.push(numberField.close());
+    //     }
+    //     if (cvvField) {
+    //         promises.push(cvvField.close());
+    //     }
+    //     if (expiryField) {
+    //         promises.push(expiryField.close());
     //     }
     //     return await Promise.all(promises);
     // }
@@ -95,7 +130,7 @@ export const PayPalCardFieldsProvider = ({
             }) ?? null;
 
         console.log({ current: cardFieldsRef.current });
-        setCardFields(() => cardFieldsRef.current ?? null);
+        // setCardFields(() => cardFieldsRef.current ?? null);
 
         if (!cardFieldsRef.current) {
             throw new Error(
@@ -125,7 +160,17 @@ export const PayPalCardFieldsProvider = ({
         <>
             {isEligible ? (
                 <PayPalCardFieldsContext.Provider
-                    value={{ cardFields: cardFields }}
+                    value={{
+                        cardFields: cardFieldsRef.current ?? null,
+                        // nameField,
+                        // numberField,
+                        // cvvField,
+                        // expiryField,
+                        // setCvvField,
+                        // setExpiryField,
+                        // setNameField,
+                        // setNumberField,
+                    }}
                 >
                     <div style={{ width: "100%" }}>{children}</div>
                 </PayPalCardFieldsContext.Provider>
@@ -136,6 +181,5 @@ export const PayPalCardFieldsProvider = ({
     );
 };
 
-export const usePayPalCardFieldsContext = (): {
-    cardFields: PayPalCardFieldsRef | null;
-} => useContext(PayPalCardFieldsContext);
+export const usePayPalCardFieldsContext = (): ContextState =>
+    useContext(PayPalCardFieldsContext);
