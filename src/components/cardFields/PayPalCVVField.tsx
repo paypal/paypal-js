@@ -1,33 +1,50 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
-import { PayPalCardFieldsIndividualFieldOptions } from "../../types";
-import { usePayPalCardFieldsContext } from "./PayPalCardFieldsProvider";
+import {
+    PayPalCardFieldsIndividualField,
+    type PayPalCardFieldsIndividualFieldOptions,
+} from "../../types";
 import { closeField } from "./utils";
+import { usePayPalCardFields } from "./hooks";
 
 export const PayPalCVVField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
-> = ({ style, inputEvents, placeholder }) => {
-    const { cardFields } = usePayPalCardFieldsContext();
-
+> = (options) => {
+    const { cardFields } = usePayPalCardFields();
+    const cvvContainer = useRef<HTMLDivElement>(null);
+    const cvvRef = useRef<PayPalCardFieldsIndividualField | null>(null);
     useEffect(() => {
         if (!cardFields) {
             return;
         }
 
-        const cvvFieldContainer = document.getElementById("card-cvv-field");
-        const cvvField = cardFields.CVVField({
-            style,
-            inputEvents,
-            placeholder,
-        });
+        cvvRef.current = cardFields.CVVField(options);
 
-        console.log({ cvvField });
-
-        if (cvvFieldContainer) {
-            cvvField.render(cvvFieldContainer);
+        if (cvvContainer.current) {
+            console.log("rendering...");
+            cvvRef.current.render(cvvContainer.current);
         }
-        return () => closeField(cvvField ?? null);
+
+        console.log({ "cvvRef.current": cvvRef.current });
+
+        // const parentElement = document.getElementById("card-cvv-field");
+        // console.log({ parentElement, children: parentElement?.children });
+
+        // const children = parentElement?.children;
+
+        // if (!parentElement?.hasChildNodes()) {
+        //     console.log("element already closed");
+        //     return;
+        // }
+
+        return () => closeField(cvvRef.current, "card-cvv-field");
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return <div id="card-cvv-field" />;
+    useEffect(() => {
+        console.log({
+            children_nodes: cvvContainer.current?.children,
+        });
+    }, [cvvContainer.current?.children]);
+
+    return <div ref={cvvContainer} id="card-cvv-field" />;
 };

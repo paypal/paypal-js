@@ -14,6 +14,8 @@ export * from "./components/cardFields/PayPalNameField";
 export * from "./components/cardFields/PayPalNumberField";
 export * from "./components/cardFields/PayPalExpiryField";
 export * from "./components/cardFields/PayPalCVVField";
+export * from "./components/cardFields/context";
+export * from "./components/cardFields/hooks";
 
 import type { FUNDING_SOURCE } from "@paypal/paypal-js";
 import * as constants from "@paypal/sdk-constants/dist/module";

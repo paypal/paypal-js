@@ -1,24 +1,14 @@
-import React, {
-    createContext,
-    ReactNode,
-    useContext,
-    useEffect,
-    useRef,
-    useState,
-} from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
 
-import { PayPalCardFieldsRef, SCRIPT_LOADING_STATE } from "../../types";
+import { SCRIPT_LOADING_STATE } from "../../types";
 import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace } from "../../utils";
 import { SDK_SETTINGS } from "../../constants";
 import { generateMissingCardFieldsError } from "./utils";
-type ContextState = {
-    cardFields: PayPalCardFieldsRef | null;
-};
-// Create the React context to use in the PayPal card fields provider
-const PayPalCardFieldsContext = createContext<ContextState>({
-    cardFields: null,
-});
+import {
+    PayPalCardFieldsContext,
+    PayPalCardFieldsContextState,
+} from "./context";
 
 export const PayPalCardFieldsProvider = ({
     children,
@@ -26,10 +16,9 @@ export const PayPalCardFieldsProvider = ({
     children: ReactNode;
 }): JSX.Element => {
     const [{ options, loadingStatus }] = useScriptProviderContext();
-    const cardFieldsInstance = useRef<PayPalCardFieldsRef | null>(null);
-    const [cardFields, setCardFields] = useState<PayPalCardFieldsRef | null>(
-        null
-    );
+    const cardFieldsInstance =
+        useRef<PayPalCardFieldsContextState["cardFields"]>(null);
+
     const cardFieldsContainerRef = useRef<HTMLDivElement>(null);
 
     const [isEligible, setIsEligible] = useState(false);
@@ -52,8 +41,6 @@ export const PayPalCardFieldsProvider = ({
                 },
             }) ?? null;
 
-        console.log({ current: cardFieldsInstance.current });
-
         if (!cardFieldsInstance.current) {
             throw new Error(
                 generateMissingCardFieldsError({
@@ -64,12 +51,12 @@ export const PayPalCardFieldsProvider = ({
             );
         }
 
-        if (cardFieldsContainerRef.current) {
-            setCardFields(cardFieldsInstance.current);
-        }
         setIsEligible(cardFieldsInstance.current.isEligible());
 
-        return () => setCardFields(null);
+        // Clean up after component unmounts
+        return () => {
+            cardFieldsInstance.current = null;
+        };
     }, [loadingStatus]); // eslint-disable-line react-hooks/exhaustive-deps
 
     if (!(loadingStatus === SCRIPT_LOADING_STATE.RESOLVED)) {
@@ -79,7 +66,9 @@ export const PayPalCardFieldsProvider = ({
     return (
         <div ref={cardFieldsContainerRef} style={{ width: "100%" }}>
             {isEligible ? (
-                <PayPalCardFieldsContext.Provider value={{ cardFields }}>
+                <PayPalCardFieldsContext.Provider
+                    value={{ cardFields: cardFieldsInstance.current }}
+                >
                     {children}
                 </PayPalCardFieldsContext.Provider>
             ) : (
@@ -88,6 +77,3 @@ export const PayPalCardFieldsProvider = ({
         </div>
     );
 };
-
-export const usePayPalCardFieldsContext = (): ContextState =>
-    useContext(PayPalCardFieldsContext);

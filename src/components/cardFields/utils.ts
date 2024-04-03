@@ -32,21 +32,26 @@ export const generateMissingCardFieldsError = ({
 };
 
 export function closeField(
-    field: PayPalCardFieldsIndividualField | null
+    field: PayPalCardFieldsIndividualField | null,
+    parentId: string
 ): void {
+    const parentElement = document.getElementById(parentId);
+    console.log({ parentElement, children: parentElement?.children });
+    if (!parentElement?.hasChildNodes()) {
+        console.log("element already closed");
+        return;
+    }
+    if (!field) {
+        console.log("no field!!");
+    }
+    console.log({ field });
     try {
-        const x = field
-            ?.close((test: any) => {
-                console.log({ test });
-            })
-            // .then((el) => console.log({ el }))
-            .catch((err) => {
-                console.log("closeField Error: ", err);
-                // noop
-            });
-
-        console.log({ x });
+        field?.close();
+        // .catch((err) => {
+        //     console.log("closeField Error: ", err);
+        //     // noop
+        // });
     } catch (error) {
-        console.log({ error });
+        console.log("SEBSHRADDHA", { error });
     }
 }

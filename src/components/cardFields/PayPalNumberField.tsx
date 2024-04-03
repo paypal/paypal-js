@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 
-import { PayPalCardFieldsIndividualFieldOptions } from "../../types";
-import { usePayPalCardFieldsContext } from "./PayPalCardFieldsProvider";
+import { type PayPalCardFieldsIndividualFieldOptions } from "../../types";
 import { closeField } from "./utils";
+import { usePayPalCardFields } from "./hooks";
 
 export const PayPalNumberField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = ({ style, inputEvents, placeholder }) => {
-    const { cardFields } = usePayPalCardFieldsContext();
+    const { cardFields } = usePayPalCardFields();
 
     useEffect(() => {
         if (!cardFields) {
@@ -25,7 +25,7 @@ export const PayPalNumberField: React.FC<
         if (numberFieldContainer) {
             numberField.render(numberFieldContainer);
         }
-        return () => closeField(numberField ?? null);
+        return () => closeField(numberField, "card-number-field");
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return <div id="card-number-field" />;
