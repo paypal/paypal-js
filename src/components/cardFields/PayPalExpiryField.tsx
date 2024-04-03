@@ -1,32 +1,20 @@
 import React, { useEffect } from "react";
 
-import {
-    PayPalCardFieldsIndividualField,
-    PayPalCardFieldsIndividualFieldOptions,
-} from "../../types";
+import { PayPalCardFieldsIndividualFieldOptions } from "../../types";
 import { usePayPalCardFieldsContext } from "./PayPalCardFieldsProvider";
+import { closeField } from "./utils";
 
 export const PayPalExpiryField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = ({ style, inputEvents, placeholder }) => {
     const { cardFields } = usePayPalCardFieldsContext();
 
-    function close(field: PayPalCardFieldsIndividualField | null) {
-        field
-            ?.close()
-            .then((err) => console.log({ err }))
-            .catch(() => {
-                // noop
-            });
-    }
-
     useEffect(() => {
         if (!cardFields) {
             return;
         }
-        const expiryFieldContainer = document.getElementById(
-            "paypal-expiry-field"
-        );
+        const expiryFieldContainer =
+            document.getElementById("card-expiry-field");
         const expiryField = cardFields.ExpiryField({
             style,
             inputEvents,
@@ -36,8 +24,8 @@ export const PayPalExpiryField: React.FC<
         if (expiryFieldContainer) {
             expiryField.render(expiryFieldContainer);
         }
-        return () => close(expiryField ?? null);
+        return () => closeField(expiryField ?? null);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return <div id="paypal-expiry-field" />;
+    return <div id="card-expiry-field" />;
 };

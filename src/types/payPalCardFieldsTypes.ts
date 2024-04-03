@@ -148,7 +148,7 @@ export type PayPalCardFieldsRef = {
 export interface PayPalCardFieldsIndividualField {
     render: (container: HTMLElement) => void;
     addClass: (className: string) => Promise<void>;
-    close: () => Promise<void>;
+    close: (...args: unknown[]) => Promise<void>;
     clear: () => void;
     focus: () => void;
     removeAttribute: (

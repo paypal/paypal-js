@@ -1,9 +1,6 @@
 import React, { useEffect } from "react";
 
-import {
-    PayPalCardFieldsIndividualField,
-    PayPalCardFieldsIndividualFieldOptions,
-} from "../../types";
+import { PayPalCardFieldsIndividualFieldOptions } from "../../types";
 import { usePayPalCardFieldsContext } from "./PayPalCardFieldsProvider";
 import { closeField } from "./utils";
 
@@ -16,7 +13,7 @@ export const PayPalNameField: React.FC<
         if (!cardFields) {
             return;
         }
-        const nameFieldContainer = document.getElementById("paypal-name-field");
+        const nameFieldContainer = document.getElementById("card-name-field");
         const nameField = cardFields.NameField({
             style,
             inputEvents,
@@ -31,5 +28,5 @@ export const PayPalNameField: React.FC<
         return () => closeField(nameField ?? null);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return <div id="paypal-name-field" />;
+    return <div id="card-name-field" />;
 };

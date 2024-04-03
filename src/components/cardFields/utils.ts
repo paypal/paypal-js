@@ -34,12 +34,19 @@ export const generateMissingCardFieldsError = ({
 export function closeField(
     field: PayPalCardFieldsIndividualField | null
 ): void {
-    const x = field
-        ?.close()
-        .then((el) => console.log({ el }))
-        .catch(() => {
-            // noop
-        });
+    try {
+        const x = field
+            ?.close((test: any) => {
+                console.log({ test });
+            })
+            // .then((el) => console.log({ el }))
+            .catch((err) => {
+                console.log("closeField Error: ", err);
+                // noop
+            });
 
-    console.log({ x });
+        console.log({ x });
+    } catch (error) {
+        console.log({ error });
+    }
 }

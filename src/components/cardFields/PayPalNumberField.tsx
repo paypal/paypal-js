@@ -1,29 +1,21 @@
 import React, { useEffect } from "react";
 
-import {
-    PayPalCardFieldsIndividualField,
-    PayPalCardFieldsIndividualFieldOptions,
-} from "../../types";
+import { PayPalCardFieldsIndividualFieldOptions } from "../../types";
 import { usePayPalCardFieldsContext } from "./PayPalCardFieldsProvider";
+import { closeField } from "./utils";
 
 export const PayPalNumberField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = ({ style, inputEvents, placeholder }) => {
     const { cardFields } = usePayPalCardFieldsContext();
 
-    function close(field: PayPalCardFieldsIndividualField | null) {
-        field?.close().catch(() => {
-            // noop
-        });
-    }
-
     useEffect(() => {
         if (!cardFields) {
             return;
         }
-        const numberFieldContainer = document.getElementById(
-            "paypal-number-field"
-        );
+        const numberFieldContainer =
+            document.getElementById("card-number-field");
+
         const numberField = cardFields.NumberField({
             style,
             inputEvents,
@@ -33,8 +25,8 @@ export const PayPalNumberField: React.FC<
         if (numberFieldContainer) {
             numberField.render(numberFieldContainer);
         }
-        return () => close(numberField ?? null);
+        return () => closeField(numberField ?? null);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return <div id="paypal-number-field" />;
+    return <div id="card-number-field" />;
 };
