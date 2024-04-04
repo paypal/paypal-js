@@ -37,6 +37,7 @@ export function closeField(
 ): void {
     const parentElement = document.getElementById(parentId);
     console.log({ parentElement, children: parentElement?.children });
+
     if (!parentElement?.hasChildNodes()) {
         console.log("element already closed");
         return;
@@ -46,7 +47,9 @@ export function closeField(
     }
     console.log({ field });
     try {
-        field?.close();
+        if (field && field.close) {
+            field?.close();
+        }
         // .catch((err) => {
         //     console.log("closeField Error: ", err);
         //     // noop

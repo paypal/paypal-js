@@ -29,17 +29,23 @@ export const PayPalCardFieldsProvider = ({
             return;
         }
 
-        cardFieldsInstance.current =
-            getPayPalWindowNamespace(
-                options[SDK_SETTINGS.DATA_NAMESPACE]
-            ).CardFields?.({
-                createOrder: () => {
-                    return;
-                },
-                onApprove: () => {
-                    return;
-                },
-            }) ?? null;
+        try {
+            cardFieldsInstance.current =
+                getPayPalWindowNamespace(
+                    options[SDK_SETTINGS.DATA_NAMESPACE]
+                ).CardFields?.({
+                    createOrder: () => {
+                        return;
+                    },
+                    onApprove: () => {
+                        return;
+                    },
+                }) ?? null;
+        } catch (error) {
+            throw new Error(
+                `Failed to render <PayPalCardFieldsProvider /> component. Failed to initialize:  ${error}`
+            );
+        }
 
         if (!cardFieldsInstance.current) {
             throw new Error(

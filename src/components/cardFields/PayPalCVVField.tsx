@@ -1,50 +1,71 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import {
     PayPalCardFieldsIndividualField,
     type PayPalCardFieldsIndividualFieldOptions,
 } from "../../types";
-import { closeField } from "./utils";
 import { usePayPalCardFields } from "./hooks";
 
 export const PayPalCVVField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = (options) => {
     const { cardFields } = usePayPalCardFields();
+    const [cleanupComplete, setCleanupComplete] = useState(false);
+    // const [isFirstRender, setIsFirstRender] = useState(true);
     const cvvContainer = useRef<HTMLDivElement>(null);
     const cvvRef = useRef<PayPalCardFieldsIndividualField | null>(null);
-    useEffect(() => {
-        if (!cardFields) {
-            return;
-        }
-
-        cvvRef.current = cardFields.CVVField(options);
-
-        if (cvvContainer.current) {
-            console.log("rendering...");
-            cvvRef.current.render(cvvContainer.current);
-        }
-
-        console.log({ "cvvRef.current": cvvRef.current });
-
-        // const parentElement = document.getElementById("card-cvv-field");
-        // console.log({ parentElement, children: parentElement?.children });
-
-        // const children = parentElement?.children;
-
-        // if (!parentElement?.hasChildNodes()) {
-        //     console.log("element already closed");
-        //     return;
-        // }
-
-        return () => closeField(cvvRef.current, "card-cvv-field");
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    const ignore = useRef(false);
 
     useEffect(() => {
-        console.log({
-            children_nodes: cvvContainer.current?.children,
-        });
-    }, [cvvContainer.current?.children]);
+        console.log("RUNNING USE EFFECT");
 
-    return <div ref={cvvContainer} id="card-cvv-field" />;
+        function instantiate() {
+            if (!cardFields) {
+                return;
+            }
+
+            console.log({ ignore: ignore.current });
+
+            if (cvvContainer.current && !ignore.current) {
+                cvvRef.current = cardFields?.CVVField(options) ?? null;
+                cvvRef.current?.render(cvvContainer.current);
+            }
+        }
+        instantiate();
+
+        return () => {
+            console.log("cleanup started");
+            if (ignore.current === true) {
+                console.log("return early");
+                ignore.current = false;
+                return;
+            }
+            ignore.current = true;
+
+            console.log("close started");
+            cvvRef.current
+                ?.close()
+                .then(() => {
+                    setCleanupComplete(true);
+                    console.log("clean up ignore before: ", ignore.current);
+                })
+                // .then(() => {
+                //     ignore.current = false;
+                //     console.log("clean up ignore after: ", ignore.current);
+                // })
+                .catch((err) => {
+                    return console.log("inside catch", err);
+                });
+        };
+    }, [cleanupComplete]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    // if (cvvContainer.current && isFirstRender) {
+    //     cvvRef.current.render(cvvContainer.current);
+    // }
+
+    // if (!cleanupComplete) {
+    //     return null;
+    // }
+
+    return <div ref={cvvContainer} />;
 };
