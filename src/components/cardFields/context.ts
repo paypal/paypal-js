@@ -1,11 +1,8 @@
 import { createContext } from "react";
 
-import {
-    PayPalCardFieldsIndividualField,
-    PayPalCardFieldsRef,
-} from "../../types";
+import { PayPalCardFieldsIndividualField, PayPalCardFields } from "../../types";
 
-export type CardFieldsState = PayPalCardFieldsRef | null;
+export type CardFieldsState = PayPalCardFields | null;
 export type FieldState = PayPalCardFieldsIndividualField | null;
 
 export type PayPalCardFieldsContextState = {

@@ -33,7 +33,7 @@ export type CardFieldState = {
     isFocused: boolean;
 };
 
-export type FieldsState = {
+export type PayPalCardFieldsState = {
     cardNameField?: CardFieldState;
     cardNumberField: CardFieldState;
     cardExpiryField: CardFieldState;
@@ -77,7 +77,7 @@ export type ParsedCardType = {
 export type InputEventState = {
     cards: Array<ParsedCardType>;
     emittedBy: "name" | "number" | "cvv" | "expiry";
-    fields: FieldsState;
+    fields: PayPalCardFieldsState;
     errors: typeof CARD_ERRORS[keyof typeof CARD_ERRORS];
     isFormValid: boolean;
 };
@@ -129,7 +129,7 @@ export type PayPalCardFieldsStateObject = {
     fields: Record<CardFieldName, CardFieldState>;
 };
 
-export type PayPalCardFieldsRef = {
+export type PayPalCardFields = {
     getState: () => Promise<PayPalCardFieldsStateObject>;
     isEligible: () => boolean;
     submit: () => Promise<void>;
