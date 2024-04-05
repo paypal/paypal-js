@@ -2,15 +2,12 @@ import { createContext } from "react";
 
 import { PayPalCardFieldsIndividualField, PayPalCardFields } from "../../types";
 
-export type CardFieldsState = PayPalCardFields | null;
-export type FieldState = PayPalCardFieldsIndividualField | null;
-
 export type PayPalCardFieldsContextState = {
-    cardFields: React.MutableRefObject<CardFieldsState>;
-    nameField: React.MutableRefObject<FieldState>;
-    numberField: React.MutableRefObject<FieldState>;
-    cvvField: React.MutableRefObject<FieldState>;
-    expiryField: React.MutableRefObject<FieldState>;
+    cardFields: React.MutableRefObject<PayPalCardFields | null>;
+    nameField: React.MutableRefObject<PayPalCardFieldsIndividualField | null>;
+    numberField: React.MutableRefObject<PayPalCardFieldsIndividualField | null>;
+    cvvField: React.MutableRefObject<PayPalCardFieldsIndividualField | null>;
+    expiryField: React.MutableRefObject<PayPalCardFieldsIndividualField | null>;
 };
 
 export const PayPalCardFieldsContext =

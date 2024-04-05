@@ -1,15 +1,16 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 
-import { PayPalCardFieldsComponent, SCRIPT_LOADING_STATE } from "../../types";
+import {
+    PayPalCardFields,
+    PayPalCardFieldsComponent,
+    PayPalCardFieldsIndividualField,
+    SCRIPT_LOADING_STATE,
+} from "../../types";
 import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace } from "../../utils";
 import { SDK_SETTINGS } from "../../constants";
 import { generateMissingCardFieldsError } from "./utils";
-import {
-    CardFieldsState,
-    FieldState,
-    PayPalCardFieldsContext,
-} from "./context";
+import { PayPalCardFieldsContext } from "./context";
 
 type CardFieldsProviderProps = PayPalCardFieldsComponent & {
     children: ReactNode;
@@ -20,11 +21,11 @@ export const PayPalCardFieldsProvider = ({
     ...props
 }: CardFieldsProviderProps): JSX.Element => {
     const [{ options, loadingStatus }] = useScriptProviderContext();
-    const cardFields = useRef<CardFieldsState>(null);
-    const nameField = useRef<FieldState>(null);
-    const numberField = useRef<FieldState>(null);
-    const cvvField = useRef<FieldState>(null);
-    const expiryField = useRef<FieldState>(null);
+    const cardFields = useRef<PayPalCardFields | null>(null);
+    const nameField = useRef<PayPalCardFieldsIndividualField | null>(null);
+    const numberField = useRef<PayPalCardFieldsIndividualField | null>(null);
+    const cvvField = useRef<PayPalCardFieldsIndividualField | null>(null);
+    const expiryField = useRef<PayPalCardFieldsIndividualField | null>(null);
 
     const [isEligible, setIsEligible] = useState(false);
     // We set the error inside state so that it can be caught by React's error boundary
