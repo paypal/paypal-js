@@ -10,62 +10,43 @@ export const PayPalCVVField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = (options) => {
     const { cardFields } = usePayPalCardFields();
-    const [cleanupComplete, setCleanupComplete] = useState(false);
-    // const [isFirstRender, setIsFirstRender] = useState(true);
+
     const cvvContainer = useRef<HTMLDivElement>(null);
     const cvvRef = useRef<PayPalCardFieldsIndividualField | null>(null);
-    const ignore = useRef(false);
+    // We set the error inside state so that it can be caught by React's error boundary
+    const [, setError] = useState(null);
+
+    function closeComponent() {
+        cvvRef.current?.close().catch(() => {
+            // ignore
+            return;
+        });
+    }
 
     useEffect(() => {
-        console.log("RUNNING USE EFFECT");
-
-        function instantiate() {
-            if (!cardFields) {
-                return;
-            }
-
-            console.log({ ignore: ignore.current });
-
-            if (cvvContainer.current && !ignore.current) {
-                cvvRef.current = cardFields?.CVVField(options) ?? null;
-                cvvRef.current?.render(cvvContainer.current);
-            }
+        if (!cardFields || !cvvContainer.current) {
+            return closeComponent;
         }
-        instantiate();
 
-        return () => {
-            console.log("cleanup started");
-            if (ignore.current === true) {
-                console.log("return early");
-                ignore.current = false;
+        cvvRef.current = cardFields.CVVField(options);
+
+        cvvRef.current.render(cvvContainer.current).catch((err) => {
+            // component failed to render, possibly because it was closed or destroyed.
+            const cvvIsRendered = !!cvvContainer.current?.children.length;
+            if (!cvvIsRendered) {
+                // Component no longer in the DOM, we can safely ignore the error
                 return;
             }
-            ignore.current = true;
+            // Component is still in the DOM
+            setError(() => {
+                throw new Error(
+                    `Failed to render <PayPalCVVField /> component. ${err}`
+                );
+            });
+        });
 
-            console.log("close started");
-            cvvRef.current
-                ?.close()
-                .then(() => {
-                    setCleanupComplete(true);
-                    console.log("clean up ignore before: ", ignore.current);
-                })
-                // .then(() => {
-                //     ignore.current = false;
-                //     console.log("clean up ignore after: ", ignore.current);
-                // })
-                .catch((err) => {
-                    return console.log("inside catch", err);
-                });
-        };
-    }, [cleanupComplete]); // eslint-disable-line react-hooks/exhaustive-deps
-
-    // if (cvvContainer.current && isFirstRender) {
-    //     cvvRef.current.render(cvvContainer.current);
-    // }
-
-    // if (!cleanupComplete) {
-    //     return null;
-    // }
+        return closeComponent;
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return <div ref={cvvContainer} />;
 };
