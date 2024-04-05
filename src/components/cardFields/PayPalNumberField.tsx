@@ -1,32 +1,46 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { type PayPalCardFieldsIndividualFieldOptions } from "../../types";
-import { closeField } from "./utils";
 import { usePayPalCardFields } from "./hooks";
+import { ignore } from "./utils";
 
 export const PayPalNumberField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
-> = ({ style, inputEvents, placeholder }) => {
-    const { cardFields } = usePayPalCardFields();
+> = (options) => {
+    const { cardFields, numberField } = usePayPalCardFields();
+
+    const numberContainer = useRef<HTMLDivElement>(null);
+
+    // We set the error inside state so that it can be caught by React's error boundary
+    const [, setError] = useState(null);
+
+    function closeComponent() {
+        numberField.current?.close().catch(ignore);
+    }
 
     useEffect(() => {
-        if (!cardFields) {
-            return;
+        if (!cardFields.current || !numberContainer.current) {
+            return closeComponent;
         }
-        const numberFieldContainer =
-            document.getElementById("card-number-field");
 
-        const numberField = cardFields.NumberField({
-            style,
-            inputEvents,
-            placeholder,
+        numberField.current = cardFields.current.NumberField(options);
+        numberField.current.render(numberContainer.current).catch((err) => {
+            // component failed to render, possibly because it was closed or destroyed.
+            const numberIsRendered = !!numberContainer.current?.children.length;
+            if (!numberIsRendered) {
+                // Component no longer in the DOM, we can safely ignore the error
+                return;
+            }
+            // Component is still in the DOM
+            setError(() => {
+                throw new Error(
+                    `Failed to render <PayPalNumberField /> component. ${err}`
+                );
+            });
         });
 
-        if (numberFieldContainer) {
-            numberField.render(numberFieldContainer);
-        }
-        return () => closeField(numberField, "card-number-field");
+        return closeComponent;
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return <div id="card-number-field" />;
+    return <div ref={numberContainer} />;
 };

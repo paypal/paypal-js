@@ -1,9 +1,6 @@
 import { DEFAULT_PAYPAL_NAMESPACE, SDK_SETTINGS } from "../../constants";
 
-import type {
-    PayPalCardFieldsIndividualField,
-    PayPalCardFieldsNamespace,
-} from "../../types/payPalCardFieldsTypes";
+import type { PayPalCardFieldsNamespace } from "../../types/payPalCardFieldsTypes";
 
 /**
  * Throw an exception if the CardFields is not found in the paypal namespace
@@ -31,30 +28,6 @@ export const generateMissingCardFieldsError = ({
     return errorMessage;
 };
 
-export function closeField(
-    field: PayPalCardFieldsIndividualField | null,
-    parentId: string
-): void {
-    const parentElement = document.getElementById(parentId);
-    console.log({ parentElement, children: parentElement?.children });
-
-    if (!parentElement?.hasChildNodes()) {
-        console.log("element already closed");
-        return;
-    }
-    if (!field) {
-        console.log("no field!!");
-    }
-    console.log({ field });
-    try {
-        if (field && field.close) {
-            field?.close();
-        }
-        // .catch((err) => {
-        //     console.log("closeField Error: ", err);
-        //     // noop
-        // });
-    } catch (error) {
-        console.log("SEBSHRADDHA", { error });
-    }
+export function ignore(): void {
+    return;
 }

@@ -1,36 +1,32 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import {
-    PayPalCardFieldsIndividualField,
-    type PayPalCardFieldsIndividualFieldOptions,
-} from "../../types";
+import { type PayPalCardFieldsIndividualFieldOptions } from "../../types";
 import { usePayPalCardFields } from "./hooks";
+import { ignore } from "./utils";
 
 export const PayPalCVVField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = (options) => {
-    const { cardFields } = usePayPalCardFields();
+    const { cardFields, cvvField } = usePayPalCardFields();
 
     const cvvContainer = useRef<HTMLDivElement>(null);
-    const cvvRef = useRef<PayPalCardFieldsIndividualField | null>(null);
+    // const cvvRef = useRef<PayPalCardFieldsIndividualField | null>(null);
+
     // We set the error inside state so that it can be caught by React's error boundary
     const [, setError] = useState(null);
 
     function closeComponent() {
-        cvvRef.current?.close().catch(() => {
-            // ignore
-            return;
-        });
+        cvvField.current?.close().catch(ignore);
     }
 
     useEffect(() => {
-        if (!cardFields || !cvvContainer.current) {
+        if (!cardFields.current || !cvvContainer.current) {
             return closeComponent;
         }
 
-        cvvRef.current = cardFields.CVVField(options);
+        cvvField.current = cardFields.current.CVVField(options);
 
-        cvvRef.current.render(cvvContainer.current).catch((err) => {
+        cvvField.current.render(cvvContainer.current).catch((err) => {
             // component failed to render, possibly because it was closed or destroyed.
             const cvvIsRendered = !!cvvContainer.current?.children.length;
             if (!cvvIsRendered) {

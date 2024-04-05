@@ -1,31 +1,46 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { type PayPalCardFieldsIndividualFieldOptions } from "../../types";
-import { closeField } from "./utils";
 import { usePayPalCardFields } from "./hooks";
+import { ignore } from "./utils";
 
 export const PayPalNameField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
-> = ({ style, inputEvents, placeholder }) => {
-    const { cardFields } = usePayPalCardFields();
+> = (options) => {
+    const { cardFields, nameField } = usePayPalCardFields();
+
+    const nameContainer = useRef<HTMLDivElement>(null);
+
+    // We set the error inside state so that it can be caught by React's error boundary
+    const [, setError] = useState(null);
+
+    function closeComponent() {
+        nameField.current?.close().catch(ignore);
+    }
 
     useEffect(() => {
-        if (!cardFields) {
-            return;
+        if (!cardFields.current || !nameContainer.current) {
+            return closeComponent;
         }
-        const nameFieldContainer = document.getElementById("card-name-field");
-        const nameField = cardFields.NameField({
-            style,
-            inputEvents,
-            placeholder,
+
+        nameField.current = cardFields.current.NameField(options);
+        nameField.current.render(nameContainer.current).catch((err) => {
+            // component failed to render, possibly because it was closed or destroyed.
+            const nameIsRendered = !!nameContainer.current?.children.length;
+            if (!nameIsRendered) {
+                // Component no longer in the DOM, we can safely ignore the error
+                return;
+            }
+            // Component is still in the DOM
+            setError(() => {
+                throw new Error(
+                    `Failed to render <PayPalNameField /> component. ${err}`
+                );
+            });
         });
 
-        if (nameFieldContainer) {
-            nameField.render(nameFieldContainer);
-        }
-
-        return () => closeField(nameField, "card-name-field");
+        return closeComponent;
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return <div id="card-name-field" />;
+    return <div ref={nameContainer} />;
 };

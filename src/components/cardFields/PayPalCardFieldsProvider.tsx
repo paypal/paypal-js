@@ -1,27 +1,34 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 
-import { SCRIPT_LOADING_STATE } from "../../types";
+import { PayPalCardFieldsComponent, SCRIPT_LOADING_STATE } from "../../types";
 import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace } from "../../utils";
 import { SDK_SETTINGS } from "../../constants";
 import { generateMissingCardFieldsError } from "./utils";
 import {
+    CardFieldsState,
+    FieldState,
     PayPalCardFieldsContext,
-    PayPalCardFieldsContextState,
 } from "./context";
+
+type CardFieldsProviderProps = PayPalCardFieldsComponent & {
+    children: ReactNode;
+};
 
 export const PayPalCardFieldsProvider = ({
     children,
-}: {
-    children: ReactNode;
-}): JSX.Element => {
+    ...props
+}: CardFieldsProviderProps): JSX.Element => {
     const [{ options, loadingStatus }] = useScriptProviderContext();
-    const cardFieldsInstance =
-        useRef<PayPalCardFieldsContextState["cardFields"]>(null);
-
-    const cardFieldsContainerRef = useRef<HTMLDivElement>(null);
+    const cardFields = useRef<CardFieldsState>(null);
+    const nameField = useRef<FieldState>(null);
+    const numberField = useRef<FieldState>(null);
+    const cvvField = useRef<FieldState>(null);
+    const expiryField = useRef<FieldState>(null);
 
     const [isEligible, setIsEligible] = useState(false);
+    // We set the error inside state so that it can be caught by React's error boundary
+    const [, setError] = useState(null);
 
     useEffect(() => {
         // Only render the hosted fields when script is loaded and hostedFields is eligible
@@ -30,38 +37,39 @@ export const PayPalCardFieldsProvider = ({
         }
 
         try {
-            cardFieldsInstance.current =
+            cardFields.current =
                 getPayPalWindowNamespace(
                     options[SDK_SETTINGS.DATA_NAMESPACE]
                 ).CardFields?.({
-                    createOrder: () => {
-                        return;
-                    },
-                    onApprove: () => {
-                        return;
-                    },
+                    ...props,
                 }) ?? null;
         } catch (error) {
-            throw new Error(
-                `Failed to render <PayPalCardFieldsProvider /> component. Failed to initialize:  ${error}`
-            );
+            setError(() => {
+                throw new Error(
+                    `Failed to render <PayPalCardFieldsProvider /> component. Failed to initialize:  ${error}`
+                );
+            });
+            return;
         }
 
-        if (!cardFieldsInstance.current) {
-            throw new Error(
-                generateMissingCardFieldsError({
-                    components: options.components,
-                    [SDK_SETTINGS.DATA_NAMESPACE]:
-                        options[SDK_SETTINGS.DATA_NAMESPACE],
-                })
-            );
+        if (!cardFields.current) {
+            setError(() => {
+                throw new Error(
+                    generateMissingCardFieldsError({
+                        components: options.components,
+                        [SDK_SETTINGS.DATA_NAMESPACE]:
+                            options[SDK_SETTINGS.DATA_NAMESPACE],
+                    })
+                );
+            });
+            return;
         }
 
-        setIsEligible(cardFieldsInstance.current.isEligible());
+        setIsEligible(cardFields.current.isEligible());
 
         // Clean up after component unmounts
         return () => {
-            cardFieldsInstance.current = null;
+            cardFields.current = null;
         };
     }, [loadingStatus]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -70,10 +78,16 @@ export const PayPalCardFieldsProvider = ({
     }
 
     return (
-        <div ref={cardFieldsContainerRef} style={{ width: "100%" }}>
+        <div style={{ width: "100%" }}>
             {isEligible ? (
                 <PayPalCardFieldsContext.Provider
-                    value={{ cardFields: cardFieldsInstance.current }}
+                    value={{
+                        cardFields,
+                        nameField,
+                        numberField,
+                        cvvField,
+                        expiryField,
+                    }}
                 >
                     {children}
                 </PayPalCardFieldsContext.Provider>

@@ -5,8 +5,9 @@ export type PayPalCardFieldsNamespace = {
 } & { [DATA_NAMESPACE: string]: string | undefined };
 
 export type PayPalCardFieldsComponent = {
-    createOrder: () => void;
-    onApprove: () => void;
+    createOrder: () => Promise<string>;
+    createVaultSetupToken: () => Promise<string>;
+    onApprove: () => Promise<void>;
     style: CardFieldStyle;
     inputEvents: PayPalCardFieldsInputEvents;
 };
@@ -19,9 +20,10 @@ export type PayPalCardFieldsInputEvents = {
 };
 
 export type PayPalCardFieldsIndividualFieldOptions = {
-    placeholder: string;
+    placeholder?: string;
     inputEvents?: PayPalCardFieldsInputEvents;
     style?: CardFieldStyle;
+    className?: string;
 };
 
 export type CardFieldState = {
