@@ -25,7 +25,6 @@ export const PayPalNumberField: React.FC<
 
         numberField.current = cardFields.current.NumberField(options);
         numberField.current.render(numberContainer.current).catch((err) => {
-            // component failed to render, possibly because it was closed or destroyed.
             const numberIsRendered = !!numberContainer.current?.children.length;
             if (!numberIsRendered) {
                 // Component no longer in the DOM, we can safely ignore the error

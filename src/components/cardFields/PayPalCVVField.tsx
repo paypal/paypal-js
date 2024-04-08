@@ -10,7 +10,6 @@ export const PayPalCVVField: React.FC<
     const { cardFields, cvvField } = usePayPalCardFields();
 
     const cvvContainer = useRef<HTMLDivElement>(null);
-    // const cvvRef = useRef<PayPalCardFieldsIndividualField | null>(null);
 
     // We set the error inside state so that it can be caught by React's error boundary
     const [, setError] = useState(null);
@@ -25,9 +24,7 @@ export const PayPalCVVField: React.FC<
         }
 
         cvvField.current = cardFields.current.CVVField(options);
-
         cvvField.current.render(cvvContainer.current).catch((err) => {
-            // component failed to render, possibly because it was closed or destroyed.
             const cvvIsRendered = !!cvvContainer.current?.children.length;
             if (!cvvIsRendered) {
                 // Component no longer in the DOM, we can safely ignore the error

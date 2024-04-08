@@ -25,7 +25,6 @@ export const PayPalExpiryField: React.FC<
 
         expiryField.current = cardFields.current.ExpiryField(options);
         expiryField.current.render(expiryContainer.current).catch((err) => {
-            // component failed to render, possibly because it was closed or destroyed.
             const expiryIsRendered = !!expiryContainer.current?.children.length;
             if (!expiryIsRendered) {
                 // Component no longer in the DOM, we can safely ignore the error

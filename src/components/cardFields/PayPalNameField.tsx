@@ -25,7 +25,6 @@ export const PayPalNameField: React.FC<
 
         nameField.current = cardFields.current.NameField(options);
         nameField.current.render(nameContainer.current).catch((err) => {
-            // component failed to render, possibly because it was closed or destroyed.
             const nameIsRendered = !!nameContainer.current?.children.length;
             if (!nameIsRendered) {
                 // Component no longer in the DOM, we can safely ignore the error
