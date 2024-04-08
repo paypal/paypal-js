@@ -104,13 +104,13 @@ export interface PayPalCardFieldsStateObject {
 }
 
 export interface PayPalCardFieldsIndividualFieldOptions {
-    placeholder: string;
+    placeholder?: string;
     inputEvents?: PayPalCardFieldsInputEvents;
     style?: Record<string, PayPalCardFieldsStyleOptions>;
 }
 
 export interface PayPalCardFieldsIndividualField {
-    render: (container: string) => void;
+    render: (container: string | HTMLElement) => Promise<void>;
     addClass: (className: string) => Promise<void>;
     clear: () => void;
     focus: () => void;
@@ -120,12 +120,14 @@ export interface PayPalCardFieldsIndividualField {
     removeClass: (className: string) => Promise<void>;
     setAttribute: (name: string, value: string) => Promise<void>;
     setMessage: (message: string) => void;
+    close: ()=> Promise<void>;
 }
 
 export interface PayPalCardFieldsComponentOptions {
     createOrder: () => Promise<string>;
     onApprove: (err: Record<string, unknown>) => void;
     onError: (err: Record<string, unknown>) => void;
+    createVaultSetupToken?: () => Promise<string>;
     inputEvents?: PayPalCardFieldsInputEvents;
     style?: Record<string, PayPalCardFieldsStyleOptions>;
 }
