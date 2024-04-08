@@ -6,10 +6,10 @@ export type PayPalCardFieldsNamespace = {
 
 export type PayPalCardFieldsComponent = {
     createOrder: () => Promise<string>;
-    createVaultSetupToken: () => Promise<string>;
-    onApprove: () => Promise<void>;
-    style: CardFieldStyle;
-    inputEvents: PayPalCardFieldsInputEvents;
+    createVaultSetupToken?: () => Promise<string>;
+    onApprove?: () => Promise<void>;
+    style?: CardFieldStyle;
+    inputEvents?: PayPalCardFieldsInputEvents;
 };
 
 export type PayPalCardFieldsInputEvents = {
