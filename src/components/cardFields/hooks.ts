@@ -2,8 +2,13 @@ import { useContext } from "react";
 
 import {
     PayPalCardFieldsContext,
-    PayPalCardFieldsContextState,
+    PayPalCardFieldsContextType,
+    PayPalCardFieldsRenderStateContext,
+    PayPalCardFieldsRenderStateContextType,
 } from "./context";
 
-export const usePayPalCardFields = (): PayPalCardFieldsContextState =>
+export const usePayPalCardFields = (): PayPalCardFieldsContextType =>
     useContext(PayPalCardFieldsContext);
+export const usePayPalCardFieldsRenderState =
+    (): PayPalCardFieldsRenderStateContextType =>
+        useContext(PayPalCardFieldsRenderStateContext);

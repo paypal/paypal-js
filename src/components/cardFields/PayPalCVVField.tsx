@@ -1,20 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
+import {
+    PayPalCardFieldsIndividualField,
+    PayPalCardFieldsIndividualFieldOptions,
+} from "@paypal/paypal-js/types/components/card-fields";
 
-import { type PayPalCardFieldsIndividualFieldOptions } from "../../types";
-import { usePayPalCardFields } from "./hooks";
-import { ignore } from "./utils";
+import { usePayPalCardFields, usePayPalCardFieldsRenderState } from "./hooks";
+import { hasChildren, ignore } from "./utils";
 
 export const PayPalCVVField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = (options) => {
-    const { cardFields, cvvField } = usePayPalCardFields();
+    const { cardFields, cvvField, cvvContainer } = usePayPalCardFields();
+    const { registerField, unregisterField } = usePayPalCardFieldsRenderState();
 
-    const cvvContainer = useRef<HTMLDivElement>(null);
+    // const cvvContainer = useRef<HTMLDivElement>(null);
+    // const cvvField = useRef<PayPalCardFieldsIndividualField | null>(null);
 
-    // We set the error inside state so that it can be caught by React's error boundary
+    // Set errors is state so that they can be caught by React's error boundary
     const [, setError] = useState(null);
 
     function closeComponent() {
+        unregisterField("PayPalCVVField");
         cvvField.current?.close().catch(ignore);
     }
 
@@ -23,10 +29,14 @@ export const PayPalCVVField: React.FC<
             return closeComponent;
         }
 
+        registerField("PayPalCVVField");
         cvvField.current = cardFields.current.CVVField(options);
+
+        // Assigning current cvvField to the globally available cvvField in usePayPalCardFields() for merchants to interact with
+        // globalCvvField.current = cvvField.current;
+
         cvvField.current.render(cvvContainer.current).catch((err) => {
-            const cvvIsRendered = !!cvvContainer.current?.children.length;
-            if (!cvvIsRendered) {
+            if (!hasChildren(cvvContainer)) {
                 // Component no longer in the DOM, we can safely ignore the error
                 return;
             }

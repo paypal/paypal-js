@@ -1,20 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
+import {
+    PayPalCardFieldsIndividualField,
+    PayPalCardFieldsIndividualFieldOptions,
+} from "@paypal/paypal-js/types/components/card-fields";
 
-import { type PayPalCardFieldsIndividualFieldOptions } from "../../types";
-import { usePayPalCardFields } from "./hooks";
-import { ignore } from "./utils";
+import { usePayPalCardFields, usePayPalCardFieldsRenderState } from "./hooks";
+import { hasChildren, ignore } from "./utils";
 
 export const PayPalExpiryField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = (options) => {
-    const { cardFields, expiryField } = usePayPalCardFields();
+    const { cardFields, expiryField, expiryContainer } = usePayPalCardFields();
+    const { registerField, unregisterField } = usePayPalCardFieldsRenderState();
 
-    const expiryContainer = useRef<HTMLDivElement>(null);
+    // const expiryContainer = useRef<HTMLDivElement>(null);
+    // const expiryField = useRef<PayPalCardFieldsIndividualField | null>(null);
 
-    // We set the error inside state so that it can be caught by React's error boundary
+    // Set errors is state so that they can be caught by React's error boundary
     const [, setError] = useState(null);
 
     function closeComponent() {
+        unregisterField("PayPalExpiryField");
         expiryField.current?.close().catch(ignore);
     }
 
@@ -23,10 +29,14 @@ export const PayPalExpiryField: React.FC<
             return closeComponent;
         }
 
+        registerField("PayPalExpiryField");
         expiryField.current = cardFields.current.ExpiryField(options);
+
+        // Assigning current expiryField to the globally available expiryField in usePayPalCardFields() for merchants to interact with
+        // globalExpiryField.current = expiryField.current;
+
         expiryField.current.render(expiryContainer.current).catch((err) => {
-            const expiryIsRendered = !!expiryContainer.current?.children.length;
-            if (!expiryIsRendered) {
+            if (!hasChildren(expiryContainer)) {
                 // Component no longer in the DOM, we can safely ignore the error
                 return;
             }

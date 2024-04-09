@@ -1,17 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
+import {
+    PayPalCardFieldsIndividualField,
+    PayPalCardFieldsIndividualFieldOptions,
+} from "@paypal/paypal-js/types/components/card-fields";
 
-import { type PayPalCardFieldsIndividualFieldOptions } from "../../types";
 import { usePayPalCardFields } from "./hooks";
-import { ignore } from "./utils";
+import { hasChildren, ignore } from "./utils";
 
 export const PayPalNameField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = (options) => {
-    const { cardFields, nameField } = usePayPalCardFields();
+    const { cardFields, nameField, nameContainer } = usePayPalCardFields();
 
-    const nameContainer = useRef<HTMLDivElement>(null);
+    // const nameContainer = useRef<HTMLDivElement>(null);
+    // const nameField = useRef<PayPalCardFieldsIndividualField | null>(null);
 
-    // We set the error inside state so that it can be caught by React's error boundary
+    // Set errors is state so that they can be caught by React's error boundary
     const [, setError] = useState(null);
 
     function closeComponent() {
@@ -24,9 +28,12 @@ export const PayPalNameField: React.FC<
         }
 
         nameField.current = cardFields.current.NameField(options);
+
+        // Assigning current nameField to the globally available nameField in usePayPalCardFields() for merchants to interact with
+        // globalNameField.current = nameField.current;
+
         nameField.current.render(nameContainer.current).catch((err) => {
-            const nameIsRendered = !!nameContainer.current?.children.length;
-            if (!nameIsRendered) {
+            if (!hasChildren(nameContainer)) {
                 // Component no longer in the DOM, we can safely ignore the error
                 return;
             }

@@ -1,4 +1,10 @@
-import { DEFAULT_PAYPAL_NAMESPACE, SDK_SETTINGS } from "../../constants";
+import {
+    CARD_FIELDS_CHILDREN_ERROR,
+    CARD_FIELDS_DUPLICATE_CHILDREN_ERROR,
+    DEFAULT_PAYPAL_NAMESPACE,
+    SDK_SETTINGS,
+} from "../../constants";
+import { PayPalCardFieldsContextType } from "./context";
 
 import type { PayPalCardFieldsNamespace } from "../../types/payPalCardFieldsTypes";
 
@@ -30,4 +36,74 @@ export const generateMissingCardFieldsError = ({
 
 export function ignore(): void {
     return;
+}
+
+type ValidateCardFieldsChildrenProps = {
+    numberField: PayPalCardFieldsContextType["numberField"];
+    cvvField: PayPalCardFieldsContextType["cvvField"];
+    expiryField: PayPalCardFieldsContextType["expiryField"];
+};
+
+const hasRequiredChildren = ({
+    numberField,
+    cvvField,
+    expiryField,
+}: ValidateCardFieldsChildrenProps) => {
+    if (
+        numberField.current === null ||
+        cvvField.current === null ||
+        expiryField.current === null
+    ) {
+        throw new Error(CARD_FIELDS_CHILDREN_ERROR);
+    }
+};
+
+export type ZoidCardFieldName = "number" | "name" | "cvv" | "expiry";
+
+export function zoidCardFieldsComponents(
+    fieldName: ZoidCardFieldName
+): NodeListOf<Element> {
+    return document.querySelectorAll(
+        `iframe[name^=__zoid__paypal_card_${fieldName}_field__]`
+    );
+}
+
+const noDuplicateChildren = () => {
+    const fields: ZoidCardFieldName[] = ["number", "name", "cvv", "expiry"];
+    let hasDuplicateChildren = false;
+    let hasRequiredFields = false;
+
+    fields.forEach((fieldName) => {
+        const zoidFields = zoidCardFieldsComponents(fieldName);
+        if (fieldName !== "name" && !!zoidFields.length) {
+            hasRequiredFields = false;
+        }
+        const isDuplicate = zoidFields.length > 1;
+        if (isDuplicate) {
+            hasDuplicateChildren = isDuplicate;
+        }
+    });
+
+    if (!hasRequiredFields) {
+        throw new Error(CARD_FIELDS_CHILDREN_ERROR);
+    }
+
+    if (hasDuplicateChildren) {
+        throw new Error(CARD_FIELDS_DUPLICATE_CHILDREN_ERROR);
+    }
+};
+
+export const validateHostedFieldsChildren = ({
+    numberField,
+    cvvField,
+    expiryField,
+}: ValidateCardFieldsChildrenProps): void => {
+    // hasRequiredChildren({ numberField, cvvField, expiryField });
+    noDuplicateChildren();
+};
+
+export function hasChildren(
+    container: React.RefObject<HTMLDivElement>
+): boolean {
+    return !!container.current?.children.length;
 }
