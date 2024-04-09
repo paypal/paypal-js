@@ -1,20 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-    PayPalCardFieldsIndividualField,
-    PayPalCardFieldsIndividualFieldOptions,
-} from "@paypal/paypal-js/types/components/card-fields";
+import { PayPalCardFieldsIndividualFieldOptions } from "@paypal/paypal-js/types/components/card-fields";
 
-import { usePayPalCardFields, usePayPalCardFieldsRenderState } from "./hooks";
+import { usePayPalCardFields } from "./hooks";
 import { hasChildren, ignore } from "./utils";
 
 export const PayPalCVVField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = (options) => {
-    const { cardFields, cvvField, cvvContainer } = usePayPalCardFields();
-    const { registerField, unregisterField } = usePayPalCardFieldsRenderState();
+    const { cardFields, cvvField, registerField, unregisterField } =
+        usePayPalCardFields();
 
-    // const cvvContainer = useRef<HTMLDivElement>(null);
-    // const cvvField = useRef<PayPalCardFieldsIndividualField | null>(null);
+    const cvvContainer = useRef<HTMLDivElement>(null);
 
     // Set errors is state so that they can be caught by React's error boundary
     const [, setError] = useState(null);
@@ -31,9 +27,6 @@ export const PayPalCVVField: React.FC<
 
         registerField("PayPalCVVField");
         cvvField.current = cardFields.current.CVVField(options);
-
-        // Assigning current cvvField to the globally available cvvField in usePayPalCardFields() for merchants to interact with
-        // globalCvvField.current = cvvField.current;
 
         cvvField.current.render(cvvContainer.current).catch((err) => {
             if (!hasChildren(cvvContainer)) {

@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-    PayPalCardFieldsIndividualField,
-    PayPalCardFieldsIndividualFieldOptions,
-} from "@paypal/paypal-js/types/components/card-fields";
+import { PayPalCardFieldsIndividualFieldOptions } from "@paypal/paypal-js/types/components/card-fields";
 
 import { usePayPalCardFields } from "./hooks";
 import { hasChildren, ignore } from "./utils";
@@ -10,15 +7,16 @@ import { hasChildren, ignore } from "./utils";
 export const PayPalNameField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = (options) => {
-    const { cardFields, nameField, nameContainer } = usePayPalCardFields();
+    const { cardFields, nameField, registerField, unregisterField } =
+        usePayPalCardFields();
 
-    // const nameContainer = useRef<HTMLDivElement>(null);
-    // const nameField = useRef<PayPalCardFieldsIndividualField | null>(null);
+    const nameContainer = useRef<HTMLDivElement>(null);
 
     // Set errors is state so that they can be caught by React's error boundary
     const [, setError] = useState(null);
 
     function closeComponent() {
+        unregisterField("PayPalNameField");
         nameField.current?.close().catch(ignore);
     }
 
@@ -27,10 +25,8 @@ export const PayPalNameField: React.FC<
             return closeComponent;
         }
 
+        registerField("PayPalNameField");
         nameField.current = cardFields.current.NameField(options);
-
-        // Assigning current nameField to the globally available nameField in usePayPalCardFields() for merchants to interact with
-        // globalNameField.current = nameField.current;
 
         nameField.current.render(nameContainer.current).catch((err) => {
             if (!hasChildren(nameContainer)) {
