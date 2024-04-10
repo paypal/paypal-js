@@ -24,7 +24,7 @@ export const PayPalCardFieldsProvider = ({
 }: CardFieldsProviderProps): JSX.Element => {
     const [{ options, loadingStatus }] = useScriptProviderContext();
     const { registerField, unregisterField } = usePayPalCardFieldsRegistry();
-    const cardFieldsContainer = useRef<HTMLDivElement>(null);
+
     const cardFields = useRef<PayPalCardFieldsComponent | null>(null);
 
     const nameField = useRef<PayPalCardFieldsIndividualField | null>(null);
@@ -43,14 +43,12 @@ export const PayPalCardFieldsProvider = ({
         }
 
         try {
-            if (cardFieldsContainer.current) {
-                cardFields.current =
-                    getPayPalWindowNamespace(
-                        options[SDK_SETTINGS.DATA_NAMESPACE]
-                    ).CardFields?.({
-                        ...props,
-                    }) ?? null;
-            }
+            cardFields.current =
+                getPayPalWindowNamespace(
+                    options[SDK_SETTINGS.DATA_NAMESPACE]
+                ).CardFields?.({
+                    ...props,
+                }) ?? null;
         } catch (error) {
             setError(() => {
                 throw new Error(
@@ -81,25 +79,24 @@ export const PayPalCardFieldsProvider = ({
         };
     }, [loadingStatus]); // eslint-disable-line react-hooks/exhaustive-deps
 
+    if (!isEligible) {
+        // TODO: What should be returned here?
+        return <div />;
+    }
+
     return (
-        <div style={{ width: "100%" }} ref={cardFieldsContainer}>
-            {loadingStatus === SCRIPT_LOADING_STATE.RESOLVED && isEligible ? (
-                <PayPalCardFieldsContext.Provider
-                    value={{
-                        cardFields,
-                        nameField,
-                        numberField,
-                        cvvField,
-                        expiryField,
-                        registerField,
-                        unregisterField,
-                    }}
-                >
-                    {children}
-                </PayPalCardFieldsContext.Provider>
-            ) : (
-                <div />
-            )}
-        </div>
+        <PayPalCardFieldsContext.Provider
+            value={{
+                cardFields,
+                nameField,
+                numberField,
+                cvvField,
+                expiryField,
+                registerField,
+                unregisterField,
+            }}
+        >
+            {children}
+        </PayPalCardFieldsContext.Provider>
     );
 };
