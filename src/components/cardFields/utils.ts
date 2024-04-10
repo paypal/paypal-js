@@ -32,14 +32,6 @@ export function ignore(): void {
     return;
 }
 
-export function zoidCardFieldsComponents(
-    fieldName: "number" | "name" | "cvv" | "expiry"
-): NodeListOf<Element> {
-    return document.querySelectorAll(
-        `iframe[name^=__zoid__paypal_card_${fieldName}_field__]`
-    );
-}
-
 export function hasChildren(
     container: React.RefObject<HTMLDivElement>
 ): boolean {
