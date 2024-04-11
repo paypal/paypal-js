@@ -78,6 +78,7 @@ export const PayPalCardFieldsProvider = ({
 
         // Clean up after component unmounts
         return () => {
+            setCardFields(null);
             cardFieldsInstance.current = null;
         };
     }, [loadingStatus]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -88,18 +89,20 @@ export const PayPalCardFieldsProvider = ({
     }
 
     return (
-        <PayPalCardFieldsContext.Provider
-            value={{
-                cardFields,
-                nameField,
-                numberField,
-                cvvField,
-                expiryField,
-                registerField,
-                unregisterField,
-            }}
-        >
-            {children}
-        </PayPalCardFieldsContext.Provider>
+        <div style={{ width: "100%" }}>
+            <PayPalCardFieldsContext.Provider
+                value={{
+                    cardFields,
+                    nameField,
+                    numberField,
+                    cvvField,
+                    expiryField,
+                    registerField,
+                    unregisterField,
+                }}
+            >
+                {children}
+            </PayPalCardFieldsContext.Provider>
+        </div>
     );
 };
