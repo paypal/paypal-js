@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { PayPalCardFieldsIndividualFieldOptions } from "@paypal/paypal-js/types/components/card-fields";
 
 import { usePayPalCardFields } from "./hooks";
 import { hasChildren, ignore } from "./utils";
+import { PayPalCardFieldsIndividualFieldOptions } from "../../types";
 
 export const PayPalCVVField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
-> = (options) => {
+> = ({ className, ...options }) => {
     const { cardFields, cvvField, registerField, unregisterField } =
         usePayPalCardFields();
 
@@ -21,12 +21,20 @@ export const PayPalCVVField: React.FC<
     }
 
     useEffect(() => {
-        if (!cardFields.current || !cvvContainer.current) {
+        if (!cardFields) {
+            setError(() => {
+                throw new Error(
+                    "Individual CardFields must be rendered inside the PayPalCardFieldsProvider"
+                );
+            });
+            return closeComponent;
+        }
+        if (!cvvContainer.current) {
             return closeComponent;
         }
 
         registerField("PayPalCVVField");
-        cvvField.current = cardFields.current.CVVField(options);
+        cvvField.current = cardFields.CVVField(options);
 
         cvvField.current.render(cvvContainer.current).catch((err) => {
             if (!hasChildren(cvvContainer)) {
@@ -44,5 +52,5 @@ export const PayPalCVVField: React.FC<
         return closeComponent;
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return <div ref={cvvContainer} />;
+    return <div ref={cvvContainer} className={className} />;
 };

@@ -8,7 +8,7 @@ import { ignore } from "./utils";
 import { FieldComponentName } from "./hooks";
 
 export type PayPalCardFieldsContextType = {
-    cardFields: React.MutableRefObject<PayPalCardFieldsComponent | null>;
+    cardFields: PayPalCardFieldsComponent | null;
     nameField: React.MutableRefObject<PayPalCardFieldsIndividualField | null>;
     numberField: React.MutableRefObject<PayPalCardFieldsIndividualField | null>;
     expiryField: React.MutableRefObject<PayPalCardFieldsIndividualField | null>;
@@ -19,7 +19,7 @@ export type PayPalCardFieldsContextType = {
 
 export const PayPalCardFieldsContext =
     createContext<PayPalCardFieldsContextType>({
-        cardFields: { current: null },
+        cardFields: null,
         nameField: { current: null },
         numberField: { current: null },
         cvvField: { current: null },

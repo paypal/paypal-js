@@ -15,6 +15,7 @@ export type FieldComponentName =
 export const usePayPalCardFields = (): PayPalCardFieldsContextType =>
     useContext(PayPalCardFieldsContext);
 
+// Function used to keep track of duplicate fields
 export const usePayPalCardFieldsRegistry = (): {
     registerField: (field: FieldComponentName) => void;
     unregisterField: (field: FieldComponentName) => void;

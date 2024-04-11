@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { PayPalCardFieldsIndividualFieldOptions } from "@paypal/paypal-js/types/components/card-fields";
 
 import { usePayPalCardFields } from "./hooks";
 import { hasChildren, ignore } from "./utils";
+import { PayPalCardFieldsIndividualFieldOptions } from "../../types";
 
 export const PayPalNumberField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
-> = (options) => {
+> = ({ className, ...options }) => {
     const { cardFields, numberField, registerField, unregisterField } =
         usePayPalCardFields();
 
@@ -21,11 +21,19 @@ export const PayPalNumberField: React.FC<
     }
 
     useEffect(() => {
-        if (!cardFields.current || !numberContainer.current) {
+        if (!cardFields) {
+            setError(() => {
+                throw new Error(
+                    "Individual CardFields must be rendered inside the PayPalCardFieldsProvider"
+                );
+            });
+            return closeComponent;
+        }
+        if (!numberContainer.current) {
             return closeComponent;
         }
         registerField("PayPalNumberField");
-        numberField.current = cardFields.current.NumberField(options);
+        numberField.current = cardFields.NumberField(options);
 
         numberField.current.render(numberContainer.current).catch((err) => {
             if (!hasChildren(numberContainer)) {
@@ -43,5 +51,5 @@ export const PayPalNumberField: React.FC<
         return closeComponent;
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return <div ref={numberContainer} />;
+    return <div ref={numberContainer} className={className} />;
 };

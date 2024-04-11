@@ -25,7 +25,9 @@ export const PayPalCardFieldsProvider = ({
     const [{ options, loadingStatus }] = useScriptProviderContext();
     const { registerField, unregisterField } = usePayPalCardFieldsRegistry();
 
-    const cardFields = useRef<PayPalCardFieldsComponent | null>(null);
+    const [cardFields, setCardFields] =
+        useState<PayPalCardFieldsComponent | null>(null);
+    const cardFieldsInstance = useRef<PayPalCardFieldsComponent | null>(null);
 
     const nameField = useRef<PayPalCardFieldsIndividualField | null>(null);
     const numberField = useRef<PayPalCardFieldsIndividualField | null>(null);
@@ -43,7 +45,7 @@ export const PayPalCardFieldsProvider = ({
         }
 
         try {
-            cardFields.current =
+            cardFieldsInstance.current =
                 getPayPalWindowNamespace(
                     options[SDK_SETTINGS.DATA_NAMESPACE]
                 ).CardFields?.({
@@ -58,7 +60,7 @@ export const PayPalCardFieldsProvider = ({
             return;
         }
 
-        if (!cardFields.current) {
+        if (!cardFieldsInstance.current) {
             setError(() => {
                 throw new Error(
                     generateMissingCardFieldsError({
@@ -71,11 +73,12 @@ export const PayPalCardFieldsProvider = ({
             return;
         }
 
-        setIsEligible(cardFields.current.isEligible());
+        setIsEligible(cardFieldsInstance.current.isEligible());
+        setCardFields(cardFieldsInstance.current);
 
         // Clean up after component unmounts
         return () => {
-            cardFields.current = null;
+            cardFieldsInstance.current = null;
         };
     }, [loadingStatus]); // eslint-disable-line react-hooks/exhaustive-deps
 

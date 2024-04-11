@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { PayPalCardFieldsIndividualFieldOptions } from "@paypal/paypal-js/types/components/card-fields";
 
 import { usePayPalCardFields } from "./hooks";
 import { hasChildren, ignore } from "./utils";
+import { PayPalCardFieldsIndividualFieldOptions } from "../../types";
 
 export const PayPalExpiryField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
-> = (options) => {
+> = ({ className, ...options }) => {
     const { cardFields, expiryField, registerField, unregisterField } =
         usePayPalCardFields();
 
@@ -21,12 +21,20 @@ export const PayPalExpiryField: React.FC<
     }
 
     useEffect(() => {
-        if (!cardFields.current || !expiryContainer.current) {
+        if (!cardFields) {
+            setError(() => {
+                throw new Error(
+                    "Individual CardFields must be rendered inside the PayPalCardFieldsProvider"
+                );
+            });
+            return closeComponent;
+        }
+        if (!expiryContainer.current) {
             return closeComponent;
         }
 
         registerField("PayPalExpiryField");
-        expiryField.current = cardFields.current.ExpiryField(options);
+        expiryField.current = cardFields.ExpiryField(options);
 
         expiryField.current.render(expiryContainer.current).catch((err) => {
             if (!hasChildren(expiryContainer)) {
@@ -44,5 +52,5 @@ export const PayPalExpiryField: React.FC<
         return closeComponent;
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    return <div ref={expiryContainer} />;
+    return <div ref={expiryContainer} className={className} />;
 };
