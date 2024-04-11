@@ -377,9 +377,12 @@ There are 3 parts to the card-fields integration:
 ```jsx
 import {
     PayPalScriptProvider,
-    PayPalHostedFieldsProvider,
-    PayPalHostedField,
-    usePayPalHostedFields,
+    PayPalCardFieldsProvider,
+    PayPalNameField,
+    PayPalNumberField,
+    PayPalExpiryField,
+    PayPalCVVField,
+    usePayPalCardFields,
 } from "@paypal/react-paypal-js";
 
 const SubmitPayment = () => {
