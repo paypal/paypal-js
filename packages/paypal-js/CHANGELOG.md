@@ -1,5 +1,13 @@
 # Changelog
 
+## 8.0.5
+
+### Patch Changes
+
+-   81faf35: Exported the card field types. They were previously defined but not exported.
+-   b3da231: Adjust card-field types.
+-   a33a65f: Updated the type for the card fields onApprove parameter.
+
 ## 8.0.4
 
 ### Patch Changes
