@@ -114,7 +114,7 @@ export interface PayPalCardFieldsIndividualFieldOptions {
 }
 
 export interface PayPalCardFieldsIndividualField {
-    render: (container: string | HTMLElement) => Promise<void>;
+    render: (container: string | HTMLElement) => Promise<void>;
     addClass: (className: string) => Promise<void>;
     clear: () => void;
     focus: () => void;
@@ -124,7 +124,7 @@ export interface PayPalCardFieldsIndividualField {
     removeClass: (className: string) => Promise<void>;
     setAttribute: (name: string, value: string) => Promise<void>;
     setMessage: (message: string) => void;
-    close: ()=> Promise<void>;
+    close: () => Promise<void>;
 }
 
 export interface PayPalCardFieldsComponentOptions {

@@ -25,15 +25,15 @@ import type {
 
 export interface PayPalNamespace {
     Buttons?: (
-        options?: PayPalButtonsComponentOptions,
+        options?: PayPalButtonsComponentOptions
     ) => PayPalButtonsComponent;
     Marks?: (options?: PayPalMarksComponentOptions) => PayPalMarksComponent;
     Messages?: (
-        options?: PayPalMessagesComponentOptions,
+        options?: PayPalMessagesComponentOptions
     ) => PayPalMessagesComponent;
     HostedFields?: PayPalHostedFieldsComponent;
     CardFields?: (
-        options?: PayPalCardFieldsComponentOptions,
+        options?: PayPalCardFieldsComponentOptions
     ) => PayPalCardFieldsComponent;
     getFundingSources?: getFundingSources;
     isFundingEligible?: isFundingEligible;
@@ -44,7 +44,7 @@ export interface PayPalNamespace {
 
 export function loadScript(
     options: PayPalScriptOptions,
-    PromisePonyfill?: PromiseConstructor,
+    PromisePonyfill?: PromiseConstructor
 ): Promise<PayPalNamespace | null>;
 
 export function loadCustomScript(options: {
@@ -67,7 +67,7 @@ export * from "./components/funding-eligibility";
 export * from "./components/hosted-fields";
 export * from "./components/marks";
 export * from "./components/messages";
-export * from "./components/card-fields"
+export * from "./components/card-fields";
 
 // Export apis
 export * from "./apis/orders";

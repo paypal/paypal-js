@@ -21,6 +21,7 @@ interface PayPalScriptQueryParameters {
 }
 
 interface PayPalScriptDataAttributes {
+    env?: 'sandbox' | 'production',
     dataClientToken?: string;
     dataCspNonce?: string;
     dataClientMetadataId?: string;
