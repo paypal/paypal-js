@@ -46,4 +46,5 @@ export interface PayPalScriptOptions
         ScriptAttributes {
     sdkBaseUrl?: string;
     environment?: "production" | "sandbox";
+    sdkBaseUrl?: string;
 }
