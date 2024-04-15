@@ -104,6 +104,13 @@ function validateArguments(options: unknown, PromisePonyfill?: unknown) {
     if (typeof options !== "object" || options === null) {
         throw new Error("Expected an options object.");
     }
+    const { environment } = options as PayPalScriptOptions;
+
+    if (environment && !["production", "sandbox"].includes(environment)) {
+        throw new Error(
+            'The `environment` option must be either "production" or "sandbox".'
+        );
+    }
 
     if (
         typeof PromisePonyfill !== "undefined" &&
