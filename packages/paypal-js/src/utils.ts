@@ -67,7 +67,7 @@ export function processOptions(options: PayPalScriptOptions): {
     attributes: StringMap;
 } {
     const { environment } = options;
-    // Keeping production as default to keep maintain backward compatibility.
+    // Keeping production as default to maintain backward compatibility.
     // In the future this logic needs to be changed to use sandbox domain as default instead of production.
     let sdkBaseUrl =
         environment === "sandbox"
