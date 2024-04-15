@@ -44,7 +44,6 @@ export interface PayPalScriptOptions
     extends PayPalScriptQueryParameters,
         PayPalScriptDataAttributes,
         ScriptAttributes {
-    sdkBaseUrl?: string;
     environment?: "production" | "sandbox";
     sdkBaseUrl?: string;
 }
