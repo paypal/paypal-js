@@ -6,9 +6,7 @@ import { mock } from "jest-mock-extended";
 
 import { PayPalScriptProvider } from "../PayPalScriptProvider";
 import { PayPalCardFieldsProvider } from "./PayPalCardFieldsProvider";
-import {
-    CARD_FIELDS_DUPLICATE_CHILDREN_ERROR,
-} from "../../constants";
+import { CARD_FIELDS_DUPLICATE_CHILDREN_ERROR } from "../../constants";
 import { PayPalNumberField } from "./PayPalNumberField";
 import { PayPalCVVField } from "./PayPalCVVField";
 import { PayPalExpiryField } from "./PayPalExpiryField";

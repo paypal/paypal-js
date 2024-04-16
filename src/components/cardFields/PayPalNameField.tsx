@@ -6,10 +6,5 @@ import { PayPalCardField } from "./PayPalCardField";
 export const PayPalNameField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = (options) => {
-    return (
-        <PayPalCardField
-            fieldName="NameField"
-            {...options}
-        />
-    );
+    return <PayPalCardField fieldName="NameField" {...options} />;
 };
