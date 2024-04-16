@@ -386,7 +386,7 @@ import {
 } from "@paypal/react-paypal-js";
 
 const SubmitPayment = () => {
-    const { cardFields } = usePayPalCardFields();
+    const { cardFields, fields } = usePayPalCardFields();
 
     function submitHandler() {
         if (typeof cardFields.submit !== "function") return; // validate that `submit()` exists before using it
