@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.2.0](https://github.com/paypal/react-paypal-js/compare/v8.1.4...v8.2.0) (2024-03-20)
+
+### Features
+
+-   add DATA_JS_SDK_LIBRARY to constants ([aa1b771](https://github.com/paypal/react-paypal-js/commit/aa1b771d85fa75083ad152f9d9b55d9c46ae051f))
+-   add js library to options ([acc5123](https://github.com/paypal/react-paypal-js/commit/acc512371460da4b7d2f59ba10c69034f7ecef45))
+-   hardcode js library ([95a29fa](https://github.com/paypal/react-paypal-js/commit/95a29fae3895042eca2b55f33a98a0d85ed97eae))
+-   rename constant ([1d027b6](https://github.com/paypal/react-paypal-js/commit/1d027b6b93d23309a4d6966f998e320fcf7c94e5))
+
+### Bug Fixes
+
+-   alphabetize constants ([0d9b495](https://github.com/paypal/react-paypal-js/commit/0d9b495a15e2fd8e923bc55237bb6ba0c69cd11e))
+-   enforce values ([faa6278](https://github.com/paypal/react-paypal-js/commit/faa6278d1ad530658999c21be36f24fa1322d8e6))
+
 ### [8.1.4](https://github.com/paypal/react-paypal-js/compare/v8.1.3...v8.1.4) (2024-02-28)
 
 ### Bug Fixes

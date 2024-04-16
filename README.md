@@ -417,7 +417,6 @@ export default function App() {
         <PayPalScriptProvider
             options={{
                 clientId: "your-client-id",
-                dataUserIdToken: "your-data-user-id-token",
                 components: "card-fields",
             }}
         >
