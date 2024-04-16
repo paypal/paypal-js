@@ -372,7 +372,7 @@ There are 3 parts to the card-fields integration:
     - `<PayPalCVVField>` component used for the credit card cvv element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
     - `<PayPalExpiryField>` component used for the credit card expiry element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
     - `<PayPalNameField>` component used for the credit cardholder's name element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
-3. The `usePayPalCardFields` hook exposes the `cardFields` instance that includes methods suchs as the `cardFields.submit()` function for submitting the payment with your own custom button. It also exposes the references to each of the 4 individual components like `cvvField` for more granular control, eg: `cvvField.current.focus()` to programatically manipulate the element in the DOM.
+3. The `usePayPalCardFields` hook exposes the `cardFieldsForm` instance that includes methods suchs as the `cardFieldsForm.submit()` function for submitting the payment with your own custom button. It also exposes the references to each of the individual components for more granular control, eg: `fields.CVVField.focus()` to programatically manipulate the element in the DOM.
 
 ```jsx
 import {
