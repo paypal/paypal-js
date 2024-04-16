@@ -1,6 +1,6 @@
 import {
     PayPalCardFieldsInputEvents,
-    PayPalCardFieldsIndividualFieldOptions,
+    PayPalCardFieldsIndividualFieldOptions as FieldOptions,
     PayPalCardFieldsComponentOptions,
     PayPalCardFieldCardFieldData,
     PayPalCardFieldSecurityCode,
@@ -12,7 +12,6 @@ import {
 
 export type {
     PayPalCardFieldsInputEvents,
-    PayPalCardFieldsIndividualFieldOptions,
     PayPalCardFieldsComponentOptions,
     PayPalCardFieldCardFieldData,
     PayPalCardFieldSecurityCode,
@@ -20,6 +19,10 @@ export type {
     PayPalCardFieldsStateObject,
     PayPalCardFieldsComponent,
     PayPalCardFieldsIndividualField,
+};
+
+export type PayPalCardFieldsIndividualFieldOptions = FieldOptions & {
+    className?: string;
 };
 
 export type PayPalCardFieldsNamespace = {
@@ -63,3 +66,13 @@ export type CardFieldStyle = {
     WebkitTapHighlightColor?: string;
     WebkitTransition?: string;
 };
+
+export type FieldComponentName =
+    | "CVVField"
+    | "ExpiryField"
+    | "NumberField"
+    | "NameField";
+
+export type RegisteredFields = Partial<
+    Record<FieldComponentName, PayPalCardFieldsIndividualField>
+>;

@@ -9,6 +9,13 @@ export * from "./components/PayPalMessages";
 export * from "./components/PayPalScriptProvider";
 export * from "./components/hostedFields/PayPalHostedFieldsProvider";
 export * from "./components/hostedFields/PayPalHostedField";
+export * from "./components/cardFields/PayPalCardFieldsProvider";
+export * from "./components/cardFields/PayPalNameField";
+export * from "./components/cardFields/PayPalNumberField";
+export * from "./components/cardFields/PayPalExpiryField";
+export * from "./components/cardFields/PayPalCVVField";
+export * from "./components/cardFields/context";
+export { usePayPalCardFields } from "./components/cardFields/hooks";
 
 import type { FUNDING_SOURCE } from "@paypal/paypal-js";
 import * as constants from "@paypal/sdk-constants/dist/module";

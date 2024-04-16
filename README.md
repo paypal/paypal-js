@@ -360,6 +360,83 @@ export default function App() {
 }
 ```
 
+### PayPal Card Fields
+
+The JS SDK card-fields component provides payment form functionality that you can customize. Read more about this integration in the [PayPal Advanced Card Payments documentation](https://developer.paypal.com/docs/business/checkout/advanced-card-payments/).
+
+There are 3 parts to the card-fields integration:
+
+1. The `<PayPalCardFieldsProvider />` provider component wraps the form field elements and accepts props like `createOrder()`.
+2. The individual CardFields:
+    - `<PayPalNumberField>` component used for the credit card number element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
+    - `<PayPalCVVField>` component used for the credit card cvv element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
+    - `<PayPalExpiryField>` component used for the credit card expiry element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
+    - `<PayPalNameField>` component used for the credit cardholder's name element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
+3. The `usePayPalCardFields` hook exposes the `cardFieldsForm` instance that includes methods suchs as the `cardFieldsForm.submit()` function for submitting the payment with your own custom button. It also exposes the references to each of the individual components for more granular control, eg: `fields.CVVField.focus()` to programatically manipulate the element in the DOM.
+
+```jsx
+import {
+    PayPalScriptProvider,
+    PayPalCardFieldsProvider,
+    PayPalNameField,
+    PayPalNumberField,
+    PayPalExpiryField,
+    PayPalCVVField,
+    usePayPalCardFields,
+} from "@paypal/react-paypal-js";
+
+const SubmitPayment = () => {
+    const { cardFields, fields } = usePayPalCardFields();
+
+    function submitHandler() {
+        if (typeof cardFields.submit !== "function") return; // validate that `submit()` exists before using it
+
+        cardFields
+            .submit()
+            .then(() => {
+                // submit successful
+            })
+            .catch(() => {
+                // submission error
+            });
+    }
+    return <button onClick={submitHandler}>Pay</button>;
+};
+
+export default function App() {
+    function createOrder() {
+        // merchant code
+    }
+    function onApprove() {
+        // merchant code
+    }
+    function onError() {
+        // merchant code
+    }
+    return (
+        <PayPalScriptProvider
+            options={{
+                clientId: "your-client-id",
+                components: "card-fields",
+            }}
+        >
+            <PayPalCardFieldsProvider
+                createOrder={createOrder}
+                onApprove={onApprove}
+                onError={onError}
+            >
+                <PayPalNameField />
+                <PayPalNumberField />
+                <PayPalExpiryField />
+                <PayPalCVVField />
+
+                <SubmitPayment />
+            </PayPalCardFieldsProvider>
+        </PayPalScriptProvider>
+    );
+}
+```
+
 ### Browser Support
 
 This library supports all popular browsers, including IE 11. It provides the same browser support as the JS SDK. Here's the [full list of supported browsers](https://developer.paypal.com/docs/business/checkout/reference/browser-support/#supported-browsers-by-platform).

@@ -44,3 +44,20 @@ export const HOSTED_FIELDS_DUPLICATE_CHILDREN_ERROR =
  *******************/
 export const SCRIPT_PROVIDER_REDUCER_ERROR =
     "usePayPalScriptReducer must be used within a PayPalScriptProvider";
+
+/*******************
+ * Card Fields *
+ *******************/
+export const CARD_ERRORS = {
+    INELIGIBLE_CARD_VENDOR: "INELIGIBLE_CARD_VENDOR",
+    INVALID_NUMBER: "INVALID_NUMBER",
+    INVALID_EXPIRY: "INVALID_EXPIRY",
+    INVALID_CVV: "INVALID_CVV",
+    INVALID_NAME: "INVALID_NAME",
+} as const;
+export const CARD_FIELDS_CHILDREN_ERROR =
+    "To use CardFields you must use it with at least the 3 required fields (PayPalNumberField, PayPalCVVField, PayPalExpiryField)";
+export const CARD_FIELDS_DUPLICATE_CHILDREN_ERROR =
+    "Cannot use duplicate CardFields as children";
+export const CARD_FIELDS_CONTEXT_ERROR =
+    "Individual CardFields must be rendered inside the PayPalCardFieldsProvider";
