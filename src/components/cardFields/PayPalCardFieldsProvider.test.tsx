@@ -8,7 +8,6 @@ import { PayPalScriptProvider } from "../PayPalScriptProvider";
 import { PayPalCardFieldsProvider } from "./PayPalCardFieldsProvider";
 import {
     CARD_FIELDS_DUPLICATE_CHILDREN_ERROR,
-    EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE,
 } from "../../constants";
 import { PayPalNumberField } from "./PayPalNumberField";
 import { PayPalCVVField } from "./PayPalCVVField";
@@ -107,31 +106,6 @@ describe("PayPalCardFieldsProvider", () => {
         await waitFor(() => expect(onError).toHaveBeenCalled());
         expect(onError.mock.calls[0][0].message).toEqual(
             "usePayPalScriptReducer must be used within a PayPalScriptProvider"
-        );
-        spyConsoleError.mockRestore();
-    });
-
-    test("should throw an Error using the component with PayPalScriptProvider without dataClientToken", async () => {
-        const spyConsoleError = jest
-            .spyOn(console, "error")
-            .mockImplementation();
-
-        render(
-            <PayPalScriptProvider options={{ clientId: "" }}>
-                <PayPalCardFieldsProvider
-                    onApprove={mockOnApprove}
-                    createOrder={mockCreateOrder}
-                    onError={mockOnError}
-                >
-                    <></>
-                </PayPalCardFieldsProvider>
-            </PayPalScriptProvider>,
-            { wrapper }
-        );
-
-        await waitFor(() => expect(onError).toHaveBeenCalled());
-        expect(onError.mock.calls[0][0].message).toEqual(
-            EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE
         );
         spyConsoleError.mockRestore();
     });

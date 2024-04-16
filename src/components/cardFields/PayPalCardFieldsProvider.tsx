@@ -1,7 +1,6 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 
-import { SCRIPT_LOADING_STATE } from "../../types";
-import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
+import { usePayPalScriptReducer } from "../../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace } from "../../utils";
 import { SDK_SETTINGS } from "../../constants";
 import { generateMissingCardFieldsError } from "./utils";
@@ -21,7 +20,7 @@ export const PayPalCardFieldsProvider = ({
     children,
     ...props
 }: CardFieldsProviderProps): JSX.Element => {
-    const [{ options, loadingStatus }] = useScriptProviderContext();
+    const [{ isResolved, options }] = usePayPalScriptReducer();
     const { fields, registerField, unregisterField } =
         usePayPalCardFieldsRegistry();
 
@@ -34,7 +33,7 @@ export const PayPalCardFieldsProvider = ({
     const [, setError] = useState(null);
 
     useEffect(() => {
-        if (!(loadingStatus === SCRIPT_LOADING_STATE.RESOLVED)) {
+        if (!isResolved) {
             return;
         }
 
@@ -74,7 +73,7 @@ export const PayPalCardFieldsProvider = ({
             setCardFieldsForm(null);
             cardFieldsInstance.current = null;
         };
-    }, [loadingStatus]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [isResolved]); // eslint-disable-line react-hooks/exhaustive-deps
 
     if (!isEligible) {
         // TODO: What should be returned here?
