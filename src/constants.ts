@@ -58,3 +58,4 @@ export const CARD_FIELDS_CHILDREN_ERROR =
     "To use CardFields you must use it with at least the 3 required fields (PayPalNumberField, PayPalCVVField, PayPalExpiryField)";
 export const CARD_FIELDS_DUPLICATE_CHILDREN_ERROR =
     "Cannot use duplicate CardFields as children";
+export const CARD_FIELDS_CONTEXT_ERROR = "Individual CardFields must be rendered inside the PayPalCardFieldsProvider"

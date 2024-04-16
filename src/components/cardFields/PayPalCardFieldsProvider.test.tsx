@@ -3,7 +3,6 @@ import { render, waitFor } from "@testing-library/react";
 import { ErrorBoundary } from "react-error-boundary";
 import { PayPalNamespace, loadScript } from "@paypal/paypal-js";
 import { mock } from "jest-mock-extended";
-import { PayPalCardFieldsComponent } from "@paypal/paypal-js/types/components/card-fields";
 
 import { PayPalScriptProvider } from "../PayPalScriptProvider";
 import { PayPalCardFieldsProvider } from "./PayPalCardFieldsProvider";
@@ -15,6 +14,7 @@ import { PayPalNumberField } from "./PayPalNumberField";
 import { PayPalCVVField } from "./PayPalCVVField";
 import { PayPalExpiryField } from "./PayPalExpiryField";
 
+import type { PayPalCardFieldsComponent } from "@paypal/paypal-js/types/components/card-fields";
 import type { ReactNode } from "react";
 
 const MOCK_ELEMENT_ID = "mock-element";

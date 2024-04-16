@@ -66,3 +66,13 @@ export type CardFieldStyle = {
     WebkitTapHighlightColor?: string;
     WebkitTransition?: string;
 };
+
+export type FieldComponentName =
+    | "CVVField"
+    | "ExpiryField"
+    | "NumberField"
+    | "NameField";
+
+export type RegisteredFields = Partial<
+    Record<FieldComponentName, PayPalCardFieldsIndividualField>
+>;

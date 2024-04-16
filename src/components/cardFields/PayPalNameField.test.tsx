@@ -7,8 +7,9 @@ import { mock } from "jest-mock-extended";
 import { PayPalNameField } from "./PayPalNameField";
 import { PayPalScriptProvider } from "../PayPalScriptProvider";
 import { PayPalCardFieldsProvider } from "./PayPalCardFieldsProvider";
-import { PayPalCardFieldsComponent } from "../../types";
+import { CARD_FIELDS_CONTEXT_ERROR } from "../../constants";
 
+import type { PayPalCardFieldsComponent } from "../../types";
 import type { ReactNode } from "react";
 
 const onError = jest.fn();
@@ -217,7 +218,7 @@ describe("PayPalNameField", () => {
 
         await waitFor(() => expect(onError).toBeCalledTimes(1));
         expect(onError.mock.calls[0][0].message).toBe(
-            "Individual CardFields must be rendered inside the PayPalCardFieldsProvider"
+            CARD_FIELDS_CONTEXT_ERROR
         );
         spyConsoleError.mockRestore();
     });

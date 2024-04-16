@@ -1,17 +1,17 @@
 import React from "react";
 
-import { usePayPalCardFields } from "./hooks";
+// import { usePayPalCardFields } from "./hooks";
 import { PayPalCardFieldsIndividualFieldOptions } from "../../types";
 import { PayPalCardField } from "./PayPalCardField";
 
 export const PayPalNameField: React.FC<
     PayPalCardFieldsIndividualFieldOptions
 > = (options) => {
-    const { nameField } = usePayPalCardFields();
+    // const { nameField } = usePayPalCardFields();
 
     return (
         <PayPalCardField
-            fieldRef={nameField}
+            // fieldRef={nameField}
             fieldName="NameField"
             {...options}
         />

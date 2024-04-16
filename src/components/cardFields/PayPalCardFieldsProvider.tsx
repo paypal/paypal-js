@@ -11,7 +11,6 @@ import { usePayPalCardFieldsRegistry } from "./hooks";
 import type {
     PayPalCardFieldsComponentOptions,
     PayPalCardFieldsComponent,
-    PayPalCardFieldsIndividualField,
 } from "@paypal/paypal-js/types/components/card-fields";
 
 type CardFieldsProviderProps = PayPalCardFieldsComponentOptions & {
@@ -23,23 +22,18 @@ export const PayPalCardFieldsProvider = ({
     ...props
 }: CardFieldsProviderProps): JSX.Element => {
     const [{ options, loadingStatus }] = useScriptProviderContext();
-    const { registerField, unregisterField } = usePayPalCardFieldsRegistry();
+    const { fields, registerField, unregisterField } =
+        usePayPalCardFieldsRegistry();
 
-    const [cardFields, setCardFields] =
+    const [cardFieldsForm, setCardFieldsForm] =
         useState<PayPalCardFieldsComponent | null>(null);
     const cardFieldsInstance = useRef<PayPalCardFieldsComponent | null>(null);
-
-    const nameField = useRef<PayPalCardFieldsIndividualField | null>(null);
-    const numberField = useRef<PayPalCardFieldsIndividualField | null>(null);
-    const cvvField = useRef<PayPalCardFieldsIndividualField | null>(null);
-    const expiryField = useRef<PayPalCardFieldsIndividualField | null>(null);
 
     const [isEligible, setIsEligible] = useState(false);
     // We set the error inside state so that it can be caught by React's error boundary
     const [, setError] = useState(null);
 
     useEffect(() => {
-        // Only render the card fields when script is loaded and cardFields is eligible
         if (!(loadingStatus === SCRIPT_LOADING_STATE.RESOLVED)) {
             return;
         }
@@ -74,11 +68,10 @@ export const PayPalCardFieldsProvider = ({
         }
 
         setIsEligible(cardFieldsInstance.current.isEligible());
-        setCardFields(cardFieldsInstance.current);
+        setCardFieldsForm(cardFieldsInstance.current);
 
-        // Clean up after component unmounts
         return () => {
-            setCardFields(null);
+            setCardFieldsForm(null);
             cardFieldsInstance.current = null;
         };
     }, [loadingStatus]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -92,11 +85,8 @@ export const PayPalCardFieldsProvider = ({
         <div style={{ width: "100%" }}>
             <PayPalCardFieldsContext.Provider
                 value={{
-                    cardFields,
-                    nameField,
-                    numberField,
-                    cvvField,
-                    expiryField,
+                    cardFieldsForm,
+                    fields,
                     registerField,
                     unregisterField,
                 }}

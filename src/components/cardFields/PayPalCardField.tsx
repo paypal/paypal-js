@@ -1,19 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { usePayPalCardFields } from "./hooks";
-import { hasChildren, ignore } from "./utils";
-import {
-    PayPalCardFieldsIndividualField,
+import { hasChildren } from "./utils";
+import { CARD_FIELDS_CONTEXT_ERROR } from "../../constants";
+
+import type {
+    FieldComponentName,
     PayPalCardFieldsIndividualFieldOptions,
 } from "../../types";
 
 export const PayPalCardField: React.FC<
     PayPalCardFieldsIndividualFieldOptions & {
-        fieldRef: React.MutableRefObject<PayPalCardFieldsIndividualField | null>;
-        fieldName: "NameField" | "NumberField" | "CVVField" | "ExpiryField";
+        fieldName: FieldComponentName;
     }
-> = ({ className, fieldRef, fieldName, ...options }) => {
-    const { cardFields, registerField, unregisterField } =
+> = ({ className, fieldName, ...options }) => {
+    const { cardFieldsForm, registerField, unregisterField } =
         usePayPalCardFields();
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -22,16 +23,13 @@ export const PayPalCardField: React.FC<
     const [, setError] = useState(null);
 
     function closeComponent() {
-        unregisterField(`PayPal${fieldName}`);
-        fieldRef.current?.close().catch(ignore);
+        unregisterField(fieldName);
     }
 
     useEffect(() => {
-        if (!cardFields) {
+        if (!cardFieldsForm) {
             setError(() => {
-                throw new Error(
-                    "Individual CardFields must be rendered inside the PayPalCardFieldsProvider"
-                );
+                throw new Error(CARD_FIELDS_CONTEXT_ERROR);
             });
             return closeComponent;
         }
@@ -39,10 +37,13 @@ export const PayPalCardField: React.FC<
             return closeComponent;
         }
 
-        registerField(`PayPal${fieldName}`);
-        fieldRef.current = cardFields[fieldName](options);
+        const registeredField = registerField(
+            fieldName,
+            options,
+            cardFieldsForm
+        );
 
-        fieldRef.current.render(containerRef.current).catch((err) => {
+        registeredField?.render(containerRef.current).catch((err) => {
             if (!hasChildren(containerRef)) {
                 // Component no longer in the DOM, we can safely ignore the error
                 return;
