@@ -37,7 +37,38 @@ describe("loadScript()", () => {
         expect(window.paypal).toBe(undefined);
 
         const response = await loadScript({ clientId: "test" });
+        expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
+            "https://www.paypal.com/sdk/js?client-id=test"
+        );
         expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+        expect(response).toEqual(window.paypal);
+    });
+
+    test("should insert <script> using environment option as sandbox", async () => {
+        expect(window.paypal).toBe(undefined);
+
+        const response = await loadScript({
+            clientId: "test",
+            environment: "sandbox",
+        });
+        expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+        expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
+            "https://www.sandbox.paypal.com/sdk/js?client-id=test"
+        );
+        expect(response).toEqual(window.paypal);
+    });
+
+    test("should insert <script> using environment option as production", async () => {
+        expect(window.paypal).toBe(undefined);
+
+        const response = await loadScript({
+            clientId: "test",
+            environment: "production",
+        });
+        expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+        expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
+            "https://www.paypal.com/sdk/js?client-id=test"
+        );
         expect(response).toEqual(window.paypal);
     });
 
@@ -89,6 +120,19 @@ describe("loadScript()", () => {
                 "The window.paypal global variable is not available."
             );
         }
+    });
+
+    test("should fail to insert <script> using invalid environment option", async () => {
+        expect(window.paypal).toBe(undefined);
+        expect(() =>
+            loadScript({
+                clientId: "test",
+                // @ts-expect-error intentionally sending invalid value
+                environment: "invalid",
+            })
+        ).toThrowError(
+            'The `environment` option must be either "production" or "sandbox"'
+        );
     });
 
     test("should throw an error from invalid arguments", () => {
