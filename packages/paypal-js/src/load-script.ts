@@ -106,7 +106,11 @@ function validateArguments(options: unknown, PromisePonyfill?: unknown) {
     }
     const { environment } = options as PayPalScriptOptions;
 
-    if (environment && !["production", "sandbox"].includes(environment)) {
+    if (
+        environment &&
+        environment !== "production" &&
+        environment !== "sandbox"
+    ) {
         throw new Error(
             'The `environment` option must be either "production" or "sandbox".'
         );
