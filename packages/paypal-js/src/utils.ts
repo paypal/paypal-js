@@ -66,7 +66,15 @@ export function processOptions(options: PayPalScriptOptions): {
     url: string;
     attributes: StringMap;
 } {
-    let sdkBaseUrl = "https://www.paypal.com/sdk/js";
+    const { environment } = options;
+    // Keeping production as default to maintain backward compatibility.
+    // In the future this logic needs to be changed to use sandbox domain as default instead of production.
+    let sdkBaseUrl =
+        environment === "sandbox"
+            ? "https://www.sandbox.paypal.com/sdk/js"
+            : "https://www.paypal.com/sdk/js";
+    // env is not an allowed key for sdk/js url.
+    delete options.environment;
 
     if (options.sdkBaseUrl) {
         sdkBaseUrl = options.sdkBaseUrl;
