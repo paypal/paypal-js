@@ -364,7 +364,73 @@ export default function App() {
 
 The JS SDK card-fields component provides payment form functionality that you can customize. Read more about this integration in the [PayPal Advanced Card Payments documentation](https://developer.paypal.com/docs/business/checkout/advanced-card-payments/).
 
-There are 3 parts to the card-fields integration:
+#### Using Card Fields Form (recommeneded)
+
+There are 3 parts to the this card-fields integration:
+
+1. The `<PayPalCardFieldsProvider />` provider component wraps the form field elements and accepts props like `createOrder()`.
+2. The `<PayPalCardFieldsForm />` component renders a form with all 4 fields included out of the box. This is an alternative for merchants who don't want to render each field individually in their react app.
+3. The `usePayPalCardFields` hook exposes the `cardFieldsForm` instance that includes methods suchs as the `cardFieldsForm.submit()` function for submitting the payment with your own custom button. It also exposes the references to each of the individual components for more granular control, eg: `fields.CVVField.focus()` to programatically manipulate the element in the DOM.
+
+```jsx
+import {
+    PayPalScriptProvider,
+    PayPalCardFieldsProvider,
+    PayPalCardFieldsForm
+    usePayPalCardFields,
+} from "@paypal/react-paypal-js";
+
+const SubmitPayment = () => {
+    const { cardFields, fields } = usePayPalCardFields();
+
+    function submitHandler() {
+        if (typeof cardFields.submit !== "function") return; // validate that `submit()` exists before using it
+
+        cardFields
+            .submit()
+            .then(() => {
+                // submit successful
+            })
+            .catch(() => {
+                // submission error
+            });
+    }
+    return <button onClick={submitHandler}>Pay</button>;
+};
+
+export default function App() {
+    function createOrder() {
+        // merchant code
+    }
+    function onApprove() {
+        // merchant code
+    }
+    function onError() {
+        // merchant code
+    }
+    return (
+        <PayPalScriptProvider
+            options={{
+                clientId: "your-client-id",
+                components: "card-fields",
+            }}
+        >
+            <PayPalCardFieldsProvider
+                createOrder={createOrder}
+                onApprove={onApprove}
+                onError={onError}
+            >
+                <PayPalCardFieldsForm />
+                <SubmitPayment />
+            </PayPalCardFieldsProvider>
+        </PayPalScriptProvider>
+    );
+}
+```
+
+#### Using Card Fields Individually
+
+There are 3 parts to the this card-fields integration:
 
 1. The `<PayPalCardFieldsProvider />` provider component wraps the form field elements and accepts props like `createOrder()`.
 2. The individual CardFields:
@@ -403,6 +469,7 @@ const SubmitPayment = () => {
     return <button onClick={submitHandler}>Pay</button>;
 };
 
+// Example using individual card fields
 export default function App() {
     function createOrder() {
         // merchant code

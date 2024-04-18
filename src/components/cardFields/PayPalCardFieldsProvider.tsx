@@ -6,6 +6,7 @@ import { SDK_SETTINGS } from "../../constants";
 import { generateMissingCardFieldsError } from "./utils";
 import { PayPalCardFieldsContext } from "./context";
 import { usePayPalCardFieldsRegistry } from "./hooks";
+import { FullWidthContainer } from "../ui/FullWidthContainer";
 
 import type {
     PayPalCardFieldsComponentOptions,
@@ -81,7 +82,7 @@ export const PayPalCardFieldsProvider = ({
     }
 
     return (
-        <div style={{ width: "100%" }}>
+        <FullWidthContainer>
             <PayPalCardFieldsContext.Provider
                 value={{
                     cardFieldsForm,
@@ -92,6 +93,6 @@ export const PayPalCardFieldsProvider = ({
             >
                 {children}
             </PayPalCardFieldsContext.Provider>
-        </div>
+        </FullWidthContainer>
     );
 };
