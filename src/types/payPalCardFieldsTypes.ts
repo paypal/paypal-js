@@ -25,6 +25,11 @@ export type PayPalCardFieldsIndividualFieldOptions = FieldOptions & {
     className?: string;
 };
 
+export type PayPalCardFieldsFormOptions = Omit<
+    PayPalCardFieldsIndividualFieldOptions,
+    "placeholder"
+>;
+
 export type PayPalCardFieldsNamespace = {
     components: string | string[] | undefined;
 } & { [DATA_NAMESPACE: string]: string | undefined };
