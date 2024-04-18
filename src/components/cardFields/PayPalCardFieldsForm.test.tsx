@@ -67,7 +67,7 @@ describe("PayPalCardFieldsForm", () => {
 
         (loadScript as jest.Mock).mockResolvedValue(window.paypal);
     });
-    test("should render each component with the glocal style passed", async () => {
+    test("should render each component with the global style passed", async () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
