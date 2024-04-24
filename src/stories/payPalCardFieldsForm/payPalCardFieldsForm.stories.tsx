@@ -18,27 +18,18 @@ import {
 import {
     COMPONENT_PROPS_CATEGORY,
     COMPONENT_TYPES,
-    ARG_TYPE_AMOUNT,
     ORDER_ID,
     ERROR,
 } from "../constants";
 
-import type { CSSProperties, FC, ReactElement } from "react";
+import type { FC, ReactElement } from "react";
 import type {
     CardFieldsOnApproveData,
     PayPalScriptOptions,
 } from "@paypal/paypal-js";
 
-type StoryProps = {
-    amount: string;
-    styles: Record<string, unknown>;
-    style: CSSProperties;
-};
-
 const uid = generateRandomString();
 const TOKEN_URL = `${FLY_SERVER}/api/paypal/generate-client-token`;
-const RED_COLOR = "#dc3545";
-const GREEN_COLOR = "#28a745";
 const scriptProviderOptions: PayPalScriptOptions = {
     clientId:
         "AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
@@ -97,6 +88,9 @@ export default {
     component: PayPalCardFieldsForm,
     parameters: {
         controls: { expanded: true, sort: "requiredFirst" },
+        docs: {
+            source: { language: "tsx" },
+        },
     },
     argTypes: {
         className: {
@@ -297,115 +291,3 @@ export const Default: FC = () => {
         </PayPalCardFieldsProvider>
     );
 };
-
-// export const IndividualFields: FC = () => {
-//     const [isPaying, setIsPaying] = useState(false);
-//     async function createOrder() {
-//         action(CREATE_ORDER)("Start creating the order in custom endpoint");
-//         return fetch(CREATE_ORDER_URL, {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json",
-//             },
-//             body: JSON.stringify({
-//                 cart: [
-//                     {
-//                         sku: "1blwyeo8",
-//                         quantity: 2,
-//                     },
-//                 ],
-//             }),
-//         })
-//             .then((response) => response.json())
-//             .then((order) => {
-//                 action(CREATE_ORDER)(order);
-//                 return order.id;
-//             })
-//             .catch((err) => {
-//                 action(ERROR)(err.message);
-//                 console.error(err);
-//             });
-//     }
-
-//     function onApprove(data: CardFieldsOnApproveData) {
-//         action(`Received ${ORDER_ID}`)(data.orderID);
-//         action(CAPTURE_ORDER)(
-//             `Sending ${ORDER_ID} to custom endpoint to capture the payment information`
-//         );
-//         fetch(CAPTURE_ORDER_URL, {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json",
-//             },
-//             body: JSON.stringify({ orderID: data.orderID }),
-//         })
-//             .then((response) => response.json())
-//             .then((data) => {
-//                 action(CAPTURE_ORDER)(data);
-//                 setIsPaying(false);
-//             })
-//             .catch((err) => {
-//                 action(ERROR)(err.message);
-//             });
-//     }
-//     return (
-//         <PayPalScriptProvider
-//             options={{
-//                 clientId:
-//                     "AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
-//                 components: "card-fields",
-//             }}
-//         >
-//             <PayPalCardFieldsProvider
-//                 createOrder={createOrder}
-//                 onApprove={onApprove}
-//                 onError={(err) => {
-//                     console.log(err);
-//                 }}
-//             >
-//                 <PayPalNameField />
-//                 <PayPalNumberField />
-//                 <PayPalExpiryField />
-//                 <PayPalCVVField />
-//                 {/* Custom client component to handle card fields submit */}
-//                 <SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
-//             </PayPalCardFieldsProvider>
-//         </PayPalScriptProvider>
-//     );
-// };
-
-/********************
- * OVERRIDE STORIES *
- *******************/
-// (Default as StoryFn).parameters = {
-//     docs: {
-//         container: ({
-//             context,
-//         }: {
-//             context: DocsContextProps;
-//         }): ReactElement => (
-//             <DocPageStructure context={context} code={getDefaultCode()} />
-//         ),
-//     },
-// };
-
-// (ExpirationDate as StoryFn).parameters = {
-//     docs: {
-//         container: ({
-//             context,
-//         }: {
-//             context: DocsContextProps;
-//         }): ReactElement => (
-//             <DocPageStructure
-//                 context={context}
-//                 code={getExpirationDateCode(
-//                     context.getStoryContext(context.storyById(context.id)).args
-//                 )}
-//             />
-//         ),
-//     },
-// };
-
-// (ExpirationDate as StoryFn).args = {
-//     style: {},
-// };
