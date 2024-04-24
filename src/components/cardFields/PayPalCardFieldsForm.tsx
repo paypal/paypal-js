@@ -10,7 +10,7 @@ This `<PayPalCardFieldsForm />` component renders the 4 individual fields for [C
 It relies on the `<PayPalCardFieldsProvider />` parent component for managing state related to loading the JS SDK script
 and execute some validations before the rendering the fields.
 
-Note: If you want to have more granular control over the structure of how the fields are rendered, you can alternatively use our [Individual Fields](https://paypal.github.io/react-paypal-js/?path=/docs/paypal-paypalcardfields--individual-fields).
+Note: If you want to have more granular control over the structure of how the fields are rendered, you can alternatively use our Individual Fields.
 */
 export const PayPalCardFieldsForm: React.FC<PayPalCardFieldsFormOptions> = ({
     className,
