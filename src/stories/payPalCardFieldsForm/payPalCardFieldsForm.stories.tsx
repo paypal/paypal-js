@@ -27,6 +27,10 @@ import type {
     CardFieldsOnApproveData,
     PayPalScriptOptions,
 } from "@paypal/paypal-js";
+import { StoryFn } from "@storybook/react";
+import { DocsContextProps } from "@storybook/addon-docs";
+import DocPageStructure from "../components/DocPageStructure";
+import { getFormCode } from "./code";
 
 const uid = generateRandomString();
 const TOKEN_URL = `${FLY_SERVER}/api/paypal/generate-client-token`;
@@ -84,7 +88,7 @@ const SubmitPayment: React.FC<{
 };
 
 export default {
-    title: "PayPal/PayPalCardFieldsForm",
+    title: "PayPal/PayPalCardFields/Form",
     component: PayPalCardFieldsForm,
     parameters: {
         controls: { expanded: true, sort: "requiredFirst" },
@@ -290,4 +294,20 @@ export const Default: FC = () => {
             <SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
         </PayPalCardFieldsProvider>
     );
+};
+
+/********************
+ * OVERRIDE STORIES *
+ *******************/
+(Default as StoryFn).parameters = {
+    docs: {
+        container: ({ context }: { context: DocsContextProps }) => (
+            <DocPageStructure
+                context={context}
+                code={getFormCode(
+                    context.getStoryContext(context.storyById(context.id)).args
+                )}
+            />
+        ),
+    },
 };
