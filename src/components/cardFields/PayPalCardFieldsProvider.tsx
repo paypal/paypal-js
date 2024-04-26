@@ -17,6 +17,15 @@ type CardFieldsProviderProps = PayPalCardFieldsComponentOptions & {
     children: ReactNode;
 };
 
+/**
+The `<PayPalCardFieldsProvider />` is a context provider that is designed to support the rendering and state management of PayPal CardFields in your application. 
+
+The context provider will initialize the `CardFields` instance from the JS SDK and determine eligibility to render the CardField components. Once the `CardFields` are initialized, the context provider will manage the state of the `CardFields` instance as well as the reference to each individiual card field.
+
+The state managed by the provider is accessible through our custom hook `usePayPalCardFields`.
+
+*/
+
 export const PayPalCardFieldsProvider = ({
     children,
     ...props

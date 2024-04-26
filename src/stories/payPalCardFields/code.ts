@@ -2,7 +2,7 @@ import { CREATE_ORDER_URL, CAPTURE_ORDER_URL } from "../utils";
 
 import type { Args } from "@storybook/addons/dist/ts3.9/types";
 
-export const getFormCode = (args: Args): string => {
+export const getFormCode = (): string => {
     return `
 	import React, { useState } from "react";
 	import type { CardFieldsOnApproveData } from "@paypal/paypal-js";
@@ -118,16 +118,19 @@ export const getFormCode = (args: Args): string => {
 	`;
 };
 
-export const getIndividualFieldCode = (args: Args): string => {
+export const getIndividualFieldCode = (): string => {
     return `
 	import React, { useState } from "react";
 	import type { CardFieldsOnApproveData } from "@paypal/paypal-js";
 
 	import {
-		PayPalScriptProvider,
-		usePayPalCardFields,
-		PayPalCardFieldsProvider,
-	//four different components and rendering them
+    PayPalScriptProvider,
+    usePayPalCardFields,
+    PayPalCardFieldsProvider,
+    PayPalCVVField,
+    PayPalExpiryField,
+    PayPalNameField,
+    PayPalNumberField,
 	} from "@paypal/react-paypal-js";
 
 	export default function App(): JSX.Element {
@@ -187,8 +190,10 @@ export const getIndividualFieldCode = (args: Args): string => {
 						console.log(err);
 					}}
 				>
-					<PayPalCardFieldsForm />
-					{/* Custom client component to handle card fields submit */}
+				<PayPalNameField />
+				<PayPalNumberField />
+				<PayPalExpiryField />
+				<PayPalCVVField />
 					<SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
 				</PayPalCardFieldsProvider>
 			</PayPalScriptProvider>

@@ -5,8 +5,12 @@ import {
     PayPalScriptProvider,
     usePayPalCardFields,
     PayPalCardFieldsProvider,
+    PayPalCVVField,
+    PayPalExpiryField,
+    PayPalNameField,
     PayPalNumberField,
 } from "../../index";
+
 import {
     getOptionsFromQueryString,
     generateRandomString,
@@ -30,7 +34,7 @@ import type {
 import { StoryFn } from "@storybook/react";
 import { DocsContextProps } from "@storybook/addon-docs";
 import DocPageStructure from "../components/DocPageStructure";
-import { getFormCode } from "./code";
+import { getIndividualFieldCode } from "./code";
 
 const uid = generateRandomString();
 const TOKEN_URL = `${FLY_SERVER}/api/paypal/generate-client-token`;
@@ -43,6 +47,19 @@ const scriptProviderOptions: PayPalScriptOptions = {
 const CREATE_ORDER = "createOrder";
 const SUBMIT_FORM = "submitForm";
 const CAPTURE_ORDER = "captureOrder";
+
+const description = `Rendering individual fields allows for more granular control over each component as well as flexibility in the layout of all [Card Fields](https://developer.paypal.com/docs/business/checkout/advanced-card-payments/integrate#3-add-javascript-sdk-and-card-form).
+
+This setup relies on the \`<PayPalCardFieldsProvider />\` parent component, which manages the state related to loading the JS SDK script and performs certain validations before rendering the fields.
+
+The individual fields include following components: 
+
+- \`<PaypalNameField />\` _optional_
+- \`<PaypalNumberField />\` _required_
+- \`<PaypalExpiryField />\` _required_
+- \`<PaypalCVVField />\` _required_
+
+Each field accepts it's own independent props, such as \`className\`, \`placeholder\`, \`inputEvents\`, \`style\`. `;
 
 /**
  * Functional component to submit the hosted fields form
@@ -88,20 +105,21 @@ const SubmitPayment: React.FC<{
 };
 
 export default {
-    title: "PayPal/PayPalCardFields/Individual",
-    component: PayPalNumberField,
+    title: "PayPal/PayPalCardFields/Individual Fields",
     parameters: {
         controls: { expanded: true, sort: "requiredFirst" },
         docs: {
             source: { language: "tsx" },
+            description: {
+                component: description,
+            },
         },
     },
     argTypes: {
         className: {
             control: false,
             table: { category: "Props", type: { summary: "string?" } },
-            description:
-                "Classes applied to the form container, not the individual fields.",
+            description: "Classes applied to individual field container.",
             defaultValue: {
                 summary: "undefined",
             },
@@ -118,6 +136,17 @@ export default {
         inputEvents: {
             control: false,
             table: { category: "Props", type: { summary: "InputEvents?" } },
+            description:
+                "An object containing callbacks for when a specified input event occurs for a field.",
+        },
+        placeholder: {
+            control: false,
+            table: { category: "Props", type: { summary: "string?" } },
+            description:
+                "Each card field has a default placeholder text. Pass a placeholder object to customize this text.",
+            defaultValue: {
+                summary: "undefined",
+            },
         },
         InputEvents: {
             control: false,
@@ -231,7 +260,7 @@ export default {
     ],
 };
 
-export const NumberField: FC = () => {
+export const Default: FC = () => {
     const [isPaying, setIsPaying] = useState(false);
     async function createOrder() {
         action(CREATE_ORDER)("Start creating the order in custom endpoint");
@@ -289,7 +318,10 @@ export const NumberField: FC = () => {
                 console.log(err);
             }}
         >
+            <PayPalNameField />
             <PayPalNumberField />
+            <PayPalExpiryField />
+            <PayPalCVVField />
             {/* Custom client component to handle card fields submit */}
             <SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
         </PayPalCardFieldsProvider>
@@ -299,14 +331,12 @@ export const NumberField: FC = () => {
 /********************
  * OVERRIDE STORIES *
  *******************/
-(NumberField as StoryFn).parameters = {
+(Default as StoryFn).parameters = {
     docs: {
         container: ({ context }: { context: DocsContextProps }) => (
             <DocPageStructure
                 context={context}
-                code={getFormCode(
-                    context.getStoryContext(context.storyById(context.id)).args
-                )}
+                code={getIndividualFieldCode()}
             />
         ),
     },

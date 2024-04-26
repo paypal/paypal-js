@@ -5,7 +5,7 @@ import {
     PayPalScriptProvider,
     usePayPalCardFields,
     PayPalCardFieldsProvider,
-    PayPalExpiryField,
+    PayPalCardFieldsForm,
 } from "../../index";
 import {
     getOptionsFromQueryString,
@@ -88,8 +88,8 @@ const SubmitPayment: React.FC<{
 };
 
 export default {
-    title: "PayPal/PayPalCardFields/Individual",
-    component: PayPalExpiryField,
+    title: "PayPal/PayPalCardFields/Form",
+    component: PayPalCardFieldsForm,
     parameters: {
         controls: { expanded: true, sort: "requiredFirst" },
         docs: {
@@ -118,6 +118,8 @@ export default {
         inputEvents: {
             control: false,
             table: { category: "Props", type: { summary: "InputEvents?" } },
+            description:
+                "An object containing callbacks that will be applied to each input field.",
         },
         InputEvents: {
             control: false,
@@ -231,7 +233,7 @@ export default {
     ],
 };
 
-export const ExpiryField: FC = () => {
+export const Default: FC = () => {
     const [isPaying, setIsPaying] = useState(false);
     async function createOrder() {
         action(CREATE_ORDER)("Start creating the order in custom endpoint");
@@ -289,7 +291,7 @@ export const ExpiryField: FC = () => {
                 console.log(err);
             }}
         >
-            <PayPalExpiryField />
+            <PayPalCardFieldsForm />
             {/* Custom client component to handle card fields submit */}
             <SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
         </PayPalCardFieldsProvider>
@@ -299,15 +301,10 @@ export const ExpiryField: FC = () => {
 /********************
  * OVERRIDE STORIES *
  *******************/
-(ExpiryField as StoryFn).parameters = {
+(Default as StoryFn).parameters = {
     docs: {
         container: ({ context }: { context: DocsContextProps }) => (
-            <DocPageStructure
-                context={context}
-                code={getFormCode(
-                    context.getStoryContext(context.storyById(context.id)).args
-                )}
-            />
+            <DocPageStructure context={context} code={getFormCode()} />
         ),
     },
 };

@@ -118,6 +118,8 @@ export default {
         inputEvents: {
             control: false,
             table: { category: "Props", type: { summary: "InputEvents?" } },
+            description:
+                "An object containing callbacks that will be applied to each input field.",
         },
         InputEvents: {
             control: false,
@@ -302,12 +304,7 @@ export const Default: FC = () => {
 (Default as StoryFn).parameters = {
     docs: {
         container: ({ context }: { context: DocsContextProps }) => (
-            <DocPageStructure
-                context={context}
-                code={getFormCode(
-                    context.getStoryContext(context.storyById(context.id)).args
-                )}
-            />
+            <DocPageStructure context={context} code={getFormCode()} />
         ),
     },
 };

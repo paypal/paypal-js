@@ -3,9 +3,9 @@ import { action } from "@storybook/addon-actions";
 
 import {
     PayPalScriptProvider,
-    usePayPalCardFields,
     PayPalCardFieldsProvider,
-    PayPalCVVField,
+    PayPalCardFieldsForm,
+    usePayPalCardFields,
 } from "../../index";
 import {
     getOptionsFromQueryString,
@@ -88,27 +88,67 @@ const SubmitPayment: React.FC<{
 };
 
 export default {
-    title: "PayPal/PayPalCardFields/Individual",
-    component: PayPalCVVField,
+    title: "PayPal/PayPalCardFields/Context Provider",
+    component: PayPalCardFieldsProvider,
     parameters: {
         controls: { expanded: true, sort: "requiredFirst" },
         docs: {
             source: { language: "tsx" },
+            disabled: true,
         },
     },
     argTypes: {
-        className: {
+        createOrder: {
             control: false,
-            table: { category: "Props", type: { summary: "string?" } },
-            description:
-                "Classes applied to the form container, not the individual fields.",
-            defaultValue: {
-                summary: "undefined",
+            type: {
+                required: true,
             },
+            table: {
+                category: "Props",
+                type: { summary: "() => Promise<string>" },
+            },
+            description:
+                "The callback to create the order on your server. [CardFields options doc](https://developer.paypal.com/sdk/js/reference/#link-options)",
+        },
+        onApprove: {
+            control: false,
+            type: {
+                required: true,
+            },
+            table: {
+                category: "Props",
+                type: { summary: "(data: CardFieldsOnApproveData) => void" },
+            },
+            description:
+                "The callback to capture the order on your server. [CardFields options doc](https://developer.paypal.com/sdk/js/reference/#link-options)",
+        },
+        onError: {
+            control: false,
+            type: {
+                required: true,
+            },
+            table: {
+                category: "Props",
+                type: { summary: "(err: Record<string, unknown>) => void" },
+            },
+            description:
+                "The callback to catch errors during checkout. [CardFields options doc](https://developer.paypal.com/sdk/js/reference/#link-options)",
+        },
+        createVaultSetupToken: {
+            control: false,
+            type: {
+                required: false,
+            },
+            table: {
+                category: "Props",
+                type: { summary: "() => Promise<string>" },
+            },
+            description:
+                "The callback to create the `vaultSetupToken` on your server.",
         },
         style: {
             description:
-                "Custom CSS properties to customize each individual card field",
+                "Custom CSS properties to customize each individual card field.",
             control: { type: "object" },
             ...{
                 ...COMPONENT_PROPS_CATEGORY,
@@ -118,6 +158,17 @@ export default {
         inputEvents: {
             control: false,
             table: { category: "Props", type: { summary: "InputEvents?" } },
+            description:
+                "An object containing callbacks that will be applied to each input field.",
+        },
+        CardFieldsOnApproveData: {
+            control: false,
+            type: { required: false },
+            description: `<code>{<br>
+                <b class="code-json">orderID</b>: string <br> 
+            }</code>
+            `,
+            table: { category: COMPONENT_TYPES },
         },
         InputEvents: {
             control: false,
@@ -231,7 +282,7 @@ export default {
     ],
 };
 
-export const CVVField: FC = () => {
+export const Default: FC = () => {
     const [isPaying, setIsPaying] = useState(false);
     async function createOrder() {
         action(CREATE_ORDER)("Start creating the order in custom endpoint");
@@ -289,7 +340,7 @@ export const CVVField: FC = () => {
                 console.log(err);
             }}
         >
-            <PayPalCVVField />
+            <PayPalCardFieldsForm />
             {/* Custom client component to handle card fields submit */}
             <SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
         </PayPalCardFieldsProvider>
@@ -299,15 +350,10 @@ export const CVVField: FC = () => {
 /********************
  * OVERRIDE STORIES *
  *******************/
-(CVVField as StoryFn).parameters = {
+(Default as StoryFn).parameters = {
     docs: {
         container: ({ context }: { context: DocsContextProps }) => (
-            <DocPageStructure
-                context={context}
-                code={getFormCode(
-                    context.getStoryContext(context.storyById(context.id)).args
-                )}
-            />
+            <DocPageStructure context={context} code={getFormCode()} />
         ),
     },
 };
