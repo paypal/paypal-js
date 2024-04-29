@@ -67,7 +67,7 @@ describe("PayPalCardFieldsForm", () => {
 
         (loadScript as jest.Mock).mockResolvedValue(window.paypal);
     });
-    test("should render each component with the global style passed", async () => {
+    test("should initialize CardFields with the global style object", async () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
@@ -85,28 +85,25 @@ describe("PayPalCardFieldsForm", () => {
                     onApprove={mockOnApprove}
                     createOrder={mockCreateOrder}
                     onError={mockOnError}
+                    style={{ input: { color: "black" } }}
                 >
-                    <PayPalCardFieldsForm
-                        style={{ input: { color: "black" } }}
-                    />
+                    <PayPalCardFieldsForm />
                 </PayPalCardFieldsProvider>
             </PayPalScriptProvider>,
             { wrapper }
         );
         await waitFor(() => expect(onError).toHaveBeenCalledTimes(0));
 
-        [CVVField, ExpiryField, NameField, NumberField].forEach((field) => {
-            expect(field).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    style: { input: { color: "black" } },
-                })
-            );
-        });
+        expect(CardFields).toBeCalledWith(
+            expect.objectContaining({
+                style: { input: { color: "black" } },
+            })
+        );
 
         spyConsoleError.mockRestore();
     });
 
-    test("should render component with specific input event callbacks", async () => {
+    test("should initialize CardFields with global input events", async () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
@@ -124,33 +121,30 @@ describe("PayPalCardFieldsForm", () => {
                     onApprove={mockOnApprove}
                     createOrder={mockCreateOrder}
                     onError={mockOnError}
+                    inputEvents={{
+                        onChange: mockOnChange,
+                        onFocus: mockOnFocus,
+                        onBlur: mockOnBlur,
+                        onInputSubmitRequest: mockOnInputSubmitRequest,
+                    }}
                 >
-                    <PayPalCardFieldsForm
-                        inputEvents={{
-                            onChange: mockOnChange,
-                            onFocus: mockOnFocus,
-                            onBlur: mockOnBlur,
-                            onInputSubmitRequest: mockOnInputSubmitRequest,
-                        }}
-                    />
+                    <PayPalCardFieldsForm />
                 </PayPalCardFieldsProvider>
             </PayPalScriptProvider>,
             { wrapper }
         );
         await waitFor(() => expect(onError).toHaveBeenCalledTimes(0));
 
-        [CVVField, ExpiryField, NameField, NumberField].forEach((field) => {
-            expect(field).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    inputEvents: {
-                        onChange: mockOnChange,
-                        onFocus: mockOnFocus,
-                        onBlur: mockOnBlur,
-                        onInputSubmitRequest: mockOnInputSubmitRequest,
-                    },
-                })
-            );
-        });
+        expect(CardFields).toBeCalledWith(
+            expect.objectContaining({
+                inputEvents: {
+                    onChange: mockOnChange,
+                    onFocus: mockOnFocus,
+                    onBlur: mockOnBlur,
+                    onInputSubmitRequest: mockOnInputSubmitRequest,
+                },
+            })
+        );
 
         spyConsoleError.mockRestore();
     });
