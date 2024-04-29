@@ -1,6 +1,5 @@
 import { CREATE_ORDER_URL, CAPTURE_ORDER_URL } from "../utils";
 
-
 export const getFormCode = (): string => {
     return `
 	import React, { useState } from "react";
