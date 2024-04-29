@@ -6,7 +6,9 @@ export const parameters = {
                 "PayPal",
                 [
                     "PayPalButtons",
+                    "PayPalCardFields",
                     "PayPalHostedFields",
+                    "PayPalHostedFieldsProvider",
                     "PayPalMarks",
                     "PayPalMessages",
                     "Subscriptions",
