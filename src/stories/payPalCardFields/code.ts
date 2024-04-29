@@ -208,7 +208,7 @@ export const getIndividualFieldCode = (): string => {
 		const handleClick = async () => {
 			if (!cardFieldsForm) {
 				const childErrorMessage =
-					"Unable to find any child components in the <PayPalHostedFieldsProvider />";
+					"Unable to find any child components in the < PayPalCardFieldsProvider />";
 
 				throw new Error(childErrorMessage);
 			}
