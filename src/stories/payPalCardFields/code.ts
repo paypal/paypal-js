@@ -1,6 +1,5 @@
 import { CREATE_ORDER_URL, CAPTURE_ORDER_URL } from "../utils";
 
-import type { Args } from "@storybook/addons/dist/ts3.9/types";
 
 export const getFormCode = (): string => {
     return `
