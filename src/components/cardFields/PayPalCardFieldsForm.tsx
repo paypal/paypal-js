@@ -11,7 +11,7 @@ This setup relies on the `<PayPalCardFieldsProvider />` parent component, which 
 
 
 
-Note: If you want to have more granular control over the structure of how the fields are rendered, you can alternatively use our Individual Fields.
+Note: If you want to have more granular control over the layout of how the fields are rendered, you can alternatively use our Individual Fields.
 */
 export const PayPalCardFieldsForm: React.FC<PayPalCardFieldsFormOptions> = ({
     className,

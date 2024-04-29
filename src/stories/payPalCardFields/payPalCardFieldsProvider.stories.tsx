@@ -108,7 +108,7 @@ export default {
                 type: { summary: "() => Promise<string>" },
             },
             description:
-                "The callback to create the order on your server. [CardFields options doc](https://developer.paypal.com/sdk/js/reference/#link-options)",
+                "The callback to create the order on your server. [CardFields options documentation](https://developer.paypal.com/sdk/js/reference/#link-options)",
         },
         onApprove: {
             control: false,
@@ -120,7 +120,7 @@ export default {
                 type: { summary: "(data: CardFieldsOnApproveData) => void" },
             },
             description:
-                "The callback to capture the order on your server. [CardFields options doc](https://developer.paypal.com/sdk/js/reference/#link-options)",
+                "The callback to capture the order on your server. [CardFields options documentation](https://developer.paypal.com/sdk/js/reference/#link-options)",
         },
         onError: {
             control: false,
@@ -132,7 +132,7 @@ export default {
                 type: { summary: "(err: Record<string, unknown>) => void" },
             },
             description:
-                "The callback to catch errors during checkout. [CardFields options doc](https://developer.paypal.com/sdk/js/reference/#link-options)",
+                "The callback to catch errors during checkout. [CardFields options documentation](https://developer.paypal.com/sdk/js/reference/#link-options)",
         },
         createVaultSetupToken: {
             control: false,
@@ -148,7 +148,7 @@ export default {
         },
         style: {
             description:
-                "Custom CSS properties to customize each individual card field.",
+                "Custom CSS properties to customize each individual card field. [Supported CSS properties](https://developer.paypal.com/docs/checkout/advanced/customize/card-field-style/#link-supportedcssproperties)",
             control: { type: "object" },
             ...{
                 ...COMPONENT_PROPS_CATEGORY,

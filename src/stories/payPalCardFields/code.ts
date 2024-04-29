@@ -83,7 +83,7 @@ export const getFormCode = (): string => {
 		setIsPaying: React.Dispatch<React.SetStateAction<boolean>>;
 		isPaying: boolean;
 	}> = ({ isPaying, setIsPaying }) => {
-		const { cardFieldsForm } = usePayPalCardFields();
+		const { cardFieldsForm, fields } = usePayPalCardFields();
 
 		const handleClick = async () => {
 			if (!cardFieldsForm) {

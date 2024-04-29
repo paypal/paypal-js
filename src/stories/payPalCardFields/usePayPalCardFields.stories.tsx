@@ -40,7 +40,7 @@ const SUBMIT_FORM = "submitForm";
 const CAPTURE_ORDER = "captureOrder";
 
 const description = `
-The \`usePayPalCardFields\` custom hook provides access to the state managed by \`<PayPalCardFieldsProvider />\` 
+The \`usePayPalCardFields\` custom hook provides access to the state managed by \`<PayPalCardFieldsProvider />\`.
 `;
 
 /**

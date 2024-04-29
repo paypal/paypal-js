@@ -126,7 +126,7 @@ export default {
         },
         style: {
             description:
-                "Custom CSS properties to customize each individual card field",
+                "Custom CSS properties to customize each individual card field. [Supported CSS properties](https://developer.paypal.com/docs/checkout/advanced/customize/card-field-style/#link-supportedcssproperties).",
             control: { type: "object" },
             ...{
                 ...COMPONENT_PROPS_CATEGORY,
