@@ -19,7 +19,7 @@ import { getFormCode } from "./code";
 
 import type { DocsContextProps } from "@storybook/addon-docs";
 import type { StoryFn } from "@storybook/react";
-import type { FC, ReactElement } from "react";
+import type { FC } from "react";
 import type {
     CardFieldsOnApproveData,
     PayPalScriptOptions,
@@ -100,27 +100,6 @@ export default {
             },
         },
     },
-    decorators: [
-        (Story: FC): ReactElement => {
-            // Workaround to render the story after got the client token,
-            // The new experimental loaders doesn't work in Docs views
-
-            return (
-                <div style={{ minHeight: "200px" }}>
-                    <PayPalScriptProvider
-                        options={{
-                            ...scriptProviderOptions,
-
-                            dataNamespace: uid,
-                            dataUid: uid,
-                        }}
-                    >
-                        <Story />
-                    </PayPalScriptProvider>
-                </div>
-            );
-        },
-    ],
 };
 
 export const Default: FC = () => {
@@ -174,17 +153,26 @@ export const Default: FC = () => {
             });
     }
     return (
-        <PayPalCardFieldsProvider
-            createOrder={createOrder}
-            onApprove={onApprove}
-            onError={(err) => {
-                console.log(err);
+        <PayPalScriptProvider
+            options={{
+                ...scriptProviderOptions,
+
+                dataNamespace: uid,
+                dataUid: uid,
             }}
         >
-            <PayPalCardFieldsForm />
-            {/* Custom client component to handle card fields submit */}
-            <SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
-        </PayPalCardFieldsProvider>
+            <PayPalCardFieldsProvider
+                createOrder={createOrder}
+                onApprove={onApprove}
+                onError={(err) => {
+                    console.log(err);
+                }}
+            >
+                <PayPalCardFieldsForm />
+                {/* Custom client component to handle card fields submit */}
+                <SubmitPayment isPaying={isPaying} setIsPaying={setIsPaying} />
+            </PayPalCardFieldsProvider>
+        </PayPalScriptProvider>
     );
 };
 
