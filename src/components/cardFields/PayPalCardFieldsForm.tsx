@@ -7,18 +7,17 @@ import { FullWidthContainer } from "../ui/FullWidthContainer";
 
 export const PayPalCardFieldsForm: React.FC<PayPalCardFieldsFormOptions> = ({
     className,
-    ...options
 }) => {
     return (
         <div className={className}>
-            <PayPalCardField fieldName="NameField" {...options} />
-            <PayPalCardField fieldName="NumberField" {...options} />
+            <PayPalCardField fieldName="NameField" />
+            <PayPalCardField fieldName="NumberField" />
             <FlexContainer>
                 <FullWidthContainer>
-                    <PayPalCardField fieldName="ExpiryField" {...options} />
+                    <PayPalCardField fieldName="ExpiryField" />
                 </FullWidthContainer>
                 <FullWidthContainer>
-                    <PayPalCardField fieldName="CVVField" {...options} />
+                    <PayPalCardField fieldName="CVVField" />
                 </FullWidthContainer>
             </FlexContainer>
         </div>
