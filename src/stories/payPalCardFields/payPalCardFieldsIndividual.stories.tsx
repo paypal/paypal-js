@@ -74,7 +74,7 @@ const SubmitPayment: React.FC<{
     const handleClick = async () => {
         if (!cardFieldsForm) {
             const childErrorMessage =
-                "Unable to find any child components in the <PayPalHostedFieldsProvider />";
+                "Unable to find any child components in the <PayPalCardFieldsProvider />";
 
             action(ERROR)(childErrorMessage);
             throw new Error(childErrorMessage);
