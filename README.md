@@ -364,7 +364,7 @@ export default function App() {
 
 The JS SDK card-fields component provides payment form functionality that you can customize. Read more about this integration in the [PayPal Advanced Card Payments documentation](https://developer.paypal.com/docs/business/checkout/advanced-card-payments/).
 
-#### Using Card Fields Form (recommeneded)
+#### Using Card Fields Form (recommended)
 
 There are 3 parts to the this card-fields integration:
 
