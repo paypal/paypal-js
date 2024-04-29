@@ -45,7 +45,7 @@ const SUBMIT_FORM = "submitForm";
 const CAPTURE_ORDER = "captureOrder";
 
 /**
- * Functional component to submit the hosted fields form
+ * Functional component to submit the card fields form
  */
 
 const SubmitPayment: React.FC<{
