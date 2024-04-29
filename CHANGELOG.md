@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.3.0](https://github.com/paypal/react-paypal-js/compare/v8.2.0...v8.3.0) (2024-04-29)
+
+### Features
+
+-   add cardfields form component ([634e6cd](https://github.com/paypal/react-paypal-js/commit/634e6cdfc4c3deb7d5b4cd903e196bf444bed9f4))
+
+### Bug Fixes
+
+-   prettier format ([3e03c3b](https://github.com/paypal/react-paypal-js/commit/3e03c3b7c34781ab98dbc624bac42f56c1b70cac))
+-   rerender error fixed ([161fea6](https://github.com/paypal/react-paypal-js/commit/161fea66574f351eeb1b34f5d96b5f7014e0c72d))
+
 ## [8.2.0](https://github.com/paypal/react-paypal-js/compare/v8.1.4...v8.2.0) (2024-03-20)
 
 ### Features
