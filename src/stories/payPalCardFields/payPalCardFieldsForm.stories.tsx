@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { action } from "@storybook/addon-actions";
 
 import {
@@ -10,30 +10,23 @@ import {
 import {
     getOptionsFromQueryString,
     generateRandomString,
-    getClientToken,
-    FLY_SERVER,
     CREATE_ORDER_URL,
     CAPTURE_ORDER_URL,
 } from "../utils";
-import {
-    COMPONENT_PROPS_CATEGORY,
-    COMPONENT_TYPES,
-    ORDER_ID,
-    ERROR,
-} from "../constants";
+import { ORDER_ID, ERROR } from "../constants";
+import DocPageStructure from "../components/DocPageStructure";
+import { getFormCode } from "./code";
 
+import type { DocsContextProps } from "@storybook/addon-docs";
+import type { StoryFn } from "@storybook/react";
 import type { FC, ReactElement } from "react";
 import type {
     CardFieldsOnApproveData,
     PayPalScriptOptions,
 } from "@paypal/paypal-js";
-import { StoryFn } from "@storybook/react";
-import { DocsContextProps } from "@storybook/addon-docs";
-import DocPageStructure from "../components/DocPageStructure";
-import { getFormCode } from "./code";
 
 const uid = generateRandomString();
-const TOKEN_URL = `${FLY_SERVER}/api/paypal/generate-client-token`;
+
 const scriptProviderOptions: PayPalScriptOptions = {
     clientId:
         "AduyjUJ0A7urUcWtGCTjanhRBSzOSn9_GKUzxWDnf51YaV1eZNA0ZAFhebIV_Eq-daemeI7dH05KjLWm",
@@ -111,30 +104,19 @@ export default {
         (Story: FC): ReactElement => {
             // Workaround to render the story after got the client token,
             // The new experimental loaders doesn't work in Docs views
-            const [clientToken, setClientToken] = useState<string | null>(null);
-
-            useEffect(() => {
-                (async () => {
-                    setClientToken(await getClientToken(TOKEN_URL));
-                })();
-            }, []);
 
             return (
                 <div style={{ minHeight: "200px" }}>
-                    {clientToken && (
-                        <>
-                            <PayPalScriptProvider
-                                options={{
-                                    ...scriptProviderOptions,
-                                    dataClientToken: clientToken,
-                                    dataNamespace: uid,
-                                    dataUid: uid,
-                                }}
-                            >
-                                <Story />
-                            </PayPalScriptProvider>
-                        </>
-                    )}
+                    <PayPalScriptProvider
+                        options={{
+                            ...scriptProviderOptions,
+
+                            dataNamespace: uid,
+                            dataUid: uid,
+                        }}
+                    >
+                        <Story />
+                    </PayPalScriptProvider>
                 </div>
             );
         },
