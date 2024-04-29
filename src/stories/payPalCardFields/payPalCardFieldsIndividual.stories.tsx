@@ -62,7 +62,7 @@ The individual fields include following components:
 Each field accepts it's own independent props, such as \`className\`, \`placeholder\`, \`inputEvents\`, \`style\`. `;
 
 /**
- * Functional component to submit the hosted fields form
+ * Functional component to submit the card fields form
  */
 
 const SubmitPayment: React.FC<{
