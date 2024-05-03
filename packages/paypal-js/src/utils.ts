@@ -65,6 +65,7 @@ export function insertScriptElement({
 export function processOptions(options: PayPalScriptOptions): {
     url: string;
     attributes: StringMap;
+    queryParams: StringMap;
 } {
     const { environment } = options;
     // Keeping production as default to maintain backward compatibility.
@@ -121,6 +122,7 @@ export function processOptions(options: PayPalScriptOptions): {
     return {
         url: `${sdkBaseUrl}?${objectToQueryString(queryParams)}`,
         attributes,
+        queryParams,
     };
 }
 

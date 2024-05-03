@@ -17,13 +17,13 @@ export function loadScript(
     // resolve with null when running in Node or Deno
     if (typeof document === "undefined") return PromisePonyfill.resolve(null);
 
-    if (!options.clientId) {
+    const { url, attributes, queryParams } = processOptions(options);
+
+    if (!queryParams["client-id"]) {
         throw new Error(
             `Expected clientId in options object: ${JSON.stringify(options)}`
         );
     }
-
-    const { url, attributes } = processOptions(options);
 
     const namespace = attributes["data-namespace"] || "paypal";
     const existingWindowNamespace = getPayPalWindowNamespace(namespace);
