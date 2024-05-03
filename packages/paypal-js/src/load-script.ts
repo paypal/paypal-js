@@ -14,11 +14,17 @@ export function loadScript(
     PromisePonyfill: PromiseConstructor = Promise
 ): Promise<PayPalNamespace | null> {
     validateArguments(options, PromisePonyfill);
-
     // resolve with null when running in Node or Deno
     if (typeof document === "undefined") return PromisePonyfill.resolve(null);
 
+    if (!options.clientId) {
+        throw new Error(
+            `Expected clientId in options object: ${JSON.stringify(options)}`
+        );
+    }
+
     const { url, attributes } = processOptions(options);
+
     const namespace = attributes["data-namespace"] || "paypal";
     const existingWindowNamespace = getPayPalWindowNamespace(namespace);
 
@@ -104,6 +110,7 @@ function validateArguments(options: unknown, PromisePonyfill?: unknown) {
     if (typeof options !== "object" || options === null) {
         throw new Error("Expected an options object.");
     }
+
     const { environment } = options as PayPalScriptOptions;
 
     if (
