@@ -5,6 +5,7 @@ import { loadScript, PayPalScriptOptions } from "@paypal/paypal-js";
 import { PayPalScriptProvider } from "./PayPalScriptProvider";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { SCRIPT_ID, SDK_SETTINGS } from "../constants";
+import { DISPATCH_ACTION } from "../types/enums";
 
 jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),
@@ -290,7 +291,7 @@ function ResetParamsOnClick({
 
     function onClick() {
         dispatch({
-            type: "resetOptions",
+            type: DISPATCH_ACTION.RESET_OPTIONS,
             value: options as PayPalScriptOptions,
         });
     }

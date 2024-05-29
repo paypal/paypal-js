@@ -10,19 +10,19 @@ export interface ReactPayPalScriptOptions extends PayPalScriptOptions {
 
 export type ScriptReducerAction =
     | {
-          type: `${DISPATCH_ACTION.LOADING_STATUS}`;
+          type: DISPATCH_ACTION.LOADING_STATUS;
           value: SCRIPT_LOADING_STATE;
       }
     | {
-          type: `${DISPATCH_ACTION.LOADING_STATUS}`;
+          type: DISPATCH_ACTION.LOADING_STATUS;
           value: { state: SCRIPT_LOADING_STATE; message: string };
       }
     | {
-          type: `${DISPATCH_ACTION.RESET_OPTIONS}`;
+          type: DISPATCH_ACTION.RESET_OPTIONS;
           value: ReactPayPalScriptOptions;
       }
     | {
-          type: `${DISPATCH_ACTION.SET_BRAINTREE_INSTANCE}`;
+          type: DISPATCH_ACTION.SET_BRAINTREE_INSTANCE;
           value: BraintreePayPalCheckout;
       };
 
