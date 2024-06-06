@@ -1,0 +1,7 @@
+coverage
+dist
+storybook-static
+
+node_modules
+.DS_Store
+yarn.lock

@@ -1,0 +1,112 @@
+{
+    "name": "@paypal/react-paypal-js",
+    "version": "8.3.0",
+    "description": "React components for the PayPal JS SDK",
+    "keywords": [
+        "react",
+        "component",
+        "paypal",
+        "button",
+        "checkout",
+        "payment",
+        "paypal javascript sdk",
+        "paypal smart buttons"
+    ],
+    "main": "index.js",
+    "module": "dist/esm/react-paypal-js.js",
+    "types": "dist/types/index.d.ts",
+    "scripts": {
+        "build": "rollup --config",
+        "check-node-version": "node scripts/check-node-version.js",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "lint": "eslint .",
+        "prepare": "husky install",
+        "prepack": "rimraf dist && npm run build && npm run type-declarations",
+        "test": "jest --env=jsdom",
+        "start": "npm run check-node-version && npm run storybook",
+        "storybook": "start-storybook -p 6006",
+        "build-storybook": "build-storybook",
+        "deploy-storybook": "storybook-to-ghpages",
+        "prerelease": "npm run validate",
+        "release": "standard-version",
+        "postrelease": "git push && git push --follow-tags && npm run build && npm publish",
+        "typecheck": "tsc --noEmit",
+        "type-declarations": "tsc --emitDeclarationOnly --outDir dist/types --project tsconfig.declarations.json",
+        "validate": "npm run check-node-version && npm run format:check && npm run typecheck && npm run build && npm run lint && npm test -- --coverage"
+    },
+    "files": [
+        "dist"
+    ],
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/paypal/react-paypal-js.git"
+    },
+    "homepage": "https://paypal.github.io/react-paypal-js/",
+    "dependencies": {
+        "@paypal/paypal-js": "^8.0.5",
+        "@paypal/sdk-constants": "^1.0.122"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.17.5",
+        "@babel/preset-env": "^7.16.11",
+        "@babel/preset-react": "^7.16.7",
+        "@babel/preset-typescript": "^7.16.7",
+        "@codesandbox/sandpack-react": "^0.14.0",
+        "@commitlint/cli": "^16.2.1",
+        "@commitlint/config-conventional": "^16.2.1",
+        "@rollup/plugin-babel": "^5.3.0",
+        "@rollup/plugin-node-resolve": "^13.1.3",
+        "@rollup/plugin-replace": "^3.1.0",
+        "@rollup/plugin-typescript": "^8.3.0",
+        "@storybook/addon-actions": "^6.4.9",
+        "@storybook/addon-docs": "^6.4.9",
+        "@storybook/addon-essentials": "^6.4.9",
+        "@storybook/addon-links": "^6.4.9",
+        "@storybook/react": "^6.4.9",
+        "@storybook/storybook-deployer": "^2.8.10",
+        "@testing-library/react": "^12.1.3",
+        "@testing-library/react-hooks": "^7.0.2",
+        "@types/jest": "^27.4.0",
+        "@types/react": "^17.0.39",
+        "@types/react-dom": "^17.0.11",
+        "@types/string-template": "^1.0.2",
+        "@typescript-eslint/eslint-plugin": "^5.12.0",
+        "@typescript-eslint/parser": "^5.12.0",
+        "babel-jest": "^27.5.1",
+        "babel-loader": "^8.2.3",
+        "eslint": "^8.9.0",
+        "eslint-config-prettier": "^8.4.0",
+        "eslint-plugin-import": "^2.25.4",
+        "eslint-plugin-react": "^7.28.0",
+        "eslint-plugin-react-hooks": "^4.3.0",
+        "husky": "^7.0.4",
+        "jest": "^27.5.1",
+        "jest-mock-extended": "^2.0.4",
+        "lint-staged": "^12.3.4",
+        "prettier": "^2.5.1",
+        "react": "^16.14.0",
+        "react-dom": "^16.14.0",
+        "react-element-to-jsx-string": "^14.3.4",
+        "react-error-boundary": "^3.1.4",
+        "react-is": "^17.0.2",
+        "rimraf": "^3.0.2",
+        "rollup": "^2.67.3",
+        "rollup-plugin-cleanup": "^3.2.1",
+        "rollup-plugin-terser": "^7.0.2",
+        "semver": "^7.3.5",
+        "standard-version": "^9.3.2",
+        "string-template": "^1.0.0",
+        "typescript": "^4.7.2"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+        "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    },
+    "jest": {
+        "transformIgnorePatterns": [
+            "/!node_modules\\/@paypal\\/sdk-constants/"
+        ]
+    }
+}
