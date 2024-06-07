@@ -316,6 +316,7 @@ describe("render Braintree PayPal button component", () => {
             >
                 <BraintreePayPalButtons
                     style={{ layout: "horizontal" }}
+                    message={{ amount: 100 }}
                     fundingSource={FUNDING.CREDIT}
                     createOrder={jest.fn()}
                     onApprove={jest.fn()}
@@ -328,6 +329,7 @@ describe("render Braintree PayPal button component", () => {
                 window.paypal.Buttons) as jest.Mock;
             expect(mockButtons).toBeCalledWith({
                 style: { layout: "horizontal" },
+                message: { amount: 100 },
                 fundingSource: FUNDING.CREDIT,
                 createOrder: expect.any(Function),
                 onApprove: expect.any(Function),

@@ -62,6 +62,7 @@ describe("<PayPalButtons />", () => {
                 <PayPalButtons
                     fundingSource={FUNDING.CREDIT}
                     style={{ layout: "horizontal" }}
+                    message={{ amount: 100 }}
                 />
             </PayPalScriptProvider>
         );
@@ -69,6 +70,7 @@ describe("<PayPalButtons />", () => {
         await waitFor(() =>
             expect(window.paypal?.Buttons).toHaveBeenCalledWith({
                 style: { layout: "horizontal" },
+                message: { amount: 100 },
                 fundingSource: FUNDING.CREDIT,
                 onInit: expect.any(Function),
             })

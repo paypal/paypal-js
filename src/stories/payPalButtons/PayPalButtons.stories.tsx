@@ -32,6 +32,7 @@ import type { DocsContextProps } from "@storybook/addon-docs";
 
 type StoryProps = {
     style: PayPalButtonsComponentOptions["style"];
+    message: PayPalButtonsComponentOptions["message"];
     fundingSource: FUNDING_SOURCE;
     disabled: boolean;
     showSpinner: boolean;
@@ -72,6 +73,10 @@ export default {
             },
         },
         style: {
+            control: { type: "object" },
+            ...COMPONENT_PROPS_CATEGORY,
+        },
+        message: {
             control: { type: "object" },
             ...COMPONENT_PROPS_CATEGORY,
         },
@@ -136,6 +141,7 @@ export default {
 
 export const Default: FC<StoryProps> = ({
     style,
+    message,
     fundingSource,
     disabled,
     showSpinner,
@@ -157,6 +163,7 @@ export const Default: FC<StoryProps> = ({
             {showSpinner && <LoadingSpinner />}
             <PayPalButtons
                 style={style}
+                message={message}
                 disabled={disabled}
                 fundingSource={fundingSource}
                 forceReRender={[style]}
