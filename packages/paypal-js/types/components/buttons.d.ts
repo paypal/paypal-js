@@ -306,6 +306,16 @@ export interface PayPalButtonsComponentOptions {
      * Used for displaying only vaultable buttons.
      */
     displayOnly?: DisplayOnlyOptions[];
+    /**
+     * [Message options](https://developer.paypal.com/sdk/js/reference/#message) for customizing the message appearance and limited content control.
+     */
+    message?: {
+        amount?: number;
+        align?: "center" | "left" | "right";
+        color?: "black" | "white";
+        position?: "top" | "bottom";
+        offer?: "pay_later_short_term" | "pay_later_long_term";
+    };
 }
 
 export interface PayPalButtonsComponent {
