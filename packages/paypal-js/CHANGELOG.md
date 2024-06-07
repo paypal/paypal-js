@@ -1,5 +1,15 @@
 # Changelog
 
+## 8.1.0
+
+### Minor Changes
+
+-   c0badf3: Support env param in loadScript options object
+
+### Patch Changes
+
+-   5adf3b6: updates PayPalButtonComponentOptions to add message
+
 ## 8.0.5
 
 ### Patch Changes
