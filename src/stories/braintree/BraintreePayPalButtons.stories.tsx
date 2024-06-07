@@ -39,6 +39,7 @@ import type {
 
 type StoryProps = {
     style: PayPalButtonsComponentOptions["style"];
+    message: PayPalButtonsComponentOptions["message"];
     fundingSource: FUNDING_SOURCE;
     disabled: boolean;
     amount: string;
@@ -64,6 +65,10 @@ export default {
         size: CONTAINER_SIZE,
         style: {
             control: { type: "object", expanded: true },
+            ...COMPONENT_PROPS_CATEGORY,
+        },
+        message: {
+            control: { type: "object" },
             ...COMPONENT_PROPS_CATEGORY,
         },
         disabled: {
@@ -149,6 +154,7 @@ export default {
 
 export const Default: FC<StoryProps> = ({
     style,
+    message,
     fundingSource,
     disabled,
     amount,
@@ -158,6 +164,7 @@ export const Default: FC<StoryProps> = ({
     return (
         <BraintreePayPalButtons
             style={style}
+            message={message}
             disabled={disabled}
             fundingSource={fundingSource}
             forceReRender={[style, amount, currency]}
