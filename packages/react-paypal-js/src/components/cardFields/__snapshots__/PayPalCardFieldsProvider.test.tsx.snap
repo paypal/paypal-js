@@ -1,0 +1,6 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PayPalCardFieldsProvider should throw an error when the 'card-fields' component is missing from the components list passed to the PayPalScriptProvider 1`] = `
+"Unable to render <PayPalCardFieldsProvider /> because window.paypal.CardFields is undefined.
+To fix the issue, add 'card-fields' to the list of components passed to the parent PayPalScriptProvider: <PayPalScriptProvider options={{ components: 'buttons,messages,card-fields'}}>"
+`;
