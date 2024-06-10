@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [8.4.0](https://github.com/paypal/react-paypal-js/compare/v8.3.0...v8.4.0) (2024-06-10)
+
+### Features
+
+-   updates PayPalButtons to add message option ([ee7cf02](https://github.com/paypal/react-paypal-js/commit/ee7cf029ad1d15d51aa38b2476f8c66bbcd511da))
+-   updates PayPalButtons to add message option ([8213385](https://github.com/paypal/react-paypal-js/commit/8213385f64d814cf50ed233a2f8201fc2238b84a))
+
+### Bug Fixes
+
+-   add individual story and cardfieldsprovider ([6c942c7](https://github.com/paypal/react-paypal-js/commit/6c942c75a58c8745236f261777c47ff1a1e97553))
+-   prettier ([8fa2294](https://github.com/paypal/react-paypal-js/commit/8fa2294eb27cf958da44507a7c6a9218f006fbe3))
+-   remove inputEvents and style for form component ([3306470](https://github.com/paypal/react-paypal-js/commit/3306470c3d1818a54bf74484bd58d883952636cb))
+-   remove options from form component ([ffb7af8](https://github.com/paypal/react-paypal-js/commit/ffb7af8639c1f9452261499f1d0af456a5ec9e40))
+-   skeleton for individual stories ([73676e6](https://github.com/paypal/react-paypal-js/commit/73676e6081d24e33485aad1268a7f6b45953bc4f))
+-   typo correction in readme ([557f591](https://github.com/paypal/react-paypal-js/commit/557f591c6980f7ddf5eba38fe46c6b7bb713391f))
+-   wip relative imports not working ([913dd15](https://github.com/paypal/react-paypal-js/commit/913dd153d73b6f17710cee20c9c17303cf4e5ebd))
+
 ## [8.3.0](https://github.com/paypal/react-paypal-js/compare/v8.2.0...v8.3.0) (2024-04-29)
 
 ### Features
