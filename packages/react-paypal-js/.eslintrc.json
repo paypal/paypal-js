@@ -1,0 +1,57 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint", "import"],
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended",
+        "plugin:react-hooks/recommended"
+    ],
+    "env": {
+        "browser": true,
+        "es2020": true,
+        "node": true,
+        "jest": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 11,
+        "sourceType": "module"
+    },
+    "globals": {
+        "page": "readonly"
+    },
+    "ignorePatterns": ["dist/*.js"],
+    "settings": {
+        "react": {
+            "version": "16.3"
+        }
+    },
+    "rules": {
+        "react/prop-types": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "curly": "warn",
+        "eqeqeq": "warn",
+        "import/order": [
+            1,
+            {
+                "groups": [
+                    "external",
+                    "builtin",
+                    ["internal", "sibling", "parent"],
+                    "index",
+                    "type",
+                    "object"
+                ],
+                "newlines-between": "always"
+            }
+        ]
+    },
+    "overrides": [
+        {
+            "files": ["*.ts", "*.tsx"],
+            "rules": {
+                "@typescript-eslint/explicit-module-boundary-types": ["error"]
+            }
+        }
+    ]
+}
