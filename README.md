@@ -9,6 +9,7 @@ Below is a list of available packages to install.
 Each package has its own documentation in it's respective README.
 
 -   [@paypal/paypal-js](./packages/paypal-js/README.md): PayPal's Vanilla JS loader
+-   [@paypal/react-paypal-js](./packages/react-paypal-js/README.md): PayPal's React loader
 
 ### Contributing
 
