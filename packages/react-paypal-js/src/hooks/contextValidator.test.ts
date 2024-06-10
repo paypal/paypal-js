@@ -113,7 +113,7 @@ describe("validateBraintreeAuthorizationData", () => {
     test("should return object if data client token is a valid string", () => {
         const state = {
             options: {
-                dataClientToken: "JKHFGDHJ657",
+                dataClientToken: "abc123",
                 [SCRIPT_ID]: "id",
                 clientId: "123",
             },
