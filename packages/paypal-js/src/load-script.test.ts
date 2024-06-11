@@ -142,6 +142,14 @@ describe("loadScript()", () => {
         expect(() => loadScript({}, {})).toThrow(
             "Expected PromisePonyfill to be a function."
         );
+
+        const missingClientIdOptions = { components: "buttons" };
+        // @ts-expect-error ignore invalid arguments error
+        expect(() => loadScript(missingClientIdOptions)).toThrow(
+            `Expected clientId in options object: ${JSON.stringify(
+                missingClientIdOptions
+            )}`
+        );
     });
 });
 
