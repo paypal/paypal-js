@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.5.1
+
+### Patch Changes
+
+-   12a76c9: set publish access to public
+
 ## 8.5.0
 
 ### Minor Changes
