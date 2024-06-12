@@ -39,6 +39,8 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
         }
     }
 
+    const buttonMessageContent = JSON.stringify(buttonProps.message);
+
     // useEffect hook for rendering the buttons
     useEffect(() => {
         // verify the sdk script has successfully loaded
@@ -124,7 +126,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
         isResolved,
         ...forceReRender,
         buttonProps.fundingSource,
-        JSON.stringify(buttonProps.message)
+        buttonMessageContent
     ]);
 
     // useEffect hook for managing disabled state
