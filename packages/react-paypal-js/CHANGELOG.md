@@ -1,15 +1,5 @@
 # Changelog
 
-## 8.5.0
-
-### Minor Changes
-
--   ef84e71: Add react-paypal-js to the paypal-js monorepo
-
-### Patch Changes
-
--   a87cfa5: fixes button rerender issue due to obj in dependency array
-
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
 ## [8.4.0](https://github.com/paypal/react-paypal-js/compare/v8.3.0...v8.4.0) (2024-06-10)
