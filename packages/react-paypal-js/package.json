@@ -15,6 +15,9 @@
     "main": "index.js",
     "module": "dist/esm/react-paypal-js.js",
     "types": "dist/types/index.d.ts",
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "build": "rollup --config",
         "check-node-version": "node scripts/check-node-version.js",
