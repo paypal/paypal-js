@@ -349,6 +349,7 @@ describe("<PayPalButtons />", () => {
                         }
                         return Promise.reject("Unknown error");
                     }),
+                    updateProps: jest.fn().mockResolvedValue({}),
                 };
             },
             version: "",
@@ -423,6 +424,7 @@ describe("<PayPalButtons />", () => {
                     close: jest.fn().mockResolvedValue({}),
                     isEligible: jest.fn().mockReturnValue(true),
                     render: mockRender,
+                    updateProps: jest.fn().mockResolvedValue({}),
                 };
             },
             version: "",
