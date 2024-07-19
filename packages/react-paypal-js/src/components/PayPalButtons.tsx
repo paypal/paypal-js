@@ -39,9 +39,11 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
         }
     }
 
-    buttons.current?.updateProps({
-        message: buttonProps.message
-    })
+    if (buttons.current?.updateProps) {
+        buttons.current.updateProps({
+            message: buttonProps.message
+        })
+    }
 
     // useEffect hook for rendering the buttons
     useEffect(() => {
