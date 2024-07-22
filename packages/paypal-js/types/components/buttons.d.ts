@@ -287,6 +287,7 @@ export interface PayPalButtonsComponentOptions {
      * [Styling options](https://developer.paypal.com/docs/business/checkout/reference/style-guide/#customize-the-payment-buttons) for customizing the button appearance.
      */
     style?: {
+        borderRadius?: number;
         color?: "gold" | "blue" | "silver" | "white" | "black";
         disableMaxWidth?: boolean;
         height?: number;
