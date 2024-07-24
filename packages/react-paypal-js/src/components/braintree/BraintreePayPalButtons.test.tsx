@@ -367,8 +367,12 @@ describe("render Braintree PayPal button component", () => {
     });
 
     test("should accept button message amount as a string", async () => {
+        const options = {
+            clientId: "test",
+            dataClientToken: CLIENT_TOKEN,
+        };
         render(
-            <PayPalScriptProvider options={{ clientId: "test" }}>
+            <PayPalScriptProvider options={ options }>
                 <BraintreePayPalButtons
                     message={{ amount: "100" }}
                 />
