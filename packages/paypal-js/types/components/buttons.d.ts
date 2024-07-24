@@ -310,7 +310,7 @@ export interface PayPalButtonsComponentOptions {
      * [Message options](https://developer.paypal.com/sdk/js/reference/#message) for customizing the message appearance and limited content control.
      */
     message?: {
-        amount?: number;
+        amount?: number | string;
         align?: "center" | "left" | "right";
         color?: "black" | "white";
         position?: "top" | "bottom";

@@ -440,4 +440,21 @@ describe("<PayPalButtons />", () => {
         ).toBeFalsy();
         spyConsoleError.mockRestore();
     });
+
+    test("should accept button message amount as a string", async () => {
+        render(
+            <PayPalScriptProvider options={{ clientId: "test" }}>
+                <PayPalButtons
+                    message={{ amount: "100" }}
+                />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() =>
+            expect(window.paypal?.Buttons).toHaveBeenCalledWith({
+                message: { amount: "100" },
+                onInit: expect.any(Function),
+            })
+        );
+    });
 });
