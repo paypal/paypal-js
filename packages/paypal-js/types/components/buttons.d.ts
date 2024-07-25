@@ -323,4 +323,5 @@ export interface PayPalButtonsComponent {
     close: () => Promise<void>;
     isEligible: () => boolean;
     render: (container: HTMLElement | string) => Promise<void>;
+    updateProps: (props: PayPalButtonsComponentOptions) => Promise<void>;
 }
