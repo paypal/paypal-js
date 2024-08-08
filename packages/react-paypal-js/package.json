@@ -21,8 +21,6 @@
     "scripts": {
         "build": "rollup --config",
         "check-node-version": "node scripts/check-node-version.js",
-        "format": "prettier --write .",
-        "format:check": "prettier --check .",
         "lint": "eslint .",
         "prepack": "rimraf dist && npm run build && npm run type-declarations",
         "test": "jest --env=jsdom",
