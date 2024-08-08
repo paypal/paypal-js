@@ -69,7 +69,7 @@ const SubmitPayment = ({ customStyle }: { customStyle?: CSSProperties }) => {
         }
         const isFormInvalid =
             Object.values(hostedField.cardFields.getState().fields).some(
-                (field) => !field.isValid
+                (field) => !field.isValid,
             ) || !cardHolderName?.current?.value;
 
         if (isFormInvalid) {
@@ -84,7 +84,7 @@ const SubmitPayment = ({ customStyle }: { customStyle?: CSSProperties }) => {
             .then((data) => {
                 action(`Received ${ORDER_ID}`)(data.orderId);
                 action(CAPTURE_ORDER)(
-                    `Sending ${ORDER_ID} to custom endpoint to capture the payment information`
+                    `Sending ${ORDER_ID} to custom endpoint to capture the payment information`,
                 );
                 fetch(CAPTURE_ORDER_URL, {
                     method: "POST",
@@ -248,7 +248,7 @@ export const Default: FC<StoryProps> = ({ amount, styles, style }) => {
         <PayPalHostedFieldsProvider
             createOrder={() => {
                 action(CREATE_ORDER)(
-                    "Start creating the order in custom endpoint"
+                    "Start creating the order in custom endpoint",
                 );
                 return fetch(CREATE_ORDER_URL, {
                     method: "POST",
@@ -410,7 +410,7 @@ export const ExpirationDate: FC<{ amount: string }> = ({ amount }) => {
             <DocPageStructure
                 context={context}
                 code={getDefaultCode(
-                    context.getStoryContext(context.storyById(context.id)).args
+                    context.getStoryContext(context.storyById(context.id)).args,
                 )}
             />
         ),
@@ -427,7 +427,7 @@ export const ExpirationDate: FC<{ amount: string }> = ({ amount }) => {
             <DocPageStructure
                 context={context}
                 code={getExpirationDateCode(
-                    context.getStoryContext(context.storyById(context.id)).args
+                    context.getStoryContext(context.storyById(context.id)).args,
                 )}
             />
         ),

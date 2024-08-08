@@ -279,7 +279,7 @@ export const Default: FC = () => {
     function onApprove(data: CardFieldsOnApproveData) {
         action(`Received ${ORDER_ID}`)(data.orderID);
         action(CAPTURE_ORDER)(
-            `Sending ${ORDER_ID} to custom endpoint to capture the payment information`
+            `Sending ${ORDER_ID} to custom endpoint to capture the payment information`,
         );
         fetch(CAPTURE_ORDER_URL, {
             method: "POST",

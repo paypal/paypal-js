@@ -21,7 +21,7 @@ describe("generateErrorMessage", () => {
                 sdkComponentKey: "example",
                 sdkRequestedComponents: ["hosted-fields"],
                 sdkDataNamespace: "customNamespace",
-            })
+            }),
         ).toBe(errorMessage);
     });
     test("sdkRequestedComponents as a string", () => {
@@ -31,7 +31,7 @@ describe("generateErrorMessage", () => {
                 sdkComponentKey: "example",
                 sdkRequestedComponents: "hosted-fields",
                 sdkDataNamespace: "customNamespace",
-            })
+            }),
         ).toBe(errorMessage);
     });
 });
@@ -63,7 +63,7 @@ describe("getBraintreeWindowNamespace", () => {
     test("should return the paypal namespace", () => {
         expect(getBraintreeWindowNamespace("braintree")).toEqual(
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (window as any).braintree
+            (window as any).braintree,
         );
     });
 
@@ -76,10 +76,10 @@ describe("hashStr", () => {
     test("should match the hash from the argument string", () => {
         expect(hashStr("react")).toMatchInlineSnapshot(`"xxhjw"`);
         expect(hashStr("react-js.braintree")).toMatchInlineSnapshot(
-            `"xxhjbzppoallaomelb"`
+            `"xxhjbzppoallaomelb"`,
         );
         expect(hashStr("react-js.paypal")).toMatchInlineSnapshot(
-            `"xxhjbzppiqfhtje"`
+            `"xxhjbzppiqfhtje"`,
         );
         expect(hashStr("")).toMatchInlineSnapshot(`""`);
         expect(
@@ -93,10 +93,10 @@ describe("hashStr", () => {
                     vault: false,
                     locale: "US",
                     [SDK_SETTINGS.DATA_NAMESPACE]: "braintree",
-                })
-            )
+                }),
+            ),
         ).toMatchInlineSnapshot(
-            `"iiuovjsckceqfpltierfuadvueugmwdpyghjioombfdvqayoscllfvddtjnvtfgijdxjyablkakmjjmogakewwsybbxfiiseblauicltugxfqiistfmyeomwiyrvgkaswosisqbndhwqqmmclzswdxymqeuqwetbsehtpvnvgsvtsiscvpnvvxdxekjpwoayeofhgilfeke"`
+            `"iiuovjsckceqfpltierfuadvueugmwdpyghjioombfdvqayoscllfvddtjnvtfgijdxjyablkakmjjmogakewwsybbxfiiseblauicltugxfqiistfmyeomwiyrvgkaswosisqbndhwqqmmclzswdxymqeuqwetbsehtpvnvgsvtsiscvpnvvxdxekjpwoayeofhgilfeke"`,
         );
     });
 });

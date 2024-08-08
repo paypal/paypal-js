@@ -299,7 +299,7 @@ const SubmitPayment = () => {
             })
             .then((order) => {
                 fetch(
-                    "/your-server-side-integration-endpoint/capture-payment-info"
+                    "/your-server-side-integration-endpoint/capture-payment-info",
                 )
                     .then((response) => response.json())
                     .then((data) => {
@@ -326,7 +326,7 @@ export default function App() {
                 createOrder={() => {
                     // Here define the call to create and order
                     return fetch(
-                        "/your-server-side-integration-endpoint/orders"
+                        "/your-server-side-integration-endpoint/orders",
                     )
                         .then((response) => response.json())
                         .then((order) => order.id)

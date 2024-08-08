@@ -41,8 +41,8 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
 
     if (buttons.current?.updateProps) {
         buttons.current.updateProps({
-            message: buttonProps.message
-        })
+            message: buttonProps.message,
+        });
     }
 
     // useEffect hook for rendering the buttons
@@ -53,7 +53,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
         }
 
         const paypalWindowNamespace = getPayPalWindowNamespace(
-            options.dataNamespace
+            options.dataNamespace,
         );
 
         // verify dependency on window object
@@ -68,7 +68,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
                         sdkComponentKey: "buttons",
                         sdkRequestedComponents: options.components,
                         sdkDataNamespace: options[SDK_SETTINGS.DATA_NAMESPACE],
-                    })
+                    }),
                 );
             });
             return closeButtonsComponent;
@@ -76,7 +76,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
 
         const decoratedOnInit = (
             data: Record<string, unknown>,
-            actions: OnInitActions
+            actions: OnInitActions,
         ) => {
             setInitActions(actions);
             if (typeof buttonProps.onInit === "function") {
@@ -92,7 +92,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
         } catch (err) {
             return setErrorState(() => {
                 throw new Error(
-                    `Failed to render <PayPalButtons /> component. Failed to initialize:  ${err}`
+                    `Failed to render <PayPalButtons /> component. Failed to initialize:  ${err}`,
                 );
             });
         }
@@ -119,18 +119,14 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
             // paypal buttons container is still in the DOM
             setErrorState(() => {
                 throw new Error(
-                    `Failed to render <PayPalButtons /> component. ${err}`
+                    `Failed to render <PayPalButtons /> component. ${err}`,
                 );
             });
         });
 
         return closeButtonsComponent;
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [
-        isResolved,
-        ...forceReRender,
-        buttonProps.fundingSource
-    ]);
+    }, [isResolved, ...forceReRender, buttonProps.fundingSource]);
 
     // useEffect hook for managing disabled state
     useEffect(() => {

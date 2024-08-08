@@ -101,7 +101,7 @@ export default function App() {
                 context={context}
                 code={getDefaultCode(
                     context.getStoryContext(context.storyById(context.id)).args
-                        .style
+                        .style,
                 )}
             />
         ),

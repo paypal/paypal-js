@@ -22,7 +22,7 @@ export type RegistryHookReturnType = {
     registerField: (
         fieldName: FieldComponentName,
         options: PayPalCardFieldsIndividualFieldOptions,
-        cardFields: PayPalCardFieldsComponent | null
+        cardFields: PayPalCardFieldsComponent | null,
     ) => PayPalCardFieldsIndividualField | void;
     unregisterField: (field: FieldComponentName) => void;
 };
