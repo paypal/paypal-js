@@ -1,6 +1,6 @@
 export type BraintreeCallback<T = unknown> = (
     err?: BraintreeError,
-    data?: T
+    data?: T,
 ) => void;
 export interface BraintreeError {
     /**

@@ -15,7 +15,7 @@ describe("bundle size", () => {
 
     test(`paypal-js.legacy.min.js should be less than ${maxLegacyBundleSizeInKiloBytes} KB`, () => {
         const { size: sizeInBytes } = fs.statSync(
-            "dist/iife/paypal-js.legacy.min.js"
+            "dist/iife/paypal-js.legacy.min.js",
         );
         const [sizeInKiloBytes] = filesize(sizeInBytes, { output: "array" });
 

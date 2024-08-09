@@ -30,7 +30,7 @@ export function getScriptID(options: ReactPayPalScriptOptions): string {
  */
 export function destroySDKScript(reactPayPalScriptID?: string): void {
     const scriptNode = self.document.querySelector<HTMLScriptElement>(
-        `script[${SCRIPT_ID}="${reactPayPalScriptID}"]`
+        `script[${SCRIPT_ID}="${reactPayPalScriptID}"]`,
     );
 
     if (scriptNode?.parentNode) {
@@ -47,7 +47,7 @@ export function destroySDKScript(reactPayPalScriptID?: string): void {
  */
 export function scriptReducer(
     state: ScriptContextState,
-    action: ScriptReducerAction
+    action: ScriptReducerAction,
 ): ScriptContextState {
     switch (action.type) {
         case DISPATCH_ACTION.LOADING_STATUS:

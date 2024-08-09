@@ -47,13 +47,13 @@ describe("<PayPalMarks />", () => {
                 options={{ clientId: "test", components: "marks" }}
             >
                 <PayPalMarks fundingSource={FUNDING.CREDIT} />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() =>
             expect(window.paypal?.Marks).toHaveBeenCalledWith({
                 fundingSource: FUNDING.CREDIT,
-            })
+            }),
         );
     });
 
@@ -71,11 +71,13 @@ describe("<PayPalMarks />", () => {
                 options={{ clientId: "test", components: "marks" }}
             >
                 <PayPalMarks className="custom-class-name" />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() =>
-            expect(document.querySelector("div.custom-class-name")).toBeTruthy()
+            expect(
+                document.querySelector("div.custom-class-name"),
+            ).toBeTruthy(),
         );
     });
 
@@ -87,7 +89,7 @@ describe("<PayPalMarks />", () => {
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalMarks />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
@@ -110,7 +112,7 @@ describe("<PayPalMarks />", () => {
             >
                 <PayPalMarks />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
@@ -131,7 +133,7 @@ describe("<PayPalMarks />", () => {
             >
                 <PayPalMarks />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
@@ -163,7 +165,7 @@ describe("<PayPalMarks />", () => {
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalMarks />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
@@ -191,7 +193,7 @@ describe("<PayPalMarks />", () => {
         render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalMarks className="test-class" />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => expect(mockRender).toBeCalled());
@@ -216,13 +218,14 @@ describe("<PayPalMarks />", () => {
                 <PayPalMarks className="mark-container">
                     <div className="ineligible"></div>
                 </PayPalMarks>
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() =>
             expect(
-                container.querySelector(".ineligible") instanceof HTMLDivElement
-            ).toBeTruthy()
+                container.querySelector(".ineligible") instanceof
+                    HTMLDivElement,
+            ).toBeTruthy(),
         );
         expect(container.querySelector(".mark-container")).toBeNull();
         expect(mockIsEligible).toBeCalledTimes(1);
@@ -250,7 +253,7 @@ describe("<PayPalMarks />", () => {
         const { rerender } = render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalMarks fundingSource="paypal" />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => expect(mockRender).toBeCalledTimes(1));
@@ -258,7 +261,7 @@ describe("<PayPalMarks />", () => {
         rerender(
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalMarks fundingSource="card" />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => expect(mockRender).toBeCalledTimes(2));

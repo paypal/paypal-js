@@ -6,17 +6,17 @@ test("Browser global window.paypalLoadScript", async ({ page }) => {
         route.fulfill({
             status: 200,
             body: successfulSDKResponseMock(),
-        })
+        }),
     );
 
     await page.goto("/e2e-tests/browser-global.html");
 
     await expect(page).toHaveTitle(
-        "Demo with window.paypalLoadScript | PayPal JS"
+        "Demo with window.paypalLoadScript | PayPal JS",
     );
 
     const scriptElement = await page.locator(
-        'script[src^="https://www.paypal.com/sdk/js"]'
+        'script[src^="https://www.paypal.com/sdk/js"]',
     );
     const uidFromDOM = await scriptElement.getAttribute("data-uid-auto");
 

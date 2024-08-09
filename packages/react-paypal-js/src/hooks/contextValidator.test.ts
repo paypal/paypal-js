@@ -14,8 +14,8 @@ describe("validateReducer", () => {
             validateReducer(null);
         }).toThrowError(
             new Error(
-                "usePayPalScriptReducer must be used within a PayPalScriptProvider"
-            )
+                "usePayPalScriptReducer must be used within a PayPalScriptProvider",
+            ),
         );
     });
 
@@ -25,8 +25,8 @@ describe("validateReducer", () => {
             validateReducer({});
         }).toThrowError(
             new Error(
-                "usePayPalScriptReducer must be used within a PayPalScriptProvider"
-            )
+                "usePayPalScriptReducer must be used within a PayPalScriptProvider",
+            ),
         );
     });
 
@@ -36,8 +36,8 @@ describe("validateReducer", () => {
             validateReducer({ dispatch: 10 });
         }).toThrowError(
             new Error(
-                "usePayPalScriptReducer must be used within a PayPalScriptProvider"
-            )
+                "usePayPalScriptReducer must be used within a PayPalScriptProvider",
+            ),
         );
     });
 
@@ -47,8 +47,8 @@ describe("validateReducer", () => {
             validateReducer({ dispatch: jest.fn() });
         }).toThrowError(
             new Error(
-                "usePayPalScriptReducer must be used within a PayPalScriptProvider"
-            )
+                "usePayPalScriptReducer must be used within a PayPalScriptProvider",
+            ),
         );
     });
 

@@ -33,7 +33,7 @@ export function ignore(): void {
 }
 
 export function hasChildren(
-    container: React.RefObject<HTMLDivElement>
+    container: React.RefObject<HTMLDivElement>,
 ): boolean {
     return !!container.current?.children.length;
 }

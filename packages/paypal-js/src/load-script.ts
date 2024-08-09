@@ -11,7 +11,7 @@ import type { PayPalNamespace } from "../types/index";
  */
 export function loadScript(
     options: PayPalScriptOptions,
-    PromisePonyfill: PromiseConstructor = Promise
+    PromisePonyfill: PromiseConstructor = Promise,
 ): Promise<PayPalNamespace | null> {
     validateArguments(options, PromisePonyfill);
 
@@ -36,7 +36,7 @@ export function loadScript(
             url,
             attributes: attributes,
         },
-        PromisePonyfill
+        PromisePonyfill,
     ).then(() => {
         const newWindowNamespace = getPayPalWindowNamespace(namespace);
 
@@ -45,7 +45,7 @@ export function loadScript(
         }
 
         throw new Error(
-            `The window.${namespace} global variable is not available.`
+            `The window.${namespace} global variable is not available.`,
         );
     });
 }
@@ -62,7 +62,7 @@ export function loadCustomScript(
         url: string;
         attributes?: Record<string, string>;
     },
-    PromisePonyfill: PromiseConstructor = Promise
+    PromisePonyfill: PromiseConstructor = Promise,
 ): Promise<void> {
     validateArguments(options, PromisePonyfill);
 
@@ -86,7 +86,7 @@ export function loadCustomScript(
             onSuccess: () => resolve(),
             onError: () => {
                 const defaultError = new Error(
-                    `The script "${url}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`
+                    `The script "${url}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
                 );
 
                 return reject(defaultError);
@@ -112,7 +112,7 @@ function validateArguments(options: unknown, PromisePonyfill?: unknown) {
         environment !== "sandbox"
     ) {
         throw new Error(
-            'The `environment` option must be either "production" or "sandbox".'
+            'The `environment` option must be either "production" or "sandbox".',
         );
     }
 

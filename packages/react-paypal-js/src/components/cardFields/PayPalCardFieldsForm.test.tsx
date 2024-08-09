@@ -37,7 +37,7 @@ const CardFields = jest.fn(
                 render: jest.fn(() => Promise.resolve()),
                 close: jest.fn(() => Promise.resolve()),
             }),
-        } as unknown as PayPalCardFieldsComponent)
+        }) as unknown as PayPalCardFieldsComponent,
 );
 const wrapper = ({ children }: { children: ReactNode }) => (
     <ErrorBoundary fallback={<div>Error</div>} onError={onError}>
@@ -90,14 +90,14 @@ describe("PayPalCardFieldsForm", () => {
                     <PayPalCardFieldsForm />
                 </PayPalCardFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
         await waitFor(() => expect(onError).toHaveBeenCalledTimes(0));
 
         expect(CardFields).toBeCalledWith(
             expect.objectContaining({
                 style: { input: { color: "black" } },
-            })
+            }),
         );
 
         spyConsoleError.mockRestore();
@@ -131,7 +131,7 @@ describe("PayPalCardFieldsForm", () => {
                     <PayPalCardFieldsForm />
                 </PayPalCardFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
         await waitFor(() => expect(onError).toHaveBeenCalledTimes(0));
 
@@ -143,7 +143,7 @@ describe("PayPalCardFieldsForm", () => {
                     onBlur: mockOnBlur,
                     onInputSubmitRequest: mockOnInputSubmitRequest,
                 },
-            })
+            }),
         );
 
         spyConsoleError.mockRestore();
@@ -172,7 +172,7 @@ describe("PayPalCardFieldsForm", () => {
                     <PayPalCardFieldsForm className="class1 class2 class3" />
                 </PayPalCardFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
         await waitFor(() => expect(onError).toHaveBeenCalledTimes(0));
 
@@ -192,12 +192,12 @@ describe("PayPalCardFieldsForm", () => {
             <PayPalScriptProvider options={{ clientId: "" }}>
                 <PayPalCardFieldsForm />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toBeCalledTimes(4)); // 4 times, 1 for each field in the form.
         expect(onError.mock.calls[0][0].message).toBe(
-            CARD_FIELDS_CONTEXT_ERROR
+            CARD_FIELDS_CONTEXT_ERROR,
         );
         spyConsoleError.mockRestore();
     });

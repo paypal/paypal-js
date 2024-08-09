@@ -223,7 +223,7 @@ export interface BraintreePayPalCheckout {
      */
     createPayment(
         options: BraintreePayPalCheckoutCreatePaymentOptions,
-        callback?: BraintreeCallback
+        callback?: BraintreeCallback,
     ): Promise<string>;
 
     /**
@@ -249,7 +249,7 @@ export interface BraintreePayPalCheckout {
      *
      */
     tokenizePayment(
-        tokenizeOptions: BraintreePayPalCheckoutTokenizationOptions
+        tokenizeOptions: BraintreePayPalCheckoutTokenizationOptions,
     ): Promise<BraintreeTokenizePayload>;
 
     /**

@@ -12,10 +12,10 @@ import type { PayPalHostedFieldsRegistered } from "../../types/payPalHostedField
  * and at the second a function handler to register the hosted fields components
  */
 export const useHostedFieldsRegister = (
-    initialValue = {}
+    initialValue = {},
 ): [
     MutableRefObject<PayPalHostedFieldsRegistered>,
-    (component: PayPalHostedFieldsRegistered) => void
+    (component: PayPalHostedFieldsRegistered) => void,
 ] => {
     const registeredFields = useRef<PayPalHostedFieldsRegistered>(initialValue);
 

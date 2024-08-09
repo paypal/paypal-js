@@ -176,12 +176,12 @@ export const Default: FC<StoryProps> = ({
                             } else {
                                 throw new Error("failed to create Order Id");
                             }
-                        }
+                        },
                     )
                 }
                 onApprove={(data) =>
                     onApprove(data).then((orderData) =>
-                        action(APPROVE)(orderData)
+                        action(APPROVE)(orderData),
                     )
                 }
                 {...defaultProps}
@@ -210,7 +210,7 @@ export const Donate: FC<Omit<StoryProps, "showSpinner" | "fundingSource">> = ({
                     } else {
                         throw new Error("failed to create Order Id");
                     }
-                }
+                },
             )
         }
         onApprove={(data) =>
@@ -230,7 +230,7 @@ export const Donate: FC<Omit<StoryProps, "showSpinner" | "fundingSource">> = ({
             <DocPageStructure
                 context={context}
                 code={getDefaultCode(
-                    context.getStoryContext(context.storyById(context.id)).args
+                    context.getStoryContext(context.storyById(context.id)).args,
                 )}
             />
         ),
@@ -244,7 +244,7 @@ export const Donate: FC<Omit<StoryProps, "showSpinner" | "fundingSource">> = ({
             <DocPageStructure
                 context={context}
                 code={getDonateCode(
-                    context.getStoryContext(context.storyById(context.id)).args
+                    context.getStoryContext(context.storyById(context.id)).args,
                 )}
             />
         ),

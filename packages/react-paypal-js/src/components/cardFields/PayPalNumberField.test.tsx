@@ -22,7 +22,7 @@ const CardFields = jest.fn(
                 render: jest.fn(() => Promise.resolve()),
                 close: jest.fn(() => Promise.resolve()),
             }),
-        } as unknown as PayPalCardFieldsComponent)
+        }) as unknown as PayPalCardFieldsComponent,
 );
 const wrapper = ({ children }: { children: ReactNode }) => (
     <ErrorBoundary fallback={<div>Error</div>} onError={onError}>
@@ -75,12 +75,12 @@ describe("PayPalNumberField", () => {
                     <PayPalNumberField style={{ input: { color: "black" } }} />
                 </PayPalCardFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
         await waitFor(() => expect(onError).toHaveBeenCalledTimes(0));
 
         expect(NumberField).toHaveBeenCalledWith(
-            expect.objectContaining({ style: { input: { color: "black" } } })
+            expect.objectContaining({ style: { input: { color: "black" } } }),
         );
 
         spyConsoleError.mockRestore();
@@ -116,7 +116,7 @@ describe("PayPalNumberField", () => {
                     />
                 </PayPalCardFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
         await waitFor(() => expect(onError).toHaveBeenCalledTimes(0));
 
@@ -128,7 +128,7 @@ describe("PayPalNumberField", () => {
                     onBlur: mockOnBlur,
                     onInputSubmitRequest: mockOnInputSubmitRequest,
                 },
-            })
+            }),
         );
 
         spyConsoleError.mockRestore();
@@ -157,14 +157,14 @@ describe("PayPalNumberField", () => {
                     <PayPalNumberField placeholder="custom-place-holder" />
                 </PayPalCardFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
         await waitFor(() => expect(onError).toHaveBeenCalledTimes(0));
 
         expect(NumberField).toHaveBeenCalledWith(
             expect.objectContaining({
                 placeholder: "custom-place-holder",
-            })
+            }),
         );
 
         spyConsoleError.mockRestore();
@@ -193,7 +193,7 @@ describe("PayPalNumberField", () => {
                     <PayPalNumberField className="class1 class2 class3" />
                 </PayPalCardFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
         await waitFor(() => expect(onError).toHaveBeenCalledTimes(0));
 
@@ -213,12 +213,12 @@ describe("PayPalNumberField", () => {
             <PayPalScriptProvider options={{ clientId: "" }}>
                 <PayPalNumberField />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toBeCalledTimes(1));
         expect(onError.mock.calls[0][0].message).toBe(
-            CARD_FIELDS_CONTEXT_ERROR
+            CARD_FIELDS_CONTEXT_ERROR,
         );
         spyConsoleError.mockRestore();
     });

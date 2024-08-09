@@ -32,7 +32,7 @@ export const PayPalHostedField: FC<PayPalHostedFieldProps> = ({
     useEffect(() => {
         if (!hostedFieldContext?.registerHostedField) {
             throw new Error(
-                "The HostedField cannot be register in the PayPalHostedFieldsProvider parent component"
+                "The HostedField cannot be register in the PayPalHostedFieldsProvider parent component",
             );
         }
         // Register in the parent provider

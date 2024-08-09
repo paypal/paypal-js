@@ -126,7 +126,7 @@ export const Default: FC<{
                 context={context}
                 code={getDefaultCode(
                     context.getStoryContext(context.storyById(context.id)).args
-                        .style
+                        .style,
                 )}
             />
         ),

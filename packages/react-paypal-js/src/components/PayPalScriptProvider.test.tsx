@@ -30,7 +30,7 @@ describe("<PayPalScriptProvider />", () => {
     beforeEach(() => {
         document.head.innerHTML = "";
         (loadScript as jest.Mock).mockImplementation(
-            loadScriptMockImplementation
+            loadScriptMockImplementation,
         );
     });
 
@@ -43,7 +43,7 @@ describe("<PayPalScriptProvider />", () => {
         render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <TestComponent />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
         expect(loadScript).toHaveBeenCalledWith({
             clientId: "test",
@@ -70,7 +70,7 @@ describe("<PayPalScriptProvider />", () => {
         render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <TestComponent />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
         expect(loadScript).toHaveBeenCalledWith({
             clientId: "test",
@@ -98,7 +98,7 @@ describe("<PayPalScriptProvider />", () => {
         const { unmount } = render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <TestComponent />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         unmount();
@@ -122,7 +122,7 @@ describe("<PayPalScriptProvider />", () => {
                 options={{ clientId: "test" }}
             >
                 <TestComponent />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         // verify initial state
@@ -136,7 +136,7 @@ describe("<PayPalScriptProvider />", () => {
                 options={{ clientId: "test" }}
             >
                 <TestComponent />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         expect(loadScript).toHaveBeenCalledWith({
@@ -163,7 +163,7 @@ describe("<PayPalScriptProvider />", () => {
         const { unmount } = render(
             <PayPalScriptProvider options={options}>
                 <TestComponent />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         // unmount to simulate <PayPalScriptProvider> getting removed from the DOM
@@ -172,7 +172,7 @@ describe("<PayPalScriptProvider />", () => {
         render(
             <PayPalScriptProvider options={options}>
                 <TestComponent />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => expect(state.isResolved).toBeTruthy());
@@ -188,7 +188,7 @@ describe("usePayPalScriptReducer", () => {
     beforeEach(() => {
         document.head.innerHTML = "";
         (loadScript as jest.Mock).mockImplementation(
-            loadScriptMockImplementation
+            loadScriptMockImplementation,
         );
     });
 
@@ -201,7 +201,7 @@ describe("usePayPalScriptReducer", () => {
         render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <TestComponent />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         expect(state.options).toHaveProperty("clientId", "test");
@@ -230,7 +230,7 @@ describe("usePayPalScriptReducer", () => {
                         options={{ clientId: "xyz", disableFunding: "card" }}
                     />
                 </TestComponent>
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         expect(state.options).toMatchObject({ clientId: "abc" });
@@ -245,7 +245,7 @@ describe("usePayPalScriptReducer", () => {
         const secondScriptID = state.options[SCRIPT_ID];
 
         expect(
-            document.querySelector(`script[${SCRIPT_ID}="${secondScriptID}"]`)
+            document.querySelector(`script[${SCRIPT_ID}="${secondScriptID}"]`),
         ).toBeTruthy();
         expect(firstScriptID).not.toBe(secondScriptID);
 

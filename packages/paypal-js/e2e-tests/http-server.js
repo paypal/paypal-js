@@ -48,7 +48,7 @@ http.createServer(function (request, response) {
                 response.end(
                     "Sorry, check with the site admin for error: " +
                         error.code +
-                        " ..\n"
+                        " ..\n",
                 );
             }
         } else {

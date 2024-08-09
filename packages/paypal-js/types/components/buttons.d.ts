@@ -29,7 +29,7 @@ export type CreateSubscriptionActions = {
         /** Used to revise an existing subscription for client-side integrations. Accepts the same options as the request body of the [/v1/billing/subscription/{id}/revise api](https://developer.paypal.com/docs/api/subscriptions/v1/#subscriptions_revise). */
         revise: (
             subscriptionID: string,
-            options: ReviseSubscriptionRequestBody
+            options: ReviseSubscriptionRequestBody,
         ) => Promise<string>;
     };
 };
@@ -211,14 +211,14 @@ export interface PayPalButtonsComponentOptions {
      */
     createOrder?: (
         data: CreateOrderData,
-        actions: CreateOrderActions
+        actions: CreateOrderActions,
     ) => Promise<string>;
     /**
      * Called on button click to set up a recurring payment. [createSubscription docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#createsubscription).
      */
     createSubscription?: (
         data: Record<string, unknown>,
-        actions: CreateSubscriptionActions
+        actions: CreateSubscriptionActions,
     ) => Promise<string>;
     /**
      * Save payment methods to charge payers after a set amount of time. For example, you can offer a free trial and charge payers after the trial expires. Payers don't need to be present when charged. No checkout required.
@@ -235,7 +235,7 @@ export interface PayPalButtonsComponentOptions {
      */
     onApprove?: (
         data: OnApproveData,
-        actions: OnApproveActions
+        actions: OnApproveActions,
     ) => Promise<void>;
     /**
      * Called when the buyer cancels the transaction.
@@ -243,14 +243,14 @@ export interface PayPalButtonsComponentOptions {
      */
     onCancel?: (
         data: Record<string, unknown>,
-        actions: OnCancelledActions
+        actions: OnCancelledActions,
     ) => void;
     /**
      * Called when the button is clicked. Often used for [validation](https://developer.paypal.com/docs/checkout/integration-features/validation/).
      */
     onClick?: (
         data: Record<string, unknown>,
-        actions: OnClickActions
+        actions: OnClickActions,
     ) => Promise<void> | void;
     /**
      * Catch all for errors preventing buyer checkout.
@@ -267,21 +267,21 @@ export interface PayPalButtonsComponentOptions {
      */
     onShippingChange?: (
         data: OnShippingChangeData,
-        actions: OnShippingChangeActions
+        actions: OnShippingChangeActions,
     ) => Promise<void>;
     /**
      * Called when the buyer selects a new shipping option on PayPal.
      */
     onShippingOptionsChange?: (
         data: OnShippingOptionsChangeData,
-        actions: OnShippingOptionsChangeActions
+        actions: OnShippingOptionsChangeActions,
     ) => Promise<void>;
     /**
      * Called when the buyer updates their shipping address on PayPal.
      */
     onShippingAddressChange?: (
         data: OnShippingAddressChangeData,
-        actions: OnShippingAddressChangeActions
+        actions: OnShippingAddressChangeActions,
     ) => Promise<void>;
     /**
      * [Styling options](https://developer.paypal.com/docs/business/checkout/reference/style-guide/#customize-the-payment-buttons) for customizing the button appearance.

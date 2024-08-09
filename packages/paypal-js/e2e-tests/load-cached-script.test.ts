@@ -6,7 +6,7 @@ test("Load cached script", async ({ page }) => {
         route.fulfill({
             status: 200,
             body: successfulSDKResponseMock(),
-        })
+        }),
     );
 
     let sdkRequestCounter = 0;

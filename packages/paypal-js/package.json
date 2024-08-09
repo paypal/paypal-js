@@ -19,8 +19,8 @@
         "test:e2e": "playwright test",
         "test:e2e:debug": "PWDEBUG=1 playwright test --project=\"chromium\"",
         "test:e2e:start": "node e2e-tests/http-server.js",
-        "typecheck": "tsc --noEmit",
-        "validate": "npm run check-node-version && npm run format:check && npm run typecheck && npm run build && npm run lint && npm test -- --watch=false --coverage.enabled --coverage.include=src && npm run test:bundle -- --watch=false",
+        "typecheck": "tsc --noEmit --allowSyntheticDefaultImports",
+        "validate": "npm run check-node-version && npm run typecheck && npm run build && npm run lint && npm test -- --watch=false --coverage.enabled --coverage.include=src && npm run test:bundle -- --watch=false",
         "openapi": "npm run openapi-orders && npm run openapi-subscriptions",
         "openapi-orders": "openapi-typescript node_modules/@paypal/paypal-rest-api-specifications/openapi/checkout_orders_v2.json -o types/apis/openapi/checkout_orders_v2.d.ts",
         "openapi-subscriptions": "openapi-typescript node_modules/@paypal/paypal-rest-api-specifications/openapi/billing_subscriptions_v1.json -o types/apis/openapi/billing_subscriptions_v1.d.ts"
@@ -66,7 +66,6 @@
         "jsdom": "^23.0.1",
         "lint-staged": "15.2.0",
         "openapi-typescript": "^6.7.3",
-        "prettier": "3.1.1",
         "rollup": "4.9.1",
         "semver": "7.5.4",
         "standard-version": "9.5.0",

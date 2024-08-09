@@ -58,7 +58,7 @@ const setup = () => {
     (loadScript as jest.Mock).mockResolvedValue(window.paypal);
     (loadCustomScript as jest.Mock).mockResolvedValue(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (window as any).braintree
+        (window as any).braintree,
     );
 };
 
@@ -86,7 +86,7 @@ describe("Braintree PayPal button fail in mount process", () => {
             errorMessage = (ex as Error).message;
         }
         expect(errorMessage).toEqual(
-            "usePayPalScriptReducer must be used within a PayPalScriptProvider"
+            "usePayPalScriptReducer must be used within a PayPalScriptProvider",
         );
         expect(console.error).toHaveBeenCalled();
     });
@@ -100,13 +100,13 @@ describe("Braintree PayPal button fail in mount process", () => {
                 // @ts-expect-error this test case validates that the options property is required
                 <PayPalScriptProvider>
                     <BraintreePayPalButtons />
-                </PayPalScriptProvider>
+                </PayPalScriptProvider>,
             );
         } catch (ex) {
             errorMessage = (ex as Error).message;
         }
         expect(errorMessage).toEqual(
-            EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE
+            EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE,
         );
         expect(console.error).toHaveBeenCalled();
     });
@@ -119,13 +119,13 @@ describe("Braintree PayPal button fail in mount process", () => {
             render(
                 <PayPalScriptProvider options={{ clientId: "test" }}>
                     <BraintreePayPalButtons />
-                </PayPalScriptProvider>
+                </PayPalScriptProvider>,
             );
         } catch (ex) {
             errorMessage = (ex as Error).message;
         }
         expect(errorMessage).toEqual(
-            EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE
+            EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE,
         );
         expect(console.error).toHaveBeenCalled();
     });
@@ -143,14 +143,14 @@ describe("Braintree PayPal button fail in mount process", () => {
                     }}
                 >
                     <BraintreePayPalButtons />
-                </PayPalScriptProvider>
+                </PayPalScriptProvider>,
             );
         } catch (ex) {
             errorMessage = (ex as Error).message;
         }
 
         expect(errorMessage).toEqual(
-            EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE
+            EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE,
         );
         expect(console.error).toHaveBeenCalled();
     });
@@ -172,7 +172,7 @@ describe("Braintree PayPal button fail in mount process", () => {
                     }}
                 >
                     <BraintreePayPalButtons />
-                </PayPalScriptProvider>
+                </PayPalScriptProvider>,
             );
         } catch (ex) {
             errorMessage = (ex as Error).message;
@@ -189,7 +189,7 @@ describe("Braintree PayPal button fail in mount process", () => {
             .spyOn(console, "error")
             .mockImplementation();
         (loadCustomScript as jest.Mock).mockRejectedValue(
-            new Error("Server Error")
+            new Error("Server Error"),
         );
 
         render(
@@ -201,14 +201,14 @@ describe("Braintree PayPal button fail in mount process", () => {
             >
                 <BraintreePayPalButtons />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toBeCalled());
         expect(onError.mock.calls[0][0]).toEqual(
             expect.objectContaining({
                 message: `${LOAD_SCRIPT_ERROR} Error: Server Error`,
-            })
+            }),
         );
         spyConsoleError.mockRestore();
     });
@@ -231,14 +231,14 @@ describe("Braintree PayPal button fail in mount process", () => {
             >
                 <BraintreePayPalButtons />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toBeCalled());
         expect(onError.mock.calls[0][0]).toEqual(
             expect.objectContaining({
                 message: `${LOAD_SCRIPT_ERROR} Error: Cannot create the Braintree client`,
-            })
+            }),
         );
         spyConsoleError.mockRestore();
     });
@@ -259,14 +259,14 @@ describe("Braintree PayPal button fail in mount process", () => {
             >
                 <BraintreePayPalButtons />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toBeCalled());
         expect(onError.mock.calls[0][0]).toEqual(
             expect.objectContaining({
                 message: `${LOAD_SCRIPT_ERROR} TypeError: Cannot read properties of null (reading 'client')`,
-            })
+            }),
         );
         spyConsoleError.mockRestore();
     });
@@ -284,7 +284,7 @@ describe("render Braintree PayPal button component", () => {
                 }}
             >
                 <BraintreePayPalButtons />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => {
@@ -293,16 +293,16 @@ describe("render Braintree PayPal button component", () => {
                     clientId: "test",
                     dataClientToken: CLIENT_TOKEN,
                     "data-react-paypal-script-id": expect.any(String),
-                })
+                }),
             );
         });
         expect(loadCustomScript).toHaveBeenCalledWith(
-            expect.objectContaining({ url: BRAINTREE_SOURCE })
+            expect.objectContaining({ url: BRAINTREE_SOURCE }),
         );
         expect(loadCustomScript).toHaveBeenLastCalledWith(
             expect.objectContaining({
                 url: BRAINTREE_PAYPAL_CHECKOUT_SOURCE,
-            })
+            }),
         );
     });
 
@@ -321,7 +321,7 @@ describe("render Braintree PayPal button component", () => {
                     createOrder={jest.fn()}
                     onApprove={jest.fn()}
                 />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => {
@@ -355,7 +355,7 @@ describe("render Braintree PayPal button component", () => {
                     createOrder={jest.fn()}
                     onApprove={jest.fn()}
                 />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => {

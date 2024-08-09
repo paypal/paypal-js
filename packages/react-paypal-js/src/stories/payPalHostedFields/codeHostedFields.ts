@@ -111,7 +111,7 @@ const getCode = (
         customCardNameField,
         expirationDateFieldType,
     }: { expirationDateFieldType: string; customCardNameField: string },
-    args: Args
+    args: Args,
 ): string =>
     `import { useState, useEffect, useRef } from "react";
 import {
@@ -268,7 +268,7 @@ export const getDefaultCode = (args: Args): string =>
             customCardNameField: CUSTOM_INPUT_WITH_LABEL,
             expirationDateFieldType: EXPIRATION_DATE_SINGLE_FIELD,
         },
-        args
+        args,
     );
 export const getExpirationDateCode = (args: Args): string =>
     getCode(
@@ -276,5 +276,5 @@ export const getExpirationDateCode = (args: Args): string =>
             customCardNameField: CUSTOM_INPUT,
             expirationDateFieldType: EXPIRATION_DATE_MULTI_FIELD,
         },
-        args
+        args,
     );

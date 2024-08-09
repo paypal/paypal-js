@@ -9,10 +9,10 @@ type StringMap = Record<string, string>;
 
 export function findScript(
     url: string,
-    attributes?: StringMap
+    attributes?: StringMap,
 ): HTMLScriptElement | null {
     const currentScript = document.querySelector<HTMLScriptElement>(
-        `script[src="${url}"]`
+        `script[src="${url}"]`,
     );
     if (currentScript === null) return null;
 
@@ -107,7 +107,7 @@ export function processOptions(options: PayPalScriptOptions): {
             {
                 queryParams: {} as StringMap,
                 attributes: {} as StringMap,
-            }
+            },
         );
 
     if (
@@ -142,7 +142,7 @@ export function objectToQueryString(params: StringMap): string {
 
 function createScriptElement(
     url: string,
-    attributes: StringMap = {}
+    attributes: StringMap = {},
 ): HTMLScriptElement {
     const newScript: HTMLScriptElement = document.createElement("script");
     newScript.src = url;

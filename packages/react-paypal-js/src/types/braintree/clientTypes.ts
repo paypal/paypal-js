@@ -86,7 +86,7 @@ export interface BraintreeClient {
             data: unknown;
             timeout?: number | undefined;
         },
-        callback: BraintreeCallback
+        callback: BraintreeCallback,
     ): void;
 
     /**

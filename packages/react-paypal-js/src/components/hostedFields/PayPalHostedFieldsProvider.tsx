@@ -44,8 +44,8 @@ export const PayPalHostedFieldsProvider: FC<
     useEffect(() => {
         validateHostedFieldChildren(
             Object.keys(
-                registeredFields.current
-            ) as PAYPAL_HOSTED_FIELDS_TYPES[]
+                registeredFields.current,
+            ) as PAYPAL_HOSTED_FIELDS_TYPES[],
         );
         // Only render the hosted fields when script is loaded and hostedFields is eligible
         if (!(loadingStatus === SCRIPT_LOADING_STATE.RESOLVED)) {
@@ -53,7 +53,7 @@ export const PayPalHostedFieldsProvider: FC<
         }
         // Get the hosted fields from the [window.paypal.HostedFields] SDK
         hostedFields.current = getPayPalWindowNamespace(
-            options[SDK_SETTINGS.DATA_NAMESPACE]
+            options[SDK_SETTINGS.DATA_NAMESPACE],
         ).HostedFields;
 
         if (!hostedFields.current) {
@@ -62,7 +62,7 @@ export const PayPalHostedFieldsProvider: FC<
                     components: options.components,
                     [SDK_SETTINGS.DATA_NAMESPACE]:
                         options[SDK_SETTINGS.DATA_NAMESPACE],
-                })
+                }),
             );
         }
         if (!hostedFields.current.isEligible()) {
@@ -89,7 +89,7 @@ export const PayPalHostedFieldsProvider: FC<
             .catch((err) => {
                 setErrorState(() => {
                     throw new Error(
-                        `Failed to render <PayPalHostedFieldsProvider /> component. ${err}`
+                        `Failed to render <PayPalHostedFieldsProvider /> component. ${err}`,
                     );
                 });
             });

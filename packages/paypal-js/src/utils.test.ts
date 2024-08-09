@@ -34,7 +34,7 @@ describe("processOptions()", () => {
         const { url, attributes } = processOptions(options);
 
         expect(url).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&currency=USD&some-random-key=some-random-value"
+            "https://www.paypal.com/sdk/js?client-id=test&currency=USD&some-random-key=some-random-value",
         );
         expect(attributes).toEqual({ "data-page-type": "checkout" });
     });
@@ -58,7 +58,7 @@ describe("processOptions()", () => {
         });
 
         expect(url).toBe(
-            "http://localhost.paypal.com:8000/sdk/js?client-id=test"
+            "http://localhost.paypal.com:8000/sdk/js?client-id=test",
         );
     });
 
@@ -78,7 +78,7 @@ describe("processOptions()", () => {
         });
 
         expect(url).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&components=buttons,marks,messages&enable-funding=venmo,paylater&disable-funding=card"
+            "https://www.paypal.com/sdk/js?client-id=test&components=buttons,marks,messages&enable-funding=venmo,paylater&disable-funding=card",
         );
         expect(attributes).toEqual({});
     });
@@ -90,7 +90,7 @@ describe("processOptions()", () => {
         });
 
         expect(url).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*"
+            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*",
         );
         expect(attributes).toEqual({ "data-merchant-id": "123,456,789" });
     });
@@ -102,7 +102,7 @@ describe("processOptions()", () => {
         });
 
         expect(url).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=123"
+            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=123",
         );
         expect(attributes).toEqual({});
 
@@ -112,7 +112,7 @@ describe("processOptions()", () => {
         });
 
         expect(url2).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=123"
+            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=123",
         );
         expect(attributes2).toEqual({});
     });
@@ -125,7 +125,7 @@ describe("processOptions()", () => {
         });
 
         expect(url).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*"
+            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*",
         );
         expect(attributes).toEqual({ "data-merchant-id": "123,456,789" });
 
@@ -135,7 +135,7 @@ describe("processOptions()", () => {
         });
 
         expect(url2).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*"
+            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*",
         );
         expect(attributes2).toEqual({ "data-merchant-id": "123,456,789" });
     });
@@ -161,7 +161,7 @@ describe("findScript()", () => {
 
     test("returns null when the script is not found", () => {
         expect(
-            findScript("https://www.paypal.com/sdk/js?client-id=test")
+            findScript("https://www.paypal.com/sdk/js?client-id=test"),
         ).toBeNull();
     });
 
@@ -240,7 +240,7 @@ describe("insertScriptElement()", () => {
         });
 
         const [firstScript, secondScript] = Array.from(
-            document.querySelectorAll<HTMLScriptElement>("head script")
+            document.querySelectorAll<HTMLScriptElement>("head script"),
         );
 
         expect(firstScript.src).toBe(newScriptSrc);

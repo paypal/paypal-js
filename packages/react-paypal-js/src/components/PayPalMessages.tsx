@@ -37,7 +37,7 @@ export const PayPalMessages: FC<PayPalMessagesComponentProps> = ({
         }
 
         const paypalWindowNamespace = getPayPalWindowNamespace(
-            options[SDK_SETTINGS.DATA_NAMESPACE]
+            options[SDK_SETTINGS.DATA_NAMESPACE],
         );
 
         // verify dependency on window object
@@ -53,7 +53,7 @@ export const PayPalMessages: FC<PayPalMessagesComponentProps> = ({
                         sdkComponentKey: "messages",
                         sdkRequestedComponents: options.components,
                         sdkDataNamespace: options[SDK_SETTINGS.DATA_NAMESPACE],
-                    })
+                    }),
                 );
             });
         }
@@ -76,7 +76,7 @@ export const PayPalMessages: FC<PayPalMessagesComponentProps> = ({
                 // paypal messages container is still in the DOM
                 setErrorState(() => {
                     throw new Error(
-                        `Failed to render <PayPalMessages /> component. ${err}`
+                        `Failed to render <PayPalMessages /> component. ${err}`,
                     );
                 });
             });

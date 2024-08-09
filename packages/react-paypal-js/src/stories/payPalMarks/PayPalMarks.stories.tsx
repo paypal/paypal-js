@@ -79,7 +79,7 @@ export const RadioButtons: FC<{
     style: PayPalButtonsComponentOptions["style"];
 }> = ({ style }) => {
     const [selectedFundingSource, setSelectedFundingSource] = useState(
-        fundingSources[0]
+        fundingSources[0],
     );
 
     function onChange(event: ChangeEvent<HTMLInputElement>) {
@@ -118,12 +118,12 @@ export const RadioButtons: FC<{
                             } else {
                                 throw new Error("failed to create Order Id");
                             }
-                        }
+                        },
                     )
                 }
                 onApprove={(data) =>
                     onApprove(data).then((orderData) =>
-                        action(APPROVE)(orderData)
+                        action(APPROVE)(orderData),
                     )
                 }
                 {...defaultProps}
@@ -144,7 +144,7 @@ export const RadioButtons: FC<{
                 context={context}
                 code={getDefaultCode(
                     context.getStoryContext(context.storyById(context.id)).args
-                        .fundingSource
+                        .fundingSource,
                 )}
             />
         ),
@@ -161,7 +161,7 @@ export const RadioButtons: FC<{
             <DocPageStructure
                 context={context}
                 code={getRadioButtonsCode(
-                    context.getStoryContext(context.storyById(context.id)).args
+                    context.getStoryContext(context.storyById(context.id)).args,
                 )}
             />
         ),

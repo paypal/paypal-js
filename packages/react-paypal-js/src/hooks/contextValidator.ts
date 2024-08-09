@@ -13,7 +13,7 @@ import type { ScriptContextState } from "../types";
  * @returns strict context avoiding null values in the type
  */
 export function validateReducer(
-    scriptContext: ScriptContextState | null
+    scriptContext: ScriptContextState | null,
 ): ScriptContextState {
     if (
         typeof scriptContext?.dispatch === "function" &&
@@ -36,7 +36,7 @@ export function validateReducer(
  * @returns strict context if one of the keys are defined
  */
 export const validateBraintreeAuthorizationData = (
-    scriptContext: ScriptContextState | null
+    scriptContext: ScriptContextState | null,
 ): ScriptContextState => {
     if (
         !scriptContext?.options?.[SDK_SETTINGS.DATA_CLIENT_TOKEN] &&

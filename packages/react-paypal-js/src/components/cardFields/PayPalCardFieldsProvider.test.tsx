@@ -73,7 +73,7 @@ describe("PayPalCardFieldsProvider", () => {
                         NameField: jest.fn().mockReturnValue(happyMethods),
                         CVVField: jest.fn().mockReturnValue(happyMethods),
                         ExpiryField: jest.fn().mockReturnValue(happyMethods),
-                    } as unknown as PayPalCardFieldsComponent)
+                    }) as unknown as PayPalCardFieldsComponent,
             ),
             version: "",
         };
@@ -98,12 +98,12 @@ describe("PayPalCardFieldsProvider", () => {
             >
                 <></>
             </PayPalCardFieldsProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
         expect(onError.mock.calls[0][0].message).toEqual(
-            "usePayPalScriptReducer must be used within a PayPalScriptProvider"
+            "usePayPalScriptReducer must be used within a PayPalScriptProvider",
         );
         spyConsoleError.mockRestore();
     });
@@ -134,12 +134,12 @@ describe("PayPalCardFieldsProvider", () => {
                     <PayPalExpiryField />
                 </PayPalCardFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
         expect(onError.mock.calls[0][0].message).toEqual(
-            CARD_FIELDS_DUPLICATE_CHILDREN_ERROR
+            CARD_FIELDS_DUPLICATE_CHILDREN_ERROR,
         );
 
         spyConsoleError.mockRestore();
@@ -170,7 +170,7 @@ describe("PayPalCardFieldsProvider", () => {
                     <PayPalCVVField />
                     <PayPalExpiryField />
                 </PayPalCardFieldsProvider>
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
         await waitFor(() => {
             expect(loadScript).toBeCalled();
@@ -187,7 +187,7 @@ describe("PayPalCardFieldsProvider", () => {
                 () =>
                     ({
                         isEligible: jest.fn().mockReturnValue(false),
-                    } as unknown as PayPalCardFieldsComponent)
+                    }) as unknown as PayPalCardFieldsComponent,
             ),
             version: "",
         };
@@ -211,7 +211,7 @@ describe("PayPalCardFieldsProvider", () => {
                     <PayPalCVVField />
                     <PayPalExpiryField />
                 </PayPalCardFieldsProvider>
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
         await waitFor(() => {
             expect(getMockElementsRendered().length).toEqual(0);
@@ -228,7 +228,7 @@ describe("PayPalCardFieldsProvider", () => {
                     ({
                         isEligible: jest.fn().mockReturnValue(true),
                         NumberField: jest.fn(() => unHappyMethods),
-                    } as unknown as PayPalCardFieldsComponent)
+                    }) as unknown as PayPalCardFieldsComponent,
             ),
             version: "",
         };
@@ -250,12 +250,12 @@ describe("PayPalCardFieldsProvider", () => {
                     <PayPalNumberField />
                 </PayPalCardFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
         expect(onError.mock.calls[0][0].message).toEqual(
-            "Failed to render <PayPalNumberField /> component. Unknown error"
+            "Failed to render <PayPalNumberField /> component. Unknown error",
         );
         spyConsoleError.mockRestore();
     });
@@ -284,7 +284,7 @@ describe("PayPalCardFieldsProvider", () => {
                     <PayPalExpiryField />
                 </PayPalCardFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
@@ -312,7 +312,7 @@ describe("PayPalCardFieldsProvider", () => {
                     <PayPalCVVField />
                     <PayPalExpiryField />
                 </PayPalCardFieldsProvider>
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => {
@@ -344,7 +344,7 @@ describe("PayPalCardFieldsProvider", () => {
                             render: mockRender,
                             close: happyMethods.close,
                         })),
-                    } as unknown as PayPalCardFieldsComponent)
+                    }) as unknown as PayPalCardFieldsComponent,
             ),
             version: "",
         };
@@ -368,7 +368,7 @@ describe("PayPalCardFieldsProvider", () => {
                     <PayPalCVVField />
                     <PayPalExpiryField />
                 </PayPalCardFieldsProvider>
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => expect(mockRender).toHaveBeenCalledTimes(3));

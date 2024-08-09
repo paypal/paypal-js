@@ -52,14 +52,14 @@ export const PayPalCardFieldsProvider = ({
         try {
             cardFieldsInstance.current =
                 getPayPalWindowNamespace(
-                    options[SDK_SETTINGS.DATA_NAMESPACE]
+                    options[SDK_SETTINGS.DATA_NAMESPACE],
                 ).CardFields?.({
                     ...props,
                 }) ?? null;
         } catch (error) {
             setError(() => {
                 throw new Error(
-                    `Failed to render <PayPalCardFieldsProvider /> component. Failed to initialize:  ${error}`
+                    `Failed to render <PayPalCardFieldsProvider /> component. Failed to initialize:  ${error}`,
                 );
             });
             return;
@@ -72,7 +72,7 @@ export const PayPalCardFieldsProvider = ({
                         components: options.components,
                         [SDK_SETTINGS.DATA_NAMESPACE]:
                             options[SDK_SETTINGS.DATA_NAMESPACE],
-                    })
+                    }),
                 );
             });
             return;

@@ -41,7 +41,7 @@ const subscriptionOptions: PayPalScriptOptions = {
 const buttonSubscriptionProps = {
     createSubscription(
         data: Record<string, unknown>,
-        actions: CreateSubscriptionActions
+        actions: CreateSubscriptionActions,
     ) {
         return actions.subscription
             .create({
@@ -186,7 +186,7 @@ export const Default: FC<{ type: string }> = ({ type }) => {
                 context={context}
                 code={getDefaultCode(
                     context.getStoryContext(context.storyById(context.id)).args
-                        .type
+                        .type,
                 )}
             />
         ),

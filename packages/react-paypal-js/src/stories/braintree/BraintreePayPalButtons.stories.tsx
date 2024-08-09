@@ -112,7 +112,7 @@ export default {
             storyArg: {
                 args: { size: number };
                 originalStoryFn: { name: string };
-            }
+            },
         ): ReactElement => {
             // Workaround to render the story after got the client token,
             // The new experimental loaders doesn't work in Docs views
@@ -170,7 +170,7 @@ export const Default: FC<StoryProps> = ({
             forceReRender={[style, amount, currency]}
             createOrder={(
                 data: Record<string, unknown>,
-                actions: CreateOrderBraintreeActions
+                actions: CreateOrderBraintreeActions,
             ) =>
                 actions.braintree
                     .createPayment({
@@ -198,7 +198,7 @@ export const Default: FC<StoryProps> = ({
             }
             onApprove={(
                 data: OnApproveBraintreeData,
-                actions: OnApproveBraintreeActions
+                actions: OnApproveBraintreeActions,
             ) =>
                 actions.braintree.tokenizePayment(data).then((payload) => {
                     approveSale(payload.nonce, amount).then((data) => {
@@ -272,7 +272,7 @@ export const BillingAgreement: FC<StoryProps> = ({
             <DocPageStructure
                 context={context}
                 code={getDefaultCode(
-                    context.getStoryContext(context.storyById(context.id)).args
+                    context.getStoryContext(context.storyById(context.id)).args,
                 )}
             />
         ),
@@ -285,7 +285,7 @@ export const BillingAgreement: FC<StoryProps> = ({
             <DocPageStructure
                 context={context}
                 code={getBillingAgreementCode(
-                    context.getStoryContext(context.storyById(context.id)).args
+                    context.getStoryContext(context.storyById(context.id)).args,
                 )}
             />
         ),

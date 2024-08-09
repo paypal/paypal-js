@@ -47,11 +47,11 @@ describe("<PayPalMessages />", () => {
                 options={{ clientId: "test", components: "messages" }}
             >
                 <PayPalMessages style={style} className="customClass" />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() =>
-            expect(window.paypal?.Messages).toHaveBeenCalledWith({ style })
+            expect(window.paypal?.Messages).toHaveBeenCalledWith({ style }),
         );
     });
 
@@ -68,13 +68,13 @@ describe("<PayPalMessages />", () => {
                 options={{ clientId: "test", components: "messages" }}
             >
                 <PayPalMessages className="custom-class-name" />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() =>
             expect(
-                container.querySelector("div.custom-class-name")
-            ).not.toBeNull()
+                container.querySelector("div.custom-class-name"),
+            ).not.toBeNull(),
         );
     });
 
@@ -88,7 +88,7 @@ describe("<PayPalMessages />", () => {
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalMessages />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
@@ -114,7 +114,7 @@ describe("<PayPalMessages />", () => {
             >
                 <PayPalMessages />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
@@ -145,7 +145,7 @@ describe("<PayPalMessages />", () => {
             >
                 <PayPalMessages />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(mockRender).toBeCalled());
@@ -180,7 +180,7 @@ describe("<PayPalMessages />", () => {
             >
                 <PayPalMessages />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
