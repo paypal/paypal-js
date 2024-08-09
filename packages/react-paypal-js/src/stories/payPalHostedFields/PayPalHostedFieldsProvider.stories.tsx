@@ -71,7 +71,7 @@ export default {
                     context={context}
                     code={getDefaultCode(
                         context.getStoryContext(context.storyById(context.id))
-                            .args.styles
+                            .args.styles,
                     )}
                 />
             ),

@@ -17,7 +17,7 @@ export const CAPTURE_ORDER_URL = `${FLY_SERVER}/api/paypal/capture-order`;
 const CLIENT_TOKEN_URL = `${FLY_SERVER}/api/braintree/generate-client-token`;
 const SALE_URL = `${FLY_SERVER}/api/braintree/sale`;
 const allowedSDKQueryParams = Object.keys(SDK_QUERY_KEYS).map(
-    (key) => SDK_QUERY_KEYS[key]
+    (key) => SDK_QUERY_KEYS[key],
 );
 
 // paypal-js supports the sdkBaseURL param for testing in lower environments
@@ -46,7 +46,7 @@ export async function getClientToken(url = CLIENT_TOKEN_URL): Promise<string> {
 
 export async function approveSale(
     nonce: string,
-    amount: string
+    amount: string,
 ): Promise<unknown> {
     return await (
         await fetch(SALE_URL, {
@@ -81,7 +81,7 @@ export function generateFundingSource(fundingSource?: string): string {
 }
 
 export function createOrder(
-    cart: { sku: string; quantity: number }[]
+    cart: { sku: string; quantity: number }[],
 ): Promise<OrderResponseBody> {
     return fetch(CREATE_ORDER_URL, {
         method: "POST",

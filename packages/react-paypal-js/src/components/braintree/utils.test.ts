@@ -39,7 +39,7 @@ describe("decorateActions", () => {
               "onClick": [MockFunction],
               "onInit": [MockFunction],
             }
-        `
+        `,
         );
     });
 
@@ -52,7 +52,7 @@ describe("decorateActions", () => {
             createOrder: jest
                 .fn()
                 .mockImplementation(
-                    (data, actions) => actions.braintree.create !== undefined
+                    (data, actions) => actions.braintree.create !== undefined,
                 ),
         };
 
@@ -60,7 +60,7 @@ describe("decorateActions", () => {
 
         const buttonProps = decorateActions(
             buttonPropsWithCreateOrder,
-            mockedCheckout
+            mockedCheckout,
         );
 
         if (!buttonProps) {
@@ -72,7 +72,7 @@ describe("decorateActions", () => {
         const mockedCreateOrderActions = mock<CreateOrderBraintreeActions>();
 
         expect(
-            buttonProps.createOrder({}, mockedCreateOrderActions)
+            buttonProps.createOrder({}, mockedCreateOrderActions),
         ).toBeTruthy();
     });
 
@@ -86,7 +86,7 @@ describe("decorateActions", () => {
                 .fn()
                 .mockImplementation(
                     (data, actions) =>
-                        actions.braintree.createBillingAgreement !== undefined
+                        actions.braintree.createBillingAgreement !== undefined,
                 ),
         };
 
@@ -94,7 +94,7 @@ describe("decorateActions", () => {
 
         const buttonProps = decorateActions(
             buttonPropsWithCreateBillingAgreement,
-            mockedCheckout
+            mockedCheckout,
         );
 
         if (!buttonProps) {
@@ -109,8 +109,8 @@ describe("decorateActions", () => {
         expect(
             buttonProps.createBillingAgreement(
                 {},
-                mockedCreateBillingAgreementActions
-            )
+                mockedCreateBillingAgreementActions,
+            ),
         ).toBeTruthy();
     });
 
@@ -123,7 +123,7 @@ describe("decorateActions", () => {
             onApprove: jest
                 .fn()
                 .mockImplementation(
-                    (data, actions) => actions.braintree.create !== undefined
+                    (data, actions) => actions.braintree.create !== undefined,
                 ),
         };
 
@@ -131,7 +131,7 @@ describe("decorateActions", () => {
 
         const buttonProps = decorateActions(
             buttonPropsWithOnApprove,
-            mockedCheckout
+            mockedCheckout,
         );
 
         if (!buttonProps) {
@@ -143,7 +143,7 @@ describe("decorateActions", () => {
         const mockedOnApproveData = mock<OnApproveBraintreeData>();
         const mockedOnApproveActions = mock<OnApproveBraintreeActions>();
         expect(
-            buttonProps.onApprove(mockedOnApproveData, mockedOnApproveActions)
+            buttonProps.onApprove(mockedOnApproveData, mockedOnApproveActions),
         ).toBeTruthy();
     });
 });
@@ -170,7 +170,7 @@ describe("getBraintreeNamespace", () => {
         },
     };
     (getBraintreeWindowNamespace as jest.Mock).mockReturnValue(
-        braintreeNamespace
+        braintreeNamespace,
     );
 
     test("should return Braintree namespace from argument", async () => {
@@ -190,7 +190,7 @@ describe("getBraintreeNamespace", () => {
             getBraintreeNamespace(mock<BraintreeNamespace>());
         } catch (err) {
             expect((err as Error).message).toEqual(
-                "The braintreeNamespace property is not a valid BraintreeNamespace type."
+                "The braintreeNamespace property is not a valid BraintreeNamespace type.",
             );
         }
     });

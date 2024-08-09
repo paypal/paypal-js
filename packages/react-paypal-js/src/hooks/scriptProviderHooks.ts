@@ -22,7 +22,7 @@ import type {
  */
 export function usePayPalScriptReducer(): [
     ScriptContextDerivedState,
-    React.Dispatch<ScriptReducerAction>
+    React.Dispatch<ScriptReducerAction>,
 ] {
     const scriptContext = validateReducer(useContext(ScriptContext));
 
@@ -49,10 +49,10 @@ export function usePayPalScriptReducer(): [
  */
 export function useScriptProviderContext(): [
     ScriptContextState,
-    React.Dispatch<ScriptReducerAction>
+    React.Dispatch<ScriptReducerAction>,
 ] {
     const scriptContext = validateBraintreeAuthorizationData(
-        validateReducer(useContext(ScriptContext))
+        validateReducer(useContext(ScriptContext)),
     );
 
     return [

@@ -21,13 +21,13 @@ describe("generateMissingHostedFieldsError", () => {
             generateMissingHostedFieldsError({
                 components: "marks",
                 [SDK_SETTINGS.DATA_NAMESPACE]: "Braintree",
-            })
+            }),
         ).toEqual(exceptionMessage);
     });
 
     test("should throw exception with default namespace", () => {
         expect(generateMissingHostedFieldsError({ components: "" })).toEqual(
-            exceptionMessagePayPalNamespace
+            exceptionMessagePayPalNamespace,
         );
     });
 
@@ -35,9 +35,9 @@ describe("generateMissingHostedFieldsError", () => {
         window.paypal = { version: "" };
 
         expect(
-            generateMissingHostedFieldsError({ components: "hosted-fields" })
+            generateMissingHostedFieldsError({ components: "hosted-fields" }),
         ).toEqual(
-            "Unable to render <PayPalHostedFieldsProvider /> because window.paypal.HostedFields is undefined."
+            "Unable to render <PayPalHostedFieldsProvider /> because window.paypal.HostedFields is undefined.",
         );
     });
 });

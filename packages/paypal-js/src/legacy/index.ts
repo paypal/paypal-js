@@ -1,4 +1,4 @@
-import Promise from "promise-polyfill";
+import * as Promise from "promise-polyfill";
 import {
     loadScript as originalLoadScript,
     loadCustomScript as originalLoadCustomScript,
@@ -7,7 +7,7 @@ import type { PayPalScriptOptions } from "../../types/script-options";
 import type { PayPalNamespace } from "../../types/index";
 
 export function loadScript(
-    options: PayPalScriptOptions
+    options: PayPalScriptOptions,
 ): Promise<PayPalNamespace | null> {
     return originalLoadScript(options, Promise);
 }

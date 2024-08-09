@@ -60,7 +60,7 @@ export const PayPalMarks: FC<PayPalMarksComponentProps> = ({
             // paypal marks container is still in the DOM
             setErrorState(() => {
                 throw new Error(
-                    `Failed to render <PayPalMarks /> component. ${err}`
+                    `Failed to render <PayPalMarks /> component. ${err}`,
                 );
             });
         });
@@ -73,7 +73,7 @@ export const PayPalMarks: FC<PayPalMarksComponentProps> = ({
         }
 
         const paypalWindowNamespace = getPayPalWindowNamespace(
-            options[SDK_SETTINGS.DATA_NAMESPACE]
+            options[SDK_SETTINGS.DATA_NAMESPACE],
         );
 
         // verify dependency on window object
@@ -88,7 +88,7 @@ export const PayPalMarks: FC<PayPalMarksComponentProps> = ({
                         sdkComponentKey: "marks",
                         sdkRequestedComponents: options.components,
                         sdkDataNamespace: options[SDK_SETTINGS.DATA_NAMESPACE],
-                    })
+                    }),
                 );
             });
         }

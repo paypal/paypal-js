@@ -20,7 +20,7 @@ export const defaultProps = {
     },
     onClick(): void {
         action("button")(
-            "Click event dispatch from the the PayPal payment button"
+            "Click event dispatch from the the PayPal payment button",
         );
     },
     onError(err: Record<string, unknown>): void {

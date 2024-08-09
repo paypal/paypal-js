@@ -70,7 +70,7 @@ function PrintLoadingState(): ReactElement | null {
 
     if (isInitial) {
         action("isInitial")(
-            "The sdk script has not been loaded  yet. It has been deferred."
+            "The sdk script has not been loaded  yet. It has been deferred.",
         );
     } else if (isPending) {
         action("isPending")("The sdk script is loading.");
@@ -78,7 +78,7 @@ function PrintLoadingState(): ReactElement | null {
         action("isResolved")("The sdk script has successfully loaded.");
     } else if (isRejected) {
         action("isResolved")(
-            "Something went wrong. The sdk script failed to load."
+            "Something went wrong. The sdk script failed to load.",
         );
     }
 
@@ -135,7 +135,7 @@ export const Default: FC<{ deferLoading: boolean }> = ({ deferLoading }) => {
                 context={context}
                 code={getDefaultCode(
                     context.getStoryContext(context.storyById(context.id)).args
-                        .deferLoading
+                        .deferLoading,
                 )}
             />
         ),

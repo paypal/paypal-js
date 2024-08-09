@@ -43,7 +43,7 @@ export const generateMissingHostedFieldsError = ({
  * @returns @type {true} when the children are valid
  */
 const validateExpirationDate = (
-    registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[]
+    registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[],
 ) => {
     return (
         !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE) &&
@@ -92,7 +92,7 @@ const noDuplicateChildren = (registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[]) => {
  * @param requiredChildren the list with required children [number, expiration, cvv]
  */
 export const validateHostedFieldChildren = (
-    registeredFields: PAYPAL_HOSTED_FIELDS_TYPES[]
+    registeredFields: PAYPAL_HOSTED_FIELDS_TYPES[],
 ): void => {
     hasDefaultChildren(registeredFields);
     noDuplicateChildren(registeredFields);
