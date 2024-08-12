@@ -271,9 +271,7 @@ export type PayPalButtonStyle = {
     shape?: "rect" | "pill" | "sharp";
     tagline?: boolean;
 };
-
 export type PayPalButtonDisplayOnly = DisplayOnlyOptions[];
-
 export type PayPalButtonMessage = {
     amount?: number;
     align?: "center" | "left" | "right";
