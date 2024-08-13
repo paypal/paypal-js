@@ -3,9 +3,9 @@ import { useSandpack } from "@codesandbox/sandpack-react";
 
 import type { ReactElement } from "react";
 
-import type { Properties as CSSProperties} from "csstype";
+import type { Properties as CSSProperties } from "csstype";
 
-const COPY_BUTTON: CSSProperties =  {
+const COPY_BUTTON: CSSProperties = {
     padding: "4px 10px",
     cursor: "pointer",
     display: "flex",

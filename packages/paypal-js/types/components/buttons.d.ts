@@ -201,122 +201,155 @@ type OnShippingAddressChangeActions = {
 
 export type DisplayOnlyOptions = "vaultable";
 
+export type PayPalButtonCreateOrder = (
+    data: CreateOrderData,
+    actions: CreateOrderActions,
+) => Promise<string>;
+
+export type PayPalButtonCreateBillingAgreement = () => Promise<string>;
+
+export type PayPalButtonCreateSubscription = (
+    data: Record<string, unknown>,
+    actions: CreateSubscriptionActions,
+) => Promise<string>;
+
+export type PayPalButtonCreateVaultSetupToken = () => Promise<string>;
+
+export type PayPalButtonFundingSource = FUNDING_SOURCE;
+
+export type PayPalButtonOnApprove = (
+    data: OnApproveData,
+    actions: OnApproveActions,
+) => Promise<void>;
+
+export type PayPalButtonOnCancel = (
+    data: Record<string, unknown>,
+    actions: OnCancelledActions,
+) => void;
+
+export type PayPalButtonOnClick = (
+    data: Record<string, unknown>,
+    actions: OnClickActions,
+) => Promise<void> | void;
+
+export type PayPalButtonOnError = (err: Record<string, unknown>) => void;
+
+export type PayPalButtonOnInit = (
+    data: Record<string, unknown>,
+    actions: OnInitActions,
+) => void;
+
+export type PayPalButtonOnShippingChange = (
+    data: OnShippingChangeData,
+    actions: OnShippingChangeActions,
+) => Promise<void>;
+
+export type PayPalButtonOnShippingOptionsChange = (
+    data: OnShippingOptionsChangeData,
+    actions: OnShippingOptionsChangeActions,
+) => Promise<void>;
+
+export type PayPalButtonOnShippingAddressChange = (
+    data: OnShippingAddressChangeData,
+    actions: OnShippingAddressChangeActions,
+) => Promise<void>;
+
+export type PayPalButtonStyle = {
+    borderRadius?: number;
+    color?: "gold" | "blue" | "silver" | "white" | "black";
+    disableMaxWidth?: boolean;
+    height?: number;
+    label?:
+        | "paypal"
+        | "checkout"
+        | "buynow"
+        | "pay"
+        | "installment"
+        | "subscribe"
+        | "donate";
+    layout?: "vertical" | "horizontal";
+    shape?: "rect" | "pill" | "sharp";
+    tagline?: boolean;
+};
+export type PayPalButtonDisplayOnly = DisplayOnlyOptions[];
+export type PayPalButtonMessage = {
+    amount?: number;
+    align?: "center" | "left" | "right";
+    color?: "black" | "white";
+    position?: "top" | "bottom";
+    offer?: "pay_later_short_term" | "pay_later_long_term";
+};
+
 export interface PayPalButtonsComponentOptions {
     /**
      * Called on button click. Often used for [Braintree vault integrations](https://developers.braintreepayments.com/guides/paypal/vault/javascript/v3).
      */
-    createBillingAgreement?: () => Promise<string>;
+    createBillingAgreement?: PayPalButtonCreateBillingAgreement;
     /**
      * Called on button click to set up a one-time payment. [createOrder docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#createorder).
      */
-    createOrder?: (
-        data: CreateOrderData,
-        actions: CreateOrderActions,
-    ) => Promise<string>;
+    createOrder?: PayPalButtonCreateOrder;
     /**
      * Called on button click to set up a recurring payment. [createSubscription docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#createsubscription).
      */
-    createSubscription?: (
-        data: Record<string, unknown>,
-        actions: CreateSubscriptionActions,
-    ) => Promise<string>;
+    createSubscription?: PayPalButtonCreateSubscription;
     /**
      * Save payment methods to charge payers after a set amount of time. For example, you can offer a free trial and charge payers after the trial expires. Payers don't need to be present when charged. No checkout required.
      * https://developer.paypal.com/docs/checkout/save-payment-methods/purchase-later/js-sdk/paypal/#link-clientsidecodesample
      */
-    createVaultSetupToken?: () => Promise<string>;
+    createVaultSetupToken?: PayPalButtonCreateVaultSetupToken;
     /**
      * Used for defining a standalone button.
      * Learn more about [configuring the funding source for standalone buttons](https://developer.paypal.com/docs/business/checkout/configure-payments/standalone-buttons/#4-funding-sources).
      */
-    fundingSource?: FUNDING_SOURCE;
+    fundingSource?: PayPalButtonFundingSource;
     /**
      * Called when finalizing the transaction. Often used to inform the buyer that the transaction is complete. [onApprove docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#onapprove).
      */
-    onApprove?: (
-        data: OnApproveData,
-        actions: OnApproveActions,
-    ) => Promise<void>;
+    onApprove?: PayPalButtonOnApprove;
     /**
      * Called when the buyer cancels the transaction.
      * Often used to show the buyer a [cancellation page](https://developer.paypal.com/docs/business/checkout/add-capabilities/buyer-experience/#3-show-cancellation-page).
      */
-    onCancel?: (
-        data: Record<string, unknown>,
-        actions: OnCancelledActions,
-    ) => void;
+    onCancel?: PayPalButtonOnCancel;
     /**
      * Called when the button is clicked. Often used for [validation](https://developer.paypal.com/docs/checkout/integration-features/validation/).
      */
-    onClick?: (
-        data: Record<string, unknown>,
-        actions: OnClickActions,
-    ) => Promise<void> | void;
+    onClick?: PayPalButtonOnClick;
     /**
      * Catch all for errors preventing buyer checkout.
      * Often used to show the buyer an [error page](https://developer.paypal.com/docs/checkout/integration-features/handle-errors/).
      */
-    onError?: (err: Record<string, unknown>) => void;
+    onError?: PayPalButtonOnError;
     /**
      * Called when the buttons are initialized. The component is initialized after the iframe has successfully loaded.
      */
-    onInit?: (data: Record<string, unknown>, actions: OnInitActions) => void;
+    onInit?: PayPalButtonOnInit;
     /**
      * Called when the buyer changes their shipping address on PayPal.
      * @deprecated Use `onShippingAddressChange` or `onShippingOptionsChange` instead.
      */
-    onShippingChange?: (
-        data: OnShippingChangeData,
-        actions: OnShippingChangeActions,
-    ) => Promise<void>;
+    onShippingChange?: PayPalButtonOnShippingChange;
     /**
      * Called when the buyer selects a new shipping option on PayPal.
      */
-    onShippingOptionsChange?: (
-        data: OnShippingOptionsChangeData,
-        actions: OnShippingOptionsChangeActions,
-    ) => Promise<void>;
+    onShippingOptionsChange?: PayPalButtonOnShippingOptionsChange;
     /**
      * Called when the buyer updates their shipping address on PayPal.
      */
-    onShippingAddressChange?: (
-        data: OnShippingAddressChangeData,
-        actions: OnShippingAddressChangeActions,
-    ) => Promise<void>;
+    onShippingAddressChange?: PayPalButtonOnShippingAddressChange;
     /**
      * [Styling options](https://developer.paypal.com/docs/business/checkout/reference/style-guide/#customize-the-payment-buttons) for customizing the button appearance.
      */
-    style?: {
-        borderRadius?: number;
-        color?: "gold" | "blue" | "silver" | "white" | "black";
-        disableMaxWidth?: boolean;
-        height?: number;
-        label?:
-            | "paypal"
-            | "checkout"
-            | "buynow"
-            | "pay"
-            | "installment"
-            | "subscribe"
-            | "donate";
-        layout?: "vertical" | "horizontal";
-        shape?: "rect" | "pill" | "sharp";
-        tagline?: boolean;
-    };
+    style?: PayPalButtonStyle;
     /**
      * Used for displaying only vaultable buttons.
      */
-    displayOnly?: DisplayOnlyOptions[];
+    displayOnly?: PayPalButtonDisplayOnly;
     /**
      * [Message options](https://developer.paypal.com/sdk/js/reference/#message) for customizing the message appearance and limited content control.
      */
-    message?: {
-        amount?: number;
-        align?: "center" | "left" | "right";
-        color?: "black" | "white";
-        position?: "top" | "bottom";
-        offer?: "pay_later_short_term" | "pay_later_long_term";
-    };
+    message?: PayPalButtonMessage;
 }
 
 export interface PayPalButtonsComponent {
