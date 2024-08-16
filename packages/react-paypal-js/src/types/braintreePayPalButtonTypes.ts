@@ -33,21 +33,21 @@ export interface BraintreePayPalButtonsComponentProps
      */
     createOrder?: (
         data: Record<string, unknown>,
-        actions: CreateOrderBraintreeActions
+        actions: CreateOrderBraintreeActions,
     ) => Promise<string>;
     /**
      * The createBillingAgreement actions include the Braintree SDK paypalCheckoutInstance as `actions.braintree`
      */
     createBillingAgreement?: (
         data: Record<string, unknown>,
-        actions: CreateBillingAgreementActions
+        actions: CreateBillingAgreementActions,
     ) => Promise<string>;
     /**
      * The onApprove actions include the Braintree SDK paypalCheckoutInstance as `actions.braintree`
      */
     onApprove?: (
         data: OnApproveBraintreeData,
-        actions: OnApproveBraintreeActions
+        actions: OnApproveBraintreeActions,
     ) => Promise<void>;
     /**
      * An optional Braintree namespace.

@@ -64,7 +64,7 @@ describe("<PayPalButtons />", () => {
                     style={{ layout: "horizontal" }}
                     message={{ amount: 100 }}
                 />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() =>
@@ -73,7 +73,7 @@ describe("<PayPalButtons />", () => {
                 message: { amount: 100 },
                 fundingSource: FUNDING.CREDIT,
                 onInit: expect.any(Function),
-            })
+            }),
         );
     });
 
@@ -81,11 +81,13 @@ describe("<PayPalButtons />", () => {
         render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons className="custom-class-name" />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() =>
-            expect(document.querySelector("div.custom-class-name")).toBeTruthy()
+            expect(
+                document.querySelector("div.custom-class-name"),
+            ).toBeTruthy(),
         );
     });
 
@@ -99,12 +101,12 @@ describe("<PayPalButtons />", () => {
                     disabled={true}
                     onInit={onInitCallbackMock}
                 />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => {
             expect(
-                document.querySelector("div.paypal-buttons-disabled")
+                document.querySelector("div.paypal-buttons-disabled"),
             ).toBeTruthy();
         });
         expect(window.paypal?.Buttons).toHaveBeenCalled();
@@ -117,8 +119,8 @@ describe("<PayPalButtons />", () => {
         act(() =>
             (window.paypal?.Buttons as jest.Mock).mock.calls[0][0].onInit(
                 {},
-                onInitActions
-            )
+                onInitActions,
+            ),
         );
 
         await waitFor(() => {
@@ -135,14 +137,14 @@ describe("<PayPalButtons />", () => {
                     disabled={true}
                     onInit={jest.fn()}
                 />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => {
             expect(
                 container
                     .querySelector("div.custom-class-name")
-                    ?.classList.contains("paypal-buttons-disabled")
+                    ?.classList.contains("paypal-buttons-disabled"),
             ).toBeTruthy();
         });
         const onInitActions = {
@@ -154,8 +156,8 @@ describe("<PayPalButtons />", () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (window.paypal?.Buttons as jest.Mock).mock.calls[0][0]?.onInit(
                 {},
-                onInitActions
-            )
+                onInitActions,
+            ),
         );
         rerender(
             <PayPalScriptProvider options={{ clientId: "test" }}>
@@ -164,7 +166,7 @@ describe("<PayPalButtons />", () => {
                     disabled={false}
                     onInit={onInitActions.enable}
                 />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
         await waitFor(() => {
             expect(onInitActions.enable).toBeCalled();
@@ -172,7 +174,7 @@ describe("<PayPalButtons />", () => {
         expect(
             container
                 ?.querySelector("div.custom-class-name")
-                ?.classList.contains("paypal-buttons-disabled")
+                ?.classList.contains("paypal-buttons-disabled"),
         ).toBeFalsy();
     });
 
@@ -196,25 +198,25 @@ describe("<PayPalButtons />", () => {
         render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <ButtonWrapper initialAmount="1" />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() =>
-            expect(window.paypal?.Buttons).toHaveBeenCalledTimes(1)
+            expect(window.paypal?.Buttons).toHaveBeenCalledTimes(1),
         );
 
         fireEvent.click(screen.getByText("Update Amount"));
 
         // confirm re-render when the forceReRender value changes for first item
         await waitFor(() =>
-            expect(window.paypal?.Buttons).toHaveBeenCalledTimes(2)
+            expect(window.paypal?.Buttons).toHaveBeenCalledTimes(2),
         );
 
         fireEvent.click(screen.getByText("Update Currency"));
 
         // confirm re-render when the forceReRender value changes for second item
         await waitFor(() =>
-            expect(window.paypal?.Buttons).toHaveBeenCalledTimes(3)
+            expect(window.paypal?.Buttons).toHaveBeenCalledTimes(3),
         );
     });
     window.paypal?.Buttons as jest.Mock;
@@ -237,22 +239,24 @@ describe("<PayPalButtons />", () => {
         render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <ButtonWrapper initialOrderID="1" />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() =>
-            expect(window.paypal?.Buttons).toHaveBeenCalledTimes(1)
+            expect(window.paypal?.Buttons).toHaveBeenCalledTimes(1),
         );
 
         expect(screen.getByTestId("orderID").innerHTML).toBe("1");
 
         await act(() =>
             // call createOrder() to trigger a state change
-            (window.paypal?.Buttons as jest.Mock).mock.calls[0][0].createOrder()
+            (
+                window.paypal?.Buttons as jest.Mock
+            ).mock.calls[0][0].createOrder(),
         );
 
         await waitFor(() =>
-            expect(screen.getByTestId("orderID").innerHTML).toBe("2")
+            expect(screen.getByTestId("orderID").innerHTML).toBe("2"),
         );
 
         // confirm that the Buttons were NOT reset by a side-effect in createOrder()
@@ -271,7 +275,7 @@ describe("<PayPalButtons />", () => {
         render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons className="test-button" />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         // defaults to rendering null when ineligible
@@ -280,11 +284,11 @@ describe("<PayPalButtons />", () => {
         });
         expect(
             (window.paypal?.Buttons as jest.Mock).mock.results[0].value
-                .isEligible
+                .isEligible,
         ).toBeCalled();
         expect(
             (window.paypal?.Buttons as jest.Mock).mock.results[0].value
-                .isEligible.mock.results[0].value
+                .isEligible.mock.results[0].value,
         ).toBeFalsy();
     });
 
@@ -300,7 +304,7 @@ describe("<PayPalButtons />", () => {
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
@@ -325,7 +329,7 @@ describe("<PayPalButtons />", () => {
             >
                 <PayPalButtons />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
@@ -349,6 +353,7 @@ describe("<PayPalButtons />", () => {
                         }
                         return Promise.reject("Unknown error");
                     }),
+                    updateProps: jest.fn().mockResolvedValue({}),
                 };
             },
             version: "",
@@ -358,7 +363,7 @@ describe("<PayPalButtons />", () => {
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toHaveBeenCalled());
@@ -377,7 +382,7 @@ describe("<PayPalButtons />", () => {
                     options?.fundingSource === "venmo"
                 ) {
                     throw new Error(
-                        "Unexpected style.color for venmo button: gold, expected blue, silver, black, white"
+                        "Unexpected style.color for venmo button: gold, expected blue, silver, black, white",
                     );
                 }
                 return mockPaypalButtonsComponent;
@@ -397,7 +402,7 @@ describe("<PayPalButtons />", () => {
                     fundingSource={FUNDING.VENMO}
                 />
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toBeCalled());
@@ -405,7 +410,7 @@ describe("<PayPalButtons />", () => {
             expect.objectContaining({
                 message:
                     "Failed to render <PayPalButtons /> component. Failed to initialize:  Error: Unexpected style.color for venmo button: gold, expected blue, silver, black, white",
-            })
+            }),
         );
         spyConsoleError.mockRestore();
     });
@@ -423,6 +428,7 @@ describe("<PayPalButtons />", () => {
                     close: jest.fn().mockResolvedValue({}),
                     isEligible: jest.fn().mockReturnValue(true),
                     render: mockRender,
+                    updateProps: jest.fn().mockResolvedValue({}),
                 };
             },
             version: "",
@@ -431,12 +437,12 @@ describe("<PayPalButtons />", () => {
         const { container } = render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
                 <PayPalButtons className="test-children" />
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => expect(mockRender).toBeCalled());
         expect(
-            container.querySelector("div.test-children")?.hasChildNodes()
+            container.querySelector("div.test-children")?.hasChildNodes(),
         ).toBeFalsy();
         spyConsoleError.mockRestore();
     });

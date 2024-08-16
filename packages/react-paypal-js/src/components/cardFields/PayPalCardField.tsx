@@ -40,7 +40,7 @@ export const PayPalCardField: React.FC<
         const registeredField = registerField(
             fieldName,
             options,
-            cardFieldsForm
+            cardFieldsForm,
         );
 
         registeredField?.render(containerRef.current).catch((err) => {
@@ -51,7 +51,7 @@ export const PayPalCardField: React.FC<
             // Component is still in the DOM
             setError(() => {
                 throw new Error(
-                    `Failed to render <PayPal${fieldName} /> component. ${err}`
+                    `Failed to render <PayPal${fieldName} /> component. ${err}`,
                 );
             });
         });

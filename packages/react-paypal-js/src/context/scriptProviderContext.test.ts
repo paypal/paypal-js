@@ -26,9 +26,9 @@ describe("getScriptID", () => {
                 intent: "capture",
                 currency: "USD",
                 dataClientToken: "long_JWT_client_token",
-            })
+            }),
         ).toEqual(
-            "react-paypal-js-iiuovjsckceqpjrzqildwyishnomaqumyapbgcgqkiseblauicltugxfqiiskmmkdjrzqiggpdicseweuqvrvvljmcfhgckevdcatp"
+            "react-paypal-js-iiuovjsckceqpjrzqildwyishnomaqumyapbgcgqkiseblauicltugxfqiiskmmkdjrzqiggpdicseweuqvrvvljmcfhgckevdcatp",
         );
     });
 });
@@ -48,7 +48,7 @@ describe("destroySDKScript", () => {
         destroySDKScript("script-id");
 
         expect(
-            document.querySelector("#script-id") instanceof HTMLScriptElement
+            document.querySelector("#script-id") instanceof HTMLScriptElement,
         ).toBeTruthy();
     });
 
@@ -61,7 +61,7 @@ describe("destroySDKScript", () => {
         destroySDKScript("generated-id");
 
         expect(
-            document.querySelector("#script-id") instanceof HTMLScriptElement
+            document.querySelector("#script-id") instanceof HTMLScriptElement,
         ).toBeFalsy();
     });
 });
@@ -89,7 +89,7 @@ describe("scriptReducer", () => {
             scriptReducer(state, {
                 type: DISPATCH_ACTION.LOADING_STATUS,
                 value: "resolve" as SCRIPT_LOADING_STATE,
-            })
+            }),
         ).toMatchObject({ ...state, loadingStatus: "resolve" });
     });
 
@@ -101,7 +101,7 @@ describe("scriptReducer", () => {
                     clientId: "",
                     [SCRIPT_ID]: "script",
                 } as PayPalScriptOptions,
-            })
+            }),
         ).toMatchObject({
             ...state,
             loadingStatus: "pending",
@@ -118,7 +118,7 @@ describe("scriptReducer", () => {
             scriptReducer(state, {
                 type: DISPATCH_ACTION.SET_BRAINTREE_INSTANCE,
                 value: braintreeMockInstance,
-            })
+            }),
         ).toMatchObject({
             ...state,
             braintreePayPalCheckoutInstance: braintreeMockInstance,

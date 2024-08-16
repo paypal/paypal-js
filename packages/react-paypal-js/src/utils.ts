@@ -22,7 +22,7 @@ type ErrorMessageParams = {
  * @returns the namespace if exists or undefined otherwise
  */
 export function getPayPalWindowNamespace(
-    namespace: string = DEFAULT_PAYPAL_NAMESPACE
+    namespace: string = DEFAULT_PAYPAL_NAMESPACE,
 ): PayPalNamespace {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (window as any)[namespace];
@@ -37,7 +37,7 @@ export function getPayPalWindowNamespace(
  * @returns the namespace if exists or undefined otherwise
  */
 export function getBraintreeWindowNamespace(
-    namespace: string = DEFAULT_BRAINTREE_NAMESPACE
+    namespace: string = DEFAULT_BRAINTREE_NAMESPACE,
 ): BraintreeNamespace {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (window as any)[namespace];

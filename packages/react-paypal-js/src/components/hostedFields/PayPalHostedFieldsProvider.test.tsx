@@ -60,10 +60,10 @@ describe("PayPalHostedFieldsProvider", () => {
             <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
                 <></>
             </PayPalHostedFieldsProvider>,
-            { wrapper }
+            { wrapper },
         );
         expect(onError.mock.calls[0][0].message).toEqual(
-            "usePayPalScriptReducer must be used within a PayPalScriptProvider"
+            "usePayPalScriptReducer must be used within a PayPalScriptProvider",
         );
         spyConsoleError.mockRestore();
     });
@@ -79,10 +79,10 @@ describe("PayPalHostedFieldsProvider", () => {
                     <></>
                 </PayPalHostedFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
         expect(onError.mock.calls[0][0].message).toEqual(
-            EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE
+            EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE,
         );
         spyConsoleError.mockRestore();
     });
@@ -106,10 +106,10 @@ describe("PayPalHostedFieldsProvider", () => {
                     <></>
                 </PayPalHostedFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
         expect(onError.mock.calls[0][0].message).toEqual(
-            "To use HostedFields you must use it with at least 3 children with types: [number, cvv, expirationDate] includes"
+            "To use HostedFields you must use it with at least 3 children with types: [number, cvv, expirationDate] includes",
         );
         spyConsoleError.mockRestore();
     });
@@ -146,14 +146,14 @@ describe("PayPalHostedFieldsProvider", () => {
                     />
                 </PayPalHostedFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => {
             expect(onError.mock.calls[0][0].message).toEqual(
                 "Unable to render <PayPalHostedFieldsProvider /> because window.paypal.HostedFields is undefined." +
                     "\nTo fix the issue, add 'hosted-fields' to the list of components passed to the parent PayPalScriptProvider: " +
-                    "<PayPalScriptProvider options={{ components: 'hosted-fields'}}>"
+                    "<PayPalScriptProvider options={{ components: 'hosted-fields'}}>",
             );
         });
         spyConsoleError.mockRestore();
@@ -191,7 +191,7 @@ describe("PayPalHostedFieldsProvider", () => {
                         options={{ selector: "cvv" }}
                     />
                 </PayPalHostedFieldsProvider>
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
         await waitFor(() => {
             expect(loadScript).toBeCalled();
@@ -228,7 +228,7 @@ describe("PayPalHostedFieldsProvider", () => {
                         options={{ selector: "cvv" }}
                     />
                 </PayPalHostedFieldsProvider>
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
         await waitFor(() => {
             expect(container.querySelector(".number")).toEqual(null);
@@ -274,12 +274,12 @@ describe("PayPalHostedFieldsProvider", () => {
                     />
                 </PayPalHostedFieldsProvider>
             </PayPalScriptProvider>,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => {
             expect(onError.mock.calls[0][0].message).toEqual(
-                "Failed to render <PayPalHostedFieldsProvider /> component. Error: Failing rendering hostedFields"
+                "Failed to render <PayPalHostedFieldsProvider /> component. Error: Failing rendering hostedFields",
             );
         });
         spyConsoleError.mockRestore();
@@ -315,17 +315,17 @@ describe("PayPalHostedFieldsProvider", () => {
                         options={{ selector: ".cvv" }}
                     />
                 </PayPalHostedFieldsProvider>
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => {
             expect(window?.paypal?.HostedFields?.render).toBeCalled();
         });
         expect(
-            container.querySelector(".number") instanceof HTMLDivElement
+            container.querySelector(".number") instanceof HTMLDivElement,
         ).toBeTruthy();
         expect(
-            container.querySelector(".expiration") instanceof HTMLDivElement
+            container.querySelector(".expiration") instanceof HTMLDivElement,
         ).toBeTruthy();
         expect(container.querySelector(".cvv")).toBeTruthy();
 
@@ -365,7 +365,7 @@ describe("PayPalHostedFieldsProvider", () => {
                         options={{ selector: ".cvv" }}
                     />
                 </PayPalHostedFieldsProvider>
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
         await waitFor(() => {
             expect(window?.paypal?.HostedFields?.render).toBeCalledTimes(2);
@@ -381,7 +381,9 @@ describe("PayPalHostedFieldsProvider", () => {
             .fn()
             .mockImplementation(
                 () =>
-                    new Promise((resolve) => setTimeout(() => resolve({}), 500))
+                    new Promise((resolve) =>
+                        setTimeout(() => resolve({}), 500),
+                    ),
             );
 
         const { container, unmount } = render(
@@ -413,7 +415,7 @@ describe("PayPalHostedFieldsProvider", () => {
                         options={{ selector: ".cvv" }}
                     />
                 </PayPalHostedFieldsProvider>
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => {
@@ -423,7 +425,7 @@ describe("PayPalHostedFieldsProvider", () => {
         jest.runAllTimers();
 
         expect(
-            container.querySelector(".number") instanceof HTMLDivElement
+            container.querySelector(".number") instanceof HTMLDivElement,
         ).toBeFalsy();
         jest.useRealTimers();
     });
@@ -465,7 +467,7 @@ describe("PayPalHostedFieldsProvider", () => {
                         options={{ selector: ".cvv" }}
                     />
                 </PayPalHostedFieldsProvider>
-            </PayPalScriptProvider>
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() => {
@@ -476,7 +478,7 @@ describe("PayPalHostedFieldsProvider", () => {
                         onInstallmentsAvailable: expect.any(Function),
                         onInstallmentsError: expect.any(Function),
                     },
-                })
+                }),
             );
         });
     });

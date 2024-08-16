@@ -2,13 +2,10 @@ import React, { useState } from "react";
 import { useSandpack } from "@codesandbox/sandpack-react";
 
 import type { ReactElement } from "react";
-import type {
-    FontWeightProperty,
-    FloatProperty,
-    PositionProperty,
-} from "csstype/index";
 
-const COPY_BUTTON = {
+import type { Properties as CSSProperties } from "csstype";
+
+const COPY_BUTTON: CSSProperties = {
     padding: "4px 10px",
     cursor: "pointer",
     display: "flex",
@@ -17,11 +14,11 @@ const COPY_BUTTON = {
     background: "#FFFFFF",
     fontSize: "12px",
     lineHeight: "16px",
-    fontWeight: "700" as FontWeightProperty,
+    fontWeight: "700",
     border: "1px solid rgba(0,0,0,.1)",
     borderRadius: "4px 0 0 0",
-    float: "right" as FloatProperty,
-    position: "relative" as PositionProperty,
+    float: "right",
+    position: "relative",
     top: "-26px",
 };
 

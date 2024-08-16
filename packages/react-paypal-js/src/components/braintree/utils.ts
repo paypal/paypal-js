@@ -22,7 +22,7 @@ const isValidBraintreeNamespace = (braintreeSource?: BraintreeNamespace) => {
         typeof braintreeSource?.paypalCheckout?.create !== "function"
     ) {
         throw new Error(
-            "The braintreeNamespace property is not a valid BraintreeNamespace type."
+            "The braintreeNamespace property is not a valid BraintreeNamespace type.",
         );
     }
     return true;
@@ -37,7 +37,7 @@ const isValidBraintreeNamespace = (braintreeSource?: BraintreeNamespace) => {
  */
 export const decorateActions = (
     buttonProps: BraintreePayPalButtonsComponentProps,
-    payPalCheckoutInstance: BraintreePayPalCheckout
+    payPalCheckoutInstance: BraintreePayPalCheckout,
 ): BraintreePayPalButtonsComponentProps => {
     const createOrderRef = buttonProps.createOrder;
     const createBillingAgreementRef = buttonProps.createBillingAgreement;
@@ -86,7 +86,7 @@ export const decorateActions = (
  * @returns the {@link BraintreeNamespace}
  */
 export const getBraintreeNamespace = (
-    braintreeSource?: BraintreeNamespace
+    braintreeSource?: BraintreeNamespace,
 ): Promise<BraintreeNamespace> => {
     if (braintreeSource && isValidBraintreeNamespace(braintreeSource)) {
         return Promise.resolve(braintreeSource);

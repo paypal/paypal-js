@@ -9,6 +9,7 @@
         "moduleResolution": "node",
         "target": "esnext",
         "strict": true,
+        "skipLibCheck": true,
 
         // these are overridden by the Rollup plugin
         "outDir": "./dist",

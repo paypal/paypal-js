@@ -21,13 +21,13 @@ const providerRender = (
     {
         providerProps,
         ...renderOptions
-    }: { providerProps: ProviderProps<PayPalHostedFieldContext> }
+    }: { providerProps: ProviderProps<PayPalHostedFieldContext> },
 ) => {
     return render(
         <PayPalHostedFieldsContext.Provider {...providerProps}>
             {ui}
         </PayPalHostedFieldsContext.Provider>,
-        renderOptions
+        renderOptions,
     );
 };
 const defaultProviderValue = {
@@ -46,11 +46,11 @@ describe("PayPalHostedField", () => {
                     options={{ selector: "#number" }}
                 />
             </PayPalHostedFieldsContext.Provider>,
-            defaultProviderValue
+            defaultProviderValue,
         );
 
         expect(
-            container.querySelector("#number") instanceof HTMLDivElement
+            container.querySelector("#number") instanceof HTMLDivElement,
         ).toBeTruthy();
     });
 
@@ -61,7 +61,7 @@ describe("PayPalHostedField", () => {
                 hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
                 options={{ selector: ".class1" }}
             />,
-            defaultProviderValue
+            defaultProviderValue,
         );
         const renderedElement = container.querySelector(".class1");
 
@@ -80,7 +80,7 @@ describe("PayPalHostedField", () => {
                 hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
                 options={{ selector: ".number" }}
             />,
-            defaultProviderValue
+            defaultProviderValue,
         );
         const renderedElement =
             container.querySelector<HTMLDivElement>(".number");
@@ -103,12 +103,12 @@ describe("PayPalHostedField", () => {
                 hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
                 options={{ selector: ".number" }}
             />,
-            { wrapper }
+            { wrapper },
         );
 
         await waitFor(() => expect(onError).toBeCalledTimes(1));
         expect(onError.mock.calls[0][0].message).toBe(
-            "The HostedField cannot be register in the PayPalHostedFieldsProvider parent component"
+            "The HostedField cannot be register in the PayPalHostedFieldsProvider parent component",
         );
         spyConsoleError.mockRestore();
     });
