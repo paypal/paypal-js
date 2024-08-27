@@ -1,5 +1,15 @@
 # Changelog
 
+## 8.1.1
+
+### Patch Changes
+
+-   d36e386: add the shape: "sharp" in style
+-   638e8e6: remove .nvmrc and lint-staged.config.js in react-paypal-js
+-   638e8e6: remove the prettier dependency from each packages, update the prettier root version, fixed build error, update note version to 18
+-   543fa08: Add button style borderRadius type
+-   22f23ab: Split up each props into its own type to export
+
 ## 8.1.0
 
 ### Minor Changes
