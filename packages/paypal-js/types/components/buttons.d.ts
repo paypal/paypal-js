@@ -273,7 +273,7 @@ export type PayPalButtonStyle = {
 };
 export type PayPalButtonDisplayOnly = DisplayOnlyOptions[];
 export type PayPalButtonMessage = {
-    amount?: number;
+    amount?: number | string;
     align?: "center" | "left" | "right";
     color?: "black" | "white";
     position?: "top" | "bottom";

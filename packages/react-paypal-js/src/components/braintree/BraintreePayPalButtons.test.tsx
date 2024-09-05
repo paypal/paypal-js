@@ -365,4 +365,27 @@ describe("render Braintree PayPal button component", () => {
             });
         });
     });
+
+    test("should accept button message amount as a string", async () => {
+        const options = {
+            clientId: "test",
+            dataClientToken: CLIENT_TOKEN,
+        };
+        render(
+            <PayPalScriptProvider options={ options }>
+                <BraintreePayPalButtons
+                    message={{ amount: "100" }}
+                />
+            </PayPalScriptProvider>
+        );
+
+        await waitFor(() => {
+        const mockButtons = (window.paypal &&
+            window.paypal.Buttons) as jest.Mock;
+        expect(mockButtons).toBeCalledWith({
+                message: { amount: "100" },
+                onInit: expect.any(Function),
+            })
+        });
+    });
 });
