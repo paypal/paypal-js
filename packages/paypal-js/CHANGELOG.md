@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.1.2
+
+### Patch Changes
+
+-   a83971e: Allows button message amount type to be string
+
 ## 8.1.1
 
 ### Patch Changes
