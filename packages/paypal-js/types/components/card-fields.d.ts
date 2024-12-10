@@ -38,6 +38,10 @@ export interface PayPalCardFieldsStyleOptions {
 
 export type CardFieldsOnApproveData = {
     orderID: string;
+    /**
+     * subscriptionID is newly added for Fullstack Subscription.
+     * @alpha
+     */
     subscriptionID?: string;
 };
 
@@ -133,9 +137,14 @@ export interface PayPalCardFieldsComponentOptions {
     onApprove: (data: CardFieldsOnApproveData) => void;
     onError: (err: Record<string, unknown>) => void;
     createVaultSetupToken?: () => Promise<string>;
-    createSubscription?: () => Promise<string>;
     inputEvents?: PayPalCardFieldsInputEvents;
     style?: Record<string, PayPalCardFieldsStyleOptions>;
+    /**
+     * createSubscription is newly added for Fullstack Subscription.
+     * Because of this, we have marked createOrder as optional.
+     * @alpha
+     */
+    createSubscription?: () => Promise<string>;
 }
 
 export interface PayPalCardFieldsComponent {
