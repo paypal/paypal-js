@@ -38,6 +38,7 @@ export interface PayPalCardFieldsStyleOptions {
 
 export type CardFieldsOnApproveData = {
     orderID: string;
+    subscriptionID?: string;
 };
 
 export interface PayPalCardFieldsInputEvents {
@@ -128,10 +129,11 @@ export interface PayPalCardFieldsIndividualField {
 }
 
 export interface PayPalCardFieldsComponentOptions {
-    createOrder: () => Promise<string>;
+    createOrder?: () => Promise<string>;
     onApprove: (data: CardFieldsOnApproveData) => void;
     onError: (err: Record<string, unknown>) => void;
     createVaultSetupToken?: () => Promise<string>;
+    createSubscription?: () => Promise<string>;
     inputEvents?: PayPalCardFieldsInputEvents;
     style?: Record<string, PayPalCardFieldsStyleOptions>;
 }
