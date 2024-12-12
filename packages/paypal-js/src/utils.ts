@@ -131,6 +131,16 @@ export function objectToQueryString(params: StringMap): string {
     return queryString;
 }
 
+export function processSdkBaseUrl(
+    environment: PayPalScriptOptions["environment"],
+): string {
+    // Keeping production as default to maintain backward compatibility.
+    // In the future this logic needs to be changed to use sandbox domain as default instead of production.
+    return environment === "sandbox"
+        ? "https://www.sandbox.paypal.com/sdk/js"
+        : "https://www.paypal.com/sdk/js";
+}
+
 function createScriptElement(
     url: string,
     attributes: StringMap = {},
@@ -147,14 +157,4 @@ function createScriptElement(
     });
 
     return newScript;
-}
-
-function processSdkBaseUrl(
-    environment: PayPalScriptOptions["environment"],
-): string {
-    // Keeping production as default to maintain backward compatibility.
-    // In the future this logic needs to be changed to use sandbox domain as default instead of production.
-    return environment === "sandbox"
-        ? "https://www.sandbox.paypal.com/sdk/js"
-        : "https://www.paypal.com/sdk/js";
 }
