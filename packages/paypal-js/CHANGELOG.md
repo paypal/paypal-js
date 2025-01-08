@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.1.3
+
+### Patch Changes
+
+-   b2253cc: Prevent option paremeter being modified by processOptions()
+
 ## 8.1.2
 
 ### Patch Changes
