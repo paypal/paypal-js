@@ -62,24 +62,15 @@ export function insertScriptElement({
     document.head.insertBefore(newScript, document.head.firstElementChild);
 }
 
-export function processOptions(options: PayPalScriptOptions): {
+export function processOptions({
+    sdkBaseUrl: customSdkBaseUrl,
+    environment,
+    ...options
+}: PayPalScriptOptions): {
     url: string;
     attributes: StringMap;
 } {
-    const { environment } = options;
-    // Keeping production as default to maintain backward compatibility.
-    // In the future this logic needs to be changed to use sandbox domain as default instead of production.
-    let sdkBaseUrl =
-        environment === "sandbox"
-            ? "https://www.sandbox.paypal.com/sdk/js"
-            : "https://www.paypal.com/sdk/js";
-    // env is not an allowed key for sdk/js url.
-    delete options.environment;
-
-    if (options.sdkBaseUrl) {
-        sdkBaseUrl = options.sdkBaseUrl;
-        delete options.sdkBaseUrl;
-    }
+    const sdkBaseUrl = customSdkBaseUrl || processSdkBaseUrl(environment);
 
     const optionsWithStringIndex =
         options as PayPalScriptOptionsWithStringIndex;
@@ -138,6 +129,16 @@ export function objectToQueryString(params: StringMap): string {
         queryString += key + "=" + params[key];
     });
     return queryString;
+}
+
+export function processSdkBaseUrl(
+    environment: PayPalScriptOptions["environment"],
+): string {
+    // Keeping production as default to maintain backward compatibility.
+    // In the future this logic needs to be changed to use sandbox domain as default instead of production.
+    return environment === "sandbox"
+        ? "https://www.sandbox.paypal.com/sdk/js"
+        : "https://www.paypal.com/sdk/js";
 }
 
 function createScriptElement(

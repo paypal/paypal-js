@@ -9,6 +9,7 @@ import {
     insertScriptElement,
     objectToQueryString,
     processOptions,
+    processSdkBaseUrl,
 } from "./utils";
 
 describe("objectToQueryString()", () => {
@@ -138,6 +139,18 @@ describe("processOptions()", () => {
             "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*",
         );
         expect(attributes2).toEqual({ "data-merchant-id": "123,456,789" });
+    });
+
+    test("did not modified options parameter", () => {
+        const options: PayPalScriptOptions = {
+            clientId: "",
+            sdkBaseUrl: "sdkBaseUrl",
+        };
+        const optionsCopy = JSON.parse(JSON.stringify(options));
+
+        processOptions(options);
+
+        expect(options).toEqual(optionsCopy);
     });
 });
 
@@ -301,5 +314,25 @@ describe("insertScriptElement()", () => {
             vi.runAllTimers();
             expect(onErrorMock).toBeCalled();
         });
+    });
+});
+
+describe("processSdkBaseUrl()", () => {
+    const sandboxBaseUrl = "https://www.sandbox.paypal.com/sdk/js";
+    const productionUrl = "https://www.paypal.com/sdk/js";
+
+    test("returns sandboxUrl", () => {
+        const sdkBaseUrl = processSdkBaseUrl("sandbox");
+        expect(sdkBaseUrl).toEqual(sandboxBaseUrl);
+    });
+
+    test("returns production url", () => {
+        const sdkBaseUrl = processSdkBaseUrl("production");
+        expect(sdkBaseUrl).toEqual(productionUrl);
+    });
+
+    test("defaults to production url", () => {
+        const sdkBaseUrl = processSdkBaseUrl(undefined);
+        expect(sdkBaseUrl).toEqual(productionUrl);
     });
 });
