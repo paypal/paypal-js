@@ -10,6 +10,7 @@ const pkgName = pkg.name.split("@paypal/")[1];
 const banner = getBannerText();
 const tsconfigOverride = {
     exclude: ["node_modules", "**/*.test.ts*"],
+    outDir: "./dist",
     target: "es5",
 };
 
@@ -19,6 +20,7 @@ export default [
         input: "src/index.ts",
         plugins: [
             typescript({
+                tsconfig: "./tsconfig.lib.json",
                 ...tsconfigOverride,
             }),
             nodeResolve(),
@@ -56,7 +58,10 @@ export default [
     {
         input: "src/index.ts",
         plugins: [
-            typescript({ ...tsconfigOverride }),
+            typescript({
+                tsconfig: "./tsconfig.lib.json",
+                ...tsconfigOverride,
+            }),
             nodeResolve(),
             cleanup({
                 comments: "none",

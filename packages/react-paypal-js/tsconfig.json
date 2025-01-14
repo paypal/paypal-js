@@ -9,11 +9,10 @@
         "moduleResolution": "node",
         "target": "esnext",
         "strict": true,
-        "skipLibCheck": true,
-
-        // these are overridden by the Rollup plugin
-        "outDir": "./dist",
-        "rootDir": "./src"
+        "skipLibCheck": true
     },
-    "include": ["src", "./jest.setup.ts"]
+    "references": [
+        { "path": "./tsconfig.lib.json" },
+        { "path": "./tsconfig.test.json" }
+    ]
 }
