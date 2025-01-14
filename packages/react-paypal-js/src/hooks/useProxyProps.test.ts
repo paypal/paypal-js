@@ -2,7 +2,6 @@ import {
     CreateOrderActions,
     CreateOrderData,
     OnClickActions,
-    PayPalButtonsComponentOptions,
 } from "@paypal/paypal-js";
 import { renderHook } from "@testing-library/react-hooks";
 import { useProxyProps } from "./useProxyProps";
@@ -15,7 +14,7 @@ describe("useProxyProps", () => {
         const props = {
             createOrder,
             onClick,
-        } as unknown as PayPalButtonsComponentOptions;
+        };
 
         const {
             result: { current },
@@ -46,7 +45,7 @@ describe("useProxyProps", () => {
         const fundingSource = ["paypal"];
         const props = {
             fundingSource,
-        } as unknown as PayPalButtonsComponentOptions;
+        };
 
         const {
             result: { current },
