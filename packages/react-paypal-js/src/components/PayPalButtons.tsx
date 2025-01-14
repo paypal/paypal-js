@@ -7,6 +7,7 @@ import { SDK_SETTINGS } from "../constants";
 import type { FunctionComponent } from "react";
 import type { PayPalButtonsComponent, OnInitActions } from "@paypal/paypal-js";
 import type { PayPalButtonsComponentProps } from "../types";
+import { useProxyProps } from "../hooks/useProxyProps";
 
 /**
 This `<PayPalButtons />` component supports rendering [buttons](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#buttons) for PayPal, Venmo, and alternative payment methods.
@@ -25,6 +26,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
     }`.trim();
     const buttonsContainerRef = useRef<HTMLDivElement>(null);
     const buttons = useRef<PayPalButtonsComponent | null>(null);
+    const proxyProps = useProxyProps(buttonProps);
 
     const [{ isResolved, options }] = usePayPalScriptReducer();
     const [initActions, setInitActions] = useState<OnInitActions | null>(null);
@@ -86,7 +88,7 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
 
         try {
             buttons.current = paypalWindowNamespace.Buttons({
-                ...buttonProps,
+                ...proxyProps,
                 onInit: decoratedOnInit,
             });
         } catch (err) {
