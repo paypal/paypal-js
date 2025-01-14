@@ -9,7 +9,7 @@ import pkg from "./package.json";
 const pkgName = pkg.name.split("@paypal/")[1];
 const banner = getBannerText();
 const tsconfigOverride = {
-    exclude: ["node_modules", "**/*.test.ts"],
+    exclude: ["node_modules", "**/*.test.ts*"],
     target: "es5",
 };
 
