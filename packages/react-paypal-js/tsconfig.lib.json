@@ -3,6 +3,6 @@
     // these are overridden by the Rollup plugin
     "outDir": "./dist",
     "rootDir": "./src",
-    "include": ["src/**/*.ts"],
+    "include": ["src/**/*.ts", "src/**/*.tsx"],
     "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
 }
