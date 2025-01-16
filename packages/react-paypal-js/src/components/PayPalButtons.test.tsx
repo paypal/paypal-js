@@ -6,6 +6,7 @@ import {
     fireEvent,
     act,
 } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { ErrorBoundary } from "react-error-boundary";
 import { mock } from "jest-mock-extended";
 import { loadScript } from "@paypal/paypal-js";
@@ -450,17 +451,71 @@ describe("<PayPalButtons />", () => {
     test("should accept button message amount as a string", async () => {
         render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
-                <PayPalButtons
-                    message={{ amount: "100" }}
-                />
-            </PayPalScriptProvider>
+                <PayPalButtons message={{ amount: "100" }} />
+            </PayPalScriptProvider>,
         );
 
         await waitFor(() =>
             expect(window.paypal?.Buttons).toHaveBeenCalledWith({
                 message: { amount: "100" },
                 onInit: expect.any(Function),
-            })
+            }),
         );
+    });
+
+    test("should not create a stale closure when passing callbacks", async () => {
+        userEvent.setup();
+
+        // @ts-expect-error mocking partial ButtonComponent
+        window.paypal!.Buttons = ({ onClick }: { onClick: () => void }) => ({
+            isEligible: () => true,
+            close: async () => undefined,
+            render: async (ref: HTMLDivElement) => {
+                const el = document.createElement("button");
+                el.id = "mock-button";
+                el.textContent = "Pay";
+                el.addEventListener("click", onClick);
+                ref.appendChild(el);
+            },
+        });
+        const onClickFn = jest.fn();
+
+        const Wrapper = () => {
+            const [count, setCount] = useState(0);
+
+            function onClick() {
+                onClickFn(count);
+            }
+
+            return (
+                <div>
+                    <button
+                        data-testid="count-button"
+                        onClick={() => setCount(count + 1)}
+                    >
+                        Count: {count}
+                    </button>
+                    <PayPalScriptProvider options={{ clientId: "test" }}>
+                        <PayPalButtons onClick={onClick} />
+                    </PayPalScriptProvider>
+                </div>
+            );
+        };
+
+        render(<Wrapper />);
+
+        const countButton = screen.getByTestId("count-button");
+        const payButton = await screen.findByText("Pay");
+        expect(screen.getByText("Count: 0")).toBeInTheDocument();
+
+        await userEvent.click(countButton);
+        expect(await screen.findByText("Count: 1")).toBeInTheDocument();
+        await userEvent.click(payButton);
+        expect(onClickFn).toHaveBeenCalledWith(1);
+
+        await userEvent.click(countButton);
+        expect(await screen.findByText("Count: 2")).toBeInTheDocument();
+        await userEvent.click(payButton);
+        expect(onClickFn).toHaveBeenCalledWith(2);
     });
 });

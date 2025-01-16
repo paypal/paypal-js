@@ -3,7 +3,7 @@ const { join } = require("path");
 const semver = require("semver");
 
 const expectedNodeVersion = readFileSync(
-    join(__dirname, "../", ".nvmrc"),
+    join(__dirname, "../../", ".nvmrc"),
     "utf-8",
 );
 const isValidNodeVersion = semver.satisfies(
