@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.8.0
+
+### Minor Changes
+
+-   471280d: (fix) proxy props to prevent stale closure
+
 ## 8.7.0
 
 ### Minor Changes
