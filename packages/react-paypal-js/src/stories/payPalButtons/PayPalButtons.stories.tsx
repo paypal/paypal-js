@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { action } from "@storybook/addon-actions";
 
 import { usePayPalScriptReducer, DISPATCH_ACTION } from "../../index";
@@ -255,4 +255,59 @@ export const Donate: FC<Omit<StoryProps, "showSpinner" | "fundingSource">> = ({
 (Donate as StoryFn).argTypes = {
     fundingSource: { control: false },
     showSpinner: { table: { disable: true } },
+};
+
+export const WithDynamicOrderState: FC<StoryProps> = ({
+    style,
+    message,
+    fundingSource,
+    disabled,
+    showSpinner,
+}) => {
+    const [count, setCount] = useState(0);
+    const [{ options }, dispatch] = usePayPalScriptReducer();
+    useEffect(() => {
+        dispatch({
+            type: DISPATCH_ACTION.RESET_OPTIONS,
+            value: {
+                ...options,
+                "data-order-id": Date.now().toString(),
+            },
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showSpinner]);
+
+    return (
+        <>
+            {showSpinner && <LoadingSpinner />}
+            <button onClick={() => setCount(count + 1)}>Count: {count}</button>
+            <PayPalButtons
+                style={style}
+                message={message}
+                disabled={disabled}
+                fundingSource={fundingSource}
+                forceReRender={[style]}
+                createOrder={() =>
+                    createOrder([{ sku: "1blwyeo8", quantity: count }]).then(
+                        (orderData) => {
+                            if (orderData.id) {
+                                action(ORDER_ID)(orderData.id);
+                                return orderData.id;
+                            } else {
+                                throw new Error("failed to create Order Id");
+                            }
+                        },
+                    )
+                }
+                onApprove={(data) =>
+                    onApprove(data).then((orderData) =>
+                        action(APPROVE)(orderData),
+                    )
+                }
+                {...defaultProps}
+            >
+                <InEligibleError />
+            </PayPalButtons>
+        </>
+    );
 };

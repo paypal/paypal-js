@@ -1,5 +1,17 @@
 # Changelog
 
+## 8.8.1
+
+### Patch Changes
+
+-   10775ad: minor fixes to release and adding react 19 as peer dependency
+
+## 8.8.0
+
+### Minor Changes
+
+-   471280d: (fix) proxy props to prevent stale closure
+
 ## 8.7.0
 
 ### Minor Changes
