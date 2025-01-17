@@ -130,6 +130,7 @@ export interface PayPalCardFieldsIndividualField {
 export interface PayPalCardFieldsComponentBasics {
     onApprove: (data: CardFieldsOnApproveData) => void;
     onError: (err: Record<string, unknown>) => void;
+    onCancel?: () => Promise<void> | void;
     inputEvents?: PayPalCardFieldsInputEvents;
     style?: Record<string, PayPalCardFieldsStyleOptions>;
 }
@@ -150,8 +151,7 @@ export type PayPalCardFieldsComponentOptions =
     | PayPalCardFieldsComponentCreateOrder
     | PayPalCardFieldsComponentCreateVaultSetupToken;
 
-export interface PayPalCardFieldsComponent
-    extends PayPalCardFieldsComponentOptions {
+export interface PayPalCardFieldsComponent {
     getState: () => Promise<PayPalCardFieldsStateObject>;
     isEligible: () => boolean;
     submit: () => Promise<void>;
