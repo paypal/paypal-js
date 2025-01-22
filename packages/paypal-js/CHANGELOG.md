@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.2.0
+
+### Minor Changes
+
+-   6f339f6: Adding test for card-fields.test.ts
+
 ## 8.1.3
 
 ### Patch Changes
