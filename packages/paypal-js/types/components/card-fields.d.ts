@@ -38,6 +38,11 @@ export interface PayPalCardFieldsStyleOptions {
 
 export type CardFieldsOnApproveData = {
     orderID: string;
+    /**
+     * subscriptionID is newly added for Fullstack Subscription.
+     * @alpha
+     */
+    subscriptionID?: string;
 };
 
 export interface PayPalCardFieldsInputEvents {
@@ -139,17 +144,26 @@ export interface PayPalCardFieldsComponentCreateOrder
     extends PayPalCardFieldsComponentBasics {
     createOrder: () => Promise<string>;
     createVaultSetupToken?: never;
+    createSubscription?: never;
 }
 
 export interface PayPalCardFieldsComponentCreateVaultSetupToken
     extends PayPalCardFieldsComponentBasics {
     createOrder?: never;
     createVaultSetupToken: () => Promise<string>;
+    createSubscription?: never;
+}
+export interface PayPalCardFieldsComponentCreateSubscription
+    extends PayPalCardFieldsComponentBasics {
+    createOrder?: never;
+    createVaultSetupToken?: never;
+    createSubscription: () => Promise<string>;
 }
 
 export type PayPalCardFieldsComponentOptions =
     | PayPalCardFieldsComponentCreateOrder
-    | PayPalCardFieldsComponentCreateVaultSetupToken;
+    | PayPalCardFieldsComponentCreateVaultSetupToken
+    | PayPalCardFieldsComponentCreateSubscription;
 
 export interface PayPalCardFieldsComponent {
     getState: () => Promise<PayPalCardFieldsStateObject>;
