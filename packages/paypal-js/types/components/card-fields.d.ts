@@ -132,20 +132,38 @@ export interface PayPalCardFieldsIndividualField {
     close: () => Promise<void>;
 }
 
-export interface PayPalCardFieldsComponentOptions {
-    createOrder?: () => Promise<string>;
+export interface PayPalCardFieldsComponentBasics {
     onApprove: (data: CardFieldsOnApproveData) => void;
     onError: (err: Record<string, unknown>) => void;
-    createVaultSetupToken?: () => Promise<string>;
+    onCancel?: () => Promise<void> | void;
     inputEvents?: PayPalCardFieldsInputEvents;
     style?: Record<string, PayPalCardFieldsStyleOptions>;
-    /**
-     * createSubscription is newly added for Fullstack Subscription.
-     * Because of this, we have marked createOrder as optional.
-     * @alpha
-     */
-    createSubscription?: () => Promise<string>;
 }
+
+export interface PayPalCardFieldsComponentCreateOrder
+    extends PayPalCardFieldsComponentBasics {
+    createOrder: () => Promise<string>;
+    createVaultSetupToken?: never;
+    createSubscription?: never;
+}
+
+export interface PayPalCardFieldsComponentCreateVaultSetupToken
+    extends PayPalCardFieldsComponentBasics {
+    createOrder?: never;
+    createVaultSetupToken: () => Promise<string>;
+    createSubscription?: never;
+}
+export interface PayPalCardFieldsComponentCreateSubscription
+    extends PayPalCardFieldsComponentBasics {
+    createOrder?: never;
+    createVaultSetupToken?: never;
+    createSubscription: () => Promise<string>;
+}
+
+export type PayPalCardFieldsComponentOptions =
+    | PayPalCardFieldsComponentCreateOrder
+    | PayPalCardFieldsComponentCreateVaultSetupToken
+    | PayPalCardFieldsComponentCreateSubscription;
 
 export interface PayPalCardFieldsComponent {
     getState: () => Promise<PayPalCardFieldsStateObject>;
