@@ -1,11 +1,5 @@
 # Changelog
 
-## 9.0.0
-
-### Major Changes
-
--   7adcd62: added missing style fields to CardField Types
-
 ## 8.8.1
 
 ### Patch Changes
