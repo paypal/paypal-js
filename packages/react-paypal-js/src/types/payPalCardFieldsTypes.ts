@@ -35,6 +35,7 @@ export type PayPalCardFieldsNamespace = {
 
 export type CardFieldStyle = {
     appearance?: string;
+    background?: string;
     color?: string;
     direction?: string;
     font?: string;
@@ -50,6 +51,7 @@ export type CardFieldStyle = {
     fontVariantNumeric?: string;
     fontVariant?: string;
     fontWeight?: string;
+    height?: string;
     letterSpacing?: string;
     lineHeight?: string;
     opacity?: string;
