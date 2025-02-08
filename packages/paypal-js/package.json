@@ -43,7 +43,8 @@
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
-        "url": "git://github.com/paypal/paypal-js.git"
+        "url": "git://github.com/paypal/paypal-js.git",
+        "directory": "packages/paypal-js"
     },
     "devDependencies": {
         "@commitlint/cli": "18.4.3",
