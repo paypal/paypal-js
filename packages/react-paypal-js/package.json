@@ -41,7 +41,8 @@
     "license": "Apache-2.0",
     "repository": {
         "type": "git",
-        "url": "git://github.com/paypal/react-paypal-js.git"
+        "url": "git://github.com/paypal/paypal-js.git",
+        "directory": "packages/react-paypal-js"
     },
     "homepage": "https://paypal.github.io/react-paypal-js/",
     "dependencies": {
