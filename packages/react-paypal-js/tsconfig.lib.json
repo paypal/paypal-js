@@ -1,7 +1,15 @@
 {
+    "compilerOptions": {
+        "composite": true,
+        "declaration": true,
+        "outDir": "./dist", // Specify your desired output directory
+        "allowJs": false,
+        "allowSyntheticDefaultImports": true
+        // other options...
+    },
+    // other configurations...
     "extends": "./tsconfig.json",
     // these are overridden by the Rollup plugin
-    "outDir": "./dist",
     "rootDir": "./src",
     "include": ["src/**/*.ts", "src/**/*.tsx"],
     "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]

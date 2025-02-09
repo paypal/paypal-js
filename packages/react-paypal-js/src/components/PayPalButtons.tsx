@@ -1,29 +1,32 @@
 import React, { useEffect, useRef, useState } from "react";
-
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
 import { SDK_SETTINGS } from "../constants";
 
 import type { FunctionComponent } from "react";
 import type { PayPalButtonsComponent, OnInitActions } from "@paypal/paypal-js";
-import type { PayPalButtonsComponentProps } from "../types";
+import type { PayPalButtonsComponentProps } from "../types/paypalButtonTypes"; // Ensure this import is correct
 import { useProxyProps } from "../hooks/useProxyProps";
 
 /**
 This `<PayPalButtons />` component supports rendering [buttons](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#buttons) for PayPal, Venmo, and alternative payment methods.
 It relies on the `<PayPalScriptProvider />` parent component for managing state related to loading the JS SDK script.
 */
+
 export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
     className = "",
     disabled = false,
     children,
     forceReRender = [],
+    disableMaxHeight = false,
+    borderColor,
+    borderWidth,
+    borderRadius,
     ...buttonProps
-}: PayPalButtonsComponentProps) => {
+}) => {
     const isDisabledStyle = disabled ? { opacity: 0.38 } : {};
-    const classNames = `${className} ${
-        disabled ? "paypal-buttons-disabled" : ""
-    }`.trim();
+    const classNames =
+        `${className} ${disabled ? "paypal-buttons-disabled" : ""}`.trim();
     const buttonsContainerRef = useRef<HTMLDivElement>(null);
     const buttons = useRef<PayPalButtonsComponent | null>(null);
     const proxyProps = useProxyProps(buttonProps);
@@ -147,12 +150,19 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
         }
     }, [disabled, initActions]);
 
+    const buttonStyle = {
+        borderColor: borderColor || "defaultColor",
+        borderWidth: borderWidth || "defaultWidth",
+        borderRadius: borderRadius || "defaultRadius",
+        maxHeight: disableMaxHeight ? "none" : "maxHeightValue",
+    };
+
     return (
         <>
             {isEligible ? (
                 <div
                     ref={buttonsContainerRef}
-                    style={isDisabledStyle}
+                    style={{ ...isDisabledStyle, ...buttonStyle }}
                     className={classNames}
                 />
             ) : (
