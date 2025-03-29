@@ -271,24 +271,31 @@ export function useButtonsWithRefAndButtons(
     const containerElement = useRef<HTMLDivElement | null>(null);
     const [, setError] = useState();
 
-    // TODO add disabled option
-    const register = ({ disabled }: { disabled: boolean }) => {
-        if (initActionsRef?.current) {
-            if (disabled === true) {
-                // eslint-disable-next-line @typescript-eslint/no-empty-function
-                initActionsRef.current.disable().catch(() => {});
-            } else {
-                // eslint-disable-next-line @typescript-eslint/no-empty-function
-                initActionsRef.current.enable().catch(() => {});
-            }
-        }
+    const [buttonsApi] = useState(() => {
+        const api = {} as { Buttons: ComponentType<{ disabled?: boolean }> };
 
-        return {
-            ref: (ref: HTMLDivElement | null) => {
-                containerElement.current = ref;
-            },
+        api.Buttons = function Buttons({
+            disabled = false,
+        }: {
+            disabled?: boolean;
+        }) {
+            useEffect(() => {
+                if (initActionsRef?.current) {
+                    if (disabled === true) {
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        initActionsRef.current.disable().catch(() => {});
+                    } else {
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        initActionsRef.current.enable().catch(() => {});
+                    }
+                }
+            }, [disabled, initActionsRef?.current]); // eslint-disable-line react-hooks/exhaustive-deps
+
+            return <div ref={containerElement} />;
         };
-    };
+
+        return api;
+    });
 
     useEffect(() => {
         if (!instance || !containerElement.current) {
@@ -309,17 +316,5 @@ export function useButtonsWithRefAndButtons(
         });
     }, [instance]);
 
-    const Buttons = useMemo(() => {
-        return function memoizedButtons({
-            disabled = false,
-        }: {
-            disabled?: boolean;
-        }) {
-            return <div {...register({ disabled })} />;
-        };
-    }, []);
-
-    return {
-        Buttons,
-    };
+    return buttonsApi;
 }
