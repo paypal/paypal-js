@@ -19,12 +19,7 @@ import {
 } from "../constants";
 import DocPageStructure from "../components/DocPageStructure";
 import { InEligibleError, defaultProps } from "../commons";
-import {
-    Buttons,
-    useButtons,
-    useButtonsWithRef,
-    useButtonsWithRefAndButtons,
-} from "../../hooks/useButtons";
+import { usePayPalButtons } from "../../hooks/useButtons";
 
 import type { FC, ReactElement } from "react";
 import type {
@@ -108,150 +103,31 @@ export const Default: FC<StoryProps> = ({
     >("paypal");
     const [disabled, setDisabled] = useState(false);
     const [count, setCount] = useState(0);
+    const [, forceUpdate] = useState({});
 
     async function createOrder(): Promise<string> {
         console.log("count:", count);
         return new Promise((resolve) => setTimeout(() => resolve("1"), 500));
     }
 
-    const { buttons } = useButtons({ fundingSource, createOrder });
-
-    return (
-        <>
-            {showSpinner && <LoadingSpinner />}
-            <button
-                style={{ margin: "2rem" }}
-                onClick={() =>
-                    setFundingSource((prev) =>
-                        prev === "paypal"
-                            ? "venmo"
-                            : prev === "venmo"
-                              ? undefined
-                              : "paypal",
-                    )
-                }
-            >
-                Switch Funding Source. Currently:{" "}
-                {fundingSource ?? "undefined (display all)"}
-            </button>
-            <button
-                style={{ margin: "2rem" }}
-                onClick={() => setDisabled((prev) => !prev)}
-            >
-                Set disabled state: Currently: {String(disabled)}
-            </button>
-            <button
-                style={{ margin: "2rem" }}
-                onClick={() => setCount((prev) => prev + 1)}
-            >
-                Increase count. Currently: {count}
-            </button>
-            <Buttons buttons={buttons} disabled={disabled} />
-        </>
-    );
-};
-
-export const DefaultWithRef: FC<StoryProps> = ({
-    //style,
-    //message,
-    //fundingSource,
-    //disabled,
-    showSpinner,
-}) => {
-    const [{ options }, dispatch] = usePayPalScriptReducer();
-    useEffect(() => {
-        dispatch({
-            type: DISPATCH_ACTION.RESET_OPTIONS,
-            value: {
-                ...options,
-                "data-order-id": Date.now().toString(),
-            },
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [showSpinner]);
-
-    const [fundingSource, setFundingSource] = useState<
-        "paypal" | "venmo" | undefined
-    >("paypal");
-    const [disabled, setDisabled] = useState(false);
-    const [count, setCount] = useState(0);
-
-    async function createOrder(): Promise<string> {
-        console.log("count:", count);
-        return new Promise((resolve) => setTimeout(() => resolve("1"), 500));
+    async function onApprove(data: unknown) {
+        console.log("onApprove", data);
     }
 
-    const { register } = useButtonsWithRef({ fundingSource, createOrder });
-
-    return (
-        <>
-            {showSpinner && <LoadingSpinner />}
-            <button
-                style={{ margin: "2rem" }}
-                onClick={() =>
-                    setFundingSource((prev) =>
-                        prev === "paypal"
-                            ? "venmo"
-                            : prev === "venmo"
-                              ? undefined
-                              : "paypal",
-                    )
-                }
-            >
-                Switch Funding Source. Currently:{" "}
-                {fundingSource ?? "undefined (display all)"}
-            </button>
-            <button
-                style={{ margin: "2rem" }}
-                onClick={() => setDisabled((prev) => !prev)}
-            >
-                Set disabled state: Currently: {String(disabled)}
-            </button>
-            <button
-                style={{ margin: "2rem" }}
-                onClick={() => setCount((prev) => prev + 1)}
-            >
-                Increase count. Currently: {count}
-            </button>
-            <div {...register({ disabled })} />
-        </>
-    );
-};
-
-export const DefaultWithRefAndButtons: FC<StoryProps> = ({
-    //style,
-    //message,
-    //fundingSource,
-    //disabled,
-    showSpinner,
-}) => {
-    const [{ options }, dispatch] = usePayPalScriptReducer();
-    useEffect(() => {
-        dispatch({
-            type: DISPATCH_ACTION.RESET_OPTIONS,
-            value: {
-                ...options,
-                "data-order-id": Date.now().toString(),
-            },
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [showSpinner]);
-
-    const [fundingSource, setFundingSource] = useState<
-        "paypal" | "venmo" | undefined
-    >("paypal");
-    const [disabled, setDisabled] = useState(false);
-    const [count, setCount] = useState(0);
-
-    async function createOrder(): Promise<string> {
-        console.log("count:", count);
-        return new Promise((resolve) => setTimeout(() => resolve("1"), 500));
-    }
-
-    const { Buttons } = useButtonsWithRefAndButtons({
+    const { Buttons, isEligible, hasReturned, resume } = usePayPalButtons({
         fundingSource,
         createOrder,
+        onApprove,
+        appSwitchWhenAvailable: true,
     });
+
+    const hasReturnedVal = hasReturned();
+
+    useEffect(() => {
+        if (hasReturnedVal) {
+            resume();
+        }
+    }, [hasReturnedVal, resume]);
 
     return (
         <>
@@ -283,8 +159,21 @@ export const DefaultWithRefAndButtons: FC<StoryProps> = ({
             >
                 Increase count. Currently: {count}
             </button>
+            <button
+                onClick={() => {
+                    if (location.hash.includes("onApprove")) {
+                        location.hash = "";
+                    } else {
+                        location.hash = "onApprove";
+                    }
 
-            <Buttons disabled={disabled} />
+                    forceUpdate({});
+                }}
+            >
+                Click me: {location.hash}
+            </button>
+
+            {isEligible() && !hasReturned() && <Buttons disabled={disabled} />}
         </>
     );
 };

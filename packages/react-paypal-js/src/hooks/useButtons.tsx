@@ -1,9 +1,7 @@
 import React, {
-    ComponentType,
     MutableRefObject,
-    ReactElement,
     useEffect,
-    useMemo,
+    useLayoutEffect,
     useRef,
     useState,
 } from "react";
@@ -12,6 +10,7 @@ import { useProxyProps } from "./useProxyProps";
 import { usePayPalScriptReducer } from "./scriptProviderHooks";
 import { generateErrorMessage, getPayPalWindowNamespace } from "../utils";
 import { SDK_SETTINGS } from "../constants";
+import { ButtonsAPI } from "../core/buttons/api";
 
 import type {
     PayPalButtonsComponentOptions,
@@ -19,15 +18,17 @@ import type {
     OnInitActions,
 } from "@paypal/paypal-js";
 
-const SYMBOL_INIT_ACTIONS = Symbol("init_actions");
-
 function useButtonsInstance(
     props: PayPalButtonsComponentOptions,
     _options?: unknown,
 ): {
-    instance: PayPalButtonsComponent | undefined;
+    instance:
+        | (PayPalButtonsComponent & {
+              hasReturned: () => boolean;
+              resume: () => void;
+          })
+        | undefined;
     isLoaded: boolean;
-    forceInit: () => void;
     initActionsRef?: MutableRefObject<OnInitActions | undefined>;
 } {
     const proxyProps = useProxyProps({ ...props });
@@ -35,7 +36,12 @@ function useButtonsInstance(
         { isResolved: isPayPalScriptResolved, options: payPalScriptOptions },
     ] = usePayPalScriptReducer();
 
-    const buttonsInstanceRef = useRef<PayPalButtonsComponent>();
+    const buttonsInstanceRef = useRef<
+        PayPalButtonsComponent & {
+            hasReturned: () => boolean;
+            resume: () => void;
+        }
+    >();
     const [, forceUpdate] = useState({});
     const [isLoaded, setIsLoaded] = useState(false);
     const initActionsRef = useRef<OnInitActions>();
@@ -43,9 +49,6 @@ function useButtonsInstance(
     const [, setError] = useState();
 
     function closeButtonsComponent() {
-        if (buttonsInstanceRef.current) {
-            console.log("closeButtonsComponent");
-        }
         buttonsInstanceRef.current?.close().catch(() => {
             // ignore errors when closing the component
         });
@@ -96,7 +99,10 @@ function useButtonsInstance(
             buttonsInstanceRef.current = namespace.Buttons?.({
                 ...proxyProps,
                 onInit: decoratedOnInit,
-            });
+            }) as PayPalButtonsComponent & {
+                hasReturned: () => boolean;
+                resume: () => void;
+            };
             setIsLoaded(true);
             forceUpdate({});
         } catch (error) {
@@ -111,174 +117,39 @@ function useButtonsInstance(
     return {
         instance: buttonsInstanceRef.current,
         isLoaded,
-        forceInit: () => setForceInit({}), // TODO not sure I like this, but we need something other than forceReRender array
         initActionsRef: initActionsRef,
     };
 }
 
-interface ButtonsProps {
-    buttons: ButtonsInstance;
+type UseButtonsWithRefAndButtonsReturnType = Omit<
+    ButtonsAPI,
+    "_update" | "options" | "publicAPI"
+>;
+
+export interface ButtonsComponentProps {
     disabled?: boolean;
 }
 
-export const Buttons = ({
-    buttons,
-    disabled,
-}: ButtonsProps): ReactElement | null => {
-    const { instance } = buttons;
-    const initActions = buttons[SYMBOL_INIT_ACTIONS];
-
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [isEligible, setIsEligible] = useState(true);
-    const [, setError] = useState();
-
-    useEffect(() => {
-        if (!initActions) {
-            return;
-        }
-
-        if (disabled === true) {
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            initActions.disable().catch(() => {});
-        } else {
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            initActions.enable().catch(() => {});
-        }
-    }, [initActions, disabled]);
-
-    useEffect(() => {
-        if (!instance || !containerRef.current) {
-            return;
-        }
-
-        if (!instance.isEligible()) {
-            setIsEligible(false);
-            return;
-        }
-
-        instance.render(containerRef.current).catch((err: Error) => {
-            if (
-                !containerRef.current ||
-                containerRef.current.children.length === 0
-            ) {
-                return;
-            }
-
-            setError(() => {
-                throw new Error(`Failed to render <Buttons />: ${err}`);
-            });
-        });
-    }, [instance]);
-
-    return isEligible && buttons ? <div ref={containerRef} /> : null;
-};
-
-interface ButtonsInstance {
-    forceInit: () => void;
-    instance?: PayPalButtonsComponent;
-    [SYMBOL_INIT_ACTIONS]?: OnInitActions;
-}
-interface UseButtonsReturnType {
-    isLoaded: boolean;
-    buttons: ButtonsInstance;
-}
-
-export function useButtons(
-    buttonsOptions: PayPalButtonsComponentOptions,
-    _options?: unknown,
-): UseButtonsReturnType {
-    const { instance, isLoaded, forceInit, initActionsRef } =
-        useButtonsInstance(buttonsOptions);
-
-    return {
-        buttons: {
-            instance,
-            forceInit,
-            [SYMBOL_INIT_ACTIONS]: initActionsRef?.current,
-        },
-        isLoaded,
-    };
-}
-
-interface RegisterReturnType {
-    ref: (ref: HTMLDivElement | null) => void;
-}
-
-interface UseButtonsWithRefReturnType {
-    register: ({ disabled }: { disabled?: boolean }) => RegisterReturnType;
-}
-
-export function useButtonsWithRef(
-    buttonOptions: PayPalButtonsComponentOptions,
-    _options?: unknown,
-): UseButtonsWithRefReturnType {
-    const { instance, initActionsRef } = useButtonsInstance(buttonOptions);
-    const containerElement = useRef<HTMLDivElement | null>(null);
-    const [, setError] = useState();
-
-    // TODO add disabled option
-    const register = ({ disabled }: { disabled?: boolean } = {}) => {
-        if (initActionsRef?.current) {
-            if (disabled === true) {
-                // eslint-disable-next-line @typescript-eslint/no-empty-function
-                initActionsRef.current.disable().catch(() => {});
-            } else {
-                // eslint-disable-next-line @typescript-eslint/no-empty-function
-                initActionsRef.current.enable().catch(() => {});
-            }
-        }
-        return {
-            ref: (ref: HTMLDivElement | null) => {
-                containerElement.current = ref;
-            },
-        };
-    };
-
-    useEffect(() => {
-        if (!instance || !containerElement.current) {
-            return;
-        }
-
-        console.log("rendering");
-        instance.render(containerElement.current).catch((err: Error) => {
-            if (
-                !containerElement.current ||
-                containerElement.current.children.length === 0
-            ) {
-                return;
-            }
-
-            setError(() => {
-                throw new Error(`Failed to render <Buttons />: ${err}`);
-            });
-        });
-    }, [instance]);
-
-    return {
-        register,
-    };
-}
-
-interface UseButtonsWithRefAndButtonsReturnType {
-    Buttons: ComponentType<{ disabled?: boolean }>;
-}
-
-export function useButtonsWithRefAndButtons(
-    buttonOptions: PayPalButtonsComponentOptions,
+export function usePayPalButtons(
+    buttonOptions: PayPalButtonsComponentOptions & {
+        appSwitchWhenAvailable?: boolean;
+    },
     _options?: unknown,
 ): UseButtonsWithRefAndButtonsReturnType {
     const { instance, initActionsRef } = useButtonsInstance(buttonOptions);
     const containerElement = useRef<HTMLDivElement | null>(null);
     const [, setError] = useState();
+    const [, update] = useState({});
+    const [ready, setReady] = useState(false);
 
-    const [buttonsApi] = useState(() => {
-        const api = {} as { Buttons: ComponentType<{ disabled?: boolean }> };
+    const [buttonsAPI] = useState(() => {
+        const api = new ButtonsAPI({
+            handleUpdate: () => update({}),
+        });
 
         api.Buttons = function Buttons({
             disabled = false,
-        }: {
-            disabled?: boolean;
-        }) {
+        }: ButtonsComponentProps) {
             useEffect(() => {
                 if (initActionsRef?.current) {
                     if (disabled === true) {
@@ -291,14 +162,30 @@ export function useButtonsWithRefAndButtons(
                 }
             }, [disabled, initActionsRef?.current]); // eslint-disable-line react-hooks/exhaustive-deps
 
+            useLayoutEffect(() => {
+                setReady(true);
+
+                return () => setReady(false);
+            }, []);
+
             return <div ref={containerElement} />;
         };
+
+        if (instance) {
+            buttonsAPI._update({ instance });
+        }
 
         return api;
     });
 
     useEffect(() => {
-        if (!instance || !containerElement.current) {
+        if (!instance) {
+            return;
+        }
+
+        buttonsAPI._update({ instance });
+
+        if (!ready || !containerElement.current) {
             return;
         }
 
@@ -314,7 +201,9 @@ export function useButtonsWithRefAndButtons(
                 throw new Error(`Failed to render <Buttons />: ${err}`);
             });
         });
-    }, [instance]);
+    }, [instance, buttonsAPI, ready]);
 
-    return buttonsApi;
+    const { Buttons, isEligible, hasReturned, resume } = buttonsAPI;
+
+    return { Buttons, isEligible, hasReturned, resume };
 }
