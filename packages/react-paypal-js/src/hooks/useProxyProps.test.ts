@@ -4,6 +4,7 @@ import {
     OnClickActions,
 } from "@paypal/paypal-js";
 import { renderHook } from "@testing-library/react-hooks";
+
 import { useProxyProps } from "./useProxyProps";
 
 describe("useProxyProps", () => {
@@ -26,11 +27,13 @@ describe("useProxyProps", () => {
         expect(current.onClick).not.toBe(props.onClick);
 
         expect(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             current.createOrder!(
                 {} as CreateOrderData,
                 {} as CreateOrderActions,
             ),
         ).toBe("createOrder");
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         expect(current.onClick!({}, {} as OnClickActions)).toBe("onClick");
 
         expect(props.createOrder).toHaveBeenCalled();

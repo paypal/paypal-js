@@ -10,7 +10,7 @@ import { useProxyProps } from "./useProxyProps";
 import { usePayPalScriptReducer } from "./scriptProviderHooks";
 import { generateErrorMessage, getPayPalWindowNamespace } from "../utils";
 import { SDK_SETTINGS } from "../constants";
-import { ButtonsAPI } from "../core/buttons/api";
+import { ButtonsAPI, ButtonsComponentProps } from "../core/buttons/api";
 
 import type {
     PayPalButtonsComponentOptions,
@@ -28,7 +28,6 @@ function useButtonsInstance(
               resume: () => void;
           })
         | undefined;
-    isLoaded: boolean;
     initActionsRef?: MutableRefObject<OnInitActions | undefined>;
 } {
     const proxyProps = useProxyProps({ ...props });
@@ -43,7 +42,6 @@ function useButtonsInstance(
         }
     >();
     const [, forceUpdate] = useState({});
-    const [isLoaded, setIsLoaded] = useState(false);
     const initActionsRef = useRef<OnInitActions>();
     const [forceInit, setForceInit] = useState({});
     const [, setError] = useState();
@@ -59,7 +57,6 @@ function useButtonsInstance(
     }, [proxyProps.fundingSource]);
 
     useEffect(() => {
-        setIsLoaded(false);
         if (isPayPalScriptResolved === false) {
             return closeButtonsComponent;
         }
@@ -103,7 +100,6 @@ function useButtonsInstance(
                 hasReturned: () => boolean;
                 resume: () => void;
             };
-            setIsLoaded(true);
             forceUpdate({});
         } catch (error) {
             return setError(() => {
@@ -116,7 +112,6 @@ function useButtonsInstance(
 
     return {
         instance: buttonsInstanceRef.current,
-        isLoaded,
         initActionsRef: initActionsRef,
     };
 }
@@ -125,10 +120,6 @@ type UseButtonsWithRefAndButtonsReturnType = Omit<
     ButtonsAPI,
     "_update" | "options" | "publicAPI"
 >;
-
-export interface ButtonsComponentProps {
-    disabled?: boolean;
-}
 
 export function usePayPalButtons(
     buttonOptions: PayPalButtonsComponentOptions & {

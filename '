@@ -1,6 +1,7 @@
 import { PayPalButtonsComponent } from "@paypal/paypal-js";
 import { ComponentType } from "react";
 
+import { ButtonsComponentProps } from "../../hooks/usePayPalButtons";
 import { PayPalButtonsComponentProps } from "../../types";
 
 interface Options {
@@ -16,10 +17,6 @@ interface IButtonsAPI {
     isEligible?: PayPalButtonsComponent["isEligible"];
     hasReturned?: () => boolean;
     resume?: () => void;
-}
-
-export interface ButtonsComponentProps {
-    disabled?: boolean;
 }
 
 export class ButtonsAPI implements IButtonsAPI {
