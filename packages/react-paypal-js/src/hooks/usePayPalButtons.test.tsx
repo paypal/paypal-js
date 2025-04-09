@@ -1,5 +1,9 @@
-import React, { PropsWithChildren, useState } from "react";
-import { FUNDING_SOURCE, PayPalNamespace } from "@paypal/paypal-js";
+import React, { PropsWithChildren, useMemo, useState } from "react";
+import {
+    FUNDING_SOURCE,
+    PayPalButtonMessage,
+    PayPalNamespace,
+} from "@paypal/paypal-js";
 import { renderHook } from "@testing-library/react-hooks";
 import { userEvent } from "@testing-library/user-event";
 import { screen, render, waitFor } from "@testing-library/react";
@@ -7,6 +11,7 @@ import { loadScript } from "@paypal/paypal-js";
 
 import { PayPalScriptProvider } from "../components/PayPalScriptProvider";
 import { usePayPalButtons } from "./usePayPalButtons";
+import { PayPalButtonsComponentProps } from "../types";
 
 jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),
@@ -31,6 +36,7 @@ describe("usePayPalButtons", () => {
                     onClick,
                     onInit,
                     fundingSource = "paypal",
+                    message,
                 }: {
                     onClick: () => void;
                     onInit: (
@@ -41,13 +47,23 @@ describe("usePayPalButtons", () => {
                         },
                     ) => void;
                     fundingSource: FUNDING_SOURCE;
+                    message: PayPalButtonMessage;
                 }) => ({
                     isEligible: () => true,
                     close: async () => undefined,
                     render: async (ref: HTMLDivElement) => {
                         const el = document.createElement("button");
                         el.id = "mock-button";
-                        el.textContent = `Pay with ${fundingSource}`;
+
+                        const pay = document.createElement("span");
+                        pay.textContent = `Pay with ${fundingSource}`;
+                        el.appendChild(pay);
+
+                        if (message) {
+                            const msg = document.createElement("span");
+                            msg.textContent = `message.amount is ${message.amount}`;
+                            el.appendChild(msg);
+                        }
 
                         if (onClick) {
                             el.addEventListener("click", onClick);
@@ -59,6 +75,15 @@ describe("usePayPalButtons", () => {
                         });
 
                         ref.appendChild(el);
+                    },
+                    updateProps: (props: PayPalButtonsComponentProps) => {
+                        if (props.message) {
+                            const el = document.getElementById("mock-button");
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            const msg = el!.lastChild;
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                            msg!.textContent = `message.amount is ${props.message.amount}`;
+                        }
                     },
                 }),
             ),
@@ -257,7 +282,7 @@ describe("usePayPalButtons", () => {
             const payButton = await screen.findByText(/Pay with paypal/);
             expect(payButton).toBeInTheDocument();
             expect(window.paypal?.Buttons).toHaveBeenCalledTimes(1);
-            const parent = payButton.parentElement;
+            const parent = payButton.parentElement?.parentElement;
             expect(parent).not.toHaveClass("paypal-buttons-disabled");
 
             expect(disableMockFn).not.toHaveBeenCalled();
@@ -273,6 +298,53 @@ describe("usePayPalButtons", () => {
             expect(enableMockFn).toHaveBeenCalledTimes(2);
 
             expect(window.paypal?.Buttons).toHaveBeenCalledTimes(1); // assert we aren't re-rendering the SDK at any point in this
+        });
+
+        test("should update message without re-rendering", async () => {
+            userEvent.setup();
+
+            const Wrapper = () => {
+                const [amount, setAmount] = useState(100);
+
+                const message: PayPalButtonMessage = useMemo(
+                    () => ({ amount, align: "center", color: "black" }),
+                    [amount],
+                );
+
+                const { Buttons } = usePayPalButtons({ message });
+
+                return (
+                    <div>
+                        <button
+                            data-testid="amount-button"
+                            onClick={() => setAmount((prev) => prev + 100)}
+                        >
+                            Add amount: {amount}
+                        </button>
+                        <Buttons />
+                    </div>
+                );
+            };
+
+            render(
+                <PayPalScriptProvider options={{ clientId: "test" }}>
+                    <Wrapper />
+                </PayPalScriptProvider>,
+            );
+
+            const payButton = await screen.findByText(/Pay with paypal/);
+            expect(payButton).toBeInTheDocument();
+            expect(window.paypal?.Buttons).toHaveBeenCalledTimes(1);
+            expect(
+                await screen.findByText("message.amount is 100"),
+            ).toBeInTheDocument();
+
+            const amountButton = screen.getByTestId("amount-button");
+            await userEvent.click(amountButton);
+
+            expect(
+                await screen.findByText("message.amount is 200"),
+            ).toBeInTheDocument();
         });
     });
 });
