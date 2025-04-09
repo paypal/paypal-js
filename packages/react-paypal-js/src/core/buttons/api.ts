@@ -20,6 +20,7 @@ interface IButtonsAPI {
 
 export interface ButtonsComponentProps {
     disabled?: boolean;
+    className?: string;
 }
 
 export class ButtonsAPI implements IButtonsAPI {

@@ -19,31 +19,49 @@ const Providers = ({ children }: PropsWithChildren<never>) => (
 );
 
 describe("usePayPalButtons", () => {
+    const enableMockFn = jest.fn(() => Promise.resolve());
+    const disableMockFn = jest.fn(() => Promise.resolve());
+
     beforeEach(() => {
         jest.clearAllMocks();
 
         window.paypal = {
-            Buttons: jest
-                .fn()
-                .mockImplementation(
-                    ({
-                        onClick,
-                        fundingSource = "paypal",
-                    }: {
-                        onClick: () => void;
-                        fundingSource: FUNDING_SOURCE;
-                    }) => ({
-                        isEligible: () => true,
-                        close: async () => undefined,
-                        render: async (ref: HTMLDivElement) => {
-                            const el = document.createElement("button");
-                            el.id = "mock-button";
-                            el.textContent = `Pay with ${fundingSource}`;
-                            el.addEventListener("click", onClick);
-                            ref.appendChild(el);
+            Buttons: jest.fn().mockImplementation(
+                ({
+                    onClick,
+                    onInit,
+                    fundingSource = "paypal",
+                }: {
+                    onClick: () => void;
+                    onInit: (
+                        _data: unknown,
+                        actions: {
+                            enable: () => Promise<void>;
+                            disable: () => Promise<void>;
                         },
-                    }),
-                ),
+                    ) => void;
+                    fundingSource: FUNDING_SOURCE;
+                }) => ({
+                    isEligible: () => true,
+                    close: async () => undefined,
+                    render: async (ref: HTMLDivElement) => {
+                        const el = document.createElement("button");
+                        el.id = "mock-button";
+                        el.textContent = `Pay with ${fundingSource}`;
+
+                        if (onClick) {
+                            el.addEventListener("click", onClick);
+                        }
+
+                        onInit(undefined, {
+                            enable: enableMockFn,
+                            disable: disableMockFn,
+                        });
+
+                        ref.appendChild(el);
+                    },
+                }),
+            ),
         } as unknown as PayPalNamespace;
 
         (loadScript as jest.Mock).mockResolvedValue(window.paypal);
@@ -192,7 +210,6 @@ describe("usePayPalButtons", () => {
                 expect.objectContaining({ fundingSource: "paypal" }),
             );
 
-            // forcing an update to assert that the hook returns the same Buttons component
             await userEvent.click(fundingSourceButton);
 
             payButton = await screen.findByText(/Pay with venmo/);
@@ -202,6 +219,60 @@ describe("usePayPalButtons", () => {
             expect(window.paypal?.Buttons).toHaveBeenCalledWith(
                 expect.objectContaining({ fundingSource: "venmo" }),
             );
+        });
+
+        test("should enable and disable buttons based on disabled prop", async () => {
+            userEvent.setup();
+
+            const onClickFn = jest.fn();
+
+            const Wrapper = () => {
+                const [disabled, setDisabled] = useState(false);
+
+                function onClick() {
+                    onClickFn();
+                }
+
+                const { Buttons } = usePayPalButtons({ onClick });
+
+                return (
+                    <div>
+                        <button
+                            data-testid="disable-button"
+                            onClick={() => setDisabled((prev) => !prev)}
+                        >
+                            Disable buttons: {disabled}
+                        </button>
+                        <Buttons disabled={disabled} />
+                    </div>
+                );
+            };
+
+            render(
+                <PayPalScriptProvider options={{ clientId: "test" }}>
+                    <Wrapper />
+                </PayPalScriptProvider>,
+            );
+
+            const payButton = await screen.findByText(/Pay with paypal/);
+            expect(payButton).toBeInTheDocument();
+            expect(window.paypal?.Buttons).toHaveBeenCalledTimes(1);
+            const parent = payButton.parentElement;
+            expect(parent).not.toHaveClass("paypal-buttons-disabled");
+
+            expect(disableMockFn).not.toHaveBeenCalled();
+            expect(enableMockFn).toHaveBeenCalledTimes(1); // this gets called on first render
+
+            const disableButton = screen.getByTestId("disable-button");
+            await userEvent.click(disableButton);
+            expect(parent).toHaveClass("paypal-buttons-disabled");
+            expect(disableMockFn).toHaveBeenCalledTimes(1);
+
+            await userEvent.click(disableButton);
+            expect(parent).not.toHaveClass("paypal-buttons-disabled");
+            expect(enableMockFn).toHaveBeenCalledTimes(2);
+
+            expect(window.paypal?.Buttons).toHaveBeenCalledTimes(1); // assert we aren't re-rendering the SDK at any point in this
         });
     });
 });

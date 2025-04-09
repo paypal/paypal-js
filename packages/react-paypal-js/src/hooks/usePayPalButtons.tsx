@@ -100,6 +100,7 @@ function useButtonsInstance(
                 hasReturned: () => boolean;
                 resume: () => void;
             };
+
             forceUpdate({});
         } catch (error) {
             return setError(() => {
@@ -109,6 +110,12 @@ function useButtonsInstance(
 
         return closeButtonsComponent;
     }, [forceInit, proxyProps, isPayPalScriptResolved, payPalScriptOptions]);
+
+    useEffect(() => {
+        buttonsInstanceRef.current?.updateProps?.({
+            message: proxyProps.message,
+        });
+    }, [proxyProps.message]);
 
     return {
         instance: buttonsInstanceRef.current,
@@ -140,7 +147,12 @@ export function usePayPalButtons(
 
         api.Buttons = function Buttons({
             disabled = false,
+            className = "",
         }: ButtonsComponentProps) {
+            const isDisabledStyle = disabled ? { opacity: 0.38 } : {};
+            const classNames =
+                `${className} ${disabled ? "paypal-buttons-disabled" : ""}`.trim();
+
             useEffect(() => {
                 if (initActionsRef?.current) {
                     if (disabled === true) {
@@ -159,7 +171,13 @@ export function usePayPalButtons(
                 return () => setReady(false);
             }, []);
 
-            return <div ref={containerElement} />;
+            return (
+                <div
+                    className={classNames}
+                    style={isDisabledStyle}
+                    ref={containerElement}
+                />
+            );
         };
 
         if (instance) {
@@ -180,18 +198,20 @@ export function usePayPalButtons(
             return;
         }
 
-        instance.render(containerElement.current).catch((err: Error) => {
-            if (
-                !containerElement.current ||
-                containerElement.current.children.length === 0
-            ) {
-                return;
-            }
+        if (instance.isEligible()) {
+            instance.render(containerElement.current).catch((err: Error) => {
+                if (
+                    !containerElement.current ||
+                    containerElement.current.children.length === 0
+                ) {
+                    return;
+                }
 
-            setError(() => {
-                throw new Error(`Failed to render <Buttons />: ${err}`);
+                setError(() => {
+                    throw new Error(`Failed to render <Buttons />: ${err}`);
+                });
             });
-        });
+        }
     }, [instance, buttonsAPI, ready]);
 
     const { Buttons, isEligible, hasReturned, resume } = buttonsAPI;
