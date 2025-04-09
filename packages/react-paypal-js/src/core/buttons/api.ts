@@ -31,17 +31,19 @@ export class ButtonsAPI implements IButtonsAPI {
         this.options = options;
     }
 
-    get isEligible(): PayPalButtonsComponent["isEligible"] {
-        return this.options.instance?.isEligible ?? (() => false);
+    get isEligible(): PayPalButtonsComponent["isEligible"] | undefined {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return this.options.instance?.isEligible;
     }
 
-    get hasReturned(): PayPalButtonsComponent["hasReturned"] {
-        return this.options.instance?.hasReturned ?? (() => false);
+    get hasReturned(): PayPalButtonsComponent["hasReturned"] | undefined {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return this.options.instance?.hasReturned;
     }
 
-    get resume(): PayPalButtonsComponent["resume"] {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        return this.options.instance?.resume ?? (() => {});
+    get resume(): PayPalButtonsComponent["resume"] | undefined {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return this.options.instance?.resume;
     }
 
     _update(options: Partial<Options>): void {

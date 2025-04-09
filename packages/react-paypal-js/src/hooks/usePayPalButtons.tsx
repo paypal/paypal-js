@@ -123,17 +123,29 @@ function useButtonsInstance(
     };
 }
 
-type UseButtonsWithRefAndButtonsReturnType = Omit<
-    ButtonsAPI,
-    "_update" | "options" | "publicAPI"
->;
+type UsePayPalButtonsReturnType =
+    | ReadyButtonsInstance
+    | NotReadyButtonsInstance;
+
+type ReadyButtonsInstance = {
+    Buttons: ButtonsAPI["Buttons"];
+    isEligible: PayPalButtonsComponent["isEligible"];
+    hasReturned: () => boolean;
+    resume: () => void;
+} & { isLoaded: true };
+
+type NotReadyButtonsInstance = Pick<ButtonsAPI, "Buttons"> & {
+    isEligible?: never;
+    hasReturned?: never;
+    resume?: never;
+} & { isLoaded: false };
 
 export function usePayPalButtons(
     buttonOptions: PayPalButtonsComponentOptions & {
         appSwitchWhenAvailable?: boolean;
     },
     _options?: unknown,
-): UseButtonsWithRefAndButtonsReturnType {
+): UsePayPalButtonsReturnType {
     const { instance, initActionsRef } = useButtonsInstance(buttonOptions);
     const containerElement = useRef<HTMLDivElement | null>(null);
     const [, setError] = useState();
@@ -216,5 +228,11 @@ export function usePayPalButtons(
 
     const { Buttons, isEligible, hasReturned, resume } = buttonsAPI;
 
-    return { Buttons, isEligible, hasReturned, resume };
+    return {
+        Buttons,
+        isLoaded: Boolean(buttonsAPI.options.instance),
+        isEligible,
+        hasReturned,
+        resume,
+    } as UsePayPalButtonsReturnType;
 }

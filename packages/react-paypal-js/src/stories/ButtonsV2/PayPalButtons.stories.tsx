@@ -94,21 +94,22 @@ export const Default: FC<StoryProps> = ({ showSpinner }) => {
 
     const message: PayPalButtonMessage = useMemo(() => ({ amount }), [amount]);
 
-    const { Buttons, isEligible, hasReturned, resume } = usePayPalButtons({
-        fundingSource,
-        createOrder,
-        onApprove,
-        message,
-        appSwitchWhenAvailable: true,
-    });
+    const { Buttons, isLoaded, isEligible, hasReturned, resume } =
+        usePayPalButtons({
+            fundingSource,
+            createOrder,
+            onApprove,
+            message,
+            appSwitchWhenAvailable: true,
+        });
 
-    const hasReturnedVal = hasReturned();
+    const hasReturnedVal = isLoaded && hasReturned();
 
     useEffect(() => {
-        if (hasReturnedVal) {
+        if (isLoaded && hasReturnedVal) {
             resume();
         }
-    }, [hasReturnedVal, resume]);
+    }, [hasReturnedVal, resume, isLoaded]);
 
     return (
         <>
@@ -160,7 +161,9 @@ export const Default: FC<StoryProps> = ({ showSpinner }) => {
                 Click me: {location.hash}
             </button>
 
-            {isEligible() && !hasReturned() && <Buttons disabled={disabled} />}
+            {isLoaded && isEligible() && !hasReturned() && (
+                <Buttons disabled={disabled} />
+            )}
         </>
     );
 };
