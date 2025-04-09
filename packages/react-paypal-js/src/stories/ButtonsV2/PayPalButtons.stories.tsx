@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import { usePayPalScriptReducer, DISPATCH_ACTION } from "../../index";
 import { COMPONENT_PROPS_CATEGORY, FUNDING_SOURCE_ARG } from "../constants";
@@ -19,6 +19,7 @@ type StoryProps = {
     fundingSource: FUNDING_SOURCE;
     disabled: boolean;
     showSpinner: boolean;
+    appSwitchWhenAvailable: boolean;
 };
 
 const scriptProviderOptions: PayPalScriptOptions = {
@@ -40,6 +41,19 @@ export default {
         controls: { expanded: true, sort: "requiredFirst" },
     },
     argTypes: {
+        showSpinner: {
+            description:
+                "This is not a property from PayPalButtons. It is custom control to show or not a spinner when PayPal SDK is loading.",
+            options: [true, false],
+            control: { type: "select" },
+            table: {
+                defaultValue: {
+                    summary: "false",
+                },
+                category: "Custom",
+                type: { summary: "boolean" },
+            },
+        },
         message: {
             control: { type: "object" },
             ...COMPONENT_PROPS_CATEGORY,
@@ -50,6 +64,22 @@ export default {
             ...COMPONENT_PROPS_CATEGORY,
         },
         fundingSource: FUNDING_SOURCE_ARG,
+        appSwitchWhenAvailable: {
+            options: [true, false],
+            control: { type: "select" },
+            ...COMPONENT_PROPS_CATEGORY,
+        },
+        style: {
+            control: { type: "object" },
+            ...COMPONENT_PROPS_CATEGORY,
+        },
+    },
+    args: {
+        style: {
+            layout: "vertical",
+        },
+        disabled: false,
+        showSpinner: false,
     },
     decorators: [
         (Story: FC, storyArg: { args: { size: number } }): ReactElement => {
@@ -82,6 +112,8 @@ export const Default: FC<StoryProps> = ({
     fundingSource,
     disabled,
     message,
+    appSwitchWhenAvailable,
+    style,
 }) => {
     const [{ options }, dispatch] = usePayPalScriptReducer();
     useEffect(() => {
@@ -109,7 +141,8 @@ export const Default: FC<StoryProps> = ({
             createOrder,
             onApprove,
             message,
-            appSwitchWhenAvailable: true,
+            appSwitchWhenAvailable,
+            style,
         });
 
     const hasReturnedVal = isLoaded && hasReturned();
@@ -119,6 +152,10 @@ export const Default: FC<StoryProps> = ({
             resume();
         }
     }, [hasReturnedVal, resume, isLoaded]);
+
+    if (isLoaded && !isEligible()) {
+        return <p>Funding source: {fundingSource} is not eligible</p>;
+    }
 
     return (
         <>
