@@ -1,5 +1,5 @@
 ---
-"@paypal/react-paypal-js": major
+"@paypal/react-paypal-js": patch
 ---
 
 WHAT: Temporary fix for Braintree SDK versioning in React JS SDK. BT SDK version has been upgraded to latest version statically in the React SDK.
