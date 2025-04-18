@@ -3,6 +3,10 @@ import type { PayPalButtonsComponentOptions } from "@paypal/paypal-js";
 
 export interface PayPalButtonsComponentProps
     extends PayPalButtonsComponentOptions {
+    disableMaxHeight?: boolean;
+    borderColor?: string;
+    borderWidth?: string;
+    borderRadius?: string;
     /**
      * Used to re-render the component.
      * Changes to this prop will destroy the existing Buttons and render them again using the current props.
