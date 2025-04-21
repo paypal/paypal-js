@@ -21,7 +21,7 @@ export const LOAD_SCRIPT_ERROR = "Failed to load the PayPal JS SDK script.";
 export const EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE =
     "Invalid authorization data. Use dataClientToken or dataUserIdToken to authorize.";
 
-const braintreeVersion = "3.84.0";
+const braintreeVersion = "3.117.0";
 export const BRAINTREE_SOURCE = `https://js.braintreegateway.com/web/${braintreeVersion}/js/client.min.js`;
 export const BRAINTREE_PAYPAL_CHECKOUT_SOURCE = `https://js.braintreegateway.com/web/${braintreeVersion}/js/paypal-checkout.min.js`;
 
