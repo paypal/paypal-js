@@ -73,6 +73,14 @@ export default {
             control: { type: "object" },
             ...COMPONENT_PROPS_CATEGORY,
         },
+        sdkBaseUrl: {
+            control: { type: "text" },
+            ...COMPONENT_PROPS_CATEGORY,
+        },
+        clientID: {
+            control: { type: "text" },
+            ...COMPONENT_PROPS_CATEGORY,
+        },
     },
     args: {
         style: {
@@ -82,7 +90,12 @@ export default {
         showSpinner: false,
     },
     decorators: [
-        (Story: FC, storyArg: { args: { size: number } }): ReactElement => {
+        (
+            Story: FC,
+            storyArg: {
+                args: { size: number; sdkBaseUrl?: string; clientID?: string };
+            },
+        ): ReactElement => {
             const uid = generateRandomString();
 
             return (
@@ -95,6 +108,10 @@ export default {
                     <PayPalScriptProvider
                         options={{
                             ...scriptProviderOptions,
+                            clientId:
+                                storyArg.args.clientID ??
+                                scriptProviderOptions.clientId,
+                            sdkBaseUrl: storyArg.args.sdkBaseUrl,
                             dataNamespace: uid,
                             dataUid: uid,
                         }}
