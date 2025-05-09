@@ -3,11 +3,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
 import { SDK_SETTINGS } from "../constants";
+import { useProxyProps } from "../hooks/useProxyProps";
 
 import type { FunctionComponent } from "react";
 import type { PayPalButtonsComponent, OnInitActions } from "@paypal/paypal-js";
 import type { PayPalButtonsComponentProps } from "../types";
-import { useProxyProps } from "../hooks/useProxyProps";
 
 /**
 This `<PayPalButtons />` component supports rendering [buttons](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#buttons) for PayPal, Venmo, and alternative payment methods.
