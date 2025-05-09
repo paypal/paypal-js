@@ -169,7 +169,7 @@ export const Default: FC<StoryProps> = ({
             fundingSource={fundingSource}
             forceReRender={[style, amount, currency]}
             createOrder={(
-                data: Record<string, unknown>,
+                _data: Record<string, unknown>,
                 actions: CreateOrderBraintreeActions,
             ) =>
                 actions.braintree
@@ -226,7 +226,7 @@ export const BillingAgreement: FC<StoryProps> = ({
             disabled={disabled}
             fundingSource={fundingSource}
             forceReRender={[style, amount]}
-            createBillingAgreement={(data, actions) =>
+            createBillingAgreement={(_data, actions) =>
                 actions.braintree.createPayment({
                     flow: "vault", // Required
 

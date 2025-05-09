@@ -40,7 +40,7 @@ const subscriptionOptions: PayPalScriptOptions = {
 
 const buttonSubscriptionProps = {
     createSubscription(
-        data: Record<string, unknown>,
+        _data: Record<string, unknown>,
         actions: CreateSubscriptionActions,
     ) {
         return actions.subscription
@@ -59,7 +59,7 @@ const buttonSubscriptionProps = {
 };
 
 const buttonOrderProps = () => ({
-    createOrder(data: Record<string, unknown>, actions: CreateOrderActions) {
+    createOrder(_data: Record<string, unknown>, actions: CreateOrderActions) {
         return actions.order
             .create({
                 intent: "CAPTURE",
@@ -77,7 +77,7 @@ const buttonOrderProps = () => ({
                 return orderId;
             });
     },
-    onApprove(data: OnApproveData, actions: OnApproveActions) {
+    onApprove(_data: OnApproveData, actions: OnApproveActions) {
         if (!actions.order) {
             action(ERROR)(ORDER_INSTANCE_ERROR);
             return Promise.reject(ORDER_INSTANCE_ERROR);
