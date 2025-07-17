@@ -8,6 +8,17 @@
     "publishConfig": {
         "access": "public"
     },
+    "exports": {
+        ".": {
+            "types": "./types/index.d.ts",
+            "import": "./dist/v5/esm/paypal-js.js",
+            "require": "./dist/v5/cjs/paypal-js.js"
+        },
+        "./v6": {
+            "types": "./types/v6/index.d.ts",
+            "import": "./dist/v6/esm/paypal-js.js"
+        }
+    },
     "scripts": {
         "build": "rm -rf dist && rollup --config --bundleConfigAsCjs",
         "lint": "eslint .",

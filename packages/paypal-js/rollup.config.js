@@ -32,33 +32,33 @@ export default [
         ],
         output: [
             {
-                file: `dist/esm/${pkgName}.js`,
+                file: `dist/v5/esm/${pkgName}.js`,
                 format: "esm",
                 banner,
             },
             {
-                file: `dist/esm/${pkgName}.min.js`,
+                file: `dist/v5/esm/${pkgName}.min.js`,
                 format: "esm",
                 banner,
                 plugins: [terser()],
             },
             {
-                file: `dist/cjs/${pkgName}.js`,
+                file: `dist/v5/cjs/${pkgName}.js`,
                 format: "cjs",
                 banner,
             },
             {
-                file: `dist/cjs/${pkgName}.min.js`,
+                file: `dist/v5/cjs/${pkgName}.min.js`,
                 format: "cjs",
                 banner,
                 plugins: [terser()],
             },
             {
-                file: `dist/iife/${pkgName}.js`,
+                file: `dist/v5/iife/${pkgName}.js`,
                 ...outputConfigForBrowserBundle,
             },
             {
-                file: `dist/iife/${pkgName}.min.js`,
+                file: `dist/v5/iife/${pkgName}.min.js`,
                 ...outputConfigForBrowserBundle,
                 plugins: [terser()],
             },
@@ -79,12 +79,37 @@ export default [
         ],
         output: [
             {
-                file: `dist/iife/${pkgName}.legacy.js`,
+                file: `dist/v5/iife/${pkgName}.legacy.js`,
                 ...outputConfigForBrowserBundle,
             },
             {
-                file: `dist/iife/${pkgName}.legacy.min.js`,
+                file: `dist/v5/iife/${pkgName}.legacy.min.js`,
                 ...outputConfigForBrowserBundle,
+                plugins: [terser()],
+            },
+        ],
+    },
+    {
+        input: "src/index-v6.ts",
+        plugins: [
+            typescript({
+                ...tsconfigOverride,
+            }),
+            replace({
+                __VERSION__: pkg.version,
+                preventAssignment: true,
+            }),
+        ],
+        output: [
+            {
+                file: `dist/v6/esm/${pkgName}.js`,
+                format: "esm",
+                banner,
+            },
+            {
+                file: `dist/v6/esm/${pkgName}.min.js`,
+                format: "esm",
+                banner,
                 plugins: [terser()],
             },
         ],
