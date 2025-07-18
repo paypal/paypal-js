@@ -1,3 +1,4 @@
-export { loadCustomScript } from "./load-script";
+import { loadCustomScript } from "./load-script";
 
-export const version = "__VERSION__";
+const version = "__VERSION__";
+export { loadCustomScript, version };

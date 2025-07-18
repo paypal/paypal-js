@@ -109,3 +109,9 @@ type StartSessionInput = {
         label?: string; // does this need to be more specific
     };
 };
+
+export function loadCustomScript(options: {
+    url: string;
+    attributes?: Record<string, string>;
+    PromisePonyfill?: PromiseConstructor;
+}): Promise<void>;
