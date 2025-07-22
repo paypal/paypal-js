@@ -23,14 +23,14 @@ export type CreateInstanceOptions = {
     partnerAttributionId?: string;
 };
 
-export type EligiblePaymentMethod =
+export type EligiblePaymentMethods =
     | "paypal_pay_later"
     | "paypal_credit"
     | "paypal"
     | "venmo";
 
 export interface EligiblePaymentMethodsOutput {
-    isEligible: (paymentMethod: EligiblePaymentMethod) => boolean;
+    isEligible: (paymentMethod: EligiblePaymentMethods) => boolean;
 }
 
 export type OnShippingAddressChangeData = {
