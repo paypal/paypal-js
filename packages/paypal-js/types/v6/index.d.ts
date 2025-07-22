@@ -23,8 +23,14 @@ export type CreateInstanceOptions = {
     partnerAttributionId?: string;
 };
 
-export interface EligiblePaymentMethods {
-    isEligible: (paymentMethod: string) => boolean;
+export type EligiblePaymentMethod =
+    | "paypal_pay_later"
+    | "paypal_credit"
+    | "paypal"
+    | "venmo";
+
+export interface EligiblePaymentMethodsOutput {
+    isEligible: (paymentMethod: EligiblePaymentMethod) => boolean;
 }
 
 // TODO separate types for PayPal and Venmo?
@@ -56,7 +62,7 @@ export type SdkInstance = {
     ) => SessionOutput;
     findEligibleMethods: (
         findEligibleMethodsOptions: FindEligibleMethodsInputs,
-    ) => Promise<EligiblePaymentMethods>;
+    ) => Promise<EligiblePaymentMethodsOutput>;
 };
 
 export type FindEligibleMethodsInputs = {
