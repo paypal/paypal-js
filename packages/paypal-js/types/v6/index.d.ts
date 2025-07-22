@@ -4,23 +4,17 @@ export interface PayPalV6Namespace {
     ) => Promise<SdkInstance>;
 }
 
-export enum COMPONENTS {
-    PAYPAL_PAYMENTS = "paypal-payments",
-    VENMO_PAYMENTS = "venmo-payments",
-}
-export type Components = `${COMPONENTS}`;
+export type Components = "paypal-payments" | "venmo-payments";
 
-export enum PAGE_TYPES {
-    CART = "cart",
-    CHECKOUT = "checkout",
-    MINI_CART = "mini-cart",
-    PRODUCT_DETAILS = "product-details",
-    PRODUCT_LISTING = "product-listing",
-    SEARCH_RESULTS = "search-results",
-}
-export type PageTypes = `${PAGE_TYPES}`;
+export type PageTypes =
+    | "cart"
+    | "checkout"
+    | "mini-cart"
+    | "product-details"
+    | "product-listing"
+    | "search-results";
 
-type CreateInstanceOptions = {
+export type CreateInstanceOptions = {
     clientMetadataId?: string;
     clientToken: string;
     components?: Components[];
@@ -34,42 +28,42 @@ export interface EligiblePaymentMethods {
 }
 
 // TODO separate types for PayPal and Venmo?
-export type PaymentSessionOptions = {
+export type PaymentSessionInputs = {
     onApprove?: (data: OnApproveData) => Promise<void>;
     onCancel?: (data?: { orderId: string }) => void;
     onComplete?: (data?: OnCompleteData) => void;
     onError?: (data: Error) => void;
 };
 
-type OnApproveData = {
-    orderId?: string;
+export type OnApproveData = {
+    orderId: string;
     payerId?: string;
     billingToken?: string;
 };
 
-type OnCompleteData = {
+export type OnCompleteData = {
     paymentSessionState?: string;
 };
 
 export type SdkInstance = {
     // "paypal-payments" component
     createPayPalOneTimePaymentSession: (
-        paymentSessionOptions: PaymentSessionOptions,
+        paymentSessionOptions: PaymentSessionInputs,
     ) => SessionOutput;
     // "venmo-payments" component
     createVenmoOneTimePaymentSession: (
-        paymentSessionOptions: PaymentSessionOptions,
+        paymentSessionOptions: PaymentSessionInputs,
     ) => SessionOutput;
     findEligibleMethods: (
-        findEligibleMethodsOptions: FindEligibleMethodsOptions,
+        findEligibleMethodsOptions: FindEligibleMethodsInputs,
     ) => Promise<EligiblePaymentMethods>;
 };
 
-type FindEligibleMethodsOptions = {
+export type FindEligibleMethodsInputs = {
     currencyCode?: string;
 };
 
-type SessionOutput = {
+export type SessionOutput = {
     start: (
         options: StartSessionInput,
         orderIdPromise: Promise<{ orderId: string }>,
@@ -78,25 +72,16 @@ type SessionOutput = {
     cancel: () => void;
 };
 
-declare enum PAYPAL_PRESENTATION_MODES {
-    AUTO = "auto",
-    MODAL = "modal",
-    PAYMENT_HANDLER = "payment-handler",
-    POPUP = "popup",
-    REDIRECT = "redirect",
-}
+export type PayPalPresentationModes =
+    | "auto"
+    | "modal"
+    | "payment-handler"
+    | "popup"
+    | "redirect";
 
-export type PayPalPresentationModes = `${PAYPAL_PRESENTATION_MODES}`;
+export type VenmoPresentationModes = "auto" | "modal" | "popup";
 
-declare enum VENMO_PRESENTATION_MODES {
-    AUTO = "auto",
-    MODAL = "modal",
-    POPUP = "popup",
-}
-
-export type VenmoPresentationModes = `${VENMO_PRESENTATION_MODES}`;
-
-type StartSessionInput = {
+export type StartSessionInput = {
     presentationMode?: PayPalPresentationModes | VenmoPresentationModes;
     targetElement?: string | EventTarget;
     fullPageOverlay?: {
