@@ -33,13 +33,49 @@ export interface EligiblePaymentMethodsOutput {
     isEligible: (paymentMethod: EligiblePaymentMethod) => boolean;
 }
 
+export type OnShippingAddressChangeData = {
+    orderId: string;
+    shippingAddress: {
+        city: string;
+        countryCode: string;
+        postalCode: string;
+        state: string;
+    };
+};
+
+export type OnShippingOptionsChangeData = {
+    orderId: string;
+    selectedShippingOption: {
+        amount: {
+            currencyCode: string;
+            value: string;
+        };
+        id: string;
+        label: string;
+        selected: boolean;
+        type: string;
+    };
+};
+
 // TODO separate types for PayPal and Venmo?
 export type PaymentSessionInputs = {
     onApprove?: (data: OnApproveData) => Promise<void>;
     onCancel?: (data?: { orderId: string }) => void;
     onComplete?: (data?: OnCompleteData) => void;
     onError?: (data: Error) => void;
+    onShippingAddressChange?: (
+        data: OnShippingAddressChangeData,
+    ) => Promise<void>;
+    onShippingOptionsChange?: (
+        data: OnShippingOptionsChangeData,
+    ) => Promise<void>;
+    savePayment?: boolean;
 };
+
+export type VenmoPaymentSessionInputs = Omit<
+    PaymentSessionInputs,
+    "onShippingAddressChange" | "onShippingOptionsChange"
+>;
 
 export type OnApproveData = {
     orderId: string;
@@ -58,7 +94,7 @@ export type SdkInstance = {
     ) => SessionOutput;
     // "venmo-payments" component
     createVenmoOneTimePaymentSession: (
-        paymentSessionOptions: PaymentSessionInputs,
+        paymentSessionOptions: VenmoPaymentSessionInputs,
     ) => SessionOutput;
     findEligibleMethods: (
         findEligibleMethodsOptions: FindEligibleMethodsInputs,
@@ -99,6 +135,16 @@ export type StartSessionInput = {
     loadingScreen?: {
         label?: string; // does this need to be more specific
     };
+};
+
+export type VenmoEligibility = {
+    eligibility: boolean | null;
+    ineligibilityReason: string | null;
+};
+
+export type VenmoStartSessionInput = StartSessionInput & {
+    eligibilityResponse?: VenmoEligibility | null;
+    buttonSessionID?: string;
 };
 
 export function loadCustomScript(options: {
