@@ -1,6 +1,6 @@
 export interface PayPalV6Namespace {
     createInstance: (
-        createInstanceOptions: CreateInstanceOptions,
+        createInstanceOptions: CreateInstanceInputs,
     ) => Promise<SdkInstance>;
 }
 
@@ -9,18 +9,21 @@ export type Components = "paypal-payments" | "venmo-payments";
 export type PageTypes =
     | "cart"
     | "checkout"
+    | "home"
     | "mini-cart"
     | "product-details"
     | "product-listing"
     | "search-results";
 
-export type CreateInstanceOptions = {
+export type CreateInstanceInputs = {
     clientMetadataId?: string;
     clientToken: string;
     components?: Components[];
     locale?: string;
     pageType?: PageTypes;
     partnerAttributionId?: string;
+    shopperSessionId?: string;
+    testBuyerCoutnry?: string;
 };
 
 export type EligiblePaymentMethods =
@@ -115,6 +118,7 @@ export type SessionOutput = {
 
 export type PayPalPresentationModes =
     | "auto"
+    | "direct-app-switch"
     | "modal"
     | "payment-handler"
     | "popup"

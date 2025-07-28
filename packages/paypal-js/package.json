@@ -3,7 +3,7 @@
     "version": "8.2.0",
     "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
     "main": "index.js",
-    "module": "dist/esm/paypal-js.js",
+    "module": "dist/v5/esm/paypal-js.js",
     "types": "types/index.d.ts",
     "publishConfig": {
         "access": "public"
