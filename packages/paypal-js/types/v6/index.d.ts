@@ -57,7 +57,6 @@ export type OnShippingOptionsChangeData = {
     };
 };
 
-// TODO separate types for PayPal and Venmo?
 export type PaymentSessionInputs = {
     onApprove?: (data: OnApproveData) => Promise<void>;
     onCancel?: (data?: { orderId: string }) => void;
