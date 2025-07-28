@@ -23,7 +23,7 @@ export type CreateInstanceInputs = {
     pageType?: PageTypes;
     partnerAttributionId?: string;
     shopperSessionId?: string;
-    testBuyerCoutnry?: string;
+    testBuyerCountry?: string;
 };
 
 export type EligiblePaymentMethods =
