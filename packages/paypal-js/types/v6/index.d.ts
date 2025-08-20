@@ -1,10 +1,19 @@
+import {
+    PaymentSessionInputs,
+    VenmoPaymentSessionInputs,
+} from "./components/payments";
+import { BillingSessionInputs } from "./components/billing";
+
 export interface PayPalV6Namespace {
     createInstance: (
         createInstanceOptions: CreateInstanceInputs,
     ) => Promise<SdkInstance>;
 }
 
-export type Components = "paypal-payments" | "venmo-payments";
+export type Components =
+    | "paypal-payments"
+    | "venmo-payments"
+    | "paypal-legacy-billing-agreements";
 
 export type PageTypes =
     | "cart"
@@ -36,60 +45,11 @@ export interface EligiblePaymentMethodsOutput {
     isEligible: (paymentMethod: EligiblePaymentMethods) => boolean;
 }
 
-export type OnShippingAddressChangeData = {
-    orderId: string;
-    shippingAddress: {
-        city: string;
-        countryCode: string;
-        postalCode: string;
-        state: string;
-    };
-};
-
-export type OnShippingOptionsChangeData = {
-    orderId: string;
-    selectedShippingOption: {
-        amount: {
-            currencyCode: string;
-            value: string;
-        };
-        id: string;
-        label: string;
-        selected: boolean;
-        type: string;
-    };
-};
-
-export type PaymentSessionInputs = {
-    onApprove?: (data: OnApproveData) => Promise<void>;
-    onCancel?: (data?: { orderId: string }) => void;
-    onComplete?: (data?: OnCompleteData) => void;
-    onError?: (data: Error) => void;
-    onShippingAddressChange?: (
-        data: OnShippingAddressChangeData,
-    ) => Promise<void>;
-    onShippingOptionsChange?: (
-        data: OnShippingOptionsChangeData,
-    ) => Promise<void>;
-    savePayment?: boolean;
-};
-
-export type VenmoPaymentSessionInputs = Omit<
-    PaymentSessionInputs,
-    "onShippingAddressChange" | "onShippingOptionsChange"
->;
-
-export type OnApproveData = {
-    orderId: string;
-    payerId?: string;
-    billingToken?: string;
-};
-
-export type OnCompleteData = {
-    paymentSessionState?: string;
-};
-
 export type SdkInstance = {
+    // "paypal-legacy-billing-agreements" component
+    createPayPalBillingAgreementWithoutPurchase: (
+        paymentSessionOptions: BillingSessionInputs,
+    ) => void;
     // "paypal-payments" component
     createPayPalOneTimePaymentSession: (
         paymentSessionOptions: PaymentSessionInputs,
@@ -155,3 +115,7 @@ export function loadCustomScript(options: {
     attributes?: Record<string, string>;
     PromisePonyfill?: PromiseConstructor;
 }): Promise<void>;
+
+// Components
+export * from "./components/payments";
+export * from "./components/billing";
