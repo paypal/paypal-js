@@ -6,10 +6,9 @@ import {
 } from "./payments";
 
 export type BillingSessionInputs = {
-    onApprove?: ((data: OnApproveData) => Promise<void>) | undefined;
+    onApprove?: (data: OnApproveData) => Promise<void>;
     onCancel?: (data?: OnCancelData) => void;
     onComplete?: (data?: OnCompleteData) => void;
     onError?: (data: OnErrorData) => void;
     billingToken?: string;
-    sdkInstanceId?: string;
 };

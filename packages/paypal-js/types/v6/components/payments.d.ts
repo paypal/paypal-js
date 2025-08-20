@@ -83,7 +83,7 @@ export type PaymentSessionInputs = {
     savePayment?: boolean;
 };
 
-export type SavePaymentSessionOptions = {
+export type SavePaymentSessionInputs = {
     testBuyerCountry?: string;
     commit?: boolean;
     clientMetadataId?: string;

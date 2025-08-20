@@ -1,6 +1,6 @@
 import {
     PaymentSessionInputs,
-    SavePaymentSessionOptions,
+    SavePaymentSessionInputs,
     VenmoPaymentSessionInputs,
 } from "./components/payments";
 import { BillingSessionInputs } from "./components/billing";
@@ -56,7 +56,7 @@ export type SdkInstance = {
         paymentSessionOptions: PaymentSessionInputs,
     ) => SessionOutput;
     createPayPalSavePaymentSession: (
-        paymentSessionOptions: SavePaymentSessionOptions,
+        paymentSessionOptions: SavePaymentSessionInputs,
     ) => SessionOutput;
     // "venmo-payments" component
     createVenmoOneTimePaymentSession: (
