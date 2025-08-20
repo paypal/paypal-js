@@ -90,7 +90,7 @@ export default [
         ],
     },
     {
-        input: "src/index-v6.ts",
+        input: "src/v6/index.ts",
         plugins: [
             typescript({
                 ...tsconfigOverride,
