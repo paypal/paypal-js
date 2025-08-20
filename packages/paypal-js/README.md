@@ -309,7 +309,7 @@ import type {
     CreateInstanceInputs,
     Components,
     EligiblePaymentMethods
-} from "@paypal/paypal-js/types/v6";
+} from "@paypal/paypal-js/types/sdk-v6";
 ```
 
 ## Releasing
