@@ -293,6 +293,25 @@ loadCustomScript({
 
 This package includes TypeScript type definitions for the PayPal JS SDK. This includes types for the `window.paypal` namespace. We support projects using TypeScript versions >= 3.8.
 
+### V6 TypeScript Types
+
+The library includes TypeScript types for the PayPal JS SDK V6 API. These types provide full type safety when working with the V6 payment flows.
+
+#### Importing V6 Types
+
+```js
+import type {
+    PayPalV6Namespace,
+    SdkInstance,
+    PaymentSessionInputs,
+    OnApproveData,
+    OnCompleteData,
+    CreateInstanceInputs,
+    Components,
+    EligiblePaymentMethods
+} from "@paypal/paypal-js/types/v6";
+```
+
 ## Releasing
 
 Run `npm run release` to publish a new release. The version number is determined by the git commits which follow [conventional commits spec](https://www.conventionalcommits.org).
