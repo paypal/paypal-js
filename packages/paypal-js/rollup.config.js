@@ -32,33 +32,33 @@ export default [
         ],
         output: [
             {
-                file: `dist/v5/esm/${pkgName}.js`,
+                file: `dist/esm/${pkgName}.js`,
                 format: "esm",
                 banner,
             },
             {
-                file: `dist/v5/esm/${pkgName}.min.js`,
+                file: `dist/esm/${pkgName}.min.js`,
                 format: "esm",
                 banner,
                 plugins: [terser()],
             },
             {
-                file: `dist/v5/cjs/${pkgName}.js`,
+                file: `dist/cjs/${pkgName}.js`,
                 format: "cjs",
                 banner,
             },
             {
-                file: `dist/v5/cjs/${pkgName}.min.js`,
+                file: `dist/cjs/${pkgName}.min.js`,
                 format: "cjs",
                 banner,
                 plugins: [terser()],
             },
             {
-                file: `dist/v5/iife/${pkgName}.js`,
+                file: `dist/iife/${pkgName}.js`,
                 ...outputConfigForBrowserBundle,
             },
             {
-                file: `dist/v5/iife/${pkgName}.min.js`,
+                file: `dist/iife/${pkgName}.min.js`,
                 ...outputConfigForBrowserBundle,
                 plugins: [terser()],
             },
@@ -79,11 +79,11 @@ export default [
         ],
         output: [
             {
-                file: `dist/v5/iife/${pkgName}.legacy.js`,
+                file: `dist/iife/${pkgName}.legacy.js`,
                 ...outputConfigForBrowserBundle,
             },
             {
-                file: `dist/v5/iife/${pkgName}.legacy.min.js`,
+                file: `dist/iife/${pkgName}.legacy.min.js`,
                 ...outputConfigForBrowserBundle,
                 plugins: [terser()],
             },

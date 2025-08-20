@@ -3,7 +3,7 @@
     "version": "8.2.0",
     "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
     "main": "index.js",
-    "module": "dist/v5/esm/paypal-js.js",
+    "module": "dist/esm/paypal-js.js",
     "types": "types/index.d.ts",
     "publishConfig": {
         "access": "public"
@@ -11,8 +11,8 @@
     "exports": {
         ".": {
             "types": "./types/index.d.ts",
-            "import": "./dist/v5/esm/paypal-js.js",
-            "require": "./dist/v5/cjs/paypal-js.js"
+            "import": "./dist/esm/paypal-js.js",
+            "require": "./dist/cjs/paypal-js.js"
         },
         "./sdk-v6": {
             "types": "./types/v6/index.d.ts",
