@@ -295,7 +295,7 @@ This package includes TypeScript type definitions for the PayPal JS SDK. This in
 
 ### V6 TypeScript Types
 
-The library includes TypeScript types for the PayPal JS SDK V6 API. These types provide full type safety when working with the V6 payment flows.
+In addition to the type definitions above, this package also includes Typescript type definitions for the PayPal JS SDK V6.
 
 #### Importing V6 Types
 

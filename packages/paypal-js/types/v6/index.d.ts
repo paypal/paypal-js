@@ -1,5 +1,6 @@
 import {
     PaymentSessionInputs,
+    SavePaymentSessionOptions,
     VenmoPaymentSessionInputs,
 } from "./components/payments";
 import { BillingSessionInputs } from "./components/billing";
@@ -49,10 +50,13 @@ export type SdkInstance = {
     // "paypal-legacy-billing-agreements" component
     createPayPalBillingAgreementWithoutPurchase: (
         paymentSessionOptions: BillingSessionInputs,
-    ) => void;
+    ) => SessionOutput;
     // "paypal-payments" component
     createPayPalOneTimePaymentSession: (
         paymentSessionOptions: PaymentSessionInputs,
+    ) => SessionOutput;
+    createPayPalSavePaymentSession: (
+        paymentSessionOptions: SavePaymentSessionOptions,
     ) => SessionOutput;
     // "venmo-payments" component
     createVenmoOneTimePaymentSession: (

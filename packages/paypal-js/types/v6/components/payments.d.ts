@@ -83,6 +83,18 @@ export type PaymentSessionInputs = {
     savePayment?: boolean;
 };
 
+export type SavePaymentSessionOptions = {
+    testBuyerCountry?: string;
+    commit?: boolean;
+    clientMetadataId?: string;
+    onError?: (data: OnErrorData) => void;
+    onCancel?: (data?: OnCancelData) => void;
+    onComplete?: (data?: OnCompleteData) => void;
+    orderId?: never;
+    setupToken?: string;
+    onApprove?: (data?: OnApproveDataSavePayments) => void;
+};
+
 export type VenmoPaymentSessionInputs = Omit<
     PaymentSessionInputs,
     "onShippingAddressChange" | "onShippingOptionsChange"
