@@ -48,6 +48,10 @@ export interface EligiblePaymentMethodsOutput {
 
 export type SdkInstance = {
     // "paypal-legacy-billing-agreements" component
+
+    /**
+     * @deprecated This method is legacy and should not be used for new implementations.
+     */
     createPayPalBillingAgreementWithoutPurchase: (
         paymentSessionOptions: BillingSessionInputs,
     ) => SessionOutput;
