@@ -14,15 +14,6 @@ test("Reload script", async ({ page }) => {
 
     await expect(page).toHaveTitle("Reload Script Demo | PayPal JS");
 
-    // let sdkRequest;
-    // page.on("request", (request) => {
-    //     if (request.url().startsWith("https://www.paypal.com/sdk/js")) {
-    //         sdkRequest = request.url();
-    //     }
-    // });
-
-    // await page.locator("select#currency").selectOption("EUR");
-    // expect(sdkRequest.includes("currency=EUR")).toBe(true);
     // Wait for the request when currency is changed to EUR
     const requestPromise = page.waitForRequest(
         (request) =>
