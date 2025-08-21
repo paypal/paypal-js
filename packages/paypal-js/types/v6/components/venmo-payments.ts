@@ -1,6 +1,6 @@
-import { PayPalOneTimePaymentPaymentSessionOptions } from "./paypal-payments";
+import { PayPalOneTimePaymentSessionOptions } from "./paypal-payments";
 
 export type VenmoPaymentSessionOptions = Omit<
-    PayPalOneTimePaymentPaymentSessionOptions,
+    PayPalOneTimePaymentSessionOptions,
     "onShippingAddressChange" | "onShippingOptionsChange"
 >;

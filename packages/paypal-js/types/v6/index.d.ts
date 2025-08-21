@@ -1,5 +1,5 @@
 import {
-    PayPalOneTimePaymentPaymentSessionOptions,
+    PayPalOneTimePaymentSessionOptions,
     SavePaymentSessionOptions,
 } from "./components/paypal-payments";
 import { BillingSessionOptions } from "./components/paypal-legacy-billing-agreements";
@@ -57,7 +57,7 @@ export type SdkInstance = {
     ) => SessionOutput;
     // "paypal-payments" component
     createPayPalOneTimePaymentSession?: (
-        paymentSessionOptions: PayPalOneTimePaymentPaymentSessionOptions,
+        paymentSessionOptions: PayPalOneTimePaymentSessionOptions,
     ) => SessionOutput;
     createPayPalSavePaymentSession?: (
         paymentSessionOptions: SavePaymentSessionOptions,

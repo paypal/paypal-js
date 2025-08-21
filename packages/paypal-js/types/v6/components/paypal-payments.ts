@@ -65,7 +65,7 @@ export type OnCancelData = {
 
 export type OnErrorData = Error;
 
-export type PayPalOneTimePaymentPaymentSessionOptions = {
+export type PayPalOneTimePaymentSessionOptions = {
     onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;
     onCancel?: (data?: OnCancelData) => void;
     onComplete?: (data?: OnCompleteData) => void;
