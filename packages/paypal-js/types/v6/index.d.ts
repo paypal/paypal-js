@@ -2,7 +2,7 @@ import {
     PayPalOneTimePaymentPaymentSessionOptions,
     SavePaymentSessionOptions,
 } from "./components/paypal-payments";
-import { BillingSessionOptions } from "./components/paypal-legacy-billing-agreemens";
+import { BillingSessionOptions } from "./components/paypal-legacy-billing-agreements";
 import { VenmoPaymentSessionOptions } from "./components/venmo-payments";
 
 export interface PayPalV6Namespace {
@@ -134,5 +134,5 @@ export function loadCustomScript(options: {
 
 // Components
 export * from "./components/paypal-payments";
-export * from "./components/paypal-legacy-billing-agreemens";
+export * from "./components/paypal-legacy-billing-agreements";
 export * from "./components/venmo-payments";
