@@ -65,11 +65,15 @@ export type OnCancelData = {
 
 export type OnErrorData = Error;
 
-export type PayPalOneTimePaymentSessionOptions = {
-    onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;
+export type BaseSessionOptions = {
     onCancel?: (data?: OnCancelData) => void;
     onComplete?: (data?: OnCompleteData) => void;
     onError?: (data: OnErrorData) => void;
+    testBuyerCountry?: string;
+};
+
+export type PayPalOneTimePaymentSessionOptions = BaseSessionOptions & {
+    onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;
     onShippingAddressChange?: (
         data: OnShippingAddressChangeData,
     ) => Promise<void>;
@@ -77,15 +81,10 @@ export type PayPalOneTimePaymentSessionOptions = {
         data: OnShippingOptionsChangeData,
     ) => Promise<void>;
     savePayment?: boolean;
-    testBuyerCountry?: string;
 };
 
-export type SavePaymentSessionOptions = {
-    testBuyerCountry?: string;
+export type SavePaymentSessionOptions = BaseSessionOptions & {
     clientMetadataId?: string;
-    onError?: (data: OnErrorData) => void;
-    onCancel?: (data?: OnCancelData) => void;
-    onComplete?: (data?: OnCompleteData) => void;
     orderId?: never;
     setupToken?: string;
     onApprove?: (data?: OnApproveDataSavePayments) => void;
