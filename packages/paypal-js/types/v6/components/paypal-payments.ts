@@ -55,10 +55,6 @@ export type OnApproveDataSavePayments = {
     payerId?: string;
 };
 
-export type OnApproveData =
-    | OnApproveDataOneTimePayments
-    | OnApproveDataSavePayments;
-
 export type OnCompleteData = {
     paymentSessionState?: string;
 };
