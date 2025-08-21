@@ -22,10 +22,10 @@ export type OnShippingAddressChangeData = {
     errors: ShippingAddressErrorMessages;
     orderId: string;
     shippingAddress: {
-        city: string;
+        city?: string;
         countryCode: string;
-        postalCode: string;
-        state: string;
+        postalCode?: string;
+        state?: string;
     };
 };
 
@@ -81,11 +81,11 @@ export type PaymentSessionInputs = {
         data: OnShippingOptionsChangeData,
     ) => Promise<void>;
     savePayment?: boolean;
+    testBuyerCountry?: string;
 };
 
 export type SavePaymentSessionInputs = {
     testBuyerCountry?: string;
-    commit?: boolean;
     clientMetadataId?: string;
     onError?: (data: OnErrorData) => void;
     onCancel?: (data?: OnCancelData) => void;
