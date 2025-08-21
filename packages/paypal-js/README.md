@@ -297,19 +297,36 @@ This package includes TypeScript type definitions for the PayPal JS SDK. This in
 
 In addition to the type definitions above, this package also includes Typescript type definitions for the PayPal JS SDK V6.
 
-#### Importing V6 Types
+#### Importing and Using V6 Types
+
+A basic example showing data-typing for PayPal One Time Payment.
 
 ```js
 import type {
     PayPalV6Namespace,
-    SdkInstance,
-    PaymentSessionInputs,
-    OnApproveData,
-    OnCompleteData,
     CreateInstanceInputs,
-    Components,
-    EligiblePaymentMethods
+    OnApproveDataOneTimePayments,
+    OnShippingAddressChangeData,
+    SdkInstance
 } from "@paypal/paypal-js/types/sdk-v6";
+
+declare global {
+    interface Window {
+        paypal?: PayPalV6Namespace | null;
+    }
+}
+
+const createInstanceInputs: CreateInstanceInputs = {
+    clientToken,
+    components: ["paypal-payments", "venmo-payments"]
+}
+
+const sdkInstance: SdkInstance = await window.paypal.createInstance(createInstanceInputs);
+
+const paypalCheckout = sdkInstance.createPayPalOneTimePaymentSession({
+    onApprove: (data: OnApproveDataOneTimePayments) => {},
+    onShippingAddressChange: (data: OnShippingAddressChangeData) => {},
+});
 ```
 
 ## Releasing
