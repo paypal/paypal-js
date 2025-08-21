@@ -304,7 +304,7 @@ A basic example showing data-typing for PayPal One Time Payment.
 ```js
 import type {
     PayPalV6Namespace,
-    CreateInstanceInputs,
+    CreateInstanceOptions,
     OnApproveDataOneTimePayments,
     OnShippingAddressChangeData,
     SdkInstance
@@ -316,7 +316,7 @@ declare global {
     }
 }
 
-const createInstanceInputs: CreateInstanceInputs = {
+const createInstanceOptions: CreateInstanceOptions = {
     clientToken,
     components: ["paypal-payments", "venmo-payments"]
 }
