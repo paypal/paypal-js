@@ -54,18 +54,18 @@ export type SdkInstance = {
      */
     createPayPalBillingAgreementWithoutPurchase?: (
         paymentSessionOptions: BillingSessionOptions,
-    ) => SessionOutput;
+    ) => PaymentSession;
     // "paypal-payments" component
     createPayPalOneTimePaymentSession?: (
         paymentSessionOptions: PayPalOneTimePaymentSessionOptions,
-    ) => SessionOutput;
+    ) => PaymentSession;
     createPayPalSavePaymentSession?: (
         paymentSessionOptions: SavePaymentSessionOptions,
-    ) => SessionOutput;
+    ) => PaymentSession;
     // "venmo-payments" component
     createVenmoOneTimePaymentSession?: (
         paymentSessionOptions: VenmoPaymentSessionOptions,
-    ) => SessionOutput;
+    ) => PaymentSession;
     findEligibleMethods: (
         findEligibleMethodsOptions: FindEligibleMethodsOptions,
     ) => Promise<EligiblePaymentMethodsOutput>;
@@ -75,7 +75,7 @@ export type FindEligibleMethodsOptions = {
     currencyCode?: string;
 };
 
-export type SessionOutput = {
+export type PaymentSession = {
     start: (
         options: SessionStartOptions,
         orderIdPromise: Promise<{ orderId: string }>,
@@ -104,7 +104,7 @@ export type VenmoPresentationModes = "auto" | "modal" | "popup";
 
 export type SessionStartOptions = {
     presentationMode?: PayPalPresentationModes | VenmoPresentationModes;
-    targetElement?: string | EventTarget;
+    targetElement?: string | HTMLElement;
     fullPageOverlay?: {
         enabled?: boolean;
     };
