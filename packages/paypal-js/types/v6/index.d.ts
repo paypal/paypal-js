@@ -2,7 +2,7 @@ import {
     PayPalOneTimePaymentPaymentSessionOptions,
     SavePaymentSessionOptions,
 } from "./components/paypal-payments";
-import { BillingSessionInputs } from "./components/paypal-legacy-billing-agreemens";
+import { BillingSessionOptions } from "./components/paypal-legacy-billing-agreemens";
 import { VenmoPaymentSessionOptions } from "./components/venmo-payments";
 
 export interface PayPalV6Namespace {
@@ -53,7 +53,7 @@ export type SdkInstance = {
      * @deprecated This method is legacy and should not be used for new implementations.
      */
     createPayPalBillingAgreementWithoutPurchase?: (
-        paymentSessionOptions: BillingSessionInputs,
+        paymentSessionOptions: BillingSessionOptions,
     ) => SessionOutput;
     // "paypal-payments" component
     createPayPalOneTimePaymentSession?: (
