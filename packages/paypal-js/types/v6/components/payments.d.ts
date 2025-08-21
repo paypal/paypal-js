@@ -70,7 +70,7 @@ export type OnCancelData = {
 export type OnErrorData = Error;
 
 export type PaymentSessionInputs = {
-    onApprove?: (data: OnApproveData) => Promise<void>;
+    onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;
     onCancel?: (data?: { orderId: string }) => void;
     onComplete?: (data?: OnCompleteData) => void;
     onError?: (data: Error) => void;
