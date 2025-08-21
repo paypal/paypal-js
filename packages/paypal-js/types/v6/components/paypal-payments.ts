@@ -69,7 +69,7 @@ export type OnCancelData = {
 
 export type OnErrorData = Error;
 
-export type PayPalOneTimePaymentPaymentSessionInputs = {
+export type PayPalOneTimePaymentPaymentSessionOptions = {
     onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;
     onCancel?: (data?: OnCancelData) => void;
     onComplete?: (data?: OnCompleteData) => void;
@@ -84,7 +84,7 @@ export type PayPalOneTimePaymentPaymentSessionInputs = {
     testBuyerCountry?: string;
 };
 
-export type SavePaymentSessionInputs = {
+export type SavePaymentSessionOptions = {
     testBuyerCountry?: string;
     clientMetadataId?: string;
     onError?: (data: OnErrorData) => void;

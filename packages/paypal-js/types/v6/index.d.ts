@@ -1,13 +1,13 @@
 import {
-    PayPalOneTimePaymentPaymentSessionInputs,
-    SavePaymentSessionInputs,
+    PayPalOneTimePaymentPaymentSessionOptions,
+    SavePaymentSessionOptions,
 } from "./components/paypal-payments";
 import { BillingSessionInputs } from "./components/paypal-legacy-billing-agreemens";
-import { VenmoPaymentSessionInputs } from "./components/venmo-payments";
+import { VenmoPaymentSessionOptions } from "./components/venmo-payments";
 
 export interface PayPalV6Namespace {
     createInstance: (
-        createInstanceOptions: CreateInstanceInputs,
+        createInstanceOptions: CreateInstanceOptions,
     ) => Promise<SdkInstance>;
 }
 
@@ -25,7 +25,7 @@ export type PageTypes =
     | "product-listing"
     | "search-results";
 
-export type CreateInstanceInputs = {
+export type CreateInstanceOptions = {
     clientMetadataId?: string;
     clientToken: string;
     components?: Components[];
@@ -57,27 +57,27 @@ export type SdkInstance = {
     ) => SessionOutput;
     // "paypal-payments" component
     createPayPalOneTimePaymentSession?: (
-        paymentSessionOptions: PayPalOneTimePaymentPaymentSessionInputs,
+        paymentSessionOptions: PayPalOneTimePaymentPaymentSessionOptions,
     ) => SessionOutput;
     createPayPalSavePaymentSession?: (
-        paymentSessionOptions: SavePaymentSessionInputs,
+        paymentSessionOptions: SavePaymentSessionOptions,
     ) => SessionOutput;
     // "venmo-payments" component
     createVenmoOneTimePaymentSession?: (
-        paymentSessionOptions: VenmoPaymentSessionInputs,
+        paymentSessionOptions: VenmoPaymentSessionOptions,
     ) => SessionOutput;
     findEligibleMethods: (
-        findEligibleMethodsOptions: FindEligibleMethodsInputs,
+        findEligibleMethodsOptions: FindEligibleMethodsOptions,
     ) => Promise<EligiblePaymentMethodsOutput>;
 };
 
-export type FindEligibleMethodsInputs = {
+export type FindEligibleMethodsOptions = {
     currencyCode?: string;
 };
 
 export type SessionOutput = {
     start: (
-        options: StartSessionInput,
+        options: SessionStartOptions,
         orderIdPromise: Promise<{ orderId: string }>,
     ) => Promise<void>;
     destroy: () => void;
@@ -86,7 +86,7 @@ export type SessionOutput = {
 
 export type BillingSessionOutput = {
     start: (
-        options: StartSessionInput,
+        options: SessionStartOptions,
         billingSessionOptionsPromise: Promise<{ billingToken: string }>,
     ) => Promise<void>;
     destroy: () => void;
@@ -102,7 +102,7 @@ export type PayPalPresentationModes =
 
 export type VenmoPresentationModes = "auto" | "modal" | "popup";
 
-export type StartSessionInput = {
+export type SessionStartOptions = {
     presentationMode?: PayPalPresentationModes | VenmoPresentationModes;
     targetElement?: string | EventTarget;
     fullPageOverlay?: {
@@ -121,7 +121,7 @@ export type VenmoEligibility = {
     ineligibilityReason: string | null;
 };
 
-export type VenmoStartSessionInput = StartSessionInput & {
+export type VenmoSessionStartOptions = SessionStartOptions & {
     eligibilityResponse?: VenmoEligibility | null;
     buttonSessionID?: string;
 };
