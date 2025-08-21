@@ -1,9 +1,9 @@
 import {
-    PaymentSessionInputs,
+    PayPalOneTimePaymentPaymentSessionInputs,
     SavePaymentSessionInputs,
-    VenmoPaymentSessionInputs,
-} from "./components/payments";
-import { BillingSessionInputs } from "./components/billing";
+} from "./components/paypal-payments";
+import { BillingSessionInputs } from "./components/paypal-legacy-billing-agreemens";
+import { VenmoPaymentSessionInputs } from "./components/venmo-payments";
 
 export interface PayPalV6Namespace {
     createInstance: (
@@ -52,18 +52,18 @@ export type SdkInstance = {
     /**
      * @deprecated This method is legacy and should not be used for new implementations.
      */
-    createPayPalBillingAgreementWithoutPurchase: (
+    createPayPalBillingAgreementWithoutPurchase?: (
         paymentSessionOptions: BillingSessionInputs,
     ) => SessionOutput;
     // "paypal-payments" component
-    createPayPalOneTimePaymentSession: (
-        paymentSessionOptions: PaymentSessionInputs,
+    createPayPalOneTimePaymentSession?: (
+        paymentSessionOptions: PayPalOneTimePaymentPaymentSessionInputs,
     ) => SessionOutput;
-    createPayPalSavePaymentSession: (
+    createPayPalSavePaymentSession?: (
         paymentSessionOptions: SavePaymentSessionInputs,
     ) => SessionOutput;
     // "venmo-payments" component
-    createVenmoOneTimePaymentSession: (
+    createVenmoOneTimePaymentSession?: (
         paymentSessionOptions: VenmoPaymentSessionInputs,
     ) => SessionOutput;
     findEligibleMethods: (
@@ -133,5 +133,6 @@ export function loadCustomScript(options: {
 }): Promise<void>;
 
 // Components
-export * from "./components/payments";
-export * from "./components/billing";
+export * from "./components/paypal-payments";
+export * from "./components/paypal-legacy-billing-agreemens";
+export * from "./components/venmo-payments";

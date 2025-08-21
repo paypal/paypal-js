@@ -3,7 +3,7 @@ import {
     OnCancelData,
     OnErrorData,
     OnApproveDataOneTimePayments,
-} from "./payments";
+} from "./paypal-payments";
 
 export type BillingSessionInputs = {
     onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;

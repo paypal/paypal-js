@@ -71,9 +71,9 @@ export type OnErrorData = Error;
 
 export type PayPalOneTimePaymentPaymentSessionInputs = {
     onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;
-    onCancel?: (data?: { orderId: string }) => void;
+    onCancel?: (data?: OnCancelData) => void;
     onComplete?: (data?: OnCompleteData) => void;
-    onError?: (data: Error) => void;
+    onError?: (data: OnErrorData) => void;
     onShippingAddressChange?: (
         data: OnShippingAddressChangeData,
     ) => Promise<void>;
@@ -94,8 +94,3 @@ export type SavePaymentSessionInputs = {
     setupToken?: string;
     onApprove?: (data?: OnApproveDataSavePayments) => void;
 };
-
-export type VenmoPaymentSessionInputs = Omit<
-    PaymentSessionInputs,
-    "onShippingAddressChange" | "onShippingOptionsChange"
->;
