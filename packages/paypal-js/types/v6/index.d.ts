@@ -84,6 +84,14 @@ export type SessionOutput = {
     cancel: () => void;
 };
 
+export type BillingSessionOutput = {
+    start: (
+        options: StartSessionInput,
+        billingSessionOptionsPromise: Promise<{ billingToken: string }>,
+    ) => Promise<void>;
+    destroy: () => void;
+};
+
 export type PayPalPresentationModes =
     | "auto"
     | "direct-app-switch"
