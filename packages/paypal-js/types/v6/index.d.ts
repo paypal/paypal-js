@@ -54,18 +54,18 @@ export type SdkInstance = {
      */
     createPayPalBillingAgreementWithoutPurchase?: (
         paymentSessionOptions: BillingSessionOptions,
-    ) => PaymentSessionLegacyBillingAgreement;
+    ) => BillingAgreementSession;
     // "paypal-payments" component
     createPayPalOneTimePaymentSession?: (
         paymentSessionOptions: PayPalOneTimePaymentSessionOptions,
-    ) => PaymentSessionOneTimePayment;
+    ) => OneTimePaymentSession;
     createPayPalSavePaymentSession?: (
         paymentSessionOptions: SavePaymentSessionOptions,
-    ) => PaymentSessionSavePayment;
+    ) => SavePaymentSession;
     // "venmo-payments" component
     createVenmoOneTimePaymentSession?: (
         paymentSessionOptions: VenmoPaymentSessionOptions,
-    ) => PaymentSessionOneTimePayment;
+    ) => OneTimePaymentSession;
     findEligibleMethods: (
         findEligibleMethodsOptions: FindEligibleMethodsOptions,
     ) => Promise<EligiblePaymentMethodsOutput>;
@@ -75,7 +75,7 @@ export type FindEligibleMethodsOptions = {
     currencyCode?: string;
 };
 
-export type PaymentSessionOneTimePayment = {
+export type OneTimePaymentSession = {
     start: (
         options: SessionStartOptions,
         orderIdPromise: Promise<{ orderId: string }>,
@@ -84,7 +84,7 @@ export type PaymentSessionOneTimePayment = {
     cancel: () => void;
 };
 
-export type PaymentSessionSavePayment = {
+export type SavePaymentSession = {
     start: (
         options: SessionStartOptions,
         vaultSetupTokenPromise: Promise<{ vaultSetupToken: string }>,
@@ -93,7 +93,7 @@ export type PaymentSessionSavePayment = {
     cancel: () => void;
 };
 
-export type PaymentSessionLegacyBillingAgreement = {
+export type BillingAgreementSession = {
     start: (
         options: SessionStartOptions,
         billingTokenPromise: Promise<{ billingToken: string }>,
