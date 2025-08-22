@@ -1,9 +1,13 @@
 import {
+    PayLaterCountryCodes,
+    PayLaterProductCodes,
+    PayPalCreditCountryCodes,
     PayPalOneTimePaymentSessionOptions,
     SavePaymentSessionOptions,
 } from "./components/paypal-payments";
 import { BillingSessionOptions } from "./components/paypal-legacy-billing-agreements";
 import { VenmoPaymentSessionOptions } from "./components/venmo-payments";
+import type { CamelizeObjectKeys } from "./utils";
 
 export interface PayPalV6Namespace {
     createInstance: (
@@ -42,8 +46,60 @@ export type EligiblePaymentMethods =
     | "paypal"
     | "venmo";
 
+export type FindEligibleMethodsOptions = {
+    currencyCode?: string;
+};
+
+export type FundingSource =
+    | "ach"
+    | "advanced_cards"
+    | "applepay"
+    | "bancontact"
+    | "blik"
+    | "boletobancario"
+    | "card"
+    | "credit"
+    | "eps"
+    | "giropay"
+    | "googlepay"
+    | "ideal"
+    | "itau"
+    | "maxima"
+    | "mercadopago"
+    | "multibanco"
+    | "mybank"
+    | "oxxo"
+    | "p24"
+    | "paidy"
+    | "paylater"
+    | "paypal"
+    | "payu"
+    | "satispay"
+    | "sepa"
+    | "sofort"
+    | "trustly"
+    | "venmo"
+    | "verkkopankki"
+    | "wechatpay"
+    | "zimpler";
+
+type EligiblePaymentMethodDetails = {
+    can_be_vaulted?: boolean;
+    eligible_in_paypal_network?: boolean;
+    recommended?: boolean;
+    recommended_priority?: number;
+    country_code?: PayLaterCountryCodes | PayPalCreditCountryCodes;
+    product_code?: PayLaterProductCodes;
+};
+
+type FindEligibleMethodsGetDetailsReturnType =
+    CamelizeObjectKeys<EligiblePaymentMethodDetails>;
+
 export interface EligiblePaymentMethodsOutput {
-    isEligible: (paymentMethod: EligiblePaymentMethods) => boolean;
+    isEligible: (paymentMethod: FundingSource) => boolean;
+    getDetails: (
+        fundingSource: FundingSource,
+    ) => FindEligibleMethodsGetDetailsReturnType;
 }
 
 export type SdkInstance = {
@@ -69,10 +125,6 @@ export type SdkInstance = {
     findEligibleMethods: (
         findEligibleMethodsOptions: FindEligibleMethodsOptions,
     ) => Promise<EligiblePaymentMethodsOutput>;
-};
-
-export type FindEligibleMethodsOptions = {
-    currencyCode?: string;
 };
 
 export type OneTimePaymentSession = {

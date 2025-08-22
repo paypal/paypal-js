@@ -1,3 +1,16 @@
+export type PayLaterCountryCodes =
+    | "AU"
+    | "DE"
+    | "ES"
+    | "FR"
+    | "GB"
+    | "IT"
+    | "US";
+
+export type PayLaterProductCodes = "PAYLATER" | "PAY_LATER_SHORT_TERM";
+
+export type PayPalCreditCountryCodes = "US" | "GB";
+
 export type ShippingAddressErrorType =
     | "ADDRESS_ERROR"
     | "COUNTRY_ERROR"
