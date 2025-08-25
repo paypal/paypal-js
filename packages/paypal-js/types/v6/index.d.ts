@@ -191,7 +191,6 @@ export type VenmoSessionStartOptions = SessionStartOptions & {
 export function loadCustomScript(options: {
     url: string;
     attributes?: Record<string, string>;
-    PromisePonyfill?: PromiseConstructor;
 }): Promise<void>;
 
 // Components

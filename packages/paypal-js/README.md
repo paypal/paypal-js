@@ -321,11 +321,14 @@ const createInstanceOptions: CreateInstanceOptions = {
     components: ["paypal-payments", "venmo-payments"]
 }
 
-const sdkInstance: SdkInstance = await window.paypal.createInstance(createInstanceInputs);
+const sdkInstance = await window.paypal.createInstance(createInstanceInputs);
+
+function onApproveCallback(data: OnApproveDataOneTimePayments) {}
+function onShippingAddressChangeCallback(data: OnShippingAddressChangeData) {}
 
 const paypalCheckout = sdkInstance.createPayPalOneTimePaymentSession({
-    onApprove: (data: OnApproveDataOneTimePayments) => {},
-    onShippingAddressChange: (data: OnShippingAddressChangeData) => {},
+    onApprove: onApproveCallback,
+    onShippingAddressChange: onShippingAddressChangeCallback,
 });
 ```
 

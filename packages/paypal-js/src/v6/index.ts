@@ -1,4 +1,11 @@
-import { loadCustomScript } from "../load-script";
+import { loadCustomScript as originalLoadCustomScript } from "../load-script";
 
-const version = "__VERSION__";
-export { loadCustomScript, version };
+export const version = "__VERSION__";
+
+// V6-specific loadCustomScript without PromisePonyfill
+export function loadCustomScript(options: {
+    url: string;
+    attributes?: Record<string, string>;
+}): Promise<void> {
+    return originalLoadCustomScript(options); // Uses default Promise
+}
