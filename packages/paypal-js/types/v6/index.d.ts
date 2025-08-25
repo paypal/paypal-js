@@ -1,7 +1,9 @@
 import {
     PayLaterCountryCodes,
+    PayLaterOneTimePaymentSessionOptions,
     PayLaterProductCodes,
     PayPalCreditCountryCodes,
+    PayPalCreditOneTimePaymentSessionOptions,
     PayPalOneTimePaymentSessionOptions,
     SavePaymentSessionOptions,
 } from "./components/paypal-payments";
@@ -115,6 +117,12 @@ export type SdkInstance = {
     createPayPalSavePaymentSession?: (
         paymentSessionOptions: SavePaymentSessionOptions,
     ) => SavePaymentSession;
+    createPayLaterOneTimePaymentSession?: (
+        paymentSessionOptions: PayLaterOneTimePaymentSessionOptions,
+    ) => OneTimePaymentSession;
+    createPayPalCreditOneTimePaymentSession?: (
+        paymentSessionOptions: PayPalCreditOneTimePaymentSessionOptions,
+    ) => OneTimePaymentSession;
     // "venmo-payments" component
     createVenmoOneTimePaymentSession?: (
         paymentSessionOptions: VenmoPaymentSessionOptions,

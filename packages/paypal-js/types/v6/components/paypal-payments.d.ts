@@ -102,3 +102,9 @@ export type SavePaymentSessionOptions = BaseSessionOptions & {
     setupToken?: string;
     onApprove?: (data?: OnApproveDataSavePayments) => void;
 };
+
+export type PayLaterOneTimePaymentSessionOptions =
+    PayPalOneTimePaymentSessionOptions;
+
+export type PayPalCreditOneTimePaymentSessionOptions =
+    PayPalOneTimePaymentSessionOptions;
