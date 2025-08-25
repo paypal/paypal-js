@@ -110,7 +110,7 @@ export type SdkInstance = {
      */
     createPayPalBillingAgreementWithoutPurchase?: (
         paymentSessionOptions: BillingSessionOptions,
-    ) => BillingAgreementSession;
+    ) => BillingAgreementPaymentSession;
     // "paypal-payments" component
     createPayPalOneTimePaymentSession?: (
         paymentSessionOptions: PayPalOneTimePaymentSessionOptions,
@@ -145,7 +145,7 @@ export type SavePaymentSession = {
     cancel: () => void;
 };
 
-export type BillingAgreementSession = {
+export type BillingAgreementPaymentSession = {
     start: (
         options: SessionStartOptions,
         billingTokenPromise: Promise<{ billingToken: string }>,
