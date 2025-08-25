@@ -85,14 +85,11 @@ export type FundingSource =
 
 type EligiblePaymentMethodDetails = {
     can_be_vaulted?: boolean;
-    eligible_in_paypal_network?: boolean;
-    recommended?: boolean;
-    recommended_priority?: number;
     country_code?: PayLaterCountryCodes | PayPalCreditCountryCodes;
     product_code?: PayLaterProductCodes;
 };
 
-type FindEligibleMethodsGetDetailsReturnType =
+export type FindEligibleMethodsGetDetailsReturnType =
     CamelizeObjectKeys<EligiblePaymentMethodDetails>;
 
 export interface EligiblePaymentMethodsOutput {
