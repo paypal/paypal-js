@@ -12,9 +12,9 @@ import { VenmoPaymentSessionOptions } from "./components/venmo-payments";
 import type { CamelizeObjectKeys } from "./utils";
 
 export interface PayPalV6Namespace {
-    createInstance: (
-        createInstanceOptions: CreateInstanceOptions,
-    ) => Promise<SdkInstance>;
+    createInstance: <T extends readonly [Components, ...Components[]]>(
+        createInstanceOptions: CreateInstanceOptions & { components: T },
+    ) => Promise<SdkInstance<T>>;
 }
 
 export type Components =
@@ -101,36 +101,52 @@ export interface EligiblePaymentMethodsOutput {
     ) => FindEligibleMethodsGetDetailsReturnType;
 }
 
-export type SdkInstance = {
-    // "paypal-legacy-billing-agreements" component
+export type SdkInstance<T extends readonly Components[]> = BaseInstance &
+    (T[number] extends "paypal-payments"
+        ? PayPalPaymentsInstance
+        : Record<string, never>) &
+    (T[number] extends "venmo-payments"
+        ? VenmoPaymentsInstance
+        : Record<string, never>) &
+    (T[number] extends "paypal-legacy-billing-agreements"
+        ? PayPalLegacyBillingInstance
+        : Record<string, never>);
 
-    /**
-     * @deprecated This method is legacy and should not be used for new implementations.
-     */
-    createPayPalBillingAgreementWithoutPurchase?: (
-        paymentSessionOptions: BillingSessionOptions,
-    ) => BillingAgreementPaymentSession;
-    // "paypal-payments" component
-    createPayPalOneTimePaymentSession?: (
-        paymentSessionOptions: PayPalOneTimePaymentSessionOptions,
-    ) => OneTimePaymentSession;
-    createPayPalSavePaymentSession?: (
-        paymentSessionOptions: SavePaymentSessionOptions,
-    ) => SavePaymentSession;
-    createPayLaterOneTimePaymentSession?: (
-        paymentSessionOptions: PayLaterOneTimePaymentSessionOptions,
-    ) => OneTimePaymentSession;
-    createPayPalCreditOneTimePaymentSession?: (
-        paymentSessionOptions: PayPalCreditOneTimePaymentSessionOptions,
-    ) => OneTimePaymentSession;
-    // "venmo-payments" component
-    createVenmoOneTimePaymentSession?: (
-        paymentSessionOptions: VenmoPaymentSessionOptions,
-    ) => OneTimePaymentSession;
+export interface BaseInstance {
     findEligibleMethods: (
         findEligibleMethodsOptions: FindEligibleMethodsOptions,
     ) => Promise<EligiblePaymentMethodsOutput>;
-};
+}
+
+export interface PayPalPaymentsInstance {
+    createPayPalOneTimePaymentSession: (
+        paymentSessionOptions: PayPalOneTimePaymentSessionOptions,
+    ) => OneTimePaymentSession;
+    createPayPalSavePaymentSession: (
+        paymentSessionOptions: SavePaymentSessionOptions,
+    ) => SavePaymentSession;
+    createPayLaterOneTimePaymentSession: (
+        paymentSessionOptions: PayLaterOneTimePaymentSessionOptions,
+    ) => OneTimePaymentSession;
+    createPayPalCreditOneTimePaymentSession: (
+        paymentSessionOptions: PayPalCreditOneTimePaymentSessionOptions,
+    ) => OneTimePaymentSession;
+}
+
+export interface VenmoPaymentsInstance {
+    createVenmoOneTimePaymentSession: (
+        paymentSessionOptions: VenmoPaymentSessionOptions,
+    ) => OneTimePaymentSession;
+}
+
+export interface PayPalLegacyBillingInstance {
+    /**
+     * @deprecated This method is legacy and should not be used for new implementations.
+     */
+    createPayPalBillingAgreementWithoutPurchase: (
+        paymentSessionOptions: BillingSessionOptions,
+    ) => BillingAgreementPaymentSession;
+}
 
 export type OneTimePaymentSession = {
     start: (
