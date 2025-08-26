@@ -13,7 +13,7 @@ import type { CamelizeObjectKeys } from "./utils";
 
 export interface PayPalV6Namespace {
     createInstance: <T extends readonly [Components, ...Components[]]>(
-        createInstanceOptions: CreateInstanceOptions & { components: T },
+        createInstanceOptions: CreateInstanceOptions<T>,
     ) => Promise<SdkInstance<T>>;
 }
 
@@ -31,10 +31,10 @@ export type PageTypes =
     | "product-listing"
     | "search-results";
 
-export type CreateInstanceOptions = {
+export type CreateInstanceOptions<T extends readonly Components[]> = {
     clientMetadataId?: string;
     clientToken: string;
-    components: Components[];
+    components: T;
     locale?: string;
     pageType?: PageTypes;
     partnerAttributionId?: string;
