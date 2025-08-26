@@ -101,6 +101,38 @@ export interface EligiblePaymentMethodsOutput {
     ) => FindEligibleMethodsGetDetailsReturnType;
 }
 
+/**
+ * Dynamically typed SDK instance based on the components array provided to createInstance.
+ *
+ * The return type changes based on which components are specified in the components array.
+ *
+ * **Always includes:**
+ * - `findEligibleMethods()` - Base method available regardless of components
+ *
+ * **Conditionally includes methods based on components:**
+ * - `"paypal-payments"` - Adds PayPalPaymentsInstance methods
+ * - `"venmo-payments"` - Adds VenmoPaymentsInstance methods
+ * - `"paypal-legacy-billing-agreements"` Adds PayPalLegacyBillingInstance methods
+ *
+ * @example
+ * ```typescript
+ * // Only PayPal methods + base methods
+ * const sdkInstance = await createInstance({
+ *   clientToken: "token",
+ *   components: ["paypal-payments"]
+ * });
+ * sdkInstance.createPayPalOneTimePaymentSession(...); // ✅ Available
+ * sdkInstance.createVenmoOneTimePaymentSession(...);  // ❌ TypeScript error
+ *
+ * // Multiple components
+ * const sdkInstance = await createInstance({
+ *   clientToken: "token",
+ *   components: ["paypal-payments", "venmo-payments"]
+ * });
+ * sdkInstance.createPayPalOneTimePaymentSession(...); // ✅ Available
+ * sdkInstance.createVenmoOneTimePaymentSession(...);  // ✅ Available
+ * ```
+ */
 export type SdkInstance<T extends readonly Components[]> = BaseInstance &
     (T[number] extends "paypal-payments"
         ? PayPalPaymentsInstance
