@@ -34,7 +34,7 @@ export type PageTypes =
 export type CreateInstanceOptions = {
     clientMetadataId?: string;
     clientToken: string;
-    components?: Components[];
+    components: Components[];
     locale?: string;
     pageType?: PageTypes;
     partnerAttributionId?: string;
