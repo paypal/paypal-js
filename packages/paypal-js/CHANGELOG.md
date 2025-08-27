@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.3.0
+
+### Minor Changes
+
+-   f594d7e: Update rollup config and add V6 types
+
 ## 8.2.0
 
 ### Minor Changes
