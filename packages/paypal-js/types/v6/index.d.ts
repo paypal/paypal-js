@@ -1,15 +1,15 @@
 import {
-    PayLaterCountryCodes,
     PayLaterOneTimePaymentSessionOptions,
-    PayLaterProductCodes,
-    PayPalCreditCountryCodes,
     PayPalCreditOneTimePaymentSessionOptions,
     PayPalOneTimePaymentSessionOptions,
     SavePaymentSessionOptions,
 } from "./components/paypal-payments";
 import { BillingSessionOptions } from "./components/paypal-legacy-billing-agreements";
 import { VenmoPaymentSessionOptions } from "./components/venmo-payments";
-import type { CamelizeObjectKeys } from "./utils";
+import {
+    EligiblePaymentMethodsOutput,
+    FindEligibleMethodsOptions,
+} from "./components/find-eligible-methods";
 
 export interface PayPalV6Namespace {
     createInstance: <T extends readonly [Components, ...Components[]]>(
@@ -41,65 +41,6 @@ export type CreateInstanceOptions<T extends readonly Components[]> = {
     shopperSessionId?: string;
     testBuyerCountry?: string;
 };
-
-export type EligiblePaymentMethods =
-    | "paypal_pay_later"
-    | "paypal_credit"
-    | "paypal"
-    | "venmo";
-
-export type FindEligibleMethodsOptions = {
-    currencyCode?: string;
-};
-
-export type FundingSource =
-    | "ach"
-    | "advanced_cards"
-    | "applepay"
-    | "bancontact"
-    | "blik"
-    | "boletobancario"
-    | "card"
-    | "credit"
-    | "eps"
-    | "giropay"
-    | "googlepay"
-    | "ideal"
-    | "itau"
-    | "maxima"
-    | "mercadopago"
-    | "multibanco"
-    | "mybank"
-    | "oxxo"
-    | "p24"
-    | "paidy"
-    | "paylater"
-    | "paypal"
-    | "payu"
-    | "satispay"
-    | "sepa"
-    | "sofort"
-    | "trustly"
-    | "venmo"
-    | "verkkopankki"
-    | "wechatpay"
-    | "zimpler";
-
-type EligiblePaymentMethodDetails = {
-    can_be_vaulted?: boolean;
-    country_code?: PayLaterCountryCodes | PayPalCreditCountryCodes;
-    product_code?: PayLaterProductCodes;
-};
-
-export type FindEligibleMethodsGetDetailsReturnType =
-    CamelizeObjectKeys<EligiblePaymentMethodDetails>;
-
-export interface EligiblePaymentMethodsOutput {
-    isEligible: (paymentMethod: FundingSource) => boolean;
-    getDetails: (
-        fundingSource: FundingSource,
-    ) => FindEligibleMethodsGetDetailsReturnType;
-}
 
 /**
  * Dynamically typed SDK instance based on the components array provided to createInstance.
@@ -250,3 +191,4 @@ export function loadCustomScript(options: {
 export * from "./components/paypal-payments";
 export * from "./components/paypal-legacy-billing-agreements";
 export * from "./components/venmo-payments";
+export * from "./components/find-eligible-methods";
