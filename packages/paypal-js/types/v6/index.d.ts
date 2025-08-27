@@ -89,6 +89,7 @@ export interface BaseInstance {
     findEligibleMethods: (
         findEligibleMethodsOptions: FindEligibleMethodsOptions,
     ) => Promise<EligiblePaymentMethodsOutput>;
+    updateLocale: (locale: string) => void;
 }
 
 export interface PayPalPaymentsInstance {

@@ -99,7 +99,7 @@ export type PayPalOneTimePaymentSessionOptions = BaseSessionOptions & {
 export type SavePaymentSessionOptions = BaseSessionOptions & {
     clientMetadataId?: string;
     orderId?: never;
-    setupToken?: string;
+    vaultSetupToken?: string;
     onApprove?: (data?: OnApproveDataSavePayments) => void;
 };
 

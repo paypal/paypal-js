@@ -14,38 +14,7 @@ export type FindEligibleMethodsOptions = {
     currencyCode?: string;
 };
 
-export type FundingSource =
-    | "ach"
-    | "advanced_cards"
-    | "applepay"
-    | "bancontact"
-    | "blik"
-    | "boletobancario"
-    | "card"
-    | "credit"
-    | "eps"
-    | "giropay"
-    | "googlepay"
-    | "ideal"
-    | "itau"
-    | "maxima"
-    | "mercadopago"
-    | "multibanco"
-    | "mybank"
-    | "oxxo"
-    | "p24"
-    | "paidy"
-    | "paylater"
-    | "paypal"
-    | "payu"
-    | "satispay"
-    | "sepa"
-    | "sofort"
-    | "trustly"
-    | "venmo"
-    | "verkkopankki"
-    | "wechatpay"
-    | "zimpler";
+export type FundingSource = "credit" | "paylater" | "paypal" | "venmo";
 
 type BaseEligiblePaymentMethodDetails = {
     canBeVaulted: boolean;
