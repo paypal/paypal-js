@@ -293,6 +293,45 @@ loadCustomScript({
 
 This package includes TypeScript type definitions for the PayPal JS SDK. This includes types for the `window.paypal` namespace. We support projects using TypeScript versions >= 3.8.
 
+### V6 TypeScript Types
+
+In addition to the type definitions above, this package also includes Typescript type definitions for the PayPal JS SDK V6.
+
+#### Importing and Using V6 Types
+
+A basic example showing data-typing for PayPal One Time Payment.
+
+```js
+import type {
+    PayPalV6Namespace,
+    CreateInstanceOptions,
+    OnApproveDataOneTimePayments,
+    OnShippingAddressChangeData,
+    SdkInstance
+} from "@paypal/paypal-js/types/sdk-v6";
+
+declare global {
+    interface Window {
+        paypal?: PayPalV6Namespace | null;
+    }
+}
+
+const createInstanceOptions: CreateInstanceOptions = {
+    clientToken,
+    components: ["paypal-payments", "venmo-payments"]
+}
+
+const sdkInstance = await window.paypal.createInstance(createInstanceInputs);
+
+function onApproveCallback(data: OnApproveDataOneTimePayments) {}
+function onShippingAddressChangeCallback(data: OnShippingAddressChangeData) {}
+
+const paypalCheckout = sdkInstance.createPayPalOneTimePaymentSession({
+    onApprove: onApproveCallback,
+    onShippingAddressChange: onShippingAddressChangeCallback,
+});
+```
+
 ## Releasing
 
 Run `npm run release` to publish a new release. The version number is determined by the git commits which follow [conventional commits spec](https://www.conventionalcommits.org).

@@ -14,13 +14,15 @@ test("Reload script", async ({ page }) => {
 
     await expect(page).toHaveTitle("Reload Script Demo | PayPal JS");
 
-    let sdkRequest;
-    await page.on("request", (request) => {
-        if (request.url().startsWith("https://www.paypal.com/sdk/js")) {
-            sdkRequest = request.url();
-        }
-    });
+    // Wait for the request when currency is changed to EUR
+    const requestPromise = page.waitForRequest(
+        (request) =>
+            request.url().startsWith("https://www.paypal.com/sdk/js") &&
+            request.url().includes("currency=EUR"),
+    );
 
     await page.locator("select#currency").selectOption("EUR");
-    expect(sdkRequest.includes("currency=EUR")).toBe(true);
+
+    const sdkRequest = await requestPromise;
+    expect(sdkRequest.url().includes("currency=EUR")).toBe(true);
 });

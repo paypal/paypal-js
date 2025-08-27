@@ -89,6 +89,31 @@ export default [
             },
         ],
     },
+    {
+        input: "src/v6/index.ts",
+        plugins: [
+            typescript({
+                ...tsconfigOverride,
+            }),
+            replace({
+                __VERSION__: pkg.version,
+                preventAssignment: true,
+            }),
+        ],
+        output: [
+            {
+                file: `dist/v6/esm/${pkgName}.js`,
+                format: "esm",
+                banner,
+            },
+            {
+                file: `dist/v6/esm/${pkgName}.min.js`,
+                format: "esm",
+                banner,
+                plugins: [terser()],
+            },
+        ],
+    },
 ];
 
 function getBannerText() {
