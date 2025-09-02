@@ -8,7 +8,7 @@ import {
     PayPalCardFieldsStateObject,
     PayPalCardFieldsComponent,
     PayPalCardFieldsIndividualField,
-} from "@paypal/paypal-js/types/components/card-fields";
+} from "@paypal/paypal-js";
 
 export type {
     PayPalCardFieldsInputEvents,
