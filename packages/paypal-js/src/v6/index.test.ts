@@ -1,4 +1,4 @@
-import { beforeEach, afterEach, describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { loadCoreSdkScript } from "./index";
 import { insertScriptElement, type ScriptElement } from "../utils";
@@ -43,12 +43,12 @@ describe("loadCoreSdkScript()", () => {
 
     test("should error due to unvalid input", async () => {
         expect(async () => {
-            // @ts-ignore invalid arguments
+            // @ts-expect-error invalid arguments
             await loadCoreSdkScript(123);
         }).rejects.toThrowError("Expected an options object");
 
         expect(async () => {
-            // @ts-ignore invalid arguments
+            // @ts-expect-error invalid arguments
             await loadCoreSdkScript({ environment: "bad_value" });
         }).rejects.toThrowError(
             'The "environment" option must be either "production" or "sandbox"',
