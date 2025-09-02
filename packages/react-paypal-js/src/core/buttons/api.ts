@@ -14,7 +14,7 @@ interface Options {
 interface IButtonsAPI {
     Buttons: ComponentType<ButtonsComponentProps>;
     isEligible?: PayPalButtonsComponent["isEligible"];
-    hasReturned?: () => boolean;
+    hasReturned?: boolean;
     resume?: () => void;
 }
 
@@ -36,9 +36,11 @@ export class ButtonsAPI implements IButtonsAPI {
         return this.options.instance?.isEligible;
     }
 
-    get hasReturned(): PayPalButtonsComponent["hasReturned"] | undefined {
+    get hasReturned():
+        | ReturnType<PayPalButtonsComponent["hasReturned"]>
+        | undefined {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return this.options.instance?.hasReturned;
+        return this.options.instance?.hasReturned();
     }
 
     get resume(): PayPalButtonsComponent["resume"] | undefined {

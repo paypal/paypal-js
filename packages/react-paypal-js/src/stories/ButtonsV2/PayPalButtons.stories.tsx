@@ -1,9 +1,18 @@
 import React, { useEffect } from "react";
+import { action } from "@storybook/addon-actions";
 
 import { usePayPalScriptReducer, DISPATCH_ACTION } from "../../index";
-import { COMPONENT_PROPS_CATEGORY, FUNDING_SOURCE_ARG } from "../constants";
+import {
+    COMPONENT_PROPS_CATEGORY,
+    FUNDING_SOURCE_ARG,
+    ORDER_ID,
+} from "../constants";
 import { PayPalScriptProvider } from "../../index";
-import { getOptionsFromQueryString, generateRandomString } from "../utils";
+import {
+    getOptionsFromQueryString,
+    generateRandomString,
+    CREATE_ORDER_URL,
+} from "../utils";
 import { usePayPalButtons } from "../../hooks/usePayPalButtons";
 
 import type { FC, ReactElement } from "react";
@@ -11,6 +20,7 @@ import type {
     PayPalScriptOptions,
     PayPalButtonsComponentOptions,
     FUNDING_SOURCE,
+    OrderResponseBody,
 } from "@paypal/paypal-js";
 
 type StoryProps = {
@@ -144,8 +154,31 @@ export const Default: FC<StoryProps> = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showSpinner]);
 
-    async function createOrder(): Promise<string> {
-        return new Promise((resolve) => setTimeout(() => resolve("1"), 500));
+    async function createOrder(
+        cart: { sku: string; quantity: number }[],
+    ): Promise<OrderResponseBody> {
+        return fetch(CREATE_ORDER_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            // use the "body" param to optionally pass additional order information
+            // like product ids and quantities
+            body: JSON.stringify({ cart }),
+        }).then((response) => response.json());
+    }
+
+    async function createOrderCallback(): Promise<string> {
+        return createOrder([{ sku: "1blwyeo8", quantity: 1 }]).then(
+            (orderData) => {
+                if (orderData.id) {
+                    action(ORDER_ID)(orderData.id);
+                    return orderData.id;
+                } else {
+                    throw new Error("failed to create Order Id");
+                }
+            },
+        );
     }
 
     async function onApprove(data: unknown) {
@@ -155,20 +188,18 @@ export const Default: FC<StoryProps> = ({
     const { Buttons, isLoaded, isEligible, hasReturned, resume } =
         usePayPalButtons({
             fundingSource,
-            createOrder,
+            createOrder: createOrderCallback,
             onApprove,
             message,
             appSwitchWhenAvailable,
             style,
         });
 
-    const hasReturnedVal = isLoaded && hasReturned();
-
     useEffect(() => {
-        if (isLoaded && hasReturnedVal) {
+        if (hasReturned) {
             resume();
         }
-    }, [hasReturnedVal, resume, isLoaded]);
+    }, [hasReturned, resume]);
 
     if (isLoaded && !isEligible()) {
         return <p>Funding source: {fundingSource} is not eligible</p>;
@@ -177,7 +208,7 @@ export const Default: FC<StoryProps> = ({
     return (
         <>
             {showSpinner && <LoadingSpinner />}
-            {isLoaded && isEligible() && !hasReturned() && (
+            {isLoaded && isEligible() && !hasReturned && (
                 <Buttons disabled={disabled} />
             )}
         </>

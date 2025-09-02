@@ -130,8 +130,8 @@ type UsePayPalButtonsReturnType =
 type ReadyButtonsInstance = {
     Buttons: ButtonsAPI["Buttons"];
     isEligible: PayPalButtonsComponent["isEligible"];
-    hasReturned: () => boolean;
     resume: () => void;
+    hasReturned?: boolean;
 } & { isLoaded: true };
 
 type NotReadyButtonsInstance = Pick<ButtonsAPI, "Buttons"> & {
