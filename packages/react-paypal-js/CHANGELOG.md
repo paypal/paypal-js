@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.9.0
+
+### Minor Changes
+
+-   eda47cb: Update card fields import paths and fix readme
+
 ## 8.8.3
 
 ### Patch Changes
