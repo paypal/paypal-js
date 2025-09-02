@@ -1,4 +1,7 @@
 {
     "extends": "./tsconfig.json",
-    "include": ["src/**/*.test.ts", "src/**/*.test.tsx", "jest.setup.ts"]
+    "include": ["src/**/*.test.ts", "src/**/*.test.tsx", "jest.setup.ts"],
+    "compilerOptions": {
+        "composite": true
+    }
 }
