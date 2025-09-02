@@ -11,7 +11,7 @@ import { FullWidthContainer } from "../ui/FullWidthContainer";
 import type {
     PayPalCardFieldsComponentOptions,
     PayPalCardFieldsComponent,
-} from "@paypal/paypal-js/types/components/card-fields";
+} from "@paypal/paypal-js";
 
 type CardFieldsProviderProps = PayPalCardFieldsComponentOptions & {
     children: ReactNode;

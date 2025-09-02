@@ -308,7 +308,7 @@ import type {
     OnApproveDataOneTimePayments,
     OnShippingAddressChangeData,
     SdkInstance
-} from "@paypal/paypal-js/types/sdk-v6";
+} from "@paypal/paypal-js/sdk-v6";
 
 declare global {
     interface Window {

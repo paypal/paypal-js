@@ -11,7 +11,7 @@ import { PayPalNumberField } from "./PayPalNumberField";
 import { PayPalCVVField } from "./PayPalCVVField";
 import { PayPalExpiryField } from "./PayPalExpiryField";
 
-import type { PayPalCardFieldsComponent } from "@paypal/paypal-js/types/components/card-fields";
+import type { PayPalCardFieldsComponent } from "@paypal/paypal-js";
 import type { ReactNode } from "react";
 
 const MOCK_ELEMENT_ID = "mock-element";

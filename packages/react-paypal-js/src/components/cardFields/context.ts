@@ -3,7 +3,7 @@ import { createContext } from "react";
 import { ignore } from "./utils";
 import { RegistryHookReturnType } from "./hooks";
 
-import type { PayPalCardFieldsComponent } from "@paypal/paypal-js/types/components/card-fields";
+import type { PayPalCardFieldsComponent } from "@paypal/paypal-js";
 
 export type PayPalCardFieldsContextType = {
     cardFieldsForm: PayPalCardFieldsComponent | null;
