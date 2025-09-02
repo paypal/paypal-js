@@ -361,6 +361,6 @@ export interface PayPalButtonsComponent {
     isEligible: () => boolean;
     render: (container: HTMLElement | string) => Promise<void>;
     updateProps: (props: PayPalButtonsComponentOptions) => Promise<void>;
-    resume?: () => void;
-    hasReturned?: () => boolean;
+    resume: () => void;
+    hasReturned: () => boolean;
 }
