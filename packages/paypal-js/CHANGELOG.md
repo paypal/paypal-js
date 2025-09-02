@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.3.1
+
+### Patch Changes
+
+-   c22489a: Update tsconfig location for paypal-js package
+
 ## 8.3.0
 
 ### Minor Changes
