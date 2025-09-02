@@ -9,8 +9,8 @@
 [![npm downloads][downloads-badge]][npmtrends]
 [![apache license][license-badge]][license]
 
-[build-badge]: https://img.shields.io/github/actions/workflow/status/paypal/paypal-js/validate.yml?branch=main&logo=github&style=flat-square
-[build]: https://github.com/paypal/paypal-js/actions?query=workflow%3Avalidate
+[build-badge]: https://img.shields.io/github/actions/workflow/status/paypal/paypal-js/main.yml?branch=main&logo=github&style=flat-square
+[build]: https://github.com/paypal/paypal-js/actions/workflows/main.yml
 [coverage-badge]: https://img.shields.io/codecov/c/github/paypal/paypal-js.svg?style=flat-square
 [coverage]: https://codecov.io/github/paypal/paypal-js/
 [version-badge]: https://img.shields.io/npm/v/@paypal/paypal-js.svg?style=flat-square
