@@ -351,7 +351,7 @@ export interface PayPalButtonsComponentOptions {
      */
     message?: PayPalButtonMessage;
     /**
-     * When true, clicking on the button will first attempt to open paysheet in PayPal app before opening Checkout window when supported.
+     * When true, clicking the button will first attempt to open the paysheet in the PayPal app (if supported). If not supported, Checkout will open in the web flow.
      */
     appSwitchWhenAvailable?: boolean;
 }
