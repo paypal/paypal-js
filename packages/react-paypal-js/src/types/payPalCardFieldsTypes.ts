@@ -8,7 +8,7 @@ import {
     PayPalCardFieldsStateObject,
     PayPalCardFieldsComponent,
     PayPalCardFieldsIndividualField,
-} from "@paypal/paypal-js/types/components/card-fields";
+} from "@paypal/paypal-js";
 
 export type {
     PayPalCardFieldsInputEvents,
@@ -36,6 +36,9 @@ export type PayPalCardFieldsNamespace = {
 export type CardFieldStyle = {
     appearance?: string;
     background?: string;
+    border?: string;
+    borderRadius?: string;
+    boxShadow?: string;
     color?: string;
     direction?: string;
     font?: string;
@@ -63,7 +66,7 @@ export type CardFieldStyle = {
     paddingLeft?: string;
     textShadow?: string;
     transition?: string;
-    MozApperance?: string;
+    MozAppearance?: string;
     MozOsxFontSmoothing?: string;
     MozTapHighlightColor?: string;
     MozTransition?: string;

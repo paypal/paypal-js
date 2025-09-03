@@ -350,6 +350,9 @@ export interface PayPalButtonsComponentOptions {
      * [Message options](https://developer.paypal.com/sdk/js/reference/#message) for customizing the message appearance and limited content control.
      */
     message?: PayPalButtonMessage;
+    /**
+     * When true, clicking the button will first attempt to open the paysheet in the PayPal app (if supported). If not supported, Checkout will open in the web flow.
+     */
     appSwitchWhenAvailable?: boolean;
 }
 
@@ -358,6 +361,6 @@ export interface PayPalButtonsComponent {
     isEligible: () => boolean;
     render: (container: HTMLElement | string) => Promise<void>;
     updateProps: (props: PayPalButtonsComponentOptions) => Promise<void>;
-    hasReturned: () => boolean;
     resume: () => void;
+    hasReturned: () => boolean;
 }
