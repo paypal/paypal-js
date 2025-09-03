@@ -21,7 +21,7 @@
     },
     "scripts": {
         "build": "rm -rf dist && rollup --config --bundleConfigAsCjs",
-        "lint": "eslint .",
+        "lint": "eslint . && npm run typecheck",
         "prerelease": "npm run validate",
         "release": "standard-version --commit-all",
         "postrelease": "git push && git push --follow-tags && npm run build && npm publish",
