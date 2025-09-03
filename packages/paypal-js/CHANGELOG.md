@@ -1,5 +1,11 @@
 # Changelog
 
+## 8.4.1
+
+### Patch Changes
+
+-   f97adb4: fix: update type for v6 loader loadCoreSdkScript
+
 ## 8.4.0
 
 ### Minor Changes
