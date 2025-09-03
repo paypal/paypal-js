@@ -1,4 +1,5 @@
 import { insertScriptElement } from "../utils";
+import type { PayPalV6Namespace } from "../../types/v6/index";
 
 const version = "__VERSION__";
 
@@ -11,9 +12,6 @@ function loadCoreSdkScript(options: LoadScriptOptions = {}) {
     validateArguments(options);
     const { environment, debug } = options;
 
-    // resolve with null when running in Node or Deno
-    if (typeof document === "undefined") return Promise.resolve(null);
-
     const baseURL =
         environment === "production"
             ? "https://www.paypal.com"
@@ -24,23 +22,25 @@ function loadCoreSdkScript(options: LoadScriptOptions = {}) {
         url.searchParams.append("debug", "true");
     }
 
-    insertScriptElement({
-        url: url.toString(),
-        onSuccess: () => {
-            if (!window.paypal) {
-                return Promise.reject(
-                    "The window.paypal global variable is not available",
+    return new Promise<PayPalV6Namespace>((resolve, reject) => {
+        insertScriptElement({
+            url: url.toString(),
+            onSuccess: () => {
+                if (!window.paypal) {
+                    return reject(
+                        "The window.paypal global variable is not available",
+                    );
+                }
+                return resolve(window.paypal as unknown as PayPalV6Namespace);
+            },
+            onError: () => {
+                const defaultError = new Error(
+                    `The script "${url}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
                 );
-            }
-            return Promise.resolve(window.paypal);
-        },
-        onError: () => {
-            const defaultError = new Error(
-                `The script "${url}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
-            );
 
-            return Promise.reject(defaultError);
-        },
+                return reject(defaultError);
+            },
+        });
     });
 }
 
