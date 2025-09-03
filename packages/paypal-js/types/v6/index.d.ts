@@ -183,10 +183,14 @@ export type VenmoSessionStartOptions = SessionStartOptions & {
     buttonSessionID?: string;
 };
 
-export function loadCustomScript(options: {
-    url: string;
-    attributes?: Record<string, string>;
-}): Promise<void>;
+export type LoadCoreSdkScriptOptions = {
+    environment?: "production" | "sandbox";
+    debug?: boolean;
+};
+
+export function loadCoreSdkScript(
+    options: LoadCoreSdkScriptOptions,
+): Promise<PayPalV6Namespace>;
 
 // Components
 export * from "./components/paypal-payments";

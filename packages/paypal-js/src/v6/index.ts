@@ -1,14 +1,12 @@
 import { insertScriptElement } from "../utils";
-import type { PayPalV6Namespace } from "../../types/v6/index";
+import type {
+    PayPalV6Namespace,
+    LoadCoreSdkScriptOptions,
+} from "../../types/v6/index";
 
 const version = "__VERSION__";
 
-type LoadScriptOptions = {
-    environment?: "production" | "sandbox";
-    debug?: boolean;
-};
-
-function loadCoreSdkScript(options: LoadScriptOptions = {}) {
+function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     validateArguments(options);
     const { environment, debug } = options;
 
