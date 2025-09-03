@@ -75,6 +75,7 @@ export default {
         },
         fundingSource: FUNDING_SOURCE_ARG,
         appSwitchWhenAvailable: {
+            defaultValue: true,
             options: [true, false],
             control: { type: "select" },
             ...COMPONENT_PROPS_CATEGORY,
