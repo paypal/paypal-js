@@ -46,7 +46,7 @@ function validateArguments(options: unknown) {
     if (typeof options !== "object" || options === null) {
         throw new Error("Expected an options object");
     }
-    const { environment } = options as LoadScriptOptions;
+    const { environment } = options as LoadCoreSdkScriptOptions;
 
     if (
         environment &&
