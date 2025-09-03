@@ -1,5 +1,14 @@
 # Changelog
 
+## 8.9.1
+
+### Patch Changes
+
+-   67c5a2a: fix style types on CardField react component
+-   Updated dependencies [d3851e4]
+-   Updated dependencies [4d51a9a]
+    -   @paypal/paypal-js@8.4.0
+
 ## 8.9.0
 
 ### Minor Changes

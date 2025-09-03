@@ -1,5 +1,15 @@
 # Changelog
 
+## 8.4.0
+
+### Minor Changes
+
+-   4d51a9a: Add new script loader for v6 core sdk script
+
+### Patch Changes
+
+-   d3851e4: Adds types for v5 Direct App Switch
+
 ## 8.3.1
 
 ### Patch Changes
