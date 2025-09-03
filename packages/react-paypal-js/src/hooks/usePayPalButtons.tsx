@@ -130,11 +130,13 @@ type UsePayPalButtonsReturnType =
 type ReadyButtonsInstance = {
     Buttons: ButtonsAPI["Buttons"];
     isEligible: PayPalButtonsComponent["isEligible"];
-    resume: () => void;
-    hasReturned?: boolean;
+    isAppSwitchReturn: boolean;
+    resume: PayPalButtonsComponent["resume"];
+    hasReturned?: PayPalButtonsComponent["hasReturned"];
 } & { isLoaded: true };
 
 type NotReadyButtonsInstance = Pick<ButtonsAPI, "Buttons"> & {
+    isAppSwitchReturn?: never;
     isEligible?: never;
     hasReturned?: never;
     resume?: never;
@@ -227,10 +229,12 @@ export function usePayPalButtons(
     }, [instance, buttonsAPI, ready]);
 
     const { Buttons, isEligible, hasReturned, resume } = buttonsAPI;
+    const isLoaded = Boolean(buttonsAPI.options.instance);
 
     return {
         Buttons,
-        isLoaded: Boolean(buttonsAPI.options.instance),
+        isAppSwitchReturn: isLoaded && hasReturned?.(),
+        isLoaded,
         isEligible,
         hasReturned,
         resume,

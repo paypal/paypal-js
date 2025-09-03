@@ -185,7 +185,7 @@ export const Default: FC<StoryProps> = ({
         console.log("onApprove", data);
     }
 
-    const { Buttons, isLoaded, isEligible, hasReturned, resume } =
+    const { Buttons, isLoaded, isEligible, isAppSwitchReturn, resume } =
         usePayPalButtons({
             fundingSource,
             createOrder: createOrderCallback,
@@ -196,10 +196,10 @@ export const Default: FC<StoryProps> = ({
         });
 
     useEffect(() => {
-        if (hasReturned) {
+        if (isAppSwitchReturn) {
             resume();
         }
-    }, [hasReturned, resume]);
+    }, [isAppSwitchReturn, resume]);
 
     if (isLoaded && !isEligible()) {
         return <p>Funding source: {fundingSource} is not eligible</p>;
@@ -208,7 +208,7 @@ export const Default: FC<StoryProps> = ({
     return (
         <>
             {showSpinner && <LoadingSpinner />}
-            {isLoaded && isEligible() && !hasReturned && (
+            {isLoaded && isEligible() && !isAppSwitchReturn && (
                 <Buttons disabled={disabled} />
             )}
         </>
