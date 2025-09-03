@@ -15,9 +15,9 @@ function loadCoreSdkScript(options: LoadScriptOptions = {}) {
     if (typeof document === "undefined") return Promise.resolve(null);
 
     const baseURL =
-        environment === "sandbox"
-            ? "https://www.sandbox.paypal.com"
-            : "https://www.paypal.com";
+        environment === "production"
+            ? "https://www.paypal.com"
+            : "https://www.sandbox.paypal.com";
     const url = new URL("/web-sdk/v6/core", baseURL);
 
     if (debug) {

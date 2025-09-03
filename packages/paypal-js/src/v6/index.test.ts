@@ -25,16 +25,24 @@ describe("loadCoreSdkScript()", () => {
         vi.clearAllMocks();
     });
 
-    test("should default to using the production environment", async () => {
+    test("should default to using the sandbox environment", async () => {
         await loadCoreSdkScript();
+        expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
+            "https://www.sandbox.paypal.com/web-sdk/v6/core",
+        );
+        expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+    });
+
+    test("should support options for using production environment", async () => {
+        await loadCoreSdkScript({ environment: "production" });
         expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
             "https://www.paypal.com/web-sdk/v6/core",
         );
         expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
     });
 
-    test("should support options for using sandbox environment and enabling debugging", async () => {
-        await loadCoreSdkScript({ environment: "sandbox", debug: true });
+    test("should support enabling debugging", async () => {
+        await loadCoreSdkScript({ debug: true });
         expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
             "https://www.sandbox.paypal.com/web-sdk/v6/core?debug=true",
         );
