@@ -22,16 +22,12 @@
     "scripts": {
         "build": "rm -rf dist && rollup --config --bundleConfigAsCjs",
         "lint": "eslint . && npm run typecheck",
-        "prerelease": "npm run validate",
-        "release": "standard-version --commit-all",
-        "postrelease": "git push && git push --follow-tags && npm run build && npm publish",
         "test": "vitest src",
         "test:bundle": "vitest bundle-tests/**",
         "test:e2e": "playwright test",
         "test:e2e:debug": "PWDEBUG=1 playwright test --project=\"chromium\"",
         "test:e2e:start": "node e2e-tests/http-server.js",
         "typecheck": "tsc --noEmit --allowSyntheticDefaultImports",
-        "validate": "npm run check-node-version && npm run typecheck && npm run build && npm run lint && npm test -- --watch=false --coverage.enabled --coverage.include=src && npm run test:bundle -- --watch=false",
         "openapi": "npm run openapi-orders && npm run openapi-subscriptions",
         "openapi-orders": "openapi-typescript node_modules/@paypal/paypal-rest-api-specifications/openapi/checkout_orders_v2.json -o types/apis/openapi/checkout_orders_v2.d.ts",
         "openapi-subscriptions": "openapi-typescript node_modules/@paypal/paypal-rest-api-specifications/openapi/billing_subscriptions_v1.json -o types/apis/openapi/billing_subscriptions_v1.d.ts"
@@ -80,7 +76,6 @@
         "openapi-typescript": "^6.7.3",
         "rollup": "4.9.1",
         "semver": "7.5.4",
-        "standard-version": "9.5.0",
         "tslib": "2.6.2",
         "typescript": "5.3.3",
         "vitest": "1.1.0"
