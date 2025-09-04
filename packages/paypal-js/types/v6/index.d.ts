@@ -74,16 +74,16 @@ export type CreateInstanceOptions<T extends readonly Components[]> = {
  * sdkInstance.createVenmoOneTimePaymentSession(...);  // ✅ Available
  * ```
  */
-export type SdkInstance<T extends readonly Components[]> = BaseInstance &
-    (T[number] extends "paypal-payments"
-        ? PayPalPaymentsInstance
-        : Record<string, never>) &
-    (T[number] extends "venmo-payments"
-        ? VenmoPaymentsInstance
-        : Record<string, never>) &
-    (T[number] extends "paypal-legacy-billing-agreements"
-        ? PayPalLegacyBillingInstance
-        : Record<string, never>);
+
+export type SdkInstance<T extends readonly [Components, ...Components[]]> =
+    BaseInstance &
+        ("paypal-payments" extends T[number]
+            ? PayPalPaymentsInstance
+            : unknown) &
+        ("venmo-payments" extends T[number] ? VenmoPaymentsInstance : unknown) &
+        ("paypal-legacy-billing-agreements" extends T[number]
+            ? PayPalLegacyBillingInstance
+            : unknown);
 
 export interface BaseInstance {
     findEligibleMethods: (
