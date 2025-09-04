@@ -301,27 +301,23 @@ In addition to the type definitions above, this package also includes Typescript
 
 A basic example showing data-typing for PayPal One Time Payment.
 
-```js
+```ts
 import type {
     PayPalV6Namespace,
-    CreateInstanceOptions,
     OnApproveDataOneTimePayments,
     OnShippingAddressChangeData,
-    SdkInstance
 } from "@paypal/paypal-js/sdk-v6";
 
 declare global {
     interface Window {
-        paypal?: PayPalV6Namespace | null;
+        paypal: PayPalV6Namespace;
     }
 }
 
-const createInstanceOptions: CreateInstanceOptions = {
-    clientToken,
-    components: ["paypal-payments", "venmo-payments"]
-}
-
-const sdkInstance = await window.paypal.createInstance(createInstanceInputs);
+const sdkInstance = await window.paypal.createInstance({
+    clientToken: "INSERT_YOUR_CLIENT_TOKEN_HERE",
+    components: ["paypal-payments", "venmo-payments"],
+});
 
 function onApproveCallback(data: OnApproveDataOneTimePayments) {}
 function onShippingAddressChangeCallback(data: OnShippingAddressChangeData) {}
@@ -331,7 +327,3 @@ const paypalCheckout = sdkInstance.createPayPalOneTimePaymentSession({
     onShippingAddressChange: onShippingAddressChangeCallback,
 });
 ```
-
-## Releasing
-
-Run `npm run release` to publish a new release. The version number is determined by the git commits which follow [conventional commits spec](https://www.conventionalcommits.org).
