@@ -52,7 +52,7 @@ describe("decorateActions", () => {
             createOrder: jest
                 .fn()
                 .mockImplementation(
-                    (data, actions) => actions.braintree.create !== undefined,
+                    (_data, actions) => actions.braintree.create !== undefined,
                 ),
         };
 
@@ -85,7 +85,7 @@ describe("decorateActions", () => {
             createBillingAgreement: jest
                 .fn()
                 .mockImplementation(
-                    (data, actions) =>
+                    (_data, actions) =>
                         actions.braintree.createBillingAgreement !== undefined,
                 ),
         };
@@ -123,7 +123,7 @@ describe("decorateActions", () => {
             onApprove: jest
                 .fn()
                 .mockImplementation(
-                    (data, actions) => actions.braintree.create !== undefined,
+                    (_data, actions) => actions.braintree.create !== undefined,
                 ),
         };
 
