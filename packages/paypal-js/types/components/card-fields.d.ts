@@ -3,6 +3,9 @@ export interface PayPalCardFieldsStyleOptions {
     color?: string;
     direction?: string;
     font?: string;
+    border?: string;
+    borderRadius?: string;
+    boxShadow?: string;
     "font-family"?: string;
     "font-size"?: string;
     "font-size-adjust"?: string;
