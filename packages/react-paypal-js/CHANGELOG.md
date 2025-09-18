@@ -1,5 +1,12 @@
 # Changelog
 
+## 8.9.2
+
+### Patch Changes
+
+-   Updated dependencies [6c83cf1]
+    -   @paypal/paypal-js@9.0.0
+
 ## 8.9.1
 
 ### Patch Changes
