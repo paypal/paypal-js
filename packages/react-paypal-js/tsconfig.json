@@ -6,7 +6,7 @@
         "forceConsistentCasingInFileNames": true,
         "jsx": "react",
         "module": "esnext",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "target": "esnext",
         "strict": true,
         "skipLibCheck": true
