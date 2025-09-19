@@ -25,8 +25,8 @@
             "require": "./dist/cjs/react-paypal-js.js"
         },
         "./sdk-v6": {
-          "types": "./dist/types/v6/index.d.ts",
-          "import": "./dist/v6/esm/react-paypal-js.js"
+            "types": "./dist/types/v6/index.d.ts",
+            "import": "./dist/v6/esm/react-paypal-js.js"
         }
     },
     "scripts": {
