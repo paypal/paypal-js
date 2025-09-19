@@ -9,7 +9,8 @@
         "moduleResolution": "node",
         "target": "esnext",
         "strict": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "ignoreDeprecations": "6.0"
     },
     "references": [
         { "path": "./tsconfig.lib.json" },
