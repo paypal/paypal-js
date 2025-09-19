@@ -18,6 +18,17 @@
     "publishConfig": {
         "access": "public"
     },
+    "exports": {
+        ".": {
+            "types": "./dist/types/index.d.ts",
+            "import": "./dist/esm/react-paypal-js.js",
+            "require": "./dist/cjs/react-paypal-js.js"
+        },
+        "./sdk-v6": {
+          "types": "./dist/types/v6/index.d.ts",
+          "import": "./dist/v6/esm/react-paypal-js.js"
+        }
+    },
     "scripts": {
         "build": "rollup --config",
         "check-node-version": "node scripts/check-node-version.js",

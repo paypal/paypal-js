@@ -1,0 +1,11 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "outDir": "./dist/v6",
+        "rootDir": "./src/v6",
+        "tsBuildInfoFile": "./.cache/tsconfig.v6.tsbuildinfo"
+    },
+    "include": ["src/v6/**/*.ts", "src/v6/**/*.tsx"],
+    "exclude": ["src/v6/**/*.test.ts", "src/v6/**/*.test.tsx"]
+}
