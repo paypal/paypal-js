@@ -1,5 +1,12 @@
 {
     "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "../../types": ["./src/types"],
+            "@paypal/paypal-js": ["./node_modules/@paypal/paypal-js"]
+        }
+    },
     "include": ["src"],
     "exclude": ["src/stories", "src/**/*.test.ts", "src/**/*.test.tsx"]
 }

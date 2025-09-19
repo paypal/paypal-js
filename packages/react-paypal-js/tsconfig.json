@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "baseUrl": ".",
         "declaration": true,
         "allowJs": false,
         "allowSyntheticDefaultImports": true,
@@ -7,9 +8,13 @@
         "jsx": "react",
         "module": "esnext",
         "moduleResolution": "bundler",
-        "target": "esnext",
+        "target": "es5",
         "strict": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "paths": {
+            "../../types": ["./src/types"],
+            "@paypal/paypal-js": ["./node_modules/@paypal/paypal-js"]
+        }
     },
     "references": [
         { "path": "./tsconfig.lib.json" },
