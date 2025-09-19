@@ -1,3 +1,4 @@
+import "@testing-library/jest-dom";
 import React, { useState } from "react";
 import {
     render,
@@ -355,6 +356,8 @@ describe("<PayPalButtons />", () => {
                         return Promise.reject("Unknown error");
                     }),
                     updateProps: jest.fn().mockResolvedValue({}),
+                    resume: jest.fn(),
+                    hasReturned: jest.fn().mockReturnValue(false),
                 };
             },
             version: "",
@@ -430,6 +433,8 @@ describe("<PayPalButtons />", () => {
                     isEligible: jest.fn().mockReturnValue(true),
                     render: mockRender,
                     updateProps: jest.fn().mockResolvedValue({}),
+                    resume: jest.fn(),
+                    hasReturned: jest.fn().mockReturnValue(false),
                 };
             },
             version: "",

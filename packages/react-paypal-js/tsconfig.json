@@ -1,19 +1,16 @@
 {
     "compilerOptions": {
-        "declaration": true,
         "allowJs": false,
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
         "jsx": "react",
-        "module": "esnext",
-        "moduleResolution": "node",
+        "module": "node16",
+        "moduleResolution": "node16",
         "target": "esnext",
         "strict": true,
         "skipLibCheck": true,
         "ignoreDeprecations": "6.0"
     },
-    "references": [
-        { "path": "./tsconfig.lib.json" },
-        { "path": "./tsconfig.test.json" }
-    ]
+    "include": ["src/**/*.ts", "src/**/*.tsx"],
+    "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
 }
