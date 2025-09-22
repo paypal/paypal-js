@@ -1,5 +1,14 @@
 # Changelog
 
+## 8.9.2
+
+### Patch Changes
+
+-   0575877: Upgrade to package-lock v3 and fix rollup dependency
+-   Updated dependencies [6c83cf1]
+-   Updated dependencies [0575877]
+    -   @paypal/paypal-js@9.0.0
+
 ## 8.9.1
 
 ### Patch Changes
