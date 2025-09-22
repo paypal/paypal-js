@@ -31,6 +31,9 @@ jobs:
                     npm install
                   }
 
+            - name: 🔧 Reinstall rollup (workaround for npm optional deps bug)
+              run: npm install rollup --force
+
             - name: 🧾 Check for changeset
               # blocks PRs without changesets
               run: npx changeset status --since=origin/main
