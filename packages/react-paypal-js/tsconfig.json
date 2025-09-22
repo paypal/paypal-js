@@ -1,6 +1,5 @@
 {
     "compilerOptions": {
-        "declaration": true,
         "allowJs": false,
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
@@ -11,8 +10,6 @@
         "strict": true,
         "skipLibCheck": true
     },
-    "references": [
-        { "path": "./tsconfig.lib.json" },
-        { "path": "./tsconfig.test.json" }
-    ]
+    "include": ["src/**/*.ts", "src/**/*.tsx"],
+    "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/stories/**/*"]
 }
