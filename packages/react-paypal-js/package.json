@@ -1,7 +1,6 @@
 {
     "name": "@paypal/react-paypal-js",
     "version": "8.9.1",
-    "type": "module",
     "description": "React components for the PayPal JS SDK",
     "keywords": [
         "react",
@@ -31,7 +30,7 @@
         }
     },
     "scripts": {
-        "build": "rollup --config",
+        "build": "rollup --config --bundleConfigAsCjs",
         "check-node-version": "node scripts/check-node-version.js",
         "lint": "eslint .",
         "prepack": "rimraf dist && npm run build && npm run type-declarations",
