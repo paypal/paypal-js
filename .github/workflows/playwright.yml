@@ -28,7 +28,10 @@ jobs:
                   node-version: ${{ env.NVMRC }}
 
             - name: 📥 Download deps
-              uses: bahmutov/npm-install@v1
+              run: npm install
+
+            - name: 🔧 Reinstall rollup (workaround for npm optional deps bug)
+              run: npm install rollup --force
 
             - name: 🌎 Install Playwright Browsers
               run: npx playwright install --with-deps
