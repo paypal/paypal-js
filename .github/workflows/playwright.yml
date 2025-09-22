@@ -28,7 +28,7 @@ jobs:
                   node-version: ${{ env.NVMRC }}
 
             - name: 📥 Download deps
-              uses: npm ci
+              uses: bahmutov/npm-install@v1
 
             - name: 🌎 Install Playwright Browsers
               run: npx playwright install --with-deps
