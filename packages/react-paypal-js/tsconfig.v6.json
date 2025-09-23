@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./dist/v6",
+        "rootDir": "./src/v6"
+    },
+    "include": ["src/v6/**/*.ts", "src/v6/**/*.tsx"],
+    "exclude": ["src/v6/**/*.test.ts", "src/v6/**/*.test.tsx"]
+}

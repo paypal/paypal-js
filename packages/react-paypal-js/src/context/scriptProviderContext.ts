@@ -18,6 +18,7 @@ import type {
  */
 export function getScriptID(options: ReactPayPalScriptOptions): string {
     // exclude the data-react-paypal-script-id value from the options hash
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { [SCRIPT_ID]: _scriptId, ...paypalScriptOptions } = options;
 
     return `react-paypal-js-${hashStr(JSON.stringify(paypalScriptOptions))}`;
