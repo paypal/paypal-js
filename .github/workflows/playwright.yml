@@ -26,18 +26,9 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: ${{ env.NVMRC }}
-                  cache: "npm"
-                  cache-dependency-path: "**/package-lock.json"
 
-            - name: 📥 Download deps (with fallback)
-              run: |
-                  npm ci --prefer-offline || {
-                    echo "npm ci failed, falling back to npm install"
-                    npm install
-                  }
-
-            - name: 🔧 Reinstall rollup (workaround for npm optional deps bug)
-              run: npm install rollup --force
+            - name: 📥 Download deps
+              uses: bahmutov/npm-install@v1
 
             - name: 🌎 Install Playwright Browsers
               run: npx playwright install --with-deps
