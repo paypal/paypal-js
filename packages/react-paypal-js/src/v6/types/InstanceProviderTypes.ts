@@ -5,7 +5,7 @@ import type {
 } from "./index";
 
 export interface InstanceContextState {
-    sdkInstance?: SdkInstance<readonly [Components, ...Components[]]> | null;
+    sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
     eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
     isLoading: boolean;
     error: Error | null;
