@@ -1,8 +1,4 @@
-import type {
-    Components,
-    SdkInstance,
-    EligiblePaymentMethodsOutput,
-} from "./index";
+import type { Components, SdkInstance, EligiblePaymentMethodsOutput } from "./";
 
 export interface InstanceContextState {
     sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
