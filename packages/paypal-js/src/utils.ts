@@ -158,3 +158,5 @@ function createScriptElement(
 
     return newScript;
 }
+
+export const isServer = typeof window === "undefined";

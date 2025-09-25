@@ -1,4 +1,4 @@
-import { insertScriptElement } from "../utils";
+import { insertScriptElement, isServer } from "../utils";
 import type {
     PayPalV6Namespace,
     LoadCoreSdkScriptOptions,
@@ -30,7 +30,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         insertScriptElement({
             url: url.toString(),
             onSuccess: () => {
-                if (typeof window === "undefined" || !window.paypal) {
+                if (isServer || !window.paypal) {
                     return reject(
                         "The window.paypal global variable is not available",
                     );

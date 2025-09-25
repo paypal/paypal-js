@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
 import { InstanceContext } from "../context/InstanceProviderContext";
+import { isServer } from "../../utils";
 
 import type {
     CreateInstanceOptions,
@@ -10,7 +11,6 @@ import type {
     EligiblePaymentMethodsOutput,
     LoadCoreSdkScriptOptions,
 } from "../types";
-import type { FC } from "react";
 
 interface PayPalInstanceProviderProps {
     options: CreateInstanceOptions<readonly [Components, ...Components[]]>;
@@ -18,7 +18,7 @@ interface PayPalInstanceProviderProps {
     scriptOptions: LoadCoreSdkScriptOptions;
 }
 
-export const PayPalInstanceProvider: FC<PayPalInstanceProviderProps> = ({
+export const PayPalInstanceProvider: React.FC<PayPalInstanceProviderProps> = ({
     options,
     children,
     scriptOptions,
@@ -39,7 +39,7 @@ export const PayPalInstanceProvider: FC<PayPalInstanceProviderProps> = ({
     // ensure that we take SSR precautions
     useEffect(() => {
         // Skip if SSR
-        if (typeof window === "undefined") {
+        if (isServer) {
             setIsLoading(false);
             return;
         }
