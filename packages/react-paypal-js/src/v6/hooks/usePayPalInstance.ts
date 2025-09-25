@@ -9,7 +9,7 @@ import type {
     SdkInstance,
 } from "../types";
 
-function usePayPalInstance(): InstanceContextState {
+export function usePayPalInstance(): InstanceContextState {
     const context = useContext(InstanceContext);
 
     if (context === null) {
