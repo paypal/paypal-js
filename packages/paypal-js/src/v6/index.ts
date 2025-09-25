@@ -8,6 +8,12 @@ const version = "__VERSION__";
 
 function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     validateArguments(options);
+
+    // SSR safeguard
+    if (typeof document === "undefined") {
+        return Promise.resolve(null);
+    }
+
     const { environment, debug } = options;
 
     const baseURL =
@@ -24,7 +30,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         insertScriptElement({
             url: url.toString(),
             onSuccess: () => {
-                if (!window.paypal) {
+                if (typeof window === "undefined" || !window.paypal) {
                     return reject(
                         "The window.paypal global variable is not available",
                     );
