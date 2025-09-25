@@ -12,6 +12,7 @@ import type {
     PayPalCardFieldsComponentOptions,
     PayPalCardFieldsComponent,
 } from "@paypal/paypal-js";
+import { useProxyProps } from "../../hooks/useProxyProps";
 
 type CardFieldsProviderProps = PayPalCardFieldsComponentOptions & {
     children: ReactNode;
@@ -32,6 +33,10 @@ export const PayPalCardFieldsProvider = ({
     children,
     ...props
 }: CardFieldsProviderProps): JSX.Element => {
+    props.inputEvents &&= useProxyProps(
+        props.inputEvents as Record<PropertyKey, unknown>,
+    );
+    const proxyProps = useProxyProps(props);
     const [{ isResolved, options }] = usePayPalScriptReducer();
     const { fields, registerField, unregisterField } =
         usePayPalCardFieldsRegistry();
@@ -54,7 +59,7 @@ export const PayPalCardFieldsProvider = ({
                 getPayPalWindowNamespace(
                     options[SDK_SETTINGS.DATA_NAMESPACE],
                 ).CardFields?.({
-                    ...props,
+                    ...proxyProps,
                 }) ?? null;
         } catch (error) {
             setError(() => {

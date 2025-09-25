@@ -8,6 +8,7 @@ import type {
     FieldComponentName,
     PayPalCardFieldsIndividualFieldOptions,
 } from "../../types";
+import { useProxyProps } from "../../hooks/useProxyProps";
 
 export const PayPalCardField: React.FC<
     PayPalCardFieldsIndividualFieldOptions & {
@@ -18,6 +19,9 @@ export const PayPalCardField: React.FC<
         usePayPalCardFields();
 
     const containerRef = useRef<HTMLDivElement>(null);
+    options.inputEvents &&= useProxyProps(
+        options.inputEvents as Record<PropertyKey, unknown>,
+    );
 
     // Set errors is state so that they can be caught by React's error boundary
     const [, setError] = useState(null);
