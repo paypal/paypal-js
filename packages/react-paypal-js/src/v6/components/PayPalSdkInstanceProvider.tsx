@@ -17,7 +17,7 @@ import type {
     LoadCoreSdkScriptOptions,
 } from "../types";
 
-interface PayPalInstanceProviderProps {
+interface PayPalSdkInstanceProviderProps {
     createInstanceOptions: CreateInstanceOptions<
         readonly [Components, ...Components[]]
     >;
@@ -25,11 +25,9 @@ interface PayPalInstanceProviderProps {
     scriptOptions: LoadCoreSdkScriptOptions;
 }
 
-export const PayPalInstanceProvider: React.FC<PayPalInstanceProviderProps> = ({
-    createInstanceOptions,
-    children,
-    scriptOptions,
-}) => {
+export const PayPalSdkInstanceProvider: React.FC<
+    PayPalSdkInstanceProviderProps
+> = ({ createInstanceOptions, children, scriptOptions }) => {
     // Memoize createInstanceOptions to detect changes (for client token updates)
     const memoizedOptions = useMemo(
         () => createInstanceOptions,

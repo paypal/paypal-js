@@ -1,4 +1,4 @@
 export * from "./types";
-export { PayPalInstanceProvider } from "./components/PayPalInstanceProvider";
+export { PayPalSdkInstanceProvider } from "./components/PayPalSdkInstanceProvider";
 export { InstanceContext } from "./context/InstanceProviderContext";
 export { usePayPalInstance } from "./hooks/usePayPalInstance";
