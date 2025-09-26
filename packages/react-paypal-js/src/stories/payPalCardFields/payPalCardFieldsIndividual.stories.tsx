@@ -397,6 +397,7 @@ export const WithDynamicOrderState: FC = () => {
         borderCollapse: "collapse",
         border: "1px solid black",
         width: "100%",
+        maxWidth: "1400px",
         textAlign: "center",
     } as React.CSSProperties;
 
