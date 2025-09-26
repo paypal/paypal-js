@@ -331,3 +331,180 @@ export const Default: FC = () => {
         ),
     },
 };
+
+export const WithDynamicOrderState: FC = () => {
+    const [count, setCount] = useState(0);
+    const [providerTableCounts, setProviderTableCounts] = useState(
+        new Array(6).fill(count),
+    );
+    const [isPaying, setIsPaying] = useState(false);
+
+    const updateProviderTableCount = (index: number, count: number) => {
+        const newProviderTableCounts = [...providerTableCounts];
+        newProviderTableCounts[index] = count;
+        setProviderTableCounts(newProviderTableCounts);
+    };
+
+    async function createOrder() {
+        updateProviderTableCount(0, count);
+        action(CREATE_ORDER)("Start creating the order in custom endpoint");
+        return fetch(CREATE_ORDER_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                cart: [
+                    {
+                        sku: "1blwyeo8",
+                        quantity: count,
+                    },
+                ],
+            }),
+        })
+            .then((response) => response.json())
+            .then((order) => {
+                action(CREATE_ORDER)(order);
+                return order.id;
+            })
+            .catch((err) => {
+                action(ERROR)(err.message);
+                console.error(err);
+            });
+    }
+
+    function onApprove(data: CardFieldsOnApproveData) {
+        updateProviderTableCount(1, count);
+        action(`Received ${ORDER_ID}`)(data.orderID);
+        action(CAPTURE_ORDER)(
+            `Sending ${ORDER_ID} to custom endpoint to capture the payment information`,
+        );
+        fetch(CAPTURE_ORDER_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ orderID: data.orderID }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                action(CAPTURE_ORDER)(data);
+                setIsPaying(false);
+            })
+            .catch((err) => {
+                action(ERROR)(err.message);
+            });
+    }
+
+    const tableStyles = {
+        borderCollapse: "collapse",
+        border: "1px solid black",
+        width: "100%",
+        textAlign: "center",
+    } as React.CSSProperties;
+
+    const columnStyles = {
+        border: "1px solid black",
+    } as React.CSSProperties;
+
+    return (
+        <>
+            <button onClick={() => setCount(count + 1)}>Count: {count}</button>
+            <PayPalScriptProvider
+                options={{
+                    ...scriptProviderOptions,
+
+                    dataNamespace: uid,
+                    dataUid: uid,
+                }}
+            >
+                <PayPalCardFieldsProvider
+                    createOrder={createOrder}
+                    onApprove={onApprove}
+                    onError={(err) => {
+                        console.log(err);
+                    }}
+                    inputEvents={{
+                        onChange: () => updateProviderTableCount(2, count),
+                        onFocus: () => updateProviderTableCount(3, count),
+                        onBlur: () => updateProviderTableCount(4, count),
+                        onInputSubmitRequest: () =>
+                            updateProviderTableCount(5, count),
+                    }}
+                >
+                    <PayPalCardFieldsForm />
+                    {/* Custom client component to handle card fields submit */}
+                    <SubmitPayment
+                        isPaying={isPaying}
+                        setIsPaying={setIsPaying}
+                    />
+                </PayPalCardFieldsProvider>
+            </PayPalScriptProvider>
+            <section>
+                <h2>Count state on Provider Callbacks and input events</h2>
+                <table style={tableStyles}>
+                    <thead>
+                        <tr>
+                            <th style={columnStyles} scope="col">
+                                Callback Name
+                            </th>
+                            <th style={columnStyles} scope="col">
+                                count state value
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th style={columnStyles} scope="row">
+                                createOrder
+                            </th>
+                            <td style={columnStyles}>
+                                <span>{providerTableCounts[0]}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style={columnStyles} scope="row">
+                                onApprove
+                            </th>
+                            <td style={columnStyles}>
+                                <span>{providerTableCounts[1]}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style={columnStyles} scope="row">
+                                onChange
+                            </th>
+                            <td style={columnStyles}>
+                                <span>{providerTableCounts[2]}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style={columnStyles} scope="row">
+                                onFocus
+                            </th>
+                            <td style={columnStyles}>
+                                <span>{providerTableCounts[3]}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style={columnStyles} scope="row">
+                                onBlur
+                            </th>
+                            <td style={columnStyles}>
+                                <span>{providerTableCounts[4]}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style={columnStyles} scope="row">
+                                onInputSubmitRequest
+                            </th>
+                            <td style={columnStyles}>
+                                <span>{providerTableCounts[5]}</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </>
+    );
+};
