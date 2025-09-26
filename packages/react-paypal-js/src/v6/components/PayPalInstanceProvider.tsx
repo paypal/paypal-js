@@ -1,114 +1,201 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useMemo } from "react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
-import { InstanceContext } from "../context/InstanceProviderContext";
+import {
+    InstanceContext,
+    instanceReducer,
+} from "../context/InstanceProviderContext";
+import {
+    INSTANCE_LOADING_STATE,
+    INSTANCE_DISPATCH_ACTION,
+} from "../types/InstanceProviderTypes";
 import { isServer } from "../utils";
 
 import type {
     CreateInstanceOptions,
     Components,
-    SdkInstance,
-    EligiblePaymentMethodsOutput,
     LoadCoreSdkScriptOptions,
 } from "../types";
 
 interface PayPalInstanceProviderProps {
-    options: CreateInstanceOptions<readonly [Components, ...Components[]]>;
+    createInstanceOptions: CreateInstanceOptions<
+        readonly [Components, ...Components[]]
+    >;
     children: React.ReactNode;
     scriptOptions: LoadCoreSdkScriptOptions;
 }
 
 export const PayPalInstanceProvider: React.FC<PayPalInstanceProviderProps> = ({
-    options,
+    createInstanceOptions,
     children,
     scriptOptions,
-}: {
-    options: CreateInstanceOptions<readonly [Components, ...Components[]]>;
-    children: React.ReactNode;
-    scriptOptions: LoadCoreSdkScriptOptions;
 }) => {
-    const [sdkInstance, setSdkInstance] = useState<SdkInstance<
-        readonly [Components, ...Components[]]
-    > | null>(null);
-    const [eligiblePaymentMethods, setEligiblePaymentMethods] =
-        useState<EligiblePaymentMethodsOutput | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<Error | null>(null);
+    // Memoize createInstanceOptions to detect changes (for client token updates)
+    const memoizedOptions = useMemo(
+        () => createInstanceOptions,
+        [JSON.stringify(createInstanceOptions)],
+    );
 
+    const [state, dispatch] = useReducer(instanceReducer, {
+        sdkInstance: null,
+        eligiblePaymentMethods: null,
+        loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+        error: null,
+        createInstanceOptions: memoizedOptions,
+        scriptOptions,
+    });
+
+    // Auto-sync createInstanceOptions changes (e.g., client token updates)
     useEffect(() => {
-        // Skip if SSR
+        const hasOptionsChanged =
+            JSON.stringify(state.createInstanceOptions) !==
+            JSON.stringify(memoizedOptions);
+
+        if (hasOptionsChanged) {
+            dispatch({
+                type: INSTANCE_DISPATCH_ACTION.RESET_STATE,
+                value: {
+                    createInstanceOptions: memoizedOptions,
+                    scriptOptions: state.scriptOptions,
+                },
+            });
+        }
+    }, [memoizedOptions, state.createInstanceOptions, state.scriptOptions]);
+
+    // SDK loading effect
+    useEffect(() => {
         if (isServer) {
-            setIsLoading(false);
+            dispatch({
+                type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
+                value: INSTANCE_LOADING_STATE.INITIAL,
+            });
             return;
         }
 
+        if (
+            state.loadingStatus !== INSTANCE_LOADING_STATE.PENDING ||
+            state.sdkInstance
+        ) {
+            return;
+        }
+
+        let isSubscribed = true;
         const controller = new AbortController();
 
-        const initializeSdk = async () => {
+        const loadSdk = async () => {
             try {
-                setIsLoading(true);
-                setError(null);
+                // Load the core SDK script
+                const paypalNamespace = await loadCoreSdkScript(
+                    state.scriptOptions,
+                );
 
-                const paypalNameSapce = await loadCoreSdkScript(scriptOptions);
-
-                if (controller.signal.aborted) {
+                if (
+                    controller.signal.aborted ||
+                    !isSubscribed ||
+                    !paypalNamespace
+                ) {
                     return;
                 }
 
-                if (!paypalNameSapce) {
-                    throw new Error("PayPal SDK failed to load");
-                }
+                // Create SDK instance
+                const instance = await paypalNamespace.createInstance(
+                    state.createInstanceOptions,
+                );
 
-                const instance = await paypalNameSapce.createInstance(options);
-
-                if (controller.signal.aborted) {
+                if (controller.signal.aborted || !isSubscribed) {
                     return;
                 }
 
-                setSdkInstance(instance);
-
-                try {
-                    const eligiblePaymentMethods =
-                        await instance.findEligibleMethods({});
-
-                    if (controller.signal.aborted) {
-                        return;
-                    }
-
-                    setEligiblePaymentMethods(eligiblePaymentMethods);
-                } catch (eligibilityErr) {
-                    if (!controller.signal.aborted) {
-                        console.warn(
-                            "Failed to get eligible payment methods:",
-                            eligibilityErr,
-                        );
-                    }
-                }
-
-                if (!controller.signal.aborted) {
-                    setIsLoading(false);
-                }
-            } catch (err) {
-                if (!controller.signal.aborted) {
-                    const error =
-                        err instanceof Error ? err : new Error(String(err));
-                    setError(error);
-                    setIsLoading(false);
+                dispatch({
+                    type: INSTANCE_DISPATCH_ACTION.SET_INSTANCE,
+                    value: instance,
+                });
+            } catch (error) {
+                if (!controller.signal.aborted && isSubscribed) {
+                    const errorInstance =
+                        error instanceof Error
+                            ? error
+                            : new Error(String(error));
+                    dispatch({
+                        type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
+                        value: errorInstance,
+                    });
                 }
             }
         };
 
-        initializeSdk();
+        loadSdk();
 
         return () => {
+            isSubscribed = false;
             controller.abort();
         };
-    }, [options, scriptOptions]);
+    }, [
+        state.loadingStatus,
+        state.sdkInstance,
+        state.createInstanceOptions,
+        state.scriptOptions,
+    ]);
+
+    // Separate effect for eligibility - runs after instance is created
+    useEffect(() => {
+        // Only run when we have an instance and it's in resolved state
+        if (
+            !state.sdkInstance ||
+            state.loadingStatus !== INSTANCE_LOADING_STATE.RESOLVED
+        ) {
+            return;
+        }
+
+        let isSubscribed = true;
+        const controller = new AbortController();
+
+        const loadEligibility = async () => {
+            try {
+                const eligiblePaymentMethods =
+                    await state.sdkInstance?.findEligibleMethods({});
+
+                if (
+                    controller.signal.aborted ||
+                    !isSubscribed ||
+                    !eligiblePaymentMethods
+                ) {
+                    return;
+                }
+
+                dispatch({
+                    type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
+                    value: eligiblePaymentMethods,
+                });
+            } catch (error) {
+                if (!controller.signal.aborted && isSubscribed) {
+                    console.warn(
+                        "Failed to get eligible payment methods:",
+                        error,
+                    );
+                }
+            }
+        };
+
+        loadEligibility();
+
+        return () => {
+            isSubscribed = false;
+            controller.abort();
+        };
+    }, [state.sdkInstance, state.loadingStatus]);
+
+    const contextValue = {
+        sdkInstance: state.sdkInstance,
+        eligiblePaymentMethods: state.eligiblePaymentMethods,
+        isLoading: state.loadingStatus === INSTANCE_LOADING_STATE.PENDING,
+        error: state.error,
+        dispatch,
+        loadingStatus: state.loadingStatus,
+    };
 
     return (
-        <InstanceContext.Provider
-            value={{ sdkInstance, eligiblePaymentMethods, isLoading, error }}
-        >
+        <InstanceContext.Provider value={contextValue}>
             {children}
         </InstanceContext.Provider>
     );

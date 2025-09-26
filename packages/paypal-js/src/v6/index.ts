@@ -10,7 +10,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     validateArguments(options);
 
     // SSR safeguard
-    if (typeof document === "undefined") {
+    if (isServer) {
         return Promise.resolve(null);
     }
 
