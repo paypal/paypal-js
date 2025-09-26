@@ -3,12 +3,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { usePayPalCardFields } from "./hooks";
 import { hasChildren } from "./utils";
 import { CARD_FIELDS_CONTEXT_ERROR } from "../../constants";
+import { useProxyProps } from "../../hooks/useProxyProps";
 
 import type {
     FieldComponentName,
     PayPalCardFieldsIndividualFieldOptions,
 } from "../../types";
-import { useProxyProps } from "../../hooks/useProxyProps";
 
 export const PayPalCardField: React.FC<
     PayPalCardFieldsIndividualFieldOptions & {
@@ -19,7 +19,7 @@ export const PayPalCardField: React.FC<
         usePayPalCardFields();
 
     const containerRef = useRef<HTMLDivElement>(null);
-    options.inputEvents &&= useProxyProps(
+    const proxyInputEvents = useProxyProps(
         options.inputEvents as Record<PropertyKey, unknown>,
     );
 
@@ -39,6 +39,9 @@ export const PayPalCardField: React.FC<
         }
         if (!containerRef.current) {
             return closeComponent;
+        }
+        if (options.inputEvents) {
+            options.inputEvents = proxyInputEvents;
         }
 
         const registeredField = registerField(
