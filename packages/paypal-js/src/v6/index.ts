@@ -1,4 +1,4 @@
-import { insertScriptElement } from "../utils";
+import { insertScriptElement, isServer } from "../utils";
 import type {
     PayPalV6Namespace,
     LoadCoreSdkScriptOptions,
@@ -8,6 +8,12 @@ const version = "__VERSION__";
 
 function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     validateArguments(options);
+
+    // SSR safeguard
+    if (isServer) {
+        return Promise.resolve(null);
+    }
+
     const { environment, debug } = options;
 
     const baseURL =
@@ -24,7 +30,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         insertScriptElement({
             url: url.toString(),
             onSuccess: () => {
-                if (!window.paypal) {
+                if (isServer || !window.paypal) {
                     return reject(
                         "The window.paypal global variable is not available",
                     );
