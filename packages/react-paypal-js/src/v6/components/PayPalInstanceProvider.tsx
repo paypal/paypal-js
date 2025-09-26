@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
 import { InstanceContext } from "../context/InstanceProviderContext";
-import { isServer } from "../../utils";
+import { isServer } from "../utils";
 
 import type {
     CreateInstanceOptions,
