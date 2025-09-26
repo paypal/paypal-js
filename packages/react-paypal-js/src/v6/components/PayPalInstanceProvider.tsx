@@ -35,8 +35,6 @@ export const PayPalInstanceProvider: React.FC<PayPalInstanceProviderProps> = ({
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
 
-    // use a useEffect to load the core sdk script
-    // ensure that we take SSR precautions
     useEffect(() => {
         // Skip if SSR
         if (isServer) {
