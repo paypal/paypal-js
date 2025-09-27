@@ -340,9 +340,15 @@ export const WithDynamicOrderState: FC = () => {
     const [isPaying, setIsPaying] = useState(false);
 
     const updateProviderTableCount = (index: number, count: number) => {
-        const newProviderTableCounts = [...providerTableCounts];
-        newProviderTableCounts[index] = count;
-        setProviderTableCounts(newProviderTableCounts);
+        setProviderTableCounts((prevProviderTableCounts) => {
+            if (prevProviderTableCounts[index] === count) {
+                return prevProviderTableCounts;
+            }
+
+            const newProviderTableCounts = [...prevProviderTableCounts];
+            newProviderTableCounts[index] = count;
+            return newProviderTableCounts;
+        });
     };
 
     async function createOrder() {

@@ -330,16 +330,28 @@ export const WithDynamicOrderState: FC = () => {
         column: number,
         count: number,
     ) => {
-        const index = row * 4 + column;
-        const newFieldsTableCounts = [...fieldsTableCounts];
-        newFieldsTableCounts[index] = count;
-        setFieldsTableCounts(newFieldsTableCounts);
+        setFieldsTableCounts((prevFieldsTableCounts) => {
+            const index = row * 4 + column;
+            if (prevFieldsTableCounts[index] === count) {
+                return prevFieldsTableCounts;
+            }
+
+            const newFieldsTableCounts = [...prevFieldsTableCounts];
+            newFieldsTableCounts[index] = count;
+            return newFieldsTableCounts;
+        });
     };
 
     const updateProviderTableCount = (index: number, count: number) => {
-        const newProviderTableCounts = [...providerTableCounts];
-        newProviderTableCounts[index] = count;
-        setProviderTableCounts(newProviderTableCounts);
+        setProviderTableCounts((prevProviderTableCounts) => {
+            if (prevProviderTableCounts[index] === count) {
+                return prevProviderTableCounts;
+            }
+
+            const newProviderTableCounts = [...prevProviderTableCounts];
+            newProviderTableCounts[index] = count;
+            return newProviderTableCounts;
+        });
     };
 
     async function createOrder() {
