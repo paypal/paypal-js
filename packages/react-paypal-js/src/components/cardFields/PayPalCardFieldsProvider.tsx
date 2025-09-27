@@ -7,6 +7,7 @@ import { generateMissingCardFieldsError } from "./utils";
 import { PayPalCardFieldsContext } from "./context";
 import { usePayPalCardFieldsRegistry } from "./hooks";
 import { FullWidthContainer } from "../ui/FullWidthContainer";
+import { useProxyProps } from "../../hooks/useProxyProps";
 
 import type {
     PayPalCardFieldsComponentOptions,
@@ -32,6 +33,10 @@ export const PayPalCardFieldsProvider = ({
     children,
     ...props
 }: CardFieldsProviderProps): JSX.Element => {
+    const proxyInputEvents = useProxyProps(
+        props.inputEvents as Record<PropertyKey, unknown>,
+    );
+    const proxyProps = useProxyProps(props);
     const [{ isResolved, options }] = usePayPalScriptReducer();
     const { fields, registerField, unregisterField } =
         usePayPalCardFieldsRegistry();
@@ -48,13 +53,16 @@ export const PayPalCardFieldsProvider = ({
         if (!isResolved) {
             return;
         }
+        if (props.inputEvents) {
+            proxyProps.inputEvents = proxyInputEvents;
+        }
 
         try {
             cardFieldsInstance.current =
                 getPayPalWindowNamespace(
                     options[SDK_SETTINGS.DATA_NAMESPACE],
                 ).CardFields?.({
-                    ...props,
+                    ...proxyProps,
                 }) ?? null;
         } catch (error) {
             setError(() => {

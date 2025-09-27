@@ -1,7 +1,10 @@
 import React from "react";
-import { render, waitFor } from "@testing-library/react";
+import { render, waitFor, screen, fireEvent } from "@testing-library/react";
 import { ErrorBoundary } from "react-error-boundary";
-import { loadScript } from "@paypal/paypal-js";
+import {
+    loadScript,
+    PayPalCardFieldsIndividualFieldOptions,
+} from "@paypal/paypal-js";
 import { mock } from "jest-mock-extended";
 
 import { PayPalCVVField } from "./PayPalCVVField";
@@ -130,6 +133,122 @@ describe("PayPalCVVField", () => {
                 },
             }),
         );
+
+        spyConsoleError.mockRestore();
+    });
+
+    test("should not create stale closure when passing callbacks", async () => {
+        const spyConsoleError = jest
+            .spyOn(console, "error")
+            .mockImplementation();
+
+        const MOCK_CARDFIELD_ID = "mock-cardfield";
+
+        window.paypal = {
+            CardFields: jest.fn(
+                () =>
+                    ({
+                        isEligible: jest.fn().mockReturnValue(true),
+                        CVVField: jest.fn(
+                            (
+                                options: PayPalCardFieldsIndividualFieldOptions,
+                            ) => ({
+                                render: jest.fn(
+                                    (element: string | HTMLElement) => {
+                                        // Simulate adding element
+                                        if (typeof element !== "string") {
+                                            const child =
+                                                document.createElement("div");
+                                            child.setAttribute(
+                                                "id",
+                                                MOCK_CARDFIELD_ID,
+                                            );
+                                            child.setAttribute(
+                                                "data-testid",
+                                                MOCK_CARDFIELD_ID,
+                                            );
+                                            if (options?.inputEvents?.onFocus) {
+                                                child.addEventListener(
+                                                    "focus",
+                                                    options.inputEvents
+                                                        .onFocus as unknown as EventListener,
+                                                );
+                                            }
+                                            element.append(child);
+                                        }
+                                        return Promise.resolve();
+                                    },
+                                ),
+                                close: jest.fn(() => Promise.resolve()),
+                            }),
+                        ),
+                    }) as unknown as PayPalCardFieldsComponent,
+            ),
+            version: "",
+        };
+
+        const onFocusFn = jest.fn();
+
+        const Wrapper = () => {
+            const [count, setCount] = React.useState(0);
+
+            function onFocus() {
+                onFocusFn(count);
+            }
+
+            return (
+                <div>
+                    <button
+                        data-testid="count-button"
+                        onClick={() => setCount(count + 1)}
+                    >
+                        Count: {count}
+                    </button>
+                    <PayPalScriptProvider
+                        options={{
+                            clientId: "test-client",
+                            currency: "USD",
+                            intent: "authorize",
+                            components: "card-fields",
+                            dataClientToken: "test-data-client-token",
+                        }}
+                    >
+                        <PayPalCardFieldsProvider
+                            onApprove={mockOnApprove}
+                            createOrder={mockCreateOrder}
+                            onError={mockOnError}
+                        >
+                            <PayPalCVVField
+                                inputEvents={{
+                                    onFocus: onFocus,
+                                }}
+                            />
+                        </PayPalCardFieldsProvider>
+                    </PayPalScriptProvider>
+                    {wrapper}
+                </div>
+            );
+        };
+
+        render(<Wrapper />);
+        await waitFor(() => expect(onError).toHaveBeenCalledTimes(0));
+
+        const countButton = screen.getByTestId("count-button");
+        const cvvField = screen.getByTestId(MOCK_CARDFIELD_ID);
+
+        expect(screen.getByText("Count: 0")).toBeInTheDocument();
+        fireEvent.focus(cvvField);
+        expect(onFocusFn).toHaveBeenCalledWith(0);
+
+        fireEvent.click(countButton);
+        expect(await screen.findByText("Count: 1")).toBeInTheDocument();
+        fireEvent.focus(cvvField);
+        expect(onFocusFn).toHaveBeenCalledWith(1);
+
+        fireEvent.click(countButton);
+        expect(await screen.findByText("Count: 2")).toBeInTheDocument();
+        fireEvent.focus(cvvField);
+        expect(onFocusFn).toHaveBeenCalledWith(2);
 
         spyConsoleError.mockRestore();
     });

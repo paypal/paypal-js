@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { usePayPalCardFields } from "./hooks";
 import { hasChildren } from "./utils";
 import { CARD_FIELDS_CONTEXT_ERROR } from "../../constants";
+import { useProxyProps } from "../../hooks/useProxyProps";
 
 import type {
     FieldComponentName,
@@ -18,6 +19,9 @@ export const PayPalCardField: React.FC<
         usePayPalCardFields();
 
     const containerRef = useRef<HTMLDivElement>(null);
+    const proxyInputEvents = useProxyProps(
+        options.inputEvents as Record<PropertyKey, unknown>,
+    );
 
     // Set errors is state so that they can be caught by React's error boundary
     const [, setError] = useState(null);
@@ -35,6 +39,9 @@ export const PayPalCardField: React.FC<
         }
         if (!containerRef.current) {
             return closeComponent;
+        }
+        if (options.inputEvents) {
+            options.inputEvents = proxyInputEvents;
         }
 
         const registeredField = registerField(
