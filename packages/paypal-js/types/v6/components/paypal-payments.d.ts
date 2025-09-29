@@ -1,3 +1,13 @@
+import {
+    BasePaymentSessionOptions,
+    BasePaymentSession,
+    PresentationModeOptionsForPopup,
+    PresentationModeOptionsForModal,
+    PresentationModeOptionsForAuto,
+    PresentationModeOptionsForPaymentHandler,
+    PresentationModeOptionsForRedirect,
+} from "./base-component";
+
 export type PayLaterCountryCodes =
     | "AU"
     | "DE"
@@ -68,24 +78,8 @@ export type OnApproveDataSavePayments = {
     payerId?: string;
 };
 
-export type OnCompleteData = {
-    paymentSessionState?: string;
-};
-
-export type OnCancelData = {
-    orderId: string;
-};
-
-export type OnErrorData = Error;
-
-export type BaseSessionOptions = {
-    onCancel?: (data?: OnCancelData) => void;
-    onComplete?: (data?: OnCompleteData) => void;
-    onError?: (data: OnErrorData) => void;
-    testBuyerCountry?: string;
-};
-
-export type PayPalOneTimePaymentSessionOptions = BaseSessionOptions & {
+export type PayPalOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
+    orderId?: string;
     onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;
     onShippingAddressChange?: (
         data: OnShippingAddressChangeData,
@@ -93,14 +87,34 @@ export type PayPalOneTimePaymentSessionOptions = BaseSessionOptions & {
     onShippingOptionsChange?: (
         data: OnShippingOptionsChangeData,
     ) => Promise<void>;
-    savePayment?: boolean;
 };
 
-export type SavePaymentSessionOptions = BaseSessionOptions & {
+export type SavePaymentSessionOptions = BasePaymentSessionOptions & {
     clientMetadataId?: string;
     orderId?: never;
     vaultSetupToken?: string;
     onApprove?: (data?: OnApproveDataSavePayments) => void;
+};
+
+export type PayPalPresentationModeOptions =
+    | PresentationModeOptionsForAuto
+    | PresentationModeOptionsForPopup
+    | PresentationModeOptionsForModal
+    | PresentationModeOptionsForPaymentHandler
+    | PresentationModeOptionsForRedirect;
+
+export type OneTimePaymentSession = BasePaymentSession & {
+    start: (
+        presentationModeOptions: PayPalPresentationModeOptions,
+        paymentSessionPromise?: Promise<{ orderId: string }>,
+    ) => Promise<void>;
+};
+
+export type SavePaymentSession = BasePaymentSession & {
+    start: (
+        presentationModeOptions: PayPalPresentationModeOptions,
+        paymentSessionPromise?: Promise<{ vaultSetupToken: string }>,
+    ) => Promise<void>;
 };
 
 export type PayLaterOneTimePaymentSessionOptions =
@@ -108,3 +122,18 @@ export type PayLaterOneTimePaymentSessionOptions =
 
 export type PayPalCreditOneTimePaymentSessionOptions =
     PayPalOneTimePaymentSessionOptions;
+
+export interface PayPalPaymentsInstance {
+    createPayPalOneTimePaymentSession: (
+        paymentSessionOptions: PayPalOneTimePaymentSessionOptions,
+    ) => OneTimePaymentSession;
+    createPayPalSavePaymentSession: (
+        paymentSessionOptions: SavePaymentSessionOptions,
+    ) => SavePaymentSession;
+    createPayLaterOneTimePaymentSession: (
+        paymentSessionOptions: PayLaterOneTimePaymentSessionOptions,
+    ) => OneTimePaymentSession;
+    createPayPalCreditOneTimePaymentSession: (
+        paymentSessionOptions: PayPalCreditOneTimePaymentSessionOptions,
+    ) => OneTimePaymentSession;
+}
