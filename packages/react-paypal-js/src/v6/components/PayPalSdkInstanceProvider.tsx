@@ -31,7 +31,7 @@ export const PayPalSdkInstanceProvider: React.FC<
     // Memoize createInstanceOptions to detect changes (for client token updates)
     const memoizedOptions = useMemo(
         () => createInstanceOptions,
-        [JSON.stringify(createInstanceOptions)],
+        [createInstanceOptions],
     );
 
     const [state, dispatch] = useReducer(instanceReducer, {
@@ -46,8 +46,7 @@ export const PayPalSdkInstanceProvider: React.FC<
     // Auto-sync createInstanceOptions changes (e.g., client token updates)
     useEffect(() => {
         const hasOptionsChanged =
-            JSON.stringify(state.createInstanceOptions) !==
-            JSON.stringify(memoizedOptions);
+            state.createInstanceOptions !== memoizedOptions;
 
         if (hasOptionsChanged) {
             dispatch({
