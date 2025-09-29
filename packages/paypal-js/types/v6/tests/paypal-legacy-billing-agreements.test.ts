@@ -36,9 +36,8 @@ async function main() {
             onApprove: () => Promise.resolve(),
         });
 
-    // TODO: this should fail
-    // figure out how to prevent overrides
-    const createBillingToken = () => Promise.resolve({ orderId: "ABC123" });
+    const createBillingToken = () =>
+        Promise.resolve({ billingToken: "ABC123" });
 
     const paypalButton = document.querySelector("paypal-button");
 

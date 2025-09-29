@@ -12,11 +12,13 @@ export type OnApproveDataBillingAgreements = {
     payerId?: string;
 };
 
-export type PayPalLegacyBillingAgreementsSessionOptions =
-    BasePaymentSessionOptions & {
-        billingToken?: string;
-        onApprove: (data: OnApproveDataBillingAgreements) => Promise<void>;
-    };
+export type PayPalLegacyBillingAgreementsSessionOptions = Omit<
+    BasePaymentSessionOptions,
+    "onApprove"
+> & {
+    billingToken?: string;
+    onApprove: (data: OnApproveDataBillingAgreements) => Promise<void>;
+};
 
 export type PayPalLegacyBillingPresentationModeOptions =
     | PresentationModeOptionsForAuto
@@ -28,7 +30,10 @@ export type PayPalLegacyBillingAgreementsSessionPromise = Promise<{
     billingToken: string;
 }>;
 
-export type PayPalLegacyBillingAgreementsSession = BasePaymentSession & {
+export type PayPalLegacyBillingAgreementsSession = Omit<
+    BasePaymentSession,
+    "start"
+> & {
     start: (
         presentationModeOptions: PayPalLegacyBillingPresentationModeOptions,
         paymentSessionPromise?: PayPalLegacyBillingAgreementsSessionPromise,

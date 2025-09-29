@@ -1,6 +1,7 @@
 import {
     BasePaymentSessionOptions,
     BasePaymentSession,
+    OnApproveDataOneTimePayments,
     PresentationModeOptionsForPopup,
     PresentationModeOptionsForModal,
     PresentationModeOptionsForAuto,
@@ -67,12 +68,6 @@ export type OnShippingOptionsChangeData = {
     };
 };
 
-export type OnApproveDataOneTimePayments = {
-    orderId: string;
-    payerId?: string;
-    billingToken?: string;
-};
-
 export type OnApproveDataSavePayments = {
     vaultSetupToken: string;
     payerId?: string;
@@ -89,7 +84,10 @@ export type PayPalOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
     ) => Promise<void>;
 };
 
-export type SavePaymentSessionOptions = BasePaymentSessionOptions & {
+export type SavePaymentSessionOptions = Omit<
+    BasePaymentSessionOptions,
+    "onApprove"
+> & {
     clientMetadataId?: string;
     orderId?: never;
     vaultSetupToken?: string;
@@ -110,7 +108,7 @@ export type OneTimePaymentSession = BasePaymentSession & {
     ) => Promise<void>;
 };
 
-export type SavePaymentSession = BasePaymentSession & {
+export type SavePaymentSession = Omit<BasePaymentSession, "start"> & {
     start: (
         presentationModeOptions: PayPalPresentationModeOptions,
         paymentSessionPromise?: Promise<{ vaultSetupToken: string }>,

@@ -1,20 +1,15 @@
 import {
     BasePaymentSessionOptions,
     BasePaymentSession,
+    OnApproveDataOneTimePayments,
     PresentationModeOptionsForPopup,
     PresentationModeOptionsForModal,
     PresentationModeOptionsForAuto,
 } from "./base-component";
 
-export type OnApproveDataVenmoOneTimePayments = {
-    orderId: string;
-    payerId?: string;
-    billingToken?: string;
-};
-
 export type VenmoOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
     orderId?: string;
-    onApprove: (data: OnApproveDataVenmoOneTimePayments) => Promise<void>;
+    onApprove: (data: OnApproveDataOneTimePayments) => Promise<void>;
 };
 
 export type VenmoPresentationModeOptions =
@@ -24,7 +19,7 @@ export type VenmoPresentationModeOptions =
 
 export type VenmoOneTimePaymentSessionPromise = Promise<{ orderId: string }>;
 
-export type VenmoOneTimePaymentSession = BasePaymentSession & {
+export type VenmoOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
     start: (
         presentationModeOptions: VenmoPresentationModeOptions,
         paymentSessionPromise?: VenmoOneTimePaymentSessionPromise,

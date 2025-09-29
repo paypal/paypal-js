@@ -1,12 +1,20 @@
+export type OnApproveDataOneTimePayments = {
+    orderId: string;
+    payerId?: string;
+    billingToken?: string;
+};
+
 export type OnCompleteData = {
     paymentSessionState: "approved" | "cancelled" | "error";
 };
 
 export type OnErrorData = Error;
 
+/**
+ * use Omit<BasePaymentSessionOptions, "onApprove"> to change the arguments for onApprove()
+ */
 export type BasePaymentSessionOptions = {
-    // this onApproveData will be overwritten
-    onApprove: (data: Record<string, unknown>) => Promise<void>;
+    onApprove: (data: OnApproveDataOneTimePayments) => Promise<void>;
     onCancel?: () => void;
     onComplete?: (data: OnCompleteData) => void;
     onError?: (data: OnErrorData) => void;
@@ -36,12 +44,14 @@ export type PresentationModeOptionsForAuto = {
     fullPageOverlay?: { enabled: boolean };
 };
 
-export type BasePaymentSessionPromise = Promise<Record<string, unknown>>;
+export type BasePaymentSessionPromise = Promise<{ orderId: string }>;
 
+/**
+ * use Omit<BasePaymentSession, "start"> to change the arguments for start()
+ */
 export type BasePaymentSession = {
     start: (
         options: PresentationModeOptionsForAuto,
-        // this PaymentSessionPromise will be overwritten
         PaymentSessionPromise?: BasePaymentSessionPromise,
     ) => Promise<void>;
     destroy: () => void;
