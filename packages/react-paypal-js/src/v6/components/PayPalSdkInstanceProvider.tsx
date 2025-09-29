@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useMemo } from "react";
+import React, { useEffect, useReducer } from "react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
 import {
