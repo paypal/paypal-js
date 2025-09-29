@@ -25,17 +25,38 @@ interface PayPalSdkInstanceProviderProps {
     scriptOptions: LoadCoreSdkScriptOptions;
 }
 
+/**
+ * PayPal SDK Instance Provider with SSR support
+ *
+ * SSR Behavior:
+ * - Server: Initializes in INITIAL state, no script loading attempted
+ * - Client: Initializes in PENDING state, loads scripts on mount
+ * - Hydration: Client takes over from server state seamlessly
+ */
 export const PayPalSdkInstanceProvider: React.FC<
     PayPalSdkInstanceProviderProps
 > = ({ createInstanceOptions, children, scriptOptions }) => {
     const [state, dispatch] = useReducer(instanceReducer, {
         sdkInstance: null,
         eligiblePaymentMethods: null,
-        loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+        loadingStatus: INSTANCE_LOADING_STATE.INITIAL,
         error: null,
         createInstanceOptions,
         scriptOptions,
     });
+
+    // Client-side hydration: transition from INITIAL to PENDING state
+    useEffect(() => {
+        if (
+            !isServer &&
+            state.loadingStatus === INSTANCE_LOADING_STATE.INITIAL
+        ) {
+            dispatch({
+                type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
+                value: INSTANCE_LOADING_STATE.PENDING,
+            });
+        }
+    }); // Run once on mount
 
     // Auto-sync createInstanceOptions changes (e.g., client token updates)
     useEffect(() => {
@@ -57,16 +78,8 @@ export const PayPalSdkInstanceProvider: React.FC<
         state.scriptOptions,
     ]);
 
-    // SDK loading effect
+    // SDK loading effect - only runs on client (useEffect doesn't run during SSR)
     useEffect(() => {
-        if (isServer) {
-            dispatch({
-                type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
-                value: INSTANCE_LOADING_STATE.INITIAL,
-            });
-            return;
-        }
-
         if (
             state.loadingStatus !== INSTANCE_LOADING_STATE.PENDING ||
             state.sdkInstance
@@ -183,7 +196,6 @@ export const PayPalSdkInstanceProvider: React.FC<
     const contextValue = {
         sdkInstance: state.sdkInstance,
         eligiblePaymentMethods: state.eligiblePaymentMethods,
-        isLoading: state.loadingStatus === INSTANCE_LOADING_STATE.PENDING,
         error: state.error,
         dispatch,
         loadingStatus: state.loadingStatus,

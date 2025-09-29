@@ -59,7 +59,6 @@ export type InstanceAction =
 export interface InstanceContextState {
     sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
     eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
-    isLoading: boolean;
     error: Error | null;
     dispatch: React.Dispatch<InstanceAction>;
     loadingStatus: INSTANCE_LOADING_STATE;
