@@ -28,36 +28,34 @@ interface PayPalSdkInstanceProviderProps {
 export const PayPalSdkInstanceProvider: React.FC<
     PayPalSdkInstanceProviderProps
 > = ({ createInstanceOptions, children, scriptOptions }) => {
-    // Memoize createInstanceOptions to detect changes (for client token updates)
-    const memoizedOptions = useMemo(
-        () => createInstanceOptions,
-        [createInstanceOptions],
-    );
-
     const [state, dispatch] = useReducer(instanceReducer, {
         sdkInstance: null,
         eligiblePaymentMethods: null,
         loadingStatus: INSTANCE_LOADING_STATE.PENDING,
         error: null,
-        createInstanceOptions: memoizedOptions,
+        createInstanceOptions,
         scriptOptions,
     });
 
     // Auto-sync createInstanceOptions changes (e.g., client token updates)
     useEffect(() => {
         const hasOptionsChanged =
-            state.createInstanceOptions !== memoizedOptions;
+            state.createInstanceOptions !== createInstanceOptions;
 
         if (hasOptionsChanged) {
             dispatch({
                 type: INSTANCE_DISPATCH_ACTION.RESET_STATE,
                 value: {
-                    createInstanceOptions: memoizedOptions,
+                    createInstanceOptions,
                     scriptOptions: state.scriptOptions,
                 },
             });
         }
-    }, [memoizedOptions, state.createInstanceOptions, state.scriptOptions]);
+    }, [
+        createInstanceOptions,
+        state.createInstanceOptions,
+        state.scriptOptions,
+    ]);
 
     // SDK loading effect
     useEffect(() => {
