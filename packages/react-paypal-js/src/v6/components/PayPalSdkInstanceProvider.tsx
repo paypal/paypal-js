@@ -9,7 +9,7 @@ import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
 } from "../types/InstanceProviderTypes";
-import { isServer } from "../utils";
+import { isServer, useDeepCompareMemoize } from "../utils";
 
 import type {
     CreateInstanceOptions,
@@ -32,17 +32,35 @@ interface PayPalSdkInstanceProviderProps {
  * - Server: Initializes in INITIAL state, no script loading attempted
  * - Client: Initializes in PENDING state, loads scripts on mount
  * - Hydration: Client takes over from server state seamlessly
+ *
+ * Props are automatically deep-compared to prevent unnecessary SDK reloads.
+ * You can pass options directly without manual memoization.
+ *
+ * @example
+ * <PayPalSdkInstanceProvider
+ *   createInstanceOptions={{
+ *     components: ["paypal-payments"],
+ *     clientToken: token,
+ *   }}
+ *   scriptOptions={{ environment: "sandbox" }}
+ * >
+ *   {children}
+ * </PayPalSdkInstanceProvider>
  */
 export const PayPalSdkInstanceProvider: React.FC<
     PayPalSdkInstanceProviderProps
 > = ({ createInstanceOptions, children, scriptOptions }) => {
+    // Auto-memoize props based on deep equality to prevent unnecessary reloads
+    const memoizedCreateOptions = useDeepCompareMemoize(createInstanceOptions);
+    const memoizedScriptOptions = useDeepCompareMemoize(scriptOptions);
+
     const [state, dispatch] = useReducer(instanceReducer, {
         sdkInstance: null,
         eligiblePaymentMethods: null,
         loadingStatus: INSTANCE_LOADING_STATE.INITIAL,
         error: null,
-        createInstanceOptions,
-        scriptOptions,
+        createInstanceOptions: memoizedCreateOptions,
+        scriptOptions: memoizedScriptOptions,
     });
 
     // Client-side hydration: transition from INITIAL to PENDING state
@@ -61,19 +79,21 @@ export const PayPalSdkInstanceProvider: React.FC<
     // Auto-sync createInstanceOptions changes (e.g., client token updates)
     useEffect(() => {
         const hasOptionsChanged =
-            state.createInstanceOptions !== createInstanceOptions;
+            state.createInstanceOptions !== memoizedCreateOptions ||
+            state.scriptOptions !== memoizedScriptOptions;
 
         if (hasOptionsChanged) {
             dispatch({
                 type: INSTANCE_DISPATCH_ACTION.RESET_STATE,
                 value: {
-                    createInstanceOptions,
-                    scriptOptions: state.scriptOptions,
+                    createInstanceOptions: memoizedCreateOptions,
+                    scriptOptions: memoizedScriptOptions,
                 },
             });
         }
     }, [
-        createInstanceOptions,
+        memoizedCreateOptions,
+        memoizedScriptOptions,
         state.createInstanceOptions,
         state.scriptOptions,
     ]);
@@ -147,6 +167,10 @@ export const PayPalSdkInstanceProvider: React.FC<
 
     // Separate effect for eligibility - runs after instance is created
     useEffect(() => {
+        if (isServer) {
+            return;
+        }
+
         // Only run when we have an instance and it's in resolved state
         if (
             !state.sdkInstance ||

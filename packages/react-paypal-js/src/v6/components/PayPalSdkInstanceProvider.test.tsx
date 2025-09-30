@@ -359,6 +359,186 @@ describe("PayPalSdkInstanceProvider", () => {
     });
 });
 
+describe("Auto-memoization", () => {
+    beforeEach(() => {
+        document.head.innerHTML = "";
+        (loadCoreSdkScript as jest.Mock).mockResolvedValue(
+            createMockPayPalNamespace(),
+        );
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+        document.head.innerHTML = "";
+    });
+
+    test("should not reload SDK when props have same values but different references", async () => {
+        const { state, TestComponent } = setupTestComponent();
+
+        const { rerender } = render(
+            <PayPalSdkInstanceProvider
+                createInstanceOptions={createInstanceOptions}
+                scriptOptions={scriptOptions}
+            >
+                <TestComponent />
+            </PayPalSdkInstanceProvider>,
+        );
+
+        await waitFor(() => expectResolvedState(state));
+
+        const loadCallCount = (loadCoreSdkScript as jest.Mock).mock.calls
+            .length;
+
+        // Rerender with new object reference but same values
+        rerender(
+            <PayPalSdkInstanceProvider
+                createInstanceOptions={{
+                    components: ["paypal-payments"],
+                    clientToken: TEST_CLIENT_TOKEN,
+                }}
+                scriptOptions={{ environment: "sandbox" }}
+            >
+                <TestComponent />
+            </PayPalSdkInstanceProvider>,
+        );
+
+        // Wait a bit to ensure no reload happens
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        // Should NOT reload
+        expect((loadCoreSdkScript as jest.Mock).mock.calls.length).toBe(
+            loadCallCount,
+        );
+    });
+
+    test("should reload SDK when actual values change", async () => {
+        const { state, TestComponent } = setupTestComponent();
+
+        const { rerender } = render(
+            <PayPalSdkInstanceProvider
+                createInstanceOptions={createInstanceOptions}
+                scriptOptions={scriptOptions}
+            >
+                <TestComponent />
+            </PayPalSdkInstanceProvider>,
+        );
+
+        await waitFor(() => expectResolvedState(state));
+
+        const loadCallCount = (loadCoreSdkScript as jest.Mock).mock.calls
+            .length;
+
+        // Rerender with different client token
+        rerender(
+            <PayPalSdkInstanceProvider
+                createInstanceOptions={{
+                    components: ["paypal-payments"],
+                    clientToken: "NEW-TOKEN",
+                }}
+                scriptOptions={scriptOptions}
+            >
+                <TestComponent />
+            </PayPalSdkInstanceProvider>,
+        );
+
+        // Should reset to pending state
+        expectResetState(state);
+
+        // Should reload with new token
+        await waitFor(() =>
+            expect((loadCoreSdkScript as jest.Mock).mock.calls.length).toBe(
+                loadCallCount + 1,
+            ),
+        );
+    });
+
+    test("should reload SDK when scriptOptions change", async () => {
+        const { state, TestComponent } = setupTestComponent();
+
+        const { rerender } = render(
+            <PayPalSdkInstanceProvider
+                createInstanceOptions={createInstanceOptions}
+                scriptOptions={scriptOptions}
+            >
+                <TestComponent />
+            </PayPalSdkInstanceProvider>,
+        );
+
+        await waitFor(() => expectResolvedState(state));
+
+        const loadCallCount = (loadCoreSdkScript as jest.Mock).mock.calls
+            .length;
+
+        // Rerender with different environment
+        rerender(
+            <PayPalSdkInstanceProvider
+                createInstanceOptions={createInstanceOptions}
+                scriptOptions={{ environment: "production" }}
+            >
+                <TestComponent />
+            </PayPalSdkInstanceProvider>,
+        );
+
+        // Should reset to pending state
+        expectResetState(state);
+
+        // Should reload with new environment
+        await waitFor(() =>
+            expect((loadCoreSdkScript as jest.Mock).mock.calls.length).toBe(
+                loadCallCount + 1,
+            ),
+        );
+    });
+
+    test("should handle nested object changes correctly", async () => {
+        const { state, TestComponent } = setupTestComponent();
+
+        const complexOptions: CreateInstanceOptions<
+            ["paypal-payments", "venmo-payments"]
+        > = {
+            components: ["paypal-payments", "venmo-payments"],
+            clientToken: TEST_CLIENT_TOKEN,
+            locale: "en_US",
+        };
+
+        const { rerender } = render(
+            <PayPalSdkInstanceProvider
+                createInstanceOptions={complexOptions}
+                scriptOptions={scriptOptions}
+            >
+                <TestComponent />
+            </PayPalSdkInstanceProvider>,
+        );
+
+        await waitFor(() => expectResolvedState(state));
+
+        const loadCallCount = (loadCoreSdkScript as jest.Mock).mock.calls
+            .length;
+
+        // Rerender with same values but new object reference
+        rerender(
+            <PayPalSdkInstanceProvider
+                createInstanceOptions={{
+                    components: ["paypal-payments", "venmo-payments"],
+                    clientToken: TEST_CLIENT_TOKEN,
+                    locale: "en_US",
+                }}
+                scriptOptions={{ environment: "sandbox" }}
+            >
+                <TestComponent />
+            </PayPalSdkInstanceProvider>,
+        );
+
+        // Wait a bit to ensure no reload happens
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        // Should NOT reload
+        expect((loadCoreSdkScript as jest.Mock).mock.calls.length).toBe(
+            loadCallCount,
+        );
+    });
+});
+
 describe("usePayPalInstance", () => {
     test("should throw an error when used without PayPalSdkInstanceProvider", () => {
         withConsoleSpy("error", () => {

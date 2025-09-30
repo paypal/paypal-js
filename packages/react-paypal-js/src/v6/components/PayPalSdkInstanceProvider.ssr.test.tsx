@@ -23,6 +23,7 @@ jest.mock("@paypal/paypal-js/sdk-v6", () => ({
 }));
 
 jest.mock("../utils", () => ({
+    ...jest.requireActual("../utils"),
     isServer: true,
 }));
 
