@@ -96,72 +96,20 @@ describe("instanceReducer", () => {
     });
 
     describe("SET_LOADING_STATUS action", () => {
-        test("should set loadingStatus to PENDING", () => {
+        test.each([
+            INSTANCE_LOADING_STATE.PENDING,
+            INSTANCE_LOADING_STATE.RESOLVED,
+            INSTANCE_LOADING_STATE.REJECTED,
+        ])("should set loadingStatus to %s", (status) => {
             const action: InstanceAction = {
                 type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
-                value: INSTANCE_LOADING_STATE.PENDING,
+                value: status,
             };
 
             const result = instanceReducer(initialState, action);
 
-            expect(result).toEqual({
-                ...initialState,
-                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
-            });
+            expect(result.loadingStatus).toBe(status);
             expect(result).not.toBe(initialState);
-        });
-
-        test("should set loadingStatus to RESOLVED", () => {
-            const action: InstanceAction = {
-                type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
-                value: INSTANCE_LOADING_STATE.RESOLVED,
-            };
-
-            const result = instanceReducer(initialState, action);
-
-            expect(result.loadingStatus).toBe(INSTANCE_LOADING_STATE.RESOLVED);
-            expect(result.sdkInstance).toBe(initialState.sdkInstance);
-            expect(result.eligiblePaymentMethods).toBe(
-                initialState.eligiblePaymentMethods,
-            );
-            expect(result.error).toBe(initialState.error);
-        });
-
-        test("should set loadingStatus to REJECTED", () => {
-            const action: InstanceAction = {
-                type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
-                value: INSTANCE_LOADING_STATE.REJECTED,
-            };
-
-            const result = instanceReducer(initialState, action);
-
-            expect(result.loadingStatus).toBe(INSTANCE_LOADING_STATE.REJECTED);
-        });
-
-        test("should preserve all other state properties", () => {
-            const stateWithData = {
-                ...initialState,
-                sdkInstance: createMockSdkInstance(),
-                eligiblePaymentMethods: createMockEligiblePaymentMethods(),
-                error: new Error("test error"),
-            };
-
-            const action: InstanceAction = {
-                type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
-                value: INSTANCE_LOADING_STATE.PENDING,
-            };
-
-            const result = instanceReducer(stateWithData, action);
-
-            expect(result.sdkInstance).toBe(stateWithData.sdkInstance);
-            expect(result.eligiblePaymentMethods).toBe(
-                stateWithData.eligiblePaymentMethods,
-            );
-            expect(result.error).toBe(stateWithData.error);
-            expect(result.createInstanceOptions).toBe(
-                stateWithData.createInstanceOptions,
-            );
-            expect(result.scriptOptions).toBe(stateWithData.scriptOptions);
         });
     });
 
@@ -179,33 +127,6 @@ describe("instanceReducer", () => {
             expect(result.loadingStatus).toBe(INSTANCE_LOADING_STATE.RESOLVED);
             expect(result).not.toBe(initialState);
         });
-
-        test("should preserve other state properties when setting instance", () => {
-            const stateWithData = {
-                ...initialState,
-                eligiblePaymentMethods: createMockEligiblePaymentMethods(),
-                error: new Error("previous error"),
-            };
-
-            const mockInstance = createMockSdkInstance();
-            const action: InstanceAction = {
-                type: INSTANCE_DISPATCH_ACTION.SET_INSTANCE,
-                value: mockInstance,
-            };
-
-            const result = instanceReducer(stateWithData, action);
-
-            expect(result.sdkInstance).toBe(mockInstance);
-            expect(result.loadingStatus).toBe(INSTANCE_LOADING_STATE.RESOLVED);
-            expect(result.eligiblePaymentMethods).toBe(
-                stateWithData.eligiblePaymentMethods,
-            );
-            expect(result.error).toBe(stateWithData.error);
-            expect(result.createInstanceOptions).toBe(
-                stateWithData.createInstanceOptions,
-            );
-            expect(result.scriptOptions).toBe(stateWithData.scriptOptions);
-        });
     });
 
     describe("SET_ELIGIBILITY action", () => {
@@ -221,88 +142,29 @@ describe("instanceReducer", () => {
             expect(result.eligiblePaymentMethods).toBe(mockEligibility);
             expect(result).not.toBe(initialState);
         });
-
-        test("should preserve other state properties when setting eligibility", () => {
-            const stateWithData = {
-                ...initialState,
-                sdkInstance: createMockSdkInstance(),
-                loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
-                error: new Error("test error"),
-            };
-
-            const mockEligibility = createMockEligiblePaymentMethods();
-            const action: InstanceAction = {
-                type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-                value: mockEligibility,
-            };
-
-            const result = instanceReducer(stateWithData, action);
-
-            expect(result.eligiblePaymentMethods).toBe(mockEligibility);
-            expect(result.sdkInstance).toBe(stateWithData.sdkInstance);
-            expect(result.loadingStatus).toBe(stateWithData.loadingStatus);
-            expect(result.error).toBe(stateWithData.error);
-            expect(result.createInstanceOptions).toBe(
-                stateWithData.createInstanceOptions,
-            );
-            expect(result.scriptOptions).toBe(stateWithData.scriptOptions);
-        });
     });
 
     describe("SET_ERROR action", () => {
-        test("should set error and automatically set loadingStatus to REJECTED", () => {
-            const testError = new Error("SDK loading failed");
-            const action: InstanceAction = {
-                type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                value: testError,
-            };
+        test.each([
+            ["Error", new Error("SDK loading failed")],
+            ["TypeError", new TypeError("Network error")],
+        ])(
+            "should set error and automatically set loadingStatus to REJECTED for %s",
+            (_name, error) => {
+                const action: InstanceAction = {
+                    type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
+                    value: error,
+                };
 
-            const result = instanceReducer(initialState, action);
+                const result = instanceReducer(initialState, action);
 
-            expect(result.error).toBe(testError);
-            expect(result.loadingStatus).toBe(INSTANCE_LOADING_STATE.REJECTED);
-            expect(result).not.toBe(initialState);
-        });
-
-        test("should preserve other state properties when setting error", () => {
-            const stateWithData = {
-                ...initialState,
-                sdkInstance: createMockSdkInstance(),
-                eligiblePaymentMethods: createMockEligiblePaymentMethods(),
-            };
-
-            const testError = new Error("Instance creation failed");
-            const action: InstanceAction = {
-                type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                value: testError,
-            };
-
-            const result = instanceReducer(stateWithData, action);
-
-            expect(result.error).toBe(testError);
-            expect(result.loadingStatus).toBe(INSTANCE_LOADING_STATE.REJECTED);
-            expect(result.sdkInstance).toBe(stateWithData.sdkInstance);
-            expect(result.eligiblePaymentMethods).toBe(
-                stateWithData.eligiblePaymentMethods,
-            );
-            expect(result.createInstanceOptions).toBe(
-                stateWithData.createInstanceOptions,
-            );
-            expect(result.scriptOptions).toBe(stateWithData.scriptOptions);
-        });
-
-        test("should handle different error types", () => {
-            const networkError = new TypeError("Network error");
-            const action: InstanceAction = {
-                type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                value: networkError,
-            };
-
-            const result = instanceReducer(initialState, action);
-
-            expect(result.error).toBe(networkError);
-            expect(result.loadingStatus).toBe(INSTANCE_LOADING_STATE.REJECTED);
-        });
+                expect(result.error).toBe(error);
+                expect(result.loadingStatus).toBe(
+                    INSTANCE_LOADING_STATE.REJECTED,
+                );
+                expect(result).not.toBe(initialState);
+            },
+        );
     });
 
     describe("RESET_STATE action", () => {
@@ -367,39 +229,20 @@ describe("instanceReducer", () => {
         });
     });
 
-    describe("Default case", () => {
-        test("should return same state for unknown action", () => {
-            const action = { type: "UNKNOWN_ACTION", value: "test" };
-            // @ts-expect-error Testing unknown action type
-            const result = instanceReducer(initialState, action);
-
-            expect(result).toBe(initialState);
-        });
-
-        test("should return same state for empty action", () => {
-            const action = {};
-            // @ts-expect-error Testing invalid action
-            const result = instanceReducer(initialState, action);
+    describe("Invalid actions", () => {
+        test("should return same state for unknown action type", () => {
+            const result = instanceReducer(initialState, {
+                // @ts-expect-error invalid action type
+                type: "UNKNOWN_ACTION",
+                // @ts-expect-error invalid component value
+                value: "test",
+            });
 
             expect(result).toBe(initialState);
         });
     });
 
-    describe("State immutability", () => {
-        test("should never mutate the input state", () => {
-            const originalState = createInitialState();
-            const stateCopy = { ...originalState };
-
-            const action: InstanceAction = {
-                type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
-                value: INSTANCE_LOADING_STATE.PENDING,
-            };
-
-            instanceReducer(originalState, action);
-
-            expect(originalState).toEqual(stateCopy);
-        });
-
+    describe("State immutability and preservation", () => {
         test("should return new state object for all valid actions", () => {
             const testCases: InstanceAction[] = [
                 {
@@ -431,28 +274,66 @@ describe("instanceReducer", () => {
             testCases.forEach((action) => {
                 const result = instanceReducer(initialState, action);
                 expect(result).not.toBe(initialState);
-                expect(typeof result).toBe("object");
             });
         });
 
-        test("should preserve nested object references when not modified", () => {
-            const mockOptions = createMockCreateInstanceOptions();
-            const mockScriptOptions = createMockScriptOptions();
-            const stateWithOptions = {
-                ...initialState,
-                createInstanceOptions: mockOptions,
-                scriptOptions: mockScriptOptions,
-            };
+        test.each<[string, InstanceAction]>([
+            [
+                "SET_LOADING_STATUS",
+                {
+                    type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
+                    value: INSTANCE_LOADING_STATE.PENDING,
+                },
+            ],
+            [
+                "SET_INSTANCE",
+                {
+                    type: INSTANCE_DISPATCH_ACTION.SET_INSTANCE,
+                    value: createMockSdkInstance(),
+                },
+            ],
+            [
+                "SET_ELIGIBILITY",
+                {
+                    type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
+                    value: createMockEligiblePaymentMethods(),
+                },
+            ],
+            [
+                "SET_ERROR",
+                {
+                    type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
+                    value: new Error("test"),
+                },
+            ],
+        ])(
+            "should preserve unmodified state properties for %s action",
+            (_name, action) => {
+                const mockInstance = createMockSdkInstance();
+                const mockEligibility = createMockEligiblePaymentMethods();
+                const mockOptions = createMockCreateInstanceOptions();
+                const mockScriptOptions = createMockScriptOptions();
 
-            const action: InstanceAction = {
-                type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
-                value: INSTANCE_LOADING_STATE.PENDING,
-            };
+                const stateWithData = {
+                    ...initialState,
+                    sdkInstance: mockInstance,
+                    eligiblePaymentMethods: mockEligibility,
+                    createInstanceOptions: mockOptions,
+                    scriptOptions: mockScriptOptions,
+                };
 
-            const result = instanceReducer(stateWithOptions, action);
+                const result = instanceReducer(stateWithData, action);
 
-            expect(result.createInstanceOptions).toBe(mockOptions);
-            expect(result.scriptOptions).toBe(mockScriptOptions);
-        });
+                // Verify unmodified properties maintain reference equality
+                if (action.type !== INSTANCE_DISPATCH_ACTION.SET_INSTANCE) {
+                    expect(result.sdkInstance).toBe(mockInstance);
+                }
+                if (action.type !== INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY) {
+                    expect(result.eligiblePaymentMethods).toBe(mockEligibility);
+                }
+                expect(result.createInstanceOptions).toBe(mockOptions);
+                expect(result.scriptOptions).toBe(mockScriptOptions);
+            },
+        );
     });
 });

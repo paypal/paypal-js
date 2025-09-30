@@ -6,6 +6,18 @@ import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 import { PayPalSdkInstanceProvider } from "./PayPalSdkInstanceProvider";
 import { usePayPalInstance } from "../hooks/usePayPalInstance";
 import { INSTANCE_LOADING_STATE } from "../types/InstanceProviderTypes";
+import {
+    TEST_CLIENT_TOKEN,
+    TEST_ERROR_MESSAGE,
+    TEST_ELIGIBILITY_RESULT,
+    createMockSdkInstance,
+    createMockPayPalNamespace,
+    expectPendingState,
+    expectResolvedState,
+    expectRejectedState,
+    expectResetState,
+    withConsoleSpy,
+} from "./providerTestUtils";
 
 import type {
     CreateInstanceOptions,
@@ -22,14 +34,6 @@ jest.mock("../utils", () => ({
     isServer: false,
 }));
 
-// Test constants
-const TEST_CLIENT_TOKEN = "test-client-token";
-const TEST_ERROR_MESSAGE = "test error";
-const TEST_ELIGIBILITY_RESULT = {
-    paypal: { eligible: true },
-    venmo: { eligible: false },
-};
-
 const createInstanceOptions: CreateInstanceOptions<["paypal-payments"]> = {
     components: ["paypal-payments"],
     clientToken: TEST_CLIENT_TOKEN,
@@ -38,23 +42,6 @@ const createInstanceOptions: CreateInstanceOptions<["paypal-payments"]> = {
 const scriptOptions: LoadCoreSdkScriptOptions = {
     environment: "sandbox",
 };
-
-// Test utilities
-function createMockSdkInstance() {
-    return {
-        findEligibleMethods: jest
-            .fn()
-            .mockResolvedValue(TEST_ELIGIBILITY_RESULT),
-        createPayPalOneTimePaymentSession: jest.fn(),
-        updateLocale: jest.fn(),
-    };
-}
-
-function createMockPayPalNamespace() {
-    return {
-        createInstance: jest.fn().mockResolvedValue(createMockSdkInstance()),
-    };
-}
 
 function renderProvider(
     instanceOptions = createInstanceOptions,
@@ -92,11 +79,7 @@ describe("PayPalSdkInstanceProvider", () => {
         test("should transition to PENDING on client mount (hydration-safe)", async () => {
             const { state } = renderProvider();
 
-            await waitFor(() =>
-                expect(state.loadingStatus).toBe(
-                    INSTANCE_LOADING_STATE.PENDING,
-                ),
-            );
+            await waitFor(() => expectPendingState(state));
         });
 
         test("should set loadingStatus to 'resolved' when SDK loads successfully", async () => {
@@ -104,80 +87,58 @@ describe("PayPalSdkInstanceProvider", () => {
 
             expect(loadCoreSdkScript).toHaveBeenCalledWith(scriptOptions);
 
-            await waitFor(() =>
-                expect(state.loadingStatus).toBe(
-                    INSTANCE_LOADING_STATE.RESOLVED,
-                ),
-            );
-            expect(state.sdkInstance).toBeTruthy();
-            expect(state.error).toBe(null);
+            await waitFor(() => expectResolvedState(state));
         });
 
         test('should set loadingStatus to "rejected" when SDK fails to load', async () => {
-            const spyConsoleError = jest
-                .spyOn(console, "error")
-                .mockImplementation();
-
-            (loadCoreSdkScript as jest.Mock).mockRejectedValue(
-                new Error(TEST_ERROR_MESSAGE),
-            );
-
-            const { state } = renderProvider();
-
-            await waitFor(() =>
-                expect(state.loadingStatus).toBe(
-                    INSTANCE_LOADING_STATE.REJECTED,
-                ),
-            );
-            expect(state.sdkInstance).toBe(null);
-            expect(state.error).toEqual(new Error(TEST_ERROR_MESSAGE));
-
-            spyConsoleError.mockRestore();
-        });
-
-        test("should inject script element into document head", async () => {
-            // Override mock to actually inject script element for this test
-            (loadCoreSdkScript as jest.Mock).mockImplementation(() => {
-                const script = document.createElement("script");
-                script.src = "https://www.sandbox.paypal.com/web-sdk/v6/core";
-                document.head.appendChild(script);
-                return Promise.resolve(createMockPayPalNamespace());
-            });
-
-            renderProvider();
-
-            await waitFor(() => {
-                const scriptElement = document.querySelector(
-                    'script[src*="sandbox.paypal.com"]',
+            await withConsoleSpy("error", async () => {
+                (loadCoreSdkScript as jest.Mock).mockRejectedValue(
+                    new Error(TEST_ERROR_MESSAGE),
                 );
-                expect(scriptElement).toBeInTheDocument();
-            });
-        });
 
-        test("should use production URL when environment is production", async () => {
-            const productionOptions: LoadCoreSdkScriptOptions = {
-                environment: "production",
-            };
+                const { state } = renderProvider();
 
-            // Override mock to inject production script for this test
-            (loadCoreSdkScript as jest.Mock).mockImplementation(() => {
-                const script = document.createElement("script");
-                script.src = "https://www.paypal.com/web-sdk/v6/core";
-                document.head.appendChild(script);
-                return Promise.resolve(createMockPayPalNamespace());
-            });
-
-            renderProvider(createInstanceOptions, productionOptions);
-
-            expect(loadCoreSdkScript).toHaveBeenCalledWith(productionOptions);
-
-            await waitFor(() => {
-                const scriptElement = document.querySelector(
-                    'script[src*="www.paypal.com"]',
+                await waitFor(() =>
+                    expectRejectedState(state, new Error(TEST_ERROR_MESSAGE)),
                 );
-                expect(scriptElement).toBeInTheDocument();
             });
         });
+
+        test.each<[string, LoadCoreSdkScriptOptions, string, string]>([
+            [
+                "sandbox",
+                { environment: "sandbox" },
+                "https://www.sandbox.paypal.com/web-sdk/v6/core",
+                "sandbox.paypal.com",
+            ],
+            [
+                "production",
+                { environment: "production" },
+                "https://www.paypal.com/web-sdk/v6/core",
+                "www.paypal.com",
+            ],
+        ])(
+            "should inject script element for %s environment",
+            async (_env, options, scriptSrc, urlFragment) => {
+                (loadCoreSdkScript as jest.Mock).mockImplementation(() => {
+                    const script = document.createElement("script");
+                    script.src = scriptSrc;
+                    document.head.appendChild(script);
+                    return Promise.resolve(createMockPayPalNamespace());
+                });
+
+                renderProvider(createInstanceOptions, options);
+
+                expect(loadCoreSdkScript).toHaveBeenCalledWith(options);
+
+                await waitFor(() => {
+                    const scriptElement = document.querySelector(
+                        `script[src*="${urlFragment}"]`,
+                    );
+                    expect(scriptElement).toBeInTheDocument();
+                });
+            },
+        );
     });
 
     describe("Instance Creation", () => {
@@ -192,11 +153,7 @@ describe("PayPalSdkInstanceProvider", () => {
 
             const { state } = renderProvider();
 
-            await waitFor(() =>
-                expect(state.loadingStatus).toBe(
-                    INSTANCE_LOADING_STATE.RESOLVED,
-                ),
-            );
+            await waitFor(() => expectResolvedState(state));
 
             expect(mockCreateInstance).toHaveBeenCalledWith(
                 createInstanceOptions,
@@ -215,14 +172,7 @@ describe("PayPalSdkInstanceProvider", () => {
 
             const { state } = renderProvider();
 
-            await waitFor(() =>
-                expect(state.loadingStatus).toBe(
-                    INSTANCE_LOADING_STATE.REJECTED,
-                ),
-            );
-
-            expect(state.error).toEqual(instanceError);
-            expect(state.sdkInstance).toBe(null);
+            await waitFor(() => expectRejectedState(state, instanceError));
         });
 
         test("should work with multiple component types", async () => {
@@ -245,19 +195,14 @@ describe("PayPalSdkInstanceProvider", () => {
             (loadCoreSdkScript as jest.Mock).mockResolvedValue({
                 createInstance: mockCreateInstance,
             });
-
+            // @ts-expect-error renderProvider is typed for single component only
             const { state } = renderProvider(multiComponentOptions);
 
-            await waitFor(() =>
-                expect(state.loadingStatus).toBe(
-                    INSTANCE_LOADING_STATE.RESOLVED,
-                ),
-            );
+            await waitFor(() => expectResolvedState(state));
 
             expect(mockCreateInstance).toHaveBeenCalledWith(
                 multiComponentOptions,
             );
-            expect(state.sdkInstance).toBeTruthy();
         });
     });
 
@@ -265,56 +210,41 @@ describe("PayPalSdkInstanceProvider", () => {
         test("should load eligible payment methods after instance creation", async () => {
             const { state } = renderProvider();
 
+            await waitFor(() => expectResolvedState(state));
+
             await waitFor(() =>
-                expect(state.loadingStatus).toBe(
-                    INSTANCE_LOADING_STATE.RESOLVED,
+                expect(state.eligiblePaymentMethods).toEqual(
+                    TEST_ELIGIBILITY_RESULT,
                 ),
-            );
-
-            await waitFor(() =>
-                expect(state.eligiblePaymentMethods).toBeTruthy(),
-            );
-
-            expect(state.eligiblePaymentMethods).toEqual(
-                TEST_ELIGIBILITY_RESULT,
             );
         });
 
         test("should handle eligibility loading failure gracefully", async () => {
-            const spyConsoleWarn = jest
-                .spyOn(console, "warn")
-                .mockImplementation();
+            await withConsoleSpy("warn", async (spy) => {
+                const mockInstance = {
+                    ...createMockSdkInstance(),
+                    findEligibleMethods: jest
+                        .fn()
+                        .mockRejectedValue(new Error("Eligibility failed")),
+                };
 
-            const mockInstance = {
-                ...createMockSdkInstance(),
-                findEligibleMethods: jest
-                    .fn()
-                    .mockRejectedValue(new Error("Eligibility failed")),
-            };
+                (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                    createInstance: jest.fn().mockResolvedValue(mockInstance),
+                });
 
-            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
-                createInstance: jest.fn().mockResolvedValue(mockInstance),
+                const { state } = renderProvider();
+
+                await waitFor(() => expectResolvedState(state));
+
+                await waitFor(() =>
+                    expect(spy).toHaveBeenCalledWith(
+                        "Failed to get eligible payment methods:",
+                        expect.any(Error),
+                    ),
+                );
+
+                expect(state.eligiblePaymentMethods).toBe(null);
             });
-
-            const { state } = renderProvider();
-
-            await waitFor(() =>
-                expect(state.loadingStatus).toBe(
-                    INSTANCE_LOADING_STATE.RESOLVED,
-                ),
-            );
-
-            await waitFor(() =>
-                expect(spyConsoleWarn).toHaveBeenCalledWith(
-                    "Failed to get eligible payment methods:",
-                    expect.any(Error),
-                ),
-            );
-
-            expect(state.eligiblePaymentMethods).toBe(null);
-            expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.RESOLVED);
-
-            spyConsoleWarn.mockRestore();
         });
     });
 
@@ -337,12 +267,7 @@ describe("PayPalSdkInstanceProvider", () => {
             );
 
             // Wait for initial load
-            await waitFor(() =>
-                expect(state.loadingStatus).toBe(
-                    INSTANCE_LOADING_STATE.RESOLVED,
-                ),
-            );
-            expect(state.sdkInstance).toBeTruthy();
+            await waitFor(() => expectResolvedState(state));
 
             // Change the options
             rerender(
@@ -355,117 +280,94 @@ describe("PayPalSdkInstanceProvider", () => {
             );
 
             // Should reset to pending state
-            expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
-            expect(state.sdkInstance).toBe(null);
-            expect(state.eligiblePaymentMethods).toBe(null);
-            expect(state.error).toBe(null);
+            expectResetState(state);
 
             // Should reload with new options
-            await waitFor(() =>
-                expect(state.loadingStatus).toBe(
-                    INSTANCE_LOADING_STATE.RESOLVED,
-                ),
-            );
+            await waitFor(() => expectResolvedState(state));
         });
     });
 
     describe("Component Lifecycle", () => {
-        test("should not update state after component unmounts during SDK loading", async () => {
-            // Make loadCoreSdkScript take longer to resolve
-            let resolveLoad: (
-                value: ReturnType<typeof createMockPayPalNamespace>,
-            ) => void;
-            const loadPromise = new Promise<
-                ReturnType<typeof createMockPayPalNamespace>
-            >((resolve) => {
-                resolveLoad = resolve;
-            });
-            (loadCoreSdkScript as jest.Mock).mockReturnValue(loadPromise);
-
-            const { state, unmount } = renderProvider();
-
-            await waitFor(() =>
-                expect(state.loadingStatus).toBe(
-                    INSTANCE_LOADING_STATE.PENDING,
-                ),
-            );
-
-            // Unmount the component
-            unmount();
-
-            // Resolve the load after unmounting
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            resolveLoad!(createMockPayPalNamespace());
-
-            // Wait and ensure state wasn't updated
-            await waitFor(
+        test.each<[string, () => void]>([
+            [
+                "SDK loading",
                 () => {
-                    // State should remain in pending since component was unmounted
-                    expect(state.loadingStatus).toBe(
-                        INSTANCE_LOADING_STATE.PENDING,
+                    let resolveLoad: (
+                        value: ReturnType<typeof createMockPayPalNamespace>,
+                    ) => void;
+                    const loadPromise = new Promise<
+                        ReturnType<typeof createMockPayPalNamespace>
+                    >((resolve) => {
+                        resolveLoad = resolve;
+                    });
+                    (loadCoreSdkScript as jest.Mock).mockReturnValue(
+                        loadPromise,
                     );
-                    expect(state.sdkInstance).toBe(null);
+
+                    setTimeout(() => {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        resolveLoad!(createMockPayPalNamespace());
+                    }, 100);
                 },
-                { timeout: 500 },
-            );
-        });
-
-        test("should not update state after component unmounts during instance creation", async () => {
-            let resolveCreateInstance: (
-                value: ReturnType<typeof createMockSdkInstance>,
-            ) => void;
-            const createInstancePromise = new Promise<
-                ReturnType<typeof createMockSdkInstance>
-            >((resolve) => {
-                resolveCreateInstance = resolve;
-            });
-
-            const mockCreateInstance = jest
-                .fn()
-                .mockReturnValue(createInstancePromise);
-
-            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
-                createInstance: mockCreateInstance,
-            });
-
-            const { state, unmount } = renderProvider();
-
-            // Wait for SDK to load and createInstance to be called
-            await waitFor(() => expect(mockCreateInstance).toHaveBeenCalled());
-
-            // Unmount before instance creation completes
-            unmount();
-
-            // Resolve instance creation after unmounting
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            resolveCreateInstance!(createMockSdkInstance());
-
-            // Wait and ensure state wasn't updated
-            await waitFor(
+            ],
+            [
+                "instance creation",
                 () => {
-                    expect(state.loadingStatus).toBe(
-                        INSTANCE_LOADING_STATE.PENDING,
-                    );
-                    expect(state.sdkInstance).toBe(null);
+                    let resolveCreateInstance: (
+                        value: ReturnType<typeof createMockSdkInstance>,
+                    ) => void;
+                    const createInstancePromise = new Promise<
+                        ReturnType<typeof createMockSdkInstance>
+                    >((resolve) => {
+                        resolveCreateInstance = resolve;
+                    });
+
+                    (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                        createInstance: jest
+                            .fn()
+                            .mockReturnValue(createInstancePromise),
+                    });
+
+                    setTimeout(() => {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        resolveCreateInstance!(createMockSdkInstance());
+                    }, 100);
                 },
-                { timeout: 500 },
-            );
-        });
+            ],
+        ])(
+            "should not update state after component unmounts during %s",
+            async (_stage, setupMock) => {
+                setupMock();
+
+                const { state, unmount } = renderProvider();
+
+                await waitFor(() => expectPendingState(state));
+
+                // Unmount the component before async operation completes
+                unmount();
+
+                // Wait and ensure state wasn't updated
+                await waitFor(
+                    () => {
+                        expectPendingState(state);
+                        expect(state.sdkInstance).toBe(null);
+                    },
+                    { timeout: 500 },
+                );
+            },
+        );
     });
 });
 
 describe("usePayPalInstance", () => {
     test("should throw an error when used without PayPalSdkInstanceProvider", () => {
-        const { TestComponent } = setupTestComponent();
-        const spyConsoleError = jest
-            .spyOn(console, "error")
-            .mockImplementation();
+        withConsoleSpy("error", () => {
+            const { TestComponent } = setupTestComponent();
 
-        expect(() => render(<TestComponent />)).toThrow(
-            "usePayPalInstance must be used within a PayPalInstanceProvider",
-        );
-
-        spyConsoleError.mockRestore();
+            expect(() => render(<TestComponent />)).toThrow(
+                "usePayPalInstance must be used within a PayPalInstanceProvider",
+            );
+        });
     });
 });
 

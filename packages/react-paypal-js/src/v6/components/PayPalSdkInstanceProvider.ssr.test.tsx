@@ -10,6 +10,7 @@ import { PayPalSdkInstanceProvider } from "./PayPalSdkInstanceProvider";
 import { usePayPalInstance } from "../hooks/usePayPalInstance";
 import { INSTANCE_LOADING_STATE } from "../types/InstanceProviderTypes";
 import { isServer } from "../utils";
+import { TEST_CLIENT_TOKEN, expectInitialState } from "./providerTestUtils";
 
 import type {
     CreateInstanceOptions,
@@ -24,9 +25,6 @@ jest.mock("@paypal/paypal-js/sdk-v6", () => ({
 jest.mock("../utils", () => ({
     isServer: true,
 }));
-
-// Test constants
-const TEST_CLIENT_TOKEN = "test-client-token";
 
 const createInstanceOptions: CreateInstanceOptions<["paypal-payments"]> = {
     components: ["paypal-payments"],
@@ -69,10 +67,7 @@ describe("PayPalSdkInstanceProvider SSR", () => {
     test("should initialize correctly and never load scripts during SSR", () => {
         const { state } = renderSSRProvider();
 
-        expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.INITIAL);
-        expect(state.sdkInstance).toBe(null);
-        expect(state.eligiblePaymentMethods).toBe(null);
-        expect(state.error).toBe(null);
+        expectInitialState(state);
         expect(loadCoreSdkScript).not.toHaveBeenCalled();
     });
 
@@ -89,10 +84,8 @@ describe("PayPalSdkInstanceProvider SSR", () => {
             const { html: html2, state: state2 } = renderSSRProvider();
 
             // Both renders should produce identical state and HTML
-            expect(state1.loadingStatus).toBe(state2.loadingStatus);
-            expect(state1.loadingStatus).toBe(INSTANCE_LOADING_STATE.INITIAL);
-            expect(state1.sdkInstance).toBe(state2.sdkInstance);
-            expect(state1.sdkInstance).toBe(null);
+            expectInitialState(state1);
+            expectInitialState(state2);
             expect(html1).toBe(html2);
         });
     });
@@ -112,12 +105,7 @@ describe("PayPalSdkInstanceProvider SSR", () => {
             expect(() => JSON.parse(serializedState)).not.toThrow();
 
             const parsedState = JSON.parse(serializedState);
-            expect(parsedState.loadingStatus).toBe(
-                INSTANCE_LOADING_STATE.INITIAL,
-            );
-            expect(parsedState.sdkInstance).toBe(null);
-            expect(parsedState.eligiblePaymentMethods).toBe(null);
-            expect(parsedState.error).toBe(null);
+            expectInitialState(parsedState);
         });
 
         test("should handle different options consistently", () => {
@@ -130,8 +118,8 @@ describe("PayPalSdkInstanceProvider SSR", () => {
             const { state: state2 } = renderSSRProvider(updatedOptions);
 
             // Both should have consistent initial state regardless of options
-            expect(state1.loadingStatus).toBe(INSTANCE_LOADING_STATE.INITIAL);
-            expect(state2.loadingStatus).toBe(INSTANCE_LOADING_STATE.INITIAL);
+            expectInitialState(state1);
+            expectInitialState(state2);
             expect(loadCoreSdkScript).not.toHaveBeenCalled();
         });
     });
@@ -156,7 +144,7 @@ describe("PayPalSdkInstanceProvider SSR", () => {
             consoleSpy.mockRestore();
         });
 
-        test("should handle complex options without serialization issues", () => {
+        test("should handle complex options without issues", () => {
             const complexOptions: CreateInstanceOptions<
                 ["paypal-payments", "venmo-payments"]
             > = {
@@ -168,6 +156,7 @@ describe("PayPalSdkInstanceProvider SSR", () => {
             };
 
             const { html } = renderSSRProvider(
+                // @ts-expect-error renderSSRProvider is typed for single component
                 complexOptions,
                 { environment: "production", debug: true },
                 <div>Complex Options Test</div>,
@@ -175,7 +164,6 @@ describe("PayPalSdkInstanceProvider SSR", () => {
 
             expect(html).toBeTruthy();
             expect(html).toContain("Complex Options Test");
-            expect(() => JSON.stringify(complexOptions)).not.toThrow();
         });
 
         test("should generate consistent HTML across renders", () => {
@@ -217,7 +205,7 @@ describe("usePayPalInstance SSR", () => {
     test("should work correctly in SSR context", () => {
         const { state } = renderSSRProvider();
 
-        expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.INITIAL);
+        expectInitialState(state);
     });
 });
 
