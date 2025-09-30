@@ -56,7 +56,7 @@ export const PayPalSdkInstanceProvider: React.FC<
                 value: INSTANCE_LOADING_STATE.PENDING,
             });
         }
-    }); // Run once on mount
+    }, []); // Run once on mount
 
     // Auto-sync createInstanceOptions changes (e.g., client token updates)
     useEffect(() => {
