@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useMemo, useReducer } from "react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
 import {
@@ -217,13 +217,22 @@ export const PayPalSdkInstanceProvider: React.FC<
         };
     }, [state.sdkInstance, state.loadingStatus]);
 
-    const contextValue = {
-        sdkInstance: state.sdkInstance,
-        eligiblePaymentMethods: state.eligiblePaymentMethods,
-        error: state.error,
-        dispatch,
-        loadingStatus: state.loadingStatus,
-    };
+    const contextValue = useMemo(
+        () => ({
+            sdkInstance: state.sdkInstance,
+            eligiblePaymentMethods: state.eligiblePaymentMethods,
+            error: state.error,
+            dispatch,
+            loadingStatus: state.loadingStatus,
+        }),
+        [
+            state.sdkInstance,
+            state.eligiblePaymentMethods,
+            state.error,
+            state.loadingStatus,
+            dispatch,
+        ],
+    );
 
     return (
         <InstanceContext.Provider value={contextValue}>
