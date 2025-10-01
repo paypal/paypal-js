@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import deepEqual from "fast-deep-equal";
+import { dequal } from "dequal";
 
 export const isServer = typeof window === "undefined";
 
@@ -21,7 +21,7 @@ export const isServer = typeof window === "undefined";
 export function useDeepCompareMemoize<T>(value: T): T {
     const ref = useRef<T>(value);
 
-    if (!deepEqual(ref.current, value)) {
+    if (!dequal(ref.current, value)) {
         ref.current = value;
     }
 
