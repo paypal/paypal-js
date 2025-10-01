@@ -1,11 +1,6 @@
-import {
-    PayLaterOneTimePaymentSessionOptions,
-    PayPalCreditOneTimePaymentSessionOptions,
-    PayPalOneTimePaymentSessionOptions,
-    SavePaymentSessionOptions,
-} from "./components/paypal-payments";
-import { BillingSessionOptions } from "./components/paypal-legacy-billing-agreements";
-import { VenmoPaymentSessionOptions } from "./components/venmo-payments";
+import { PayPalPaymentsInstance } from "./components/paypal-payments";
+import { PayPalLegacyBillingInstance } from "./components/paypal-legacy-billing-agreements";
+import { VenmoPaymentsInstance } from "./components/venmo-payments";
 import {
     EligiblePaymentMethodsOutput,
     FindEligibleMethodsOptions,
@@ -91,97 +86,6 @@ export interface BaseInstance {
     ) => Promise<EligiblePaymentMethodsOutput>;
     updateLocale: (locale: string) => void;
 }
-
-export interface PayPalPaymentsInstance {
-    createPayPalOneTimePaymentSession: (
-        paymentSessionOptions: PayPalOneTimePaymentSessionOptions,
-    ) => OneTimePaymentSession;
-    createPayPalSavePaymentSession: (
-        paymentSessionOptions: SavePaymentSessionOptions,
-    ) => SavePaymentSession;
-    createPayLaterOneTimePaymentSession: (
-        paymentSessionOptions: PayLaterOneTimePaymentSessionOptions,
-    ) => OneTimePaymentSession;
-    createPayPalCreditOneTimePaymentSession: (
-        paymentSessionOptions: PayPalCreditOneTimePaymentSessionOptions,
-    ) => OneTimePaymentSession;
-}
-
-export interface VenmoPaymentsInstance {
-    createVenmoOneTimePaymentSession: (
-        paymentSessionOptions: VenmoPaymentSessionOptions,
-    ) => OneTimePaymentSession;
-}
-
-export interface PayPalLegacyBillingInstance {
-    /**
-     * @deprecated This method is legacy and should not be used for new implementations.
-     */
-    createPayPalBillingAgreementWithoutPurchase: (
-        paymentSessionOptions: BillingSessionOptions,
-    ) => BillingAgreementPaymentSession;
-}
-
-export type OneTimePaymentSession = {
-    start: (
-        options: SessionStartOptions,
-        orderIdPromise: Promise<{ orderId: string }>,
-    ) => Promise<void>;
-    destroy: () => void;
-    cancel: () => void;
-};
-
-export type SavePaymentSession = {
-    start: (
-        options: SessionStartOptions,
-        vaultSetupTokenPromise: Promise<{ vaultSetupToken: string }>,
-    ) => Promise<void>;
-    destroy: () => void;
-    cancel: () => void;
-};
-
-export type BillingAgreementPaymentSession = {
-    start: (
-        options: SessionStartOptions,
-        billingTokenPromise: Promise<{ billingToken: string }>,
-    ) => Promise<void>;
-    destroy: () => void;
-    cancel: () => void;
-};
-
-export type PayPalPresentationModes =
-    | "auto"
-    | "direct-app-switch"
-    | "modal"
-    | "payment-handler"
-    | "popup"
-    | "redirect";
-
-export type VenmoPresentationModes = "auto" | "modal" | "popup";
-
-export type SessionStartOptions = {
-    presentationMode?: PayPalPresentationModes | VenmoPresentationModes;
-    targetElement?: string | HTMLElement;
-    fullPageOverlay?: {
-        enabled?: boolean;
-    };
-    autoRedirect?: {
-        enabled?: boolean;
-    };
-    loadingScreen?: {
-        label?: string; // does this need to be more specific
-    };
-};
-
-export type VenmoEligibility = {
-    eligibility: boolean | null;
-    ineligibilityReason: string | null;
-};
-
-export type VenmoSessionStartOptions = SessionStartOptions & {
-    eligibilityResponse?: VenmoEligibility | null;
-    buttonSessionID?: string;
-};
 
 export type LoadCoreSdkScriptOptions = {
     environment?: "production" | "sandbox";
