@@ -167,7 +167,7 @@ export const PayPalSdkInstanceProvider: React.FC<
 
     // Separate effect for eligibility - runs after instance is created
     useEffect(() => {
-        if (isServer) {
+        if (isServer()) {
             return;
         }
 

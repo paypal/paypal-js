@@ -8,9 +8,10 @@ const version = "__VERSION__";
 
 function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     validateArguments(options);
+    const isServerEnv = isServer();
 
     // SSR safeguard
-    if (isServer) {
+    if (isServerEnv) {
         return Promise.resolve(null);
     }
 
@@ -30,7 +31,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         insertScriptElement({
             url: url.toString(),
             onSuccess: () => {
-                if (isServer || !window.paypal) {
+                if (isServerEnv || !window.paypal) {
                     return reject(
                         "The window.paypal global variable is not available",
                     );

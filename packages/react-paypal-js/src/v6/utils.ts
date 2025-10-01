@@ -1,7 +1,9 @@
 import { useRef } from "react";
 import { dequal } from "dequal";
 
-export const isServer = typeof window === "undefined";
+export function isServer(): boolean {
+    return typeof window === "undefined" && typeof document === "undefined";
+}
 
 /**
  * Custom hook that memoizes a value based on deep equality comparison.
