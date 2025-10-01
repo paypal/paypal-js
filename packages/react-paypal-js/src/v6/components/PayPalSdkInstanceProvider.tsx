@@ -113,7 +113,6 @@ export const PayPalSdkInstanceProvider: React.FC<
         }
 
         let isSubscribed = true;
-        const controller = new AbortController();
 
         const loadSdk = async () => {
             try {
@@ -122,11 +121,7 @@ export const PayPalSdkInstanceProvider: React.FC<
                     state.scriptOptions,
                 );
 
-                if (
-                    controller.signal.aborted ||
-                    !isSubscribed ||
-                    !paypalNamespace
-                ) {
+                if (!isSubscribed || !paypalNamespace) {
                     return;
                 }
 
@@ -135,7 +130,7 @@ export const PayPalSdkInstanceProvider: React.FC<
                     state.createInstanceOptions,
                 );
 
-                if (controller.signal.aborted || !isSubscribed) {
+                if (!isSubscribed) {
                     return;
                 }
 
@@ -144,7 +139,7 @@ export const PayPalSdkInstanceProvider: React.FC<
                     value: instance,
                 });
             } catch (error) {
-                if (!controller.signal.aborted && isSubscribed) {
+                if (isSubscribed) {
                     const errorInstance =
                         error instanceof Error
                             ? error
@@ -161,7 +156,6 @@ export const PayPalSdkInstanceProvider: React.FC<
 
         return () => {
             isSubscribed = false;
-            controller.abort();
         };
     }, [
         state.loadingStatus,
@@ -181,18 +175,13 @@ export const PayPalSdkInstanceProvider: React.FC<
         }
 
         let isSubscribed = true;
-        const controller = new AbortController();
 
         const loadEligibility = async () => {
             try {
                 const eligiblePaymentMethods =
                     await state.sdkInstance?.findEligibleMethods({});
 
-                if (
-                    controller.signal.aborted ||
-                    !isSubscribed ||
-                    !eligiblePaymentMethods
-                ) {
+                if (!isSubscribed || !eligiblePaymentMethods) {
                     return;
                 }
 
@@ -201,7 +190,7 @@ export const PayPalSdkInstanceProvider: React.FC<
                     value: eligiblePaymentMethods,
                 });
             } catch (error) {
-                if (!controller.signal.aborted && isSubscribed) {
+                if (isSubscribed) {
                     console.warn(
                         "Failed to get eligible payment methods:",
                         error,
@@ -214,7 +203,6 @@ export const PayPalSdkInstanceProvider: React.FC<
 
         return () => {
             isSubscribed = false;
-            controller.abort();
         };
     }, [state.sdkInstance, state.loadingStatus]);
 
