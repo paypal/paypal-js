@@ -95,5 +95,3 @@ export function generateErrorMessage({
 
     return errorMessage;
 }
-
-export const isServer = typeof window === "undefined";
