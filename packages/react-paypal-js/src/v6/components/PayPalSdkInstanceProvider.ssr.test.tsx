@@ -24,7 +24,7 @@ jest.mock("@paypal/paypal-js/sdk-v6", () => ({
 
 jest.mock("../utils", () => ({
     ...jest.requireActual("../utils"),
-    isServer: true,
+    isServer: () => true,
 }));
 
 const createInstanceOptions: CreateInstanceOptions<["paypal-payments"]> = {
@@ -62,7 +62,7 @@ describe("PayPalSdkInstanceProvider SSR", () => {
     });
 
     test("should verify isServer mock is working", () => {
-        expect(isServer).toBe(true);
+        expect(isServer()).toBe(true);
     });
 
     test("should initialize correctly and never load scripts during SSR", () => {

@@ -66,7 +66,7 @@ export const PayPalSdkInstanceProvider: React.FC<
     // Client-side hydration: transition from INITIAL to PENDING state
     useEffect(() => {
         if (
-            !isServer &&
+            !isServer() &&
             state.loadingStatus === INSTANCE_LOADING_STATE.INITIAL
         ) {
             dispatch({

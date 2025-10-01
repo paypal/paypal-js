@@ -31,7 +31,7 @@ jest.mock("@paypal/paypal-js/sdk-v6", () => ({
 
 jest.mock("../utils", () => ({
     ...jest.requireActual("../utils"),
-    isServer: false,
+    isServer: () => false,
 }));
 
 const createInstanceOptions: CreateInstanceOptions<["paypal-payments"]> = {
