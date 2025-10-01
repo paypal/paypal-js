@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer } from "react";
+import React, { useEffect, useMemo, useReducer, useRef } from "react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
 import {
@@ -54,6 +54,9 @@ export const PayPalSdkInstanceProvider: React.FC<
     const memoizedCreateOptions = useDeepCompareMemoize(createInstanceOptions);
     const memoizedScriptOptions = useDeepCompareMemoize(scriptOptions);
 
+    // Track if we've already handled the initial hydration
+    const hasHandledInitialHydration = useRef(false);
+
     const [state, dispatch] = useReducer(instanceReducer, {
         sdkInstance: null,
         eligiblePaymentMethods: null,
@@ -67,14 +70,16 @@ export const PayPalSdkInstanceProvider: React.FC<
     useEffect(() => {
         if (
             !isServer() &&
-            state.loadingStatus === INSTANCE_LOADING_STATE.INITIAL
+            state.loadingStatus === INSTANCE_LOADING_STATE.INITIAL &&
+            !hasHandledInitialHydration.current
         ) {
+            hasHandledInitialHydration.current = true;
             dispatch({
                 type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
                 value: INSTANCE_LOADING_STATE.PENDING,
             });
         }
-    }, [state.loadingStatus]); // Run once on mount
+    }, [state.loadingStatus]); // Run when loadingStatus changes, but only act once
 
     // Auto-sync createInstanceOptions changes (e.g., client token updates)
     useEffect(() => {
