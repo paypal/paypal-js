@@ -5,7 +5,7 @@ export type OnApproveDataOneTimePayments = {
 };
 
 export type OnCompleteData = {
-    paymentSessionState: "approved" | "cancelled" | "error";
+    paymentSessionState: "approved" | "canceled" | "error";
 };
 
 export type OnErrorData = Error;
