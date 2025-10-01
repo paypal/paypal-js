@@ -74,7 +74,7 @@ export const PayPalSdkInstanceProvider: React.FC<
                 value: INSTANCE_LOADING_STATE.PENDING,
             });
         }
-    }, []); // Run once on mount
+    }, [state.loadingStatus]); // Run once on mount
 
     // Auto-sync createInstanceOptions changes (e.g., client token updates)
     useEffect(() => {
@@ -167,10 +167,6 @@ export const PayPalSdkInstanceProvider: React.FC<
 
     // Separate effect for eligibility - runs after instance is created
     useEffect(() => {
-        if (isServer()) {
-            return;
-        }
-
         // Only run when we have an instance and it's in resolved state
         if (
             !state.sdkInstance ||
