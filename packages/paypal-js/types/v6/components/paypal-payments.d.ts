@@ -122,15 +122,115 @@ export type PayPalCreditOneTimePaymentSessionOptions =
     PayPalOneTimePaymentSessionOptions;
 
 export interface PayPalPaymentsInstance {
+    /**
+     * Creates a PayPal one-time payment session for processing single payments through PayPal.
+     * This method allows you to configure callback functions to handle different stages
+     * of the PayPal checkout process, including payment approval, shipping address changes,
+     * shipping option changes, cancelation, and errors.
+     *
+     * @param paymentSessionOptions - Configuration options for the PayPal payment session
+     * @returns A OneTimePaymentSession object that can be used to start the payment flow
+     *
+     * @example
+     * ```typescript
+     * const paypalSession = sdkInstance.createPayPalOneTimePaymentSession({
+     *   onApprove: (data) => {
+     *     console.log('PayPal payment approved:', data);
+     *   },
+     *   onShippingAddressChange: (data) => {
+     *     console.log('Shipping address changed:', data);
+     *   },
+     *   onShippingOptionsChange: (data) => {
+     *     console.log('Shipping options changed:', data);
+     *   },
+     *   onCancel: () => {
+     *     console.log('PayPal payment canceled');
+     *   },
+     *   onError: (data) => {
+     *     console.error('PayPal payment error:', data);
+     *   }
+     * });
+     * ```
+     */
     createPayPalOneTimePaymentSession: (
         paymentSessionOptions: PayPalOneTimePaymentSessionOptions,
     ) => OneTimePaymentSession;
+    /**
+     * Creates a PayPal save payment session for storing payment methods for future use.
+     * This method allows you to set up vault payment sessions where customers can save
+     * their PayPal payment method for future transactions without re-entering details.
+     *
+     * @param paymentSessionOptions - Configuration options for the save payment session
+     * @returns A SavePaymentSession object that can be used to start the vault setup flow
+     *
+     * @example
+     * ```typescript
+     * const savePaymentSession = sdkInstance.createPayPalSavePaymentSession({
+     *   vaultSetupToken: 'your-vault-setup-token',
+     *   onApprove: (data) => {
+     *     console.log('Payment method saved:', data);
+     *   },
+     *   onCancel: () => {
+     *     console.log('Save payment canceled');
+     *   },
+     *   onError: (data) => {
+     *     console.error('Save payment error:', data);
+     *   }
+     * });
+     * ```
+     */
     createPayPalSavePaymentSession: (
         paymentSessionOptions: SavePaymentSessionOptions,
     ) => SavePaymentSession;
+    /**
+     * Creates a PayPal Pay Later one-time payment session for buy now, pay later transactions.
+     * This method enables customers to make purchases and pay for them over time through
+     * PayPal's Pay Later financing options. Available in supported countries.
+     *
+     * @param paymentSessionOptions - Configuration options for the Pay Later payment session
+     * @returns A OneTimePaymentSession object that can be used to start the Pay Later flow
+     *
+     * @example
+     * ```typescript
+     * const payLaterSession = sdkInstance.createPayLaterOneTimePaymentSession({
+     *   onApprove: (data) => {
+     *     console.log('Pay Later payment approved:', data);
+     *   },
+     *   onCancel: () => {
+     *     console.log('Pay Later payment canceled');
+     *   },
+     *   onError: (data) => {
+     *     console.error('Pay Later payment error:', data);
+     *   }
+     * });
+     * ```
+     */
     createPayLaterOneTimePaymentSession: (
         paymentSessionOptions: PayLaterOneTimePaymentSessionOptions,
     ) => OneTimePaymentSession;
+    /**
+     * Creates a PayPal Credit one-time payment session for credit-based transactions.
+     * This method enables customers to make purchases using PayPal Credit, allowing them
+     * to pay over time with financing options. Available in supported countries.
+     *
+     * @param paymentSessionOptions - Configuration options for the PayPal Credit payment session
+     * @returns A OneTimePaymentSession object that can be used to start the PayPal Credit flow
+     *
+     * @example
+     * ```typescript
+     * const creditSession = sdkInstance.createPayPalCreditOneTimePaymentSession({
+     *   onApprove: (data) => {
+     *     console.log('PayPal Credit payment approved:', data);
+     *   },
+     *   onCancel: () => {
+     *     console.log('PayPal Credit payment canceled');
+     *   },
+     *   onError: (data) => {
+     *     console.error('PayPal Credit payment error:', data);
+     *   }
+     * });
+     * ```
+     */
     createPayPalCreditOneTimePaymentSession: (
         paymentSessionOptions: PayPalCreditOneTimePaymentSessionOptions,
     ) => OneTimePaymentSession;
