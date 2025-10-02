@@ -7,6 +7,8 @@ import {
     PresentationModeOptionsForPaymentHandler,
 } from "./base-component";
 
+import { PayPalPaymentsInstance } from "./paypal-payments.d";
+
 export type OnApproveDataBillingAgreements = {
     billingToken: string;
     payerId?: string;
@@ -47,10 +49,10 @@ export interface PayPalLegacyBillingInstance {
      * that can be used for future transactions.
      *
      * @deprecated This method is legacy and should not be used for new implementations.
-     * Use the newer vault setup token approach with createPayPalSavePaymentSession instead.
+     * Use the newer vault setup token approach with {@link PayPalPaymentsInstance.createPayPalSavePaymentSession} instead.
      *
-     * @param paymentSessionOptions - Configuration options for the billing agreement session
-     * @returns A PayPalLegacyBillingAgreementsSession object that can be used to start the billing agreement flow
+     * @param {PayPalLegacyBillingAgreementsSessionOptions} paymentSessionOptions - Configuration options for the billing agreement session
+     * @returns {PayPalLegacyBillingAgreementsSession} - A session object that can be used to start the billing agreement flow
      *
      * @example
      * ```typescript

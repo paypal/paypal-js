@@ -32,8 +32,8 @@ export interface VenmoPaymentsInstance {
      * This method allows you to configure callback functions to handle different stages
      * of the Venmo checkout process, including payment approval, cancelation, and errors.
      *
-     * @param paymentSessionOptions - Configuration options for the Venmo payment session
-     * @returns A VenmoOneTimePaymentSession object that can be used to start the payment flow
+     * @param {VenmoOneTimePaymentSessionOptions} paymentSessionOptions - Configuration options for the Venmo payment session
+     * @returns {VenmoOneTimePaymentSession} - A session object that can be used to start the payment flow
      *
      * @example
      * ```typescript
