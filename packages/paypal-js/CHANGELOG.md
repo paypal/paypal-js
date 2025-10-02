@@ -1,5 +1,19 @@
 # Changelog
 
+## 9.0.0
+
+### Major Changes
+
+-   6c83cf1: Added the missing style properties to the type definitions so developers can correctly pass styling options to PayPal card fields or PayPalCardFieldsProvider without TypeScript errors.
+
+### Minor Changes
+
+-   9b6eecc: Update types for the v6 web sdk
+
+### Patch Changes
+
+-   0575877: Upgrade to package-lock v3 and fix rollup dependency
+
 ## 8.4.2
 
 ### Patch Changes
