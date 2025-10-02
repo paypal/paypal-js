@@ -14,8 +14,8 @@ export interface PayPalV6Namespace {
      * client token and components. The SDK is designed to be lightweight and modular,
      * allowing you to load only the functionality you need.
      *
-     * @param createInstanceOptions - Configuration options for creating the SDK instance
-     * @returns A promise that resolves to an SDK instance with methods based on the specified components
+     * @param {CreateInstanceOptions} createInstanceOptions - Configuration options for creating the SDK instance
+     * @returns {Promise<SdkInstance<T>>} - A promise that resolves to an SDK instance with methods based on the specified components
      *
      * @example
      * ```typescript
@@ -108,8 +108,8 @@ export interface BaseInstance {
      * public API to determine whether payment methods (such as PayPal or Venmo) can be used.
      * Use this to conditionally render the appropriate payment buttons on your site.
      *
-     * @param findEligibleMethodsOptions - Options for checking payment method eligibility
-     * @returns A promise that resolves to payment methods eligibility information
+     * @param {FindEligibleMethodsOptions} findEligibleMethodsOptions - Options for checking payment method eligibility
+     * @returns {Promise<EligiblePaymentMethodsOutput>} - A promise that resolves to payment methods eligibility information
      *
      * @example
      * ```typescript
@@ -129,7 +129,8 @@ export interface BaseInstance {
      * This method allows you to dynamically change the locale of the SDK instance
      * after it has been initialized. The locale should be specified using a BCP-47 code.
      *
-     * @param locale - The new locale to set, specified as a BCP-47 code (e.g., "en-US", "es-ES")
+     * @param {string} locale - The new locale to set, specified as a BCP-47 code (e.g., "en-US", "es-ES")
+     * @returns {void}
      *
      * @example
      * ```typescript
