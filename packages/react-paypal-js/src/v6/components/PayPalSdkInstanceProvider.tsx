@@ -17,13 +17,13 @@ import type {
     LoadCoreSdkScriptOptions,
 } from "../types";
 
-interface PayPalSdkInstanceProviderProps {
-    createInstanceOptions: CreateInstanceOptions<
-        readonly [Components, ...Components[]]
-    >;
+type PayPalSdkInstanceProviderProps = CreateInstanceOptions<
+    readonly [Components, ...Components[]]
+> & {
+    // Provider-specific properties
     children: React.ReactNode;
     scriptOptions: LoadCoreSdkScriptOptions;
-}
+};
 
 /**
  * PayPal SDK Instance Provider with SSR support
@@ -38,10 +38,8 @@ interface PayPalSdkInstanceProviderProps {
  *
  * @example
  * <PayPalSdkInstanceProvider
- *   createInstanceOptions={{
- *     components: ["paypal-payments"],
- *     clientToken: token,
- *   }}
+ *   components={["paypal-payments"]}
+ *   clientToken={token}
  *   scriptOptions={{ environment: "sandbox" }}
  * >
  *   {children}
@@ -49,9 +47,29 @@ interface PayPalSdkInstanceProviderProps {
  */
 export const PayPalSdkInstanceProvider: React.FC<
     PayPalSdkInstanceProviderProps
-> = ({ createInstanceOptions, children, scriptOptions }) => {
+> = ({
+    clientMetadataId,
+    clientToken,
+    components,
+    locale,
+    pageType,
+    partnerAttributionId,
+    shopperSessionId,
+    testBuyerCountry,
+    children,
+    scriptOptions,
+}) => {
     // Auto-memoize props based on deep equality to prevent unnecessary reloads
-    const memoizedCreateOptions = useDeepCompareMemoize(createInstanceOptions);
+    const memoizedCreateOptions = useDeepCompareMemoize({
+        clientMetadataId,
+        clientToken,
+        components,
+        locale,
+        pageType,
+        partnerAttributionId,
+        shopperSessionId,
+        testBuyerCountry,
+    });
     const memoizedScriptOptions = useDeepCompareMemoize(scriptOptions);
 
     // Track if we've already handled the initial hydration
