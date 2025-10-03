@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.0.1
+
+### Patch Changes
+
+-   53b1f63: Export v6 types for all callbacks
+
 ## 9.0.0
 
 ### Major Changes
