@@ -26,6 +26,16 @@ export type VenmoOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
     ) => Promise<void>;
 };
 
+/**
+ * Interface for managing Venmo payment operations within the PayPal SDK.
+ * This interface provides methods for creating and managing Venmo payment sessions,
+ * allowing merchants to integrate Venmo as a payment method in their applications.
+ *
+ * The {@link VenmoPaymentsInstance} enables seamless integration with Venmo's payment flow,
+ * providing a secure and user-friendly way to process payments through the Venmo platform.
+ *
+ * @interface VenmoPaymentsInstance
+ */
 export interface VenmoPaymentsInstance {
     /**
      * Creates a Venmo one-time payment session for processing payments through Venmo.
