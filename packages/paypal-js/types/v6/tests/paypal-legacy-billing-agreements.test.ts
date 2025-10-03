@@ -1,5 +1,8 @@
 import { loadCoreSdkScript } from "../../../src/v6";
-import type { PayPalV6Namespace } from "../index";
+import type {
+    OnApproveDataBillingAgreements,
+    PayPalV6Namespace,
+} from "../index";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function main() {
@@ -31,9 +34,20 @@ async function main() {
         return;
     }
 
+    function onApproveCallback({
+        billingToken,
+        payerId,
+    }: OnApproveDataBillingAgreements) {
+        console.log({
+            billingToken,
+            payerId,
+        });
+        return Promise.resolve();
+    }
+
     const paypalPaymentSession =
         sdkInstance.createPayPalBillingAgreementWithoutPurchase({
-            onApprove: () => Promise.resolve(),
+            onApprove: onApproveCallback,
         });
 
     const createBillingToken = () =>
