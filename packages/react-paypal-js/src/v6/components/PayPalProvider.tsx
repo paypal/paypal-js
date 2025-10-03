@@ -37,13 +37,13 @@ type PayPalProviderProps = CreateInstanceOptions<
  * You can pass options directly without manual memoization.
  *
  * @example
- * <PayPalSdkInstanceProvider
+ * <PayPalProvider
  *   components={["paypal-payments"]}
  *   clientToken={token}
  *   scriptOptions={{ environment: "sandbox" }}
  * >
  *   {children}
- * </PayPalSdkInstanceProvider>
+ * </PayPalProvider>
  */
 export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     clientMetadataId,
@@ -112,12 +112,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                 },
             });
         }
-    }, [
-        memoizedCreateOptions,
-        memoizedScriptOptions,
-        state.createInstanceOptions,
-        state.scriptOptions,
-    ]);
+    }, [memoizedCreateOptions, memoizedScriptOptions]);
 
     // SDK loading effect - only runs on client (useEffect doesn't run during SSR)
     useEffect(() => {
