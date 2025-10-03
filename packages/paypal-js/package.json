@@ -21,7 +21,8 @@
     },
     "scripts": {
         "build": "rm -rf dist && rollup --config --bundleConfigAsCjs",
-        "docs:v6": "jsdoc -c ./jsdocConfig.json",
+        "docs:v6": "jsdoc -c ./jsdocConfig.json && npm run format",
+        "format": "prettier --write --ignore-unknown .",
         "lint": "eslint . && npm run typecheck",
         "test": "vitest src",
         "test:bundle": "vitest bundle-tests/**",
