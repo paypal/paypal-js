@@ -31,7 +31,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         insertScriptElement({
             url: url.toString(),
             onSuccess: () => {
-                if (isServerEnv || !window.paypal) {
+                if (!window.paypal) {
                     return reject(
                         "The window.paypal global variable is not available",
                     );
