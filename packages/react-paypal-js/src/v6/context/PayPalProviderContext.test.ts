@@ -4,9 +4,9 @@ import { instanceReducer } from "./PayPalProviderContext";
 import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
-    InstanceState,
+    PayPalState,
     InstanceAction,
-} from "../types/InstanceProviderTypes";
+} from "../types/PayPalProviderTypes";
 
 import type {
     SdkInstance,
@@ -77,7 +77,7 @@ function createMockScriptOptions(): LoadCoreSdkScriptOptions {
     };
 }
 
-function createInitialState(): InstanceState {
+function createInitialState(): PayPalState {
     return {
         sdkInstance: null,
         eligiblePaymentMethods: null,
@@ -89,7 +89,7 @@ function createInitialState(): InstanceState {
 }
 
 describe("instanceReducer", () => {
-    let initialState: InstanceState;
+    let initialState: PayPalState;
 
     beforeEach(() => {
         initialState = createInitialState();

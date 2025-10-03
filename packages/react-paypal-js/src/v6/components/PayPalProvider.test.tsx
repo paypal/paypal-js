@@ -3,9 +3,9 @@ import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
-import { PayPalSdkInstanceProvider } from "./PayPalSdkInstanceProvider";
-import { usePayPalInstance } from "../hooks/usePayPalInstance";
-import { INSTANCE_LOADING_STATE } from "../types/InstanceProviderTypes";
+import { PayPalProvider } from "./PayPalProvider";
+import { usePayPal } from "../hooks/usePayPal";
+import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderTypes";
 import {
     TEST_CLIENT_TOKEN,
     TEST_ERROR_MESSAGE,
@@ -22,7 +22,7 @@ import {
 import type {
     CreateInstanceOptions,
     LoadCoreSdkScriptOptions,
-    InstanceContextState,
+    PayPalContextState,
 } from "../types";
 
 jest.mock("@paypal/paypal-js/sdk-v6", () => ({
@@ -51,18 +51,19 @@ function renderProvider(
     const { state, TestComponent } = setupTestComponent();
 
     const result = render(
-        <PayPalSdkInstanceProvider
-            createInstanceOptions={instanceOptions}
+        <PayPalProvider
+            components={instanceOptions.components}
+            clientToken={instanceOptions.clientToken}
             scriptOptions={scriptOpts}
         >
             <TestComponent>{children}</TestComponent>
-        </PayPalSdkInstanceProvider>,
+        </PayPalProvider>,
     );
 
     return { ...result, state };
 }
 
-describe("PayPalSdkInstanceProvider", () => {
+describe("PayPalProvider", () => {
     beforeEach(() => {
         document.head.innerHTML = "";
         (loadCoreSdkScript as jest.Mock).mockResolvedValue(
@@ -252,18 +253,14 @@ describe("PayPalSdkInstanceProvider", () => {
         test("should reset state when createInstanceOptions change", async () => {
             const { state, TestComponent } = setupTestComponent();
 
-            const updatedOptions = {
-                ...createInstanceOptions,
-                clientToken: "new-client-token",
-            };
-
             const { rerender } = render(
-                <PayPalSdkInstanceProvider
-                    createInstanceOptions={createInstanceOptions}
+                <PayPalProvider
+                    components={createInstanceOptions.components}
+                    clientToken={createInstanceOptions.clientToken}
                     scriptOptions={scriptOptions}
                 >
                     <TestComponent />
-                </PayPalSdkInstanceProvider>,
+                </PayPalProvider>,
             );
 
             // Wait for initial load
@@ -271,12 +268,13 @@ describe("PayPalSdkInstanceProvider", () => {
 
             // Change the options
             rerender(
-                <PayPalSdkInstanceProvider
-                    createInstanceOptions={updatedOptions}
+                <PayPalProvider
+                    components={createInstanceOptions.components}
+                    clientToken={"new-client-token"}
                     scriptOptions={scriptOptions}
                 >
                     <TestComponent />
-                </PayPalSdkInstanceProvider>,
+                </PayPalProvider>,
             );
 
             // Should reset to pending state
@@ -376,12 +374,13 @@ describe("Auto-memoization", () => {
         const { state, TestComponent } = setupTestComponent();
 
         const { rerender } = render(
-            <PayPalSdkInstanceProvider
-                createInstanceOptions={createInstanceOptions}
+            <PayPalProvider
+                components={createInstanceOptions.components}
+                clientToken={createInstanceOptions.clientToken}
                 scriptOptions={scriptOptions}
             >
                 <TestComponent />
-            </PayPalSdkInstanceProvider>,
+            </PayPalProvider>,
         );
 
         await waitFor(() => expectResolvedState(state));
@@ -391,15 +390,13 @@ describe("Auto-memoization", () => {
 
         // Rerender with new object reference but same values
         rerender(
-            <PayPalSdkInstanceProvider
-                createInstanceOptions={{
-                    components: ["paypal-payments"],
-                    clientToken: TEST_CLIENT_TOKEN,
-                }}
+            <PayPalProvider
+                components={["paypal-payments"]}
+                clientToken={TEST_CLIENT_TOKEN}
                 scriptOptions={{ environment: "sandbox" }}
             >
                 <TestComponent />
-            </PayPalSdkInstanceProvider>,
+            </PayPalProvider>,
         );
 
         // Wait a bit to ensure no reload happens
@@ -415,12 +412,13 @@ describe("Auto-memoization", () => {
         const { state, TestComponent } = setupTestComponent();
 
         const { rerender } = render(
-            <PayPalSdkInstanceProvider
-                createInstanceOptions={createInstanceOptions}
+            <PayPalProvider
+                components={createInstanceOptions.components}
+                clientToken={createInstanceOptions.clientToken}
                 scriptOptions={scriptOptions}
             >
                 <TestComponent />
-            </PayPalSdkInstanceProvider>,
+            </PayPalProvider>,
         );
 
         await waitFor(() => expectResolvedState(state));
@@ -430,15 +428,13 @@ describe("Auto-memoization", () => {
 
         // Rerender with different client token
         rerender(
-            <PayPalSdkInstanceProvider
-                createInstanceOptions={{
-                    components: ["paypal-payments"],
-                    clientToken: "NEW-TOKEN",
-                }}
+            <PayPalProvider
+                components={["paypal-payments"]}
+                clientToken="NEW-TOKEN"
                 scriptOptions={scriptOptions}
             >
                 <TestComponent />
-            </PayPalSdkInstanceProvider>,
+            </PayPalProvider>,
         );
 
         // Should reset to pending state
@@ -456,12 +452,13 @@ describe("Auto-memoization", () => {
         const { state, TestComponent } = setupTestComponent();
 
         const { rerender } = render(
-            <PayPalSdkInstanceProvider
-                createInstanceOptions={createInstanceOptions}
+            <PayPalProvider
+                components={createInstanceOptions.components}
+                clientToken={createInstanceOptions.clientToken}
                 scriptOptions={scriptOptions}
             >
                 <TestComponent />
-            </PayPalSdkInstanceProvider>,
+            </PayPalProvider>,
         );
 
         await waitFor(() => expectResolvedState(state));
@@ -471,12 +468,13 @@ describe("Auto-memoization", () => {
 
         // Rerender with different environment
         rerender(
-            <PayPalSdkInstanceProvider
-                createInstanceOptions={createInstanceOptions}
+            <PayPalProvider
+                components={createInstanceOptions.components}
+                clientToken={createInstanceOptions.clientToken}
                 scriptOptions={{ environment: "production" }}
             >
                 <TestComponent />
-            </PayPalSdkInstanceProvider>,
+            </PayPalProvider>,
         );
 
         // Should reset to pending state
@@ -502,12 +500,14 @@ describe("Auto-memoization", () => {
         };
 
         const { rerender } = render(
-            <PayPalSdkInstanceProvider
-                createInstanceOptions={complexOptions}
+            <PayPalProvider
+                components={complexOptions.components}
+                clientToken={complexOptions.clientToken}
+                locale={complexOptions.locale}
                 scriptOptions={scriptOptions}
             >
                 <TestComponent />
-            </PayPalSdkInstanceProvider>,
+            </PayPalProvider>,
         );
 
         await waitFor(() => expectResolvedState(state));
@@ -517,16 +517,14 @@ describe("Auto-memoization", () => {
 
         // Rerender with same values but new object reference
         rerender(
-            <PayPalSdkInstanceProvider
-                createInstanceOptions={{
-                    components: ["paypal-payments", "venmo-payments"],
-                    clientToken: TEST_CLIENT_TOKEN,
-                    locale: "en_US",
-                }}
+            <PayPalProvider
+                components={["paypal-payments", "venmo-payments"]}
+                clientToken={TEST_CLIENT_TOKEN}
+                locale="en_US"
                 scriptOptions={{ environment: "sandbox" }}
             >
                 <TestComponent />
-            </PayPalSdkInstanceProvider>,
+            </PayPalProvider>,
         );
 
         // Wait a bit to ensure no reload happens
@@ -539,20 +537,20 @@ describe("Auto-memoization", () => {
     });
 });
 
-describe("usePayPalInstance", () => {
-    test("should throw an error when used without PayPalSdkInstanceProvider", () => {
+describe("usePayPal", () => {
+    test("should throw an error when used without PayPalProvider", () => {
         withConsoleSpy("error", () => {
             const { TestComponent } = setupTestComponent();
 
             expect(() => render(<TestComponent />)).toThrow(
-                "usePayPalInstance must be used within a PayPalInstanceProvider",
+                "usePayPal must be used within a PayPalProvider",
             );
         });
     });
 });
 
 function setupTestComponent() {
-    const state: InstanceContextState = {
+    const state: PayPalContextState = {
         loadingStatus: INSTANCE_LOADING_STATE.INITIAL,
         sdkInstance: null,
         eligiblePaymentMethods: null,
@@ -565,7 +563,7 @@ function setupTestComponent() {
     }: {
         children?: React.ReactNode;
     }) {
-        const instanceState = usePayPalInstance();
+        const instanceState = usePayPal();
         Object.assign(state, instanceState);
         return <>{children}</>;
     }

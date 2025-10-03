@@ -6,15 +6,15 @@ import React from "react";
 import { renderToString } from "react-dom/server";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
-import { PayPalSdkInstanceProvider } from "./PayPalSdkInstanceProvider";
-import { usePayPalInstance } from "../hooks/usePayPalInstance";
-import { INSTANCE_LOADING_STATE } from "../types/InstanceProviderTypes";
+import { PayPalProvider } from "./PayPalProvider";
+import { usePayPal } from "../hooks/usePayPal";
+import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderTypes";
 import { isServer } from "../utils";
 import { TEST_CLIENT_TOKEN, expectInitialState } from "./providerTestUtils";
 
 import type {
     CreateInstanceOptions,
-    InstanceContextState,
+    PayPalContextState,
     LoadCoreSdkScriptOptions,
 } from "../types";
 
@@ -43,20 +43,22 @@ function renderSSRProvider(
     children?: React.ReactNode,
 ) {
     const { state, TestComponent } = setupSSRTestComponent();
+    const { components, clientToken } = instanceOptions;
 
     const html = renderToString(
-        <PayPalSdkInstanceProvider
-            createInstanceOptions={instanceOptions}
+        <PayPalProvider
+            components={components}
+            clientToken={clientToken}
             scriptOptions={scriptOpts}
         >
             <TestComponent>{children}</TestComponent>
-        </PayPalSdkInstanceProvider>,
+        </PayPalProvider>,
     );
 
     return { html, state };
 }
 
-describe("PayPalSdkInstanceProvider SSR", () => {
+describe("PayPalProvider SSR", () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -211,7 +213,7 @@ describe("usePayPalInstance SSR", () => {
 });
 
 function setupSSRTestComponent() {
-    const state: InstanceContextState = {
+    const state: PayPalContextState = {
         loadingStatus: INSTANCE_LOADING_STATE.INITIAL,
         sdkInstance: null,
         eligiblePaymentMethods: null,
@@ -225,7 +227,7 @@ function setupSSRTestComponent() {
         children?: React.ReactNode;
     }) {
         try {
-            const instanceState = usePayPalInstance();
+            const instanceState = usePayPal();
             Object.assign(state, instanceState);
         } catch (error) {
             state.error = error as Error;
