@@ -2,13 +2,13 @@ import React, { useEffect, useMemo, useReducer, useRef } from "react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
 import {
-    InstanceContext,
+    PayPalContext,
     instanceReducer,
-} from "../context/InstanceProviderContext";
+} from "../context/PayPalProviderContext";
 import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
-} from "../types/InstanceProviderTypes";
+} from "../types/PayPalProviderTypes";
 import { isServer, useDeepCompareMemoize } from "../utils";
 
 import type {
@@ -17,7 +17,7 @@ import type {
     LoadCoreSdkScriptOptions,
 } from "../types";
 
-type PayPalSdkInstanceProviderProps = CreateInstanceOptions<
+type PayPalProviderProps = CreateInstanceOptions<
     readonly [Components, ...Components[]]
 > & {
     // Provider-specific properties
@@ -45,9 +45,7 @@ type PayPalSdkInstanceProviderProps = CreateInstanceOptions<
  *   {children}
  * </PayPalSdkInstanceProvider>
  */
-export const PayPalSdkInstanceProvider: React.FC<
-    PayPalSdkInstanceProviderProps
-> = ({
+export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     clientMetadataId,
     clientToken,
     components,
@@ -242,8 +240,8 @@ export const PayPalSdkInstanceProvider: React.FC<
     );
 
     return (
-        <InstanceContext.Provider value={contextValue}>
+        <PayPalContext.Provider value={contextValue}>
             {children}
-        </InstanceContext.Provider>
+        </PayPalContext.Provider>
     );
 };

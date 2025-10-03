@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { INSTANCE_LOADING_STATE } from "../types/InstanceProviderTypes";
+import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderTypes";
 
 import type { InstanceContextState } from "../types";
 

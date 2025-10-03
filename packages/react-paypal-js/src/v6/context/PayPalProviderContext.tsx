@@ -1,17 +1,17 @@
 import { createContext } from "react";
 
 import {
-    InstanceContextState,
-    InstanceState,
+    PayPalContextState,
+    PayPalState,
     InstanceAction,
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
-} from "../types/InstanceProviderTypes";
+} from "../types/PayPalProviderTypes";
 
 export function instanceReducer(
-    state: InstanceState,
+    state: PayPalState,
     action: InstanceAction,
-): InstanceState {
+): PayPalState {
     switch (action.type) {
         case INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS:
             return { ...state, loadingStatus: action.value };
@@ -44,4 +44,4 @@ export function instanceReducer(
     }
 }
 
-export const InstanceContext = createContext<InstanceContextState | null>(null);
+export const PayPalContext = createContext<PayPalContextState | null>(null);

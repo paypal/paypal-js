@@ -4,7 +4,7 @@ import type {
     EligiblePaymentMethodsOutput,
     CreateInstanceOptions,
     LoadCoreSdkScriptOptions,
-} from "./";
+} from ".";
 
 export enum INSTANCE_LOADING_STATE {
     INITIAL = "initial",
@@ -21,7 +21,7 @@ export enum INSTANCE_DISPATCH_ACTION {
     RESET_STATE = "resetState",
 }
 
-export interface InstanceState {
+export interface PayPalState {
     sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
     eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
     loadingStatus: INSTANCE_LOADING_STATE;
@@ -56,7 +56,7 @@ export type InstanceAction =
           };
       };
 
-export interface InstanceContextState {
+export interface PayPalContextState {
     sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
     eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
     error: Error | null;

@@ -1,6 +1,6 @@
 import { mock } from "jest-mock-extended";
 
-import { instanceReducer } from "./InstanceProviderContext";
+import { instanceReducer } from "./PayPalProviderContext";
 import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
