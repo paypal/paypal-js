@@ -1,4 +1,4 @@
-import { insertScriptElement } from "../utils";
+import { insertScriptElement, isServer } from "../utils";
 import type {
     PayPalV6Namespace,
     LoadCoreSdkScriptOptions,
@@ -8,6 +8,13 @@ const version = "__VERSION__";
 
 function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     validateArguments(options);
+    const isServerEnv = isServer();
+
+    // SSR safeguard
+    if (isServerEnv) {
+        return Promise.resolve(null);
+    }
+
     const { environment, debug } = options;
 
     const baseURL =
