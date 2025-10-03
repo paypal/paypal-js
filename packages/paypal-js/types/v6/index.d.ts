@@ -101,3 +101,10 @@ export * from "./components/paypal-payments";
 export * from "./components/paypal-legacy-billing-agreements";
 export * from "./components/venmo-payments";
 export * from "./components/find-eligible-methods";
+
+// export a subset of types from base-component
+export {
+    OnApproveDataOneTimePayments,
+    OnCompleteData,
+    OnErrorData,
+} from "./components/base-component";
