@@ -121,6 +121,33 @@ export type PayLaterOneTimePaymentSessionOptions =
 export type PayPalCreditOneTimePaymentSessionOptions =
     PayPalOneTimePaymentSessionOptions;
 
+/**
+ * PayPal Payments Instance interface for creating and managing different types of PayPal payment sessions.
+ *
+ * This interface provides methods to create various PayPal payment flows including:
+ * - One-time payments with standard PayPal
+ * - Save payment methods for future use (vaulting)
+ * - PayPal Pay Later financing options
+ * - PayPal Credit transactions
+ *
+ * Each method returns a payment session object that can be used to initiate the corresponding
+ * payment flow with different presentation modes (popup, modal, redirect, etc.).
+ *
+ * @interface PayPalPaymentsInstance
+ *
+ * @example
+ * ```typescript
+ * // Create a one-time payment session
+ * const paypalCheckout = sdkInstance.createPayPalOneTimePaymentSession({
+ *   onApprove: (data) => console.log('Payment approved:', data),
+ *   onCancel: () => console.log('Payment canceled'),
+ *   onError: (data) => console.error('Payment error:', data)
+ * });
+ *
+ * // Start the payment flow
+ * await paypalCheckout.start({ mode: 'auto' });
+ * ```
+ */
 export interface PayPalPaymentsInstance {
     /**
      * Creates a PayPal one-time payment session for processing single payments through PayPal.
