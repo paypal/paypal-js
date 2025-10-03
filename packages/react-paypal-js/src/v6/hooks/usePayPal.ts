@@ -2,9 +2,9 @@ import { useContext } from "react";
 
 import { PayPalContext } from "../context/PayPalProviderContext";
 
-import type { InstanceContextState } from "../types/PayPalProviderTypes";
+import type { PayPalContextState } from "../types/PayPalProviderTypes";
 
-export function usePayPal(): InstanceContextState {
+export function usePayPal(): PayPalContextState {
     const context = useContext(PayPalContext);
 
     if (context === null) {

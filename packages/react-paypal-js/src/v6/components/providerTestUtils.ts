@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderTypes";
 
-import type { InstanceContextState } from "../types";
+import type { PayPalContextState } from "../types";
 
 // Test constants
 export const TEST_CLIENT_TOKEN = "test-client-token";
@@ -29,25 +29,25 @@ export function createMockPayPalNamespace() {
 }
 
 // State assertion helpers
-export function expectInitialState(state: Partial<InstanceContextState>) {
+export function expectInitialState(state: Partial<PayPalContextState>) {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.INITIAL);
     expect(state.sdkInstance).toBe(null);
     expect(state.eligiblePaymentMethods).toBe(null);
     expect(state.error).toBe(null);
 }
 
-export function expectPendingState(state: Partial<InstanceContextState>) {
+export function expectPendingState(state: Partial<PayPalContextState>) {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
 }
 
-export function expectResolvedState(state: Partial<InstanceContextState>) {
+export function expectResolvedState(state: Partial<PayPalContextState>) {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.RESOLVED);
     expect(state.sdkInstance).toBeTruthy();
     expect(state.error).toBe(null);
 }
 
 export function expectRejectedState(
-    state: Partial<InstanceContextState>,
+    state: Partial<PayPalContextState>,
     error?: Error,
 ) {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.REJECTED);
@@ -57,7 +57,7 @@ export function expectRejectedState(
     }
 }
 
-export function expectResetState(state: Partial<InstanceContextState>) {
+export function expectResetState(state: Partial<PayPalContextState>) {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
     expect(state.sdkInstance).toBe(null);
     expect(state.eligiblePaymentMethods).toBe(null);
