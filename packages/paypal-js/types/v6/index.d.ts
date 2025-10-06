@@ -7,6 +7,25 @@ import {
 } from "./components/find-eligible-methods";
 
 export interface PayPalV6Namespace {
+    /**
+     * Creates an SDK instance, which is the first step in an SDK integration. This instance serves as the base layer for all SDK components.
+     *
+     * This is an asynchronous method that initializes the PayPal SDK with the provided
+     * client token and components.
+     *
+     * @param {CreateInstanceOptions} createInstanceOptions - Configuration options for creating the SDK instance
+     * @returns {Promise<SdkInstance<Components[]>>} - A promise that resolves to an SDK instance with methods based on the specified components
+     *
+     * @example
+     * ```typescript
+     * const sdkInstance = await window.paypal.createInstance({
+     *   clientToken: "your-client-token",
+     *   components: ["paypal-payments"],
+     *   locale: "en-US",
+     *   pageType: "checkout"
+     * });
+     * ```
+     */
     createInstance: <T extends readonly [Components, ...Components[]]>(
         createInstanceOptions: CreateInstanceOptions<T>,
     ) => Promise<SdkInstance<T>>;
@@ -81,9 +100,42 @@ export type SdkInstance<T extends readonly [Components, ...Components[]]> =
             : unknown);
 
 export interface BaseInstance {
+    /**
+     * Checks eligibility for specific payment methods.
+     *
+     * This method verifies buyer and merchant eligibility by interacting with PayPal's
+     * public API to determine whether payment methods (such as PayPal or Venmo) can be used.
+     * Use this to conditionally render the appropriate payment buttons on your site.
+     *
+     * @param {FindEligibleMethodsOptions} findEligibleMethodsOptions - Options for checking payment method eligibility
+     * @returns {Promise<EligiblePaymentMethodsOutput>} - A promise that resolves to payment methods eligibility information
+     *
+     * @example
+     * ```typescript
+     * const paymentMethods = await sdkInstance.findEligibleMethods();
+     * const isPayPalEligible = paymentMethods.isEligible("paypal");
+     * if (isPayPalEligible) {
+     *   // Render PayPal button
+     * }
+     * ```
+     */
     findEligibleMethods: (
         findEligibleMethodsOptions: FindEligibleMethodsOptions,
     ) => Promise<EligiblePaymentMethodsOutput>;
+    /**
+     * Updates the locale for the SDK instance.
+     *
+     * This method allows you to dynamically change the locale of the SDK instance
+     * after it has been initialized. The locale should be specified using a BCP-47 code.
+     *
+     * @param {string} locale - The new locale to set, specified as a BCP-47 code (e.g., "en-US", "es-ES")
+     * @returns {void}
+     *
+     * @example
+     * ```typescript
+     * sdkInstance.updateLocale("es-ES");
+     * ```
+     */
     updateLocale: (locale: string) => void;
 }
 
