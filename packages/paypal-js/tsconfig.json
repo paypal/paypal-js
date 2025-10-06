@@ -7,6 +7,7 @@
         "moduleResolution": "bundler",
         "target": "es5",
         "strict": true,
+        "skipLibCheck": true,
 
         // these are overridden by the Rollup plugin
         "outDir": "./dist",

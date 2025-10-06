@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>PayPalPaymentsInstance</title>
+
+        <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <script src="./build/entry.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!--[if lt IE 9]>
+            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <link
+            href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+            integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+            crossorigin="anonymous"
+        />
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css"
+        />
+        <link type="text/css" rel="stylesheet" href="styles/app.min.css" />
+        <link type="text/css" rel="stylesheet" href="styles/iframe.css" />
+        <link type="text/css" rel="stylesheet" href="" />
+        <script async defer src="https://buttons.github.io/buttons.js"></script>
+    </head>
+
+    <body class="layout small-header">
+        <div id="stickyNavbarOverlay"></div>
+
+        <div class="top-nav">
+            <div class="inner">
+                <a
+                    id="hamburger"
+                    role="button"
+                    class="navbar-burger"
+                    aria-label="menu"
+                    aria-expanded="false"
+                >
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+                <div class="logo"></div>
+                <div class="menu">
+                    <div class="navigation">
+                        <a href="index.html" class="link"> Documentation </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="main">
+            <div class="sidebar" id="sidebarNav">
+                <nav>
+                    <h2><a href="index.html">Documentation</a></h2>
+                    <div class="category">
+                        <h3>Interfaces</h3>
+                        <ul>
+                            <li>
+                                <a href="PayPalLegacyBillingInstance.html"
+                                    >PayPalLegacyBillingInstance</a
+                                >
+                            </li>
+                            <li>
+                                <a href="PayPalPaymentsInstance.html"
+                                    >PayPalPaymentsInstance</a
+                                >
+                            </li>
+                            <li>
+                                <a href="VenmoPaymentsInstance.html"
+                                    >VenmoPaymentsInstance</a
+                                >
+                            </li>
+                        </ul>
+                        <h3><a href="global.html">Global</a></h3>
+                    </div>
+                </nav>
+            </div>
+            <div class="core" id="main-content-wrapper">
+                <div class="content">
+                    <header class="page-title">
+                        <p>Interface</p>
+                        <h1>PayPalPaymentsInstance</h1>
+                    </header>
+
+                    <section>
+                        <header>
+                            <h2>PayPalPaymentsInstance</h2>
+                        </header>
+
+                        <article>
+                            <div class="container-overview">
+                                <div class="description">
+                                    <p>
+                                        PayPal Payments Instance interface for
+                                        creating and managing different types of
+                                        PayPal payment sessions.
+                                    </p>
+                                    <p>
+                                        This interface provides methods to
+                                        create various PayPal payment flows
+                                        including:
+                                    </p>
+                                    <ul>
+                                        <li>
+                                            One-time payments with standard
+                                            PayPal
+                                        </li>
+                                        <li>
+                                            Save payment methods for future use
+                                            (vaulting)
+                                        </li>
+                                        <li>
+                                            PayPal Pay Later financing options
+                                        </li>
+                                        <li>PayPal Credit transactions</li>
+                                    </ul>
+                                    <p>
+                                        Each method returns a payment session
+                                        object that can be used to initiate the
+                                        corresponding payment flow with
+                                        different presentation modes (popup,
+                                        modal, redirect, etc.).
+                                    </p>
+                                </div>
+
+                                <dl class="details">
+                                    <p class="tag-source">
+                                        <a
+                                            href="components_paypal-payments.d.ts.html"
+                                            class="button"
+                                            >View Source</a
+                                        >
+                                        <span>
+                                            <a
+                                                href="components_paypal-payments.d.ts.html"
+                                                >components/paypal-payments.d.ts</a
+                                            >,
+                                            <a
+                                                href="components_paypal-payments.d.ts.html#line22"
+                                                >line 22</a
+                                            >
+                                        </span>
+                                    </p>
+                                </dl>
+
+                                <h3>Example</h3>
+
+                                <pre class="prettyprint"><code>```typescript
+// Create a one-time payment session
+const paypalCheckout = sdkInstance.createPayPalOneTimePaymentSession({
+  onApprove: (data) => console.log('Payment approved:', data),
+  onCancel: () => console.log('Payment canceled'),
+  onError: (data) => console.error('Payment error:', data)
+});
+
+// Start the payment flow
+await paypalCheckout.start({ mode: 'auto' });
+```</code></pre>
+                            </div>
+
+                            <div class="vertical-section">
+                                <h1>Members</h1>
+                                <div class="members">
+                                    <div class="member">
+                                        <span
+                                            class="method-parameter is-pulled-right"
+                                        >
+                                            <label>Type:</label>
+
+                                            <code class="param-type"
+                                                >function</code
+                                            >
+                                        </span>
+
+                                        <h4
+                                            class="name"
+                                            id="createPayLaterOneTimePaymentSession"
+                                        >
+                                            <a
+                                                class="href-link"
+                                                href="#createPayLaterOneTimePaymentSession"
+                                                >#</a
+                                            >
+
+                                            <span class="code-name">
+                                                createPayLaterOneTimePaymentSession
+                                            </span>
+                                        </h4>
+
+                                        <div class="description">
+                                            <p>
+                                                Creates a PayPal Pay Later
+                                                one-time payment session for buy
+                                                now, pay later transactions.
+                                                This method enables customers to
+                                                make purchases and pay for them
+                                                over time through PayPal's Pay
+                                                Later financing options.
+                                                Available in supported
+                                                countries.
+                                            </p>
+                                        </div>
+
+                                        <dl class="details">
+                                            <p class="tag-source">
+                                                <a
+                                                    href="components_paypal-payments.d.ts.html"
+                                                    class="button"
+                                                    >View Source</a
+                                                >
+                                                <span>
+                                                    <a
+                                                        href="components_paypal-payments.d.ts.html"
+                                                        >components/paypal-payments.d.ts</a
+                                                    >,
+                                                    <a
+                                                        href="components_paypal-payments.d.ts.html#line108"
+                                                        >line 108</a
+                                                    >
+                                                </span>
+                                            </p>
+                                        </dl>
+
+                                        <h5>Example</h5>
+
+                                        <pre
+                                            class="prettyprint"
+                                        ><code>```typescript
+const payLaterSession = sdkInstance.createPayLaterOneTimePaymentSession({
+  onApprove: (data) => {
+    console.log('Pay Later payment approved:', data);
+  },
+  onCancel: () => {
+    console.log('Pay Later payment canceled');
+  },
+  onError: (data) => {
+    console.error('Pay Later payment error:', data);
+  }
+});
+```</code></pre>
+                                    </div>
+
+                                    <div class="member">
+                                        <span
+                                            class="method-parameter is-pulled-right"
+                                        >
+                                            <label>Type:</label>
+
+                                            <code class="param-type"
+                                                >function</code
+                                            >
+                                        </span>
+
+                                        <h4
+                                            class="name"
+                                            id="createPayPalCreditOneTimePaymentSession"
+                                        >
+                                            <a
+                                                class="href-link"
+                                                href="#createPayPalCreditOneTimePaymentSession"
+                                                >#</a
+                                            >
+
+                                            <span class="code-name">
+                                                createPayPalCreditOneTimePaymentSession
+                                            </span>
+                                        </h4>
+
+                                        <div class="description">
+                                            <p>
+                                                Creates a PayPal Credit one-time
+                                                payment session for credit-based
+                                                transactions. This method
+                                                enables customers to make
+                                                purchases using PayPal Credit,
+                                                allowing them to pay over time
+                                                with financing options.
+                                                Available in supported
+                                                countries.
+                                            </p>
+                                        </div>
+
+                                        <dl class="details">
+                                            <p class="tag-source">
+                                                <a
+                                                    href="components_paypal-payments.d.ts.html"
+                                                    class="button"
+                                                    >View Source</a
+                                                >
+                                                <span>
+                                                    <a
+                                                        href="components_paypal-payments.d.ts.html"
+                                                        >components/paypal-payments.d.ts</a
+                                                    >,
+                                                    <a
+                                                        href="components_paypal-payments.d.ts.html#line133"
+                                                        >line 133</a
+                                                    >
+                                                </span>
+                                            </p>
+                                        </dl>
+
+                                        <h5>Example</h5>
+
+                                        <pre
+                                            class="prettyprint"
+                                        ><code>```typescript
+const creditSession = sdkInstance.createPayPalCreditOneTimePaymentSession({
+  onApprove: (data) => {
+    console.log('PayPal Credit payment approved:', data);
+  },
+  onCancel: () => {
+    console.log('PayPal Credit payment canceled');
+  },
+  onError: (data) => {
+    console.error('PayPal Credit payment error:', data);
+  }
+});
+```</code></pre>
+                                    </div>
+
+                                    <div class="member">
+                                        <span
+                                            class="method-parameter is-pulled-right"
+                                        >
+                                            <label>Type:</label>
+
+                                            <code class="param-type"
+                                                >function</code
+                                            >
+                                        </span>
+
+                                        <h4
+                                            class="name"
+                                            id="createPayPalOneTimePaymentSession"
+                                        >
+                                            <a
+                                                class="href-link"
+                                                href="#createPayPalOneTimePaymentSession"
+                                                >#</a
+                                            >
+
+                                            <span class="code-name">
+                                                createPayPalOneTimePaymentSession
+                                            </span>
+                                        </h4>
+
+                                        <div class="description">
+                                            <p>
+                                                Creates a PayPal one-time
+                                                payment session for processing
+                                                single payments through PayPal.
+                                                This method allows you to
+                                                configure callback functions to
+                                                handle different stages of the
+                                                PayPal checkout process,
+                                                including payment approval,
+                                                shipping address changes,
+                                                shipping option changes,
+                                                cancelation, and errors.
+                                            </p>
+                                        </div>
+
+                                        <dl class="details">
+                                            <p class="tag-source">
+                                                <a
+                                                    href="components_paypal-payments.d.ts.html"
+                                                    class="button"
+                                                    >View Source</a
+                                                >
+                                                <span>
+                                                    <a
+                                                        href="components_paypal-payments.d.ts.html"
+                                                        >components/paypal-payments.d.ts</a
+                                                    >,
+                                                    <a
+                                                        href="components_paypal-payments.d.ts.html#line50"
+                                                        >line 50</a
+                                                    >
+                                                </span>
+                                            </p>
+                                        </dl>
+
+                                        <h5>Example</h5>
+
+                                        <pre
+                                            class="prettyprint"
+                                        ><code>```typescript
+const paypalSession = sdkInstance.createPayPalOneTimePaymentSession({
+  onApprove: (data) => {
+    console.log('PayPal payment approved:', data);
+  },
+  onShippingAddressChange: (data) => {
+    console.log('Shipping address changed:', data);
+  },
+  onShippingOptionsChange: (data) => {
+    console.log('Shipping options changed:', data);
+  },
+  onCancel: () => {
+    console.log('PayPal payment canceled');
+  },
+  onError: (data) => {
+    console.error('PayPal payment error:', data);
+  }
+});
+```</code></pre>
+                                    </div>
+
+                                    <div class="member">
+                                        <span
+                                            class="method-parameter is-pulled-right"
+                                        >
+                                            <label>Type:</label>
+
+                                            <code class="param-type"
+                                                >function</code
+                                            >
+                                        </span>
+
+                                        <h4
+                                            class="name"
+                                            id="createPayPalSavePaymentSession"
+                                        >
+                                            <a
+                                                class="href-link"
+                                                href="#createPayPalSavePaymentSession"
+                                                >#</a
+                                            >
+
+                                            <span class="code-name">
+                                                createPayPalSavePaymentSession
+                                            </span>
+                                        </h4>
+
+                                        <div class="description">
+                                            <p>
+                                                Creates a PayPal save payment
+                                                session for storing payment
+                                                methods for future use. This
+                                                method allows you to set up
+                                                vault payment sessions where
+                                                customers can save their PayPal
+                                                payment method for future
+                                                transactions without re-entering
+                                                details.
+                                            </p>
+                                        </div>
+
+                                        <dl class="details">
+                                            <p class="tag-source">
+                                                <a
+                                                    href="components_paypal-payments.d.ts.html"
+                                                    class="button"
+                                                    >View Source</a
+                                                >
+                                                <span>
+                                                    <a
+                                                        href="components_paypal-payments.d.ts.html"
+                                                        >components/paypal-payments.d.ts</a
+                                                    >,
+                                                    <a
+                                                        href="components_paypal-payments.d.ts.html#line82"
+                                                        >line 82</a
+                                                    >
+                                                </span>
+                                            </p>
+                                        </dl>
+
+                                        <h5>Example</h5>
+
+                                        <pre
+                                            class="prettyprint"
+                                        ><code>```typescript
+const savePaymentSession = sdkInstance.createPayPalSavePaymentSession({
+  vaultSetupToken: 'your-vault-setup-token',
+  onApprove: (data) => {
+    console.log('Payment method saved:', data);
+  },
+  onCancel: () => {
+    console.log('Save payment canceled');
+  },
+  onError: (data) => {
+    console.error('Save payment error:', data);
+  }
+});
+```</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </section>
+                </div>
+
+                <footer class="footer">
+                    <div class="content has-text-centered">
+                        <p>
+                            Documentation generated by
+                            <a href="https://github.com/jsdoc3/jsdoc"
+                                >JSDoc 4.0.4</a
+                            >
+                        </p>
+                        <p class="sidebar-created-by">
+                            <a
+                                href="https://github.com/SoftwareBrothers/better-docs"
+                                target="_blank"
+                                >BetterDocs theme</a
+                            >
+                            provided with <i class="fas fa-heart"></i> by
+                            <a href="http://softwarebrothers.co" target="_blank"
+                                >SoftwareBrothers - JavaScript Development
+                                Agency</a
+                            >
+                        </p>
+                    </div>
+                </footer>
+            </div>
+            <div id="side-nav" class="side-nav"></div>
+        </div>
+        <script src="scripts/app.min.js"></script>
+        <script>
+            PR.prettyPrint();
+        </script>
+        <script src="scripts/linenumber.js"></script>
+    </body>
+</html>

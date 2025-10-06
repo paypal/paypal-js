@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>components/paypal-legacy-billing-agreements.d.ts</title>
+
+        <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <script src="./build/entry.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!--[if lt IE 9]>
+            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <link
+            href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+            integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+            crossorigin="anonymous"
+        />
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css"
+        />
+        <link type="text/css" rel="stylesheet" href="styles/app.min.css" />
+        <link type="text/css" rel="stylesheet" href="styles/iframe.css" />
+        <link type="text/css" rel="stylesheet" href="" />
+        <script async defer src="https://buttons.github.io/buttons.js"></script>
+    </head>
+
+    <body class="layout small-header">
+        <div id="stickyNavbarOverlay"></div>
+
+        <div class="top-nav">
+            <div class="inner">
+                <a
+                    id="hamburger"
+                    role="button"
+                    class="navbar-burger"
+                    aria-label="menu"
+                    aria-expanded="false"
+                >
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+                <div class="logo"></div>
+                <div class="menu">
+                    <div class="navigation">
+                        <a href="index.html" class="link"> Documentation </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="main">
+            <div class="sidebar" id="sidebarNav">
+                <nav>
+                    <h2><a href="index.html">Documentation</a></h2>
+                    <div class="category">
+                        <h3>Interfaces</h3>
+                        <ul>
+                            <li>
+                                <a href="PayPalLegacyBillingInstance.html"
+                                    >PayPalLegacyBillingInstance</a
+                                >
+                            </li>
+                            <li>
+                                <a href="PayPalPaymentsInstance.html"
+                                    >PayPalPaymentsInstance</a
+                                >
+                            </li>
+                            <li>
+                                <a href="VenmoPaymentsInstance.html"
+                                    >VenmoPaymentsInstance</a
+                                >
+                            </li>
+                        </ul>
+                        <h3><a href="global.html">Global</a></h3>
+                    </div>
+                </nav>
+            </div>
+            <div class="core" id="main-content-wrapper">
+                <div class="content">
+                    <header class="page-title">
+                        <p>Source</p>
+                        <h1>
+                            components/paypal-legacy-billing-agreements.d.ts
+                        </h1>
+                    </header>
+
+                    <section>
+                        <article>
+                            <pre
+                                class="prettyprint source linenums"
+                            ><code>import {
+    BasePaymentSessionOptions,
+    BasePaymentSession,
+    PresentationModeOptionsForPopup,
+    PresentationModeOptionsForModal,
+    PresentationModeOptionsForAuto,
+    PresentationModeOptionsForPaymentHandler,
+} from "./base-component";
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { PayPalPaymentsInstance } from "./paypal-payments.d";
+
+export type OnApproveDataBillingAgreements = {
+    billingToken: string;
+    payerId?: string;
+};
+
+export type PayPalLegacyBillingAgreementsSessionOptions = Omit&lt;
+    BasePaymentSessionOptions,
+    "onApprove"
+> &amp; {
+    billingToken?: string;
+    onApprove: (data: OnApproveDataBillingAgreements) => Promise&lt;void>;
+};
+
+export type PayPalLegacyBillingPresentationModeOptions =
+    | PresentationModeOptionsForAuto
+    | PresentationModeOptionsForPopup
+    | PresentationModeOptionsForModal
+    | PresentationModeOptionsForPaymentHandler;
+
+export type PayPalLegacyBillingAgreementsSessionPromise = Promise&lt;{
+    billingToken: string;
+}>;
+
+export type PayPalLegacyBillingAgreementsSession = Omit&lt;
+    BasePaymentSession,
+    "start"
+> &amp; {
+    start: (
+        presentationModeOptions: PayPalLegacyBillingPresentationModeOptions,
+        paymentSessionPromise?: PayPalLegacyBillingAgreementsSessionPromise,
+    ) => Promise&lt;void>;
+};
+
+/**
+ * Interface for PayPal legacy billing agreement functionality.
+ *
+ * @deprecated This interface provides legacy billing agreement methods that should not be used for new implementations.
+ * Use the newer vault setup token approach with {@link PayPalPaymentsInstance.createPayPalSavePaymentSession} instead.
+ *
+ * @interface PayPalLegacyBillingInstance
+ * @description Provides methods for creating billing agreements without requiring an immediate purchase.
+ * This legacy interface allows merchants to set up recurring payment agreements with customers
+ * that can be used for future transactions.
+ *
+ * @example
+ * ```typescript
+ * // Legacy billing agreement setup (deprecated)
+ * const billingAgreementWithoutPurchaseSession = sdkInstance.createPayPalBillingAgreementWithoutPurchase({
+ *   billingToken: 'your-billing-token',
+ *   onApprove: (data) => {
+ *     console.log('Billing agreement approved:', data);
+ *   },
+ *   onCancel: () => {
+ *     console.log('Billing agreement canceled');
+ *   },
+ *   onError: (data) => {
+ *     console.error('Billing agreement error:', data);
+ *   }
+ * });
+ *
+ * // Start the billing agreement flow
+ * await billingAgreementWithoutPurchaseSession.start({
+ *   mode: 'popup'
+ * });
+ * ```
+ *
+ * @see {@link PayPalPaymentsInstance.createPayPalSavePaymentSession} For the recommended modern approach
+ */
+export interface PayPalLegacyBillingInstance {
+    /**
+     * Creates a PayPal billing agreement session without requiring an immediate purchase.
+     * This legacy method allows merchants to set up recurring payment agreements with customers
+     * that can be used for future transactions.
+     *
+     * @deprecated This method is legacy and should not be used for new implementations.
+     * Use the newer vault setup token approach with {@link PayPalPaymentsInstance.createPayPalSavePaymentSession} instead.
+     *
+     * @param {PayPalLegacyBillingAgreementsSessionOptions} paymentSessionOptions - Configuration options for the billing agreement session
+     * @returns {PayPalLegacyBillingAgreementsSession} - A session object that can be used to start the billing agreement flow
+     *
+     * @example
+     * ```typescript
+     * const billingSession = sdkInstance.createPayPalBillingAgreementWithoutPurchase({
+     *   billingToken: 'your-billing-token',
+     *   onApprove: (data) => {
+     *     console.log('Billing agreement approved:', data);
+     *   },
+     *   onCancel: () => {
+     *     console.log('Billing agreement canceled');
+     *   },
+     *   onError: (data) => {
+     *     console.error('Billing agreement error:', data);
+     *   }
+     * });
+     * ```
+     */
+    createPayPalBillingAgreementWithoutPurchase: (
+        paymentSessionOptions: PayPalLegacyBillingAgreementsSessionOptions,
+    ) => PayPalLegacyBillingAgreementsSession;
+}
+</code></pre>
+                        </article>
+                    </section>
+                </div>
+
+                <footer class="footer">
+                    <div class="content has-text-centered">
+                        <p>
+                            Documentation generated by
+                            <a href="https://github.com/jsdoc3/jsdoc"
+                                >JSDoc 4.0.4</a
+                            >
+                        </p>
+                        <p class="sidebar-created-by">
+                            <a
+                                href="https://github.com/SoftwareBrothers/better-docs"
+                                target="_blank"
+                                >BetterDocs theme</a
+                            >
+                            provided with <i class="fas fa-heart"></i> by
+                            <a href="http://softwarebrothers.co" target="_blank"
+                                >SoftwareBrothers - JavaScript Development
+                                Agency</a
+                            >
+                        </p>
+                    </div>
+                </footer>
+            </div>
+            <div id="side-nav" class="side-nav"></div>
+        </div>
+        <script src="scripts/app.min.js"></script>
+        <script>
+            PR.prettyPrint();
+        </script>
+        <script src="scripts/linenumber.js"></script>
+    </body>
+</html>

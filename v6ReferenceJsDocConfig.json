@@ -1,0 +1,16 @@
+{
+    "source": {
+        "include": ["./packages/paypal-js/types/v6/"],
+        "includePattern": "\\.(d.ts)$"
+    },
+    "opts": {
+        "destination": "./docs/web-sdk-v6-reference-page",
+        "recurse": true,
+        "readme": "./docs/web-sdk-v6-reference-page/README.md",
+        "template": "./node_modules/better-docs"
+    },
+    "plugins": ["plugins/markdown", "./node_modules/better-docs/typescript"],
+    "markdown": {
+        "parser": "gfm"
+    }
+}

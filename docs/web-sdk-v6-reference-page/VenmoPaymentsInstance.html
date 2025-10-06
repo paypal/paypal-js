@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>VenmoPaymentsInstance</title>
+
+        <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+        <script src="./build/entry.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!--[if lt IE 9]>
+            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <link
+            href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+            integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+            crossorigin="anonymous"
+        />
+        <link
+            type="text/css"
+            rel="stylesheet"
+            href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css"
+        />
+        <link type="text/css" rel="stylesheet" href="styles/app.min.css" />
+        <link type="text/css" rel="stylesheet" href="styles/iframe.css" />
+        <link type="text/css" rel="stylesheet" href="" />
+        <script async defer src="https://buttons.github.io/buttons.js"></script>
+    </head>
+
+    <body class="layout small-header">
+        <div id="stickyNavbarOverlay"></div>
+
+        <div class="top-nav">
+            <div class="inner">
+                <a
+                    id="hamburger"
+                    role="button"
+                    class="navbar-burger"
+                    aria-label="menu"
+                    aria-expanded="false"
+                >
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+                <div class="logo"></div>
+                <div class="menu">
+                    <div class="navigation">
+                        <a href="index.html" class="link"> Documentation </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="main">
+            <div class="sidebar" id="sidebarNav">
+                <nav>
+                    <h2><a href="index.html">Documentation</a></h2>
+                    <div class="category">
+                        <h3>Interfaces</h3>
+                        <ul>
+                            <li>
+                                <a href="PayPalLegacyBillingInstance.html"
+                                    >PayPalLegacyBillingInstance</a
+                                >
+                            </li>
+                            <li>
+                                <a href="PayPalPaymentsInstance.html"
+                                    >PayPalPaymentsInstance</a
+                                >
+                            </li>
+                            <li>
+                                <a href="VenmoPaymentsInstance.html"
+                                    >VenmoPaymentsInstance</a
+                                >
+                            </li>
+                        </ul>
+                        <h3><a href="global.html">Global</a></h3>
+                    </div>
+                </nav>
+            </div>
+            <div class="core" id="main-content-wrapper">
+                <div class="content">
+                    <header class="page-title">
+                        <p>Interface</p>
+                        <h1>VenmoPaymentsInstance</h1>
+                    </header>
+
+                    <section>
+                        <header>
+                            <h2>VenmoPaymentsInstance</h2>
+                        </header>
+
+                        <article>
+                            <div class="container-overview">
+                                <div class="description">
+                                    <p>
+                                        Interface for managing Venmo payment
+                                        operations within the PayPal SDK. This
+                                        interface provides methods for creating
+                                        and managing Venmo payment sessions,
+                                        allowing merchants to integrate Venmo as
+                                        a payment method in their applications.
+                                    </p>
+                                    <p>
+                                        The
+                                        <a href="VenmoPaymentsInstance.html"
+                                            >VenmoPaymentsInstance</a
+                                        >
+                                        enables seamless integration with
+                                        Venmo's payment flow, providing a secure
+                                        and user-friendly way to process
+                                        payments through the Venmo platform.
+                                    </p>
+                                </div>
+
+                                <dl class="details">
+                                    <p class="tag-source">
+                                        <a
+                                            href="components_venmo-payments.d.ts.html"
+                                            class="button"
+                                            >View Source</a
+                                        >
+                                        <span>
+                                            <a
+                                                href="components_venmo-payments.d.ts.html"
+                                                >components/venmo-payments.d.ts</a
+                                            >,
+                                            <a
+                                                href="components_venmo-payments.d.ts.html#line9"
+                                                >line 9</a
+                                            >
+                                        </span>
+                                    </p>
+                                </dl>
+                            </div>
+
+                            <div class="vertical-section">
+                                <h1>Members</h1>
+                                <div class="members">
+                                    <div class="member">
+                                        <span
+                                            class="method-parameter is-pulled-right"
+                                        >
+                                            <label>Type:</label>
+
+                                            <code class="param-type"
+                                                >function</code
+                                            >
+                                        </span>
+
+                                        <h4
+                                            class="name"
+                                            id="createVenmoOneTimePaymentSession"
+                                        >
+                                            <a
+                                                class="href-link"
+                                                href="#createVenmoOneTimePaymentSession"
+                                                >#</a
+                                            >
+
+                                            <span class="code-name">
+                                                createVenmoOneTimePaymentSession
+                                            </span>
+                                        </h4>
+
+                                        <div class="description">
+                                            <p>
+                                                Creates a Venmo one-time payment
+                                                session for processing payments
+                                                through Venmo. This method
+                                                allows you to configure callback
+                                                functions to handle different
+                                                stages of the Venmo checkout
+                                                process, including payment
+                                                approval, cancelation, and
+                                                errors.
+                                            </p>
+                                        </div>
+
+                                        <dl class="details">
+                                            <p class="tag-source">
+                                                <a
+                                                    href="components_venmo-payments.d.ts.html"
+                                                    class="button"
+                                                    >View Source</a
+                                                >
+                                                <span>
+                                                    <a
+                                                        href="components_venmo-payments.d.ts.html"
+                                                        >components/venmo-payments.d.ts</a
+                                                    >,
+                                                    <a
+                                                        href="components_venmo-payments.d.ts.html#line20"
+                                                        >line 20</a
+                                                    >
+                                                </span>
+                                            </p>
+                                        </dl>
+
+                                        <h5>Example</h5>
+
+                                        <pre
+                                            class="prettyprint"
+                                        ><code>```typescript
+const venmoSession = sdkInstance.createVenmoOneTimePaymentSession({
+  onApprove: (data) => {
+    console.log('Venmo payment approved:', data);
+  },
+  onCancel: () => {
+    console.log('Venmo payment canceled');
+  },
+  onError: (data) => {
+    console.error('Venmo payment error:', data);
+  }
+});
+```</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </section>
+                </div>
+
+                <footer class="footer">
+                    <div class="content has-text-centered">
+                        <p>
+                            Documentation generated by
+                            <a href="https://github.com/jsdoc3/jsdoc"
+                                >JSDoc 4.0.4</a
+                            >
+                        </p>
+                        <p class="sidebar-created-by">
+                            <a
+                                href="https://github.com/SoftwareBrothers/better-docs"
+                                target="_blank"
+                                >BetterDocs theme</a
+                            >
+                            provided with <i class="fas fa-heart"></i> by
+                            <a href="http://softwarebrothers.co" target="_blank"
+                                >SoftwareBrothers - JavaScript Development
+                                Agency</a
+                            >
+                        </p>
+                    </div>
+                </footer>
+            </div>
+            <div id="side-nav" class="side-nav"></div>
+        </div>
+        <script src="scripts/app.min.js"></script>
+        <script>
+            PR.prettyPrint();
+        </script>
+        <script src="scripts/linenumber.js"></script>
+    </body>
+</html>
