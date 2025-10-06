@@ -83,8 +83,6 @@ function createInitialState(): PayPalState {
         eligiblePaymentMethods: null,
         loadingStatus: INSTANCE_LOADING_STATE.INITIAL,
         error: null,
-        createInstanceOptions: createMockCreateInstanceOptions(),
-        scriptOptions: createMockScriptOptions(),
     };
 }
 
@@ -177,22 +175,8 @@ describe("instanceReducer", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
             };
 
-            const newCreateInstanceOptions: CreateInstanceOptions<
-                ["venmo-payments"]
-            > = {
-                components: ["venmo-payments"],
-                clientToken: "new-client-token",
-            };
-            const newScriptOptions = {
-                environment: "production" as const,
-            };
-
             const action: InstanceAction = {
                 type: INSTANCE_DISPATCH_ACTION.RESET_STATE,
-                value: {
-                    createInstanceOptions: newCreateInstanceOptions,
-                    scriptOptions: newScriptOptions,
-                },
             };
 
             const result = instanceReducer(stateWithData, action);
@@ -201,21 +185,12 @@ describe("instanceReducer", () => {
             expect(result.eligiblePaymentMethods).toBe(null);
             expect(result.error).toBe(null);
             expect(result.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
-            expect(result.createInstanceOptions).toBe(newCreateInstanceOptions);
-            expect(result.scriptOptions).toBe(newScriptOptions);
             expect(result).not.toBe(stateWithData);
         });
 
         test("should reset from initial state", () => {
-            const newCreateInstanceOptions = createMockCreateInstanceOptions();
-            const newScriptOptions = createMockScriptOptions();
-
             const action: InstanceAction = {
                 type: INSTANCE_DISPATCH_ACTION.RESET_STATE,
-                value: {
-                    createInstanceOptions: newCreateInstanceOptions,
-                    scriptOptions: newScriptOptions,
-                },
             };
 
             const result = instanceReducer(initialState, action);
@@ -224,8 +199,6 @@ describe("instanceReducer", () => {
             expect(result.eligiblePaymentMethods).toBe(null);
             expect(result.error).toBe(null);
             expect(result.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
-            expect(result.createInstanceOptions).toBe(newCreateInstanceOptions);
-            expect(result.scriptOptions).toBe(newScriptOptions);
         });
     });
 
@@ -263,11 +236,6 @@ describe("instanceReducer", () => {
                 },
                 {
                     type: INSTANCE_DISPATCH_ACTION.RESET_STATE,
-                    value: {
-                        createInstanceOptions:
-                            createMockCreateInstanceOptions(),
-                        scriptOptions: createMockScriptOptions(),
-                    },
                 },
             ];
 
@@ -331,8 +299,6 @@ describe("instanceReducer", () => {
                 if (action.type !== INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY) {
                     expect(result.eligiblePaymentMethods).toBe(mockEligibility);
                 }
-                expect(result.createInstanceOptions).toBe(mockOptions);
-                expect(result.scriptOptions).toBe(mockScriptOptions);
             },
         );
     });

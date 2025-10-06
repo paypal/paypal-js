@@ -78,8 +78,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         eligiblePaymentMethods: null,
         loadingStatus: INSTANCE_LOADING_STATE.INITIAL,
         error: null,
-        createInstanceOptions: memoizedCreateOptions,
-        scriptOptions: memoizedScriptOptions,
     });
 
     // Client-side hydration: transition from INITIAL to PENDING state
@@ -97,22 +95,17 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         }
     }, [state.loadingStatus]); // Run when loadingStatus changes, but only act once
 
-    // Auto-sync createInstanceOptions changes (e.g., client token updates)
+    // Effect to reset state if options change
     useEffect(() => {
-        const hasOptionsChanged =
-            state.createInstanceOptions !== memoizedCreateOptions ||
-            state.scriptOptions !== memoizedScriptOptions;
-
-        if (hasOptionsChanged) {
-            dispatch({
-                type: INSTANCE_DISPATCH_ACTION.RESET_STATE,
-                value: {
-                    createInstanceOptions: memoizedCreateOptions,
-                    scriptOptions: memoizedScriptOptions,
-                },
-            });
+        if (!state.sdkInstance) {
+            return;
         }
-    }, [memoizedCreateOptions, memoizedScriptOptions]);
+
+        dispatch({
+            type: INSTANCE_DISPATCH_ACTION.RESET_STATE,
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [memoizedCreateOptions, memoizedScriptOptions]); // Only reset when options change, not the SDK instance
 
     // SDK loading effect - only runs on client (useEffect doesn't run during SSR)
     useEffect(() => {
@@ -129,7 +122,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             try {
                 // Load the core SDK script
                 const paypalNamespace = await loadCoreSdkScript(
-                    state.scriptOptions,
+                    memoizedScriptOptions,
                 );
 
                 if (!isSubscribed || !paypalNamespace) {
@@ -138,10 +131,10 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
 
                 // Create SDK instance
                 const instance = await paypalNamespace.createInstance(
-                    state.createInstanceOptions,
+                    memoizedCreateOptions,
                 );
 
-                if (!isSubscribed) {
+                if (!isSubscribed || !instance) {
                     return;
                 }
 
@@ -171,8 +164,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     }, [
         state.loadingStatus,
         state.sdkInstance,
-        state.createInstanceOptions,
-        state.scriptOptions,
+        memoizedCreateOptions,
+        memoizedScriptOptions,
     ]);
 
     // Separate effect for eligibility - runs after instance is created

@@ -36,8 +36,6 @@ export function instanceReducer(
                 eligiblePaymentMethods: null,
                 error: null,
                 loadingStatus: INSTANCE_LOADING_STATE.PENDING,
-                createInstanceOptions: action.value.createInstanceOptions,
-                scriptOptions: action.value.scriptOptions,
             };
         default:
             return state;
