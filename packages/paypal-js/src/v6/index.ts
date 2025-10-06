@@ -10,8 +10,11 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     validateArguments(options);
     const isServerEnv = isServer();
 
-    // SSR safeguard
+    // SSR safeguard - warn about incorrect usage
     if (isServerEnv) {
+        console.warn(
+            "PayPal JS: loadCoreSdkScript() was called on the server. This function should only be called on the client side. Please ensure you're not calling this during server-side rendering.",
+        );
         return Promise.resolve(null);
     }
 
