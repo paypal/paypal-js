@@ -8,14 +8,13 @@ import {
 
 export interface PayPalV6Namespace {
     /**
-     * Creates an SDK instance with the specified components and configuration.
+     * Creates an SDK instance, which is the first step in an SDK integration. This instance serves as the base layer for all SDK components.
      *
      * This is an asynchronous method that initializes the PayPal SDK with the provided
-     * client token and components. The SDK is designed to be lightweight and modular,
-     * allowing you to load only the functionality you need.
+     * client token and components.
      *
      * @param {CreateInstanceOptions} createInstanceOptions - Configuration options for creating the SDK instance
-     * @returns {Promise<SdkInstance<T>>} - A promise that resolves to an SDK instance with methods based on the specified components
+     * @returns {Promise<SdkInstance<Components[]>>} - A promise that resolves to an SDK instance with methods based on the specified components
      *
      * @example
      * ```typescript
