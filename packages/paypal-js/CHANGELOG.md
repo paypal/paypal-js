@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.0.2
+
+### Patch Changes
+
+-   1599832: feat: add jsdoc comments to v6 public interface types
+
 ## 9.0.1
 
 ### Patch Changes
