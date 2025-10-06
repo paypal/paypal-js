@@ -13,13 +13,6 @@
         "plugins/markdown",
         "../../node_modules/better-docs/typescript"
     ],
-    "tags": {
-        "allowUnknownTags": ["optional"]
-    },
-    "templates": {
-        "cleverLinks": false,
-        "monospaceLinks": false
-    },
     "markdown": {
         "parser": "gfm"
     }
