@@ -4,9 +4,9 @@
         "includePattern": "\\.(d.ts)$"
     },
     "opts": {
-        "destination": "./docs/",
+        "destination": "./docs/web-sdk-v6-reference-page",
         "recurse": true,
-        "readme": "./docs/README.md",
+        "readme": "./docs/web-sdk-v6-reference-page/README.md",
         "template": "./node_modules/better-docs"
     },
     "plugins": ["plugins/markdown", "./node_modules/better-docs/typescript"],

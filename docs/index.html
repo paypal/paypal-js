@@ -1,135 +1,105 @@
 <!doctype html>
 <html lang="en">
     <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Home</title>
-
-        <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
-        <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-        <script src="./build/entry.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <!--[if lt IE 9]>
-            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-        <link
-            href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700"
-            rel="stylesheet"
-        />
-        <link
-            rel="stylesheet"
-            href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-            integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-            crossorigin="anonymous"
-        />
-        <link
-            type="text/css"
-            rel="stylesheet"
-            href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css"
-        />
-        <link type="text/css" rel="stylesheet" href="styles/app.min.css" />
-        <link type="text/css" rel="stylesheet" href="styles/iframe.css" />
-        <link type="text/css" rel="stylesheet" href="" />
-        <script async defer src="https://buttons.github.io/buttons.js"></script>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>PayPal JS SDK Documentation</title>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 40px 20px;
+                background-color: #f8f9fa;
+            }
+            .container {
+                background: white;
+                padding: 40px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            h1 {
+                color: #0070ba;
+                margin-bottom: 10px;
+                font-size: 2.5em;
+                font-weight: 300;
+            }
+            .subtitle {
+                color: #666;
+                margin-bottom: 40px;
+                font-size: 1.2em;
+            }
+            .docs-grid {
+                display: grid;
+                gap: 20px;
+                margin-top: 30px;
+            }
+            .doc-card {
+                border: 1px solid #e1e5e9;
+                border-radius: 6px;
+                padding: 24px;
+                text-decoration: none;
+                color: inherit;
+                transition: all 0.2s ease;
+                background: #fff;
+            }
+            .doc-card:hover {
+                border-color: #0070ba;
+                box-shadow: 0 4px 12px rgba(0, 112, 186, 0.15);
+                transform: translateY(-2px);
+            }
+            .doc-card h3 {
+                margin: 0 0 10px 0;
+                color: #0070ba;
+                font-size: 1.3em;
+            }
+            .doc-card p {
+                margin: 0;
+                color: #666;
+                line-height: 1.5;
+            }
+            .footer {
+                text-align: center;
+                margin-top: 50px;
+                padding-top: 30px;
+                border-top: 1px solid #e1e5e9;
+                color: #666;
+                font-size: 0.9em;
+            }
+            .paypal-logo {
+                display: inline-block;
+                font-weight: bold;
+                color: #0070ba;
+            }
+        </style>
     </head>
+    <body>
+        <div class="container">
+            <h1><span class="paypal-logo">PayPal</span> JS SDK</h1>
+            <p class="subtitle">Documentation Hub</p>
 
-    <body class="layout small-header">
-        <div id="stickyNavbarOverlay"></div>
+            <p>
+                Welcome to the PayPal JavaScript SDK documentation. Choose from
+                the available documentation versions below:
+            </p>
 
-        <div class="top-nav">
-            <div class="inner">
-                <a
-                    id="hamburger"
-                    role="button"
-                    class="navbar-burger"
-                    aria-label="menu"
-                    aria-expanded="false"
-                >
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
+            <div class="docs-grid">
+                <a href="./web-sdk-v6-reference-page/" class="doc-card">
+                    <h3>Web SDK v6 Reference</h3>
+                    <p>
+                        Complete API reference documentation for PayPal Web SDK
+                        version 6, including components, methods, and
+                        configuration options.
+                    </p>
                 </a>
-                <div class="logo"></div>
-                <div class="menu">
-                    <div class="navigation">
-                        <a href="index.html" class="link"> Documentation </a>
-                    </div>
-                </div>
+            </div>
+
+            <div class="footer">
+                <p>Documentation for the PayPal JavaScript SDK</p>
             </div>
         </div>
-        <div id="main">
-            <div class="sidebar" id="sidebarNav">
-                <nav>
-                    <h2><a href="index.html">Documentation</a></h2>
-                    <div class="category">
-                        <h3>Interfaces</h3>
-                        <ul>
-                            <li>
-                                <a href="PayPalLegacyBillingInstance.html"
-                                    >PayPalLegacyBillingInstance</a
-                                >
-                            </li>
-                            <li>
-                                <a href="PayPalPaymentsInstance.html"
-                                    >PayPalPaymentsInstance</a
-                                >
-                            </li>
-                            <li>
-                                <a href="VenmoPaymentsInstance.html"
-                                    >VenmoPaymentsInstance</a
-                                >
-                            </li>
-                        </ul>
-                        <h3><a href="global.html">Global</a></h3>
-                    </div>
-                </nav>
-            </div>
-            <div class="core" id="main-content-wrapper">
-                <div class="content">
-                    <header class="page-title">
-                        <p></p>
-                        <h1>Home</h1>
-                    </header>
-
-                    <h3></h3>
-
-                    <section>
-                        <article>
-                            <h1>PayPal v6 JS SDK Documentation</h1>
-                            <p>Welcome!</p>
-                        </article>
-                    </section>
-                </div>
-
-                <footer class="footer">
-                    <div class="content has-text-centered">
-                        <p>
-                            Documentation generated by
-                            <a href="https://github.com/jsdoc3/jsdoc"
-                                >JSDoc 4.0.4</a
-                            >
-                        </p>
-                        <p class="sidebar-created-by">
-                            <a
-                                href="https://github.com/SoftwareBrothers/better-docs"
-                                target="_blank"
-                                >BetterDocs theme</a
-                            >
-                            provided with <i class="fas fa-heart"></i> by
-                            <a href="http://softwarebrothers.co" target="_blank"
-                                >SoftwareBrothers - JavaScript Development
-                                Agency</a
-                            >
-                        </p>
-                    </div>
-                </footer>
-            </div>
-            <div id="side-nav" class="side-nav"></div>
-        </div>
-        <script src="scripts/app.min.js"></script>
-        <script>
-            PR.prettyPrint();
-        </script>
-        <script src="scripts/linenumber.js"></script>
     </body>
 </html>
