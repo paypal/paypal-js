@@ -1,25 +1,36 @@
 # Changelog
 
+## 8.9.2
+
+### Patch Changes
+
+- b41126f: (fix) Proxy props added to Card Fields to prevent stale closure
+- 0575877: Upgrade to package-lock v3 and fix rollup dependency
+- Updated dependencies [6c83cf1]
+- Updated dependencies [0575877]
+- Updated dependencies [9b6eecc]
+    - @paypal/paypal-js@9.0.0
+
 ## 8.9.1
 
 ### Patch Changes
 
--   67c5a2a: fix style types on CardField react component
--   Updated dependencies [d3851e4]
--   Updated dependencies [4d51a9a]
-    -   @paypal/paypal-js@8.4.0
+- 67c5a2a: fix style types on CardField react component
+- Updated dependencies [d3851e4]
+- Updated dependencies [4d51a9a]
+    - @paypal/paypal-js@8.4.0
 
 ## 8.9.0
 
 ### Minor Changes
 
--   eda47cb: Update card fields import paths and fix readme
+- eda47cb: Update card fields import paths and fix readme
 
 ## 8.8.3
 
 ### Patch Changes
 
--   ebcfbaa: WHAT: Temporary fix for Braintree SDK versioning in React JS SDK. BT SDK version has been upgraded to latest version statically in the React SDK.
+- ebcfbaa: WHAT: Temporary fix for Braintree SDK versioning in React JS SDK. BT SDK version has been upgraded to latest version statically in the React SDK.
 
     WHY: The BT SDK version is statically typed to an old version in our React SDK. As a short-term fix, we need to upgrade this version to the latest statically.
 
@@ -27,60 +38,60 @@
 
 ### Patch Changes
 
--   0176463: added missing style fields to CardField Types
+- 0176463: added missing style fields to CardField Types
 
 ## 8.8.1
 
 ### Patch Changes
 
--   10775ad: minor fixes to release and adding react 19 as peer dependency
+- 10775ad: minor fixes to release and adding react 19 as peer dependency
 
 ## 8.8.0
 
 ### Minor Changes
 
--   471280d: (fix) proxy props to prevent stale closure
+- 471280d: (fix) proxy props to prevent stale closure
 
 ## 8.7.0
 
 ### Minor Changes
 
--   a83971e: Allows button message amount type to be string
+- a83971e: Allows button message amount type to be string
 
 ### Patch Changes
 
--   Updated dependencies [a83971e]
-    -   @paypal/paypal-js@8.1.2
+- Updated dependencies [a83971e]
+    - @paypal/paypal-js@8.1.2
 
 ## 8.6.0
 
 ### Minor Changes
 
--   dcd618c: Fixes Button rerendering unnecessarily when Buttons Message params change
+- dcd618c: Fixes Button rerendering unnecessarily when Buttons Message params change
 
 ### Patch Changes
 
--   638e8e6: remove .nvmrc and lint-staged.config.js in react-paypal-js
--   638e8e6: remove the prettier dependency from each packages, update the prettier root version, fixed build error, update note version to 18
--   543fa08: Add button style borderRadius type
--   Updated dependencies [d36e386]
--   Updated dependencies [638e8e6]
--   Updated dependencies [638e8e6]
--   Updated dependencies [543fa08]
--   Updated dependencies [22f23ab]
-    -   @paypal/paypal-js@8.1.1
+- 638e8e6: remove .nvmrc and lint-staged.config.js in react-paypal-js
+- 638e8e6: remove the prettier dependency from each packages, update the prettier root version, fixed build error, update note version to 18
+- 543fa08: Add button style borderRadius type
+- Updated dependencies [d36e386]
+- Updated dependencies [638e8e6]
+- Updated dependencies [638e8e6]
+- Updated dependencies [543fa08]
+- Updated dependencies [22f23ab]
+    - @paypal/paypal-js@8.1.1
 
 ## 8.5.0
 
 ### Minor Changes
 
--   ecc9bc5: Add react-paypal-js to the paypal-js monorepo
+- ecc9bc5: Add react-paypal-js to the paypal-js monorepo
 
 ### Patch Changes
 
--   ecc9bc5: fixes button rerender issue due to obj in dependency array
--   12a76c9: set publish access to public
--   cf50c1d: no-op change to re-trigger version packages pr
+- ecc9bc5: fixes button rerender issue due to obj in dependency array
+- 12a76c9: set publish access to public
+- cf50c1d: no-op change to re-trigger version packages pr
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
@@ -88,49 +99,49 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
--   updates PayPalButtons to add message option ([ee7cf02](https://github.com/paypal/react-paypal-js/commit/ee7cf029ad1d15d51aa38b2476f8c66bbcd511da))
--   updates PayPalButtons to add message option ([8213385](https://github.com/paypal/react-paypal-js/commit/8213385f64d814cf50ed233a2f8201fc2238b84a))
+- updates PayPalButtons to add message option ([ee7cf02](https://github.com/paypal/react-paypal-js/commit/ee7cf029ad1d15d51aa38b2476f8c66bbcd511da))
+- updates PayPalButtons to add message option ([8213385](https://github.com/paypal/react-paypal-js/commit/8213385f64d814cf50ed233a2f8201fc2238b84a))
 
 ### Bug Fixes
 
--   add individual story and cardfieldsprovider ([6c942c7](https://github.com/paypal/react-paypal-js/commit/6c942c75a58c8745236f261777c47ff1a1e97553))
--   prettier ([8fa2294](https://github.com/paypal/react-paypal-js/commit/8fa2294eb27cf958da44507a7c6a9218f006fbe3))
--   remove inputEvents and style for form component ([3306470](https://github.com/paypal/react-paypal-js/commit/3306470c3d1818a54bf74484bd58d883952636cb))
--   remove options from form component ([ffb7af8](https://github.com/paypal/react-paypal-js/commit/ffb7af8639c1f9452261499f1d0af456a5ec9e40))
--   skeleton for individual stories ([73676e6](https://github.com/paypal/react-paypal-js/commit/73676e6081d24e33485aad1268a7f6b45953bc4f))
--   typo correction in readme ([557f591](https://github.com/paypal/react-paypal-js/commit/557f591c6980f7ddf5eba38fe46c6b7bb713391f))
--   wip relative imports not working ([913dd15](https://github.com/paypal/react-paypal-js/commit/913dd153d73b6f17710cee20c9c17303cf4e5ebd))
+- add individual story and cardfieldsprovider ([6c942c7](https://github.com/paypal/react-paypal-js/commit/6c942c75a58c8745236f261777c47ff1a1e97553))
+- prettier ([8fa2294](https://github.com/paypal/react-paypal-js/commit/8fa2294eb27cf958da44507a7c6a9218f006fbe3))
+- remove inputEvents and style for form component ([3306470](https://github.com/paypal/react-paypal-js/commit/3306470c3d1818a54bf74484bd58d883952636cb))
+- remove options from form component ([ffb7af8](https://github.com/paypal/react-paypal-js/commit/ffb7af8639c1f9452261499f1d0af456a5ec9e40))
+- skeleton for individual stories ([73676e6](https://github.com/paypal/react-paypal-js/commit/73676e6081d24e33485aad1268a7f6b45953bc4f))
+- typo correction in readme ([557f591](https://github.com/paypal/react-paypal-js/commit/557f591c6980f7ddf5eba38fe46c6b7bb713391f))
+- wip relative imports not working ([913dd15](https://github.com/paypal/react-paypal-js/commit/913dd153d73b6f17710cee20c9c17303cf4e5ebd))
 
 ## [8.3.0](https://github.com/paypal/react-paypal-js/compare/v8.2.0...v8.3.0) (2024-04-29)
 
 ### Features
 
--   add cardfields form component ([634e6cd](https://github.com/paypal/react-paypal-js/commit/634e6cdfc4c3deb7d5b4cd903e196bf444bed9f4))
+- add cardfields form component ([634e6cd](https://github.com/paypal/react-paypal-js/commit/634e6cdfc4c3deb7d5b4cd903e196bf444bed9f4))
 
 ### Bug Fixes
 
--   prettier format ([3e03c3b](https://github.com/paypal/react-paypal-js/commit/3e03c3b7c34781ab98dbc624bac42f56c1b70cac))
--   rerender error fixed ([161fea6](https://github.com/paypal/react-paypal-js/commit/161fea66574f351eeb1b34f5d96b5f7014e0c72d))
+- prettier format ([3e03c3b](https://github.com/paypal/react-paypal-js/commit/3e03c3b7c34781ab98dbc624bac42f56c1b70cac))
+- rerender error fixed ([161fea6](https://github.com/paypal/react-paypal-js/commit/161fea66574f351eeb1b34f5d96b5f7014e0c72d))
 
 ## [8.2.0](https://github.com/paypal/react-paypal-js/compare/v8.1.4...v8.2.0) (2024-03-20)
 
 ### Features
 
--   add DATA_JS_SDK_LIBRARY to constants ([aa1b771](https://github.com/paypal/react-paypal-js/commit/aa1b771d85fa75083ad152f9d9b55d9c46ae051f))
--   add js library to options ([acc5123](https://github.com/paypal/react-paypal-js/commit/acc512371460da4b7d2f59ba10c69034f7ecef45))
--   hardcode js library ([95a29fa](https://github.com/paypal/react-paypal-js/commit/95a29fae3895042eca2b55f33a98a0d85ed97eae))
--   rename constant ([1d027b6](https://github.com/paypal/react-paypal-js/commit/1d027b6b93d23309a4d6966f998e320fcf7c94e5))
+- add DATA_JS_SDK_LIBRARY to constants ([aa1b771](https://github.com/paypal/react-paypal-js/commit/aa1b771d85fa75083ad152f9d9b55d9c46ae051f))
+- add js library to options ([acc5123](https://github.com/paypal/react-paypal-js/commit/acc512371460da4b7d2f59ba10c69034f7ecef45))
+- hardcode js library ([95a29fa](https://github.com/paypal/react-paypal-js/commit/95a29fae3895042eca2b55f33a98a0d85ed97eae))
+- rename constant ([1d027b6](https://github.com/paypal/react-paypal-js/commit/1d027b6b93d23309a4d6966f998e320fcf7c94e5))
 
 ### Bug Fixes
 
--   alphabetize constants ([0d9b495](https://github.com/paypal/react-paypal-js/commit/0d9b495a15e2fd8e923bc55237bb6ba0c69cd11e))
--   enforce values ([faa6278](https://github.com/paypal/react-paypal-js/commit/faa6278d1ad530658999c21be36f24fa1322d8e6))
+- alphabetize constants ([0d9b495](https://github.com/paypal/react-paypal-js/commit/0d9b495a15e2fd8e923bc55237bb6ba0c69cd11e))
+- enforce values ([faa6278](https://github.com/paypal/react-paypal-js/commit/faa6278d1ad530658999c21be36f24fa1322d8e6))
 
 ### [8.1.4](https://github.com/paypal/react-paypal-js/compare/v8.1.3...v8.1.4) (2024-02-28)
 
 ### Bug Fixes
 
--   failing typecheck ([#408](https://github.com/paypal/react-paypal-js/issues/408)) ([df8f63b](https://github.com/paypal/react-paypal-js/commit/df8f63b05585c51a7eef9d9296bdcb76e13fa4a8))
+- failing typecheck ([#408](https://github.com/paypal/react-paypal-js/issues/408)) ([df8f63b](https://github.com/paypal/react-paypal-js/commit/df8f63b05585c51a7eef9d9296bdcb76e13fa4a8))
 
 ### [8.1.3](https://github.com/paypal/react-paypal-js/compare/v8.1.2...v8.1.3) (2023-08-16)
 
@@ -138,7 +149,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
--   allow users to change data-sdk-integration-source ([#378](https://github.com/paypal/react-paypal-js/issues/378)) ([0feef3e](https://github.com/paypal/react-paypal-js/commit/0feef3e834fb2b9aaf23029855447715915bd1b2))
+- allow users to change data-sdk-integration-source ([#378](https://github.com/paypal/react-paypal-js/issues/378)) ([0feef3e](https://github.com/paypal/react-paypal-js/commit/0feef3e834fb2b9aaf23029855447715915bd1b2))
 
 ### [8.1.1](https://github.com/paypal/react-paypal-js/compare/v8.1.0...v8.1.1) (2023-07-28)
 
@@ -146,17 +157,17 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
--   add loadingStatusErrorMessage to state ([#366](https://github.com/paypal/react-paypal-js/issues/366)) ([e1b9068](https://github.com/paypal/react-paypal-js/commit/e1b9068931c0fb832d884a0879d22deeca8304c2))
+- add loadingStatusErrorMessage to state ([#366](https://github.com/paypal/react-paypal-js/issues/366)) ([e1b9068](https://github.com/paypal/react-paypal-js/commit/e1b9068931c0fb832d884a0879d22deeca8304c2))
 
 ## [8.0.0](https://github.com/paypal/react-paypal-js/compare/v7.8.3...v8.0.0) (2023-06-12)
 
 ### ⚠ BREAKING CHANGES
 
--   this is a breaking change for PayPalScriptProvider options.
+- this is a breaking change for PayPalScriptProvider options.
 
 ### Features
 
--   use camelCase for PayPalScriptProvider options ([#360](https://github.com/paypal/react-paypal-js/issues/360)) ([168764e](https://github.com/paypal/react-paypal-js/commit/168764e4fb89be8717f256d4f9817bdf8e0a6eed))
+- use camelCase for PayPalScriptProvider options ([#360](https://github.com/paypal/react-paypal-js/issues/360)) ([168764e](https://github.com/paypal/react-paypal-js/commit/168764e4fb89be8717f256d4f9817bdf8e0a6eed))
 
 ### [7.8.3](https://github.com/paypal/react-paypal-js/compare/v7.8.2...v7.8.3) (2023-03-27)
 
@@ -168,117 +179,117 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
--   **hostedFields:** add support for installments ([#271](https://github.com/paypal/react-paypal-js/issues/271)) ([c5e9670](https://github.com/paypal/react-paypal-js/commit/c5e967067517710765692c73c009d43ec60fb914))
+- **hostedFields:** add support for installments ([#271](https://github.com/paypal/react-paypal-js/issues/271)) ([c5e9670](https://github.com/paypal/react-paypal-js/commit/c5e967067517710765692c73c009d43ec60fb914))
 
 ## [7.7.0](https://github.com/paypal/react-paypal-js/compare/v7.6.2...v7.7.0) (2022-05-10)
 
 ### Features
 
--   **braintree:** add merchantAccountId prop ([#269](https://github.com/paypal/react-paypal-js/issues/269)) ([9ee701c](https://github.com/paypal/react-paypal-js/commit/9ee701caf3b2926e126a28d7a6a00c28912e7cf3))
+- **braintree:** add merchantAccountId prop ([#269](https://github.com/paypal/react-paypal-js/issues/269)) ([9ee701c](https://github.com/paypal/react-paypal-js/commit/9ee701caf3b2926e126a28d7a6a00c28912e7cf3))
 
 ### [7.6.2](https://github.com/paypal/react-paypal-js/compare/v7.6.1...v7.6.2) (2022-05-09)
 
 ### Bug Fixes
 
--   revert "fix(braintree): pass merchant-id through to session ([#265](https://github.com/paypal/react-paypal-js/issues/265))" ([#267](https://github.com/paypal/react-paypal-js/issues/267)) ([44b56b2](https://github.com/paypal/react-paypal-js/commit/44b56b2c9a799aad4108ba0fa0203bf86b359eb0))
+- revert "fix(braintree): pass merchant-id through to session ([#265](https://github.com/paypal/react-paypal-js/issues/265))" ([#267](https://github.com/paypal/react-paypal-js/issues/267)) ([44b56b2](https://github.com/paypal/react-paypal-js/commit/44b56b2c9a799aad4108ba0fa0203bf86b359eb0))
 
 ### [7.6.1](https://github.com/paypal/react-paypal-js/compare/v7.6.0...v7.6.1) (2022-05-09)
 
 ### Bug Fixes
 
--   **braintree:** pass merchant-id through to checkout session ([#265](https://github.com/paypal/react-paypal-js/issues/265)) ([1844fd5](https://github.com/paypal/react-paypal-js/commit/1844fd588c55de028656779e6ea3327f71b15d10))
+- **braintree:** pass merchant-id through to checkout session ([#265](https://github.com/paypal/react-paypal-js/issues/265)) ([1844fd5](https://github.com/paypal/react-paypal-js/commit/1844fd588c55de028656779e6ea3327f71b15d10))
 
 ## [7.6.0](https://github.com/paypal/react-paypal-js/compare/v7.5.1...v7.6.0) (2022-02-01)
 
 ### Features
 
--   **braintree:** add optional prop for braintree namespace ([#238](https://github.com/paypal/react-paypal-js/issues/238)) ([8deab76](https://github.com/paypal/react-paypal-js/commit/8deab76564181c5f2b1a08babf9d4316cae5720d))
--   **hostedFields:** support deeply nested children ([#240](https://github.com/paypal/react-paypal-js/issues/240)) ([f5fa95d](https://github.com/paypal/react-paypal-js/commit/f5fa95db3cfe1c8797e6f1eccb4c0abfb1355aaf))
+- **braintree:** add optional prop for braintree namespace ([#238](https://github.com/paypal/react-paypal-js/issues/238)) ([8deab76](https://github.com/paypal/react-paypal-js/commit/8deab76564181c5f2b1a08babf9d4316cae5720d))
+- **hostedFields:** support deeply nested children ([#240](https://github.com/paypal/react-paypal-js/issues/240)) ([f5fa95d](https://github.com/paypal/react-paypal-js/commit/f5fa95db3cfe1c8797e6f1eccb4c0abfb1355aaf))
 
 ### [7.5.1](https://github.com/paypal/react-paypal-js/compare/v7.5.0...v7.5.1) (2022-01-14)
 
 ### Bug Fixes
 
--   add type for Braintree billing agreement option ([#234](https://github.com/paypal/react-paypal-js/issues/234)) ([ddaced2](https://github.com/paypal/react-paypal-js/commit/ddaced241a6a243cbb51689619918ab93710233e))
--   **braintree:** support Braintree integrations using tokenization keys ([#216](https://github.com/paypal/react-paypal-js/issues/216)) ([3985a13](https://github.com/paypal/react-paypal-js/commit/3985a1309bb6c98f15584dc0ca33fe09c7207910))
+- add type for Braintree billing agreement option ([#234](https://github.com/paypal/react-paypal-js/issues/234)) ([ddaced2](https://github.com/paypal/react-paypal-js/commit/ddaced241a6a243cbb51689619918ab93710233e))
+- **braintree:** support Braintree integrations using tokenization keys ([#216](https://github.com/paypal/react-paypal-js/issues/216)) ([3985a13](https://github.com/paypal/react-paypal-js/commit/3985a1309bb6c98f15584dc0ca33fe09c7207910))
 
 ## [7.5.0](https://github.com/paypal/react-paypal-js/compare/v7.4.2...v7.5.0) (2021-11-29)
 
 ### Features
 
--   log loading errors for the JS SDK script ([#212](https://github.com/paypal/react-paypal-js/issues/212)) ([77973f0](https://github.com/paypal/react-paypal-js/commit/77973f0739e740ecbc4155cd79f733b9e2824484))
+- log loading errors for the JS SDK script ([#212](https://github.com/paypal/react-paypal-js/issues/212)) ([77973f0](https://github.com/paypal/react-paypal-js/commit/77973f0739e740ecbc4155cd79f733b9e2824484))
 
 ### [7.4.2](https://github.com/paypal/react-paypal-js/compare/v7.4.1...v7.4.2) (2021-10-15)
 
 ### Bug Fixes
 
--   add `createBillingAgreement` support for BraintreePayPalButtons ([#195](https://github.com/paypal/react-paypal-js/issues/195)) ([b4086ab](https://github.com/paypal/react-paypal-js/commit/b4086ab511565b1a904ceb241779c64f8adab36b))
+- add `createBillingAgreement` support for BraintreePayPalButtons ([#195](https://github.com/paypal/react-paypal-js/issues/195)) ([b4086ab](https://github.com/paypal/react-paypal-js/commit/b4086ab511565b1a904ceb241779c64f8adab36b))
 
 ### [7.4.1](https://github.com/paypal/react-paypal-js/compare/v7.4.0...v7.4.1) (2021-10-09)
 
 ### Bug Fixes
 
--   **types:** rename back to DISPATCH_ACTION ([#192](https://github.com/paypal/react-paypal-js/issues/192)) ([2b8f14a](https://github.com/paypal/react-paypal-js/commit/2b8f14ad41a6be3f461fe73b9661c92bd012df2a))
+- **types:** rename back to DISPATCH_ACTION ([#192](https://github.com/paypal/react-paypal-js/issues/192)) ([2b8f14a](https://github.com/paypal/react-paypal-js/commit/2b8f14ad41a6be3f461fe73b9661c92bd012df2a))
 
 ## [7.4.0](https://github.com/paypal/react-paypal-js/compare/v7.3.3...v7.4.0) (2021-10-08)
 
 ### Features
 
--   **hosted-fields:** add support for hosted-fields ([#160](https://github.com/paypal/react-paypal-js/issues/160)) ([e025d9a](https://github.com/paypal/react-paypal-js/commit/e025d9a1b45d43ad4b79e419188d59907b3cf1b8))
--   update Marks to support the children prop ([#155](https://github.com/paypal/react-paypal-js/issues/155)) ([6aebf98](https://github.com/paypal/react-paypal-js/commit/6aebf98b2592ed7ac68d6b232ab2fa4121dd114e))
+- **hosted-fields:** add support for hosted-fields ([#160](https://github.com/paypal/react-paypal-js/issues/160)) ([e025d9a](https://github.com/paypal/react-paypal-js/commit/e025d9a1b45d43ad4b79e419188d59907b3cf1b8))
+- update Marks to support the children prop ([#155](https://github.com/paypal/react-paypal-js/issues/155)) ([6aebf98](https://github.com/paypal/react-paypal-js/commit/6aebf98b2592ed7ac68d6b232ab2fa4121dd114e))
 
 ### Bug Fixes
 
--   **types:** standardize types for children ([#157](https://github.com/paypal/react-paypal-js/issues/157)) ([cc956be](https://github.com/paypal/react-paypal-js/commit/cc956beb1323a7516e30174b7d7fd20c9cd60e13))
--   update Marks to rerender when fundingSource changes ([#154](https://github.com/paypal/react-paypal-js/issues/154)) ([f7b4a25](https://github.com/paypal/react-paypal-js/commit/f7b4a251b01e7777948fda846fe0b55d348ec60a))
+- **types:** standardize types for children ([#157](https://github.com/paypal/react-paypal-js/issues/157)) ([cc956be](https://github.com/paypal/react-paypal-js/commit/cc956beb1323a7516e30174b7d7fd20c9cd60e13))
+- update Marks to rerender when fundingSource changes ([#154](https://github.com/paypal/react-paypal-js/issues/154)) ([f7b4a25](https://github.com/paypal/react-paypal-js/commit/f7b4a251b01e7777948fda846fe0b55d348ec60a))
 
 ### [7.3.3](https://github.com/paypal/react-paypal-js/compare/v7.3.2...v7.3.3) (2021-08-31)
 
 ### Bug Fixes
 
--   remove babel polyfill for typeof symbol ([d73fe72](https://github.com/paypal/react-paypal-js/commit/d73fe72e0bfa482226df8d38371dec969324583d))
--   update error handling logic for BraintreePayPalButtons ([1a1c73d](https://github.com/paypal/react-paypal-js/commit/1a1c73dfb15ff39452034d35a786938e5630aa5d))
+- remove babel polyfill for typeof symbol ([d73fe72](https://github.com/paypal/react-paypal-js/commit/d73fe72e0bfa482226df8d38371dec969324583d))
+- update error handling logic for BraintreePayPalButtons ([1a1c73d](https://github.com/paypal/react-paypal-js/commit/1a1c73dfb15ff39452034d35a786938e5630aa5d))
 
 ### [7.3.2](https://github.com/paypal/react-paypal-js/compare/v7.3.1...v7.3.2) (2021-08-27)
 
 ### Bug Fixes
 
--   **buttons:** catch errors thrown during button initialization ([f60176e](https://github.com/paypal/react-paypal-js/commit/f60176e50fdbfab317bcbb08fdaac890a57ba615))
--   remove async/await usage to avoid babel polyfill ([#150](https://github.com/paypal/react-paypal-js/issues/150)) ([ecaf084](https://github.com/paypal/react-paypal-js/commit/ecaf08402f17bf92de527bb4d4d714c5007ba5cd))
+- **buttons:** catch errors thrown during button initialization ([f60176e](https://github.com/paypal/react-paypal-js/commit/f60176e50fdbfab317bcbb08fdaac890a57ba615))
+- remove async/await usage to avoid babel polyfill ([#150](https://github.com/paypal/react-paypal-js/issues/150)) ([ecaf084](https://github.com/paypal/react-paypal-js/commit/ecaf08402f17bf92de527bb4d4d714c5007ba5cd))
 
 ### [7.3.1](https://github.com/paypal/react-paypal-js/compare/v7.3.0...v7.3.1) (2021-08-26)
 
 ### Bug Fixes
 
--   **types:** export all public types ([#147](https://github.com/paypal/react-paypal-js/issues/147)) ([9e8c39b](https://github.com/paypal/react-paypal-js/commit/9e8c39b773fa076c1ffabb3c259ca87f25c55141))
+- **types:** export all public types ([#147](https://github.com/paypal/react-paypal-js/issues/147)) ([9e8c39b](https://github.com/paypal/react-paypal-js/commit/9e8c39b773fa076c1ffabb3c259ca87f25c55141))
 
 ## [7.3.0](https://github.com/paypal/react-paypal-js/compare/v7.2.1...v7.3.0) (2021-08-25)
 
 ### Features
 
--   **braintree:** add new <BraintreePayPalButtons /> component ([#140](https://github.com/paypal/react-paypal-js/issues/140)) ([a2c7741](https://github.com/paypal/react-paypal-js/commit/a2c774168fbc5ae7a610df384feca684737d7fba))
+- **braintree:** add new <BraintreePayPalButtons /> component ([#140](https://github.com/paypal/react-paypal-js/issues/140)) ([a2c7741](https://github.com/paypal/react-paypal-js/commit/a2c774168fbc5ae7a610df384feca684737d7fba))
 
 ### Bug Fixes
 
--   prevent numeric overflow with hashStr function ([#141](https://github.com/paypal/react-paypal-js/issues/141)) ([9914f60](https://github.com/paypal/react-paypal-js/commit/9914f60701c19dcde2fb42ad8791265aee37e34c))
+- prevent numeric overflow with hashStr function ([#141](https://github.com/paypal/react-paypal-js/issues/141)) ([9914f60](https://github.com/paypal/react-paypal-js/commit/9914f60701c19dcde2fb42ad8791265aee37e34c))
 
 ### [7.2.1](https://github.com/paypal/react-paypal-js/compare/v7.2.0...v7.2.1) (2021-07-28)
 
 ### Bug Fixes
 
--   avoid reloading the script when options have not changed ([#135](https://github.com/paypal/react-paypal-js/issues/135)) ([0765e16](https://github.com/paypal/react-paypal-js/commit/0765e1600322bd511ddfc61b427d14b356d3f1b8))
+- avoid reloading the script when options have not changed ([#135](https://github.com/paypal/react-paypal-js/issues/135)) ([0765e16](https://github.com/paypal/react-paypal-js/commit/0765e1600322bd511ddfc61b427d14b356d3f1b8))
 
 ## [7.2.0](https://github.com/paypal/react-paypal-js/compare/v7.1.2...v7.2.0) (2021-07-11)
 
 ### Features
 
--   more robust package publishing ([#130](https://github.com/paypal/react-paypal-js/issues/130)) ([e5caf02](https://github.com/paypal/react-paypal-js/commit/e5caf02ece24b22f50f7f82b40203358746b5cc2))
+- more robust package publishing ([#130](https://github.com/paypal/react-paypal-js/issues/130)) ([e5caf02](https://github.com/paypal/react-paypal-js/commit/e5caf02ece24b22f50f7f82b40203358746b5cc2))
 
 ### Bug Fixes
 
--   **release:** do not publish types from storybook ([#131](https://github.com/paypal/react-paypal-js/issues/131)) ([6534d59](https://github.com/paypal/react-paypal-js/commit/6534d595033dc9960b1fe6939a31482e8f22fdbd))
--   increase opacity for disabled button ([d1ac1d2](https://github.com/paypal/react-paypal-js/commit/d1ac1d28d729774900dd757e0829812ab4cbc4f9))
--   type declarations don’t depend on internal typings ([#129](https://github.com/paypal/react-paypal-js/issues/129)) ([76a3b9f](https://github.com/paypal/react-paypal-js/commit/76a3b9f72b4893aa7c2210e0d77711820a875bef))
+- **release:** do not publish types from storybook ([#131](https://github.com/paypal/react-paypal-js/issues/131)) ([6534d59](https://github.com/paypal/react-paypal-js/commit/6534d595033dc9960b1fe6939a31482e8f22fdbd))
+- increase opacity for disabled button ([d1ac1d2](https://github.com/paypal/react-paypal-js/commit/d1ac1d28d729774900dd757e0829812ab4cbc4f9))
+- type declarations don’t depend on internal typings ([#129](https://github.com/paypal/react-paypal-js/issues/129)) ([76a3b9f](https://github.com/paypal/react-paypal-js/commit/76a3b9f72b4893aa7c2210e0d77711820a875bef))
 
 ### [7.1.2](https://github.com/paypal/react-paypal-js/compare/v7.1.1...v7.1.2) (2021-07-05)
 
@@ -286,24 +297,24 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
--   **types:** export the ScriptProviderProps interface ([e97e3d0](https://github.com/paypal/react-paypal-js/commit/e97e3d0b0cc404e807f7f9e1173ec532592fc8cf))
--   **types:** update resetOptions to support PayPalScriptOptions type ([236c3cf](https://github.com/paypal/react-paypal-js/commit/236c3cff9be53959b24725718a8b0a999e17f02c))
+- **types:** export the ScriptProviderProps interface ([e97e3d0](https://github.com/paypal/react-paypal-js/commit/e97e3d0b0cc404e807f7f9e1173ec532592fc8cf))
+- **types:** update resetOptions to support PayPalScriptOptions type ([236c3cf](https://github.com/paypal/react-paypal-js/commit/236c3cff9be53959b24725718a8b0a999e17f02c))
 
 ## [7.1.0](https://github.com/paypal/react-paypal-js/compare/v7.0.0...v7.1.0) (2021-06-27)
 
 ### Features
 
--   **storybook:** add support for overriding js sdk query params ([#121](https://github.com/paypal/react-paypal-js/issues/121)) ([14d62d0](https://github.com/paypal/react-paypal-js/commit/14d62d04b3be17312b8478e815ab826434dfc6fb))
+- **storybook:** add support for overriding js sdk query params ([#121](https://github.com/paypal/react-paypal-js/issues/121)) ([14d62d0](https://github.com/paypal/react-paypal-js/commit/14d62d04b3be17312b8478e815ab826434dfc6fb))
 
 ## [7.0.0](https://github.com/paypal/react-paypal-js/compare/v6.0.2...v7.0.0) (2021-06-04)
 
 ### ⚠ BREAKING CHANGES
 
--   new file names for built files in dist folder.
+- new file names for built files in dist folder.
 
 ### Features
 
--   improve dist folder structure ([b032f77](https://github.com/paypal/react-paypal-js/commit/b032f77ceeb0181123741c0b3422ac19af94131d))
+- improve dist folder structure ([b032f77](https://github.com/paypal/react-paypal-js/commit/b032f77ceeb0181123741c0b3422ac19af94131d))
 
 ### [6.0.2](https://github.com/paypal/react-paypal-js/compare/v6.0.1...v6.0.2) (2021-06-04)
 
@@ -311,29 +322,29 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
--   **types:** improve type for ScriptLoadingState ([#113](https://github.com/paypal/react-paypal-js/issues/113)) ([402afe4](https://github.com/paypal/react-paypal-js/commit/402afe4f54b58bd5dc1d097e7c8d64e12fc852ff))
+- **types:** improve type for ScriptLoadingState ([#113](https://github.com/paypal/react-paypal-js/issues/113)) ([402afe4](https://github.com/paypal/react-paypal-js/commit/402afe4f54b58bd5dc1d097e7c8d64e12fc852ff))
 
 ## [6.0.0](https://github.com/paypal/react-paypal-js/compare/v5.2.0...v6.0.0) (2021-04-12)
 
 ### ⚠ BREAKING CHANGES
 
--   forceReRender prop now accepts an array.
+- forceReRender prop now accepts an array.
 
 ### Features
 
--   update forceReRender to be an array ([#102](https://github.com/paypal/react-paypal-js/issues/102)) ([c41ee40](https://github.com/paypal/react-paypal-js/commit/c41ee40e6899f86f2300285c4826203458f457e5))
+- update forceReRender to be an array ([#102](https://github.com/paypal/react-paypal-js/issues/102)) ([c41ee40](https://github.com/paypal/react-paypal-js/commit/c41ee40e6899f86f2300285c4826203458f457e5))
 
 ## [5.2.0](https://github.com/paypal/react-paypal-js/compare/v5.1.2...v5.2.0) (2021-04-05)
 
 ### Features
 
--   add deferLoading prop to control sdk script loading ([2cf3904](https://github.com/paypal/react-paypal-js/commit/2cf3904ebe21edcd8ffd14dcd67b553ad6ced6c8))
+- add deferLoading prop to control sdk script loading ([2cf3904](https://github.com/paypal/react-paypal-js/commit/2cf3904ebe21edcd8ffd14dcd67b553ad6ced6c8))
 
 ### [5.1.2](https://github.com/paypal/react-paypal-js/compare/v5.1.1...v5.1.2) (2021-04-02)
 
 ### Bug Fixes
 
--   prevent script provider from loading more than one sdk script ([8d5dbb7](https://github.com/paypal/react-paypal-js/commit/8d5dbb709082bec45835336a0e04312fcc9c5e1e))
+- prevent script provider from loading more than one sdk script ([8d5dbb7](https://github.com/paypal/react-paypal-js/commit/8d5dbb709082bec45835336a0e04312fcc9c5e1e))
 
 ### [5.1.1](https://github.com/paypal/react-paypal-js/compare/v5.1.0...v5.1.1) (2021-03-30)
 
@@ -341,11 +352,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
--   add support for custom namespaces ([8d3cd26](https://github.com/paypal/react-paypal-js/commit/8d3cd2612f9176dc266b4e0633827871a6ce5457))
--   support rendering custom content when ineligible ([c590e90](https://github.com/paypal/react-paypal-js/commit/c590e90dbead2539b3af6602a63f652aa6fcd7d8))
+- add support for custom namespaces ([8d3cd26](https://github.com/paypal/react-paypal-js/commit/8d3cd2612f9176dc266b4e0633827871a6ce5457))
+- support rendering custom content when ineligible ([c590e90](https://github.com/paypal/react-paypal-js/commit/c590e90dbead2539b3af6602a63f652aa6fcd7d8))
 
 ### Bug Fixes
 
--   ignore errors related to enable/disable actions ([f62eda7](https://github.com/paypal/react-paypal-js/commit/f62eda76b9ac00cadcce2a41b7fe14e80b9083a6))
--   ignore errors when cleaning up buttons component ([5a3e6f1](https://github.com/paypal/react-paypal-js/commit/5a3e6f15b81d37688cc40e8101c70ec3b07970ab))
--   use error boundaries approach for all components ([56f1b7e](https://github.com/paypal/react-paypal-js/commit/56f1b7e7486097701655e08be92b23de3135c863))
+- ignore errors related to enable/disable actions ([f62eda7](https://github.com/paypal/react-paypal-js/commit/f62eda76b9ac00cadcce2a41b7fe14e80b9083a6))
+- ignore errors when cleaning up buttons component ([5a3e6f1](https://github.com/paypal/react-paypal-js/commit/5a3e6f15b81d37688cc40e8101c70ec3b07970ab))
+- use error boundaries approach for all components ([56f1b7e](https://github.com/paypal/react-paypal-js/commit/56f1b7e7486097701655e08be92b23de3135c863))
