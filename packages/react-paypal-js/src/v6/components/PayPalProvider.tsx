@@ -109,10 +109,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
 
     // SDK loading effect - only runs on client (useEffect doesn't run during SSR)
     useEffect(() => {
-        if (
-            state.loadingStatus !== INSTANCE_LOADING_STATE.PENDING ||
-            state.sdkInstance
-        ) {
+        if (state.loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
             return;
         }
 
@@ -161,12 +158,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         return () => {
             isSubscribed = false;
         };
-    }, [
-        state.loadingStatus,
-        state.sdkInstance,
-        memoizedCreateOptions,
-        memoizedScriptOptions,
-    ]);
+    }, [state.loadingStatus, memoizedCreateOptions, memoizedScriptOptions]);
 
     // Separate effect for eligibility - runs after instance is created
     useEffect(() => {
