@@ -467,7 +467,7 @@ describe("<PayPalButtons />", () => {
         userEvent.setup();
 
         // @ts-expect-error mocking partial ButtonComponent
-        window.paypal!.Buttons = ({ onClick }: { onClick: () => void }) => ({
+        window.paypal.Buttons = ({ onClick }: { onClick: () => void }) => ({
             isEligible: () => true,
             close: async () => undefined,
             render: async (ref: HTMLDivElement) => {
