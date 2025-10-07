@@ -58,7 +58,8 @@
     "homepage": "https://paypal.github.io/react-paypal-js/",
     "dependencies": {
         "@paypal/paypal-js": "^9.0.0",
-        "@paypal/sdk-constants": "^1.0.122"
+        "@paypal/sdk-constants": "^1.0.122",
+        "dequal": "^2.0.3"
     },
     "devDependencies": {
         "@babel/core": "^7.17.5",
@@ -124,7 +125,10 @@
         ],
         "setupFilesAfterEnv": [
             "./jest.setup.ts"
-        ]
+        ],
+        "moduleNameMapper": {
+            "@paypal/paypal-js/sdk-v6": "<rootDir>/../../node_modules/@paypal/paypal-js/dist/v6/esm/paypal-js.js"
+        }
     },
     "bugs": {
         "url": "https://github.com/paypal/react-paypal-js/issues"
