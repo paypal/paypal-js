@@ -20,6 +20,32 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
 
     const { environment, debug } = options;
 
+    const currentScript = document.querySelector<HTMLScriptElement>(
+        'script[src*="/web-sdk/v6/core"]',
+    );
+
+    if (currentScript) {
+        const currentUrl = new URL(currentScript.src);
+        const currentEnvironment = currentUrl.hostname.includes("sandbox")
+            ? "sandbox"
+            : "production";
+        const currentDebug = currentUrl.searchParams.get("debug") === "true";
+
+        const isEnvironmentMatch =
+            environment === currentEnvironment ||
+            (!environment && currentEnvironment === "sandbox");
+        const isDebugMatch = (debug ?? false) === currentDebug;
+
+        if (isEnvironmentMatch && isDebugMatch && window.paypal) {
+            return Promise.resolve(
+                window.paypal as unknown as PayPalV6Namespace,
+            );
+        } else {
+            currentScript.remove();
+            delete window.paypal;
+        }
+    }
+
     const baseURL =
         environment === "production"
             ? "https://www.paypal.com"

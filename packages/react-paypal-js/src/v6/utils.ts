@@ -29,3 +29,16 @@ export function useDeepCompareMemoize<T>(value: T): T {
 
     return ref.current;
 }
+
+export function cleanupComponentScripts(): void {
+    const paypalScripts = document.querySelectorAll<HTMLScriptElement>(
+        'script[src*="paypal.com/web-sdk/v6"]',
+    );
+
+    paypalScripts.forEach((script) => {
+        // Only remove component scripts
+        if (!script.src.includes("/v6/core")) {
+            script.remove();
+        }
+    });
+}
