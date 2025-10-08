@@ -9,7 +9,11 @@ import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderTypes";
-import { isServer, useDeepCompareMemoize } from "../utils";
+import {
+    cleanupComponentScripts,
+    isServer,
+    useDeepCompareMemoize,
+} from "../utils";
 
 import type {
     CreateInstanceOptions,
@@ -117,6 +121,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
 
         const loadSdk = async () => {
             try {
+                cleanupComponentScripts();
                 // Load the core SDK script
                 const paypalNamespace = await loadCoreSdkScript(
                     memoizedScriptOptions,
@@ -157,6 +162,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
 
         return () => {
             isSubscribed = false;
+            cleanupComponentScripts();
         };
     }, [state.loadingStatus, memoizedCreateOptions, memoizedScriptOptions]);
 
