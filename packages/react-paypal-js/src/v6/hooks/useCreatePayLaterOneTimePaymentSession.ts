@@ -1,44 +1,48 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { usePayPal } from "./usePayPal";
+import { useDeepCompareMemoize } from "../utils";
 
 import type {
     OneTimePaymentSession,
     PayLaterOneTimePaymentSessionOptions,
 } from "../types";
 
-export function useCreatePayLaterOneTimePaymentSession({
-    onApprove,
-    onCancel,
-    onComplete,
-    onError,
-}: PayLaterOneTimePaymentSessionOptions): OneTimePaymentSession | null {
+export function usePayLaterOneTimePaymentSession(
+    options: PayLaterOneTimePaymentSessionOptions,
+): OneTimePaymentSession | null {
     const { sdkInstance } = usePayPal();
-    const session = useRef<OneTimePaymentSession | null>(null);
+    const sessionRef = useRef<OneTimePaymentSession | null>(null); // handle cleanup
+    const [session, updateSession] = useState<OneTimePaymentSession | null>(
+        null,
+    ); // handle session storage and force re-render
+    const memoizedOptions = useDeepCompareMemoize(options);
 
     useEffect(() => {
-        if (!sdkInstance) {
-            session.current = null;
+        if (sessionRef.current) {
+            sessionRef.current?.destroy();
+            sessionRef.current = null;
+            updateSession(null);
+        }
 
+        if (sdkInstance) {
+            const newSession =
+                sdkInstance.createPayLaterOneTimePaymentSession(
+                    memoizedOptions,
+                );
+            sessionRef.current = newSession;
+            updateSession(newSession);
+        } else {
             // TODO what if sdk instance is not available? Error?
             throw new Error("no sdk instance available");
         }
 
-        // Cleanup previous session if it exists
-        session.current?.destroy();
-
-        session.current = sdkInstance.createPayLaterOneTimePaymentSession({
-            onApprove,
-            onCancel,
-            onComplete,
-            onError,
-        });
-
-        // Cleanup on unmount or dependency change
         return () => {
-            session.current?.destroy();
+            sessionRef.current?.destroy();
+            sessionRef.current = null;
+            updateSession(null);
         };
-    }, [onApprove, onCancel, onComplete, onError, sdkInstance]);
+    }, [sdkInstance, memoizedOptions]);
 
-    return session.current;
+    return session;
 }
