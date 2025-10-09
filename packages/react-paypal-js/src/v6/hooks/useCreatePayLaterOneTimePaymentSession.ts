@@ -22,12 +22,6 @@ export function usePayLaterOneTimePaymentSession(
     const memoizedOptions = useDeepCompareMemoize(options);
 
     useEffect(() => {
-        if (sessionRef.current) {
-            sessionRef.current?.destroy();
-            sessionRef.current = null;
-            updateSession(null);
-        }
-
         if (sdkInstance) {
             const newSession =
                 sdkInstance.createPayLaterOneTimePaymentSession(
