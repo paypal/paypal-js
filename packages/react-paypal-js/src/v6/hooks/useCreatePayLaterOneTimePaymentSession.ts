@@ -8,6 +8,9 @@ import type {
     PayLaterOneTimePaymentSessionOptions,
 } from "../types";
 
+// TODO tests
+// TODO example
+// TODO eligibility
 export function usePayLaterOneTimePaymentSession(
     options: PayLaterOneTimePaymentSessionOptions,
 ): OneTimePaymentSession | null {
