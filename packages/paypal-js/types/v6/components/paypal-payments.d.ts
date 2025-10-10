@@ -124,6 +124,7 @@ export type PayPalCreditOneTimePaymentSessionOptions =
 /**
  * PayPal Payments Instance interface for creating and managing different types of PayPal payment sessions.
  *
+ * @remarks
  * This interface provides methods to create various PayPal payment flows including:
  * - One-time payments with standard PayPal
  * - Save payment methods for future use (vaulting)
@@ -149,6 +150,8 @@ export type PayPalCreditOneTimePaymentSessionOptions =
 export interface PayPalPaymentsInstance {
     /**
      * Creates a PayPal one-time payment session for processing single payments through PayPal.
+     *
+     * @remarks
      * This method allows you to configure callback functions to handle different stages
      * of the PayPal checkout process, including payment approval, shipping address changes,
      * shipping option changes, cancelation, and errors.
@@ -182,6 +185,8 @@ export interface PayPalPaymentsInstance {
     ) => OneTimePaymentSession;
     /**
      * Creates a PayPal save payment session for storing payment methods for future use.
+     *
+     * @remarks
      * This method allows you to set up vault payment sessions where customers can save
      * their PayPal payment method for future transactions without re-entering details.
      *
@@ -209,6 +214,8 @@ export interface PayPalPaymentsInstance {
     ) => SavePaymentSession;
     /**
      * Creates a PayPal Pay Later one-time payment session for buy now, pay later transactions.
+     *
+     * @remarks
      * This method enables customers to make purchases and pay for them over time through
      * PayPal's Pay Later financing options. Available in supported countries.
      *
@@ -235,6 +242,8 @@ export interface PayPalPaymentsInstance {
     ) => OneTimePaymentSession;
     /**
      * Creates a PayPal Credit one-time payment session for credit-based transactions.
+     *
+     * @remarks
      * This method enables customers to make purchases using PayPal Credit, allowing them
      * to pay over time with financing options. Available in supported countries.
      *

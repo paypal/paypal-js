@@ -10,6 +10,7 @@ export interface PayPalV6Namespace {
     /**
      * Creates an SDK instance, which is the first step in an SDK integration. This instance serves as the base layer for all SDK components.
      *
+     * @remarks
      * This is an asynchronous method that initializes the PayPal SDK with the provided
      * client token and components.
      *
@@ -59,6 +60,7 @@ export type CreateInstanceOptions<T extends readonly Components[]> = {
 /**
  * Dynamically typed SDK instance based on the components array provided to createInstance.
  *
+ * @remarks
  * The return type changes based on which components are specified in the components array.
  *
  * **Always includes:**
@@ -103,6 +105,7 @@ export interface BaseInstance {
     /**
      * Checks eligibility for specific payment methods.
      *
+     * @remarks
      * This method verifies buyer and merchant eligibility by interacting with PayPal's
      * public API to determine whether payment methods (such as PayPal or Venmo) can be used.
      * Use this to conditionally render the appropriate payment buttons on your site.
@@ -125,6 +128,7 @@ export interface BaseInstance {
     /**
      * Updates the locale for the SDK instance.
      *
+     * @remarks
      * This method allows you to dynamically change the locale of the SDK instance
      * after it has been initialized. The locale should be specified using a BCP-47 code.
      *
