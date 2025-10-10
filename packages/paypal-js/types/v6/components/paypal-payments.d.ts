@@ -124,6 +124,7 @@ export type PayPalCreditOneTimePaymentSessionOptions =
 /**
  * PayPal Payments Instance interface for creating and managing different types of PayPal payment sessions.
  *
+ * @remarks
  * This interface provides methods to create various PayPal payment flows including:
  * - One-time payments with standard PayPal
  * - Save payment methods for future use (vaulting)
@@ -132,8 +133,6 @@ export type PayPalCreditOneTimePaymentSessionOptions =
  *
  * Each method returns a payment session object that can be used to initiate the corresponding
  * payment flow with different presentation modes (popup, modal, redirect, etc.).
- *
- * @interface PayPalPaymentsInstance
  *
  * @example
  * ```typescript
@@ -151,12 +150,14 @@ export type PayPalCreditOneTimePaymentSessionOptions =
 export interface PayPalPaymentsInstance {
     /**
      * Creates a PayPal one-time payment session for processing single payments through PayPal.
+     *
+     * @remarks
      * This method allows you to configure callback functions to handle different stages
      * of the PayPal checkout process, including payment approval, shipping address changes,
      * shipping option changes, cancelation, and errors.
      *
-     * @param {PayPalOneTimePaymentSessionOptions} paymentSessionOptions - Configuration options for the PayPal payment session
-     * @returns {OneTimePaymentSession} - A session object that can be used to start the payment flow
+     * @param paymentSessionOptions - Configuration options for the PayPal payment session
+     * @returns A session object that can be used to start the payment flow
      *
      * @example
      * ```typescript
@@ -184,11 +185,13 @@ export interface PayPalPaymentsInstance {
     ) => OneTimePaymentSession;
     /**
      * Creates a PayPal save payment session for storing payment methods for future use.
+     *
+     * @remarks
      * This method allows you to set up vault payment sessions where customers can save
      * their PayPal payment method for future transactions without re-entering details.
      *
-     * @param {SavePaymentSessionOptions} paymentSessionOptions - Configuration options for the save payment session
-     * @returns {SavePaymentSession} - A session object that can be used to start the vault setup flow
+     * @param paymentSessionOptions - Configuration options for the save payment session
+     * @returns A session object that can be used to start the vault setup flow
      *
      * @example
      * ```typescript
@@ -211,11 +214,13 @@ export interface PayPalPaymentsInstance {
     ) => SavePaymentSession;
     /**
      * Creates a PayPal Pay Later one-time payment session for buy now, pay later transactions.
+     *
+     * @remarks
      * This method enables customers to make purchases and pay for them over time through
      * PayPal's Pay Later financing options. Available in supported countries.
      *
-     * @param {PayLaterOneTimePaymentSessionOptions} paymentSessionOptions - Configuration options for the Pay Later payment session
-     * @returns {OneTimePaymentSession} - A session object that can be used to start the Pay Later flow
+     * @param paymentSessionOptions - Configuration options for the Pay Later payment session
+     * @returns A session object that can be used to start the Pay Later flow
      *
      * @example
      * ```typescript
@@ -237,11 +242,13 @@ export interface PayPalPaymentsInstance {
     ) => OneTimePaymentSession;
     /**
      * Creates a PayPal Credit one-time payment session for credit-based transactions.
+     *
+     * @remarks
      * This method enables customers to make purchases using PayPal Credit, allowing them
      * to pay over time with financing options. Available in supported countries.
      *
-     * @param {PayPalCreditOneTimePaymentSessionOptions} paymentSessionOptions - Configuration options for the PayPal Credit payment session
-     * @returns {OneTimePaymentSession} - A session object that can be used to start the PayPal Credit flow
+     * @param paymentSessionOptions - Configuration options for the PayPal Credit payment session
+     * @returns A session object that can be used to start the PayPal Credit flow
      *
      * @example
      * ```typescript
