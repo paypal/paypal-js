@@ -33,8 +33,6 @@ export type VenmoOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
  *
  * The {@link VenmoPaymentsInstance} enables seamless integration with Venmo's payment flow,
  * providing a secure and user-friendly way to process payments through the Venmo platform.
- *
- * @interface VenmoPaymentsInstance
  */
 export interface VenmoPaymentsInstance {
     /**
@@ -42,8 +40,8 @@ export interface VenmoPaymentsInstance {
      * This method allows you to configure callback functions to handle different stages
      * of the Venmo checkout process, including payment approval, cancelation, and errors.
      *
-     * @param {VenmoOneTimePaymentSessionOptions} paymentSessionOptions - Configuration options for the Venmo payment session
-     * @returns {VenmoOneTimePaymentSession} - A session object that can be used to start the payment flow
+     * @param paymentSessionOptions - Configuration options for the Venmo payment session
+     * @returns A session object that can be used to start the payment flow
      *
      * @example
      * ```typescript

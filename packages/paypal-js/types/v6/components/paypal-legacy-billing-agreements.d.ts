@@ -49,8 +49,7 @@ export type PayPalLegacyBillingAgreementsSession = Omit<
  * @deprecated This interface provides legacy billing agreement methods that should not be used for new implementations.
  * Use the newer vault setup token approach with {@link PayPalPaymentsInstance.createPayPalSavePaymentSession} instead.
  *
- * @interface PayPalLegacyBillingInstance
- * @description Provides methods for creating billing agreements without requiring an immediate purchase.
+ * Provides methods for creating billing agreements without requiring an immediate purchase.
  * This legacy interface allows merchants to set up recurring payment agreements with customers
  * that can be used for future transactions.
  *
@@ -87,8 +86,8 @@ export interface PayPalLegacyBillingInstance {
      * @deprecated This method is legacy and should not be used for new implementations.
      * Use the newer vault setup token approach with {@link PayPalPaymentsInstance.createPayPalSavePaymentSession} instead.
      *
-     * @param {PayPalLegacyBillingAgreementsSessionOptions} paymentSessionOptions - Configuration options for the billing agreement session
-     * @returns {PayPalLegacyBillingAgreementsSession} - A session object that can be used to start the billing agreement flow
+     * @param paymentSessionOptions - Configuration options for the billing agreement session
+     * @returns A session object that can be used to start the billing agreement flow
      *
      * @example
      * ```typescript

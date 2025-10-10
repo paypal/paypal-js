@@ -11,7 +11,7 @@ export type OnCompleteData = {
 export type OnErrorData = Error;
 
 /**
- * use Omit<BasePaymentSessionOptions, "onApprove"> to change the arguments for onApprove()
+ * use Omit\<BasePaymentSessionOptions, "onApprove"\> to change the arguments for onApprove()
  */
 export type BasePaymentSessionOptions = {
     onApprove: (data: OnApproveDataOneTimePayments) => Promise<void>;
@@ -47,7 +47,7 @@ export type PresentationModeOptionsForAuto = {
 export type BasePaymentSessionPromise = Promise<{ orderId: string }>;
 
 /**
- * use Omit<BasePaymentSession, "start"> to change the arguments for start()
+ * use Omit\<BasePaymentSession, "start"\> to change the arguments for start()
  */
 export type BasePaymentSession = {
     start: (
