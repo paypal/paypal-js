@@ -21,5 +21,14 @@
     },
     "settings": {
         "polyfills": ["Promise", "fetch"]
-    }
+    },
+    "overrides": [
+        {
+            "files": ["types/v6/**/*.d.ts"],
+            "plugins": ["eslint-plugin-tsdoc"],
+            "rules": {
+                "tsdoc/syntax": "warn"
+            }
+        }
+    ]
 }
