@@ -1,0 +1,2713 @@
+<!doctype html>
+<html class="default" lang="en" data-base="../">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="IE=edge" />
+        <title>index | @paypal/paypal-js</title>
+        <meta
+            name="description"
+            content="Documentation for @paypal/paypal-js"
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../assets/style.css" />
+        <link rel="stylesheet" href="../assets/highlight.css" />
+        <script defer src="../assets/main.js"></script>
+        <script async src="../assets/icons.js" id="tsd-icons-script"></script>
+        <script async src="../assets/search.js" id="tsd-search-script"></script>
+        <script
+            async
+            src="../assets/navigation.js"
+            id="tsd-nav-script"
+        ></script>
+        <style>
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --md-sys-color-primary: #abc7ff;
+                    --md-sys-color-on-primary: #002f66;
+                    --md-sys-color-primary-container: #04458e;
+                    --md-sys-color-on-primary-container: #d7e2ff;
+                    --md-sys-color-secondary: #bec6dc;
+                    --md-sys-color-on-secondary: #283041;
+                    --md-sys-color-secondary-container: #3e4759;
+                    --md-sys-color-on-secondary-container: #dae2f9;
+                    --md-sys-color-tertiary: #ddbce0;
+                    --md-sys-color-on-tertiary: #3f2844;
+                    --md-sys-color-tertiary-container: #573e5c;
+                    --md-sys-color-on-tertiary-container: #fad8fd;
+                    --md-sys-color-error: #ffb4ab;
+                    --md-sys-color-on-error: #690005;
+                    --md-sys-color-error-container: #93000a;
+                    --md-sys-color-on-error-container: #ffb4ab;
+                    --md-sys-color-background: #1a1b1f;
+                    --md-sys-color-on-background: #e3e2e6;
+                    --md-sys-color-surface: #1a1b1f;
+                    --md-sys-color-on-surface: #e3e2e6;
+                    --md-sys-color-surface-variant: #44474e;
+                    --md-sys-color-on-surface-variant: #c4c6d0;
+                    --md-sys-color-outline: #8e9099;
+                    --md-sys-color-outline-variant: #44474e;
+                    --md-sys-color-shadow: #000000;
+                    --md-sys-color-scrim: #000000;
+                    --md-sys-color-inverse-surface: #e3e2e6;
+                    --md-sys-color-inverse-on-surface: #2f3033;
+                    --md-sys-color-inverse-primary: #2c5da7;
+                    --md-sys-color-surface-dim: #121316;
+                    --md-sys-color-surface-bright: #38393c;
+                    --md-sys-color-surface-container-lowest: #0d0e11;
+                    --md-sys-color-surface-container-low: #1a1b1f;
+                    --md-sys-color-surface-container: #1f1f23;
+                    --md-sys-color-surface-container-high: #292a2d;
+                    --md-sys-color-surface-container-highest: #343538;
+                }
+            }
+            :root[data-theme="dark"] {
+                --md-sys-color-primary: #abc7ff;
+                --md-sys-color-on-primary: #002f66;
+                --md-sys-color-primary-container: #04458e;
+                --md-sys-color-on-primary-container: #d7e2ff;
+                --md-sys-color-secondary: #bec6dc;
+                --md-sys-color-on-secondary: #283041;
+                --md-sys-color-secondary-container: #3e4759;
+                --md-sys-color-on-secondary-container: #dae2f9;
+                --md-sys-color-tertiary: #ddbce0;
+                --md-sys-color-on-tertiary: #3f2844;
+                --md-sys-color-tertiary-container: #573e5c;
+                --md-sys-color-on-tertiary-container: #fad8fd;
+                --md-sys-color-error: #ffb4ab;
+                --md-sys-color-on-error: #690005;
+                --md-sys-color-error-container: #93000a;
+                --md-sys-color-on-error-container: #ffb4ab;
+                --md-sys-color-background: #1a1b1f;
+                --md-sys-color-on-background: #e3e2e6;
+                --md-sys-color-surface: #1a1b1f;
+                --md-sys-color-on-surface: #e3e2e6;
+                --md-sys-color-surface-variant: #44474e;
+                --md-sys-color-on-surface-variant: #c4c6d0;
+                --md-sys-color-outline: #8e9099;
+                --md-sys-color-outline-variant: #44474e;
+                --md-sys-color-shadow: #000000;
+                --md-sys-color-scrim: #000000;
+                --md-sys-color-inverse-surface: #e3e2e6;
+                --md-sys-color-inverse-on-surface: #2f3033;
+                --md-sys-color-inverse-primary: #2c5da7;
+                --md-sys-color-surface-dim: #121316;
+                --md-sys-color-surface-bright: #38393c;
+                --md-sys-color-surface-container-lowest: #0d0e11;
+                --md-sys-color-surface-container-low: #1a1b1f;
+                --md-sys-color-surface-container: #1f1f23;
+                --md-sys-color-surface-container-high: #292a2d;
+                --md-sys-color-surface-container-highest: #343538;
+            }
+
+            @media (prefers-color-scheme: light) {
+                :root {
+                    --md-sys-color-primary: #2c5da7;
+                    --md-sys-color-on-primary: #ffffff;
+                    --md-sys-color-primary-container: #d7e2ff;
+                    --md-sys-color-on-primary-container: #001b3f;
+                    --md-sys-color-secondary: #565e71;
+                    --md-sys-color-on-secondary: #ffffff;
+                    --md-sys-color-secondary-container: #dae2f9;
+                    --md-sys-color-on-secondary-container: #131c2b;
+                    --md-sys-color-tertiary: #705574;
+                    --md-sys-color-on-tertiary: #ffffff;
+                    --md-sys-color-tertiary-container: #fad8fd;
+                    --md-sys-color-on-tertiary-container: #29132e;
+                    --md-sys-color-error: #ba1a1a;
+                    --md-sys-color-on-error: #ffffff;
+                    --md-sys-color-error-container: #ffdad6;
+                    --md-sys-color-on-error-container: #410002;
+                    --md-sys-color-background: #fdfbff;
+                    --md-sys-color-on-background: #1a1b1f;
+                    --md-sys-color-surface: #fdfbff;
+                    --md-sys-color-on-surface: #1a1b1f;
+                    --md-sys-color-surface-variant: #e0e2ec;
+                    --md-sys-color-on-surface-variant: #44474e;
+                    --md-sys-color-outline: #74777f;
+                    --md-sys-color-outline-variant: #c4c6d0;
+                    --md-sys-color-shadow: #000000;
+                    --md-sys-color-scrim: #000000;
+                    --md-sys-color-inverse-surface: #2f3033;
+                    --md-sys-color-inverse-on-surface: #f2f0f4;
+                    --md-sys-color-inverse-primary: #abc7ff;
+                    --md-sys-color-surface-dim: #dbd9dd;
+                    --md-sys-color-surface-bright: #faf9fd;
+                    --md-sys-color-surface-container-lowest: #ffffff;
+                    --md-sys-color-surface-container-low: #f4f3f7;
+                    --md-sys-color-surface-container: #efedf1;
+                    --md-sys-color-surface-container-high: #e9e7ec;
+                    --md-sys-color-surface-container-highest: #e3e2e6;
+                }
+            }
+            :root[data-theme="light"] {
+                --md-sys-color-primary: #2c5da7;
+                --md-sys-color-on-primary: #ffffff;
+                --md-sys-color-primary-container: #d7e2ff;
+                --md-sys-color-on-primary-container: #001b3f;
+                --md-sys-color-secondary: #565e71;
+                --md-sys-color-on-secondary: #ffffff;
+                --md-sys-color-secondary-container: #dae2f9;
+                --md-sys-color-on-secondary-container: #131c2b;
+                --md-sys-color-tertiary: #705574;
+                --md-sys-color-on-tertiary: #ffffff;
+                --md-sys-color-tertiary-container: #fad8fd;
+                --md-sys-color-on-tertiary-container: #29132e;
+                --md-sys-color-error: #ba1a1a;
+                --md-sys-color-on-error: #ffffff;
+                --md-sys-color-error-container: #ffdad6;
+                --md-sys-color-on-error-container: #410002;
+                --md-sys-color-background: #fdfbff;
+                --md-sys-color-on-background: #1a1b1f;
+                --md-sys-color-surface: #fdfbff;
+                --md-sys-color-on-surface: #1a1b1f;
+                --md-sys-color-surface-variant: #e0e2ec;
+                --md-sys-color-on-surface-variant: #44474e;
+                --md-sys-color-outline: #74777f;
+                --md-sys-color-outline-variant: #c4c6d0;
+                --md-sys-color-shadow: #000000;
+                --md-sys-color-scrim: #000000;
+                --md-sys-color-inverse-surface: #2f3033;
+                --md-sys-color-inverse-on-surface: #f2f0f4;
+                --md-sys-color-inverse-primary: #abc7ff;
+                --md-sys-color-surface-dim: #dbd9dd;
+                --md-sys-color-surface-bright: #faf9fd;
+                --md-sys-color-surface-container-lowest: #ffffff;
+                --md-sys-color-surface-container-low: #f4f3f7;
+                --md-sys-color-surface-container: #efedf1;
+                --md-sys-color-surface-container-high: #e9e7ec;
+                --md-sys-color-surface-container-highest: #e3e2e6;
+            }
+        </style>
+        <link rel="stylesheet" href="../assets/material-style.css" />
+    </head>
+    <body>
+        <script>
+            document.documentElement.dataset.theme =
+                localStorage.getItem("tsd-theme") || "os";
+            document.body.style.display = "none";
+            setTimeout(
+                () =>
+                    window.app
+                        ? app.showPage()
+                        : document.body.style.removeProperty("display"),
+                500,
+            );
+        </script>
+        <header class="tsd-page-toolbar">
+            <div class="tsd-toolbar-contents container">
+                <a href="../index.html" class="title">@paypal/paypal-js</a>
+                <div id="tsd-toolbar-links"></div>
+                <button
+                    id="tsd-search-trigger"
+                    class="tsd-widget"
+                    aria-label="Search"
+                >
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        aria-hidden="true"
+                    >
+                        <use href="../assets/icons.svg#icon-search"></use>
+                    </svg>
+                </button>
+                <dialog id="tsd-search" aria-label="Search">
+                    <input
+                        role="combobox"
+                        id="tsd-search-input"
+                        aria-controls="tsd-search-results"
+                        aria-autocomplete="list"
+                        aria-expanded="true"
+                        autocapitalize="off"
+                        autocomplete="off"
+                        placeholder="Search the docs"
+                        maxlength="100"
+                    />
+                    <ul role="listbox" id="tsd-search-results"></ul>
+                    <div
+                        id="tsd-search-status"
+                        aria-live="polite"
+                        aria-atomic="true"
+                    >
+                        <div>Preparing search index...</div>
+                    </div>
+                </dialog>
+                <a
+                    href="#"
+                    class="tsd-widget menu"
+                    id="tsd-toolbar-menu-trigger"
+                    data-toggle="menu"
+                    aria-label="Menu"
+                    ><svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 16 16"
+                        fill="none"
+                        aria-hidden="true"
+                    >
+                        <use href="../assets/icons.svg#icon-menu"></use></svg
+                ></a>
+            </div>
+        </header>
+        <div class="container container-main">
+            <div class="col-content">
+                <div class="tsd-page-title">
+                    <ul class="tsd-breadcrumb" aria-label="Breadcrumb">
+                        <li><a href="" aria-current="page">index</a></li>
+                    </ul>
+                    <h1>Module index</h1>
+                </div>
+                <details
+                    class="tsd-panel-group tsd-member-group tsd-accordion"
+                    open
+                >
+                    <summary
+                        class="tsd-accordion-summary"
+                        data-key="section-Interfaces"
+                    >
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            aria-hidden="true"
+                        >
+                            <use
+                                href="../assets/icons.svg#icon-chevronDown"
+                            ></use>
+                        </svg>
+                        <h2>Interfaces</h2>
+                    </summary>
+                    <dl class="tsd-member-summaries">
+                        <dt class="tsd-member-summary" id="baseinstance">
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Interface"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-256"
+                                    ></use></svg
+                                ><a href="../interfaces/index.BaseInstance.html"
+                                    >BaseInstance</a
+                                ><a
+                                    href="#baseinstance"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt class="tsd-member-summary" id="paypalv6namespace">
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Interface"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-256"
+                                    ></use></svg
+                                ><a
+                                    href="../interfaces/index.PayPalV6Namespace.html"
+                                    >PayPalV6Namespace</a
+                                ><a
+                                    href="#paypalv6namespace"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                    </dl>
+                </details>
+                <details
+                    class="tsd-panel-group tsd-member-group tsd-accordion"
+                    open
+                >
+                    <summary
+                        class="tsd-accordion-summary"
+                        data-key="section-Type Aliases"
+                    >
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            aria-hidden="true"
+                        >
+                            <use
+                                href="../assets/icons.svg#icon-chevronDown"
+                            ></use>
+                        </svg>
+                        <h2>Type Aliases</h2>
+                    </summary>
+                    <dl class="tsd-member-summaries">
+                        <dt class="tsd-member-summary" id="components">
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><a href="../types/index.Components.html"
+                                    >Components</a
+                                ><a
+                                    href="#components"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="createinstanceoptions"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><a
+                                    href="../types/index.CreateInstanceOptions.html"
+                                    >CreateInstanceOptions</a
+                                ><a
+                                    href="#createinstanceoptions"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="loadcoresdkscriptoptions"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><a
+                                    href="../types/index.LoadCoreSdkScriptOptions.html"
+                                    >LoadCoreSdkScriptOptions</a
+                                ><a
+                                    href="#loadcoresdkscriptoptions"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt class="tsd-member-summary" id="pagetypes">
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><a href="../types/index.PageTypes.html"
+                                    >PageTypes</a
+                                ><a
+                                    href="#pagetypes"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt class="tsd-member-summary" id="sdkinstance">
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><a href="../types/index.SdkInstance.html"
+                                    >SdkInstance</a
+                                ><a
+                                    href="#sdkinstance"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                    </dl>
+                </details>
+                <details
+                    class="tsd-panel-group tsd-member-group tsd-accordion"
+                    open
+                >
+                    <summary
+                        class="tsd-accordion-summary"
+                        data-key="section-Functions"
+                    >
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            aria-hidden="true"
+                        >
+                            <use
+                                href="../assets/icons.svg#icon-chevronDown"
+                            ></use>
+                        </svg>
+                        <h2>Functions</h2>
+                    </summary>
+                    <dl class="tsd-member-summaries">
+                        <dt class="tsd-member-summary" id="loadcoresdkscript">
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Function"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-64"
+                                    ></use></svg
+                                ><a
+                                    href="../functions/index.loadCoreSdkScript.html"
+                                    >loadCoreSdkScript</a
+                                ><a
+                                    href="#loadcoresdkscript"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                    </dl>
+                </details>
+                <details
+                    class="tsd-panel-group tsd-member-group tsd-accordion"
+                    open
+                >
+                    <summary
+                        class="tsd-accordion-summary"
+                        data-key="section-References"
+                    >
+                        <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            aria-hidden="true"
+                        >
+                            <use
+                                href="../assets/icons.svg#icon-chevronDown"
+                            ></use>
+                        </svg>
+                        <h2>References</h2>
+                    </summary>
+                    <dl class="tsd-member-summaries">
+                        <dt
+                            class="tsd-member-summary"
+                            id="baseeligiblepaymentmethoddetails"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>BaseEligiblePaymentMethodDetails</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_find-eligible-methods.BaseEligiblePaymentMethodDetails.html"
+                                    >BaseEligiblePaymentMethodDetails</a
+                                ><a
+                                    href="#baseeligiblepaymentmethoddetails"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="crediteligiblepaymentmethoddetails"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>CreditEligiblePaymentMethodDetails</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_find-eligible-methods.CreditEligiblePaymentMethodDetails.html"
+                                    >CreditEligiblePaymentMethodDetails</a
+                                ><a
+                                    href="#crediteligiblepaymentmethoddetails"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="eligiblepaymentmethods"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>EligiblePaymentMethods</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_find-eligible-methods.EligiblePaymentMethods.html"
+                                    >EligiblePaymentMethods</a
+                                ><a
+                                    href="#eligiblepaymentmethods"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="eligiblepaymentmethodsoutput"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Interface"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-256"
+                                    ></use></svg
+                                ><span>EligiblePaymentMethodsOutput</span
+                                ><span> → </span
+                                ><a
+                                    href="../interfaces/components_find-eligible-methods.EligiblePaymentMethodsOutput.html"
+                                    >EligiblePaymentMethodsOutput</a
+                                ><a
+                                    href="#eligiblepaymentmethodsoutput"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="findeligiblemethodsgetdetails"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>FindEligibleMethodsGetDetails</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_find-eligible-methods.FindEligibleMethodsGetDetails.html"
+                                    >FindEligibleMethodsGetDetails</a
+                                ><a
+                                    href="#findeligiblemethodsgetdetails"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="findeligiblemethodsoptions"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>FindEligibleMethodsOptions</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_find-eligible-methods.FindEligibleMethodsOptions.html"
+                                    >FindEligibleMethodsOptions</a
+                                ><a
+                                    href="#findeligiblemethodsoptions"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt class="tsd-member-summary" id="fundingsource">
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>FundingSource</span><span> → </span
+                                ><a
+                                    href="../types/components_find-eligible-methods.FundingSource.html"
+                                    >FundingSource</a
+                                ><a
+                                    href="#fundingsource"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="onapprovedatabillingagreements"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>OnApproveDataBillingAgreements</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-legacy-billing-agreements.OnApproveDataBillingAgreements.html"
+                                    >OnApproveDataBillingAgreements</a
+                                ><a
+                                    href="#onapprovedatabillingagreements"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="onapprovedataonetimepayments"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>OnApproveDataOneTimePayments</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_base-component.OnApproveDataOneTimePayments.html"
+                                    >OnApproveDataOneTimePayments</a
+                                ><a
+                                    href="#onapprovedataonetimepayments"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="onapprovedatasavepayments"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>OnApproveDataSavePayments</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.OnApproveDataSavePayments.html"
+                                    >OnApproveDataSavePayments</a
+                                ><a
+                                    href="#onapprovedatasavepayments"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt class="tsd-member-summary" id="oncompletedata">
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>OnCompleteData</span><span> → </span
+                                ><a
+                                    href="../types/components_base-component.OnCompleteData.html"
+                                    >OnCompleteData</a
+                                ><a
+                                    href="#oncompletedata"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt class="tsd-member-summary" id="onerrordata">
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>OnErrorData</span><span> → </span
+                                ><a
+                                    href="../types/components_base-component.OnErrorData.html"
+                                    >OnErrorData</a
+                                ><a
+                                    href="#onerrordata"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="onetimepaymentsession"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>OneTimePaymentSession</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.OneTimePaymentSession.html"
+                                    >OneTimePaymentSession</a
+                                ><a
+                                    href="#onetimepaymentsession"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="onshippingaddresschangedata"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>OnShippingAddressChangeData</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.OnShippingAddressChangeData.html"
+                                    >OnShippingAddressChangeData</a
+                                ><a
+                                    href="#onshippingaddresschangedata"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="onshippingoptionschangedata"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>OnShippingOptionsChangeData</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.OnShippingOptionsChangeData.html"
+                                    >OnShippingOptionsChangeData</a
+                                ><a
+                                    href="#onshippingoptionschangedata"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paylatercountrycodes"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>PayLaterCountryCodes</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.PayLaterCountryCodes.html"
+                                    >PayLaterCountryCodes</a
+                                ><a
+                                    href="#paylatercountrycodes"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paylatereligiblepaymentmethoddetails"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span
+                                    >PayLaterEligiblePaymentMethodDetails</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_find-eligible-methods.PayLaterEligiblePaymentMethodDetails.html"
+                                    >PayLaterEligiblePaymentMethodDetails</a
+                                ><a
+                                    href="#paylatereligiblepaymentmethoddetails"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paylateronetimepaymentsessionoptions"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span
+                                    >PayLaterOneTimePaymentSessionOptions</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.PayLaterOneTimePaymentSessionOptions.html"
+                                    >PayLaterOneTimePaymentSessionOptions</a
+                                ><a
+                                    href="#paylateronetimepaymentsessionoptions"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paylaterproductcodes"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>PayLaterProductCodes</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.PayLaterProductCodes.html"
+                                    >PayLaterProductCodes</a
+                                ><a
+                                    href="#paylaterproductcodes"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paypalcreditcountrycodes"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>PayPalCreditCountryCodes</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.PayPalCreditCountryCodes.html"
+                                    >PayPalCreditCountryCodes</a
+                                ><a
+                                    href="#paypalcreditcountrycodes"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paypalcreditonetimepaymentsessionoptions"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span
+                                    >PayPalCreditOneTimePaymentSessionOptions</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.PayPalCreditOneTimePaymentSessionOptions.html"
+                                    >PayPalCreditOneTimePaymentSessionOptions</a
+                                ><a
+                                    href="#paypalcreditonetimepaymentsessionoptions"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paypallegacybillingagreementssession"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span
+                                    >PayPalLegacyBillingAgreementsSession</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-legacy-billing-agreements.PayPalLegacyBillingAgreementsSession.html"
+                                    >PayPalLegacyBillingAgreementsSession</a
+                                ><a
+                                    href="#paypallegacybillingagreementssession"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paypallegacybillingagreementssessionoptions"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span
+                                    >PayPalLegacyBillingAgreementsSessionOptions</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-legacy-billing-agreements.PayPalLegacyBillingAgreementsSessionOptions.html"
+                                    >PayPalLegacyBillingAgreementsSessionOptions</a
+                                ><a
+                                    href="#paypallegacybillingagreementssessionoptions"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paypallegacybillingagreementssessionpromise"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span
+                                    >PayPalLegacyBillingAgreementsSessionPromise</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-legacy-billing-agreements.PayPalLegacyBillingAgreementsSessionPromise.html"
+                                    >PayPalLegacyBillingAgreementsSessionPromise</a
+                                ><a
+                                    href="#paypallegacybillingagreementssessionpromise"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paypallegacybillinginstance"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Interface"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-256"
+                                    ></use></svg
+                                ><span>PayPalLegacyBillingInstance</span
+                                ><span> → </span
+                                ><a
+                                    href="../interfaces/components_paypal-legacy-billing-agreements.PayPalLegacyBillingInstance.html"
+                                    class="deprecated"
+                                    >PayPalLegacyBillingInstance</a
+                                ><a
+                                    href="#paypallegacybillinginstance"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paypallegacybillingpresentationmodeoptions"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span
+                                    >PayPalLegacyBillingPresentationModeOptions</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-legacy-billing-agreements.PayPalLegacyBillingPresentationModeOptions.html"
+                                    >PayPalLegacyBillingPresentationModeOptions</a
+                                ><a
+                                    href="#paypallegacybillingpresentationmodeoptions"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paypalonetimepaymentsessionoptions"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>PayPalOneTimePaymentSessionOptions</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.PayPalOneTimePaymentSessionOptions.html"
+                                    >PayPalOneTimePaymentSessionOptions</a
+                                ><a
+                                    href="#paypalonetimepaymentsessionoptions"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paypalpaymentsinstance"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Interface"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-256"
+                                    ></use></svg
+                                ><span>PayPalPaymentsInstance</span
+                                ><span> → </span
+                                ><a
+                                    href="../interfaces/components_paypal-payments.PayPalPaymentsInstance.html"
+                                    >PayPalPaymentsInstance</a
+                                ><a
+                                    href="#paypalpaymentsinstance"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="paypalpresentationmodeoptions"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>PayPalPresentationModeOptions</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.PayPalPresentationModeOptions.html"
+                                    >PayPalPresentationModeOptions</a
+                                ><a
+                                    href="#paypalpresentationmodeoptions"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt class="tsd-member-summary" id="savepaymentsession">
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>SavePaymentSession</span><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.SavePaymentSession.html"
+                                    >SavePaymentSession</a
+                                ><a
+                                    href="#savepaymentsession"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="savepaymentsessionoptions"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>SavePaymentSessionOptions</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.SavePaymentSessionOptions.html"
+                                    >SavePaymentSessionOptions</a
+                                ><a
+                                    href="#savepaymentsessionoptions"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="shippingaddresserrormessages"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>ShippingAddressErrorMessages</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.ShippingAddressErrorMessages.html"
+                                    >ShippingAddressErrorMessages</a
+                                ><a
+                                    href="#shippingaddresserrormessages"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="shippingaddresserrortype"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>ShippingAddressErrorType</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.ShippingAddressErrorType.html"
+                                    >ShippingAddressErrorType</a
+                                ><a
+                                    href="#shippingaddresserrortype"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="shippingoptionserrormessages"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>ShippingOptionsErrorMessages</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.ShippingOptionsErrorMessages.html"
+                                    >ShippingOptionsErrorMessages</a
+                                ><a
+                                    href="#shippingoptionserrormessages"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="shippingoptionserrortype"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>ShippingOptionsErrorType</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_paypal-payments.ShippingOptionsErrorType.html"
+                                    >ShippingOptionsErrorType</a
+                                ><a
+                                    href="#shippingoptionserrortype"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="venmoonetimepaymentsession"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>VenmoOneTimePaymentSession</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_venmo-payments.VenmoOneTimePaymentSession.html"
+                                    >VenmoOneTimePaymentSession</a
+                                ><a
+                                    href="#venmoonetimepaymentsession"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="venmoonetimepaymentsessionoptions"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>VenmoOneTimePaymentSessionOptions</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_venmo-payments.VenmoOneTimePaymentSessionOptions.html"
+                                    >VenmoOneTimePaymentSessionOptions</a
+                                ><a
+                                    href="#venmoonetimepaymentsessionoptions"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="venmoonetimepaymentsessionpromise"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>VenmoOneTimePaymentSessionPromise</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_venmo-payments.VenmoOneTimePaymentSessionPromise.html"
+                                    >VenmoOneTimePaymentSessionPromise</a
+                                ><a
+                                    href="#venmoonetimepaymentsessionpromise"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="venmopaymentsinstance"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Interface"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-256"
+                                    ></use></svg
+                                ><span>VenmoPaymentsInstance</span
+                                ><span> → </span
+                                ><a
+                                    href="../interfaces/components_venmo-payments.VenmoPaymentsInstance.html"
+                                    >VenmoPaymentsInstance</a
+                                ><a
+                                    href="#venmopaymentsinstance"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                        <dt
+                            class="tsd-member-summary"
+                            id="venmopresentationmodeoptions"
+                        >
+                            <span class="tsd-member-summary-name"
+                                ><svg
+                                    class="tsd-kind-icon"
+                                    viewBox="0 0 24 24"
+                                    aria-label="Type Alias"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-2097152"
+                                    ></use></svg
+                                ><span>VenmoPresentationModeOptions</span
+                                ><span> → </span
+                                ><a
+                                    href="../types/components_venmo-payments.VenmoPresentationModeOptions.html"
+                                    >VenmoPresentationModeOptions</a
+                                ><a
+                                    href="#venmopresentationmodeoptions"
+                                    aria-label="Permalink"
+                                    class="tsd-anchor-icon"
+                                    ><svg
+                                        viewBox="0 0 24 24"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-anchor"
+                                        ></use></svg></a
+                            ></span>
+                        </dt>
+                        <dd class="tsd-member-summary"></dd>
+                    </dl>
+                </details>
+            </div>
+            <div class="col-sidebar">
+                <div class="page-menu">
+                    <div class="tsd-navigation settings">
+                        <details class="tsd-accordion">
+                            <summary class="tsd-accordion-summary">
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    aria-hidden="true"
+                                >
+                                    <use
+                                        href="../assets/icons.svg#icon-chevronDown"
+                                    ></use>
+                                </svg>
+                                <h3>Settings</h3>
+                            </summary>
+                            <div class="tsd-accordion-details">
+                                <div class="tsd-filter-visibility">
+                                    <span class="settings-label"
+                                        >Member Visibility</span
+                                    >
+                                    <ul id="tsd-filter-options">
+                                        <li class="tsd-filter-item">
+                                            <label class="tsd-filter-input"
+                                                ><input
+                                                    type="checkbox"
+                                                    id="tsd-filter-protected"
+                                                    name="protected"
+                                                /><svg
+                                                    width="32"
+                                                    height="32"
+                                                    viewBox="0 0 32 32"
+                                                    aria-hidden="true"
+                                                >
+                                                    <rect
+                                                        class="tsd-checkbox-background"
+                                                        width="30"
+                                                        height="30"
+                                                        x="1"
+                                                        y="1"
+                                                        rx="6"
+                                                        fill="none"
+                                                    ></rect>
+                                                    <path
+                                                        class="tsd-checkbox-checkmark"
+                                                        d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25"
+                                                        stroke="none"
+                                                        stroke-width="3.5"
+                                                        stroke-linejoin="round"
+                                                        fill="none"
+                                                    ></path></svg
+                                                ><span>Protected</span></label
+                                            >
+                                        </li>
+                                        <li class="tsd-filter-item">
+                                            <label class="tsd-filter-input"
+                                                ><input
+                                                    type="checkbox"
+                                                    id="tsd-filter-inherited"
+                                                    name="inherited"
+                                                    checked
+                                                /><svg
+                                                    width="32"
+                                                    height="32"
+                                                    viewBox="0 0 32 32"
+                                                    aria-hidden="true"
+                                                >
+                                                    <rect
+                                                        class="tsd-checkbox-background"
+                                                        width="30"
+                                                        height="30"
+                                                        x="1"
+                                                        y="1"
+                                                        rx="6"
+                                                        fill="none"
+                                                    ></rect>
+                                                    <path
+                                                        class="tsd-checkbox-checkmark"
+                                                        d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25"
+                                                        stroke="none"
+                                                        stroke-width="3.5"
+                                                        stroke-linejoin="round"
+                                                        fill="none"
+                                                    ></path></svg
+                                                ><span>Inherited</span></label
+                                            >
+                                        </li>
+                                        <li class="tsd-filter-item">
+                                            <label class="tsd-filter-input"
+                                                ><input
+                                                    type="checkbox"
+                                                    id="tsd-filter-external"
+                                                    name="external"
+                                                /><svg
+                                                    width="32"
+                                                    height="32"
+                                                    viewBox="0 0 32 32"
+                                                    aria-hidden="true"
+                                                >
+                                                    <rect
+                                                        class="tsd-checkbox-background"
+                                                        width="30"
+                                                        height="30"
+                                                        x="1"
+                                                        y="1"
+                                                        rx="6"
+                                                        fill="none"
+                                                    ></rect>
+                                                    <path
+                                                        class="tsd-checkbox-checkmark"
+                                                        d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25"
+                                                        stroke="none"
+                                                        stroke-width="3.5"
+                                                        stroke-linejoin="round"
+                                                        fill="none"
+                                                    ></path></svg
+                                                ><span>External</span></label
+                                            >
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="tsd-theme-toggle">
+                                    <label
+                                        class="settings-label"
+                                        for="tsd-theme"
+                                        >Theme</label
+                                    ><select id="tsd-theme">
+                                        <option value="os">OS</option>
+                                        <option value="light">Light</option>
+                                        <option value="dark">Dark</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+                    <details open class="tsd-accordion tsd-page-navigation">
+                        <summary class="tsd-accordion-summary">
+                            <svg
+                                width="20"
+                                height="20"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                aria-hidden="true"
+                            >
+                                <use
+                                    href="../assets/icons.svg#icon-chevronDown"
+                                ></use>
+                            </svg>
+                            <h3>On This Page</h3>
+                        </summary>
+                        <div class="tsd-accordion-details">
+                            <details
+                                open
+                                class="tsd-accordion tsd-page-navigation-section"
+                            >
+                                <summary
+                                    class="tsd-accordion-summary"
+                                    data-key="section-Interfaces"
+                                >
+                                    <svg
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-chevronDown"
+                                        ></use></svg
+                                    >Interfaces
+                                </summary>
+                                <div>
+                                    <a href="#baseinstance"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Interface"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-256"
+                                            ></use></svg
+                                        ><span>Base<wbr />Instance</span></a
+                                    ><a href="#paypalv6namespace"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Interface"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-256"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Pal<wbr />V6<wbr />Namespace</span
+                                        ></a
+                                    >
+                                </div>
+                            </details>
+                            <details
+                                open
+                                class="tsd-accordion tsd-page-navigation-section"
+                            >
+                                <summary
+                                    class="tsd-accordion-summary"
+                                    data-key="section-Type Aliases"
+                                >
+                                    <svg
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-chevronDown"
+                                        ></use></svg
+                                    >Type Aliases
+                                </summary>
+                                <div>
+                                    <a href="#components"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span>Components</span></a
+                                    ><a href="#createinstanceoptions"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Create<wbr />Instance<wbr />Options</span
+                                        ></a
+                                    ><a href="#loadcoresdkscriptoptions"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Load<wbr />Core<wbr />Sdk<wbr />Script<wbr />Options</span
+                                        ></a
+                                    ><a href="#pagetypes"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span>Page<wbr />Types</span></a
+                                    ><a href="#sdkinstance"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span>Sdk<wbr />Instance</span></a
+                                    >
+                                </div>
+                            </details>
+                            <details
+                                open
+                                class="tsd-accordion tsd-page-navigation-section"
+                            >
+                                <summary
+                                    class="tsd-accordion-summary"
+                                    data-key="section-Functions"
+                                >
+                                    <svg
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-chevronDown"
+                                        ></use></svg
+                                    >Functions
+                                </summary>
+                                <div>
+                                    <a href="#loadcoresdkscript"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Function"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-64"
+                                            ></use></svg
+                                        ><span
+                                            >load<wbr />Core<wbr />Sdk<wbr />Script</span
+                                        ></a
+                                    >
+                                </div>
+                            </details>
+                            <details
+                                open
+                                class="tsd-accordion tsd-page-navigation-section"
+                            >
+                                <summary
+                                    class="tsd-accordion-summary"
+                                    data-key="section-References"
+                                >
+                                    <svg
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        aria-hidden="true"
+                                    >
+                                        <use
+                                            href="../assets/icons.svg#icon-chevronDown"
+                                        ></use></svg
+                                    >References
+                                </summary>
+                                <div>
+                                    <a href="#baseeligiblepaymentmethoddetails"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Base<wbr />Eligible<wbr />Payment<wbr />Method<wbr />Details</span
+                                        ></a
+                                    ><a
+                                        href="#crediteligiblepaymentmethoddetails"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Credit<wbr />Eligible<wbr />Payment<wbr />Method<wbr />Details</span
+                                        ></a
+                                    ><a href="#eligiblepaymentmethods"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Eligible<wbr />Payment<wbr />Methods</span
+                                        ></a
+                                    ><a href="#eligiblepaymentmethodsoutput"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Interface"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-256"
+                                            ></use></svg
+                                        ><span
+                                            >Eligible<wbr />Payment<wbr />Methods<wbr />Output</span
+                                        ></a
+                                    ><a href="#findeligiblemethodsgetdetails"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Find<wbr />Eligible<wbr />Methods<wbr />Get<wbr />Details</span
+                                        ></a
+                                    ><a href="#findeligiblemethodsoptions"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Find<wbr />Eligible<wbr />Methods<wbr />Options</span
+                                        ></a
+                                    ><a href="#fundingsource"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span>Funding<wbr />Source</span></a
+                                    ><a href="#onapprovedatabillingagreements"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >On<wbr />Approve<wbr />Data<wbr />Billing<wbr />Agreements</span
+                                        ></a
+                                    ><a href="#onapprovedataonetimepayments"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >On<wbr />Approve<wbr />Data<wbr />One<wbr />Time<wbr />Payments</span
+                                        ></a
+                                    ><a href="#onapprovedatasavepayments"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >On<wbr />Approve<wbr />Data<wbr />Save<wbr />Payments</span
+                                        ></a
+                                    ><a href="#oncompletedata"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >On<wbr />Complete<wbr />Data</span
+                                        ></a
+                                    ><a href="#onerrordata"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >On<wbr />Error<wbr />Data</span
+                                        ></a
+                                    ><a href="#onetimepaymentsession"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >One<wbr />Time<wbr />Payment<wbr />Session</span
+                                        ></a
+                                    ><a href="#onshippingaddresschangedata"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >On<wbr />Shipping<wbr />Address<wbr />Change<wbr />Data</span
+                                        ></a
+                                    ><a href="#onshippingoptionschangedata"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >On<wbr />Shipping<wbr />Options<wbr />Change<wbr />Data</span
+                                        ></a
+                                    ><a href="#paylatercountrycodes"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Later<wbr />Country<wbr />Codes</span
+                                        ></a
+                                    ><a
+                                        href="#paylatereligiblepaymentmethoddetails"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Later<wbr />Eligible<wbr />Payment<wbr />Method<wbr />Details</span
+                                        ></a
+                                    ><a
+                                        href="#paylateronetimepaymentsessionoptions"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Later<wbr />One<wbr />Time<wbr />Payment<wbr />Session<wbr />Options</span
+                                        ></a
+                                    ><a href="#paylaterproductcodes"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Later<wbr />Product<wbr />Codes</span
+                                        ></a
+                                    ><a href="#paypalcreditcountrycodes"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Pal<wbr />Credit<wbr />Country<wbr />Codes</span
+                                        ></a
+                                    ><a
+                                        href="#paypalcreditonetimepaymentsessionoptions"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Pal<wbr />Credit<wbr />One<wbr />Time<wbr />Payment<wbr />Session<wbr />Options</span
+                                        ></a
+                                    ><a
+                                        href="#paypallegacybillingagreementssession"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Pal<wbr />Legacy<wbr />Billing<wbr />Agreements<wbr />Session</span
+                                        ></a
+                                    ><a
+                                        href="#paypallegacybillingagreementssessionoptions"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Pal<wbr />Legacy<wbr />Billing<wbr />Agreements<wbr />Session<wbr />Options</span
+                                        ></a
+                                    ><a
+                                        href="#paypallegacybillingagreementssessionpromise"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Pal<wbr />Legacy<wbr />Billing<wbr />Agreements<wbr />Session<wbr />Promise</span
+                                        ></a
+                                    ><a href="#paypallegacybillinginstance"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Interface"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-256"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Pal<wbr />Legacy<wbr />Billing<wbr />Instance</span
+                                        ></a
+                                    ><a
+                                        href="#paypallegacybillingpresentationmodeoptions"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Pal<wbr />Legacy<wbr />Billing<wbr />Presentation<wbr />Mode<wbr />Options</span
+                                        ></a
+                                    ><a
+                                        href="#paypalonetimepaymentsessionoptions"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Pal<wbr />One<wbr />Time<wbr />Payment<wbr />Session<wbr />Options</span
+                                        ></a
+                                    ><a href="#paypalpaymentsinstance"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Interface"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-256"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Pal<wbr />Payments<wbr />Instance</span
+                                        ></a
+                                    ><a href="#paypalpresentationmodeoptions"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Pay<wbr />Pal<wbr />Presentation<wbr />Mode<wbr />Options</span
+                                        ></a
+                                    ><a href="#savepaymentsession"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Save<wbr />Payment<wbr />Session</span
+                                        ></a
+                                    ><a href="#savepaymentsessionoptions"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Save<wbr />Payment<wbr />Session<wbr />Options</span
+                                        ></a
+                                    ><a href="#shippingaddresserrormessages"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Shipping<wbr />Address<wbr />Error<wbr />Messages</span
+                                        ></a
+                                    ><a href="#shippingaddresserrortype"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Shipping<wbr />Address<wbr />Error<wbr />Type</span
+                                        ></a
+                                    ><a href="#shippingoptionserrormessages"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Shipping<wbr />Options<wbr />Error<wbr />Messages</span
+                                        ></a
+                                    ><a href="#shippingoptionserrortype"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Shipping<wbr />Options<wbr />Error<wbr />Type</span
+                                        ></a
+                                    ><a href="#venmoonetimepaymentsession"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Venmo<wbr />One<wbr />Time<wbr />Payment<wbr />Session</span
+                                        ></a
+                                    ><a
+                                        href="#venmoonetimepaymentsessionoptions"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Venmo<wbr />One<wbr />Time<wbr />Payment<wbr />Session<wbr />Options</span
+                                        ></a
+                                    ><a
+                                        href="#venmoonetimepaymentsessionpromise"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Venmo<wbr />One<wbr />Time<wbr />Payment<wbr />Session<wbr />Promise</span
+                                        ></a
+                                    ><a href="#venmopaymentsinstance"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Interface"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-256"
+                                            ></use></svg
+                                        ><span
+                                            >Venmo<wbr />Payments<wbr />Instance</span
+                                        ></a
+                                    ><a href="#venmopresentationmodeoptions"
+                                        ><svg
+                                            class="tsd-kind-icon"
+                                            viewBox="0 0 24 24"
+                                            aria-label="Type Alias"
+                                        >
+                                            <use
+                                                href="../assets/icons.svg#icon-2097152"
+                                            ></use></svg
+                                        ><span
+                                            >Venmo<wbr />Presentation<wbr />Mode<wbr />Options</span
+                                        ></a
+                                    >
+                                </div>
+                            </details>
+                        </div>
+                    </details>
+                </div>
+                <div class="site-menu">
+                    <nav class="tsd-navigation">
+                        <a href="../modules.html">@paypal/paypal-js</a>
+                        <ul
+                            class="tsd-small-nested-navigation"
+                            id="tsd-nav-container"
+                        >
+                            <li>Loading...</li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <p class="tsd-generator">
+                Generated using
+                <a href="https://typedoc.org/" target="_blank">TypeDoc</a>
+            </p>
+        </footer>
+        <div class="overlay"></div>
+        <script>
+            try {
+                const generateLinkElement =
+                    document.querySelector(".tsd-generator a");
+                const link = document.createElement("a");
+                Object.assign(link, {
+                    href: "https://github.com/dmnsgn/typedoc-material-theme",
+                    target: "_blank",
+                    rel: "noreferrer",
+                    innerText: "typedoc-material-theme.",
+                });
+                generateLinkElement.insertAdjacentElement("afterend", link);
+                generateLinkElement.insertAdjacentText("afterend", " with ");
+            } catch (error) {}
+        </script>
+    </body>
+</html>
