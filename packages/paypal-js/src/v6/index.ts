@@ -18,6 +18,14 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         return Promise.resolve(null);
     }
 
+    const currentScript = document.querySelector<HTMLScriptElement>(
+        'script[src*="/web-sdk/v6/core"]',
+    );
+
+    if (window.paypal && currentScript) {
+        return Promise.resolve(window.paypal as unknown as PayPalV6Namespace);
+    }
+
     const { environment, debug } = options;
 
     const baseURL =
