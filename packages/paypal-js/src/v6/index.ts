@@ -22,7 +22,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         'script[src*="/web-sdk/v6/core"]',
     );
 
-    if (window.paypal && currentScript) {
+    if (window.paypal?.version.startsWith("6") && currentScript) {
         return Promise.resolve(window.paypal as unknown as PayPalV6Namespace);
     }
 
