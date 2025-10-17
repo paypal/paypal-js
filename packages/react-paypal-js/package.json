@@ -35,6 +35,7 @@
         "lint": "eslint .",
         "prepack": "rimraf dist && npm run build && npm run type-declarations",
         "test": "jest --env=jsdom",
+        "test:watch": "jest --env=jsdom --watch",
         "start": "npm run check-node-version && npm run storybook",
         "storybook": "start-storybook -p 6006",
         "build-storybook": "build-storybook",
