@@ -1,5 +1,12 @@
 # Changelog
 
+## 9.0.2
+
+### Patch Changes
+
+-   6d5e590: feat: use tsdoc for v6 public interface
+-   1599832: feat: add jsdoc comments to v6 public interface types
+
 ## 9.0.1
 
 ### Patch Changes
