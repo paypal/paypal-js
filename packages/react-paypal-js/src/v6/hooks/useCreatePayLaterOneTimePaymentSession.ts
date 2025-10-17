@@ -23,8 +23,6 @@ export function usePayLaterOneTimePaymentSession({
     const sessionRef = useRef<OneTimePaymentSession | null>(null); // handle cleanup
     const proxyCallbacks = useProxyProps(callbacks);
 
-    // TODO which props should be exposed for this session type?
-
     const handleDestroy = useCallback(() => {
         if (sessionRef.current) {
             sessionRef.current.destroy();
