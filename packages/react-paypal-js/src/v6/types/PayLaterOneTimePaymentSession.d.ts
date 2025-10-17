@@ -1,4 +1,4 @@
-import type { BasePaymentSessionPromise } from "@paypal/paypal-js/sdk-v6";
+import type { CreateOrderCallback } from "@paypal/paypal-js/sdk-v6";
 import type {
     PayLaterOneTimePaymentSessionOptions,
     PayPalPresentationModeOptions,
@@ -6,7 +6,7 @@ import type {
 
 export type PayLaterOneTimePaymentSessionProps =
     | (Omit<PayLaterOneTimePaymentSessionOptions, "orderId"> & {
-          createOrder: () => BasePaymentSessionPromise;
+          createOrder: CreateOrderCallback;
           presentationMode: PayPalPresentationModeOptions["presentationMode"];
           orderId?: never;
       })
