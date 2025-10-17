@@ -12,7 +12,6 @@ import type {
 
 // TODO tests
 // TODO example
-// TODO eligibility
 export function usePayLaterOneTimePaymentSession({
     presentationMode,
     createOrder,
