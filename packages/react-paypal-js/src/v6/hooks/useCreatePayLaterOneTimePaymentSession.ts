@@ -55,7 +55,7 @@ export function usePayLaterOneTimePaymentSession({
 
     const handleClick = useCallback(async () => {
         if (!sessionRef.current) {
-            throw new Error("Venmo session not available");
+            throw new Error("paylater session not available");
         }
 
         const startOptions: PayPalPresentationModeOptions = {
