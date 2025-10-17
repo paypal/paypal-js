@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 
 import { usePayPal } from "./usePayPal";
+import { useProxyProps } from "../utils";
 
 import type {
     OneTimePaymentSession,
@@ -20,8 +21,8 @@ export function usePayLaterOneTimePaymentSession({
 }: PayLaterOneTimePaymentSessionProps): PayLaterOneTimePaymentSessionReturn {
     const { sdkInstance } = usePayPal();
     const sessionRef = useRef<OneTimePaymentSession | null>(null); // handle cleanup
+    const proxyCallbacks = useProxyProps(callbacks);
 
-    // TODO useProxyProps
     // TODO which props should be exposed for this session type?
 
     const handleDestroy = useCallback(() => {
@@ -39,12 +40,12 @@ export function usePayLaterOneTimePaymentSession({
 
         const newSession = sdkInstance.createPayLaterOneTimePaymentSession({
             orderId,
-            ...callbacks,
+            ...proxyCallbacks,
         });
         sessionRef.current = newSession;
 
         return handleDestroy;
-    }, [sdkInstance, orderId, callbacks, handleDestroy]);
+    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
 
     const handleCancel = useCallback(() => {
         if (sessionRef.current) {
