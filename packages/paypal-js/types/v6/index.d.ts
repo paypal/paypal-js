@@ -160,6 +160,8 @@ export * from "./components/find-eligible-methods";
 
 // export a subset of types from base-component
 export {
+    CreateOrderCallback,
+    CreateOrderPromise,
     OnApproveDataOneTimePayments,
     OnCompleteData,
     OnErrorData,
