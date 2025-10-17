@@ -21,7 +21,7 @@ export function usePayLaterOneTimePaymentSession({
     const { sdkInstance } = usePayPal();
     const sessionRef = useRef<OneTimePaymentSession | null>(null); // handle cleanup
 
-    // TODO useProxProps
+    // TODO useProxyProps
     // TODO which props should be exposed for this session type?
 
     const handleDestroy = useCallback(() => {
