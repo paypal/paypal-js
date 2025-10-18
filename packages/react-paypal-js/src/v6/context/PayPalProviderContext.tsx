@@ -1,12 +1,15 @@
 import { createContext } from "react";
 
 import {
+    INSTANCE_LOADING_STATE,
+    INSTANCE_DISPATCH_ACTION,
+} from "../types/PayPalProviderEnums";
+
+import type {
     PayPalContextState,
     PayPalState,
     InstanceAction,
-    INSTANCE_LOADING_STATE,
-    INSTANCE_DISPATCH_ACTION,
-} from "../types/PayPalProviderTypes";
+} from "../types/PayPalProviderTypes.d.ts";
 
 export function instanceReducer(
     state: PayPalState,
