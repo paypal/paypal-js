@@ -1,7 +1,6 @@
 import {
     BasePaymentSessionOptions,
     BasePaymentSession,
-    OnApproveDataOneTimePayments,
     PresentationModeOptionsForPopup,
     PresentationModeOptionsForModal,
     PresentationModeOptionsForAuto,
@@ -9,7 +8,6 @@ import {
 
 export type VenmoOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
     orderId?: string;
-    onApprove: (data: OnApproveDataOneTimePayments) => Promise<void>;
 };
 
 export type VenmoPresentationModeOptions =
