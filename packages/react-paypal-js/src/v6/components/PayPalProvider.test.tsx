@@ -5,7 +5,7 @@ import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
 import { PayPalProvider } from "./PayPalProvider";
 import { usePayPal } from "../hooks/usePayPal";
-import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderTypes";
+import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import {
     TEST_CLIENT_TOKEN,
     TEST_ERROR_MESSAGE,

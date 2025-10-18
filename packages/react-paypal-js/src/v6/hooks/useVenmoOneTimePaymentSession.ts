@@ -6,11 +6,9 @@ import { useProxyProps } from "../utils";
 import type {
     VenmoOneTimePaymentSession,
     VenmoPresentationModeOptions,
-} from "../types";
-import type {
     UseVenmoOneTimePaymentSessionProps,
     UseVenmoOneTimePaymentSessionReturn,
-} from "../types/VenmoOneTimePaymentSessionTypes";
+} from "../types";
 
 export function useVenmoOneTimePaymentSession({
     presentationMode,
@@ -21,6 +19,11 @@ export function useVenmoOneTimePaymentSession({
     const { sdkInstance } = usePayPal();
     const sessionRef = useRef<VenmoOneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
+
+    const handleDestroy = useCallback(() => {
+        sessionRef.current?.destroy();
+        sessionRef.current = null;
+    }, []);
 
     useEffect(() => {
         if (!sdkInstance) {
@@ -33,13 +36,8 @@ export function useVenmoOneTimePaymentSession({
         });
         sessionRef.current = newSession;
 
-        return () => {
-            if (sessionRef.current) {
-                sessionRef.current.destroy();
-                sessionRef.current = null;
-            }
-        };
-    }, [sdkInstance, orderId, proxyCallbacks]);
+        return handleDestroy;
+    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
 
     const handleClick = useCallback(async () => {
         if (!sessionRef.current) {
@@ -58,16 +56,7 @@ export function useVenmoOneTimePaymentSession({
     }, [createOrder, presentationMode]);
 
     const handleCancel = useCallback(() => {
-        if (sessionRef.current) {
-            sessionRef.current.cancel();
-        }
-    }, []);
-
-    const handleDestroy = useCallback(() => {
-        if (sessionRef.current) {
-            sessionRef.current.destroy();
-            sessionRef.current = null;
-        }
+        sessionRef.current?.cancel();
     }, []);
 
     return {
