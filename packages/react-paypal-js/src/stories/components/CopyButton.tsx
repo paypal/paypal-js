@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useSandpack } from "@codesandbox/sandpack-react";
 
 import type { ReactElement } from "react";
-
 import type { Properties as CSSProperties } from "csstype";
 
 const COPY_BUTTON: CSSProperties = {

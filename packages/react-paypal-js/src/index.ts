@@ -18,8 +18,9 @@ export * from "./components/cardFields/PayPalCardFieldsForm";
 export * from "./components/cardFields/context";
 export { usePayPalCardFields } from "./components/cardFields/hooks";
 
-import type { FUNDING_SOURCE } from "@paypal/paypal-js";
 import * as constants from "@paypal/sdk-constants/dist/module";
+
+import type { FUNDING_SOURCE } from "@paypal/paypal-js";
 
 // We do not re-export `FUNDING` from the `sdk-constants` module
 // directly because it has no type definitions.
