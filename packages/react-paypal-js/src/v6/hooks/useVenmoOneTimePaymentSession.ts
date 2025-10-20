@@ -6,11 +6,9 @@ import { useProxyProps } from "../utils";
 import type {
     VenmoOneTimePaymentSession,
     VenmoPresentationModeOptions,
-} from "../types";
-import type {
     UseVenmoOneTimePaymentSessionProps,
     UseVenmoOneTimePaymentSessionReturn,
-} from "../types/VenmoOneTimePaymentSessionTypes";
+} from "../types";
 
 export function useVenmoOneTimePaymentSession({
     presentationMode,
