@@ -11,7 +11,6 @@ import type {
 } from "../types";
 
 // TODO add shipping options and address change callbacks?
-// TODO tests
 // TODO example
 export function usePayLaterOneTimePaymentSession({
     presentationMode,
@@ -33,6 +32,8 @@ export function usePayLaterOneTimePaymentSession({
             // TODO what if sdk instance is not available? Error?
             throw new Error("no sdk instance available");
         }
+
+        // TODO if orderId or sdkInstance update, should the previous session be destroyed?
 
         const newSession = sdkInstance.createPayLaterOneTimePaymentSession({
             orderId,
