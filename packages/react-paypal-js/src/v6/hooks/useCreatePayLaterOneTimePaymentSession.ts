@@ -24,10 +24,8 @@ export function usePayLaterOneTimePaymentSession({
     const proxyCallbacks = useProxyProps(callbacks);
 
     const handleDestroy = useCallback(() => {
-        if (sessionRef.current) {
-            sessionRef.current.destroy();
-            sessionRef.current = null;
-        }
+        sessionRef.current?.destroy();
+        sessionRef.current = null;
     }, []);
 
     useEffect(() => {
@@ -46,9 +44,7 @@ export function usePayLaterOneTimePaymentSession({
     }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
 
     const handleCancel = useCallback(() => {
-        if (sessionRef.current) {
-            sessionRef.current.cancel();
-        }
+        sessionRef.current?.cancel();
     }, []);
 
     const handleClick = useCallback(async () => {
