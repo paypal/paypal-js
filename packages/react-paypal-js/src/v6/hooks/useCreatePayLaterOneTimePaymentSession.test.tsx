@@ -3,6 +3,7 @@ import { renderHook } from "@testing-library/react-hooks";
 
 import { usePayPal } from "./usePayPal";
 import { usePayLaterOneTimePaymentSession } from "./useCreatePayLaterOneTimePaymentSession";
+import { useProxyProps } from "../utils";
 
 import type { OneTimePaymentSession } from "../types";
 
@@ -11,12 +12,16 @@ jest.mock("./usePayPal", () => ({
 }));
 
 jest.mock("../utils", () => ({
-    useProxyProps: jest.fn((callbacks) => callbacks),
+    useProxyProps: jest.fn(),
 }));
 
 // TODO cleanup and unify what can be unified
 //
 describe("usePayLaterOneTimePaymentSession", () => {
+    beforeEach(() => {
+        useProxyProps.mockImplementation((callbacks) => callbacks);
+    });
+
     it("should create a pay later payment session when the hook is called", () => {
         const mockOrderId = "123";
         const mockOnApprove = jest.fn();
@@ -217,13 +222,87 @@ describe("usePayLaterOneTimePaymentSession", () => {
     });
 
     it("should provide a destroy handler that destroys the session", () => {
-        // TODO implement
-        throw new Error("implement");
+        const mockDestroy = jest.fn();
+        const mockSession: OneTimePaymentSession = {
+            destroy: mockDestroy,
+        };
+        const mockCreatePayLaterOneTimePaymentSession = jest
+            .fn()
+            .mockReturnValue(mockSession);
+
+        (usePayPal as jest.Mock).mockReturnValue({
+            sdkInstance: {
+                createPayLaterOneTimePaymentSession:
+                    mockCreatePayLaterOneTimePaymentSession,
+            },
+        });
+
+        const mockPresentationMode = "auto";
+        const mockOrderIdPromise = Promise.resolve({ orderId: "123" });
+        const mockCreateOrder = jest.fn(() => mockOrderIdPromise);
+        const {
+            result: {
+                current: { handleDestroy },
+            },
+        } = renderHook(() =>
+            usePayLaterOneTimePaymentSession({
+                presentationMode: mockPresentationMode,
+                createOrder: mockCreateOrder,
+            }),
+        );
+
+        handleDestroy();
+
+        expect(mockDestroy).toHaveBeenCalledTimes(1);
     });
 
     it("should not re-run if callbacks are updated", () => {
-        // TODO implement
-        throw new Error("implement");
+        // For this test, we want to use actual useProxyProps so the callbacks can update without triggering
+        // the hook to run again and create another session.
+        (useProxyProps as jest.Mock).mockImplementation(
+            jest.requireActual("../utils").useProxyProps,
+        );
+
+        const mockOrderId = "123";
+        const mockStart = jest.fn();
+        const mockSession: OneTimePaymentSession = {
+            start: mockStart,
+        };
+        const mockCreatePayLaterOneTimePaymentSession = jest
+            .fn()
+            .mockReturnValue(mockSession);
+
+        (usePayPal as jest.Mock).mockReturnValue({
+            sdkInstance: {
+                createPayLaterOneTimePaymentSession:
+                    mockCreatePayLaterOneTimePaymentSession,
+            },
+        });
+
+        let mockOnApprove = jest.fn();
+        let mockOnCancel = jest.fn();
+        let mockOnError = jest.fn();
+
+        const { rerender } = renderHook(() =>
+            usePayLaterOneTimePaymentSession({
+                presentationMode: "auto",
+                orderId: mockOrderId,
+                onApprove: mockOnApprove,
+                onCancel: mockOnCancel,
+                onError: mockOnError,
+            }),
+        );
+
+        // trigger a rerender with new callbacks, this should not cause new session to be created
+        mockOnApprove = jest.fn();
+        mockOnCancel = jest.fn();
+        mockOnError = jest.fn();
+
+        rerender();
+
+        expect(mockCreatePayLaterOneTimePaymentSession).toHaveBeenCalledTimes(
+            1,
+        );
     });
 
     it("should destroy the session when the parent component is unmounted", () => {
