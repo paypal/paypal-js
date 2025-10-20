@@ -1,133 +1,219 @@
 import React from "react";
-import { render, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
+import { renderHook } from "@testing-library/react-hooks";
 
-import { PayPalProvider } from "../components/PayPalProvider";
-import { usePayPal } from "../hooks/usePayPal";
-import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
+import { usePayPal } from "./usePayPal";
 import { usePayLaterOneTimePaymentSession } from "./useCreatePayLaterOneTimePaymentSession";
-import {
-    createMockPayPalNamespace,
-    TEST_CLIENT_TOKEN,
-    expectResolvedState,
-} from "../components/providerTestUtils";
 
-import type {
-    CreateInstanceOptions,
-    LoadCoreSdkScriptOptions,
-    PayPalContextState,
-} from "../types";
+import type { OneTimePaymentSession } from "../types";
 
-jest.mock("@paypal/paypal-js/sdk-v6", () => ({
-    loadCoreSdkScript: jest.fn(),
+jest.mock("./usePayPal", () => ({
+    usePayPal: jest.fn(),
 }));
 
 jest.mock("../utils", () => ({
-    ...jest.requireActual("../utils"),
-    isServer: () => false,
+    useProxyProps: jest.fn((callbacks) => callbacks),
 }));
 
-const createInstanceOptions: CreateInstanceOptions<["paypal-payments"]> = {
-    components: ["paypal-payments"],
-    clientToken: TEST_CLIENT_TOKEN,
-};
-
-const scriptOptions: LoadCoreSdkScriptOptions = {
-    environment: "sandbox",
-};
-
-function setupTestComponent() {
-    const state: PayPalContextState = {
-        loadingStatus: INSTANCE_LOADING_STATE.INITIAL,
-        sdkInstance: null,
-        eligiblePaymentMethods: null,
-        error: null,
-        dispatch: jest.fn(),
-    };
-
-    function TestComponent({
-        children = null,
-    }: {
-        children?: React.ReactNode;
-    }) {
-        const instanceState = usePayPal();
-        Object.assign(state, instanceState);
-        return <>{children}</>;
-    }
-
-    return {
-        state,
-        TestComponent,
-    };
-}
-
-function renderProvider(
-    instanceOptions = createInstanceOptions,
-    scriptOpts = scriptOptions,
-    children?: React.ReactNode,
-) {
-    const { state, TestComponent } = setupTestComponent();
-
-    const result = render(
-        <PayPalProvider
-            components={instanceOptions.components}
-            clientToken={instanceOptions.clientToken}
-            scriptOptions={scriptOpts}
-        >
-            <TestComponent>{children}</TestComponent>
-        </PayPalProvider>,
-    );
-
-    return { ...result, state };
-}
-
+// TODO cleanup and unify what can be unified
+//
 describe("usePayLaterOneTimePaymentSession", () => {
-    beforeEach(() => {
-        document.head.innerHTML = "";
-        (loadCoreSdkScript as jest.Mock).mockResolvedValue(
-            createMockPayPalNamespace(),
-        );
-    });
-
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-
-    it.only("should provide a click handler that calls session start", async () => {
-        const MockButtonComponent = () => {
-            const { handleClick } = usePayLaterOneTimePaymentSession({
-                presentationMode: "auto",
-                createOrder: () => ({ orderId: "123" }),
-                onApprove: () => true,
-                onCancel: () => true,
-                onError: () => true,
-            });
-
-            return <button onClick={handleClick}>Mock Button</button>;
+    it("should create a pay later payment session when the hook is called", () => {
+        const mockOrderId = "123";
+        const mockOnApprove = jest.fn();
+        const mockOnCancel = jest.fn();
+        const mockOnError = jest.fn();
+        const mockStart = jest.fn();
+        const mockSession: OneTimePaymentSession = {
+            start: mockStart,
         };
+        const mockCreatePayLaterOneTimePaymentSession = jest
+            .fn()
+            .mockReturnValue(mockSession);
 
-        const { state } = renderProvider({ children: <MockButtonComponent /> });
+        (usePayPal as jest.Mock).mockReturnValue({
+            sdkInstance: {
+                createPayLaterOneTimePaymentSession:
+                    mockCreatePayLaterOneTimePaymentSession,
+            },
+        });
 
-        await waitFor(() => expectResolvedState(state));
+        renderHook(() =>
+            usePayLaterOneTimePaymentSession({
+                presentationMode: "auto",
+                orderId: mockOrderId,
+                onApprove: mockOnApprove,
+                onCancel: mockOnCancel,
+                onError: mockOnError,
+            }),
+        );
 
-        // TODO implement
-        throw new Error("implement");
+        expect(mockCreatePayLaterOneTimePaymentSession).toHaveBeenCalledTimes(
+            1,
+        );
+        expect(mockCreatePayLaterOneTimePaymentSession).toHaveBeenCalledWith({
+            orderId: mockOrderId,
+            onApprove: mockOnApprove,
+            onCancel: mockOnCancel,
+            onError: mockOnError,
+        });
     });
 
     it("should error if there is no sdkInstance when called", () => {
-        // TODO implement
-        throw new Error("implement");
+        const mockOrderId = "123";
+
+        (usePayPal as jest.Mock).mockReturnValue({ sdkInstance: null });
+
+        const {
+            result: { error },
+        } = renderHook(() =>
+            usePayLaterOneTimePaymentSession({
+                presentationMode: "auto",
+                orderId: mockOrderId,
+            }),
+        );
+
+        expect(error).toEqual(new Error("no sdk instance available"));
+    });
+
+    it("should provide a click handler that calls session start", () => {
+        const mockStart = jest.fn();
+        const mockSession: OneTimePaymentSession = {
+            start: mockStart,
+        };
+        const mockCreatePayLaterOneTimePaymentSession = jest
+            .fn()
+            .mockReturnValue(mockSession);
+
+        (usePayPal as jest.Mock).mockReturnValue({
+            sdkInstance: {
+                createPayLaterOneTimePaymentSession:
+                    mockCreatePayLaterOneTimePaymentSession,
+            },
+        });
+
+        const mockPresentationMode = "auto";
+        const {
+            result: {
+                current: { handleClick },
+            },
+        } = renderHook(() =>
+            usePayLaterOneTimePaymentSession({
+                presentationMode: mockPresentationMode,
+                orderId: "123",
+            }),
+        );
+
+        handleClick();
+
+        expect(mockStart).toHaveBeenCalledTimes(1);
+        expect(mockStart).toHaveBeenCalledWith({
+            presentationMode: mockPresentationMode,
+        });
+    });
+
+    it("should call the createOrder callback, if it was provided, on start inside the click handler", () => {
+        const mockStart = jest.fn();
+        const mockSession: OneTimePaymentSession = {
+            start: mockStart,
+        };
+        const mockCreatePayLaterOneTimePaymentSession = jest
+            .fn()
+            .mockReturnValue(mockSession);
+
+        (usePayPal as jest.Mock).mockReturnValue({
+            sdkInstance: {
+                createPayLaterOneTimePaymentSession:
+                    mockCreatePayLaterOneTimePaymentSession,
+            },
+        });
+
+        const mockPresentationMode = "auto";
+        const mockOrderIdPromise = Promise.resolve({ orderId: "123" });
+        const mockCreateOrder = jest.fn(() => mockOrderIdPromise);
+        const {
+            result: {
+                current: { handleClick },
+            },
+        } = renderHook(() =>
+            usePayLaterOneTimePaymentSession({
+                presentationMode: mockPresentationMode,
+                createOrder: mockCreateOrder,
+            }),
+        );
+
+        handleClick();
+
+        expect(mockStart).toHaveBeenCalledTimes(1);
+        expect(mockStart).toHaveBeenCalledWith(
+            { presentationMode: mockPresentationMode },
+            mockOrderIdPromise,
+        );
+    });
+
+    it("should error if the click handler is called and there is no session", async () => {
+        const mockCreatePayLaterOneTimePaymentSession = jest
+            .fn()
+            .mockReturnValue(null);
+
+        (usePayPal as jest.Mock).mockReturnValue({
+            sdkInstance: {
+                createPayLaterOneTimePaymentSession:
+                    mockCreatePayLaterOneTimePaymentSession,
+            },
+        });
+
+        const mockPresentationMode = "auto";
+        const mockOrderIdPromise = Promise.resolve({ orderId: "123" });
+        const mockCreateOrder = jest.fn(() => mockOrderIdPromise);
+        const {
+            result: {
+                current: { handleClick },
+            },
+        } = renderHook(() =>
+            usePayLaterOneTimePaymentSession({
+                presentationMode: mockPresentationMode,
+                createOrder: mockCreateOrder,
+            }),
+        );
+
+        await expect(handleClick).rejects.toThrowError(
+            "paylater session not available",
+        );
     });
 
     it("should provide a cancel handler that cancels the session", () => {
-        // TODO implement
-        throw new Error("implement");
-    });
+        const mockCancel = jest.fn();
+        const mockSession: OneTimePaymentSession = {
+            cancel: mockCancel,
+        };
+        const mockCreatePayLaterOneTimePaymentSession = jest
+            .fn()
+            .mockReturnValue(mockSession);
 
-    it("should error if the click handler is called and there is no sdkInstance", () => {
-        // TODO implement
-        throw new Error("implement");
+        (usePayPal as jest.Mock).mockReturnValue({
+            sdkInstance: {
+                createPayLaterOneTimePaymentSession:
+                    mockCreatePayLaterOneTimePaymentSession,
+            },
+        });
+
+        const mockPresentationMode = "auto";
+        const mockOrderIdPromise = Promise.resolve({ orderId: "123" });
+        const mockCreateOrder = jest.fn(() => mockOrderIdPromise);
+        const {
+            result: {
+                current: { handleCancel },
+            },
+        } = renderHook(() =>
+            usePayLaterOneTimePaymentSession({
+                presentationMode: mockPresentationMode,
+                createOrder: mockCreateOrder,
+            }),
+        );
+
+        handleCancel();
+
+        expect(mockCancel).toHaveBeenCalledTimes(1);
     });
 
     it("should provide a destroy handler that destroys the session", () => {
