@@ -20,6 +20,11 @@ export function useVenmoOneTimePaymentSession({
     const sessionRef = useRef<VenmoOneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
 
+    const handleDestroy = useCallback(() => {
+        sessionRef.current?.destroy();
+        sessionRef.current = null;
+    }, []);
+
     useEffect(() => {
         if (!sdkInstance) {
             throw new Error("no sdk instance available");
@@ -31,13 +36,8 @@ export function useVenmoOneTimePaymentSession({
         });
         sessionRef.current = newSession;
 
-        return () => {
-            if (sessionRef.current) {
-                sessionRef.current.destroy();
-                sessionRef.current = null;
-            }
-        };
-    }, [sdkInstance, orderId, proxyCallbacks]);
+        return handleDestroy;
+    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
 
     const handleClick = useCallback(async () => {
         if (!sessionRef.current) {
@@ -56,16 +56,7 @@ export function useVenmoOneTimePaymentSession({
     }, [createOrder, presentationMode]);
 
     const handleCancel = useCallback(() => {
-        if (sessionRef.current) {
-            sessionRef.current.cancel();
-        }
-    }, []);
-
-    const handleDestroy = useCallback(() => {
-        if (sessionRef.current) {
-            sessionRef.current.destroy();
-            sessionRef.current = null;
-        }
+        sessionRef.current?.cancel();
     }, []);
 
     return {
