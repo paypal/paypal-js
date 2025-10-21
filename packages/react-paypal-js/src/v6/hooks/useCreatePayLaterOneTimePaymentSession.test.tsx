@@ -1,4 +1,3 @@
-import React from "react";
 import { act, renderHook } from "@testing-library/react-hooks";
 
 import { usePayPal } from "./usePayPal";
@@ -19,6 +18,8 @@ jest.mock("../utils", () => ({
 //
 describe("usePayLaterOneTimePaymentSession", () => {
     beforeEach(() => {
+        // mocking this for each test rather than a module so it can be easily unmocked
+        // where needed
         (useProxyProps as jest.Mock).mockImplementation(
             (callbacks) => callbacks,
         );
