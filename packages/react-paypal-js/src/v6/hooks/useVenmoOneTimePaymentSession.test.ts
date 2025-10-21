@@ -65,21 +65,12 @@ describe("useVenmoOneTimePaymentSession", () => {
                 onError: jest.fn(),
             };
 
-            // Mock console.error to suppress React's error logging
-            const consoleSpy = jest
-                .spyOn(console, "error")
-                .mockImplementation();
-
             try {
                 renderHook(() => useVenmoOneTimePaymentSession(props));
             } catch (error) {
                 // The hook throws when SDK instance is null, which is expected behavior
-                expect((error as Error).message).toContain(
-                    "no sdk instance available",
-                );
+                expect(error).toEqual(new Error("no sdk instance available"));
             }
-
-            consoleSpy.mockRestore();
         });
 
         test("should create Venmo session with orderId when provided", () => {
