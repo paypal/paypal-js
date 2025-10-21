@@ -348,7 +348,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         expect(mockSession.destroy).toHaveBeenCalledTimes(1);
     });
 
-    it.only("should destroy the previous session when the hook re-runs with a new orderId", () => {
+    it("should destroy the previous session when the hook re-runs with a new orderId", () => {
         const mockDestroy = jest.fn();
         const mockSession: OneTimePaymentSession = {
             destroy: mockDestroy,
@@ -357,17 +357,15 @@ describe("usePayLaterOneTimePaymentSession", () => {
             .fn()
             .mockReturnValue(mockSession);
 
-        (usePayPal as jest.Mock).mockReturnValueOnce({
+        (usePayPal as jest.Mock).mockReturnValue({
             sdkInstance: {
                 createPayLaterOneTimePaymentSession:
                     mockCreatePayLaterOneTimePaymentSession,
             },
         });
 
-        let mockOrderId = 10;
-
         const { rerender } = renderHook(
-            (orderId) =>
+            ({ orderId }) =>
                 usePayLaterOneTimePaymentSession({
                     presentationMode: "auto",
                     orderId,
@@ -377,18 +375,8 @@ describe("usePayLaterOneTimePaymentSession", () => {
             },
         );
 
-        console.log(">>>>>> before rerender");
-
-        // TODO re-rendering calls destroy regardless of if the props changed or not
-
-        // TODO calling re-render doesn't appear to make the hook run again, i.e. "calling" isn't showing up again, effect isn't running again
         rerender({ orderId: "5678" });
 
-        console.log(">>>>>> end");
-
         expect(mockSession.destroy).toHaveBeenCalledTimes(1);
-
-        // TODO implement
-        throw new Error("implement");
     });
 });
