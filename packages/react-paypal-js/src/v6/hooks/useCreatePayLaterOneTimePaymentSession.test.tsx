@@ -366,11 +366,15 @@ describe("usePayLaterOneTimePaymentSession", () => {
 
         let mockOrderId = 10;
 
-        const { rerender } = renderHook(() =>
-            usePayLaterOneTimePaymentSession({
-                presentationMode: "auto",
-                orderId: "1234",
-            }),
+        const { rerender } = renderHook(
+            (orderId) =>
+                usePayLaterOneTimePaymentSession({
+                    presentationMode: "auto",
+                    orderId,
+                }),
+            {
+                initialProps: { orderId: "1234" },
+            },
         );
 
         console.log(">>>>>> before rerender");
@@ -378,8 +382,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         // TODO re-rendering calls destroy regardless of if the props changed or not
 
         // TODO calling re-render doesn't appear to make the hook run again, i.e. "calling" isn't showing up again, effect isn't running again
-        mockOrderId = 12;
-        rerender();
+        rerender({ orderId: "5678" });
 
         console.log(">>>>>> end");
 

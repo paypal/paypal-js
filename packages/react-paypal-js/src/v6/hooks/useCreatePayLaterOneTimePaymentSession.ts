@@ -10,7 +10,6 @@ import type {
     PayLaterOneTimePaymentSessionReturn,
 } from "../types";
 
-// TODO add shipping options and address change callbacks?
 // TODO example
 export function usePayLaterOneTimePaymentSession({
     presentationMode,
