@@ -9,30 +9,6 @@ import {
     UsePayPalOneTimePaymentSessionReturn,
 } from "../types";
 
-/**
- * Custom hook to create and manage a PayPal one-time payment session.
- *
- * This hook automatically creates a payment session when the SDK instance is available
- * and re-creates it when the options change. The options are memoized internally using
- * deep equality comparison to prevent unnecessary session recreation on re-renders.
- *
- * @param options - Configuration options for the payment session
- * @returns The OneTimePaymentSession instance or null if not yet created
- *
- * @example
- * ```tsx
- * const PayPalButton = (props) => {
- *   const paypalSession = usePayPalOneTimePaymentSession(props);
- *
- *   const handleClick = async () => {
- *     if (!paypalSession) return;
- *     await paypalSession.start({ presentationMode: "auto" }, orderData);
- *   };
- *
- *   return <button onClick={handleClick}>Pay with PayPal</button>;
- * };
- * ```
- */
 export function usePayPalOneTimePaymentSession({
     presentationMode,
     createOrder,
