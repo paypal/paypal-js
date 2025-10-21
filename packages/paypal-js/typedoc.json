@@ -4,5 +4,6 @@
     "plugin": ["typedoc-material-theme"],
     "readme": "../../docs/README-web-sdk-v6-reference.md",
     "themeColor": "#1a202c",
-    "tsconfig": "./tsconfig.json"
+    "tsconfig": "./tsconfig.json",
+    "customCss": "./custom-fonts.css"
 }
