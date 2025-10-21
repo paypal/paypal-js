@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 
 import { usePayPal } from "./usePayPal";
-import { usePayLaterOneTimePaymentSession } from "./useCreatePayLaterOneTimePaymentSession";
+import { usePayLaterOneTimePaymentSession } from "./usePayLaterOneTimePaymentSession";
 import { useProxyProps } from "../utils";
 
 import type { OneTimePaymentSession } from "../types";
@@ -14,8 +14,6 @@ jest.mock("../utils", () => ({
     useProxyProps: jest.fn(),
 }));
 
-// TODO cleanup and unify what can be unified
-//
 describe("usePayLaterOneTimePaymentSession", () => {
     beforeEach(() => {
         // mocking this for each test rather than a module so it can be easily unmocked
