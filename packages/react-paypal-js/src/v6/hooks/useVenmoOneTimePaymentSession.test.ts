@@ -74,15 +74,23 @@ describe("useVenmoOneTimePaymentSession", () => {
         });
 
         test("should create Venmo session with orderId when provided", () => {
+            const onApprove = jest.fn();
+            const onCancel = jest.fn();
+            const onError = jest.fn();
+
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 orderId: "test-order-id",
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
+                onApprove,
+                onCancel,
+                onError,
             };
 
             renderHook(() => useVenmoOneTimePaymentSession(props));
+
+            const createSessionCall =
+                mockSdkInstance.createVenmoOneTimePaymentSession.mock
+                    .calls[0][0];
 
             expect(
                 mockSdkInstance.createVenmoOneTimePaymentSession,
@@ -92,22 +100,38 @@ describe("useVenmoOneTimePaymentSession", () => {
                 onCancel: expect.any(Function),
                 onError: expect.any(Function),
             });
+
+            const mockData = { orderId: "test-order-id" };
+            createSessionCall.onApprove(mockData);
+            createSessionCall.onCancel();
+            createSessionCall.onError(new Error("test error"));
+
+            expect(onApprove).toHaveBeenCalledWith(mockData);
+            expect(onCancel).toHaveBeenCalled();
+            expect(onError).toHaveBeenCalledWith(new Error("test error"));
         });
 
         test("should create Venmo session without orderId when createOrder is provided", () => {
             const mockCreateOrder = jest
                 .fn()
                 .mockReturnValue(Promise.resolve("created-order-id"));
+            const onApprove = jest.fn();
+            const onCancel = jest.fn();
+            const onError = jest.fn();
 
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 createOrder: mockCreateOrder,
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
+                onApprove,
+                onCancel,
+                onError,
             };
 
             renderHook(() => useVenmoOneTimePaymentSession(props));
+
+            const createSessionCall =
+                mockSdkInstance.createVenmoOneTimePaymentSession.mock
+                    .calls[0][0];
 
             expect(
                 mockSdkInstance.createVenmoOneTimePaymentSession,
@@ -117,6 +141,16 @@ describe("useVenmoOneTimePaymentSession", () => {
                 onCancel: expect.any(Function),
                 onError: expect.any(Function),
             });
+
+            // Test that the proxied callbacks actually call the original functions
+            const mockData = { test: "data" };
+            createSessionCall.onApprove(mockData);
+            createSessionCall.onCancel();
+            createSessionCall.onError(new Error("test error"));
+
+            expect(onApprove).toHaveBeenCalledWith(mockData);
+            expect(onCancel).toHaveBeenCalled();
+            expect(onError).toHaveBeenCalledWith(new Error("test error"));
         });
     });
 
@@ -125,9 +159,9 @@ describe("useVenmoOneTimePaymentSession", () => {
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 orderId: "test-order-id",
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove: jest.fn(),
+                onCancel: jest.fn(),
+                onError: jest.fn(),
             };
 
             const { unmount } = renderHook(() =>
@@ -145,9 +179,9 @@ describe("useVenmoOneTimePaymentSession", () => {
                     useVenmoOneTimePaymentSession({
                         presentationMode: "popup",
                         orderId,
-                        onApprove: expect.any(Function),
-                        onCancel: expect.any(Function),
-                        onError: expect.any(Function),
+                        onApprove: jest.fn(),
+                        onCancel: jest.fn(),
+                        onError: jest.fn(),
                     }),
                 { initialProps: { orderId: "test-order-id-1" } },
             );
@@ -172,9 +206,9 @@ describe("useVenmoOneTimePaymentSession", () => {
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 orderId: "test-order-id",
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove: jest.fn(),
+                onCancel: jest.fn(),
+                onError: jest.fn(),
             };
 
             const { rerender } = renderHook(() =>
@@ -235,9 +269,9 @@ describe("useVenmoOneTimePaymentSession", () => {
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 orderId: "test-order-id",
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove: jest.fn(),
+                onCancel: jest.fn(),
+                onError: jest.fn(),
             };
 
             const { result } = renderHook(() =>
@@ -261,9 +295,9 @@ describe("useVenmoOneTimePaymentSession", () => {
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 createOrder: mockCreateOrder,
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove: jest.fn(),
+                onCancel: jest.fn(),
+                onError: jest.fn(),
             };
 
             const { result } = renderHook(() =>
@@ -286,9 +320,9 @@ describe("useVenmoOneTimePaymentSession", () => {
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 orderId: "test-order-id",
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove: jest.fn(),
+                onCancel: jest.fn(),
+                onError: jest.fn(),
             };
 
             const { result, unmount } = renderHook(() =>
@@ -312,9 +346,9 @@ describe("useVenmoOneTimePaymentSession", () => {
                 const props: UseVenmoOneTimePaymentSessionProps = {
                     presentationMode: mode,
                     orderId: "test-order-id",
-                    onApprove: expect.any(Function),
-                    onCancel: expect.any(Function),
-                    onError: expect.any(Function),
+                    onApprove: jest.fn(),
+                    onCancel: jest.fn(),
+                    onError: jest.fn(),
                 };
 
                 const { result } = renderHook(() =>
@@ -350,9 +384,9 @@ describe("useVenmoOneTimePaymentSession", () => {
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 orderId: "test-order-id",
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove: jest.fn(),
+                onCancel: jest.fn(),
+                onError: jest.fn(),
             };
 
             const { result } = renderHook(() =>
@@ -370,9 +404,9 @@ describe("useVenmoOneTimePaymentSession", () => {
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 orderId: "test-order-id",
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove: jest.fn(),
+                onCancel: jest.fn(),
+                onError: jest.fn(),
             };
 
             const { result, unmount } = renderHook(() =>
@@ -395,9 +429,9 @@ describe("useVenmoOneTimePaymentSession", () => {
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 orderId: "test-order-id",
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove: jest.fn(),
+                onCancel: jest.fn(),
+                onError: jest.fn(),
             };
 
             const { result } = renderHook(() =>
@@ -415,9 +449,9 @@ describe("useVenmoOneTimePaymentSession", () => {
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 orderId: "test-order-id",
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove: jest.fn(),
+                onCancel: jest.fn(),
+                onError: jest.fn(),
             };
 
             const { result, unmount } = renderHook(() =>
@@ -438,9 +472,9 @@ describe("useVenmoOneTimePaymentSession", () => {
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 orderId: "test-order-id",
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove: jest.fn(),
+                onCancel: jest.fn(),
+                onError: jest.fn(),
             };
 
             const { result } = renderHook(() =>
@@ -496,9 +530,9 @@ describe("useVenmoOneTimePaymentSession", () => {
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 orderId: "test-order-id",
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove: jest.fn(),
+                onCancel: jest.fn(),
+                onError: jest.fn(),
             };
 
             const { result, rerender } = renderHook(() =>
