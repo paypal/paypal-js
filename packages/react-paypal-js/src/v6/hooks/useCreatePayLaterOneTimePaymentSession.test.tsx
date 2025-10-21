@@ -1,5 +1,5 @@
 import React from "react";
-import { renderHook } from "@testing-library/react-hooks";
+import { act, renderHook } from "@testing-library/react-hooks";
 
 import { usePayPal } from "./usePayPal";
 import { usePayLaterOneTimePaymentSession } from "./useCreatePayLaterOneTimePaymentSession";
@@ -19,7 +19,9 @@ jest.mock("../utils", () => ({
 //
 describe("usePayLaterOneTimePaymentSession", () => {
     beforeEach(() => {
-        useProxyProps.mockImplementation((callbacks) => callbacks);
+        (useProxyProps as jest.Mock).mockImplementation(
+            (callbacks) => callbacks,
+        );
     });
 
     it("should create a pay later payment session when the hook is called", () => {
@@ -108,7 +110,9 @@ describe("usePayLaterOneTimePaymentSession", () => {
             }),
         );
 
-        handleClick();
+        act(() => {
+            handleClick();
+        });
 
         expect(mockStart).toHaveBeenCalledTimes(1);
         expect(mockStart).toHaveBeenCalledWith({
@@ -146,7 +150,9 @@ describe("usePayLaterOneTimePaymentSession", () => {
             }),
         );
 
-        handleClick();
+        act(() => {
+            handleClick();
+        });
 
         expect(mockStart).toHaveBeenCalledTimes(1);
         expect(mockStart).toHaveBeenCalledWith(
@@ -216,7 +222,9 @@ describe("usePayLaterOneTimePaymentSession", () => {
             }),
         );
 
-        handleCancel();
+        act(() => {
+            handleCancel();
+        });
 
         expect(mockCancel).toHaveBeenCalledTimes(1);
     });
@@ -251,7 +259,9 @@ describe("usePayLaterOneTimePaymentSession", () => {
             }),
         );
 
-        handleDestroy();
+        act(() => {
+            handleDestroy();
+        });
 
         expect(mockDestroy).toHaveBeenCalledTimes(1);
     });
@@ -305,7 +315,76 @@ describe("usePayLaterOneTimePaymentSession", () => {
         );
     });
 
-    it("should destroy the session when the parent component is unmounted", () => {
+    it("should destroy the previous session when the hook re-runs with a new sdkInstance", () => {
+        const mockDestroy = jest.fn();
+        const mockSession: OneTimePaymentSession = {
+            destroy: mockDestroy,
+        };
+        const mockCreatePayLaterOneTimePaymentSession = jest
+            .fn()
+            .mockReturnValue(mockSession);
+
+        (usePayPal as jest.Mock).mockReturnValueOnce({
+            sdkInstance: {
+                createPayLaterOneTimePaymentSession:
+                    mockCreatePayLaterOneTimePaymentSession,
+            },
+        });
+
+        const { rerender } = renderHook(() =>
+            usePayLaterOneTimePaymentSession({
+                presentationMode: "auto",
+                orderId: "1234",
+            }),
+        );
+
+        // return a new value for sdkInstance to cause session creation useEffecto run again
+        (usePayPal as jest.Mock).mockReturnValueOnce({
+            sdkInstance: {},
+        });
+
+        rerender();
+
+        expect(mockSession.destroy).toHaveBeenCalledTimes(1);
+    });
+
+    it.only("should destroy the previous session when the hook re-runs with a new orderId", () => {
+        const mockDestroy = jest.fn();
+        const mockSession: OneTimePaymentSession = {
+            destroy: mockDestroy,
+        };
+        const mockCreatePayLaterOneTimePaymentSession = jest
+            .fn()
+            .mockReturnValue(mockSession);
+
+        (usePayPal as jest.Mock).mockReturnValueOnce({
+            sdkInstance: {
+                createPayLaterOneTimePaymentSession:
+                    mockCreatePayLaterOneTimePaymentSession,
+            },
+        });
+
+        let mockOrderId = 10;
+
+        const { rerender } = renderHook(() =>
+            usePayLaterOneTimePaymentSession({
+                presentationMode: "auto",
+                orderId: "1234",
+            }),
+        );
+
+        console.log(">>>>>> before rerender");
+
+        // TODO re-rendering calls destroy regardless of if the props changed or not
+
+        // TODO calling re-render doesn't appear to make the hook run again, i.e. "calling" isn't showing up again, effect isn't running again
+        mockOrderId = 12;
+        rerender();
+
+        console.log(">>>>>> end");
+
+        expect(mockSession.destroy).toHaveBeenCalledTimes(1);
+
         // TODO implement
         throw new Error("implement");
     });

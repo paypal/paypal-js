@@ -22,18 +22,23 @@ export function usePayLaterOneTimePaymentSession({
     const sessionRef = useRef<OneTimePaymentSession | null>(null); // handle cleanup
     const proxyCallbacks = useProxyProps(callbacks);
 
+    console.log("calling", orderId);
+
     const handleDestroy = useCallback(() => {
+        console.log("destroy handler");
         sessionRef.current?.destroy();
         sessionRef.current = null;
     }, []);
 
     useEffect(() => {
+        console.log("running use effect");
+
         if (!sdkInstance) {
             // TODO what if sdk instance is not available? Error?
             throw new Error("no sdk instance available");
         }
 
-        // TODO if orderId or sdkInstance update, should the previous session be destroyed?
+        console.log(">>>>>>> creating new session");
 
         const newSession = sdkInstance.createPayLaterOneTimePaymentSession({
             orderId,
