@@ -2,25 +2,30 @@ import { renderHook, act } from "@testing-library/react-hooks";
 
 import { useVenmoOneTimePaymentSession } from "./useVenmoOneTimePaymentSession";
 import { usePayPal } from "./usePayPal";
+import { useProxyProps } from "../utils";
 import {
     INSTANCE_LOADING_STATE,
     type UseVenmoOneTimePaymentSessionProps,
     type VenmoOneTimePaymentSession,
 } from "../types";
 
-// Mock the usePayPal hook
 jest.mock("./usePayPal");
 
-const mockUsePayPal = usePayPal as jest.MockedFunction<typeof usePayPal>;
+jest.mock("../utils", () => ({
+    useProxyProps: jest.fn(),
+}));
 
-// Mock VenmoOneTimePaymentSession
+const mockUsePayPal = usePayPal as jest.MockedFunction<typeof usePayPal>;
+const mockUseProxyProps = useProxyProps as jest.MockedFunction<
+    typeof useProxyProps
+>;
+
 const createMockVenmoSession = (): VenmoOneTimePaymentSession => ({
     start: jest.fn().mockResolvedValue(undefined),
     cancel: jest.fn(),
     destroy: jest.fn(),
 });
 
-// Mock SDK instance
 const createMockSdkInstance = (venmoSession = createMockVenmoSession()) => ({
     createVenmoOneTimePaymentSession: jest.fn().mockReturnValue(venmoSession),
 });
@@ -30,6 +35,8 @@ describe("useVenmoOneTimePaymentSession", () => {
     let mockSdkInstance: ReturnType<typeof createMockSdkInstance>;
 
     beforeEach(() => {
+        mockUseProxyProps.mockImplementation((callbacks) => callbacks);
+
         mockVenmoSession = createMockVenmoSession();
         mockSdkInstance = createMockSdkInstance(mockVenmoSession);
 
@@ -68,7 +75,6 @@ describe("useVenmoOneTimePaymentSession", () => {
             try {
                 renderHook(() => useVenmoOneTimePaymentSession(props));
             } catch (error) {
-                // The hook throws when SDK instance is null, which is expected behavior
                 expect(error).toEqual(new Error("no sdk instance available"));
             }
         });
@@ -96,9 +102,9 @@ describe("useVenmoOneTimePaymentSession", () => {
                 mockSdkInstance.createVenmoOneTimePaymentSession,
             ).toHaveBeenCalledWith({
                 orderId: "test-order-id",
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove,
+                onCancel,
+                onError,
             });
 
             const mockData = { orderId: "test-order-id" };
@@ -137,12 +143,11 @@ describe("useVenmoOneTimePaymentSession", () => {
                 mockSdkInstance.createVenmoOneTimePaymentSession,
             ).toHaveBeenCalledWith({
                 orderId: undefined,
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove,
+                onCancel,
+                onError,
             });
 
-            // Test that the proxied callbacks actually call the original functions
             const mockData = { test: "data" };
             createSessionCall.onApprove(mockData);
             createSessionCall.onCancel();
@@ -174,19 +179,21 @@ describe("useVenmoOneTimePaymentSession", () => {
         });
 
         test("should recreate session when orderId changes", () => {
+            const onApprove = jest.fn();
+            const onCancel = jest.fn();
+            const onError = jest.fn();
             const { rerender } = renderHook(
                 ({ orderId }) =>
                     useVenmoOneTimePaymentSession({
                         presentationMode: "popup",
                         orderId,
-                        onApprove: jest.fn(),
-                        onCancel: jest.fn(),
-                        onError: jest.fn(),
+                        onApprove,
+                        onCancel,
+                        onError,
                     }),
                 { initialProps: { orderId: "test-order-id-1" } },
             );
 
-            // Clear mock calls from initial render
             jest.clearAllMocks();
 
             rerender({ orderId: "test-order-id-2" });
@@ -196,9 +203,9 @@ describe("useVenmoOneTimePaymentSession", () => {
                 mockSdkInstance.createVenmoOneTimePaymentSession,
             ).toHaveBeenCalledWith({
                 orderId: "test-order-id-2",
-                onApprove: expect.any(Function),
-                onCancel: expect.any(Function),
-                onError: expect.any(Function),
+                onApprove,
+                onCancel,
+                onError,
             });
         });
 
@@ -215,10 +222,8 @@ describe("useVenmoOneTimePaymentSession", () => {
                 useVenmoOneTimePaymentSession(props),
             );
 
-            // Clear mock calls from initial render
             jest.clearAllMocks();
 
-            // Change SDK instance
             const newMockSession = createMockVenmoSession();
             const newMockSdkInstance = createMockSdkInstance(newMockSession);
 
@@ -240,6 +245,10 @@ describe("useVenmoOneTimePaymentSession", () => {
         });
 
         test("should NOT recreate session when only callbacks change", () => {
+            mockUseProxyProps.mockImplementation(
+                jest.requireActual("../utils").useProxyProps,
+            );
+
             const initialOnApprove = jest.fn();
             const newOnApprove = jest.fn();
 
@@ -308,10 +317,9 @@ describe("useVenmoOneTimePaymentSession", () => {
                 await result.current.handleClick();
             });
 
-            // The hook calls createOrder() and passes the result as second argument to start()
             expect(mockVenmoSession.start).toHaveBeenCalledWith(
                 { presentationMode: "popup" },
-                expect.any(Promise), // createOrder() returns a Promise
+                expect.any(Promise),
             );
             expect(mockCreateOrder).toHaveBeenCalled();
         });
@@ -329,7 +337,6 @@ describe("useVenmoOneTimePaymentSession", () => {
                 useVenmoOneTimePaymentSession(props),
             );
 
-            // Unmount to destroy session
             unmount();
 
             await expect(
@@ -363,7 +370,6 @@ describe("useVenmoOneTimePaymentSession", () => {
                     presentationMode: mode,
                 });
 
-                // Clear for next iteration
                 jest.clearAllMocks();
                 mockVenmoSession = createMockVenmoSession();
                 mockSdkInstance = createMockSdkInstance(mockVenmoSession);
@@ -413,7 +419,6 @@ describe("useVenmoOneTimePaymentSession", () => {
                 useVenmoOneTimePaymentSession(props),
             );
 
-            // Unmount to destroy session
             unmount();
 
             expect(() => {
@@ -458,7 +463,6 @@ describe("useVenmoOneTimePaymentSession", () => {
                 useVenmoOneTimePaymentSession(props),
             );
 
-            // Unmount to destroy session
             unmount();
 
             expect(() => {
@@ -481,12 +485,10 @@ describe("useVenmoOneTimePaymentSession", () => {
                 useVenmoOneTimePaymentSession(props),
             );
 
-            // Destroy the session manually
             act(() => {
                 result.current.handleDestroy();
             });
 
-            // Trying to click after manual destroy should throw
             await expect(
                 act(async () => {
                     await result.current.handleClick();
@@ -496,6 +498,12 @@ describe("useVenmoOneTimePaymentSession", () => {
     });
 
     describe("callback proxying", () => {
+        beforeEach(() => {
+            mockUseProxyProps.mockImplementation(
+                jest.requireActual("../utils").useProxyProps,
+            );
+        });
+
         test("should proxy callbacks correctly through useProxyProps", () => {
             const onApprove = jest.fn();
             const onCancel = jest.fn();
@@ -553,7 +561,6 @@ describe("useVenmoOneTimePaymentSession", () => {
                 handleDestroy: result.current.handleDestroy,
             };
 
-            // Functions should be stable across re-renders
             expect(firstRender.handleClick).toBe(secondRender.handleClick);
             expect(firstRender.handleCancel).toBe(secondRender.handleCancel);
             expect(firstRender.handleDestroy).toBe(secondRender.handleDestroy);

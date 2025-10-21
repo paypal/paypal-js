@@ -4,6 +4,7 @@ import type {
     VenmoOneTimePaymentSessionPromise,
 } from "@paypal/paypal-js/sdk-v6";
 
+// TODO: Add all startOptions to this hook
 export type UseVenmoOneTimePaymentSessionProps =
     | (Omit<VenmoOneTimePaymentSessionOptions, "orderId"> & {
           createOrder: () => VenmoOneTimePaymentSessionPromise;
