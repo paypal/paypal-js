@@ -14,7 +14,7 @@ export function usePayPalOneTimePaymentSession({
     createOrder,
     orderId,
     ...callbacks
-}: UsePayPalOneTimePaymentSessionProps): UsePayPalOneTimePaymentSessionReturn | null {
+}: UsePayPalOneTimePaymentSessionProps): UsePayPalOneTimePaymentSessionReturn {
     const { sdkInstance } = usePayPal();
     const sessionRef = useRef<OneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
