@@ -5,5 +5,5 @@
     "readme": "../../docs/README-web-sdk-v6-reference.md",
     "themeColor": "#1a202c",
     "tsconfig": "./tsconfig.json",
-    "customCss": "../../docs/custom-fonts.css"
+    "customCss": "../../docs/paypal-fonts.css"
 }
