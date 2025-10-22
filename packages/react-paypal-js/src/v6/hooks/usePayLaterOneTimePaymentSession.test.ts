@@ -4,7 +4,12 @@ import { usePayPal } from "./usePayPal";
 import { usePayLaterOneTimePaymentSession } from "./usePayLaterOneTimePaymentSession";
 import { useProxyProps } from "../utils";
 
-import type { OneTimePaymentSession } from "../types";
+import type {
+    OneTimePaymentSession,
+    PayPalPresentationModeOptions,
+    PayLaterOneTimePaymentSessionProps,
+    PayLaterOneTimePaymentSessionReturn,
+} from "../types";
 
 jest.mock("./usePayPal", () => ({
     usePayPal: jest.fn(),
