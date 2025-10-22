@@ -23,7 +23,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         );
     });
 
-    it("should create a pay later payment session when the hook is called", () => {
+    test("should create a pay later payment session when the hook is called", () => {
         const mockOrderId = "123";
         const mockOnApprove = jest.fn();
         const mockOnCancel = jest.fn();
@@ -64,7 +64,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         });
     });
 
-    it("should error if there is no sdkInstance when called", () => {
+    test("should error if there is no sdkInstance when called", () => {
         const mockOrderId = "123";
 
         (usePayPal as jest.Mock).mockReturnValue({ sdkInstance: null });
@@ -81,7 +81,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         expect(error).toEqual(new Error("no sdk instance available"));
     });
 
-    it("should provide a click handler that calls session start", () => {
+    test("should provide a click handler that calls session start", async () => {
         const mockStart = jest.fn();
         const mockSession: OneTimePaymentSession = {
             start: mockStart,
@@ -109,7 +109,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
             }),
         );
 
-        act(() => {
+        await act(async () => {
             handleClick();
         });
 
@@ -119,7 +119,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         });
     });
 
-    it("should call the createOrder callback, if it was provided, on start inside the click handler", () => {
+    test("should call the createOrder callback, if it was provided, on start inside the click handler", async () => {
         const mockStart = jest.fn();
         const mockSession: OneTimePaymentSession = {
             start: mockStart,
@@ -149,8 +149,12 @@ describe("usePayLaterOneTimePaymentSession", () => {
             }),
         );
 
-        act(() => {
+        await act(async () => {
             handleClick();
+        });
+
+        expect(mockCreatePayLaterOneTimePaymentSession).toHaveBeenCalledWith({
+            orderId: undefined,
         });
 
         expect(mockStart).toHaveBeenCalledTimes(1);
@@ -160,7 +164,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         );
     });
 
-    it("should error if the click handler is called and there is no session", async () => {
+    test("should error if the click handler is called and there is no session", async () => {
         const mockCreatePayLaterOneTimePaymentSession = jest
             .fn()
             .mockReturnValue(null);
@@ -191,7 +195,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         );
     });
 
-    it("should provide a cancel handler that cancels the session", () => {
+    test("should provide a cancel handler that cancels the session", async () => {
         const mockCancel = jest.fn();
         const mockSession: OneTimePaymentSession = {
             cancel: mockCancel,
@@ -221,14 +225,14 @@ describe("usePayLaterOneTimePaymentSession", () => {
             }),
         );
 
-        act(() => {
+        await act(async () => {
             handleCancel();
         });
 
         expect(mockCancel).toHaveBeenCalledTimes(1);
     });
 
-    it("should provide a destroy handler that destroys the session", () => {
+    test("should provide a destroy handler that destroys the session", async () => {
         const mockDestroy = jest.fn();
         const mockSession: OneTimePaymentSession = {
             destroy: mockDestroy,
@@ -258,14 +262,14 @@ describe("usePayLaterOneTimePaymentSession", () => {
             }),
         );
 
-        act(() => {
+        await act(async () => {
             handleDestroy();
         });
 
         expect(mockDestroy).toHaveBeenCalledTimes(1);
     });
 
-    it("should not re-run if callbacks are updated", () => {
+    test("should not re-run if callbacks are updated", () => {
         // For this test, we want to use actual useProxyProps so the callbacks can update without triggering
         // the hook to run again and create another session.
         (useProxyProps as jest.Mock).mockImplementation(
@@ -314,7 +318,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         );
     });
 
-    it("should destroy the previous session when the hook re-runs with a new sdkInstance", () => {
+    test("should destroy the previous session when the hook re-runs with a new sdkInstance", () => {
         const mockDestroy = jest.fn();
         const mockSession: OneTimePaymentSession = {
             destroy: mockDestroy,
@@ -347,7 +351,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         expect(mockSession.destroy).toHaveBeenCalledTimes(1);
     });
 
-    it("should destroy the previous session when the hook re-runs with a new orderId", () => {
+    test("should destroy the previous session when the hook re-runs with a new orderId", () => {
         const mockDestroy = jest.fn();
         const mockSession: OneTimePaymentSession = {
             destroy: mockDestroy,
