@@ -16,7 +16,7 @@
         "changeset:release": "npm run build && changeset publish",
         "changeset:version": "changeset version && npm i --package-lock-only",
         "clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules",
-        "docs:v6": "npm run docs:v6 --workspace=@paypal/paypal-js && npm run format",
+        "docs:v6": "npm run docs:v6 --workspace=@paypal/paypal-js",
         "format": "prettier --write --ignore-unknown .",
         "format:check": "prettier --check .",
         "lint": "npm run lint --workspaces --if-present",
