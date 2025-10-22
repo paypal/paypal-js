@@ -27,7 +27,6 @@ export function usePayLaterOneTimePaymentSession({
 
     useEffect(() => {
         if (!sdkInstance) {
-            // TODO what if sdk instance is not available? Error?
             throw new Error("no sdk instance available");
         }
 
@@ -46,7 +45,6 @@ export function usePayLaterOneTimePaymentSession({
 
     const handleClick = useCallback(async () => {
         if (!sessionRef.current) {
-            // TODO is this error message we want?
             throw new Error("paylater session not available");
         }
 
