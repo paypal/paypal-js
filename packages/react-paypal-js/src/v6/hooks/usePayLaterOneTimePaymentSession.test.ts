@@ -4,12 +4,7 @@ import { usePayPal } from "./usePayPal";
 import { usePayLaterOneTimePaymentSession } from "./usePayLaterOneTimePaymentSession";
 import { useProxyProps } from "../utils";
 
-import type {
-    OneTimePaymentSession,
-    PayPalPresentationModeOptions,
-    PayLaterOneTimePaymentSessionProps,
-    PayLaterOneTimePaymentSessionReturn,
-} from "../types";
+import type { OneTimePaymentSession } from "../types";
 
 jest.mock("./usePayPal", () => ({
     usePayPal: jest.fn(),
@@ -35,6 +30,8 @@ describe("usePayLaterOneTimePaymentSession", () => {
         const mockOnError = jest.fn();
         const mockStart = jest.fn();
         const mockSession: OneTimePaymentSession = {
+            cancel: jest.fn(),
+            destroy: jest.fn(),
             start: mockStart,
         };
         const mockCreatePayLaterOneTimePaymentSession = jest
@@ -80,6 +77,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
             usePayLaterOneTimePaymentSession({
                 presentationMode: "auto",
                 orderId: mockOrderId,
+                onApprove: jest.fn(),
             }),
         );
 
@@ -89,6 +87,8 @@ describe("usePayLaterOneTimePaymentSession", () => {
     test("should provide a click handler that calls session start", async () => {
         const mockStart = jest.fn();
         const mockSession: OneTimePaymentSession = {
+            cancel: jest.fn(),
+            destroy: jest.fn(),
             start: mockStart,
         };
         const mockCreatePayLaterOneTimePaymentSession = jest
@@ -111,6 +111,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
             usePayLaterOneTimePaymentSession({
                 presentationMode: mockPresentationMode,
                 orderId: "123",
+                onApprove: jest.fn(),
             }),
         );
 
@@ -127,6 +128,8 @@ describe("usePayLaterOneTimePaymentSession", () => {
     test("should call the createOrder callback, if it was provided, on start inside the click handler", async () => {
         const mockStart = jest.fn();
         const mockSession: OneTimePaymentSession = {
+            cancel: jest.fn(),
+            destroy: jest.fn(),
             start: mockStart,
         };
         const mockCreatePayLaterOneTimePaymentSession = jest
@@ -143,6 +146,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         const mockPresentationMode = "auto";
         const mockOrderIdPromise = Promise.resolve({ orderId: "123" });
         const mockCreateOrder = jest.fn(() => mockOrderIdPromise);
+        const mockOnApprove = jest.fn();
         const {
             result: {
                 current: { handleClick },
@@ -151,6 +155,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
             usePayLaterOneTimePaymentSession({
                 presentationMode: mockPresentationMode,
                 createOrder: mockCreateOrder,
+                onApprove: mockOnApprove,
             }),
         );
 
@@ -159,6 +164,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         });
 
         expect(mockCreatePayLaterOneTimePaymentSession).toHaveBeenCalledWith({
+            onApprove: mockOnApprove,
             orderId: undefined,
         });
 
@@ -192,6 +198,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
             usePayLaterOneTimePaymentSession({
                 presentationMode: mockPresentationMode,
                 createOrder: mockCreateOrder,
+                onApprove: jest.fn(),
             }),
         );
 
@@ -204,6 +211,8 @@ describe("usePayLaterOneTimePaymentSession", () => {
         const mockCancel = jest.fn();
         const mockSession: OneTimePaymentSession = {
             cancel: mockCancel,
+            destroy: jest.fn(),
+            start: jest.fn(),
         };
         const mockCreatePayLaterOneTimePaymentSession = jest
             .fn()
@@ -227,6 +236,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
             usePayLaterOneTimePaymentSession({
                 presentationMode: mockPresentationMode,
                 createOrder: mockCreateOrder,
+                onApprove: jest.fn(),
             }),
         );
 
@@ -240,7 +250,9 @@ describe("usePayLaterOneTimePaymentSession", () => {
     test("should provide a destroy handler that destroys the session", async () => {
         const mockDestroy = jest.fn();
         const mockSession: OneTimePaymentSession = {
+            cancel: jest.fn(),
             destroy: mockDestroy,
+            start: jest.fn(),
         };
         const mockCreatePayLaterOneTimePaymentSession = jest
             .fn()
@@ -264,6 +276,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
             usePayLaterOneTimePaymentSession({
                 presentationMode: mockPresentationMode,
                 createOrder: mockCreateOrder,
+                onApprove: jest.fn(),
             }),
         );
 
@@ -284,6 +297,8 @@ describe("usePayLaterOneTimePaymentSession", () => {
         const mockOrderId = "123";
         const mockStart = jest.fn();
         const mockSession: OneTimePaymentSession = {
+            cancel: jest.fn(),
+            destroy: jest.fn(),
             start: mockStart,
         };
         const mockCreatePayLaterOneTimePaymentSession = jest
@@ -326,7 +341,9 @@ describe("usePayLaterOneTimePaymentSession", () => {
     test("should destroy the previous session when the hook re-runs with a new sdkInstance", () => {
         const mockDestroy = jest.fn();
         const mockSession: OneTimePaymentSession = {
+            cancel: jest.fn(),
             destroy: mockDestroy,
+            start: jest.fn(),
         };
         const mockCreatePayLaterOneTimePaymentSession = jest
             .fn()
@@ -343,6 +360,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
             usePayLaterOneTimePaymentSession({
                 presentationMode: "auto",
                 orderId: "1234",
+                onApprove: jest.fn(),
             }),
         );
 
@@ -359,7 +377,9 @@ describe("usePayLaterOneTimePaymentSession", () => {
     test("should destroy the previous session when the hook re-runs with a new orderId", () => {
         const mockDestroy = jest.fn();
         const mockSession: OneTimePaymentSession = {
+            cancel: jest.fn(),
             destroy: mockDestroy,
+            start: jest.fn(),
         };
         const mockCreatePayLaterOneTimePaymentSession = jest
             .fn()
@@ -377,6 +397,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
                 usePayLaterOneTimePaymentSession({
                     presentationMode: "auto",
                     orderId,
+                    onApprove: jest.fn(),
                 }),
             {
                 initialProps: { orderId: "1234" },
