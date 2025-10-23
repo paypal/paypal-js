@@ -146,6 +146,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         const mockPresentationMode = "auto";
         const mockOrderIdPromise = Promise.resolve({ orderId: "123" });
         const mockCreateOrder = jest.fn(() => mockOrderIdPromise);
+        const mockOnApprove = jest.fn();
         const {
             result: {
                 current: { handleClick },
@@ -154,7 +155,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
             usePayLaterOneTimePaymentSession({
                 presentationMode: mockPresentationMode,
                 createOrder: mockCreateOrder,
-                onApprove: jest.fn(),
+                onApprove: mockOnApprove,
             }),
         );
 
@@ -163,6 +164,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         });
 
         expect(mockCreatePayLaterOneTimePaymentSession).toHaveBeenCalledWith({
+            onApprove: mockOnApprove,
             orderId: undefined,
         });
 
@@ -295,6 +297,8 @@ describe("usePayLaterOneTimePaymentSession", () => {
         const mockOrderId = "123";
         const mockStart = jest.fn();
         const mockSession: OneTimePaymentSession = {
+            cancel: jest.fn(),
+            destroy: jest.fn(),
             start: mockStart,
         };
         const mockCreatePayLaterOneTimePaymentSession = jest
@@ -337,7 +341,9 @@ describe("usePayLaterOneTimePaymentSession", () => {
     test("should destroy the previous session when the hook re-runs with a new sdkInstance", () => {
         const mockDestroy = jest.fn();
         const mockSession: OneTimePaymentSession = {
+            cancel: jest.fn(),
             destroy: mockDestroy,
+            start: jest.fn(),
         };
         const mockCreatePayLaterOneTimePaymentSession = jest
             .fn()
