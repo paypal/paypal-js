@@ -8,7 +8,7 @@ import {
 import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
-} from "../types/PayPalProviderTypes";
+} from "../types/PayPalProviderEnums";
 import { isServer, useDeepCompareMemoize } from "../utils";
 
 import type {

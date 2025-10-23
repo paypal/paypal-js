@@ -1,7 +1,6 @@
 import {
     BasePaymentSessionOptions,
     BasePaymentSession,
-    OnApproveDataOneTimePayments,
     PresentationModeOptionsForPopup,
     PresentationModeOptionsForModal,
     PresentationModeOptionsForAuto,
@@ -9,7 +8,6 @@ import {
 
 export type VenmoOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
     orderId?: string;
-    onApprove: (data: OnApproveDataOneTimePayments) => Promise<void>;
 };
 
 export type VenmoPresentationModeOptions =
@@ -28,22 +26,24 @@ export type VenmoOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
 
 /**
  * Interface for managing Venmo payment operations within the PayPal SDK.
+ *
+ * @remarks
  * This interface provides methods for creating and managing Venmo payment sessions,
  * allowing merchants to integrate Venmo as a payment method in their applications.
  *
  * The {@link VenmoPaymentsInstance} enables seamless integration with Venmo's payment flow,
  * providing a secure and user-friendly way to process payments through the Venmo platform.
- *
- * @interface VenmoPaymentsInstance
  */
 export interface VenmoPaymentsInstance {
     /**
      * Creates a Venmo one-time payment session for processing payments through Venmo.
+     *
+     * @remarks
      * This method allows you to configure callback functions to handle different stages
      * of the Venmo checkout process, including payment approval, cancelation, and errors.
      *
-     * @param {VenmoOneTimePaymentSessionOptions} paymentSessionOptions - Configuration options for the Venmo payment session
-     * @returns {VenmoOneTimePaymentSession} - A session object that can be used to start the payment flow
+     * @param paymentSessionOptions - Configuration options for the Venmo payment session
+     * @returns A session object that can be used to start the payment flow
      *
      * @example
      * ```typescript

@@ -4,10 +4,12 @@ import { instanceReducer } from "./PayPalProviderContext";
 import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
+} from "../types/PayPalProviderEnums";
+
+import type {
     PayPalState,
     InstanceAction,
-} from "../types/PayPalProviderTypes";
-
+} from "../types/PayPalProviderTypes.d.ts";
 import type {
     SdkInstance,
     EligiblePaymentMethodsOutput,

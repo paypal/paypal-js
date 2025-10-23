@@ -10,11 +10,12 @@ export interface PayPalV6Namespace {
     /**
      * Creates an SDK instance, which is the first step in an SDK integration. This instance serves as the base layer for all SDK components.
      *
+     * @remarks
      * This is an asynchronous method that initializes the PayPal SDK with the provided
      * client token and components.
      *
-     * @param {CreateInstanceOptions} createInstanceOptions - Configuration options for creating the SDK instance
-     * @returns {Promise<SdkInstance<Components[]>>} - A promise that resolves to an SDK instance with methods based on the specified components
+     * @param createInstanceOptions - Configuration options for creating the SDK instance
+     * @returns A promise that resolves to an SDK instance with methods based on the specified components
      *
      * @example
      * ```typescript
@@ -59,6 +60,7 @@ export type CreateInstanceOptions<T extends readonly Components[]> = {
 /**
  * Dynamically typed SDK instance based on the components array provided to createInstance.
  *
+ * @remarks
  * The return type changes based on which components are specified in the components array.
  *
  * **Always includes:**
@@ -103,12 +105,13 @@ export interface BaseInstance {
     /**
      * Checks eligibility for specific payment methods.
      *
+     * @remarks
      * This method verifies buyer and merchant eligibility by interacting with PayPal's
      * public API to determine whether payment methods (such as PayPal or Venmo) can be used.
      * Use this to conditionally render the appropriate payment buttons on your site.
      *
-     * @param {FindEligibleMethodsOptions} findEligibleMethodsOptions - Options for checking payment method eligibility
-     * @returns {Promise<EligiblePaymentMethodsOutput>} - A promise that resolves to payment methods eligibility information
+     * @param findEligibleMethodsOptions - Options for checking payment method eligibility
+     * @returns A promise that resolves to payment methods eligibility information
      *
      * @example
      * ```typescript
@@ -125,11 +128,12 @@ export interface BaseInstance {
     /**
      * Updates the locale for the SDK instance.
      *
+     * @remarks
      * This method allows you to dynamically change the locale of the SDK instance
      * after it has been initialized. The locale should be specified using a BCP-47 code.
      *
-     * @param {string} locale - The new locale to set, specified as a BCP-47 code (e.g., "en-US", "es-ES")
-     * @returns {void}
+     * @param locale - The new locale to set, specified as a BCP-47 code (e.g., "en-US", "es-ES")
+     * @returns void
      *
      * @example
      * ```typescript
@@ -156,6 +160,8 @@ export * from "./components/find-eligible-methods";
 
 // export a subset of types from base-component
 export {
+    CreateOrderCallback,
+    CreateOrderPromise,
     OnApproveDataOneTimePayments,
     OnCompleteData,
     OnErrorData,
