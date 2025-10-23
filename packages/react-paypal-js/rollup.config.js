@@ -1,7 +1,7 @@
 import babel, { getBabelOutputPlugin } from "@rollup/plugin-babel";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
-import { terser } from "rollup-plugin-terser";
+import terser from "@rollup/plugin-terser";
 import cleanup from "rollup-plugin-cleanup";
 
 import pkg from "./package.json";
@@ -80,6 +80,41 @@ export default [
             },
             {
                 file: `dist/esm/${pkgName}.min.js`,
+                format: "esm",
+                globals: {
+                    react: "React",
+                },
+                plugins: [getBabelOutputPlugin(), terser()],
+                banner,
+            },
+        ],
+    },
+
+    // V6 ESM
+    {
+        input: "src/v6/index.ts",
+        plugins: [
+            typescript({
+                tsconfig: "./tsconfig.v6.json",
+            }),
+            nodeResolve(),
+            cleanup({
+                comments: "none",
+            }),
+        ],
+        external: ["react"],
+        output: [
+            {
+                file: `dist/v6/esm/${pkgName}.js`,
+                format: "esm",
+                globals: {
+                    react: "React",
+                },
+                plugins: [getBabelOutputPlugin()],
+                banner,
+            },
+            {
+                file: `dist/v6/esm/${pkgName}.min.js`,
                 format: "esm",
                 globals: {
                     react: "React",

@@ -1,11 +1,35 @@
 import { useRef } from "react";
+import { dequal } from "dequal";
+
+export function isServer(): boolean {
+    return typeof window === "undefined" && typeof document === "undefined";
+}
 
 /**
- * `useProxyProps` can be used to maintain a reference to an updated props, without that change triggering
- * another re-render. This is useful if, for example, some props should be passed through a parent component to
- * a child function that contains code that needs the most up-to-date-reference, without causing the parent to
- * rerender.
+ * Custom hook that memoizes a value based on deep equality comparison.
+ * Returns a stable reference when the deep value hasn't changed.
+ *
+ * This allows developers to pass inline objects without causing unnecessary re-renders.
+ *
+ * @param value - The value to memoize
+ * @returns A stable reference to the value
+ *
+ * @example
+ * const memoizedOptions = useDeepCompareMemoize({
+ *   clientToken: token,
+ *   components: ["paypal-payments"]
+ * });
  */
+export function useDeepCompareMemoize<T>(value: T): T {
+    const ref = useRef<T>(value);
+
+    if (!dequal(ref.current, value)) {
+        ref.current = value;
+    }
+
+    return ref.current;
+}
+
 export function useProxyProps<T extends Record<PropertyKey, unknown>>(
     props: T,
 ): T {

@@ -150,7 +150,7 @@ export type LoadCoreSdkScriptOptions = {
 
 export function loadCoreSdkScript(
     options: LoadCoreSdkScriptOptions,
-): Promise<PayPalV6Namespace>;
+): Promise<PayPalV6Namespace | null>;
 
 // Components
 export * from "./components/paypal-payments";
@@ -160,6 +160,8 @@ export * from "./components/find-eligible-methods";
 
 // export a subset of types from base-component
 export {
+    CreateOrderCallback,
+    CreateOrderPromise,
     OnApproveDataOneTimePayments,
     OnCompleteData,
     OnErrorData,
