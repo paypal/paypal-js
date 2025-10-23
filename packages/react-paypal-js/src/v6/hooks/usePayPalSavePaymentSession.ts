@@ -10,7 +10,7 @@ import type {
     PayPalSavePaymentSessionReturn,
 } from "../types";
 
-export function usePayPaySavePaymentSession({
+export function usePayPalSavePaymentSession({
     presentationMode,
     createVaultToken,
     vaultSetupToken,

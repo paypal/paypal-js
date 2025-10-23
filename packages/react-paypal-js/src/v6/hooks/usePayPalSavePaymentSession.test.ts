@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 
 import { usePayPal } from "./usePayPal";
-import { usePayPaySavePaymentSession } from "./usePayPalSavePaymentSession";
+import { usePayPalSavePaymentSession } from "./usePayPalSavePaymentSession";
 import { useProxyProps } from "../utils";
 
 import type { SavePaymentSession } from "../types";
@@ -50,7 +50,7 @@ describe("usePayPalSavePaymentSession", () => {
         });
 
         renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: "auto",
                 vaultSetupToken: mockVaultSetupToken,
                 onApprove: mockOnApprove,
@@ -93,7 +93,7 @@ describe("usePayPalSavePaymentSession", () => {
         });
 
         renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: "auto",
                 createVaultToken: mockCreateVaultToken,
                 onApprove: mockOnApprove,
@@ -119,7 +119,7 @@ describe("usePayPalSavePaymentSession", () => {
         const {
             result: { error },
         } = renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: "auto",
                 vaultSetupToken: mockVaultSetupToken,
                 onApprove: jest.fn(),
@@ -154,7 +154,7 @@ describe("usePayPalSavePaymentSession", () => {
                 current: { handleClick },
             },
         } = renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: mockPresentationMode,
                 vaultSetupToken: mockVaultSetupToken,
                 onApprove: jest.fn(),
@@ -200,7 +200,7 @@ describe("usePayPalSavePaymentSession", () => {
                 current: { handleClick },
             },
         } = renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: mockPresentationMode,
                 createVaultToken: mockCreateVaultToken,
                 onApprove: mockOnApprove,
@@ -245,7 +245,7 @@ describe("usePayPalSavePaymentSession", () => {
                 current: { handleClick },
             },
         } = renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: mockPresentationMode,
                 createVaultToken: mockCreateVaultToken,
                 onApprove: jest.fn(),
@@ -253,7 +253,7 @@ describe("usePayPalSavePaymentSession", () => {
         );
 
         await expect(handleClick).rejects.toThrowError(
-            "paylater session not available",
+            "save payment session not available",
         );
     });
 
@@ -282,7 +282,7 @@ describe("usePayPalSavePaymentSession", () => {
                 current: { handleCancel },
             },
         } = renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: mockPresentationMode,
                 vaultSetupToken: mockVaultSetupToken,
                 onApprove: jest.fn(),
@@ -321,7 +321,7 @@ describe("usePayPalSavePaymentSession", () => {
                 current: { handleDestroy },
             },
         } = renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: mockPresentationMode,
                 vaultSetupToken: mockVaultSetupToken,
                 onApprove: jest.fn(),
@@ -355,7 +355,7 @@ describe("usePayPalSavePaymentSession", () => {
 
         const mockVaultSetupToken = "vault-setup-token-123";
         const { unmount } = renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: "auto",
                 vaultSetupToken: mockVaultSetupToken,
                 onApprove: jest.fn(),
@@ -396,7 +396,7 @@ describe("usePayPalSavePaymentSession", () => {
         const mockOnCancel = jest.fn();
         const mockOnError = jest.fn();
         const { rerender } = renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: "auto",
                 vaultSetupToken: mockVaultSetupToken,
                 onApprove: mockOnApprove,
@@ -435,7 +435,7 @@ describe("usePayPalSavePaymentSession", () => {
         const mockOnApprove = jest.fn();
         const { rerender } = renderHook(
             ({ vaultSetupToken }) =>
-                usePayPaySavePaymentSession({
+                usePayPalSavePaymentSession({
                     presentationMode: "auto",
                     vaultSetupToken,
                     onApprove: mockOnApprove,
@@ -484,7 +484,7 @@ describe("usePayPalSavePaymentSession", () => {
 
         const mockVaultSetupToken = "vault-setup-token-123";
         const { rerender } = renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: "auto",
                 vaultSetupToken: mockVaultSetupToken,
                 onApprove: jest.fn(),
@@ -534,7 +534,7 @@ describe("usePayPalSavePaymentSession", () => {
         });
 
         renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: "auto",
                 vaultSetupToken: "vault-token-123",
                 onApprove: mockOnApprove,
@@ -572,7 +572,7 @@ describe("usePayPalSavePaymentSession", () => {
         });
 
         renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: "auto",
                 vaultSetupToken: "vault-token-123",
                 onApprove: jest.fn(),
@@ -610,7 +610,7 @@ describe("usePayPalSavePaymentSession", () => {
         });
 
         renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: "auto",
                 vaultSetupToken: "vault-token-123",
                 onApprove: jest.fn(),
@@ -653,7 +653,7 @@ describe("usePayPalSavePaymentSession", () => {
                 current: { handleClick },
             },
         } = renderHook(() =>
-            usePayPaySavePaymentSession({
+            usePayPalSavePaymentSession({
                 presentationMode: "popup",
                 vaultSetupToken: "vault-token-123",
                 onApprove: jest.fn(),
