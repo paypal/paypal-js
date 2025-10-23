@@ -1,0 +1,9 @@
+{
+    "entryPoints": ["./types/v6/**/*.d.ts"],
+    "out": "../../docs/web-sdk-v6-reference",
+    "plugin": ["typedoc-material-theme"],
+    "readme": "../../docs/README-web-sdk-v6-reference.md",
+    "themeColor": "#1a202c",
+    "tsconfig": "./tsconfig.json",
+    "customCss": "../../docs/paypal-fonts.css"
+}
