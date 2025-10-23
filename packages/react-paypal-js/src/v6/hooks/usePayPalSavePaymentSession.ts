@@ -45,7 +45,7 @@ export function usePayPalSavePaymentSession({
 
     const handleClick = useCallback(async () => {
         if (!sessionRef.current) {
-            throw new Error("paylater session not available");
+            throw new Error("save payment session not available");
         }
 
         const startOptions: PayPalPresentationModeOptions = {
