@@ -3,6 +3,14 @@ name: Build and Deploy Documentation to GitHub Pages
 on:
     push:
         branches: ["main"]
+        # Only run when documentation-related files change to avoid unnecessary builds
+        paths:
+            - "packages/paypal-js/types/v6/**/*.d.ts"
+            - ".github/workflows/build-and-deploy-docs.yml"
+            - "docs/index.html"
+            - "docs/paypal-fonts.css"
+            - "docs/*.md"
+            - "packages/paypal-js/typedoc.json"
     workflow_dispatch:
 
 permissions:
