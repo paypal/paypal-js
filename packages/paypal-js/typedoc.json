@@ -5,5 +5,7 @@
     "readme": "../../docs/README-web-sdk-v6-reference.md",
     "themeColor": "#1a202c",
     "tsconfig": "./tsconfig.json",
-    "customCss": "../../docs/paypal-fonts.css"
+    "customCss": "../../docs/paypal-fonts.css",
+    "hideGenerator": true,
+    "customFooterHtml": "<p>© 2025 PayPal, Inc. All rights reserved.</p>"
 }

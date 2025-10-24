@@ -63,3 +63,10 @@ pre,
     font-family: "SF Mono", Monaco, Menlo, Consolas, "Liberation Mono",
         "Courier New", monospace !important;
 }
+
+footer {
+    text-align: center;
+    padding: 20px 0;
+    border-top: 1px solid var(--md-sys-color-outline-variant, #e0e0e0);
+    font-size: 14px;
+}
