@@ -10,7 +10,7 @@ on:
             - "docs/index.html"
             - "docs/paypal-fonts.css"
             - "docs/*.md"
-            - "packages/paypal-js/typedoc.json"
+            - "**/typedoc.json"
     workflow_dispatch:
 
 permissions:
