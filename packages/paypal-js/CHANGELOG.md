@@ -1,5 +1,15 @@
 # Changelog
 
+## 9.0.2
+
+### Patch Changes
+
+-   b2cbae5: chore: add build-and-deploy-docs github actions workflow
+-   036f31b: feat: use typedoc for generating v6 public interface documentation
+-   6d5e590: feat: use tsdoc for v6 public interface
+-   c41dab4: feat: add paypal copyright to docs footers
+-   1599832: feat: add jsdoc comments to v6 public interface types
+
 ## 9.0.1
 
 ### Patch Changes
