@@ -38,7 +38,7 @@ export function instanceReducer(
                 sdkInstance: null,
                 eligiblePaymentMethods: null,
                 error: null,
-                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+                loadingStatus: action.value,
             };
         default:
             return state;
