@@ -27,6 +27,7 @@ export type InstanceAction =
     | { type: INSTANCE_DISPATCH_ACTION.SET_ERROR; value: Error }
     | {
           type: INSTANCE_DISPATCH_ACTION.RESET_STATE;
+          value: INSTANCE_LOADING_STATE;
       };
 
 export interface PayPalContextState {

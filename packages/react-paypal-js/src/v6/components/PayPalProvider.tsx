@@ -15,6 +15,7 @@ import type {
     CreateInstanceOptions,
     Components,
     LoadCoreSdkScriptOptions,
+    PayPalV6Namespace,
 } from "../types";
 
 type PayPalProviderProps = CreateInstanceOptions<
@@ -95,7 +96,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         }
     }, [state.loadingStatus]); // Run when loadingStatus changes, but only act once
 
-    // Effect to reset state if options change
     useEffect(() => {
         if (!state.sdkInstance) {
             return;
@@ -103,36 +103,75 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
 
         dispatch({
             type: INSTANCE_DISPATCH_ACTION.RESET_STATE,
+            value: INSTANCE_LOADING_STATE.PENDING,
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [memoizedCreateOptions, memoizedScriptOptions]); // Only reset when options change, not the SDK instance
+    }, [memoizedScriptOptions]); // Only reset when script options change
 
-    // SDK loading effect - only runs on client (useEffect doesn't run during SSR)
+    useEffect(() => {
+        if (!state.sdkInstance) {
+            return;
+        }
+
+        dispatch({
+            type: INSTANCE_DISPATCH_ACTION.RESET_STATE,
+            value: INSTANCE_LOADING_STATE.SDK_LOADED,
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [memoizedCreateOptions]); // Only reset when create options change
+
     useEffect(() => {
         if (state.loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
             return;
         }
 
-        let isSubscribed = true;
-
         const loadSdk = async () => {
             try {
-                // Load the core SDK script
-                const paypalNamespace = await loadCoreSdkScript(
-                    memoizedScriptOptions,
-                );
+                // TODO: Maybe we can remove returning the sdk instance from loadCoreSdkScript?
+                await loadCoreSdkScript(memoizedScriptOptions);
 
-                if (!isSubscribed || !paypalNamespace) {
-                    return;
+                if (!window.paypal?.version.startsWith("6")) {
+                    throw new Error("Failed to load PayPal SDK");
                 }
 
-                // Create SDK instance
+                dispatch({
+                    type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
+                    value: INSTANCE_LOADING_STATE.SDK_LOADED,
+                });
+            } catch (error) {
+                console.error(error);
+                const errorInstance =
+                    error instanceof Error ? error : new Error(String(error));
+                dispatch({
+                    type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
+                    value: errorInstance,
+                });
+            }
+        };
+
+        loadSdk();
+    }, [state.loadingStatus, memoizedScriptOptions]);
+
+    useEffect(() => {
+        if (state.loadingStatus !== INSTANCE_LOADING_STATE.SDK_LOADED) {
+            return;
+        }
+
+        const createInstance = async () => {
+            try {
+                const paypalNamespace =
+                    window.paypal as unknown as PayPalV6Namespace;
+
+                if (!paypalNamespace) {
+                    throw new Error("PayPal sdk not available");
+                }
+
                 const instance = await paypalNamespace.createInstance(
                     memoizedCreateOptions,
                 );
 
-                if (!isSubscribed || !instance) {
-                    return;
+                if (!instance) {
+                    throw new Error("Failed to create PayPal SDK instance");
                 }
 
                 dispatch({
@@ -140,25 +179,19 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     value: instance,
                 });
             } catch (error) {
-                if (isSubscribed) {
-                    const errorInstance =
-                        error instanceof Error
-                            ? error
-                            : new Error(String(error));
-                    dispatch({
-                        type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                        value: errorInstance,
-                    });
-                }
+                console.error(error);
+                const errorInstance =
+                    error instanceof Error ? error : new Error(String(error));
+                dispatch({
+                    type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
+                    value: errorInstance,
+                });
             }
         };
 
-        loadSdk();
-
-        return () => {
-            isSubscribed = false;
-        };
-    }, [state.loadingStatus, memoizedCreateOptions, memoizedScriptOptions]);
+        createInstance();
+        // TODO: Need to cleanup components loaded by instance. For example if venmo-payments is initially loading by createInstance but then removed from the components array createVenmoOneTimePaymentSession would still be available on the instance.
+    }, [state.loadingStatus, memoizedCreateOptions]);
 
     // Separate effect for eligibility - runs after instance is created
     useEffect(() => {

@@ -1,6 +1,7 @@
 export enum INSTANCE_LOADING_STATE {
     INITIAL = "initial",
     PENDING = "pending",
+    SDK_LOADED = "sdk_loaded",
     RESOLVED = "resolved",
     REJECTED = "rejected",
 }
