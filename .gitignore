@@ -1,6 +1,8 @@
 coverage
 dist
 docs/*/
+!docs/readmes/
+!docs/styles/
 
 node_modules
 .DS_Store
