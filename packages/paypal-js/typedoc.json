@@ -7,5 +7,6 @@
     "tsconfig": "./tsconfig.json",
     "customCss": "../../docs/paypal-fonts.css",
     "hideGenerator": true,
-    "customFooterHtml": "<p>© 2025 PayPal, Inc. All rights reserved.</p>"
+    "customFooterHtml": "<p>© 2025 PayPal, Inc. All rights reserved.</p>",
+    "visibilityFilters": {}
 }
