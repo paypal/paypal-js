@@ -8,5 +8,6 @@
     "customCss": "../../docs/paypal-fonts.css",
     "hideGenerator": true,
     "customFooterHtml": "<p>© 2025 PayPal, Inc. All rights reserved.</p>",
-    "visibilityFilters": {}
+    "visibilityFilters": {},
+    "excludeInternal": true
 }

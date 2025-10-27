@@ -1,3 +1,8 @@
+/**
+ * @module
+ * @internal
+ */
+
 export type OnApproveDataOneTimePayments = {
     orderId: string;
     payerId?: string;
