@@ -21,6 +21,7 @@
     },
     "scripts": {
         "build": "rm -rf dist && rollup --config --bundleConfigAsCjs",
+        "docs:v6": "typedoc",
         "lint": "eslint . && npm run typecheck",
         "test": "vitest src",
         "test:bundle": "vitest bundle-tests/**",
@@ -78,6 +79,8 @@
         "rollup": "^4.9.1",
         "semver": "7.5.4",
         "tslib": "2.6.2",
+        "typedoc": "^0.28.13",
+        "typedoc-material-theme": "^1.4.0",
         "typescript": "5.3.3",
         "vitest": "1.6.1"
     },
