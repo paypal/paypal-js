@@ -101,6 +101,9 @@ export type SdkInstance<T extends readonly [Components, ...Components[]]> =
             ? PayPalLegacyBillingInstance
             : unknown);
 
+/**
+ * @internal
+ */
 export interface BaseInstance {
     /**
      * Checks eligibility for specific payment methods.
