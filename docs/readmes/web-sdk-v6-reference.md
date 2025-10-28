@@ -1,4 +1,4 @@
-# PayPal JS SDK v6 Reference
+## PayPal JS SDK v6 Reference
 
 Welcome to the PayPal JS SDK reference documentation. This documentation provides comprehensive TypeScript type definitions and detailed API information for PayPal's JavaScript SDK v6.
 
