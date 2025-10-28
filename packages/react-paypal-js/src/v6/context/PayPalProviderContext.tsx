@@ -11,6 +11,13 @@ import type {
     InstanceAction,
 } from "../types/PayPalProviderTypes.d.ts";
 
+export const initialState: PayPalState = {
+    sdkInstance: null,
+    eligiblePaymentMethods: null,
+    loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+    error: null,
+};
+
 export function instanceReducer(
     state: PayPalState,
     action: InstanceAction,
@@ -33,13 +40,7 @@ export function instanceReducer(
                 loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
             };
         case INSTANCE_DISPATCH_ACTION.RESET_STATE:
-            return {
-                ...state,
-                sdkInstance: null,
-                eligiblePaymentMethods: null,
-                error: null,
-                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
-            };
+            return initialState;
         default:
             return state;
     }

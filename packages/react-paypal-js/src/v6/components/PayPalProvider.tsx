@@ -1,20 +1,22 @@
-import React, { useEffect, useMemo, useReducer, useRef } from "react";
+import React, { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
 import {
     PayPalContext,
+    initialState,
     instanceReducer,
 } from "../context/PayPalProviderContext";
 import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
-import { isServer, useDeepCompareMemoize } from "../utils";
+import { useDeepCompareMemoize } from "../utils";
 
 import type {
     CreateInstanceOptions,
     Components,
     LoadCoreSdkScriptOptions,
+    PayPalV6Namespace,
 } from "../types";
 
 type PayPalProviderProps = CreateInstanceOptions<
@@ -22,7 +24,9 @@ type PayPalProviderProps = CreateInstanceOptions<
 > & {
     // Provider-specific properties
     children: React.ReactNode;
-    scriptOptions: LoadCoreSdkScriptOptions;
+    // scriptOptions: LoadCoreSdkScriptOptions;
+    environment?: LoadCoreSdkScriptOptions["environment"];
+    debug?: LoadCoreSdkScriptOptions["debug"];
 };
 
 /**
@@ -55,83 +59,68 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     shopperSessionId,
     testBuyerCountry,
     children,
-    scriptOptions,
+    environment,
+    debug,
 }) => {
-    // Auto-memoize props based on deep equality to prevent unnecessary reloads
-    const memoizedCreateOptions = useDeepCompareMemoize({
-        clientMetadataId,
-        clientToken,
-        components,
-        locale,
-        pageType,
-        partnerAttributionId,
-        shopperSessionId,
-        testBuyerCountry,
-    });
-    const memoizedScriptOptions = useDeepCompareMemoize(scriptOptions);
+    const memoizedComponents = useDeepCompareMemoize(components);
 
-    // Track if we've already handled the initial hydration
-    const hasHandledInitialHydration = useRef(false);
+    const [paypalNamespace, setPaypalNamespace] =
+        useState<PayPalV6Namespace | null>(null);
+    const [state, dispatch] = useReducer(instanceReducer, initialState);
+    const environmentRef = useRef(environment);
+    const debugRef = useRef(debug);
 
-    const [state, dispatch] = useReducer(instanceReducer, {
-        sdkInstance: null,
-        eligiblePaymentMethods: null,
-        loadingStatus: INSTANCE_LOADING_STATE.INITIAL,
-        error: null,
-    });
+    // Load Core SDK Script
+    useEffect(() => {
+        const loadSdk = async () => {
+            try {
+                const paypal = await loadCoreSdkScript({
+                    environment: environmentRef.current,
+                    debug: debugRef.current,
+                });
 
-    // Client-side hydration: transition from INITIAL to PENDING state
+                if (paypal) {
+                    setPaypalNamespace(paypal);
+                }
+            } catch (error) {
+                const errorInstance =
+                    error instanceof Error ? error : new Error(String(error));
+                dispatch({
+                    type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
+                    value: errorInstance,
+                });
+            }
+        };
+
+        loadSdk();
+    }, []);
+
+    // Create SDK Instance
     useEffect(() => {
         if (
-            !isServer() &&
-            state.loadingStatus === INSTANCE_LOADING_STATE.INITIAL &&
-            !hasHandledInitialHydration.current
+            state.loadingStatus !== INSTANCE_LOADING_STATE.PENDING ||
+            !paypalNamespace
         ) {
-            hasHandledInitialHydration.current = true;
-            dispatch({
-                type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
-                value: INSTANCE_LOADING_STATE.PENDING,
-            });
-        }
-    }, [state.loadingStatus]); // Run when loadingStatus changes, but only act once
-
-    // Effect to reset state if options change
-    useEffect(() => {
-        if (!state.sdkInstance) {
-            return;
-        }
-
-        dispatch({
-            type: INSTANCE_DISPATCH_ACTION.RESET_STATE,
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [memoizedCreateOptions, memoizedScriptOptions]); // Only reset when options change, not the SDK instance
-
-    // SDK loading effect - only runs on client (useEffect doesn't run during SSR)
-    useEffect(() => {
-        if (state.loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
             return;
         }
 
         let isSubscribed = true;
 
-        const loadSdk = async () => {
+        const createSdkInstance = async () => {
             try {
-                // Load the core SDK script
-                const paypalNamespace = await loadCoreSdkScript(
-                    memoizedScriptOptions,
-                );
-
-                if (!isSubscribed || !paypalNamespace) {
-                    return;
-                }
-
                 // Create SDK instance
-                const instance = await paypalNamespace.createInstance(
-                    memoizedCreateOptions,
-                );
+                const instance = await paypalNamespace.createInstance({
+                    clientMetadataId,
+                    clientToken,
+                    components: memoizedComponents,
+                    locale,
+                    pageType,
+                    partnerAttributionId,
+                    shopperSessionId,
+                    testBuyerCountry,
+                });
 
-                if (!isSubscribed || !instance) {
+                if (!isSubscribed) {
                     return;
                 }
 
@@ -153,12 +142,26 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             }
         };
 
-        loadSdk();
+        createSdkInstance();
 
         return () => {
             isSubscribed = false;
+            dispatch({
+                type: INSTANCE_DISPATCH_ACTION.RESET_STATE,
+            });
         };
-    }, [state.loadingStatus, memoizedCreateOptions, memoizedScriptOptions]);
+    }, [
+        clientMetadataId,
+        clientToken,
+        locale,
+        memoizedComponents,
+        pageType,
+        partnerAttributionId,
+        paypalNamespace,
+        shopperSessionId,
+        // state.loadingStatus,
+        testBuyerCountry,
+    ]);
 
     // Separate effect for eligibility - runs after instance is created
     useEffect(() => {

@@ -1,29 +1,53 @@
 import { useRef } from "react";
-import { dequal } from "dequal";
+
+import type { Components } from "./types";
 
 export function isServer(): boolean {
     return typeof window === "undefined" && typeof document === "undefined";
 }
 
+function isEqualComponentsArray(
+    arr1: readonly Components[] | null | undefined,
+    arr2: readonly Components[] | null | undefined,
+): boolean {
+    if (!arr1 && !arr2) {
+        return true;
+    }
+
+    if (!arr1 || !arr2) {
+        return false;
+    }
+
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
 /**
- * Custom hook that memoizes a value based on deep equality comparison.
+ * Custom hook that memoizes a components array based on deep equality comparison.
  * Returns a stable reference when the deep value hasn't changed.
  *
- * This allows developers to pass inline objects without causing unnecessary re-renders.
+ * This allows developers to pass inline component arrays without causing unnecessary re-renders.
  *
- * @param value - The value to memoize
- * @returns A stable reference to the value
+ * @param value - The components array to memoize
+ * @returns A stable reference to the components array
  *
  * @example
- * const memoizedOptions = useDeepCompareMemoize({
- *   clientToken: token,
- *   components: ["paypal-payments"]
- * });
+ * const memoizedComponents = useDeepCompareMemoize(["paypal-payments", "venmo-payments"]);
  */
-export function useDeepCompareMemoize<T>(value: T): T {
+export function useDeepCompareMemoize<
+    T extends readonly Components[] | null | undefined,
+>(value: T): T {
     const ref = useRef<T>(value);
 
-    if (!dequal(ref.current, value)) {
+    if (!isEqualComponentsArray(ref.current, value)) {
         ref.current = value;
     }
 
