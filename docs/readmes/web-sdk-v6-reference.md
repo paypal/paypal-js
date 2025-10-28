@@ -4,7 +4,15 @@ Welcome to the PayPal JS SDK reference documentation. This documentation provide
 
 ## Importing and Using v6 Types
 
-PayPal JS SDK v6 includes comprehensive TypeScript type definitions to help you build type-safe integrations. Here's how to import and use the v6 types in your TypeScript projects.
+**paypal-js** includes comprehensive TypeScript type definitions to help you build type-safe integrations. Here's how to import and use the v6 types in your TypeScript projects.
+
+### Installation
+
+Install **paypal-js** as a dependency:
+
+```bash
+npm install @paypal/paypal-js
+```
 
 ### Basic Example
 
