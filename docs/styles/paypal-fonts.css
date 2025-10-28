@@ -1,7 +1,7 @@
 @font-face {
     font-family: "PayPal Plain";
     font-weight: 400;
-    font-display: swap;
+    font-display: block;
     font-style: normal;
     src: url("https://www.paypalobjects.com/marketing/pp-com-components/fonts/PayPal%20Plain/PayPalPlain-Regular.woff2")
         format("woff2");
@@ -10,7 +10,7 @@
 @font-face {
     font-family: "PayPal Plain";
     font-weight: 500;
-    font-display: swap;
+    font-display: block;
     font-style: normal;
     src: url("https://www.paypalobjects.com/marketing/pp-com-components/fonts/PayPal%20Plain/PayPalPlain-Medium.woff2")
         format("woff2");
@@ -19,7 +19,7 @@
 @font-face {
     font-family: "PayPal Pro";
     font-weight: 400;
-    font-display: swap;
+    font-display: block;
     font-style: normal;
     src: url("https://www.paypalobjects.com/marketing/pp-com-components/fonts/PayPal%20Pro/PayPalProSWeb-Book.woff2")
         format("woff2");
@@ -28,7 +28,7 @@
 @font-face {
     font-family: "PayPal Pro";
     font-weight: 900;
-    font-display: swap;
+    font-display: block;
     font-style: normal;
     src: url("https://www.paypalobjects.com/marketing/pp-com-components/fonts/PayPal%20Pro/PayPalProSWeb-Black.woff2")
         format("woff2");

@@ -8,8 +8,8 @@ on:
             - "packages/paypal-js/types/v6/**/*.d.ts"
             - ".github/workflows/build-and-deploy-docs.yml"
             - "docs/index.html"
-            - "docs/paypal-fonts.css"
-            - "docs/*.md"
+            - "docs/readmes/**"
+            - "docs/styles/**"
             - "**/typedoc.json"
     workflow_dispatch:
 
