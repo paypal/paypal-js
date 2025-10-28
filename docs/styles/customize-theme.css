@@ -1,0 +1,17 @@
+/* Fix typedoc-material-theme v1.4.0 feature/bug by making chevron positioning in all accordions stay within their container */
+.tsd-accordion-summary {
+    position: relative;
+    width: 100%;
+}
+
+.tsd-accordion-summary > svg {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    transition: transform 0.2s ease;
+}
+
+details[open] > .tsd-accordion-summary > svg {
+    transform: translateY(-50%) rotate(0deg);
+}

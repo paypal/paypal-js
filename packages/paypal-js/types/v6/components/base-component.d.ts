@@ -1,3 +1,10 @@
+/* eslint-disable tsdoc/syntax */
+/**
+ * @module
+ * @internal
+ */
+/* eslint-enable tsdoc/syntax */
+
 export type OnApproveDataOneTimePayments = {
     orderId: string;
     payerId?: string;
