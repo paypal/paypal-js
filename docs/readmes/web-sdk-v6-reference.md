@@ -18,7 +18,7 @@ npm install @paypal/paypal-js
 
 A basic example showing data-typing for PayPal One Time Payment:
 
-```ts
+```typescript
 import type {
     PayPalV6Namespace,
     OnApproveDataOneTimePayments,
