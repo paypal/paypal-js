@@ -11,7 +11,7 @@ Welcome to the PayPal JS SDK reference documentation. This documentation provide
 Install **paypal-js** as a dependency:
 
 ```bash
-npm install @paypal/paypal-js
+npm install @paypal/paypal-js --save-dev
 ```
 
 ### Basic Example
@@ -36,8 +36,12 @@ const sdkInstance = await window.paypal.createInstance({
     components: ["paypal-payments", "venmo-payments"],
 });
 
-function onApproveCallback(data: OnApproveDataOneTimePayments) {}
-function onShippingAddressChangeCallback(data: OnShippingAddressChangeData) {}
+function onApproveCallback(data: OnApproveDataOneTimePayments) {
+    /* ... */
+}
+function onShippingAddressChangeCallback(data: OnShippingAddressChangeData) {
+    /* ... */
+}
 
 const paypalCheckout = sdkInstance.createPayPalOneTimePaymentSession({
     onApprove: onApproveCallback,
