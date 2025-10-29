@@ -97,12 +97,15 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
 
     // Create SDK Instance
     useEffect(() => {
-        if (
-            state.loadingStatus !== INSTANCE_LOADING_STATE.PENDING ||
-            !paypalNamespace
-        ) {
+        if (!paypalNamespace) {
             return;
         }
+
+        // This dispatch is for instance creations after initial mount
+        dispatch({
+            type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
+            value: INSTANCE_LOADING_STATE.PENDING,
+        });
 
         let isSubscribed = true;
 
@@ -146,9 +149,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
 
         return () => {
             isSubscribed = false;
-            dispatch({
-                type: INSTANCE_DISPATCH_ACTION.RESET_STATE,
-            });
         };
     }, [
         clientMetadataId,
@@ -159,7 +159,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         partnerAttributionId,
         paypalNamespace,
         shopperSessionId,
-        // state.loadingStatus,
         testBuyerCountry,
     ]);
 
