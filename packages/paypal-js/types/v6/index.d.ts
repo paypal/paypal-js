@@ -64,7 +64,8 @@ export type CreateInstanceOptions<T extends readonly Components[]> = {
  * The return type changes based on which components are specified in the components array.
  *
  * **Always includes:**
- * - `findEligibleMethods()` - Base method available regardless of components
+ * - `findEligibleMethods()` - Base method that verifies buyer and merchant eligibility for various payment methods. Use this to conditionally render the appropriate payment buttons on your site.
+ * - `updateLocale()` - Base method that updates the locale for the SDK instance. The locale should be specified using a BCP-47 code.
  *
  * **Conditionally includes methods based on components:**
  * - `"paypal-payments"` - Adds PayPalPaymentsInstance methods
@@ -78,19 +79,43 @@ export type CreateInstanceOptions<T extends readonly Components[]> = {
  *   clientToken: "token",
  *   components: ["paypal-payments"]
  * });
- * sdkInstance.createPayPalOneTimePaymentSession(...); // ✅ Available
- * sdkInstance.createVenmoOneTimePaymentSession(...);  // ❌ TypeScript error
+ *
+ * const paymentMethods = await sdkInstance.findEligibleMethods();
+ * const isPayPalEligible = paymentMethods.isEligible("paypal");
+ *
+ * if (isPayPalEligible) {
+ *   sdkInstance.createPayPalOneTimePaymentSession(...); // ✅ Available
+ *   sdkInstance.createVenmoOneTimePaymentSession(...);  // ❌ TypeScript error
+ *   // Render PayPal button
+ * }
+ *
+ * // Optionally update locale
+ * sdkInstance.updateLocale("es-US");
  *
  * // Multiple components
  * const sdkInstance = await createInstance({
  *   clientToken: "token",
  *   components: ["paypal-payments", "venmo-payments"]
  * });
- * sdkInstance.createPayPalOneTimePaymentSession(...); // ✅ Available
- * sdkInstance.createVenmoOneTimePaymentSession(...);  // ✅ Available
+ *
+ * const paymentMethods = await sdkInstance.findEligibleMethods();
+ * const isPayPalEligible = paymentMethods.isEligible("paypal");
+ * const isVenmoEligible = paymentMethods.isEligible("venmo");
+ *
+ * if (isPayPalEligible) {
+ *   sdkInstance.createPayPalOneTimePaymentSession(...); // ✅ Available
+ *   // Render PayPal button
+ * }
+ *
+ * if (isVenmoEligible) {
+ *   sdkInstance.createVenmoOneTimePaymentSession(...);  // ✅ Available
+ *   // Render Venmo button
+ * }
+ *
+ * // Optionally update locale
+ * sdkInstance.updateLocale("es-US");
  * ```
  */
-
 export type SdkInstance<T extends readonly [Components, ...Components[]]> =
     BaseInstance &
         ("paypal-payments" extends T[number]
