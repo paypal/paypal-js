@@ -6,6 +6,39 @@ export function isServer(): boolean {
     return typeof window === "undefined" && typeof document === "undefined";
 }
 
+/**
+ * Performs a shallow equality check on two components arrays used by PayPalProvider.
+ *
+ * This function is specifically designed to compare the `components` prop arrays passed to
+ * PayPalProvider.
+ *
+ * This optimization prevents unnecessary re-initialization of the PayPal SDK when the components
+ * array reference changes but the actual component names remain the same. This is particularly
+ * important because re-initializing the SDK is an expensive operation that involves loading scripts
+ * and setting up PayPal integrations.
+ *
+ * @param arr1 - First components array to compare
+ * @param arr2 - Second components array to compare
+ * @returns `true` if both arrays are null/undefined, or if they contain the same components in the same order
+ *
+ * @example
+ * // Returns true - both arrays have the same components in the same order
+ * isEqualComponentsArray(
+ *   ["paypal-payments", "venmo-payments"],
+ *   ["paypal-payments", "venmo-payments"]
+ * );
+ *
+ * @example
+ * // Returns false - different order
+ * isEqualComponentsArray(
+ *   ["paypal-payments", "venmo-payments"],
+ *   ["venmo-payments", "paypal-payments"]
+ * );
+ *
+ * @example
+ * // Returns true - both are null
+ * isEqualComponentsArray(null, null);
+ */
 function isEqualComponentsArray(
     arr1: readonly Components[] | null | undefined,
     arr2: readonly Components[] | null | undefined,
