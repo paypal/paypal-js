@@ -213,7 +213,7 @@ describe("usePayPalInstance SSR", () => {
 
 function setupSSRTestComponent() {
     const state: PayPalContextState = {
-        loadingStatus: INSTANCE_LOADING_STATE.INITIAL,
+        loadingStatus: INSTANCE_LOADING_STATE.PENDING,
         sdkInstance: null,
         eligiblePaymentMethods: null,
         error: null,

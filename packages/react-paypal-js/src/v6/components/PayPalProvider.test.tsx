@@ -519,7 +519,7 @@ describe("usePayPal", () => {
 
 function setupTestComponent() {
     const state: PayPalContextState = {
-        loadingStatus: INSTANCE_LOADING_STATE.INITIAL,
+        loadingStatus: INSTANCE_LOADING_STATE.PENDING,
         sdkInstance: null,
         eligiblePaymentMethods: null,
         error: null,
