@@ -37,10 +37,10 @@ const sdkInstance = await window.paypal.createInstance({
 });
 
 function onApproveCallback(data: OnApproveDataOneTimePayments) {
-    /* ... */
+    // ...
 }
 function onShippingAddressChangeCallback(data: OnShippingAddressChangeData) {
-    /* ... */
+    // ...
 }
 
 const paypalCheckout = sdkInstance.createPayPalOneTimePaymentSession({

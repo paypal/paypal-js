@@ -54,7 +54,7 @@ export type FindEligibleMethodsGetDetails<T extends FundingSource> =
  *     onApprove: (data) => console.log('Payment approved:', data),
  *   });
  *   // set up button
- *   ...
+ *   // ...
  * }
  *
  * if (paymentMethods.isEligible("paylater")) {
@@ -69,7 +69,7 @@ export type FindEligibleMethodsGetDetails<T extends FundingSource> =
  *   const paylaterButton = document.querySelector("#paylater-button");
  *   paylaterButton.productCode = productCode;
  *   paylaterButton.countryCode = countryCode;
- *   ...
+ *   // ...
  * }
  *
  * if (paymentMethods.isEligible("credit")) {
@@ -83,7 +83,7 @@ export type FindEligibleMethodsGetDetails<T extends FundingSource> =
  *   // set up button
  *   const paypalCreditButton = document.querySelector("#paypal-credit-button");
  *   paypalCreditButton.countryCode = countryCode;
- *   ...
+ *   // ...
  * }
  * ```
  */
