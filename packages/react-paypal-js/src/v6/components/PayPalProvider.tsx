@@ -29,26 +29,6 @@ type PayPalProviderProps = CreateInstanceOptions<
     debug?: LoadCoreSdkScriptOptions["debug"];
 };
 
-/**
- * PayPal SDK Instance Provider with SSR support
- *
- * SSR Behavior:
- * - Server: Initializes in INITIAL state, no script loading attempted
- * - Client: Initializes in PENDING state, loads scripts on mount
- * - Hydration: Client takes over from server state seamlessly
- *
- * Props are automatically deep-compared to prevent unnecessary SDK reloads.
- * You can pass options directly without manual memoization.
- *
- * @example
- * <PayPalProvider
- *   components={["paypal-payments"]}
- *   clientToken={token}
- *   scriptOptions={{ environment: "sandbox" }}
- * >
- *   {children}
- * </PayPalProvider>
- */
 export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     clientMetadataId,
     clientToken,
