@@ -12,11 +12,7 @@ import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import { isServer } from "../utils";
 import { TEST_CLIENT_TOKEN, expectInitialState } from "./providerTestUtils";
 
-import type {
-    CreateInstanceOptions,
-    PayPalContextState,
-    LoadCoreSdkScriptOptions,
-} from "../types";
+import type { CreateInstanceOptions, PayPalContextState } from "../types";
 
 jest.mock("@paypal/paypal-js/sdk-v6", () => ({
     loadCoreSdkScript: jest.fn(),
@@ -32,24 +28,23 @@ const createInstanceOptions: CreateInstanceOptions<["paypal-payments"]> = {
     clientToken: TEST_CLIENT_TOKEN,
 };
 
-const scriptOptions: LoadCoreSdkScriptOptions = {
-    environment: "sandbox",
-};
-
 // Test utilities
 function renderSSRProvider(
     instanceOptions = createInstanceOptions,
-    scriptOpts = scriptOptions,
+    environment: "sandbox" | "production" = "sandbox",
+    debug = false,
     children?: React.ReactNode,
 ) {
     const { state, TestComponent } = setupSSRTestComponent();
-    const { components, clientToken } = instanceOptions;
+    const { components, clientToken, ...restOptions } = instanceOptions;
 
     const html = renderToString(
         <PayPalProvider
             components={components}
             clientToken={clientToken}
-            scriptOptions={scriptOpts}
+            environment={environment}
+            debug={debug}
+            {...restOptions}
         >
             <TestComponent>{children}</TestComponent>
         </PayPalProvider>,
@@ -135,7 +130,8 @@ describe("PayPalProvider SSR", () => {
 
             const { html } = renderSSRProvider(
                 createInstanceOptions,
-                scriptOptions,
+                "sandbox",
+                false,
                 <div>SSR Content</div>,
             );
 
@@ -161,7 +157,8 @@ describe("PayPalProvider SSR", () => {
             const { html } = renderSSRProvider(
                 // @ts-expect-error renderSSRProvider is typed for single component
                 complexOptions,
-                { environment: "production", debug: true },
+                "production",
+                true,
                 <div>Complex Options Test</div>,
             );
 
@@ -172,12 +169,14 @@ describe("PayPalProvider SSR", () => {
         test("should generate consistent HTML across renders", () => {
             const { html: html1 } = renderSSRProvider(
                 createInstanceOptions,
-                scriptOptions,
+                "sandbox",
+                false,
                 <div data-testid="ssr-content">Test Content</div>,
             );
             const { html: html2 } = renderSSRProvider(
                 createInstanceOptions,
-                scriptOptions,
+                "sandbox",
+                false,
                 <div data-testid="ssr-content">Test Content</div>,
             );
 

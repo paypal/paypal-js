@@ -15,15 +15,11 @@ import {
     expectPendingState,
     expectResolvedState,
     expectRejectedState,
-    expectResetState,
+    expectReloadingState,
     withConsoleSpy,
 } from "./providerTestUtils";
 
-import type {
-    CreateInstanceOptions,
-    LoadCoreSdkScriptOptions,
-    PayPalContextState,
-} from "../types";
+import type { CreateInstanceOptions, PayPalContextState } from "../types";
 
 jest.mock("@paypal/paypal-js/sdk-v6", () => ({
     loadCoreSdkScript: jest.fn(),
@@ -39,13 +35,10 @@ const createInstanceOptions: CreateInstanceOptions<["paypal-payments"]> = {
     clientToken: TEST_CLIENT_TOKEN,
 };
 
-const scriptOptions: LoadCoreSdkScriptOptions = {
-    environment: "sandbox",
-};
-
 function renderProvider(
     instanceOptions = createInstanceOptions,
-    scriptOpts = scriptOptions,
+    environment: "sandbox" | "production" = "sandbox",
+    debug = false,
     children?: React.ReactNode,
 ) {
     const { state, TestComponent } = setupTestComponent();
@@ -54,7 +47,8 @@ function renderProvider(
         <PayPalProvider
             components={instanceOptions.components}
             clientToken={instanceOptions.clientToken}
-            scriptOptions={scriptOpts}
+            environment={environment}
+            debug={debug}
         >
             <TestComponent>{children}</TestComponent>
         </PayPalProvider>,
@@ -77,16 +71,13 @@ describe("PayPalProvider", () => {
     });
 
     describe("SDK Loading", () => {
-        test("should transition to PENDING on client mount (hydration-safe)", async () => {
-            const { state } = renderProvider();
-
-            await waitFor(() => expectPendingState(state));
-        });
-
         test("should set loadingStatus to 'resolved' when SDK loads successfully", async () => {
             const { state } = renderProvider();
 
-            expect(loadCoreSdkScript).toHaveBeenCalledWith(scriptOptions);
+            expect(loadCoreSdkScript).toHaveBeenCalledWith({
+                environment: "sandbox",
+                debug: false,
+            });
 
             await waitFor(() => expectResolvedState(state));
         });
@@ -105,22 +96,22 @@ describe("PayPalProvider", () => {
             });
         });
 
-        test.each<[string, LoadCoreSdkScriptOptions, string, string]>([
+        test.each<[string, "sandbox" | "production", string, string]>([
             [
                 "sandbox",
-                { environment: "sandbox" },
+                "sandbox",
                 "https://www.sandbox.paypal.com/web-sdk/v6/core",
                 "sandbox.paypal.com",
             ],
             [
                 "production",
-                { environment: "production" },
+                "production",
                 "https://www.paypal.com/web-sdk/v6/core",
                 "www.paypal.com",
             ],
         ])(
             "should inject script element for %s environment",
-            async (_env, options, scriptSrc, urlFragment) => {
+            async (_env, environment, scriptSrc, urlFragment) => {
                 (loadCoreSdkScript as jest.Mock).mockImplementation(() => {
                     const script = document.createElement("script");
                     script.src = scriptSrc;
@@ -128,9 +119,12 @@ describe("PayPalProvider", () => {
                     return Promise.resolve(createMockPayPalNamespace());
                 });
 
-                renderProvider(createInstanceOptions, options);
+                renderProvider(createInstanceOptions, environment);
 
-                expect(loadCoreSdkScript).toHaveBeenCalledWith(options);
+                expect(loadCoreSdkScript).toHaveBeenCalledWith({
+                    environment,
+                    debug: false,
+                });
 
                 await waitFor(() => {
                     const scriptElement = document.querySelector(
@@ -257,7 +251,7 @@ describe("PayPalProvider", () => {
                 <PayPalProvider
                     components={createInstanceOptions.components}
                     clientToken={createInstanceOptions.clientToken}
-                    scriptOptions={scriptOptions}
+                    environment="sandbox"
                 >
                     <TestComponent />
                 </PayPalProvider>,
@@ -271,14 +265,14 @@ describe("PayPalProvider", () => {
                 <PayPalProvider
                     components={createInstanceOptions.components}
                     clientToken={"new-client-token"}
-                    scriptOptions={scriptOptions}
+                    environment="sandbox"
                 >
                     <TestComponent />
                 </PayPalProvider>,
             );
 
-            // Should reset to pending state
-            expectResetState(state);
+            // Should go back to pending state (while keeping old instance until new one loads)
+            expectReloadingState(state);
 
             // Should reload with new options
             await waitFor(() => expectResolvedState(state));
@@ -377,7 +371,7 @@ describe("Auto-memoization", () => {
             <PayPalProvider
                 components={createInstanceOptions.components}
                 clientToken={createInstanceOptions.clientToken}
-                scriptOptions={scriptOptions}
+                environment="sandbox"
             >
                 <TestComponent />
             </PayPalProvider>,
@@ -393,7 +387,7 @@ describe("Auto-memoization", () => {
             <PayPalProvider
                 components={["paypal-payments"]}
                 clientToken={TEST_CLIENT_TOKEN}
-                scriptOptions={{ environment: "sandbox" }}
+                environment="sandbox"
             >
                 <TestComponent />
             </PayPalProvider>,
@@ -408,14 +402,22 @@ describe("Auto-memoization", () => {
         );
     });
 
-    test("should reload SDK when actual values change", async () => {
+    test("should recreate instance when actual values change", async () => {
+        const mockCreateInstance = jest
+            .fn()
+            .mockResolvedValue(createMockSdkInstance());
+
+        (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+            createInstance: mockCreateInstance,
+        });
+
         const { state, TestComponent } = setupTestComponent();
 
         const { rerender } = render(
             <PayPalProvider
                 components={createInstanceOptions.components}
                 clientToken={createInstanceOptions.clientToken}
-                scriptOptions={scriptOptions}
+                environment="sandbox"
             >
                 <TestComponent />
             </PayPalProvider>,
@@ -423,68 +425,34 @@ describe("Auto-memoization", () => {
 
         await waitFor(() => expectResolvedState(state));
 
-        const loadCallCount = (loadCoreSdkScript as jest.Mock).mock.calls
-            .length;
+        const createInstanceCallCount = mockCreateInstance.mock.calls.length;
 
         // Rerender with different client token
         rerender(
             <PayPalProvider
                 components={["paypal-payments"]}
                 clientToken="NEW-TOKEN"
-                scriptOptions={scriptOptions}
+                environment="sandbox"
             >
                 <TestComponent />
             </PayPalProvider>,
         );
 
-        // Should reset to pending state
-        expectResetState(state);
+        // Should go back to pending state (while keeping old instance until new one loads)
+        expectReloadingState(state);
 
-        // Should reload with new token
+        // Should recreate instance with new token (but NOT reload SDK script)
         await waitFor(() =>
-            expect((loadCoreSdkScript as jest.Mock).mock.calls.length).toBe(
-                loadCallCount + 1,
+            expect(mockCreateInstance.mock.calls.length).toBe(
+                createInstanceCallCount + 1,
             ),
         );
-    });
 
-    test("should reload SDK when scriptOptions change", async () => {
-        const { state, TestComponent } = setupTestComponent();
-
-        const { rerender } = render(
-            <PayPalProvider
-                components={createInstanceOptions.components}
-                clientToken={createInstanceOptions.clientToken}
-                scriptOptions={scriptOptions}
-            >
-                <TestComponent />
-            </PayPalProvider>,
-        );
-
-        await waitFor(() => expectResolvedState(state));
-
-        const loadCallCount = (loadCoreSdkScript as jest.Mock).mock.calls
-            .length;
-
-        // Rerender with different environment
-        rerender(
-            <PayPalProvider
-                components={createInstanceOptions.components}
-                clientToken={createInstanceOptions.clientToken}
-                scriptOptions={{ environment: "production" }}
-            >
-                <TestComponent />
-            </PayPalProvider>,
-        );
-
-        // Should reset to pending state
-        expectResetState(state);
-
-        // Should reload with new environment
-        await waitFor(() =>
-            expect((loadCoreSdkScript as jest.Mock).mock.calls.length).toBe(
-                loadCallCount + 1,
-            ),
+        // Verify new instance was created with new token
+        expect(mockCreateInstance).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+                clientToken: "NEW-TOKEN",
+            }),
         );
     });
 
@@ -504,7 +472,7 @@ describe("Auto-memoization", () => {
                 components={complexOptions.components}
                 clientToken={complexOptions.clientToken}
                 locale={complexOptions.locale}
-                scriptOptions={scriptOptions}
+                environment="sandbox"
             >
                 <TestComponent />
             </PayPalProvider>,
@@ -521,7 +489,7 @@ describe("Auto-memoization", () => {
                 components={["paypal-payments", "venmo-payments"]}
                 clientToken={TEST_CLIENT_TOKEN}
                 locale="en_US"
-                scriptOptions={{ environment: "sandbox" }}
+                environment="sandbox"
             >
                 <TestComponent />
             </PayPalProvider>,

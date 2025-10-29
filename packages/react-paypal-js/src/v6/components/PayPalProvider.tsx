@@ -24,7 +24,6 @@ type PayPalProviderProps = CreateInstanceOptions<
 > & {
     // Provider-specific properties
     children: React.ReactNode;
-    // scriptOptions: LoadCoreSdkScriptOptions;
     environment?: LoadCoreSdkScriptOptions["environment"];
     debug?: LoadCoreSdkScriptOptions["debug"];
 };
@@ -52,6 +51,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
 
     // Load Core SDK Script
     useEffect(() => {
+        let isSubscribed = true;
+
         const loadSdk = async () => {
             try {
                 const paypal = await loadCoreSdkScript({
@@ -59,20 +60,32 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     debug: debugRef.current,
                 });
 
+                if (!isSubscribed) {
+                    return;
+                }
+
                 if (paypal) {
                     setPaypalNamespace(paypal);
                 }
             } catch (error) {
-                const errorInstance =
-                    error instanceof Error ? error : new Error(String(error));
-                dispatch({
-                    type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                    value: errorInstance,
-                });
+                if (isSubscribed) {
+                    const errorInstance =
+                        error instanceof Error
+                            ? error
+                            : new Error(String(error));
+                    dispatch({
+                        type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
+                        value: errorInstance,
+                    });
+                }
             }
         };
 
         loadSdk();
+
+        return () => {
+            isSubscribed = false;
+        };
     }, []);
 
     // Create SDK Instance
