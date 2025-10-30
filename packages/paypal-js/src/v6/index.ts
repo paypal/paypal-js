@@ -26,7 +26,8 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         return Promise.resolve(window.paypal as unknown as PayPalV6Namespace);
     }
 
-    const { environment, debug } = options;
+    const { environment, debug, dataNamespace } = options;
+    const attributes: Record<string, string> = {};
 
     const baseURL =
         environment === "production"
@@ -38,16 +39,27 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         url.searchParams.append("debug", "true");
     }
 
+    if (dataNamespace) {
+        attributes["data-namespace"] = dataNamespace;
+    }
+
     return new Promise<PayPalV6Namespace>((resolve, reject) => {
         insertScriptElement({
             url: url.toString(),
+            attributes,
             onSuccess: () => {
-                if (!window.paypal) {
+                const namespace = dataNamespace ?? "paypal";
+                const paypalSDK = Reflect.get(
+                    window,
+                    namespace,
+                ) as PayPalV6Namespace;
+
+                if (!paypalSDK) {
                     return reject(
-                        "The window.paypal global variable is not available",
+                        `The window.${namespace} global variable is not available`,
                     );
                 }
-                return resolve(window.paypal as unknown as PayPalV6Namespace);
+                return resolve(paypalSDK);
             },
             onError: () => {
                 const defaultError = new Error(
@@ -64,7 +76,7 @@ function validateArguments(options: unknown) {
     if (typeof options !== "object" || options === null) {
         throw new Error("Expected an options object");
     }
-    const { environment } = options as LoadCoreSdkScriptOptions;
+    const { environment, dataNamespace } = options as LoadCoreSdkScriptOptions;
 
     if (
         environment &&
@@ -74,6 +86,10 @@ function validateArguments(options: unknown) {
         throw new Error(
             'The "environment" option must be either "production" or "sandbox"',
         );
+    }
+
+    if (dataNamespace !== undefined && dataNamespace.trim() === "") {
+        throw new Error('The "dataNamespace" option cannot be an empty string');
     }
 }
 

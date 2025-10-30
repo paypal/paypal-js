@@ -171,10 +171,14 @@ export interface BaseInstance {
     updateLocale: (locale: string) => void;
 }
 
-export type LoadCoreSdkScriptOptions = {
+interface CoreSdkScriptDataAttributes {
+    dataNamespace?: string;
+}
+
+export interface LoadCoreSdkScriptOptions extends CoreSdkScriptDataAttributes {
     environment?: "production" | "sandbox";
     debug?: boolean;
-};
+}
 
 export function loadCoreSdkScript(
     options: LoadCoreSdkScriptOptions,
