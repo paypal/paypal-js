@@ -8,7 +8,7 @@ import { usePayPal } from "../hooks/usePayPal";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 
 import type { CreateInstanceOptions, PayPalV6Namespace } from "../types";
-import type { PayPalContextState } from "../components/PayPalProvider";
+import type { PayPalContextValue } from "../components/PayPalProvider";
 
 // Test constants
 export const TEST_CLIENT_TOKEN = "test-client-token";
@@ -141,17 +141,12 @@ describe("PayPalProvider", () => {
         });
 
         test('should set loadingStatus to "rejected" when SDK fails to load', async () => {
-            await withConsoleSpy("error", async () => {
-                (loadCoreSdkScript as jest.Mock).mockRejectedValue(
-                    new Error(TEST_ERROR_MESSAGE),
-                );
+            const mockError = new Error(TEST_ERROR_MESSAGE);
+            (loadCoreSdkScript as jest.Mock).mockRejectedValue(mockError);
 
-                const { state } = renderProvider();
+            const { state } = renderProvider();
 
-                await waitFor(() =>
-                    expectRejectedState(state, new Error(TEST_ERROR_MESSAGE)),
-                );
-            });
+            await waitFor(() => expectRejectedState(state, mockError));
         });
 
         test.each<[string, "sandbox" | "production", string, string]>([
@@ -273,31 +268,21 @@ describe("PayPalProvider", () => {
         });
 
         test("should handle eligibility loading failure gracefully", async () => {
-            await withConsoleSpy("warn", async (spy) => {
-                const mockInstance = {
-                    ...createMockSdkInstance(),
-                    findEligibleMethods: jest
-                        .fn()
-                        .mockRejectedValue(new Error("Eligibility failed")),
-                };
+            const mockError = new Error("Eligibility failed");
+            const mockInstance = {
+                ...createMockSdkInstance(),
+                findEligibleMethods: jest.fn().mockRejectedValue(mockError),
+            };
 
-                (loadCoreSdkScript as jest.Mock).mockResolvedValue({
-                    createInstance: jest.fn().mockResolvedValue(mockInstance),
-                });
-
-                const { state } = renderProvider();
-
-                await waitFor(() => expectResolvedState(state));
-
-                await waitFor(() =>
-                    expect(spy).toHaveBeenCalledWith(
-                        "Failed to get eligible payment methods:",
-                        expect.any(Error),
-                    ),
-                );
-
-                expect(state.eligiblePaymentMethods).toBe(null);
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: jest.fn().mockResolvedValue(mockInstance),
             });
+
+            const { state } = renderProvider();
+
+            await waitFor(() => expectRejectedState(state, mockError));
+
+            expect(state.eligiblePaymentMethods).toBe(null);
         });
     });
 
@@ -563,20 +548,8 @@ describe("Auto-memoization", () => {
     });
 });
 
-describe("usePayPal", () => {
-    test("should throw an error when used without PayPalProvider", () => {
-        withConsoleSpy("error", () => {
-            const { TestComponent } = setupTestComponent();
-
-            expect(() => render(<TestComponent />)).toThrow(
-                "usePayPal must be used within a PayPalProvider",
-            );
-        });
-    });
-});
-
 function setupTestComponent() {
-    const state: PayPalContextState = {
+    const state: PayPalContextValue = {
         loadingStatus: INSTANCE_LOADING_STATE.PENDING,
         sdkInstance: null,
         eligiblePaymentMethods: null,

@@ -72,7 +72,9 @@ describe("usePayLaterOneTimePaymentSession", () => {
         (usePayPal as jest.Mock).mockReturnValue({ sdkInstance: null });
 
         const {
-            result: { error },
+            result: {
+                current: { error },
+            },
         } = renderHook(() =>
             usePayLaterOneTimePaymentSession({
                 presentationMode: "auto",
@@ -190,11 +192,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         const mockPresentationMode = "auto";
         const mockOrderIdPromise = Promise.resolve({ orderId: "123" });
         const mockCreateOrder = jest.fn(() => mockOrderIdPromise);
-        const {
-            result: {
-                current: { handleClick },
-            },
-        } = renderHook(() =>
+        const { result } = renderHook(() =>
             usePayLaterOneTimePaymentSession({
                 presentationMode: mockPresentationMode,
                 createOrder: mockCreateOrder,
@@ -202,9 +200,52 @@ describe("usePayLaterOneTimePaymentSession", () => {
             }),
         );
 
-        await expect(handleClick).rejects.toThrowError(
-            "paylater session not available",
+        await act(async () => {
+            await result.current.handleClick();
+        });
+
+        expect(result.current.error).toEqual(
+            new Error("PayLater session not available"),
         );
+    });
+
+    test("should do nothing if the click handler is called after unmount", async () => {
+        const mockStart = jest.fn();
+        const mockSession: OneTimePaymentSession = {
+            cancel: jest.fn(),
+            destroy: jest.fn(),
+            start: mockStart,
+        };
+        const mockCreatePayLaterOneTimePaymentSession = jest
+            .fn()
+            .mockReturnValue(mockSession);
+
+        (usePayPal as jest.Mock).mockReturnValue({
+            sdkInstance: {
+                createPayLaterOneTimePaymentSession:
+                    mockCreatePayLaterOneTimePaymentSession,
+            },
+        });
+
+        const mockPresentationMode = "auto";
+        const mockOrderIdPromise = Promise.resolve({ orderId: "123" });
+        const mockCreateOrder = jest.fn(() => mockOrderIdPromise);
+        const { result, unmount } = renderHook(() =>
+            usePayLaterOneTimePaymentSession({
+                presentationMode: mockPresentationMode,
+                createOrder: mockCreateOrder,
+                onApprove: jest.fn(),
+            }),
+        );
+
+        unmount();
+
+        await act(async () => {
+            await result.current.handleClick();
+        });
+
+        expect(result.current.error).toBeNull();
+        expect(mockStart).not.toHaveBeenCalled();
     });
 
     test("should provide a cancel handler that cancels the session", async () => {

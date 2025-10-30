@@ -12,11 +12,11 @@ import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import { isServer } from "../utils";
 
 import type { CreateInstanceOptions } from "../types";
-import type { PayPalContextState } from "../components/PayPalProvider";
+import type { PayPalContextValue } from "../components/PayPalProvider";
 
 const TEST_CLIENT_TOKEN = "test-client-token";
 
-function expectInitialState(state: Partial<PayPalContextState>): void {
+function expectInitialState(state: Partial<PayPalContextValue>): void {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
     expect(state.sdkInstance).toBe(null);
     expect(state.eligiblePaymentMethods).toBe(null);
@@ -221,7 +221,7 @@ describe("usePayPalInstance SSR", () => {
 });
 
 function setupSSRTestComponent() {
-    const state: PayPalContextState = {
+    const state: PayPalContextValue = {
         loadingStatus: INSTANCE_LOADING_STATE.PENDING,
         sdkInstance: null,
         eligiblePaymentMethods: null,

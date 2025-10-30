@@ -71,7 +71,9 @@ describe("usePayPalOneTimePaymentSession", () => {
             };
 
             const {
-                result: { error },
+                result: {
+                    current: { error },
+                },
             } = renderHook(() => usePayPalOneTimePaymentSession(props));
 
             expect(error).toEqual(new Error("no sdk instance available"));
@@ -328,7 +330,7 @@ describe("usePayPalOneTimePaymentSession", () => {
             expect(mockCreateOrder).toHaveBeenCalled();
         });
 
-        test("should error if the click handler is called and there is no session", async () => {
+        test("should do nothing if the click handler is called and there is no session", async () => {
             const props: UsePayPalOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 orderId: "test-order-id",
@@ -343,11 +345,12 @@ describe("usePayPalOneTimePaymentSession", () => {
 
             unmount();
 
-            await expect(
-                act(async () => {
-                    await result.current.handleClick();
-                }),
-            ).rejects.toThrow("PayPal session not available");
+            await act(async () => {
+                await result.current.handleClick();
+            });
+
+            expect(result.current.error).toBeNull();
+            expect(mockPayPalSession.start).not.toHaveBeenCalled();
         });
 
         test("should handle different presentation modes", async () => {
@@ -493,11 +496,13 @@ describe("usePayPalOneTimePaymentSession", () => {
                 result.current.handleDestroy();
             });
 
-            await expect(
-                act(async () => {
-                    await result.current.handleClick();
-                }),
-            ).rejects.toThrow("PayPal session not available");
+            await act(async () => {
+                await result.current.handleClick();
+            });
+
+            expect(result.current.error).toEqual(
+                new Error("PayPal session not available"),
+            );
         });
     });
 });
