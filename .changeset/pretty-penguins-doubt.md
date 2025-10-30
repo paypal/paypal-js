@@ -2,4 +2,4 @@
 "@paypal/paypal-js": patch
 ---
 
-feat: add `PayPalV6Namespace` type to global `paypal` declaration
+feat: add version to PayPalV6Namespace

@@ -30,7 +30,7 @@ export interface PayPalV6Namespace {
     createInstance: <T extends readonly [Components, ...Components[]]>(
         createInstanceOptions: CreateInstanceOptions<T>,
     ) => Promise<SdkInstance<T>>;
-    version: `${string}.${string}.${string}`;
+    version: `${number}.${number}.${number}`;
 }
 
 export type Components =
