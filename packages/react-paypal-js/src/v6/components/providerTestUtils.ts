@@ -30,7 +30,7 @@ export function createMockPayPalNamespace() {
 
 // State assertion helpers
 export function expectInitialState(state: Partial<PayPalContextState>) {
-    expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.INITIAL);
+    expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
     expect(state.sdkInstance).toBe(null);
     expect(state.eligiblePaymentMethods).toBe(null);
     expect(state.error).toBe(null);
@@ -57,11 +57,10 @@ export function expectRejectedState(
     }
 }
 
-export function expectResetState(state: Partial<PayPalContextState>) {
+export function expectReloadingState(state: Partial<PayPalContextState>) {
+    // When props change, only loadingStatus is reset to PENDING
+    // Old instance and eligibility remain until new ones are loaded
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
-    expect(state.sdkInstance).toBe(null);
-    expect(state.eligiblePaymentMethods).toBe(null);
-    expect(state.error).toBe(null);
 }
 
 // Console spy utilities

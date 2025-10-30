@@ -83,7 +83,7 @@ function createInitialState(): PayPalState {
     return {
         sdkInstance: null,
         eligiblePaymentMethods: null,
-        loadingStatus: INSTANCE_LOADING_STATE.INITIAL,
+        loadingStatus: INSTANCE_LOADING_STATE.PENDING,
         error: null,
     };
 }
