@@ -24,6 +24,7 @@ function testGlobalUnionType() {
     const mockV6: PayPalV6Namespace = {
         createInstance: async () =>
             ({}) as Awaited<ReturnType<PayPalV6Namespace["createInstance"]>>,
+        version: "6.0.0",
     };
 
     // test compile-time type checking for assignment compatibility
@@ -41,9 +42,6 @@ function testGlobalUnionType() {
 
         // @ts-expect-error - property 'createInstance' does not exist on type 'PayPalNamespace | PayPalV6Namespace'
         window.paypal.createInstance();
-
-        // @ts-expect-error - property 'version' does not exist on type 'PayPalNamespace | PayPalV6Namespace'
-        console.log(window.paypal.version);
     }
 
     // test inline type checking
