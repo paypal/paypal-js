@@ -22,6 +22,7 @@ import type {
     PayPalCardFieldsComponentOptions,
     PayPalCardFieldsComponent,
 } from "./components/card-fields";
+import type { PayPalV6Namespace } from "./v6/index";
 
 export interface PayPalNamespace {
     Buttons?: (
@@ -57,7 +58,7 @@ export const version: string;
 
 declare global {
     interface Window {
-        paypal?: PayPalNamespace | null;
+        paypal?: PayPalNamespace | PayPalV6Namespace | null;
     }
 }
 
