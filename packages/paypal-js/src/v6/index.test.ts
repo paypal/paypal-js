@@ -94,7 +94,15 @@ describe("loadCoreSdkScript()", () => {
         });
     });
 
-    test("should error due to invalid input", async () => {
+    test("should return PayPal namespace with version property", async () => {
+        const result = await loadCoreSdkScript();
+        expect(result).toBeDefined();
+        expect(result.version).toBeDefined();
+        expect(result.version).toBe("6");
+        expect(typeof result.version).toBe("string");
+    });
+
+    test("should error due to unvalid input", async () => {
         expect(async () => {
             // @ts-expect-error invalid arguments
             await loadCoreSdkScript(123);
