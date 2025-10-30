@@ -8,7 +8,8 @@ const version = "__VERSION__";
 
 function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     validateArguments(options);
-    const { environment, debug } = options;
+    const { environment, debug, dataNamespace } = options;
+    const attributes: Record<string, string> = {};
 
     const baseURL =
         environment === "production"
@@ -20,9 +21,14 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         url.searchParams.append("debug", "true");
     }
 
+    if (dataNamespace) {
+        attributes["data-namespace"] = dataNamespace;
+    }
+
     return new Promise<PayPalV6Namespace>((resolve, reject) => {
         insertScriptElement({
             url: url.toString(),
+            attributes,
             onSuccess: () => {
                 if (!window.paypal) {
                     return reject(
