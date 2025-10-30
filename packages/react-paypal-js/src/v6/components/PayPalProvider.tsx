@@ -10,7 +10,7 @@ import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
-import { useDeepCompareMemoize } from "../utils";
+import { useCompareMemoize } from "../utils";
 
 import type {
     CreateInstanceOptions,
@@ -41,7 +41,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     environment,
     debug,
 }) => {
-    const memoizedComponents = useDeepCompareMemoize(components);
+    const memoizedComponents = useCompareMemoize(components);
 
     const [paypalNamespace, setPaypalNamespace] =
         useState<PayPalV6Namespace | null>(null);

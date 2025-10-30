@@ -7,41 +7,40 @@ export function isServer(): boolean {
 }
 
 /**
- * Performs a shallow equality check on two components arrays used by PayPalProvider.
+ * Performs a shallow equality check on two arrays.
  *
- * This function is specifically designed to compare the `components` prop arrays passed to
- * PayPalProvider.
+ * This function compares two arrays element-by-element using strict equality (===).
+ * It's primarily used to compare the `components` prop arrays passed to PayPalProvider
+ * to prevent unnecessary re-initialization of the PayPal SDK.
  *
- * This optimization prevents unnecessary re-initialization of the PayPal SDK when the components
- * array reference changes but the actual component names remain the same. This is particularly
- * important because re-initializing the SDK is an expensive operation that involves loading scripts
- * and setting up PayPal integrations.
+ * This optimization is important because re-initializing the SDK is an expensive operation
+ * that involves loading scripts and setting up PayPal integrations.
  *
- * @param arr1 - First components array to compare
- * @param arr2 - Second components array to compare
- * @returns `true` if both arrays are null/undefined, or if they contain the same components in the same order
+ * @param arr1 - First array to compare
+ * @param arr2 - Second array to compare
+ * @returns `true` if both arrays are null/undefined, or if they contain the same elements in the same order
  *
  * @example
- * // Returns true - both arrays have the same components in the same order
- * isEqualComponentsArray(
+ * // Returns true - both arrays have the same elements in the same order
+ * shallowEqualArray(
  *   ["paypal-payments", "venmo-payments"],
  *   ["paypal-payments", "venmo-payments"]
  * );
  *
  * @example
  * // Returns false - different order
- * isEqualComponentsArray(
+ * shallowEqualArray(
  *   ["paypal-payments", "venmo-payments"],
  *   ["venmo-payments", "paypal-payments"]
  * );
  *
  * @example
  * // Returns true - both are null
- * isEqualComponentsArray(null, null);
+ * shallowEqualArray(null, null);
  */
-function isEqualComponentsArray(
-    arr1: readonly Components[] | null | undefined,
-    arr2: readonly Components[] | null | undefined,
+function shallowEqualArray<T>(
+    arr1: readonly T[] | null | undefined,
+    arr2: readonly T[] | null | undefined,
 ): boolean {
     if (!arr1 && !arr2) {
         return true;
@@ -60,27 +59,29 @@ function isEqualComponentsArray(
             return false;
         }
     }
+
     return true;
 }
 
 /**
- * Custom hook that memoizes a components array based on deep equality comparison.
- * Returns a stable reference when the deep value hasn't changed.
+ * Custom hook that memoizes a components array based on shallow equality comparison.
+ * Returns a stable reference when the array contents haven't changed.
  *
- * This allows developers to pass inline component arrays without causing unnecessary re-renders.
+ * This allows developers to pass inline component arrays without causing unnecessary re-renders
+ * when the array values are the same, even if the array reference changes.
  *
  * @param value - The components array to memoize
  * @returns A stable reference to the components array
  *
  * @example
- * const memoizedComponents = useDeepCompareMemoize(["paypal-payments", "venmo-payments"]);
+ * const memoizedComponents = useCompareMemoize(["paypal-payments", "venmo-payments"]);
  */
-export function useDeepCompareMemoize<
+export function useCompareMemoize<
     T extends readonly Components[] | null | undefined,
 >(value: T): T {
     const ref = useRef<T>(value);
 
-    if (!isEqualComponentsArray(ref.current, value)) {
+    if (!shallowEqualArray(ref.current, value)) {
         ref.current = value;
     }
 
