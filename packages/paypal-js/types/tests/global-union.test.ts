@@ -1,27 +1,38 @@
 import type { PayPalNamespace } from "../index";
 import type { PayPalV6Namespace } from "../v6/index";
+import type {
+    PayPalButtonsComponent,
+    PayPalMarksComponent,
+    PayPalMessagesComponent,
+    PayPalHostedFieldsComponent,
+    PayPalCardFieldsComponent,
+} from "../index";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function testGlobalUnionType() {
     const mockV5: PayPalNamespace = {
         version: "5.0.0",
-        Buttons: () => ({}) as any,
-        Marks: () => ({}) as any,
-        Messages: () => ({}) as any,
-        HostedFields: {} as any,
-        CardFields: () => ({}) as any,
+        Buttons: (): PayPalButtonsComponent => ({}) as PayPalButtonsComponent,
+        Marks: (): PayPalMarksComponent => ({}) as PayPalMarksComponent,
+        Messages: (): PayPalMessagesComponent =>
+            ({}) as PayPalMessagesComponent,
+        HostedFields: {} as PayPalHostedFieldsComponent,
+        CardFields: (): PayPalCardFieldsComponent =>
+            ({}) as PayPalCardFieldsComponent,
     };
 
     const mockV6: PayPalV6Namespace = {
-        createInstance: async () => ({}) as any,
+        createInstance: async () =>
+            ({}) as Awaited<ReturnType<PayPalV6Namespace["createInstance"]>>,
     };
 
     // test compile-time type checking for assignment compatibility
-    let testPaypal: typeof window.paypal;
-    testPaypal = mockV5;
-    testPaypal = mockV6;
-    testPaypal = null;
-    testPaypal = undefined;
+    const testPaypal1: typeof window.paypal = mockV5;
+    const testPaypal2: typeof window.paypal = mockV6;
+    const testPaypal3: typeof window.paypal = null;
+    const testPaypal4: typeof window.paypal = undefined;
+    // use consts to avoid lint error
+    console.log(testPaypal1, testPaypal2, testPaypal3, testPaypal4);
 
     // cannot access properties directly without type guards
     if (window.paypal) {
