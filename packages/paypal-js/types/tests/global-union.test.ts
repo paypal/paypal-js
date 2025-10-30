@@ -17,7 +17,6 @@ function testGlobalUnionType() {
     };
 
     // test compile-time type checking for assignment compatibility
-
     let testPaypal: typeof window.paypal;
     testPaypal = mockV5;
     testPaypal = mockV6;
@@ -37,7 +36,6 @@ function testGlobalUnionType() {
     }
 
     // test inline type checking
-
     if (window.paypal && "createInstance" in window.paypal) {
         const v6Instance = window.paypal;
         v6Instance.createInstance({
@@ -59,7 +57,6 @@ function testGlobalUnionType() {
     }
 
     // test custom type guard functions (alternative to inline type checking)
-
     function isPayPalV6(
         paypal: NonNullable<typeof window.paypal>,
     ): paypal is PayPalV6Namespace {
