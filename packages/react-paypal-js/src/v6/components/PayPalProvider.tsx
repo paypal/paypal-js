@@ -10,7 +10,7 @@ import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
-import { useCompareMemoize } from "../utils";
+import { toError, useCompareMemoize } from "../utils";
 
 import type {
     CreateInstanceOptions,
@@ -69,13 +69,10 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                 }
             } catch (error) {
                 if (isSubscribed) {
-                    const errorInstance =
-                        error instanceof Error
-                            ? error
-                            : new Error(String(error));
+                    // TODO test
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                        value: errorInstance,
+                        value: toError(error),
                     });
                 }
             }
@@ -125,14 +122,11 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     value: instance,
                 });
             } catch (error) {
+                // TODO test
                 if (isSubscribed) {
-                    const errorInstance =
-                        error instanceof Error
-                            ? error
-                            : new Error(String(error));
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                        value: errorInstance,
+                        value: toError(error),
                     });
                 }
             }
@@ -181,6 +175,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     value: eligiblePaymentMethods,
                 });
             } catch (error) {
+                // TODO Error in state here?
+
                 if (isSubscribed) {
                     console.warn(
                         "Failed to get eligible payment methods:",
