@@ -49,7 +49,52 @@ describe("loadCoreSdkScript()", () => {
         expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
     });
 
-    test("should error due to unvalid input", async () => {
+    describe("dataNamespace option", () => {
+        test("should support custom data-namespace attribute", async () => {
+            const customNamespace = "myCustomNamespace";
+
+            // Update mock to set the custom namespace instead of window.paypal
+            mockedInsertScriptElement.mockImplementationOnce(
+                ({ onSuccess }: ScriptElement) => {
+                    vi.stubGlobal(customNamespace, { version: "6" });
+                    process.nextTick(() => onSuccess());
+                },
+            );
+
+            const result = await loadCoreSdkScript({
+                dataNamespace: customNamespace,
+            });
+
+            expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
+                "https://www.sandbox.paypal.com/web-sdk/v6/core",
+            );
+            expect(
+                mockedInsertScriptElement.mock.calls[0][0].attributes,
+            ).toEqual({
+                "data-namespace": customNamespace,
+            });
+            expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+            expect(result).toBeDefined();
+        });
+
+        test("should error when dataNamespace is an empty string", async () => {
+            expect(async () => {
+                await loadCoreSdkScript({ dataNamespace: "" });
+            }).rejects.toThrowError(
+                'The "dataNamespace" option cannot be an empty string',
+            );
+        });
+
+        test("should error when dataNamespace is only whitespace", async () => {
+            expect(async () => {
+                await loadCoreSdkScript({ dataNamespace: "   " });
+            }).rejects.toThrowError(
+                'The "dataNamespace" option cannot be an empty string',
+            );
+        });
+    });
+
+    test("should error due to invalid input", async () => {
         expect(async () => {
             // @ts-expect-error invalid arguments
             await loadCoreSdkScript(123);
