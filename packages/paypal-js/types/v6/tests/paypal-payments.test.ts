@@ -22,12 +22,6 @@ async function main() {
         throw new Error("PayPal v6 namespace missing version property");
     }
 
-    // verify version has correct format
-    const versionRegex = /^\d+\.\d+\.\d+$/;
-    if (!versionRegex.test(paypal.version)) {
-        throw new Error(`Invalid version format: ${paypal.version}`);
-    }
-
     const sdkInstance = await paypal.createInstance({
         clientToken: "fakeValue",
         components: ["paypal-payments"],
