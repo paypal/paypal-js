@@ -10,14 +10,16 @@ import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
-import { useCompareMemoize } from "../utils";
+import { toError, useCompareMemoize } from "../utils";
 
 import type {
-    CreateInstanceOptions,
     Components,
+    CreateInstanceOptions,
     LoadCoreSdkScriptOptions,
+    PayPalContextValue,
     PayPalV6Namespace,
 } from "../types";
+import type { usePayPal } from "../hooks/usePayPal";
 
 type PayPalProviderProps = CreateInstanceOptions<
     readonly [Components, ...Components[]]
@@ -28,6 +30,10 @@ type PayPalProviderProps = CreateInstanceOptions<
     debug?: LoadCoreSdkScriptOptions["debug"];
 };
 
+/**
+ * {@link PayPalProvider} creates the SDK script, component scripts, runs eligibility, then
+ * provides these in {@link PayPalContext} to child components via the {@link usePayPal} hook.
+ */
 export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     clientMetadataId,
     clientToken,
@@ -69,13 +75,9 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                 }
             } catch (error) {
                 if (isSubscribed) {
-                    const errorInstance =
-                        error instanceof Error
-                            ? error
-                            : new Error(String(error));
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                        value: errorInstance,
+                        value: toError(error),
                     });
                 }
             }
@@ -126,13 +128,9 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                 });
             } catch (error) {
                 if (isSubscribed) {
-                    const errorInstance =
-                        error instanceof Error
-                            ? error
-                            : new Error(String(error));
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                        value: errorInstance,
+                        value: toError(error),
                     });
                 }
             }
@@ -181,6 +179,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     value: eligiblePaymentMethods,
                 });
             } catch (error) {
+                // TODO Error in state here?
+
                 if (isSubscribed) {
                     console.warn(
                         "Failed to get eligible payment methods:",
@@ -197,7 +197,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         };
     }, [state.sdkInstance, state.loadingStatus]);
 
-    const contextValue = useMemo(
+    const contextValue: PayPalContextValue = useMemo(
         () => ({
             sdkInstance: state.sdkInstance,
             eligiblePaymentMethods: state.eligiblePaymentMethods,

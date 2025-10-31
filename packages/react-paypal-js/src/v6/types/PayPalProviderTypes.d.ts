@@ -4,13 +4,6 @@ import type {
     INSTANCE_DISPATCH_ACTION,
 } from "./PayPalProviderEnums";
 
-export interface PayPalState {
-    sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
-    eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
-    loadingStatus: INSTANCE_LOADING_STATE;
-    error: Error | null;
-}
-
 export type InstanceAction =
     | {
           type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS;
@@ -29,10 +22,13 @@ export type InstanceAction =
           type: INSTANCE_DISPATCH_ACTION.RESET_STATE;
       };
 
-export interface PayPalContextState {
+export interface PayPalState {
     sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
     eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
-    error: Error | null;
-    dispatch: React.Dispatch<InstanceAction>;
     loadingStatus: INSTANCE_LOADING_STATE;
+    error: Error | null;
+}
+
+export interface PayPalContextValue extends PayPalState {
+    dispatch: React.Dispatch<InstanceAction>;
 }

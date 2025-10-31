@@ -1,6 +1,6 @@
 {
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint", "import"],
+    "plugins": ["@typescript-eslint", "import", "jsdoc"],
     "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
@@ -27,6 +27,7 @@
         }
     },
     "rules": {
+        "jsdoc/no-undefined-types": 1,
         "react/prop-types": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "curly": "warn",
