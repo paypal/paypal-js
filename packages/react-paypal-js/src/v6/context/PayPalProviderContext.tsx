@@ -6,8 +6,8 @@ import {
 } from "../types/PayPalProviderEnums";
 
 import type {
-    PayPalContextState,
     PayPalState,
+    PayPalContextValue,
     InstanceAction,
 } from "../types/PayPalProviderTypes.d.ts";
 
@@ -46,4 +46,7 @@ export function instanceReducer(
     }
 }
 
-export const PayPalContext = createContext<PayPalContextState | null>(null);
+export const PayPalContext = createContext<PayPalContextValue>({
+    ...initialState,
+    dispatch: () => null,
+});
