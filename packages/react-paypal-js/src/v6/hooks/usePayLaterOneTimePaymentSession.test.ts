@@ -72,7 +72,9 @@ describe("usePayLaterOneTimePaymentSession", () => {
         (usePayPal as jest.Mock).mockReturnValue({ sdkInstance: null });
 
         const {
-            result: { error },
+            result: {
+                current: { error },
+            },
         } = renderHook(() =>
             usePayLaterOneTimePaymentSession({
                 presentationMode: "auto",
@@ -190,11 +192,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         const mockPresentationMode = "auto";
         const mockOrderIdPromise = Promise.resolve({ orderId: "123" });
         const mockCreateOrder = jest.fn(() => mockOrderIdPromise);
-        const {
-            result: {
-                current: { handleClick },
-            },
-        } = renderHook(() =>
+        const { result } = renderHook(() =>
             usePayLaterOneTimePaymentSession({
                 presentationMode: mockPresentationMode,
                 createOrder: mockCreateOrder,
@@ -202,8 +200,12 @@ describe("usePayLaterOneTimePaymentSession", () => {
             }),
         );
 
-        await expect(handleClick).rejects.toThrowError(
-            "paylater session not available",
+        await act(async () => {
+            await result.current.handleClick();
+        });
+
+        expect(result.current.error).toEqual(
+            new Error("paylater session not available"),
         );
     });
 

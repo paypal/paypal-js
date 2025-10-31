@@ -17,6 +17,7 @@ export type PayLaterOneTimePaymentSessionProps =
       });
 
 export interface PayLaterOneTimePaymentSessionReturn {
+    error: null | Error;
     handleClick: () => Promise<void>;
     handleCancel: () => void;
     handleDestroy: () => void;

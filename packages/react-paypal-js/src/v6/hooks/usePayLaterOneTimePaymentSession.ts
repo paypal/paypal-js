@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { usePayPal } from "./usePayPal";
 import { useProxyProps } from "../utils";
@@ -19,15 +19,23 @@ export function usePayLaterOneTimePaymentSession({
     const { sdkInstance } = usePayPal();
     const sessionRef = useRef<OneTimePaymentSession | null>(null); // handle cleanup
     const proxyCallbacks = useProxyProps(callbacks);
+    const [error, setError] = useState<Error | null>(null);
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
         sessionRef.current = null;
     }, []);
 
+    // Separate error reporting effect to avoid infinite loops with proxyCallbacks
     useEffect(() => {
         if (!sdkInstance) {
-            throw new Error("no sdk instance available");
+            setError(new Error("no sdk instance available"));
+        }
+    }, [sdkInstance]);
+
+    useEffect(() => {
+        if (!sdkInstance) {
+            return;
         }
 
         const newSession = sdkInstance.createPayLaterOneTimePaymentSession({
@@ -45,7 +53,8 @@ export function usePayLaterOneTimePaymentSession({
 
     const handleClick = useCallback(async () => {
         if (!sessionRef.current) {
-            throw new Error("paylater session not available");
+            setError(new Error("paylater session not available"));
+            return;
         }
 
         const startOptions: PayPalPresentationModeOptions = {
@@ -60,6 +69,7 @@ export function usePayLaterOneTimePaymentSession({
     }, [createOrder, presentationMode]);
 
     return {
+        error,
         handleCancel,
         handleClick,
         handleDestroy,
