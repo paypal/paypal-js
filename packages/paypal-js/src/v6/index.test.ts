@@ -97,9 +97,9 @@ describe("loadCoreSdkScript()", () => {
     test("should return PayPal namespace with version property", async () => {
         const result = await loadCoreSdkScript();
         expect(result).toBeDefined();
-        expect(result.version).toBeDefined();
-        expect(result.version).toBe("6");
-        expect(typeof result.version).toBe("string");
+        expect(result?.version).toBeDefined();
+        expect(result?.version).toBe("6");
+        expect(typeof result?.version).toBe("string");
     });
 
     test("should error due to unvalid input", async () => {
