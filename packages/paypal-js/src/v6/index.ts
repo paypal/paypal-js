@@ -31,10 +31,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
             attributes,
             onSuccess: () => {
                 const namespace = dataNamespace ?? "paypal";
-                const paypalSDK = Reflect.get(
-                    window,
-                    namespace,
-                ) as PayPalV6Namespace;
+                const paypalSDK = getPayPalWindowNamespace(namespace);
 
                 if (!paypalSDK) {
                     return reject(
@@ -73,6 +70,11 @@ function validateArguments(options: unknown) {
     if (dataNamespace !== undefined && dataNamespace.trim() === "") {
         throw new Error('The "dataNamespace" option cannot be an empty string');
     }
+}
+
+function getPayPalWindowNamespace(namespace: string): PayPalV6Namespace {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (window as any)[namespace];
 }
 
 export { loadCoreSdkScript, version };
