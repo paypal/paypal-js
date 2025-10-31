@@ -31,10 +31,9 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
             attributes,
             onSuccess: () => {
                 const namespace = dataNamespace ?? "paypal";
-                const paypalSDK = Reflect.get(
-                    window,
-                    namespace,
-                ) as PayPalV6Namespace;
+                const paypalSDK = (
+                    window as unknown as Record<string, unknown>
+                )[namespace] as PayPalV6Namespace | undefined;
 
                 if (!paypalSDK) {
                     return reject(
