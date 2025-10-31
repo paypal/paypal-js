@@ -21,12 +21,10 @@ import type {
 
 type PayPalProviderProps = CreateInstanceOptions<
     readonly [Components, ...Components[]]
-> & {
-    // Provider-specific properties
-    children: React.ReactNode;
-    environment?: LoadCoreSdkScriptOptions["environment"];
-    debug?: LoadCoreSdkScriptOptions["debug"];
-};
+> &
+    LoadCoreSdkScriptOptions & {
+        children: React.ReactNode;
+    };
 
 export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     clientMetadataId,
@@ -38,16 +36,15 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     shopperSessionId,
     testBuyerCountry,
     children,
-    environment,
-    debug,
+    ...scriptOptions
 }) => {
     const memoizedComponents = useCompareMemoize(components);
 
     const [paypalNamespace, setPaypalNamespace] =
         useState<PayPalV6Namespace | null>(null);
     const [state, dispatch] = useReducer(instanceReducer, initialState);
-    const environmentRef = useRef(environment);
-    const debugRef = useRef(debug);
+    // Ref to hold script options to avoid re-running effect
+    const loadCoreScriptOptions = useRef(scriptOptions);
 
     // Load Core SDK Script
     useEffect(() => {
@@ -56,8 +53,9 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         const loadSdk = async () => {
             try {
                 const paypal = await loadCoreSdkScript({
-                    environment: environmentRef.current,
-                    debug: debugRef.current,
+                    environment: loadCoreScriptOptions.current.environment,
+                    debug: loadCoreScriptOptions.current.debug,
+                    dataNamespace: loadCoreScriptOptions.current.dataNamespace,
                 });
 
                 if (!isSubscribed) {
