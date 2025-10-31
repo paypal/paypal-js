@@ -6,20 +6,21 @@ import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 import { PayPalProvider } from "./PayPalProvider";
 import { usePayPal } from "../hooks/usePayPal";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
-import {
-    TEST_CLIENT_TOKEN,
-    TEST_ERROR_MESSAGE,
-    TEST_ELIGIBILITY_RESULT,
-    createMockSdkInstance,
-    createMockPayPalNamespace,
-    expectPendingState,
-    expectResolvedState,
-    expectRejectedState,
-    expectReloadingState,
-    withConsoleSpy,
-} from "./providerTestUtils";
 
-import type { CreateInstanceOptions, PayPalContextState } from "../types";
+import type {
+    CreateInstanceOptions,
+    PayPalContextState,
+    PayPalV6Namespace,
+    SdkInstance,
+} from "../types";
+
+// Test constants
+export const TEST_CLIENT_TOKEN = "test-client-token";
+export const TEST_ERROR_MESSAGE = "test error";
+export const TEST_ELIGIBILITY_RESULT = {
+    paypal: { eligible: true },
+    venmo: { eligible: false },
+};
 
 jest.mock("@paypal/paypal-js/sdk-v6", () => ({
     loadCoreSdkScript: jest.fn(),
@@ -55,6 +56,67 @@ function renderProvider(
     );
 
     return { ...result, state };
+}
+
+// Mock factories
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+function createMockSdkInstance() {
+    return {
+        findEligibleMethods: jest
+            .fn()
+            .mockResolvedValue(TEST_ELIGIBILITY_RESULT),
+        createPayPalOneTimePaymentSession: jest.fn(),
+        updateLocale: jest.fn(),
+    };
+}
+
+function createMockPayPalNamespace(): PayPalV6Namespace {
+    return {
+        createInstance: jest.fn().mockResolvedValue(createMockSdkInstance()),
+        version: "6.0.0",
+    };
+}
+
+// State assertion helpers
+function expectPendingState(state: Partial<PayPalContextState>): void {
+    expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
+}
+
+function expectResolvedState(state: Partial<PayPalContextState>): void {
+    expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.RESOLVED);
+    expect(state.sdkInstance).toBeTruthy();
+    expect(state.error).toBe(null);
+}
+
+function expectRejectedState(
+    state: Partial<PayPalContextState>,
+    error?: Error,
+): void {
+    expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.REJECTED);
+    expect(state.sdkInstance).toBe(null);
+    if (error) {
+        expect(state.error).toEqual(error);
+    }
+}
+function expectReloadingState(state: Partial<PayPalContextState>): void {
+    // When props change, only loadingStatus is reset to PENDING
+    // Old instance and eligibility remain until new ones are loaded
+    expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
+}
+
+// Console spy utilities
+function withConsoleSpy(
+    method: "error" | "warn" | "log",
+    testFn: (spy: jest.SpyInstance) => void | Promise<void>,
+): void | Promise<void> {
+    const spy = jest.spyOn(console, method).mockImplementation();
+    const result = testFn(spy);
+
+    if (result instanceof Promise) {
+        return result.finally(() => spy.mockRestore());
+    }
+
+    spy.mockRestore();
 }
 
 describe("PayPalProvider", () => {

@@ -10,9 +10,17 @@ import { PayPalProvider } from "./PayPalProvider";
 import { usePayPal } from "../hooks/usePayPal";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import { isServer } from "../utils";
-import { TEST_CLIENT_TOKEN, expectInitialState } from "./providerTestUtils";
 
 import type { CreateInstanceOptions, PayPalContextState } from "../types";
+
+const TEST_CLIENT_TOKEN = "test-client-token";
+
+function expectInitialState(state: Partial<PayPalContextState>): void {
+    expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
+    expect(state.sdkInstance).toBe(null);
+    expect(state.eligiblePaymentMethods).toBe(null);
+    expect(state.error).toBe(null);
+}
 
 jest.mock("@paypal/paypal-js/sdk-v6", () => ({
     loadCoreSdkScript: jest.fn(),
