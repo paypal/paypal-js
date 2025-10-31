@@ -53,7 +53,7 @@ export function usePayLaterOneTimePaymentSession({
 
     const handleClick = useCallback(async () => {
         if (!sessionRef.current) {
-            setError(new Error("paylater session not available"));
+            setError(new Error("PayLater session not available"));
             return;
         }
 
