@@ -3,7 +3,6 @@ import type {
     PayPalV6Namespace,
     LoadCoreSdkScriptOptions,
 } from "../../types/v6/index";
-import { as } from "vitest/dist/reporters-O4LBziQ_.js";
 
 const version = "__VERSION__";
 
@@ -32,14 +31,16 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
             attributes,
             onSuccess: () => {
                 const namespace = dataNamespace ?? "paypal";
-                const paypalSDK = getPayPalWindowNamespace(namespace);
+                const paypalSDK = (
+                    window as unknown as Record<string, unknown>
+                )[namespace] as PayPalV6Namespace | undefined;
 
                 if (!paypalSDK) {
                     return reject(
                         `The window.${namespace} global variable is not available`,
                     );
                 }
-                return resolve(paypalSDK as PayPalV6Namespace);
+                return resolve(paypalSDK);
             },
             onError: () => {
                 const defaultError = new Error(
@@ -71,11 +72,6 @@ function validateArguments(options: unknown) {
     if (dataNamespace !== undefined && dataNamespace.trim() === "") {
         throw new Error('The "dataNamespace" option cannot be an empty string');
     }
-}
-
-function getPayPalWindowNamespace(namespace: string): unknown {
-    const win = window as unknown as Record<string, unknown>;
-    return win[namespace];
 }
 
 export { loadCoreSdkScript, version };
