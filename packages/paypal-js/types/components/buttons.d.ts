@@ -50,6 +50,7 @@ export type OnApproveData = {
     orderID: string;
     payerID?: string | null;
     paymentID?: string | null;
+    paymentSource: FUNDING_SOURCE;
     subscriptionID?: string | null;
     authCode?: string | null;
 };
