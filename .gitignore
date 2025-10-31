@@ -10,3 +10,4 @@ node_modules
 /playwright-report/
 /playwright/.cache/
 .idea
+.rollup.cache

@@ -1,5 +1,8 @@
 {
     "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "declaration": true
+    },
     "include": ["src"],
     "exclude": ["src/stories", "src/**/*.test.ts", "src/**/*.test.tsx"]
 }
