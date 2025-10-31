@@ -18,6 +18,10 @@ async function main() {
         throw new Error("Invalid paypal object for v6");
     }
 
+    if (!paypal?.version) {
+        throw new Error("PayPal v6 namespace missing version property");
+    }
+
     const sdkInstance = await paypal.createInstance({
         clientToken: "fakeValue",
         components: ["paypal-payments"],
