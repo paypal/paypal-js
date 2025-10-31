@@ -69,7 +69,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                 }
             } catch (error) {
                 if (isSubscribed) {
-                    // TODO test
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
                         value: toError(error),
@@ -122,7 +121,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     value: instance,
                 });
             } catch (error) {
-                // TODO test
                 if (isSubscribed) {
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
