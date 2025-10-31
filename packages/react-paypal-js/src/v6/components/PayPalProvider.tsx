@@ -13,11 +13,13 @@ import {
 import { toError, useCompareMemoize } from "../utils";
 
 import type {
-    CreateInstanceOptions,
     Components,
+    CreateInstanceOptions,
     LoadCoreSdkScriptOptions,
+    PayPalContextValue,
     PayPalV6Namespace,
 } from "../types";
+import type { usePayPal } from "../hooks/usePayPal";
 
 type PayPalProviderProps = CreateInstanceOptions<
     readonly [Components, ...Components[]]
@@ -28,6 +30,10 @@ type PayPalProviderProps = CreateInstanceOptions<
     debug?: LoadCoreSdkScriptOptions["debug"];
 };
 
+/**
+ * {@link PayPalProvider} creates the SDK script, component scripts, runs eligibility, then
+ * provides these in {@link PayPalContext} to child components via the {@link usePayPal} hook.
+ */
 export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     clientMetadataId,
     clientToken,
@@ -191,7 +197,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         };
     }, [state.sdkInstance, state.loadingStatus]);
 
-    const contextValue = useMemo(
+    const contextValue: PayPalContextValue = useMemo(
         () => ({
             sdkInstance: state.sdkInstance,
             eligiblePaymentMethods: state.eligiblePaymentMethods,
