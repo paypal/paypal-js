@@ -1,5 +1,5 @@
 export * from "./PayPalProviderEnums";
-export type * from "./PayLaterOneTimePaymentSession";
+
 export type * from "./PayPalProviderTypes";
 export type * from "./PayPalSavePaymentSession";
 export type * from "./PayPalOneTimePaymentSessionTypes";

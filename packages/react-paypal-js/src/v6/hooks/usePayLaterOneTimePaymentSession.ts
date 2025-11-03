@@ -4,11 +4,31 @@ import { usePayPal } from "./usePayPal";
 import { useProxyProps } from "../utils";
 
 import type {
+    CreateOrderCallback,
     OneTimePaymentSession,
+    PayLaterOneTimePaymentSessionOptions,
     PayPalPresentationModeOptions,
-    PayLaterOneTimePaymentSessionProps,
-    PayLaterOneTimePaymentSessionReturn,
+    // PayLaterOneTimePaymentSessionProps,
+    // PayLaterOneTimePaymentSessionReturn,
 } from "../types";
+
+export type PayLaterOneTimePaymentSessionProps =
+    | (Omit<PayLaterOneTimePaymentSessionOptions, "orderId"> & {
+          createOrder: CreateOrderCallback;
+          presentationMode: PayPalPresentationModeOptions["presentationMode"];
+          orderId?: never;
+      })
+    | (PayLaterOneTimePaymentSessionOptions & {
+          createOrder?: never;
+          presentationMode: PayPalPresentationModeOptions["presentationMode"];
+          orderId: string;
+      });
+
+export interface PayLaterOneTimePaymentSessionReturn {
+    handleClick: () => Promise<void>;
+    handleCancel: () => void;
+    handleDestroy: () => void;
+}
 
 export function usePayLaterOneTimePaymentSession({
     presentationMode,
