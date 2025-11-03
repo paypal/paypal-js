@@ -8,6 +8,7 @@ import type {
     VenmoPresentationModeOptions,
     VenmoOneTimePaymentSessionOptions,
     VenmoOneTimePaymentSessionPromise,
+    BasePaymentSessionReturn,
 } from "../types";
 
 // TODO: Add all startOptions to this hook
@@ -23,18 +24,12 @@ export type UseVenmoOneTimePaymentSessionProps =
           orderId: string;
       });
 
-export interface UseVenmoOneTimePaymentSessionReturn {
-    handleClick: () => Promise<void>;
-    handleCancel: () => void;
-    handleDestroy: () => void;
-}
-
 export function useVenmoOneTimePaymentSession({
     presentationMode,
     createOrder,
     orderId,
     ...callbacks
-}: UseVenmoOneTimePaymentSessionProps): UseVenmoOneTimePaymentSessionReturn {
+}: UseVenmoOneTimePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance } = usePayPal();
     const sessionRef = useRef<VenmoOneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);

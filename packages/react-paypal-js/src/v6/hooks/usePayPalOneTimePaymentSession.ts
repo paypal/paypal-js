@@ -6,6 +6,7 @@ import {
     OneTimePaymentSession,
     PayPalPresentationModeOptions,
     PayPalOneTimePaymentSessionOptions,
+    BasePaymentSessionReturn,
 } from "../types";
 
 export type UsePayPalOneTimePaymentSessionProps =
@@ -20,18 +21,12 @@ export type UsePayPalOneTimePaymentSessionProps =
           orderId: string;
       });
 
-export interface UsePayPalOneTimePaymentSessionReturn {
-    handleClick: () => Promise<void>;
-    handleCancel: () => void;
-    handleDestroy: () => void;
-}
-
 export function usePayPalOneTimePaymentSession({
     presentationMode,
     createOrder,
     orderId,
     ...callbacks
-}: UsePayPalOneTimePaymentSessionProps): UsePayPalOneTimePaymentSessionReturn {
+}: UsePayPalOneTimePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance } = usePayPal();
     const sessionRef = useRef<OneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
