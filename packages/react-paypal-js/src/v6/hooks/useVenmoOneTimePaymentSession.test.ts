@@ -5,9 +5,10 @@ import { usePayPal } from "./usePayPal";
 import { useProxyProps } from "../utils";
 import {
     INSTANCE_LOADING_STATE,
-    type UseVenmoOneTimePaymentSessionProps,
     type VenmoOneTimePaymentSession,
 } from "../types";
+
+import type { UseVenmoOneTimePaymentSessionProps } from "./useVenmoOneTimePaymentSession";
 
 jest.mock("./usePayPal");
 

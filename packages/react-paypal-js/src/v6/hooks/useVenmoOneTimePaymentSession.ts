@@ -6,9 +6,28 @@ import { useProxyProps } from "../utils";
 import type {
     VenmoOneTimePaymentSession,
     VenmoPresentationModeOptions,
-    UseVenmoOneTimePaymentSessionProps,
-    UseVenmoOneTimePaymentSessionReturn,
+    VenmoOneTimePaymentSessionOptions,
+    VenmoOneTimePaymentSessionPromise,
 } from "../types";
+
+// TODO: Add all startOptions to this hook
+export type UseVenmoOneTimePaymentSessionProps =
+    | (Omit<VenmoOneTimePaymentSessionOptions, "orderId"> & {
+          createOrder: () => VenmoOneTimePaymentSessionPromise;
+          presentationMode: VenmoPresentationModeOptions["presentationMode"];
+          orderId?: never;
+      })
+    | (VenmoOneTimePaymentSessionOptions & {
+          createOrder?: never;
+          presentationMode: VenmoPresentationModeOptions["presentationMode"];
+          orderId: string;
+      });
+
+export interface UseVenmoOneTimePaymentSessionReturn {
+    handleClick: () => Promise<void>;
+    handleCancel: () => void;
+    handleDestroy: () => void;
+}
 
 export function useVenmoOneTimePaymentSession({
     presentationMode,
