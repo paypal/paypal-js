@@ -8,8 +8,6 @@ import type {
     OneTimePaymentSession,
     PayLaterOneTimePaymentSessionOptions,
     PayPalPresentationModeOptions,
-    // PayLaterOneTimePaymentSessionProps,
-    // PayLaterOneTimePaymentSessionReturn,
 } from "../types";
 
 export type PayLaterOneTimePaymentSessionProps =

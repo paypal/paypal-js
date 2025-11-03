@@ -5,9 +5,26 @@ import { useProxyProps } from "../utils";
 import {
     OneTimePaymentSession,
     PayPalPresentationModeOptions,
-    UsePayPalOneTimePaymentSessionProps,
-    UsePayPalOneTimePaymentSessionReturn,
+    PayPalOneTimePaymentSessionOptions,
 } from "../types";
+
+export type UsePayPalOneTimePaymentSessionProps =
+    | (Omit<PayPalOneTimePaymentSessionOptions, "orderId"> & {
+          createOrder: () => Promise<{ orderId: string }>;
+          presentationMode: PayPalPresentationModeOptions["presentationMode"];
+          orderId?: never;
+      })
+    | (PayPalOneTimePaymentSessionOptions & {
+          createOrder?: never;
+          presentationMode: PayPalPresentationModeOptions["presentationMode"];
+          orderId: string;
+      });
+
+export interface UsePayPalOneTimePaymentSessionReturn {
+    handleClick: () => Promise<void>;
+    handleCancel: () => void;
+    handleDestroy: () => void;
+}
 
 export function usePayPalOneTimePaymentSession({
     presentationMode,
