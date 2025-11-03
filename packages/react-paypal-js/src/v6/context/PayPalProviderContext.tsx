@@ -6,10 +6,36 @@ import {
 } from "../types/PayPalProviderEnums";
 
 import type {
-    PayPalContextState,
-    PayPalState,
-    InstanceAction,
-} from "../types/PayPalProviderTypes.d.ts";
+    Components,
+    SdkInstance,
+    EligiblePaymentMethodsOutput,
+} from "../types";
+import type { PayPalContextState } from "../components/PayPalProvider";
+
+export interface PayPalState {
+    sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
+    eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
+    loadingStatus: INSTANCE_LOADING_STATE;
+    error: Error | null;
+}
+
+export type InstanceAction =
+    | {
+          type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS;
+          value: INSTANCE_LOADING_STATE;
+      }
+    | {
+          type: INSTANCE_DISPATCH_ACTION.SET_INSTANCE;
+          value: SdkInstance<readonly [Components, ...Components[]]>;
+      }
+    | {
+          type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY;
+          value: EligiblePaymentMethodsOutput;
+      }
+    | { type: INSTANCE_DISPATCH_ACTION.SET_ERROR; value: Error }
+    | {
+          type: INSTANCE_DISPATCH_ACTION.RESET_STATE;
+      };
 
 export const initialState: PayPalState = {
     sdkInstance: null,

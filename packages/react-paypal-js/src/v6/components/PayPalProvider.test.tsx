@@ -7,12 +7,8 @@ import { PayPalProvider } from "./PayPalProvider";
 import { usePayPal } from "../hooks/usePayPal";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 
-import type {
-    CreateInstanceOptions,
-    PayPalContextState,
-    PayPalV6Namespace,
-    SdkInstance,
-} from "../types";
+import type { CreateInstanceOptions, PayPalV6Namespace } from "../types";
+import type { PayPalContextState } from "../components/PayPalProvider";
 
 // Test constants
 export const TEST_CLIENT_TOKEN = "test-client-token";

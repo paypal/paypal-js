@@ -6,10 +6,7 @@ import {
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
 
-import type {
-    PayPalState,
-    InstanceAction,
-} from "../types/PayPalProviderTypes.d.ts";
+import type { PayPalState, InstanceAction } from "./PayPalProviderContext";
 import type {
     SdkInstance,
     EligiblePaymentMethodsOutput,
