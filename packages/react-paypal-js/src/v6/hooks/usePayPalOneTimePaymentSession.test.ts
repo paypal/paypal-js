@@ -39,6 +39,7 @@ describe("usePayPalOneTimePaymentSession", () => {
         mockSdkInstance = createMockSdkInstance(mockPayPalSession);
 
         mockUsePayPal.mockReturnValue({
+            // @ts-expect-error mocking sdk instance
             sdkInstance: mockSdkInstance,
             loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
             eligiblePaymentMethods: null,
@@ -227,6 +228,7 @@ describe("usePayPalOneTimePaymentSession", () => {
             const newMockSdkInstance = createMockSdkInstance(newMockSession);
 
             mockUsePayPal.mockReturnValue({
+                // @ts-expect-error mocking sdk instance
                 sdkInstance: newMockSdkInstance,
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
@@ -376,6 +378,7 @@ describe("usePayPalOneTimePaymentSession", () => {
                 mockPayPalSession = createMockPayPalSession();
                 mockSdkInstance = createMockSdkInstance(mockPayPalSession);
                 mockUsePayPal.mockReturnValue({
+                    // @ts-expect-error mocking sdk instance
                     sdkInstance: mockSdkInstance,
                     loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                     eligiblePaymentMethods: null,

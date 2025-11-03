@@ -11,7 +11,8 @@ import { usePayPal } from "../hooks/usePayPal";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import { isServer } from "../utils";
 
-import type { CreateInstanceOptions, PayPalContextState } from "../types";
+import type { CreateInstanceOptions } from "../types";
+import type { PayPalContextState } from "../components/PayPalProvider";
 
 const TEST_CLIENT_TOKEN = "test-client-token";
 
