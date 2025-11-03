@@ -3,11 +3,9 @@ import { renderHook, act } from "@testing-library/react-hooks";
 import { usePayPalOneTimePaymentSession } from "./usePayPalOneTimePaymentSession";
 import { usePayPal } from "./usePayPal";
 import { useProxyProps } from "../utils";
-import {
-    INSTANCE_LOADING_STATE,
-    type UsePayPalOneTimePaymentSessionProps,
-    type OneTimePaymentSession,
-} from "../types";
+import { INSTANCE_LOADING_STATE, type OneTimePaymentSession } from "../types";
+
+import type { UsePayPalOneTimePaymentSessionProps } from "./usePayPalOneTimePaymentSession";
 
 jest.mock("./usePayPal");
 

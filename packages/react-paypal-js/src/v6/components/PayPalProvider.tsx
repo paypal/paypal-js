@@ -15,9 +15,20 @@ import { useCompareMemoize } from "../utils";
 import type {
     CreateInstanceOptions,
     Components,
+    EligiblePaymentMethodsOutput,
     LoadCoreSdkScriptOptions,
     PayPalV6Namespace,
+    SdkInstance,
 } from "../types";
+import type { InstanceAction } from "../context/PayPalProviderContext";
+
+export interface PayPalContextState {
+    sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
+    eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
+    error: Error | null;
+    dispatch: React.Dispatch<InstanceAction>;
+    loadingStatus: INSTANCE_LOADING_STATE;
+}
 
 type PayPalProviderProps = CreateInstanceOptions<
     readonly [Components, ...Components[]]

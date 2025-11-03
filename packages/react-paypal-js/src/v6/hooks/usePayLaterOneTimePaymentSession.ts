@@ -4,18 +4,31 @@ import { usePayPal } from "./usePayPal";
 import { useProxyProps } from "../utils";
 
 import type {
+    BasePaymentSessionReturn,
+    CreateOrderCallback,
     OneTimePaymentSession,
+    PayLaterOneTimePaymentSessionOptions,
     PayPalPresentationModeOptions,
-    PayLaterOneTimePaymentSessionProps,
-    PayLaterOneTimePaymentSessionReturn,
 } from "../types";
+
+export type PayLaterOneTimePaymentSessionProps =
+    | (Omit<PayLaterOneTimePaymentSessionOptions, "orderId"> & {
+          createOrder: CreateOrderCallback;
+          presentationMode: PayPalPresentationModeOptions["presentationMode"];
+          orderId?: never;
+      })
+    | (PayLaterOneTimePaymentSessionOptions & {
+          createOrder?: never;
+          presentationMode: PayPalPresentationModeOptions["presentationMode"];
+          orderId: string;
+      });
 
 export function usePayLaterOneTimePaymentSession({
     presentationMode,
     createOrder,
     orderId,
     ...callbacks
-}: PayLaterOneTimePaymentSessionProps): PayLaterOneTimePaymentSessionReturn {
+}: PayLaterOneTimePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance } = usePayPal();
     const sessionRef = useRef<OneTimePaymentSession | null>(null); // handle cleanup
     const proxyCallbacks = useProxyProps(callbacks);

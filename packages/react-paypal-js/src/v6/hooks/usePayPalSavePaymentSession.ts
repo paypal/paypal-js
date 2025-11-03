@@ -6,16 +6,28 @@ import { useProxyProps } from "../utils";
 import type {
     SavePaymentSession,
     PayPalPresentationModeOptions,
-    PayPalSavePaymentSessionProps,
-    PayPalSavePaymentSessionReturn,
+    SavePaymentSessionOptions,
+    BasePaymentSessionReturn,
 } from "../types";
+
+export type PayPalSavePaymentSessionProps =
+    | (Omit<SavePaymentSessionOptions, "orderId"> & {
+          createVaultToken: () => Promise<{ vaultSetupToken: string }>;
+          presentationMode: PayPalPresentationModeOptions["presentationMode"];
+          vaultSetupToken?: never;
+      })
+    | (SavePaymentSessionOptions & {
+          createVaultToken?: never;
+          presentationMode: PayPalPresentationModeOptions["presentationMode"];
+          vaultSetupToken: string;
+      });
 
 export function usePayPalSavePaymentSession({
     presentationMode,
     createVaultToken,
     vaultSetupToken,
     ...callbacks
-}: PayPalSavePaymentSessionProps): PayPalSavePaymentSessionReturn {
+}: PayPalSavePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance } = usePayPal();
     const sessionRef = useRef<SavePaymentSession | null>(null); // handle cleanup
     const proxyCallbacks = useProxyProps(callbacks);
