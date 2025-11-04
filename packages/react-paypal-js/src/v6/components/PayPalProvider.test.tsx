@@ -96,21 +96,6 @@ function expectReloadingState(state: Partial<PayPalState>): void {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
 }
 
-// Console spy utilities
-function withConsoleSpy(
-    method: "error" | "warn" | "log",
-    testFn: (spy: jest.SpyInstance) => void | Promise<void>,
-): void | Promise<void> {
-    const spy = jest.spyOn(console, method).mockImplementation();
-    const result = testFn(spy);
-
-    if (result instanceof Promise) {
-        return result.finally(() => spy.mockRestore());
-    }
-
-    spy.mockRestore();
-}
-
 describe("PayPalProvider", () => {
     beforeEach(() => {
         document.head.innerHTML = "";
