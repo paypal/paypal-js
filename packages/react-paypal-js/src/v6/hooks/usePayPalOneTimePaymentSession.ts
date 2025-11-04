@@ -7,22 +7,16 @@ import {
     PayPalPresentationModeOptions,
     PayPalOneTimePaymentSessionOptions,
     BasePaymentSessionReturn,
+    OrderSessionProps,
 } from "../types";
 
 export type UsePayPalOneTimePaymentSessionProps =
-    | (Omit<PayPalOneTimePaymentSessionOptions, "orderId"> & {
-          createOrder: () => Promise<{ orderId: string }>;
-          presentationMode: PayPalPresentationModeOptions["presentationMode"];
-          orderId?: never;
-      })
-    | (PayPalOneTimePaymentSessionOptions & {
-          createOrder?: never;
-          presentationMode: PayPalPresentationModeOptions["presentationMode"];
-          orderId: string;
-      });
+    OrderSessionProps<PayPalOneTimePaymentSessionOptions>;
 
 export function usePayPalOneTimePaymentSession({
     presentationMode,
+    fullPageOverlay,
+    autoRedirect,
     createOrder,
     orderId,
     ...callbacks
@@ -60,16 +54,18 @@ export function usePayPalOneTimePaymentSession({
             throw new Error("PayPal session not available");
         }
 
-        const startOptions: PayPalPresentationModeOptions = {
+        const startOptions = {
             presentationMode,
-        };
+            ...(fullPageOverlay !== undefined && { fullPageOverlay }),
+            ...(autoRedirect !== undefined && { autoRedirect }),
+        } as PayPalPresentationModeOptions;
 
         if (createOrder) {
             await sessionRef.current.start(startOptions, createOrder());
         } else {
             await sessionRef.current.start(startOptions);
         }
-    }, [createOrder, presentationMode]);
+    }, [createOrder, presentationMode, fullPageOverlay, autoRedirect]);
 
     return {
         handleClick,
