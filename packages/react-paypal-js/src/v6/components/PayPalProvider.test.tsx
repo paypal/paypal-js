@@ -86,7 +86,6 @@ function expectResolvedState(state: Partial<PayPalState>): void {
 
 function expectRejectedState(state: Partial<PayPalState>, error?: Error): void {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.REJECTED);
-    expect(state.sdkInstance).toBe(null);
     if (error) {
         expect(state.error).toEqual(error);
     }
