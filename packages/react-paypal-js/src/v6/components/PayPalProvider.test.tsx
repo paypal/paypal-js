@@ -8,7 +8,7 @@ import { usePayPal } from "../hooks/usePayPal";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 
 import type { CreateInstanceOptions, PayPalV6Namespace } from "../types";
-import type { PayPalContextValue } from "../components/PayPalProvider";
+import type { PayPalState } from "../context/PayPalProviderContext";
 
 // Test constants
 export const TEST_CLIENT_TOKEN = "test-client-token";
@@ -74,27 +74,24 @@ function createMockPayPalNamespace(): PayPalV6Namespace {
 }
 
 // State assertion helpers
-function expectPendingState(state: Partial<PayPalContextState>): void {
+function expectPendingState(state: Partial<PayPalState>): void {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
 }
 
-function expectResolvedState(state: Partial<PayPalContextState>): void {
+function expectResolvedState(state: Partial<PayPalState>): void {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.RESOLVED);
     expect(state.sdkInstance).toBeTruthy();
     expect(state.error).toBe(null);
 }
 
-function expectRejectedState(
-    state: Partial<PayPalContextState>,
-    error?: Error,
-): void {
+function expectRejectedState(state: Partial<PayPalState>, error?: Error): void {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.REJECTED);
     expect(state.sdkInstance).toBe(null);
     if (error) {
         expect(state.error).toEqual(error);
     }
 }
-function expectReloadingState(state: Partial<PayPalContextState>): void {
+function expectReloadingState(state: Partial<PayPalState>): void {
     // When props change, only loadingStatus is reset to PENDING
     // Old instance and eligibility remain until new ones are loaded
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
@@ -549,12 +546,11 @@ describe("Auto-memoization", () => {
 });
 
 function setupTestComponent() {
-    const state: PayPalContextValue = {
+    const state: PayPalState = {
         loadingStatus: INSTANCE_LOADING_STATE.PENDING,
         sdkInstance: null,
         eligiblePaymentMethods: null,
         error: null,
-        dispatch: jest.fn(),
     };
 
     function TestComponent({

@@ -17,21 +17,15 @@ import type {
     CreateInstanceOptions,
     EligiblePaymentMethodsOutput,
     LoadCoreSdkScriptOptions,
-    PayPalContextValue,
     PayPalV6Namespace,
     SdkInstance,
 } from "../types";
 
-import type { InstanceAction } from "../context/PayPalProviderContext";
+import type {
+    InstanceAction,
+    PayPalState,
+} from "../context/PayPalProviderContext";
 import type { usePayPal } from "../hooks/usePayPal";
-
-export interface PayPalContextState {
-    sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
-    eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
-    error: Error | null;
-    dispatch: React.Dispatch<InstanceAction>;
-    loadingStatus: INSTANCE_LOADING_STATE;
-}
 
 type PayPalProviderProps = CreateInstanceOptions<
     readonly [Components, ...Components[]]
@@ -205,12 +199,11 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         };
     }, [state.sdkInstance, state.loadingStatus]);
 
-    const contextValue: PayPalContextValue = useMemo(
+    const contextValue: PayPalState = useMemo(
         () => ({
             sdkInstance: state.sdkInstance,
             eligiblePaymentMethods: state.eligiblePaymentMethods,
             error: state.error,
-            dispatch,
             loadingStatus: state.loadingStatus,
         }),
         [
@@ -218,7 +211,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             state.eligiblePaymentMethods,
             state.error,
             state.loadingStatus,
-            dispatch,
         ],
     );
 

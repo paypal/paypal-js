@@ -8,10 +8,8 @@ import {
 import type {
     Components,
     EligiblePaymentMethodsOutput,
-    PayPalContextValue,
     SdkInstance,
 } from "../types";
-import type { PayPalContextState } from "../components/PayPalProvider";
 
 export interface PayPalState {
     sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
@@ -73,4 +71,4 @@ export function instanceReducer(
     }
 }
 
-export const PayPalContext = createContext<PayPalContextValue | null>(null);
+export const PayPalContext = createContext<PayPalState | null>(null);

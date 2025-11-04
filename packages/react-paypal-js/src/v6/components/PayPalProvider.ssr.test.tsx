@@ -12,11 +12,11 @@ import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import { isServer } from "../utils";
 
 import type { CreateInstanceOptions } from "../types";
-import type { PayPalContextValue } from "../components/PayPalProvider";
+import type { PayPalState } from "../context/PayPalProviderContext";
 
 const TEST_CLIENT_TOKEN = "test-client-token";
 
-function expectInitialState(state: Partial<PayPalContextValue>): void {
+function expectInitialState(state: Partial<PayPalState>): void {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
     expect(state.sdkInstance).toBe(null);
     expect(state.eligiblePaymentMethods).toBe(null);
@@ -221,12 +221,11 @@ describe("usePayPalInstance SSR", () => {
 });
 
 function setupSSRTestComponent() {
-    const state: PayPalContextValue = {
+    const state: PayPalState = {
         loadingStatus: INSTANCE_LOADING_STATE.PENDING,
         sdkInstance: null,
         eligiblePaymentMethods: null,
         error: null,
-        dispatch: jest.fn(),
     };
 
     function TestComponent({
