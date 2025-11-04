@@ -47,7 +47,6 @@ describe("useVenmoOneTimePaymentSession", () => {
             loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
             eligiblePaymentMethods: null,
             error: null,
-            dispatch: jest.fn(),
         });
     });
 
@@ -62,7 +61,6 @@ describe("useVenmoOneTimePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.PENDING,
                 eligiblePaymentMethods: null,
                 error: null,
-                dispatch: jest.fn(),
             });
 
             const props: UseVenmoOneTimePaymentSessionProps = {
@@ -236,7 +234,6 @@ describe("useVenmoOneTimePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
-                dispatch: jest.fn(),
             });
 
             rerender();
@@ -383,7 +380,6 @@ describe("useVenmoOneTimePaymentSession", () => {
                     loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                     eligiblePaymentMethods: null,
                     error: null,
-                    dispatch: jest.fn(),
                 });
             }
         });

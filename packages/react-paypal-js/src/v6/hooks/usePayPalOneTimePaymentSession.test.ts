@@ -44,7 +44,6 @@ describe("usePayPalOneTimePaymentSession", () => {
             loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
             eligiblePaymentMethods: null,
             error: null,
-            dispatch: jest.fn(),
         });
     });
 
@@ -59,7 +58,6 @@ describe("usePayPalOneTimePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.PENDING,
                 eligiblePaymentMethods: null,
                 error: null,
-                dispatch: jest.fn(),
             });
 
             const props: UsePayPalOneTimePaymentSessionProps = {
@@ -235,7 +233,6 @@ describe("usePayPalOneTimePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
-                dispatch: jest.fn(),
             });
 
             rerender();
@@ -386,7 +383,6 @@ describe("usePayPalOneTimePaymentSession", () => {
                     loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                     eligiblePaymentMethods: null,
                     error: null,
-                    dispatch: jest.fn(),
                 });
             }
         });
