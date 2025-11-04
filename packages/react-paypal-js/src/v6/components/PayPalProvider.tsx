@@ -15,16 +15,10 @@ import { toError, useCompareMemoize } from "../utils";
 import type {
     Components,
     CreateInstanceOptions,
-    EligiblePaymentMethodsOutput,
     LoadCoreSdkScriptOptions,
     PayPalV6Namespace,
-    SdkInstance,
 } from "../types";
-
-import type {
-    InstanceAction,
-    PayPalState,
-} from "../context/PayPalProviderContext";
+import type { PayPalState } from "../context/PayPalProviderContext";
 import type { usePayPal } from "../hooks/usePayPal";
 
 type PayPalProviderProps = CreateInstanceOptions<
