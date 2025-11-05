@@ -22,12 +22,6 @@ export type UsePayPalOneTimePaymentSessionProps = (
 ) &
     PayPalPresentationModeOptions;
 
-const test: UsePayPalOneTimePaymentSessionProps = {
-    presentationMode: "popup",
-    createOrder: async () => ({ orderId: "123" }),
-    autoRedirect: { enabled: true },
-};
-
 export function usePayPalOneTimePaymentSession({
     presentationMode,
     fullPageOverlay,
