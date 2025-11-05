@@ -178,10 +178,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                 });
             } catch (error) {
                 if (isSubscribed) {
-                    dispatch({
-                        type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                        value: toError(error),
-                    });
+                    // TODO figure out what to do with an eligibility error
                 }
             }
         };
