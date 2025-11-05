@@ -15,17 +15,17 @@ export type OnCompleteData = {
     paymentSessionState: "approved" | "canceled" | "error";
 };
 
-export type PayPalError = Error & {
+export interface PayPalError extends Error {
     code: string;
     name: string;
     isRecoverable: boolean;
-};
+}
 
-export type PayPalWarning = {
+export interface PayPalWarning {
     code: string;
     message: string;
     name: string;
-};
+}
 
 export type OnErrorData = PayPalError;
 
