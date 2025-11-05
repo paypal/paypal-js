@@ -4,6 +4,7 @@ import { useProxyProps } from "../hooks/useProxyProps";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
 import { SDK_SETTINGS } from "../constants";
+import { useProxyProps } from "../hooks/useProxyProps";
 
 import type { FunctionComponent } from "react";
 import type { PayPalButtonsComponent, OnInitActions } from "@paypal/paypal-js";
