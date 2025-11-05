@@ -42,7 +42,6 @@ export type PresentationModeOptionsForModal = {
 
 export type PresentationModeOptionsForRedirect = {
     presentationMode: "redirect";
-    fullPageOverlay?: never;
     autoRedirect?: { enabled: boolean };
     fullPageOverlay?: never;
 };
