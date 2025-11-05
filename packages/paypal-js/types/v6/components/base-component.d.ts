@@ -44,6 +44,7 @@ export type PresentationModeOptionsForRedirect = {
     presentationMode: "redirect";
     fullPageOverlay?: never;
     autoRedirect?: { enabled: boolean };
+    fullPageOverlay?: never;
 };
 
 export type PresentationModeOptionsForPaymentHandler = {
