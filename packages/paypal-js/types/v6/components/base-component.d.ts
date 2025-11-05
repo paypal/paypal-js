@@ -31,24 +31,31 @@ export type BasePaymentSessionOptions = {
 export type PresentationModeOptionsForPopup = {
     presentationMode: "popup";
     fullPageOverlay?: { enabled: boolean };
+    autoRedirect?: never;
 };
 
 export type PresentationModeOptionsForModal = {
     presentationMode: "modal";
+    fullPageOverlay?: never;
+    autoRedirect?: never;
 };
 
 export type PresentationModeOptionsForRedirect = {
     presentationMode: "redirect";
     autoRedirect?: { enabled: boolean };
+    fullPageOverlay?: never;
 };
 
 export type PresentationModeOptionsForPaymentHandler = {
     presentationMode: "payment-handler";
+    fullPageOverlay?: never;
+    autoRedirect?: never;
 };
 
 export type PresentationModeOptionsForAuto = {
     presentationMode: "auto";
     fullPageOverlay?: { enabled: boolean };
+    autoRedirect?: never;
 };
 
 export type CreateOrderPromise = Promise<{ orderId: string }>;
