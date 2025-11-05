@@ -343,6 +343,7 @@ describe("<PayPalButtons />", () => {
             .spyOn(console, "error")
             .mockImplementation();
         window.paypal = {
+            // @ts-expect-error mocking partial ButtonComponent
             Buttons() {
                 return {
                     close: jest.fn().mockResolvedValue({}),
@@ -424,6 +425,7 @@ describe("<PayPalButtons />", () => {
             .fn()
             .mockRejectedValue(new Error("Unknown error"));
         window.paypal = {
+            // @ts-expect-error mocking partial ButtonComponent
             Buttons() {
                 return {
                     close: jest.fn().mockResolvedValue({}),
@@ -467,7 +469,7 @@ describe("<PayPalButtons />", () => {
         userEvent.setup();
 
         // @ts-expect-error mocking partial ButtonComponent
-        window.paypal!.Buttons = ({ onClick }: { onClick: () => void }) => ({
+        window.paypal.Buttons = ({ onClick }: { onClick: () => void }) => ({
             isEligible: () => true,
             close: async () => undefined,
             render: async (ref: HTMLDivElement) => {
