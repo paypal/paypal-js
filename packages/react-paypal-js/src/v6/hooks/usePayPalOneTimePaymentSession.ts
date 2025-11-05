@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { usePayPal } from "./usePayPal";
+import { useIsMountedRef } from "./useIsMounted";
 import { useProxyProps } from "../utils";
 import {
     OneTimePaymentSession,
@@ -28,8 +29,10 @@ export function usePayPalOneTimePaymentSession({
     ...callbacks
 }: UsePayPalOneTimePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance } = usePayPal();
+    const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<OneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
+    const [error, setError] = useState<Error | null>(null);
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
@@ -40,9 +43,16 @@ export function usePayPalOneTimePaymentSession({
         sessionRef.current?.cancel();
     }, []);
 
+    // Separate error reporting effect to avoid infinite loops with proxyCallbacks
     useEffect(() => {
         if (!sdkInstance) {
-            throw new Error("no sdk instance available");
+            setError(new Error("no sdk instance available"));
+        }
+    }, [sdkInstance]);
+
+    useEffect(() => {
+        if (!sdkInstance) {
+            return;
         }
 
         const newSession = sdkInstance.createPayPalOneTimePaymentSession({
@@ -56,8 +66,13 @@ export function usePayPalOneTimePaymentSession({
     }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
 
     const handleClick = useCallback(async () => {
+        if (!isMountedRef.current) {
+            return;
+        }
+
         if (!sessionRef.current) {
-            throw new Error("PayPal session not available");
+            setError(new Error("PayPal session not available"));
+            return;
         }
 
         const startOptions: PayPalPresentationModeOptions = {
@@ -69,9 +84,10 @@ export function usePayPalOneTimePaymentSession({
         } else {
             await sessionRef.current.start(startOptions);
         }
-    }, [createOrder, presentationMode]);
+    }, [createOrder, presentationMode, isMountedRef]);
 
     return {
+        error,
         handleClick,
         handleCancel,
         handleDestroy,

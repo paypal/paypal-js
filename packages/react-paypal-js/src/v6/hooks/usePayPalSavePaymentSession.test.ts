@@ -117,7 +117,9 @@ describe("usePayPalSavePaymentSession", () => {
         (usePayPal as jest.Mock).mockReturnValue({ sdkInstance: null });
 
         const {
-            result: { error },
+            result: {
+                current: { error },
+            },
         } = renderHook(() =>
             usePayPalSavePaymentSession({
                 presentationMode: "auto",
@@ -240,11 +242,7 @@ describe("usePayPalSavePaymentSession", () => {
             vaultSetupToken: "created-token-abc",
         });
         const mockCreateVaultToken = jest.fn(() => mockVaultTokenPromise);
-        const {
-            result: {
-                current: { handleClick },
-            },
-        } = renderHook(() =>
+        const { result } = renderHook(() =>
             usePayPalSavePaymentSession({
                 presentationMode: mockPresentationMode,
                 createVaultToken: mockCreateVaultToken,
@@ -252,9 +250,51 @@ describe("usePayPalSavePaymentSession", () => {
             }),
         );
 
-        await expect(handleClick).rejects.toThrowError(
-            "save payment session not available",
+        await act(async () => {
+            await result.current.handleClick();
+        });
+
+        expect(result.current.error).toEqual(
+            new Error("Save Payment session not available"),
         );
+    });
+
+    test("should do nothing if the click handler is called after unmount", async () => {
+        const mockStart = jest.fn();
+        const mockSession: SavePaymentSession = {
+            cancel: jest.fn(),
+            destroy: jest.fn(),
+            start: mockStart,
+        };
+        const mockCreatePayLaterOneTimePaymentSession = jest
+            .fn()
+            .mockReturnValue(mockSession);
+
+        (usePayPal as jest.Mock).mockReturnValue({
+            sdkInstance: {
+                createPayPalSavePaymentSession:
+                    mockCreatePayLaterOneTimePaymentSession,
+            },
+        });
+
+        const mockPresentationMode = "auto";
+        const mockVaultSetupToken = "vault-setup-token-123";
+        const { result, unmount } = renderHook(() =>
+            usePayPalSavePaymentSession({
+                presentationMode: mockPresentationMode,
+                vaultSetupToken: mockVaultSetupToken,
+                onApprove: jest.fn(),
+            }),
+        );
+
+        unmount();
+
+        await act(async () => {
+            await result.current.handleClick();
+        });
+
+        expect(result.current.error).toBeNull();
+        expect(mockStart).not.toHaveBeenCalled();
     });
 
     test("should provide a cancel handler that cancels the session", async () => {

@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { usePayPal } from "./usePayPal";
+import { useIsMountedRef } from "./useIsMounted";
 import { useProxyProps } from "../utils";
 
 import type {
@@ -29,17 +30,26 @@ export function usePayPalSavePaymentSession({
     ...callbacks
 }: PayPalSavePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance } = usePayPal();
+    const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<SavePaymentSession | null>(null); // handle cleanup
     const proxyCallbacks = useProxyProps(callbacks);
+    const [error, setError] = useState<Error | null>(null);
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
         sessionRef.current = null;
     }, []);
 
+    // Separate error reporting effect to avoid infinite loops with proxyCallbacks
     useEffect(() => {
         if (!sdkInstance) {
-            throw new Error("no sdk instance available");
+            setError(new Error("no sdk instance available"));
+        }
+    }, [sdkInstance]);
+
+    useEffect(() => {
+        if (!sdkInstance) {
+            return;
         }
 
         const newSession = sdkInstance.createPayPalSavePaymentSession({
@@ -56,8 +66,13 @@ export function usePayPalSavePaymentSession({
     }, []);
 
     const handleClick = useCallback(async () => {
+        if (!isMountedRef.current) {
+            return;
+        }
+
         if (!sessionRef.current) {
-            throw new Error("save payment session not available");
+            setError(new Error("Save Payment session not available"));
+            return;
         }
 
         const startOptions: PayPalPresentationModeOptions = {
@@ -69,9 +84,10 @@ export function usePayPalSavePaymentSession({
         } else {
             await sessionRef.current.start(startOptions);
         }
-    }, [createVaultToken, presentationMode]);
+    }, [createVaultToken, presentationMode, isMountedRef]);
 
     return {
+        error,
         handleCancel,
         handleClick,
         handleDestroy,
