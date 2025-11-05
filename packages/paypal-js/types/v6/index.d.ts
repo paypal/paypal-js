@@ -47,9 +47,8 @@ export type PageTypes =
     | "product-listing"
     | "search-results";
 
-export type CreateInstanceOptions<T extends readonly Components[]> = {
+type BaseCreateInstanceOptions<T extends readonly Components[]> = {
     clientMetadataId?: string;
-    clientToken: string;
     components: T;
     locale?: string;
     pageType?: PageTypes;
@@ -57,6 +56,18 @@ export type CreateInstanceOptions<T extends readonly Components[]> = {
     shopperSessionId?: string;
     testBuyerCountry?: string;
 };
+
+export type CreateInstanceOptions<T extends readonly Components[]> =
+    | (BaseCreateInstanceOptions<T> & {
+          clientId?: never;
+          merchantId?: never;
+          clientToken: string;
+      })
+    | (BaseCreateInstanceOptions<T> & {
+          clientId: string;
+          merchantId?: string | string[];
+          clientToken?: never;
+      });
 
 /**
  * Dynamically typed SDK instance based on the components array provided to createInstance.
