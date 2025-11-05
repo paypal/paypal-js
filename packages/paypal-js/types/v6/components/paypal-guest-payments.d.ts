@@ -11,7 +11,10 @@ export type PayPalGuestOneTimePaymentSessionOptions =
         onApprove: (data: OnApproveDataOneTimePayments) => Promise<void>;
     };
 
-export type PayPalGuestPresentationModeOptions = PresentationModeOptionsForAuto;
+export type PayPalGuestPresentationModeOptions =
+    PresentationModeOptionsForAuto & {
+        targetElement?: string | EventTarget;
+    };
 
 export type PayPalGuestOneTimePaymentSessionPromise = Promise<{
     orderId: string;
