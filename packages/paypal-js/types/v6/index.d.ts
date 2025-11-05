@@ -1,4 +1,5 @@
 import { PayPalPaymentsInstance } from "./components/paypal-payments";
+import { PayPalGuestPaymentsInstance } from "./components/paypal-guest-payments";
 import { PayPalLegacyBillingInstance } from "./components/paypal-legacy-billing-agreements";
 import { VenmoPaymentsInstance } from "./components/venmo-payments";
 import {
@@ -35,6 +36,7 @@ export interface PayPalV6Namespace {
 
 export type Components =
     | "paypal-payments"
+    | "paypal-guest-payments"
     | "venmo-payments"
     | "paypal-legacy-billing-agreements";
 
@@ -122,6 +124,9 @@ export type SdkInstance<T extends readonly [Components, ...Components[]]> =
         ("paypal-payments" extends T[number]
             ? PayPalPaymentsInstance
             : unknown) &
+        ("paypal-guest-payments" extends T[number]
+            ? PayPalGuestPaymentsInstance
+            : unknown) &
         ("venmo-payments" extends T[number] ? VenmoPaymentsInstance : unknown) &
         ("paypal-legacy-billing-agreements" extends T[number]
             ? PayPalLegacyBillingInstance
@@ -187,6 +192,7 @@ export function loadCoreSdkScript(
 
 // Components
 export * from "./components/paypal-payments";
+export * from "./components/paypal-guest-payments";
 export * from "./components/paypal-legacy-billing-agreements";
 export * from "./components/venmo-payments";
 export * from "./components/find-eligible-methods";
