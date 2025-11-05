@@ -1,5 +1,5 @@
 import { loadCoreSdkScript } from "../../../src/v6";
-import type { OnApproveDataOneTimePayments, PayPalV6Namespace } from "../index";
+import type { PayPalV6Namespace } from "../index";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function main() {
