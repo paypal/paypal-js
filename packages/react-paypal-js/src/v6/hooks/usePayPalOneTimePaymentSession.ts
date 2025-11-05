@@ -8,11 +8,25 @@ import {
     PayPalPresentationModeOptions,
     PayPalOneTimePaymentSessionOptions,
     BasePaymentSessionReturn,
-    OrderSessionProps,
 } from "../types";
 
-export type UsePayPalOneTimePaymentSessionProps =
-    OrderSessionProps<PayPalOneTimePaymentSessionOptions>;
+export type UsePayPalOneTimePaymentSessionProps = (
+    | (Omit<PayPalOneTimePaymentSessionOptions, "orderId"> & {
+          createOrder: () => Promise<{ orderId: string }>;
+          orderId?: never;
+      })
+    | (PayPalOneTimePaymentSessionOptions & {
+          createOrder?: never;
+          orderId: string;
+      })
+) &
+    PayPalPresentationModeOptions;
+
+const test: UsePayPalOneTimePaymentSessionProps = {
+    presentationMode: "popup",
+    createOrder: async () => ({ orderId: "123" }),
+    autoRedirect: { enabled: true },
+};
 
 export function usePayPalOneTimePaymentSession({
     presentationMode,
