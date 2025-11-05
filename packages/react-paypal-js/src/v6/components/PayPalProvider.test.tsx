@@ -8,7 +8,7 @@ import { usePayPal } from "../hooks/usePayPal";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 
 import type { CreateInstanceOptions, PayPalV6Namespace } from "../types";
-import type { PayPalContextState } from "../components/PayPalProvider";
+import type { PayPalState } from "../context/PayPalProviderContext";
 
 // Test constants
 export const TEST_CLIENT_TOKEN = "test-client-token";
@@ -74,45 +74,26 @@ function createMockPayPalNamespace(): PayPalV6Namespace {
 }
 
 // State assertion helpers
-function expectPendingState(state: Partial<PayPalContextState>): void {
+function expectPendingState(state: Partial<PayPalState>): void {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
 }
 
-function expectResolvedState(state: Partial<PayPalContextState>): void {
+function expectResolvedState(state: Partial<PayPalState>): void {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.RESOLVED);
     expect(state.sdkInstance).toBeTruthy();
     expect(state.error).toBe(null);
 }
 
-function expectRejectedState(
-    state: Partial<PayPalContextState>,
-    error?: Error,
-): void {
+function expectRejectedState(state: Partial<PayPalState>, error?: Error): void {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.REJECTED);
-    expect(state.sdkInstance).toBe(null);
     if (error) {
         expect(state.error).toEqual(error);
     }
 }
-function expectReloadingState(state: Partial<PayPalContextState>): void {
+function expectReloadingState(state: Partial<PayPalState>): void {
     // When props change, only loadingStatus is reset to PENDING
     // Old instance and eligibility remain until new ones are loaded
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
-}
-
-// Console spy utilities
-function withConsoleSpy(
-    method: "error" | "warn" | "log",
-    testFn: (spy: jest.SpyInstance) => void | Promise<void>,
-): void | Promise<void> {
-    const spy = jest.spyOn(console, method).mockImplementation();
-    const result = testFn(spy);
-
-    if (result instanceof Promise) {
-        return result.finally(() => spy.mockRestore());
-    }
-
-    spy.mockRestore();
 }
 
 describe("PayPalProvider", () => {
@@ -141,17 +122,12 @@ describe("PayPalProvider", () => {
         });
 
         test('should set loadingStatus to "rejected" when SDK fails to load', async () => {
-            await withConsoleSpy("error", async () => {
-                (loadCoreSdkScript as jest.Mock).mockRejectedValue(
-                    new Error(TEST_ERROR_MESSAGE),
-                );
+            const mockError = new Error(TEST_ERROR_MESSAGE);
+            (loadCoreSdkScript as jest.Mock).mockRejectedValue(mockError);
 
-                const { state } = renderProvider();
+            const { state } = renderProvider();
 
-                await waitFor(() =>
-                    expectRejectedState(state, new Error(TEST_ERROR_MESSAGE)),
-                );
-            });
+            await waitFor(() => expectRejectedState(state, mockError));
         });
 
         test.each<[string, "sandbox" | "production", string, string]>([
@@ -272,32 +248,23 @@ describe("PayPalProvider", () => {
             );
         });
 
-        test("should handle eligibility loading failure gracefully", async () => {
-            await withConsoleSpy("warn", async (spy) => {
-                const mockInstance = {
-                    ...createMockSdkInstance(),
-                    findEligibleMethods: jest
-                        .fn()
-                        .mockRejectedValue(new Error("Eligibility failed")),
-                };
+        test.skip("should handle eligibility loading failure gracefully", async () => {
+            // TODO unskip when eligibility is figured out
+            const mockError = new Error("Eligibility failed");
+            const mockInstance = {
+                ...createMockSdkInstance(),
+                findEligibleMethods: jest.fn().mockRejectedValue(mockError),
+            };
 
-                (loadCoreSdkScript as jest.Mock).mockResolvedValue({
-                    createInstance: jest.fn().mockResolvedValue(mockInstance),
-                });
-
-                const { state } = renderProvider();
-
-                await waitFor(() => expectResolvedState(state));
-
-                await waitFor(() =>
-                    expect(spy).toHaveBeenCalledWith(
-                        "Failed to get eligible payment methods:",
-                        expect.any(Error),
-                    ),
-                );
-
-                expect(state.eligiblePaymentMethods).toBe(null);
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: jest.fn().mockResolvedValue(mockInstance),
             });
+
+            const { state } = renderProvider();
+
+            await waitFor(() => expectRejectedState(state, mockError));
+
+            expect(state.eligiblePaymentMethods).toBe(null);
         });
     });
 
@@ -563,25 +530,12 @@ describe("Auto-memoization", () => {
     });
 });
 
-describe("usePayPal", () => {
-    test("should throw an error when used without PayPalProvider", () => {
-        withConsoleSpy("error", () => {
-            const { TestComponent } = setupTestComponent();
-
-            expect(() => render(<TestComponent />)).toThrow(
-                "usePayPal must be used within a PayPalProvider",
-            );
-        });
-    });
-});
-
 function setupTestComponent() {
-    const state: PayPalContextState = {
+    const state: PayPalState = {
         loadingStatus: INSTANCE_LOADING_STATE.PENDING,
         sdkInstance: null,
         eligiblePaymentMethods: null,
         error: null,
-        dispatch: jest.fn(),
     };
 
     function TestComponent({

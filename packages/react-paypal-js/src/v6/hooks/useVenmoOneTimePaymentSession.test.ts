@@ -47,7 +47,6 @@ describe("useVenmoOneTimePaymentSession", () => {
             loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
             eligiblePaymentMethods: null,
             error: null,
-            dispatch: jest.fn(),
         });
     });
 
@@ -62,7 +61,6 @@ describe("useVenmoOneTimePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.PENDING,
                 eligiblePaymentMethods: null,
                 error: null,
-                dispatch: jest.fn(),
             });
 
             const props: UseVenmoOneTimePaymentSessionProps = {
@@ -73,11 +71,13 @@ describe("useVenmoOneTimePaymentSession", () => {
                 onError: jest.fn(),
             };
 
-            try {
-                renderHook(() => useVenmoOneTimePaymentSession(props));
-            } catch (error) {
-                expect(error).toEqual(new Error("no sdk instance available"));
-            }
+            const {
+                result: {
+                    current: { error },
+                },
+            } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+            expect(error).toEqual(new Error("no sdk instance available"));
         });
 
         test("should create Venmo session with orderId when provided", () => {
@@ -234,7 +234,6 @@ describe("useVenmoOneTimePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
-                dispatch: jest.fn(),
             });
 
             rerender();
@@ -325,7 +324,7 @@ describe("useVenmoOneTimePaymentSession", () => {
             expect(mockCreateOrder).toHaveBeenCalled();
         });
 
-        test("should throw error when session is not available", async () => {
+        test("should do nothing if the click handler is called and the component has been unmounted", async () => {
             const props: UseVenmoOneTimePaymentSessionProps = {
                 presentationMode: "popup",
                 orderId: "test-order-id",
@@ -340,11 +339,12 @@ describe("useVenmoOneTimePaymentSession", () => {
 
             unmount();
 
-            await expect(
-                act(async () => {
-                    await result.current.handleClick();
-                }),
-            ).rejects.toThrow("Venmo session not available");
+            await act(async () => {
+                await result.current.handleClick();
+            });
+
+            expect(result.current.error).toBeNull();
+            expect(mockVenmoSession.start).not.toHaveBeenCalled();
         });
 
         test("should handle different presentation modes", async () => {
@@ -380,7 +380,6 @@ describe("useVenmoOneTimePaymentSession", () => {
                     loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                     eligiblePaymentMethods: null,
                     error: null,
-                    dispatch: jest.fn(),
                 });
             }
         });
@@ -490,11 +489,13 @@ describe("useVenmoOneTimePaymentSession", () => {
                 result.current.handleDestroy();
             });
 
-            await expect(
-                act(async () => {
-                    await result.current.handleClick();
-                }),
-            ).rejects.toThrow("Venmo session not available");
+            await act(async () => {
+                await result.current.handleClick();
+            });
+
+            expect(result.current.error).toEqual(
+                new Error("Venmo session not available"),
+            );
         });
     });
 

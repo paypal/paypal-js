@@ -1,6 +1,7 @@
-import { useEffect, useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { usePayPal } from "./usePayPal";
+import { useIsMountedRef } from "./useIsMounted";
 import { useProxyProps } from "../utils";
 
 import type {
@@ -31,17 +32,26 @@ export function useVenmoOneTimePaymentSession({
     ...callbacks
 }: UseVenmoOneTimePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance } = usePayPal();
+    const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<VenmoOneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
+    const [error, setError] = useState<Error | null>(null);
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
         sessionRef.current = null;
     }, []);
 
+    // Separate error reporting effect to avoid infinite loops with proxyCallbacks
     useEffect(() => {
         if (!sdkInstance) {
-            throw new Error("no sdk instance available");
+            setError(new Error("no sdk instance available"));
+        }
+    }, [sdkInstance]);
+
+    useEffect(() => {
+        if (!sdkInstance) {
+            return;
         }
 
         const newSession = sdkInstance.createVenmoOneTimePaymentSession({
@@ -53,9 +63,18 @@ export function useVenmoOneTimePaymentSession({
         return handleDestroy;
     }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
 
+    const handleCancel = useCallback(() => {
+        sessionRef.current?.cancel();
+    }, []);
+
     const handleClick = useCallback(async () => {
+        if (!isMountedRef.current) {
+            return;
+        }
+
         if (!sessionRef.current) {
-            throw new Error("Venmo session not available");
+            setError(new Error("Venmo session not available"));
+            return;
         }
 
         const startOptions: VenmoPresentationModeOptions = {
@@ -67,15 +86,12 @@ export function useVenmoOneTimePaymentSession({
         } else {
             await sessionRef.current.start(startOptions);
         }
-    }, [createOrder, presentationMode]);
-
-    const handleCancel = useCallback(() => {
-        sessionRef.current?.cancel();
-    }, []);
+    }, [createOrder, presentationMode, isMountedRef]);
 
     return {
-        handleClick,
+        error,
         handleCancel,
+        handleClick,
         handleDestroy,
     };
 }
