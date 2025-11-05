@@ -2,6 +2,7 @@ import {
     BasePaymentSessionOptions,
     BasePaymentSession,
     OnApproveDataOneTimePayments,
+    PayPalWarning,
     PresentationModeOptionsForAuto,
 } from "./base-component";
 
@@ -9,6 +10,7 @@ export type PayPalGuestOneTimePaymentSessionOptions =
     BasePaymentSessionOptions & {
         orderId?: string;
         onApprove: (data: OnApproveDataOneTimePayments) => Promise<void>;
+        onWarn?: (data: PayPalWarning) => void;
     };
 
 export type PayPalGuestPresentationModeOptions =
