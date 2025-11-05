@@ -117,3 +117,25 @@ export function useProxyProps<T extends Record<PropertyKey, unknown>>(
 
     return proxyRef.current;
 }
+
+/**
+ * Normalize input to an {@link Error} instance.
+ *
+ * @param {unknown} error - this argument will be coerced into a String then passed into a new
+ *      {@link Error}. If it's already an {@link Error} instance, it will be returned without modification.
+ * @returns {Error}
+ *
+ * @example
+ * toError("An error occurred");
+ *
+ * @example
+ * const myError = new Error("An error occurred");
+ * toError(myError);
+ */
+export function toError(error: unknown): Error {
+    if (error instanceof Error) {
+        return error;
+    }
+
+    return new Error(String(error));
+}
