@@ -28,7 +28,7 @@ export interface PayPalV6Namespace {
      * });
      * ```
      */
-    createInstance: <T extends readonly [Components, ...Components[]]>(
+    createInstance: <T extends readonly Components[]>(
         createInstanceOptions: CreateInstanceOptions<T>,
     ) => Promise<SdkInstance<T>>;
     version: `${number}.${number}.${number}`;
@@ -119,18 +119,15 @@ export type CreateInstanceOptions<T extends readonly Components[]> = {
  * sdkInstance.updateLocale("es-US");
  * ```
  */
-export type SdkInstance<T extends readonly [Components, ...Components[]]> =
-    BaseInstance &
-        ("paypal-payments" extends T[number]
-            ? PayPalPaymentsInstance
-            : unknown) &
-        ("paypal-guest-payments" extends T[number]
-            ? PayPalGuestPaymentsInstance
-            : unknown) &
-        ("venmo-payments" extends T[number] ? VenmoPaymentsInstance : unknown) &
-        ("paypal-legacy-billing-agreements" extends T[number]
-            ? PayPalLegacyBillingInstance
-            : unknown);
+export type SdkInstance<T extends readonly Components[]> = BaseInstance &
+    ("paypal-payments" extends T[number] ? PayPalPaymentsInstance : unknown) &
+    ("paypal-guest-payments" extends T[number]
+        ? PayPalGuestPaymentsInstance
+        : unknown) &
+    ("venmo-payments" extends T[number] ? VenmoPaymentsInstance : unknown) &
+    ("paypal-legacy-billing-agreements" extends T[number]
+        ? PayPalLegacyBillingInstance
+        : unknown);
 
 /**
  * @internal
