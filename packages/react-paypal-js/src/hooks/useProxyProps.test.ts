@@ -27,12 +27,12 @@ describe("useProxyProps", () => {
         expect(current.onClick).not.toBe(props.onClick);
 
         expect(
-            current.createOrder(
+            current.createOrder?.(
                 {} as CreateOrderData,
                 {} as CreateOrderActions,
             ),
         ).toBe("createOrder");
-        expect(current.onClick({}, {} as OnClickActions)).toBe("onClick");
+        expect(current.onClick?.({}, {} as OnClickActions)).toBe("onClick");
 
         expect(props.createOrder).toHaveBeenCalled();
         expect(props.onClick).toHaveBeenCalled();
