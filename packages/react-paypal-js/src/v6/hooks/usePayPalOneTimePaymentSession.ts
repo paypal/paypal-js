@@ -10,7 +10,6 @@ import {
     BasePaymentSessionReturn,
 } from "../types";
 
-// {A | B } & C
 export type UsePayPalOneTimePaymentSessionProps = (
     | (Omit<PayPalOneTimePaymentSessionOptions, "orderId"> & {
           createOrder: () => Promise<{ orderId: string }>;
