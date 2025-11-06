@@ -51,7 +51,7 @@ const paypalCheckout = sdkInstance.createPayPalOneTimePaymentSession({
 
 ### Key Features
 
--   **Dynamically Typed SDK Instance**: The return type of `createInstance()` changes based on which components are specified in the components array
--   **Type Safety**: Full TypeScript support with proper type checking for all SDK methods and callbacks
--   **Component-Based Types**: Different components provide access to different payment methods and functionality
--   **Comprehensive Callbacks**: Strongly typed callback functions for handling payment events
+- **Dynamically Typed SDK Instance**: The return type of `createInstance()` changes based on which components are specified in the components array
+- **Type Safety**: Full TypeScript support with proper type checking for all SDK methods and callbacks
+- **Component-Based Types**: Different components provide access to different payment methods and functionality
+- **Comprehensive Callbacks**: Strongly typed callback functions for handling payment events

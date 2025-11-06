@@ -1,4 +1,4 @@
-import { insertScriptElement } from "../utils";
+import { insertScriptElement, isServer } from "../utils";
 import type {
     PayPalV6Namespace,
     LoadCoreSdkScriptOptions,
@@ -8,6 +8,24 @@ const version = "__VERSION__";
 
 function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     validateArguments(options);
+    const isServerEnv = isServer();
+
+    // SSR safeguard - warn about incorrect usage
+    if (isServerEnv) {
+        console.warn(
+            "PayPal JS: loadCoreSdkScript() was called on the server. This function should only be called on the client side. Please ensure you're not calling this during server-side rendering.",
+        );
+        return Promise.resolve(null);
+    }
+
+    const currentScript = document.querySelector<HTMLScriptElement>(
+        'script[src*="/web-sdk/v6/core"]',
+    );
+
+    if (window.paypal?.version.startsWith("6") && currentScript) {
+        return Promise.resolve(window.paypal as unknown as PayPalV6Namespace);
+    }
+
     const { environment, debug, dataNamespace } = options;
     const attributes: Record<string, string> = {};
 

@@ -70,7 +70,9 @@ export type PresentationModeOptionsForAuto = {
     autoRedirect?: never;
 };
 
-export type BasePaymentSessionPromise = Promise<{ orderId: string }>;
+export type CreateOrderPromise = Promise<{ orderId: string }>;
+
+export type CreateOrderCallback = () => CreateOrderPromise;
 
 /**
  * use Omit\<BasePaymentSession, "start"\> to change the arguments for start()
@@ -78,7 +80,7 @@ export type BasePaymentSessionPromise = Promise<{ orderId: string }>;
 export type BasePaymentSession = {
     start: (
         options: PresentationModeOptionsForAuto,
-        PaymentSessionPromise?: BasePaymentSessionPromise,
+        PaymentSessionPromise?: CreateOrderPromise,
     ) => Promise<void>;
     destroy: () => void;
     cancel: () => void;

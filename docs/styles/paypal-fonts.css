@@ -60,8 +60,9 @@ code,
 pre,
 .tsd-signature,
 .tsd-code-block {
-    font-family: "SF Mono", Monaco, Menlo, Consolas, "Liberation Mono",
-        "Courier New", monospace !important;
+    font-family:
+        "SF Mono", Monaco, Menlo, Consolas, "Liberation Mono", "Courier New",
+        monospace !important;
 }
 
 footer {
