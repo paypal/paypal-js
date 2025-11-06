@@ -10,6 +10,7 @@ import {
     BasePaymentSessionReturn,
 } from "../types";
 
+// {A | B } & C
 export type UsePayPalOneTimePaymentSessionProps = (
     | (Omit<PayPalOneTimePaymentSessionOptions, "orderId"> & {
           createOrder: () => Promise<{ orderId: string }>;
@@ -28,6 +29,7 @@ export function usePayPalOneTimePaymentSession({
     autoRedirect,
     createOrder,
     orderId,
+    testBuyerCountry,
     ...callbacks
 }: UsePayPalOneTimePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance } = usePayPal();
@@ -59,13 +61,14 @@ export function usePayPalOneTimePaymentSession({
 
         const newSession = sdkInstance.createPayPalOneTimePaymentSession({
             orderId,
+            testBuyerCountry,
             ...proxyCallbacks,
         });
 
         sessionRef.current = newSession;
 
         return handleDestroy;
-    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
+    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy, testBuyerCountry]);
 
     const handleClick = useCallback(async () => {
         if (!isMountedRef.current) {
@@ -79,8 +82,10 @@ export function usePayPalOneTimePaymentSession({
 
         const startOptions = {
             presentationMode,
-            ...(fullPageOverlay !== undefined && { fullPageOverlay }),
-            ...(autoRedirect !== undefined && { autoRedirect }),
+            fullPageOverlay,
+            autoRedirect,
+            // ...(fullPageOverlay !== undefined && { fullPageOverlay }),
+            // ...(autoRedirect !== undefined && { autoRedirect }),
         } as PayPalPresentationModeOptions;
 
         if (createOrder) {
