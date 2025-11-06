@@ -343,7 +343,7 @@ describe("<PayPalButtons />", () => {
             .spyOn(console, "error")
             .mockImplementation();
         window.paypal = {
-            // @ts-expect-error missing some Button properties
+            // @ts-expect-error mocking partial ButtonComponent
             Buttons() {
                 return {
                     close: jest.fn().mockResolvedValue({}),
@@ -425,7 +425,7 @@ describe("<PayPalButtons />", () => {
             .fn()
             .mockRejectedValue(new Error("Unknown error"));
         window.paypal = {
-            // @ts-expect-error missing some Button properties
+            // @ts-expect-error mocking partial ButtonComponent
             Buttons() {
                 return {
                     close: jest.fn().mockResolvedValue({}),
