@@ -12,20 +12,23 @@ import type {
     PayPalPresentationModeOptions,
 } from "../types";
 
-export type PayLaterOneTimePaymentSessionProps =
+export type PayLaterOneTimePaymentSessionProps = (
     | (Omit<PayLaterOneTimePaymentSessionOptions, "orderId"> & {
           createOrder: CreateOrderCallback;
-          presentationMode: PayPalPresentationModeOptions["presentationMode"];
           orderId?: never;
       })
     | (PayLaterOneTimePaymentSessionOptions & {
           createOrder?: never;
-          presentationMode: PayPalPresentationModeOptions["presentationMode"];
           orderId: string;
-      });
+      })
+) &
+    PayPalPresentationModeOptions;
 
 export function usePayLaterOneTimePaymentSession({
     presentationMode,
+    fullPageOverlay,
+    autoRedirect,
+    loadingScreen,
     createOrder,
     orderId,
     ...callbacks
@@ -76,9 +79,12 @@ export function usePayLaterOneTimePaymentSession({
             return;
         }
 
-        const startOptions: PayPalPresentationModeOptions = {
+        const startOptions = {
             presentationMode,
-        };
+            fullPageOverlay,
+            autoRedirect,
+            loadingScreen,
+        } as PayPalPresentationModeOptions;
 
         if (createOrder) {
             await sessionRef.current.start(startOptions, createOrder());
