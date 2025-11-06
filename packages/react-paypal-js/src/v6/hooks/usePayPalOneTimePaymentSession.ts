@@ -83,8 +83,6 @@ export function usePayPalOneTimePaymentSession({
             presentationMode,
             fullPageOverlay,
             autoRedirect,
-            // ...(fullPageOverlay !== undefined && { fullPageOverlay }),
-            // ...(autoRedirect !== undefined && { autoRedirect }),
         } as PayPalPresentationModeOptions;
 
         if (createOrder) {
