@@ -13,20 +13,23 @@ import type {
 } from "../types";
 
 // TODO: Add all startOptions to this hook
-export type UseVenmoOneTimePaymentSessionProps =
+export type UseVenmoOneTimePaymentSessionProps = (
     | (Omit<VenmoOneTimePaymentSessionOptions, "orderId"> & {
           createOrder: () => VenmoOneTimePaymentSessionPromise;
-          presentationMode: VenmoPresentationModeOptions["presentationMode"];
           orderId?: never;
       })
     | (VenmoOneTimePaymentSessionOptions & {
           createOrder?: never;
-          presentationMode: VenmoPresentationModeOptions["presentationMode"];
           orderId: string;
-      });
+      })
+) &
+    VenmoPresentationModeOptions;
 
 export function useVenmoOneTimePaymentSession({
     presentationMode,
+    fullPageOverlay,
+    autoRedirect,
+    loadingScreen,
     createOrder,
     orderId,
     ...callbacks
@@ -77,9 +80,12 @@ export function useVenmoOneTimePaymentSession({
             return;
         }
 
-        const startOptions: VenmoPresentationModeOptions = {
+        const startOptions = {
             presentationMode,
-        };
+            fullPageOverlay,
+            autoRedirect,
+            loadingScreen,
+        } as VenmoPresentationModeOptions;
 
         if (createOrder) {
             await sessionRef.current.start(startOptions, createOrder());
