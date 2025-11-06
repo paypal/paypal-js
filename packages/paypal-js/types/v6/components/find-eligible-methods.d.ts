@@ -8,13 +8,14 @@ export type EligiblePaymentMethods =
     | "paypal_pay_later"
     | "paypal_credit"
     | "paypal"
-    | "venmo";
+    | "venmo"
+    | "basic_cards";
 
 export type FindEligibleMethodsOptions = {
     currencyCode?: string;
 };
 
-export type FundingSource = "credit" | "paylater" | "paypal" | "venmo";
+export type FundingSource = "credit" | "paylater" | "paypal" | "venmo" | "card";
 
 type BaseEligiblePaymentMethodDetails = {
     canBeVaulted: boolean;

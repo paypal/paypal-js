@@ -15,7 +15,19 @@ export type OnCompleteData = {
     paymentSessionState: "approved" | "canceled" | "error";
 };
 
-export type OnErrorData = Error;
+export interface PayPalError extends Error {
+    code: string;
+    name: string;
+    isRecoverable: boolean;
+}
+
+export interface PayPalWarning {
+    code: string;
+    message: string;
+    name: string;
+}
+
+export type OnErrorData = PayPalError;
 
 /**
  * use Omit\<BasePaymentSessionOptions, "onApprove"\> to change the arguments for onApprove()
