@@ -91,7 +91,14 @@ export function usePayLaterOneTimePaymentSession({
         } else {
             await sessionRef.current.start(startOptions);
         }
-    }, [createOrder, presentationMode, isMountedRef]);
+    }, [
+        createOrder,
+        presentationMode,
+        fullPageOverlay,
+        autoRedirect,
+        loadingScreen,
+        isMountedRef,
+    ]);
 
     return {
         error,
