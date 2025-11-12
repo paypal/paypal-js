@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
+import { useSetError } from "./useSetError";
 import { useProxyProps } from "../utils";
 
 import type {
@@ -37,7 +38,7 @@ export function useVenmoOneTimePaymentSession({
     const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<VenmoOneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = useSetError();
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
@@ -49,7 +50,7 @@ export function useVenmoOneTimePaymentSession({
         if (!sdkInstance) {
             setError(new Error("no sdk instance available"));
         }
-    }, [sdkInstance]);
+    }, [sdkInstance, setError]);
 
     useEffect(() => {
         if (!sdkInstance) {
@@ -96,6 +97,7 @@ export function useVenmoOneTimePaymentSession({
         fullPageOverlay,
         autoRedirect,
         createOrder,
+        setError,
     ]);
 
     return {
