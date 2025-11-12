@@ -27,7 +27,6 @@ export function usePayPalSavePaymentSession({
     presentationMode,
     fullPageOverlay,
     autoRedirect,
-    loadingScreen,
     createVaultToken,
     vaultSetupToken,
     ...callbacks
@@ -82,7 +81,6 @@ export function usePayPalSavePaymentSession({
             presentationMode,
             fullPageOverlay,
             autoRedirect,
-            loadingScreen,
         } as PayPalPresentationModeOptions;
 
         if (createVaultToken) {
@@ -95,7 +93,6 @@ export function usePayPalSavePaymentSession({
         presentationMode,
         fullPageOverlay,
         autoRedirect,
-        loadingScreen,
         createVaultToken,
     ]);
 

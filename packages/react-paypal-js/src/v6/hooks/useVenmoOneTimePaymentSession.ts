@@ -29,7 +29,6 @@ export function useVenmoOneTimePaymentSession({
     presentationMode,
     fullPageOverlay,
     autoRedirect,
-    loadingScreen,
     createOrder,
     orderId,
     ...callbacks
@@ -84,7 +83,6 @@ export function useVenmoOneTimePaymentSession({
             presentationMode,
             fullPageOverlay,
             autoRedirect,
-            loadingScreen,
         } as VenmoPresentationModeOptions;
 
         if (createOrder) {
@@ -97,7 +95,6 @@ export function useVenmoOneTimePaymentSession({
         presentationMode,
         fullPageOverlay,
         autoRedirect,
-        loadingScreen,
         createOrder,
     ]);
 

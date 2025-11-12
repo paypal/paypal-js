@@ -26,7 +26,6 @@ export function usePayPalOneTimePaymentSession({
     presentationMode,
     fullPageOverlay,
     autoRedirect,
-    loadingScreen,
     createOrder,
     orderId,
     ...callbacks
@@ -82,7 +81,6 @@ export function usePayPalOneTimePaymentSession({
             presentationMode,
             fullPageOverlay,
             autoRedirect,
-            loadingScreen,
         } as PayPalPresentationModeOptions;
 
         if (createOrder) {
@@ -95,7 +93,6 @@ export function usePayPalOneTimePaymentSession({
         presentationMode,
         fullPageOverlay,
         autoRedirect,
-        loadingScreen,
         createOrder,
     ]);
 
