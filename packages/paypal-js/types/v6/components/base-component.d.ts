@@ -44,35 +44,30 @@ export type PresentationModeOptionsForPopup = {
     presentationMode: "popup";
     fullPageOverlay?: { enabled: boolean };
     autoRedirect?: undefined;
-    loadingScreen?: { label: string };
 };
 
 export type PresentationModeOptionsForModal = {
     presentationMode: "modal";
     fullPageOverlay?: undefined;
     autoRedirect?: undefined;
-    loadingScreen?: { label: string };
 };
 
 export type PresentationModeOptionsForRedirect = {
     presentationMode: "redirect";
     autoRedirect?: { enabled: boolean };
     fullPageOverlay?: undefined;
-    loadingScreen?: undefined;
 };
 
 export type PresentationModeOptionsForPaymentHandler = {
     presentationMode: "payment-handler";
     fullPageOverlay?: undefined;
     autoRedirect?: undefined;
-    loadingScreen?: undefined;
 };
 
 export type PresentationModeOptionsForAuto = {
     presentationMode: "auto";
     fullPageOverlay?: { enabled: boolean };
     autoRedirect?: undefined;
-    loadingScreen?: undefined;
 };
 
 export type CreateOrderPromise = Promise<{ orderId: string }>;
