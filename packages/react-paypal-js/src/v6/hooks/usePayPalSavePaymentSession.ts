@@ -11,20 +11,22 @@ import type {
     BasePaymentSessionReturn,
 } from "../types";
 
-export type PayPalSavePaymentSessionProps =
+export type PayPalSavePaymentSessionProps = (
     | (Omit<SavePaymentSessionOptions, "orderId"> & {
           createVaultToken: () => Promise<{ vaultSetupToken: string }>;
-          presentationMode: PayPalPresentationModeOptions["presentationMode"];
           vaultSetupToken?: never;
       })
     | (SavePaymentSessionOptions & {
           createVaultToken?: never;
-          presentationMode: PayPalPresentationModeOptions["presentationMode"];
           vaultSetupToken: string;
-      });
+      })
+) &
+    PayPalPresentationModeOptions;
 
 export function usePayPalSavePaymentSession({
     presentationMode,
+    fullPageOverlay,
+    autoRedirect,
     createVaultToken,
     vaultSetupToken,
     ...callbacks
@@ -75,16 +77,24 @@ export function usePayPalSavePaymentSession({
             return;
         }
 
-        const startOptions: PayPalPresentationModeOptions = {
+        const startOptions = {
             presentationMode,
-        };
+            fullPageOverlay,
+            autoRedirect,
+        } as PayPalPresentationModeOptions;
 
         if (createVaultToken) {
             await sessionRef.current.start(startOptions, createVaultToken());
         } else {
             await sessionRef.current.start(startOptions);
         }
-    }, [createVaultToken, presentationMode, isMountedRef]);
+    }, [
+        isMountedRef,
+        presentationMode,
+        fullPageOverlay,
+        autoRedirect,
+        createVaultToken,
+    ]);
 
     return {
         error,
