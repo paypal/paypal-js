@@ -90,7 +90,14 @@ export function usePayPalSavePaymentSession({
         } else {
             await sessionRef.current.start(startOptions);
         }
-    }, [createVaultToken, presentationMode, isMountedRef]);
+    }, [
+        isMountedRef,
+        presentationMode,
+        fullPageOverlay,
+        autoRedirect,
+        loadingScreen,
+        createVaultToken,
+    ]);
 
     return {
         error,
