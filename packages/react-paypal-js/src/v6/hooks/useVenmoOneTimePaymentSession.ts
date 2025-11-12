@@ -92,7 +92,14 @@ export function useVenmoOneTimePaymentSession({
         } else {
             await sessionRef.current.start(startOptions);
         }
-    }, [createOrder, presentationMode, isMountedRef]);
+    }, [
+        isMountedRef,
+        presentationMode,
+        fullPageOverlay,
+        autoRedirect,
+        loadingScreen,
+        createOrder,
+    ]);
 
     return {
         error,
