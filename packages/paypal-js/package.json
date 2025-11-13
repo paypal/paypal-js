@@ -21,6 +21,7 @@
     },
     "scripts": {
         "build": "rm -rf dist && rollup --config --bundleConfigAsCjs",
+        "dev": "rollup --config --bundleConfigAsCjs --watch",
         "docs:v6": "typedoc",
         "lint": "eslint . && npm run typecheck",
         "test": "vitest src",
