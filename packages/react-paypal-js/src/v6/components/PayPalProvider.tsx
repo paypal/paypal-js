@@ -11,6 +11,7 @@ import {
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
 import { toError, useCompareMemoize } from "../utils";
+import { useSetError } from "../hooks/useSetError";
 
 import type {
     Components,
@@ -51,6 +52,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     const [state, dispatch] = useReducer(instanceReducer, initialState);
     // Ref to hold script options to avoid re-running effect
     const loadCoreScriptOptions = useRef(scriptOptions);
+    // Using the error hook here so it can participate in side-effects provided bhy the hook
+    const [, setError] = useSetError();
 
     // Load Core SDK Script
     useEffect(() => {
@@ -73,6 +76,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                 }
             } catch (error) {
                 if (isSubscribed) {
+                    setError(error);
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
                         value: toError(error),
@@ -86,7 +90,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         return () => {
             isSubscribed = false;
         };
-    }, []);
+    }, [setError]);
 
     // Create SDK Instance
     useEffect(() => {
@@ -126,6 +130,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                 });
             } catch (error) {
                 if (isSubscribed) {
+                    setError(error);
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
                         value: toError(error),
@@ -149,6 +154,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         paypalNamespace,
         shopperSessionId,
         testBuyerCountry,
+        setError,
     ]);
 
     // Separate effect for eligibility - runs after instance is created
@@ -178,6 +184,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                 });
             } catch (error) {
                 if (isSubscribed) {
+                    setError(error);
                     // TODO figure out what to do with an eligibility error
                 }
             }
@@ -188,7 +195,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         return () => {
             isSubscribed = false;
         };
-    }, [state.sdkInstance, state.loadingStatus]);
+    }, [state.sdkInstance, state.loadingStatus, setError]);
 
     const contextValue: PayPalState = useMemo(
         () => ({

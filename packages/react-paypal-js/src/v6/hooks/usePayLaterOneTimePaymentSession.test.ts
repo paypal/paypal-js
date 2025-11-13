@@ -210,6 +210,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         const { error } = result.current;
 
         expectSetError(error);
+
         expect(error).toEqual(new Error("PayLater session not available"));
     });
 
