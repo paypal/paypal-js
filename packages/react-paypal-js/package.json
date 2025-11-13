@@ -31,6 +31,7 @@
     },
     "scripts": {
         "build": "rollup --config --bundleConfigAsCjs",
+        "dev": "concurrently \"rollup --config --bundleConfigAsCjs --watch\" \"npm run type-declarations -- --watch\"",
         "check-node-version": "node scripts/check-node-version.js",
         "lint": "eslint . && npm run typecheck",
         "prepack": "rimraf dist && npm run build && npm run type-declarations",
