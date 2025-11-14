@@ -5,14 +5,25 @@ import {
 } from "./paypal-payments";
 
 export type EligiblePaymentMethods =
+    | "basic_cards"
     | "paypal_pay_later"
     | "paypal_credit"
     | "paypal"
-    | "venmo"
-    | "basic_cards";
+    | "venmo";
+
+export type PaymentFlow =
+    | "ONE_TIME_PAYMENT"
+    | "RECURRING_PAYMENT"
+    | "VAULT_WITH_PAYMENT"
+    | "VAULT_WITHOUT_PAYMENT";
 
 export type FindEligibleMethodsOptions = {
+    amount?: string;
+    clientToken?: string;
     currencyCode?: string;
+    merchantId?: string;
+    paymentFlow?: PaymentFlow;
+    paymentMethods?: Uppercase<EligiblePaymentMethods>[];
 };
 
 export type FundingSource = "credit" | "paylater" | "paypal" | "venmo" | "card";
