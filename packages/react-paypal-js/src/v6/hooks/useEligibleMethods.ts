@@ -125,6 +125,7 @@ export function useEligibleMethods({
     clientToken,
     payload,
 }: FindEligiblePaymentMethodsOptions): {
+    // TODO - update the types here
     eligibleMethods: any;
     isLoading: boolean;
     error: Error | null;
@@ -136,6 +137,7 @@ export function useEligibleMethods({
     const payloadRef = useRef(payload);
     const eligibleMethodsResponseRef = useRef(eligibleMethodsResponse);
 
+    // TODO - remove console logs
     console.log("hook firing");
 
     useEffect(() => {

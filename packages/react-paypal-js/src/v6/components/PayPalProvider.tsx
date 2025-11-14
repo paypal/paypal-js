@@ -47,6 +47,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     shopperSessionId,
     testBuyerCountry,
     eligibleMethodsResponse,
+    // TODO add eligible methods payload prop
     children,
     ...scriptOptions
 }) => {
@@ -59,6 +60,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     const loadCoreScriptOptions = useRef(scriptOptions);
     const eligibleMethodsResponseRef = useRef(eligibleMethodsResponse);
 
+    // TODO - remove this and use the payload prop
     const { eligibleMethods, isLoading } = useEligibleMethods({
         eligibleMethodsResponse: eligibleMethodsResponseRef.current,
         clientToken,
@@ -85,6 +87,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             ],
         },
     });
+    // TODO - remove console logs
     console.log("isLoading", isLoading);
     console.log("eligibleMethods", eligibleMethods);
 
