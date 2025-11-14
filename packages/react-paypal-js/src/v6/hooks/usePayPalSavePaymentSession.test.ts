@@ -1,5 +1,6 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 
+import { expectSetError } from "./useSetErrorTestUtil";
 import { usePayPal } from "./usePayPal";
 import { usePayPalSavePaymentSession } from "./usePayPalSavePaymentSession";
 import { useProxyProps } from "../utils";
@@ -128,6 +129,8 @@ describe("usePayPalSavePaymentSession", () => {
             }),
         );
 
+        expectSetError(error);
+
         expect(error).toEqual(new Error("no sdk instance available"));
     });
 
@@ -254,9 +257,11 @@ describe("usePayPalSavePaymentSession", () => {
             await result.current.handleClick();
         });
 
-        expect(result.current.error).toEqual(
-            new Error("Save Payment session not available"),
-        );
+        const { error } = result.current;
+
+        expectSetError(error);
+
+        expect(error).toEqual(new Error("Save Payment session not available"));
     });
 
     test("should do nothing if the click handler is called after unmount", async () => {
@@ -293,7 +298,11 @@ describe("usePayPalSavePaymentSession", () => {
             await result.current.handleClick();
         });
 
-        expect(result.current.error).toBeNull();
+        const { error } = result.current;
+
+        expectSetError(error);
+
+        expect(error).toBeNull();
         expect(mockStart).not.toHaveBeenCalled();
     });
 
