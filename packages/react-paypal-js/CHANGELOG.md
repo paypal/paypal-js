@@ -1,5 +1,38 @@
 # Changelog
 
+## 8.10.0
+
+### Minor Changes
+
+- a1c7246: Upgrade react-paypal-js Typescript version to v5.3.3 and update build configuration.
+- a1c7246: Add V6 instance provider and context hook
+
+### Patch Changes
+
+- a1c7246: Adds an early resolve to loadCoreSdkScript if a v6 core script already exists.
+- a1c7246: Refactor paypal provider test utils.
+- eae3d6c: Update presentation mode options types and integration.
+- 22029d4: Fix lint warnings.
+- Updated dependencies [16b2dfe]
+- Updated dependencies [a1c7246]
+- Updated dependencies [a1c7246]
+- Updated dependencies [45b78ce]
+- Updated dependencies [b2cbae5]
+- Updated dependencies [036f31b]
+- Updated dependencies [6d5e590]
+- Updated dependencies [6a745d7]
+- Updated dependencies [acc3ba2]
+- Updated dependencies [cfb9887]
+- Updated dependencies [a1c7246]
+- Updated dependencies [eae3d6c]
+- Updated dependencies [249f1e3]
+- Updated dependencies [6d406fd]
+- Updated dependencies [c41dab4]
+- Updated dependencies [1599832]
+- Updated dependencies [6539e8e]
+- Updated dependencies [03b0069]
+    - @paypal/paypal-js@9.1.0
+
 ## 8.9.2
 
 ### Patch Changes
