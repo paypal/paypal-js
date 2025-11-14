@@ -11,6 +11,10 @@ import {
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
 import { toError, useCompareMemoize } from "../utils";
+import {
+    FindEligiblePaymentMethodsResponse,
+    useEligibleMethods,
+} from "../hooks/useEligibleMethods";
 
 import type {
     Components,
@@ -25,6 +29,7 @@ type PayPalProviderProps = CreateInstanceOptions<
     readonly [Components, ...Components[]]
 > &
     LoadCoreSdkScriptOptions & {
+        eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
         children: React.ReactNode;
     };
 
@@ -41,6 +46,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     partnerAttributionId,
     shopperSessionId,
     testBuyerCountry,
+    eligibleMethodsResponse,
     children,
     ...scriptOptions
 }) => {
@@ -51,7 +57,43 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     const [state, dispatch] = useReducer(instanceReducer, initialState);
     // Ref to hold script options to avoid re-running effect
     const loadCoreScriptOptions = useRef(scriptOptions);
+    const eligibleMethodsResponseRef = useRef(eligibleMethodsResponse);
 
+    const { eligibleMethods, isLoading } = useEligibleMethods({
+        eligibleMethodsResponse: eligibleMethodsResponseRef.current,
+        clientToken,
+        payload: {
+            preferences: {
+                payment_flow: "ONE_TIME_PAYMENT",
+                payment_source_constraint: {
+                    constraint_type: "INCLUDE",
+                    payment_sources: [
+                        "PAYPAL_CREDIT",
+                        "PAYPAL_PAY_LATER",
+                        "PAYPAL",
+                        "VENMO",
+                    ],
+                },
+            },
+            purchase_units: [
+                {
+                    amount: {
+                        currency_code: "USD",
+                        // value: "100.00",
+                    },
+                },
+            ],
+        },
+    });
+    console.log("isLoading", isLoading);
+    console.log("eligibleMethods", eligibleMethods);
+
+    if (!isLoading && eligibleMethods && !state.eligiblePaymentMethods) {
+        dispatch({
+            type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
+            value: eligibleMethods,
+        });
+    }
     // Load Core SDK Script
     useEffect(() => {
         let isSubscribed = true;
@@ -150,45 +192,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         shopperSessionId,
         testBuyerCountry,
     ]);
-
-    // Separate effect for eligibility - runs after instance is created
-    useEffect(() => {
-        // Only run when we have an instance and it's in resolved state
-        if (
-            !state.sdkInstance ||
-            state.loadingStatus !== INSTANCE_LOADING_STATE.RESOLVED
-        ) {
-            return;
-        }
-
-        let isSubscribed = true;
-
-        const loadEligibility = async () => {
-            try {
-                const eligiblePaymentMethods =
-                    await state.sdkInstance?.findEligibleMethods({});
-
-                if (!isSubscribed || !eligiblePaymentMethods) {
-                    return;
-                }
-
-                dispatch({
-                    type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-                    value: eligiblePaymentMethods,
-                });
-            } catch (error) {
-                if (isSubscribed) {
-                    // TODO figure out what to do with an eligibility error
-                }
-            }
-        };
-
-        loadEligibility();
-
-        return () => {
-            isSubscribed = false;
-        };
-    }, [state.sdkInstance, state.loadingStatus]);
 
     const contextValue: PayPalState = useMemo(
         () => ({
