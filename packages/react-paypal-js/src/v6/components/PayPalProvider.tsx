@@ -52,7 +52,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     const [state, dispatch] = useReducer(instanceReducer, initialState);
     // Ref to hold script options to avoid re-running effect
     const loadCoreScriptOptions = useRef(scriptOptions);
-    // Using the error hook here so it can participate in side-effects provided bhy the hook
+    // Using the error hook here so it can participate in side-effects provided by the hook. The actual error
+    // instance is stored in the reducer's state.
     const [, setError] = useSetError();
 
     // Load Core SDK Script
