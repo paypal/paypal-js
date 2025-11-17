@@ -57,8 +57,6 @@ export function usePayPalOneTimePaymentSession({
             return;
         }
 
-        console.log("🔧 Creating PayPal session...", { orderId });
-
         // Create session (can be created without orderId for resume detection)
         const newSession = sdkInstance.createPayPalOneTimePaymentSession({
             orderId,
@@ -66,15 +64,6 @@ export function usePayPalOneTimePaymentSession({
         });
 
         sessionRef.current = newSession;
-
-        console.log("Checking for resume flow", {
-            hasReturned: typeof newSession.hasReturned,
-            hasReturnedResult: newSession.hasReturned?.(),
-            resume: typeof newSession.resume,
-            urlParams: window.location.search,
-            urlHash: window.location.hash,
-            fullURL: window.location.href,
-        });
 
         const handleReturnFromPayPal = async () => {
             const isResumeFlow = newSession.hasReturned?.();
