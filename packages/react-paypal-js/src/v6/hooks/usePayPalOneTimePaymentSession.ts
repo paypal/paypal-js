@@ -66,6 +66,9 @@ export function usePayPalOneTimePaymentSession({
         sessionRef.current = newSession;
 
         const handleReturnFromPayPal = async () => {
+            if (!newSession) {
+                return;
+            }
             const isResumeFlow = newSession.hasReturned?.();
             if (isResumeFlow) {
                 try {
