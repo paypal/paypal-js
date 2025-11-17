@@ -12,6 +12,7 @@ import {
 } from "../types/PayPalProviderEnums";
 import { toError, useCompareMemoize } from "../utils";
 import {
+    FindEligiblePaymentMethodsRequestPayload,
     FindEligiblePaymentMethodsResponse,
     useEligibleMethods,
 } from "../hooks/useEligibleMethods";
@@ -30,6 +31,7 @@ type PayPalProviderProps = CreateInstanceOptions<
 > &
     LoadCoreSdkScriptOptions & {
         eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
+        eligibleMethodsPayload?: FindEligiblePaymentMethodsRequestPayload; // Add this
         children: React.ReactNode;
     };
 
@@ -48,6 +50,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     testBuyerCountry,
     eligibleMethodsResponse,
     // TODO add eligible methods payload prop
+    eligibleMethodsPayload,
     children,
     ...scriptOptions
 }) => {
@@ -64,28 +67,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     const { eligibleMethods, isLoading } = useEligibleMethods({
         eligibleMethodsResponse: eligibleMethodsResponseRef.current,
         clientToken,
-        payload: {
-            preferences: {
-                payment_flow: "ONE_TIME_PAYMENT",
-                payment_source_constraint: {
-                    constraint_type: "INCLUDE",
-                    payment_sources: [
-                        "PAYPAL_CREDIT",
-                        "PAYPAL_PAY_LATER",
-                        "PAYPAL",
-                        "VENMO",
-                    ],
-                },
-            },
-            purchase_units: [
-                {
-                    amount: {
-                        currency_code: "USD",
-                        // value: "100.00",
-                    },
-                },
-            ],
-        },
+        payload: eligibleMethodsPayload ?? {},
     });
     // TODO - remove console logs
     console.log("isLoading", isLoading);
@@ -164,6 +146,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                 if (!isSubscribed) {
                     return;
                 }
+                // instance.findEligibleMethods({});
 
                 dispatch({
                     type: INSTANCE_DISPATCH_ACTION.SET_INSTANCE,

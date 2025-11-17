@@ -18,7 +18,7 @@ type PaymentFlow =
     | "VAULT_WITHOUT_PAYMENT"
     | "VAULT_WITH_PAYMENT";
 
-type FindEligiblePaymentMethodsRequestPayload = {
+export type FindEligiblePaymentMethodsRequestPayload = {
     customer?: {
         // the user agent string is used by default for requests made from the browser
         channel?: {
