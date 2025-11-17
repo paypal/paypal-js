@@ -61,6 +61,19 @@ export function usePayLaterOneTimePaymentSession({
         });
         sessionRef.current = newSession;
 
+        const handleReturnFromPayPal = async () => {
+            const isResumeFlow = newSession.hasReturned?.();
+            if (isResumeFlow) {
+                try {
+                    await newSession.resume?.();
+                } catch (err) {
+                    setError(err as Error);
+                }
+            }
+        };
+
+        handleReturnFromPayPal();
+
         return handleDestroy;
     }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
 
@@ -85,9 +98,14 @@ export function usePayLaterOneTimePaymentSession({
         } as PayPalPresentationModeOptions;
 
         if (createOrder) {
-            await sessionRef.current.start(startOptions, createOrder());
+            const result = await sessionRef.current.start(
+                startOptions,
+                createOrder(),
+            );
+            return result;
         } else {
-            await sessionRef.current.start(startOptions);
+            const result = await sessionRef.current.start(startOptions);
+            return result;
         }
     }, [
         createOrder,

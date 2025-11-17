@@ -57,12 +57,37 @@ export function usePayPalOneTimePaymentSession({
             return;
         }
 
+        console.log("🔧 Creating PayPal session...", { orderId });
+
+        // Create session (can be created without orderId for resume detection)
         const newSession = sdkInstance.createPayPalOneTimePaymentSession({
             orderId,
             ...proxyCallbacks,
         });
 
         sessionRef.current = newSession;
+
+        console.log("Checking for resume flow", {
+            hasReturned: typeof newSession.hasReturned,
+            hasReturnedResult: newSession.hasReturned?.(),
+            resume: typeof newSession.resume,
+            urlParams: window.location.search,
+            urlHash: window.location.hash,
+            fullURL: window.location.href,
+        });
+
+        const handleReturnFromPayPal = async () => {
+            const isResumeFlow = newSession.hasReturned?.();
+            if (isResumeFlow) {
+                try {
+                    await newSession.resume?.();
+                } catch (err) {
+                    setError(err as Error);
+                }
+            }
+        };
+
+        handleReturnFromPayPal();
 
         return handleDestroy;
     }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
@@ -84,9 +109,14 @@ export function usePayPalOneTimePaymentSession({
         } as PayPalPresentationModeOptions;
 
         if (createOrder) {
-            await sessionRef.current.start(startOptions, createOrder());
+            const result = await sessionRef.current.start(
+                startOptions,
+                createOrder(),
+            );
+            return result;
         } else {
-            await sessionRef.current.start(startOptions);
+            const result = await sessionRef.current.start(startOptions);
+            return result;
         }
     }, [
         isMountedRef,
