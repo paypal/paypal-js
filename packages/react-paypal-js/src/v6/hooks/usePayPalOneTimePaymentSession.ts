@@ -66,16 +66,16 @@ export function usePayPalOneTimePaymentSession({
         sessionRef.current = newSession;
 
         const handleReturnFromPayPal = async () => {
-            if (!newSession) {
-                return;
-            }
-            const isResumeFlow = newSession.hasReturned?.();
-            if (isResumeFlow) {
-                try {
-                    await newSession.resume?.();
-                } catch (err) {
-                    setError(err as Error);
+            try {
+                if (!newSession) {
+                    return;
                 }
+                const isResumeFlow = newSession.hasReturned?.();
+                if (isResumeFlow) {
+                    await newSession.resume?.();
+                }
+            } catch (err) {
+                setError(err as Error);
             }
         };
 
@@ -100,16 +100,11 @@ export function usePayPalOneTimePaymentSession({
             autoRedirect,
         } as PayPalPresentationModeOptions;
 
-        if (createOrder) {
-            const result = await sessionRef.current.start(
-                startOptions,
-                createOrder(),
-            );
-            return result;
-        } else {
-            const result = await sessionRef.current.start(startOptions);
-            return result;
-        }
+        const result = await sessionRef.current.start(
+            startOptions,
+            createOrder?.(),
+        );
+        return result;
     }, [
         isMountedRef,
         presentationMode,
