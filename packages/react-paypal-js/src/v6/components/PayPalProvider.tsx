@@ -64,7 +64,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     const { eligibleMethods, isLoading } = useEligibleMethods({
         eligibleMethodsResponse,
         clientToken,
-        payload: eligibleMethodsPayload ?? {},
+        payload: eligibleMethodsPayload,
         environment: loadCoreScriptOptions.current.environment,
     });
 
