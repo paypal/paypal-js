@@ -49,7 +49,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     shopperSessionId,
     testBuyerCountry,
     eligibleMethodsResponse,
-    // TODO add eligible methods payload prop
     eligibleMethodsPayload,
     children,
     ...scriptOptions
@@ -61,11 +60,9 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     const [state, dispatch] = useReducer(instanceReducer, initialState);
     // Ref to hold script options to avoid re-running effect
     const loadCoreScriptOptions = useRef(scriptOptions);
-    const eligibleMethodsResponseRef = useRef(eligibleMethodsResponse);
 
-    // TODO - remove this and use the payload prop
     const { eligibleMethods, isLoading } = useEligibleMethods({
-        eligibleMethodsResponse: eligibleMethodsResponseRef.current,
+        eligibleMethodsResponse,
         clientToken,
         payload: eligibleMethodsPayload ?? {},
     });
@@ -73,12 +70,15 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     console.log("isLoading", isLoading);
     console.log("eligibleMethods", eligibleMethods);
 
-    if (!isLoading && eligibleMethods && !state.eligiblePaymentMethods) {
-        dispatch({
-            type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-            value: eligibleMethods,
-        });
-    }
+    useEffect(() => {
+        if (!isLoading && eligibleMethods && !state.eligiblePaymentMethods) {
+            dispatch({
+                type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
+                value: eligibleMethods,
+            });
+        }
+    }, [isLoading, eligibleMethods, state.eligiblePaymentMethods]);
+
     // Load Core SDK Script
     useEffect(() => {
         let isSubscribed = true;
@@ -146,7 +146,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                 if (!isSubscribed) {
                     return;
                 }
-                // instance.findEligibleMethods({});
 
                 dispatch({
                     type: INSTANCE_DISPATCH_ACTION.SET_INSTANCE,

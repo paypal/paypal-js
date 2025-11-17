@@ -12,7 +12,6 @@ import type {
     BasePaymentSessionReturn,
 } from "../types";
 
-// TODO: Add all startOptions to this hook
 export type UseVenmoOneTimePaymentSessionProps = (
     | (Omit<VenmoOneTimePaymentSessionOptions, "orderId"> & {
           createOrder: () => VenmoOneTimePaymentSessionPromise;
