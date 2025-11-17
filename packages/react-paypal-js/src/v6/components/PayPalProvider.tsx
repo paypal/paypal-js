@@ -65,19 +65,20 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         eligibleMethodsResponse,
         clientToken,
         payload: eligibleMethodsPayload ?? {},
+        environment: loadCoreScriptOptions.current.environment,
     });
     // TODO - remove console logs
     console.log("isLoading", isLoading);
     console.log("eligibleMethods", eligibleMethods);
 
     useEffect(() => {
-        if (!isLoading && eligibleMethods && !state.eligiblePaymentMethods) {
+        if (!isLoading && eligibleMethods) {
             dispatch({
                 type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
                 value: eligibleMethods,
             });
         }
-    }, [isLoading, eligibleMethods, state.eligiblePaymentMethods]);
+    }, [isLoading, eligibleMethods]);
 
     // Load Core SDK Script
     useEffect(() => {

@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+
+import { useDeepCompareMemoize } from "../utils";
 
 import type {
     EligiblePaymentMethods,
@@ -6,7 +8,6 @@ import type {
     PayLaterProductCodes,
     PayPalCreditCountryCodes,
 } from "../types";
-import { useDeepCompareMemoize } from "../utils";
 
 type PhoneNumber = {
     country_code?: string;
@@ -21,13 +22,11 @@ type PaymentFlow =
 
 export type FindEligiblePaymentMethodsRequestPayload = {
     customer?: {
-        // the user agent string is used by default for requests made from the browser
         channel?: {
             browser_type?: string;
             client_os?: string;
             device_type?: string;
         };
-        // the pp_geo_loc header value is used by default for requests made from the browser
         country_code?: string;
         id?: string;
         email?: string;
@@ -66,6 +65,7 @@ export type FindEligiblePaymentMethodsRequestPayload = {
 type FindEligiblePaymentMethodsOptions = {
     clientToken: string;
     eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
+    environment?: "production" | "sandbox";
     payload?: FindEligiblePaymentMethodsRequestPayload;
 };
 
@@ -88,13 +88,17 @@ export type FindEligiblePaymentMethodsResponse = {
 };
 
 export async function fetchEligibleMethods(
-    options: FindEligiblePaymentMethodsOptions,
+    options: FindEligiblePaymentMethodsOptions & { signal?: AbortSignal },
 ): Promise<FindEligiblePaymentMethodsResponse> {
-    const { clientToken, payload } = options;
-
+    const { clientToken, payload, signal, environment } = options;
+    const defaultPayload = payload ?? {};
+    const baseUrl =
+        environment === "production"
+            ? "https://api-m.paypal.com"
+            : "https://api-m.sandbox.paypal.com";
     try {
         const response = await fetch(
-            "https://api-m.sandbox.paypal.com/v2/payments/find-eligible-methods",
+            `${baseUrl}/v2/payments/find-eligible-methods`,
             {
                 method: "POST",
                 headers: {
@@ -103,7 +107,8 @@ export async function fetchEligibleMethods(
                     Accept: "application/json",
                     "Accept-Language": "en-US,en;q=0.9",
                 },
-                body: JSON.stringify(payload),
+                body: JSON.stringify(defaultPayload),
+                signal,
             },
         );
 
@@ -125,8 +130,8 @@ export function useEligibleMethods({
     eligibleMethodsResponse,
     clientToken,
     payload,
+    environment,
 }: FindEligiblePaymentMethodsOptions): {
-    // TODO - update the types here
     eligibleMethods: FindEligiblePaymentMethodsResponse | null;
     isLoading: boolean;
     error: Error | null;
@@ -141,19 +146,16 @@ export function useEligibleMethods({
     );
 
     // TODO - remove console logs
-    console.log("hook firing");
+    console.log("hook firing", {
+        memoizedPayload,
+        clientToken: clientToken?.substring(0, 10),
+        hasResponse: !!memoizedEligibleMethodsResponse,
+    });
 
     useEffect(() => {
-        if (!memoizedEligibleMethodsResponse && !clientToken) {
-            setError(
-                new Error(
-                    "clientToken is required when eligibleMethodsResponse is not provided",
-                ),
-            );
-        }
-    }, [clientToken, memoizedEligibleMethodsResponse]);
+        const abortController = new AbortController();
+        let isSubscribed = true;
 
-    useEffect(() => {
         if (memoizedEligibleMethodsResponse) {
             setEligibleMethods(memoizedEligibleMethodsResponse);
             setIsLoading(false);
@@ -161,27 +163,58 @@ export function useEligibleMethods({
         }
 
         if (!clientToken) {
+            setError(
+                new Error(
+                    "clientToken is required when eligibleMethodsResponse is not provided",
+                ),
+            );
+            setIsLoading(false);
             return;
         }
 
         async function getEligibility() {
+            setError(null);
+            setIsLoading(true);
+
             try {
                 const methods = await fetchEligibleMethods({
                     clientToken,
                     payload: memoizedPayload,
+                    signal: abortController.signal,
+                    environment,
                 });
-                setEligibleMethods(methods);
-                setIsLoading(false);
+
+                if (isSubscribed) {
+                    setEligibleMethods(methods);
+                    setIsLoading(false);
+                }
             } catch (error) {
-                setError(
-                    error instanceof Error ? error : new Error(String(error)),
-                );
-                setIsLoading(false);
+                if (
+                    isSubscribed &&
+                    !(error instanceof Error && error.name === "AbortError")
+                ) {
+                    setError(
+                        error instanceof Error
+                            ? error
+                            : new Error(String(error)),
+                    );
+                    setIsLoading(false);
+                }
             }
         }
         console.log("useEffect body running");
         getEligibility();
-    }, [clientToken, memoizedPayload, memoizedEligibleMethodsResponse]);
+
+        return () => {
+            isSubscribed = false;
+            abortController.abort();
+        };
+    }, [
+        clientToken,
+        memoizedPayload,
+        memoizedEligibleMethodsResponse,
+        environment,
+    ]);
 
     return { eligibleMethods, isLoading, error };
 }
