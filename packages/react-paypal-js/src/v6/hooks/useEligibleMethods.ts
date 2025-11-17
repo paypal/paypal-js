@@ -6,6 +6,7 @@ import type {
     PayLaterProductCodes,
     PayPalCreditCountryCodes,
 } from "../types";
+import { useDeepCompareMemoize } from "../utils";
 
 type PhoneNumber = {
     country_code?: string;
@@ -126,7 +127,7 @@ export function useEligibleMethods({
     payload,
 }: FindEligiblePaymentMethodsOptions): {
     // TODO - update the types here
-    eligibleMethods: any;
+    eligibleMethods: FindEligiblePaymentMethodsResponse | null;
     isLoading: boolean;
     error: Error | null;
 } {
@@ -134,25 +135,27 @@ export function useEligibleMethods({
         useState<FindEligiblePaymentMethodsResponse | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<Error | null>(null);
-    const payloadRef = useRef(payload);
-    const eligibleMethodsResponseRef = useRef(eligibleMethodsResponse);
+    const memoizedPayload = useDeepCompareMemoize(payload);
+    const memoizedEligibleMethodsResponse = useDeepCompareMemoize(
+        eligibleMethodsResponse,
+    );
 
     // TODO - remove console logs
     console.log("hook firing");
 
     useEffect(() => {
-        if (!eligibleMethodsResponseRef.current && !clientToken) {
+        if (!memoizedEligibleMethodsResponse && !clientToken) {
             setError(
                 new Error(
                     "clientToken is required when eligibleMethodsResponse is not provided",
                 ),
             );
         }
-    }, [clientToken]);
+    }, [clientToken, memoizedEligibleMethodsResponse]);
 
     useEffect(() => {
-        if (eligibleMethodsResponseRef.current) {
-            setEligibleMethods(eligibleMethodsResponseRef.current);
+        if (memoizedEligibleMethodsResponse) {
+            setEligibleMethods(memoizedEligibleMethodsResponse);
             setIsLoading(false);
             return;
         }
@@ -165,7 +168,7 @@ export function useEligibleMethods({
             try {
                 const methods = await fetchEligibleMethods({
                     clientToken,
-                    payload: payloadRef.current,
+                    payload: memoizedPayload,
                 });
                 setEligibleMethods(methods);
                 setIsLoading(false);
@@ -178,7 +181,7 @@ export function useEligibleMethods({
         }
         console.log("useEffect body running");
         getEligibility();
-    }, [clientToken]);
+    }, [clientToken, memoizedPayload, memoizedEligibleMethodsResponse]);
 
     return { eligibleMethods, isLoading, error };
 }

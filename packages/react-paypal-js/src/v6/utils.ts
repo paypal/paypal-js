@@ -139,3 +139,17 @@ export function toError(error: unknown): Error {
 
     return new Error(String(error));
 }
+
+export function useDeepCompareMemoize<T>(value: T): T {
+    const ref = useRef<T>(value);
+
+    if (!deepEqual(value, ref.current)) {
+        ref.current = value;
+    }
+
+    return ref.current;
+}
+
+function deepEqual(obj1: any, obj2: any): boolean {
+    return JSON.stringify(obj1) === JSON.stringify(obj2);
+}
