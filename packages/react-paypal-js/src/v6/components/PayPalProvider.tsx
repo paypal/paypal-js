@@ -67,9 +67,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         payload: eligibleMethodsPayload ?? {},
         environment: loadCoreScriptOptions.current.environment,
     });
-    // TODO - remove console logs
-    console.log("isLoading", isLoading);
-    console.log("eligibleMethods", eligibleMethods);
 
     useEffect(() => {
         if (!isLoading && eligibleMethods) {

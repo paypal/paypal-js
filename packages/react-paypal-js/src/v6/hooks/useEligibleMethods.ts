@@ -145,13 +145,6 @@ export function useEligibleMethods({
         eligibleMethodsResponse,
     );
 
-    // TODO - remove console logs
-    console.log("hook firing", {
-        memoizedPayload,
-        clientToken: clientToken?.substring(0, 10),
-        hasResponse: !!memoizedEligibleMethodsResponse,
-    });
-
     useEffect(() => {
         const abortController = new AbortController();
         let isSubscribed = true;
@@ -202,7 +195,7 @@ export function useEligibleMethods({
                 }
             }
         }
-        console.log("useEffect body running");
+
         getEligibility();
 
         return () => {

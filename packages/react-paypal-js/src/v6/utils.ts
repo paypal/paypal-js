@@ -141,13 +141,19 @@ export function toError(error: unknown): Error {
 }
 
 export function useDeepCompareMemoize<T>(value: T): T {
-    const ref = useRef<T>(value);
+    const ref = useRef<T>();
+    const isInitialized = useRef(false);
 
-    if (!deepEqual(value, ref.current)) {
+    if (!isInitialized.current) {
+        // First render: always set the value
+        ref.current = value;
+        isInitialized.current = true;
+    } else if (!deepEqual(value, ref.current)) {
+        // Subsequent renders: only update if different
         ref.current = value;
     }
 
-    return ref.current;
+    return ref.current as T;
 }
 
 function deepEqual(obj1: any, obj2: any): boolean {
