@@ -61,24 +61,31 @@ export function usePayLaterOneTimePaymentSession({
         });
         sessionRef.current = newSession;
 
-        const handleReturnFromPayPal = async () => {
-            try {
-                if (!newSession) {
-                    return;
-                }
-                const isResumeFlow = newSession.hasReturned?.();
-                if (isResumeFlow) {
-                    await newSession.resume?.();
-                }
-            } catch (err) {
-                setError(err as Error);
-            }
-        };
+        // check for resume flow in redirect-based presentation modes
+        const isRedirectMode =
+            presentationMode === "redirect" ||
+            presentationMode === "direct-app-switch";
 
-        handleReturnFromPayPal();
+        if (isRedirectMode) {
+            const handleReturnFromPayPal = async () => {
+                try {
+                    if (!newSession) {
+                        return;
+                    }
+                    const isResumeFlow = newSession.hasReturned?.();
+                    if (isResumeFlow) {
+                        await newSession.resume?.();
+                    }
+                } catch (err) {
+                    setError(err as Error);
+                }
+            };
+
+            handleReturnFromPayPal();
+        }
 
         return handleDestroy;
-    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
+    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy, presentationMode]);
 
     const handleCancel = useCallback(() => {
         sessionRef.current?.cancel();
