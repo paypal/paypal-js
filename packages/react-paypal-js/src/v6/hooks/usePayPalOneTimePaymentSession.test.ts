@@ -1,6 +1,6 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 
-import { expectSetError } from "./useErrorTestUtil";
+import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import { usePayPalOneTimePaymentSession } from "./usePayPalOneTimePaymentSession";
 import { usePayPal } from "./usePayPal";
 import { useProxyProps } from "../utils";
@@ -75,7 +75,7 @@ describe("usePayPalOneTimePaymentSession", () => {
                 },
             } = renderHook(() => usePayPalOneTimePaymentSession(props));
 
-            expectSetError(error);
+            expectCurrentErrorValue(error);
 
             expect(error).toEqual(new Error("no sdk instance available"));
         });
@@ -351,7 +351,7 @@ describe("usePayPalOneTimePaymentSession", () => {
 
             const { error } = result.current;
 
-            expectSetError(error);
+            expectCurrentErrorValue(error);
 
             expect(error).toBeNull();
             expect(mockPayPalSession.start).not.toHaveBeenCalled();
@@ -505,7 +505,7 @@ describe("usePayPalOneTimePaymentSession", () => {
 
             const { error } = result.current;
 
-            expectSetError(error);
+            expectCurrentErrorValue(error);
 
             expect(error).toEqual(new Error("PayPal session not available"));
         });

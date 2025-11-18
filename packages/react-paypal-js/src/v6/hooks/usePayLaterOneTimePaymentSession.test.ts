@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 
-import { expectSetError } from "./useErrorTestUtil";
+import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import { usePayPal } from "./usePayPal";
 import { usePayLaterOneTimePaymentSession } from "./usePayLaterOneTimePaymentSession";
 import { useProxyProps } from "../utils";
@@ -84,7 +84,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
             }),
         );
 
-        expectSetError(error);
+        expectCurrentErrorValue(error);
 
         expect(error).toEqual(new Error("no sdk instance available"));
     });
@@ -209,7 +209,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
 
         const { error } = result.current;
 
-        expectSetError(error);
+        expectCurrentErrorValue(error);
 
         expect(error).toEqual(new Error("PayLater session not available"));
     });
@@ -251,7 +251,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
 
         const { error } = result.current;
 
-        expectSetError(error);
+        expectCurrentErrorValue(error);
 
         expect(error).toBeNull();
         expect(mockStart).not.toHaveBeenCalled();

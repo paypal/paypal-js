@@ -13,7 +13,11 @@ jest.mock("./useError", () => ({
 /**
  * Expects the given {@link Error} to be returned by the last call to the hook.
  */
-export const expectSetError = (error: Error | null): void => {
+export const expectCurrentErrorValue = (error: Error | null): void => {
     const { results } = (useError as jest.Mock).mock;
-    expect(results[results.length - 1].value[0]).toBe(error);
+
+    const lastCall = results[results.length - 1];
+    const lastError = lastCall.value[0];
+
+    expect(lastError).toBe(error);
 };

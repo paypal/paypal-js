@@ -1,6 +1,6 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 
-import { expectSetError } from "./useErrorTestUtil";
+import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import { useVenmoOneTimePaymentSession } from "./useVenmoOneTimePaymentSession";
 import { usePayPal } from "./usePayPal";
 import { useProxyProps } from "../utils";
@@ -78,7 +78,7 @@ describe("useVenmoOneTimePaymentSession", () => {
                 },
             } = renderHook(() => useVenmoOneTimePaymentSession(props));
 
-            expectSetError(error);
+            expectCurrentErrorValue(error);
 
             expect(error).toEqual(new Error("no sdk instance available"));
         });
@@ -348,7 +348,7 @@ describe("useVenmoOneTimePaymentSession", () => {
 
             const { error } = result.current;
 
-            expectSetError(error);
+            expectCurrentErrorValue(error);
 
             expect(error).toBeNull();
             expect(mockVenmoSession.start).not.toHaveBeenCalled();
@@ -502,7 +502,7 @@ describe("useVenmoOneTimePaymentSession", () => {
 
             const { error } = result.current;
 
-            expectSetError(error);
+            expectCurrentErrorValue(error);
 
             expect(error).toEqual(new Error("Venmo session not available"));
         });
