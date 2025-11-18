@@ -3,7 +3,7 @@ import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
-import { expectSetError } from "../hooks/useSetErrorTestUtil";
+import { expectSetError } from "../hooks/useErrorTestUtil";
 import { PayPalProvider } from "./PayPalProvider";
 import { usePayPal } from "../hooks/usePayPal";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";

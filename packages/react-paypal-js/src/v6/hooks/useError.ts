@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
 /**
- * Sets the `error` returned by {@link useSetError}. Also, calls {@link console.error} with the given {@link Error}.
+ * Sets the `error` returned by {@link useError}. Also, calls `console.error` with the given {@link Error}.
  */
 type TypeSetError = (error: Error) => void;
 
@@ -10,7 +10,7 @@ type TypeSetError = (error: Error) => void;
  *
  * @param {Boolean} noConsoleErrors - set to `true` to prevent `setError` calls from logging to `console.error`.
  */
-export function useSetError(
+export function useError(
     noConsoleErrors = false,
 ): [Error | null, TypeSetError] {
     const [error, setErrorInternal] = useState<Error | null>(null);

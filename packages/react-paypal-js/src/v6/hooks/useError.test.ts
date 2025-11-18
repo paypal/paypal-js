@@ -1,8 +1,8 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 
-import { useSetError } from "./useSetError";
+import { useError } from "./useError";
 
-describe("useSetError", () => {
+describe("useError", () => {
     beforeEach(() => {
         jest.restoreAllMocks();
     });
@@ -13,7 +13,7 @@ describe("useSetError", () => {
         const mockConsoleError = jest.fn();
         jest.spyOn(console, "error").mockImplementation(mockConsoleError);
 
-        const { result } = renderHook(() => useSetError());
+        const { result } = renderHook(() => useError());
 
         act(() => {
             result.current[1](mockError);
@@ -30,7 +30,7 @@ describe("useSetError", () => {
         const mockConsoleError = jest.fn();
         jest.spyOn(console, "error").mockImplementation(mockConsoleError);
 
-        const { result } = renderHook(() => useSetError(true));
+        const { result } = renderHook(() => useError(true));
 
         act(() => {
             result.current[1](mockError);

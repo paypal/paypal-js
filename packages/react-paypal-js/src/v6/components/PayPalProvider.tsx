@@ -11,7 +11,7 @@ import {
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
 import { toError, useCompareMemoize } from "../utils";
-import { useSetError } from "../hooks/useSetError";
+import { useError } from "../hooks/useError";
 
 import type {
     Components,
@@ -54,7 +54,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     const loadCoreScriptOptions = useRef(scriptOptions);
     // Using the error hook here so it can participate in side-effects provided by the hook. The actual error
     // instance is stored in the reducer's state.
-    const [, setError] = useSetError();
+    const [, setError] = useError();
 
     // Load Core SDK Script
     useEffect(() => {

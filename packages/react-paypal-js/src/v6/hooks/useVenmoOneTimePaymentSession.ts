@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
-import { useSetError } from "./useSetError";
+import { useError } from "./useError";
 import { useProxyProps } from "../utils";
 
 import type {
@@ -38,7 +38,7 @@ export function useVenmoOneTimePaymentSession({
     const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<VenmoOneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
-    const [error, setError] = useSetError();
+    const [error, setError] = useError();
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();

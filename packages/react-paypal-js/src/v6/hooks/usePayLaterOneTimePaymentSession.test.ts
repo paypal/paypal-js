@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 
-import { expectSetError } from "./useSetErrorTestUtil";
+import { expectSetError } from "./useErrorTestUtil";
 import { usePayPal } from "./usePayPal";
 import { usePayLaterOneTimePaymentSession } from "./usePayLaterOneTimePaymentSession";
 import { useProxyProps } from "../utils";

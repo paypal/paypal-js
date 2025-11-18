@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef } from "react";
 
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
-import { useSetError } from "./useSetError";
+import { useError } from "./useError";
 import { useProxyProps } from "../utils";
 import {
     OneTimePaymentSession,
@@ -35,7 +35,7 @@ export function usePayPalOneTimePaymentSession({
     const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<OneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
-    const [error, setError] = useSetError();
+    const [error, setError] = useError();
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
