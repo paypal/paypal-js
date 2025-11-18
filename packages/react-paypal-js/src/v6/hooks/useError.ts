@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 /**
  * Sets the `error` returned by {@link useError}. Also, calls `console.error` with the given {@link Error}.
  */
-type TypeSetError = (error: Error) => void;
+type TypeSetError = (error: unknown) => void;
 
 /**
  * Centralized hook for handling {@link Error}s in a consistent manner.
@@ -19,7 +19,7 @@ export function useError(
         (newError) => {
             setErrorInternal(newError);
 
-            if (newError instanceof Error && !noConsoleErrors) {
+            if (!noConsoleErrors) {
                 console.error(newError);
             }
         },
