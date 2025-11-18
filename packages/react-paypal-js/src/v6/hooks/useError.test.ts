@@ -24,7 +24,7 @@ describe("useError", () => {
         expect(result.current[0]).toBe(mockError);
     });
 
-    test("should not console.log the error if noConsoleErrors is true", () => {
+    test("should not call console.error if noConsoleErrors is true", () => {
         const mockError = new Error("test error");
 
         const mockConsoleError = jest.fn();
