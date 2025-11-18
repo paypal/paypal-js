@@ -31,7 +31,7 @@ type PayPalProviderProps = CreateInstanceOptions<
 > &
     LoadCoreSdkScriptOptions & {
         eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
-        eligibleMethodsPayload?: FindEligiblePaymentMethodsRequestPayload; // Add this
+        eligibleMethodsPayload?: FindEligiblePaymentMethodsRequestPayload;
         children: React.ReactNode;
     };
 
