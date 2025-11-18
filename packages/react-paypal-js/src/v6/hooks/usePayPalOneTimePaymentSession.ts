@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
+import { useError } from "./useError";
 import { useProxyProps } from "../utils";
 import {
     OneTimePaymentSession,
@@ -34,7 +35,7 @@ export function usePayPalOneTimePaymentSession({
     const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<OneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = useError();
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
@@ -50,13 +51,14 @@ export function usePayPalOneTimePaymentSession({
         if (!sdkInstance) {
             setError(new Error("no sdk instance available"));
         }
-    }, [sdkInstance]);
+    }, [sdkInstance, setError]);
 
     useEffect(() => {
         if (!sdkInstance) {
             return;
         }
 
+        // Create session (can be created without orderId for resume detection)
         const newSession = sdkInstance.createPayPalOneTimePaymentSession({
             orderId,
             ...proxyCallbacks,
@@ -64,8 +66,31 @@ export function usePayPalOneTimePaymentSession({
 
         sessionRef.current = newSession;
 
+        // Only check for resume flow in redirect-based presentation modes
+        const shouldCheckResume =
+            presentationMode === "redirect" ||
+            presentationMode === "direct-app-switch";
+
+        if (shouldCheckResume) {
+            const handleReturnFromPayPal = async () => {
+                try {
+                    if (!newSession) {
+                        return;
+                    }
+                    const isResumeFlow = newSession.hasReturned?.();
+                    if (isResumeFlow) {
+                        await newSession.resume?.();
+                    }
+                } catch (err) {
+                    setError(err as Error);
+                }
+            };
+
+            handleReturnFromPayPal();
+        }
+
         return handleDestroy;
-    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
+    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy, presentationMode]);
 
     const handleClick = useCallback(async () => {
         if (!isMountedRef.current) {
@@ -83,17 +108,18 @@ export function usePayPalOneTimePaymentSession({
             autoRedirect,
         } as PayPalPresentationModeOptions;
 
-        if (createOrder) {
-            await sessionRef.current.start(startOptions, createOrder());
-        } else {
-            await sessionRef.current.start(startOptions);
-        }
+        const result = await sessionRef.current.start(
+            startOptions,
+            createOrder?.(),
+        );
+        return result;
     }, [
         isMountedRef,
         presentationMode,
         fullPageOverlay,
         autoRedirect,
         createOrder,
+        setError,
     ]);
 
     return {

@@ -3,6 +3,7 @@ import React from "react";
 import { render, waitFor } from "@testing-library/react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
+import { expectCurrentErrorValue } from "../hooks/useErrorTestUtil";
 import { PayPalProvider } from "./PayPalProvider";
 import { usePayPal } from "../hooks/usePayPal";
 import { useEligibleMethods } from "../hooks/useEligibleMethods";
@@ -110,6 +111,7 @@ function expectResolvedState(state: Partial<PayPalState>): void {
 function expectRejectedState(state: Partial<PayPalState>, error?: Error): void {
     expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.REJECTED);
     if (error) {
+        expectCurrentErrorValue(error);
         expect(state.error).toEqual(error);
     }
 }

@@ -4,7 +4,7 @@ export type * from "@paypal/paypal-js/sdk-v6";
 
 export interface BasePaymentSessionReturn {
     error: Error | null;
-    handleClick: () => Promise<void>;
+    handleClick: () => Promise<{ redirectURL?: string } | void>;
     handleCancel: () => void;
     handleDestroy: () => void;
 }

@@ -1,5 +1,6 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 
+import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import { usePayPalOneTimePaymentSession } from "./usePayPalOneTimePaymentSession";
 import { usePayPal } from "./usePayPal";
 import { useProxyProps } from "../utils";
@@ -73,6 +74,8 @@ describe("usePayPalOneTimePaymentSession", () => {
                     current: { error },
                 },
             } = renderHook(() => usePayPalOneTimePaymentSession(props));
+
+            expectCurrentErrorValue(error);
 
             expect(error).toEqual(new Error("no sdk instance available"));
         });
@@ -290,9 +293,14 @@ describe("usePayPalOneTimePaymentSession", () => {
                 await result.current.handleClick();
             });
 
-            expect(mockPayPalSession.start).toHaveBeenCalledWith({
-                presentationMode: "popup",
-            });
+            expect(mockPayPalSession.start).toHaveBeenCalledWith(
+                {
+                    presentationMode: "popup",
+                    fullPageOverlay: undefined,
+                    autoRedirect: undefined,
+                },
+                undefined,
+            );
         });
 
         test("should call the createOrder callback on start inside the click handler", async () => {
@@ -321,6 +329,8 @@ describe("usePayPalOneTimePaymentSession", () => {
             expect(mockPayPalSession.start).toHaveBeenCalledWith(
                 {
                     presentationMode: "popup",
+                    fullPageOverlay: undefined,
+                    autoRedirect: undefined,
                 },
                 expect.any(Promise),
             );
@@ -346,7 +356,11 @@ describe("usePayPalOneTimePaymentSession", () => {
                 await result.current.handleClick();
             });
 
-            expect(result.current.error).toBeNull();
+            const { error } = result.current;
+
+            expectCurrentErrorValue(error);
+
+            expect(error).toBeNull();
             expect(mockPayPalSession.start).not.toHaveBeenCalled();
         });
 
@@ -370,9 +384,14 @@ describe("usePayPalOneTimePaymentSession", () => {
                     await result.current.handleClick();
                 });
 
-                expect(mockPayPalSession.start).toHaveBeenCalledWith({
-                    presentationMode: mode,
-                });
+                expect(mockPayPalSession.start).toHaveBeenCalledWith(
+                    {
+                        presentationMode: mode,
+                        fullPageOverlay: undefined,
+                        autoRedirect: undefined,
+                    },
+                    undefined,
+                );
 
                 jest.clearAllMocks();
                 mockPayPalSession = createMockPayPalSession();
@@ -496,9 +515,11 @@ describe("usePayPalOneTimePaymentSession", () => {
                 await result.current.handleClick();
             });
 
-            expect(result.current.error).toEqual(
-                new Error("PayPal session not available"),
-            );
+            const { error } = result.current;
+
+            expectCurrentErrorValue(error);
+
+            expect(error).toEqual(new Error("PayPal session not available"));
         });
     });
 });

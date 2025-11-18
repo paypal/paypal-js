@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
+import { useError } from "./useError";
 import { useProxyProps } from "../utils";
 
 import type {
@@ -36,7 +37,7 @@ export function usePayLaterOneTimePaymentSession({
     const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<OneTimePaymentSession | null>(null); // handle cleanup
     const proxyCallbacks = useProxyProps(callbacks);
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = useError();
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
@@ -48,7 +49,7 @@ export function usePayLaterOneTimePaymentSession({
         if (!sdkInstance) {
             setError(new Error("no sdk instance available"));
         }
-    }, [sdkInstance]);
+    }, [sdkInstance, setError]);
 
     useEffect(() => {
         if (!sdkInstance) {
@@ -61,8 +62,31 @@ export function usePayLaterOneTimePaymentSession({
         });
         sessionRef.current = newSession;
 
+        // check for resume flow in redirect-based presentation modes
+        const isRedirectMode =
+            presentationMode === "redirect" ||
+            presentationMode === "direct-app-switch";
+
+        if (isRedirectMode) {
+            const handleReturnFromPayPal = async () => {
+                try {
+                    if (!newSession) {
+                        return;
+                    }
+                    const isResumeFlow = newSession.hasReturned?.();
+                    if (isResumeFlow) {
+                        await newSession.resume?.();
+                    }
+                } catch (err) {
+                    setError(err as Error);
+                }
+            };
+
+            handleReturnFromPayPal();
+        }
+
         return handleDestroy;
-    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
+    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy, presentationMode]);
 
     const handleCancel = useCallback(() => {
         sessionRef.current?.cancel();
@@ -84,17 +108,18 @@ export function usePayLaterOneTimePaymentSession({
             autoRedirect,
         } as PayPalPresentationModeOptions;
 
-        if (createOrder) {
-            await sessionRef.current.start(startOptions, createOrder());
-        } else {
-            await sessionRef.current.start(startOptions);
-        }
+        const result = await sessionRef.current.start(
+            startOptions,
+            createOrder?.(),
+        );
+        return result;
     }, [
         createOrder,
         presentationMode,
         fullPageOverlay,
         autoRedirect,
         isMountedRef,
+        setError,
     ]);
 
     return {

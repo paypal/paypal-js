@@ -7,6 +7,7 @@ import {
     PresentationModeOptionsForAuto,
     PresentationModeOptionsForPaymentHandler,
     PresentationModeOptionsForRedirect,
+    PresentationModeOptionsForDirectAppSwitch,
 } from "./base-component";
 
 export type PayLaterCountryCodes =
@@ -99,13 +100,16 @@ export type PayPalPresentationModeOptions =
     | PresentationModeOptionsForPopup
     | PresentationModeOptionsForModal
     | PresentationModeOptionsForPaymentHandler
-    | PresentationModeOptionsForRedirect;
+    | PresentationModeOptionsForRedirect
+    | PresentationModeOptionsForDirectAppSwitch;
 
 export type OneTimePaymentSession = BasePaymentSession & {
     start: (
         presentationModeOptions: PayPalPresentationModeOptions,
         paymentSessionPromise?: Promise<{ orderId: string }>,
-    ) => Promise<void>;
+    ) => Promise<void | { redirectURL?: string }>;
+    hasReturned?: () => boolean;
+    resume?: () => Promise<void>;
 };
 
 export type SavePaymentSession = Omit<BasePaymentSession, "start"> & {

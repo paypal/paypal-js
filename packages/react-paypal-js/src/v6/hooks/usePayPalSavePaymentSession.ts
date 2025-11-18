@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
+import { useError } from "./useError";
 import { useProxyProps } from "../utils";
 
 import type {
@@ -35,7 +36,7 @@ export function usePayPalSavePaymentSession({
     const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<SavePaymentSession | null>(null); // handle cleanup
     const proxyCallbacks = useProxyProps(callbacks);
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = useError();
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
@@ -47,7 +48,7 @@ export function usePayPalSavePaymentSession({
         if (!sdkInstance) {
             setError(new Error("no sdk instance available"));
         }
-    }, [sdkInstance]);
+    }, [sdkInstance, setError]);
 
     useEffect(() => {
         if (!sdkInstance) {
@@ -94,6 +95,7 @@ export function usePayPalSavePaymentSession({
         fullPageOverlay,
         autoRedirect,
         createVaultToken,
+        setError,
     ]);
 
     return {
