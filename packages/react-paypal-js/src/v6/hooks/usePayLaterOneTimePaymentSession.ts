@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
+import { useError } from "./useError";
 import { useProxyProps } from "../utils";
 
 import type {
@@ -36,7 +37,7 @@ export function usePayLaterOneTimePaymentSession({
     const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<OneTimePaymentSession | null>(null); // handle cleanup
     const proxyCallbacks = useProxyProps(callbacks);
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = useError();
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
@@ -48,7 +49,7 @@ export function usePayLaterOneTimePaymentSession({
         if (!sdkInstance) {
             setError(new Error("no sdk instance available"));
         }
-    }, [sdkInstance]);
+    }, [sdkInstance, setError]);
 
     useEffect(() => {
         if (!sdkInstance) {
@@ -118,6 +119,7 @@ export function usePayLaterOneTimePaymentSession({
         fullPageOverlay,
         autoRedirect,
         isMountedRef,
+        setError,
     ]);
 
     return {

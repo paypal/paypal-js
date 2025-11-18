@@ -1,5 +1,6 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 
+import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import { usePayPal } from "./usePayPal";
 import { usePayLaterOneTimePaymentSession } from "./usePayLaterOneTimePaymentSession";
 import { useProxyProps } from "../utils";
@@ -82,6 +83,8 @@ describe("usePayLaterOneTimePaymentSession", () => {
                 onApprove: jest.fn(),
             }),
         );
+
+        expectCurrentErrorValue(error);
 
         expect(error).toEqual(new Error("no sdk instance available"));
     });
@@ -213,9 +216,11 @@ describe("usePayLaterOneTimePaymentSession", () => {
             await result.current.handleClick();
         });
 
-        expect(result.current.error).toEqual(
-            new Error("PayLater session not available"),
-        );
+        const { error } = result.current;
+
+        expectCurrentErrorValue(error);
+
+        expect(error).toEqual(new Error("PayLater session not available"));
     });
 
     test("should do nothing if the click handler is called after unmount", async () => {
@@ -253,7 +258,11 @@ describe("usePayLaterOneTimePaymentSession", () => {
             await result.current.handleClick();
         });
 
-        expect(result.current.error).toBeNull();
+        const { error } = result.current;
+
+        expectCurrentErrorValue(error);
+
+        expect(error).toBeNull();
         expect(mockStart).not.toHaveBeenCalled();
     });
 
