@@ -57,6 +57,7 @@ export function usePayPalOneTimePaymentSession({
             return;
         }
 
+        // Create session (can be created without orderId for resume detection)
         const newSession = sdkInstance.createPayPalOneTimePaymentSession({
             orderId,
             ...proxyCallbacks,
@@ -64,8 +65,31 @@ export function usePayPalOneTimePaymentSession({
 
         sessionRef.current = newSession;
 
+        // Only check for resume flow in redirect-based presentation modes
+        const shouldCheckResume =
+            presentationMode === "redirect" ||
+            presentationMode === "direct-app-switch";
+
+        if (shouldCheckResume) {
+            const handleReturnFromPayPal = async () => {
+                try {
+                    if (!newSession) {
+                        return;
+                    }
+                    const isResumeFlow = newSession.hasReturned?.();
+                    if (isResumeFlow) {
+                        await newSession.resume?.();
+                    }
+                } catch (err) {
+                    setError(err as Error);
+                }
+            };
+
+            handleReturnFromPayPal();
+        }
+
         return handleDestroy;
-    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
+    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy, presentationMode]);
 
     const handleClick = useCallback(async () => {
         if (!isMountedRef.current) {
@@ -83,11 +107,11 @@ export function usePayPalOneTimePaymentSession({
             autoRedirect,
         } as PayPalPresentationModeOptions;
 
-        if (createOrder) {
-            await sessionRef.current.start(startOptions, createOrder());
-        } else {
-            await sessionRef.current.start(startOptions);
-        }
+        const result = await sessionRef.current.start(
+            startOptions,
+            createOrder?.(),
+        );
+        return result;
     }, [
         isMountedRef,
         presentationMode,

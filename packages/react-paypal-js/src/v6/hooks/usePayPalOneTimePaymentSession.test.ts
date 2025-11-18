@@ -290,9 +290,14 @@ describe("usePayPalOneTimePaymentSession", () => {
                 await result.current.handleClick();
             });
 
-            expect(mockPayPalSession.start).toHaveBeenCalledWith({
-                presentationMode: "popup",
-            });
+            expect(mockPayPalSession.start).toHaveBeenCalledWith(
+                {
+                    presentationMode: "popup",
+                    fullPageOverlay: undefined,
+                    autoRedirect: undefined,
+                },
+                undefined,
+            );
         });
 
         test("should call the createOrder callback on start inside the click handler", async () => {
@@ -321,6 +326,8 @@ describe("usePayPalOneTimePaymentSession", () => {
             expect(mockPayPalSession.start).toHaveBeenCalledWith(
                 {
                     presentationMode: "popup",
+                    fullPageOverlay: undefined,
+                    autoRedirect: undefined,
                 },
                 expect.any(Promise),
             );
@@ -370,9 +377,14 @@ describe("usePayPalOneTimePaymentSession", () => {
                     await result.current.handleClick();
                 });
 
-                expect(mockPayPalSession.start).toHaveBeenCalledWith({
-                    presentationMode: mode,
-                });
+                expect(mockPayPalSession.start).toHaveBeenCalledWith(
+                    {
+                        presentationMode: mode,
+                        fullPageOverlay: undefined,
+                        autoRedirect: undefined,
+                    },
+                    undefined,
+                );
 
                 jest.clearAllMocks();
                 mockPayPalSession = createMockPayPalSession();

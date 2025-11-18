@@ -122,9 +122,14 @@ describe("usePayLaterOneTimePaymentSession", () => {
         });
 
         expect(mockStart).toHaveBeenCalledTimes(1);
-        expect(mockStart).toHaveBeenCalledWith({
-            presentationMode: mockPresentationMode,
-        });
+        expect(mockStart).toHaveBeenCalledWith(
+            {
+                presentationMode: mockPresentationMode,
+                fullPageOverlay: undefined,
+                autoRedirect: undefined,
+            },
+            undefined,
+        );
     });
 
     test("should call the createOrder callback, if it was provided, on start inside the click handler", async () => {
@@ -172,7 +177,11 @@ describe("usePayLaterOneTimePaymentSession", () => {
 
         expect(mockStart).toHaveBeenCalledTimes(1);
         expect(mockStart).toHaveBeenCalledWith(
-            { presentationMode: mockPresentationMode },
+            {
+                presentationMode: mockPresentationMode,
+                fullPageOverlay: undefined,
+                autoRedirect: undefined,
+            },
             mockOrderIdPromise,
         );
     });

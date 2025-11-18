@@ -55,7 +55,7 @@ export type PresentationModeOptionsForModal = {
 export type PresentationModeOptionsForRedirect = {
     presentationMode: "redirect";
     autoRedirect?: { enabled: boolean };
-    fullPageOverlay?: undefined;
+    fullPageOverlay?: { enabled: boolean };
 };
 
 export type PresentationModeOptionsForPaymentHandler = {
@@ -68,6 +68,12 @@ export type PresentationModeOptionsForAuto = {
     presentationMode: "auto";
     fullPageOverlay?: { enabled: boolean };
     autoRedirect?: undefined;
+};
+
+export type PresentationModeOptionsForDirectAppSwitch = {
+    presentationMode: "direct-app-switch";
+    fullPageOverlay?: { enabled: boolean };
+    autoRedirect?: { enabled: boolean };
 };
 
 export type CreateOrderPromise = Promise<{ orderId: string }>;
