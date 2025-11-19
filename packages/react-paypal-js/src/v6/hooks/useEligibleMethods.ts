@@ -8,6 +8,7 @@ import type {
     PayLaterProductCodes,
     PayPalCreditCountryCodes,
 } from "../types";
+import { useError } from "./useError";
 
 type PhoneNumber = {
     country_code?: string;
@@ -139,7 +140,7 @@ export function useEligibleMethods({
     const [eligibleMethods, setEligibleMethods] =
         useState<FindEligiblePaymentMethodsResponse | null>(null);
     const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<Error | null>(null);
+    const [error, setError] = useError();
     const memoizedPayload = useDeepCompareMemoize(payload);
     const memoizedEligibleMethodsResponse = useDeepCompareMemoize(
         eligibleMethodsResponse,
@@ -207,6 +208,7 @@ export function useEligibleMethods({
         memoizedPayload,
         memoizedEligibleMethodsResponse,
         environment,
+        setError,
     ]);
 
     return { eligibleMethods, isLoading, error };
