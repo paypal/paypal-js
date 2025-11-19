@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 import { useDeepCompareMemoize } from "../utils";
+import { useError } from "./useError";
 
 import type {
     EligiblePaymentMethods,
@@ -8,7 +9,6 @@ import type {
     PayLaterProductCodes,
     PayPalCreditCountryCodes,
 } from "../types";
-import { useError } from "./useError";
 
 type PhoneNumber = {
     country_code?: string;
