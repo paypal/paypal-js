@@ -156,7 +156,19 @@ export function useDeepCompareMemoize<T>(value: T): T {
     return ref.current as T;
 }
 
-function deepEqual(obj1: any, obj2: any): boolean {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function deepEqual(
+    obj1: any,
+    obj2: any,
+    maxDepth = 10,
+    currentDepth = 0,
+): boolean {
+    // Return false if we exceed max depth
+    // This ensures we don't claim equality when we haven't fully compared
+    if (currentDepth > maxDepth) {
+        return false;
+    }
+
     if (obj1 === obj2) {
         return true;
     }
@@ -179,7 +191,7 @@ function deepEqual(obj1: any, obj2: any): boolean {
         if (!keys2.includes(key)) {
             return false;
         }
-        if (!deepEqual(obj1[key], obj2[key])) {
+        if (!deepEqual(obj1[key], obj2[key], maxDepth, currentDepth + 1)) {
             return false;
         }
     }
