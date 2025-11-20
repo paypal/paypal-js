@@ -36,6 +36,7 @@ export type FindEligiblePaymentMethodsRequestPayload = {
     purchase_units?: ReadonlyArray<{
         amount: {
             currency_code: string;
+            value?: string;
         };
         payee?: {
             client_id?: string;
