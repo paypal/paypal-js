@@ -6,6 +6,7 @@ import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 import { expectCurrentErrorValue } from "../hooks/useErrorTestUtil";
 import { PayPalProvider } from "./PayPalProvider";
 import { usePayPal } from "../hooks/usePayPal";
+import { useEligibleMethods } from "../hooks/useEligibleMethods";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 
 import type { CreateInstanceOptions, PayPalV6Namespace } from "../types";
@@ -14,10 +15,32 @@ import type { PayPalState } from "../context/PayPalProviderContext";
 // Test constants
 export const TEST_CLIENT_TOKEN = "test-client-token";
 export const TEST_ERROR_MESSAGE = "test error";
-export const TEST_ELIGIBILITY_RESULT = {
+export const TEST_SDK_ELIGIBILITY_RESULT = {
     paypal: { eligible: true },
     venmo: { eligible: false },
 };
+export const TEST_ELIGIBILITY_HOOK_RESULT = {
+    eligible_methods: {
+        paypal: {
+            can_be_vaulted: true,
+            eligible_in_paypal_network: true,
+            recommended: true,
+            recommended_priority: 1,
+        },
+        venmo: {
+            can_be_vaulted: false,
+            eligible_in_paypal_network: true,
+        },
+    },
+    supplementary_data: {
+        buyer_country_code: "US",
+    },
+};
+
+jest.mock("../hooks/useEligibleMethods", () => ({
+    useEligibleMethods: jest.fn(),
+    fetchEligibleMethods: jest.fn(),
+}));
 
 jest.mock("@paypal/paypal-js/sdk-v6", () => ({
     loadCoreSdkScript: jest.fn(),
@@ -61,7 +84,7 @@ function createMockSdkInstance() {
     return {
         findEligibleMethods: jest
             .fn()
-            .mockResolvedValue(TEST_ELIGIBILITY_RESULT),
+            .mockResolvedValue(TEST_SDK_ELIGIBILITY_RESULT),
         createPayPalOneTimePaymentSession: jest.fn(),
         updateLocale: jest.fn(),
     };
@@ -104,6 +127,12 @@ describe("PayPalProvider", () => {
         (loadCoreSdkScript as jest.Mock).mockResolvedValue(
             createMockPayPalNamespace(),
         );
+        // Set up default mock for useEligibleMethods for all tests
+        (useEligibleMethods as jest.Mock).mockReturnValue({
+            eligibleMethods: TEST_ELIGIBILITY_HOOK_RESULT,
+            isLoading: false,
+            error: null,
+        });
     });
 
     afterEach(() => {
@@ -238,34 +267,31 @@ describe("PayPalProvider", () => {
     });
 
     describe("Eligibility Loading", () => {
-        test("should load eligible payment methods after instance creation", async () => {
+        test("should load eligible payment methods", async () => {
             const { state } = renderProvider();
-
-            await waitFor(() => expectResolvedState(state));
 
             await waitFor(() =>
                 expect(state.eligiblePaymentMethods).toEqual(
-                    TEST_ELIGIBILITY_RESULT,
+                    TEST_ELIGIBILITY_HOOK_RESULT,
                 ),
             );
         });
 
-        test.skip("should handle eligibility loading failure gracefully", async () => {
-            // TODO unskip when eligibility is figured out
+        test("should handle eligibility loading failure gracefully", async () => {
             const mockError = new Error("Eligibility failed");
-            const mockInstance = {
-                ...createMockSdkInstance(),
-                findEligibleMethods: jest.fn().mockRejectedValue(mockError),
-            };
 
-            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
-                createInstance: jest.fn().mockResolvedValue(mockInstance),
+            // Mock the hook to return an error
+            (useEligibleMethods as jest.Mock).mockReturnValue({
+                eligibleMethods: null,
+                isLoading: false,
+                error: mockError,
             });
 
             const { state } = renderProvider();
 
-            await waitFor(() => expectRejectedState(state, mockError));
+            await waitFor(() => expectResolvedState(state));
 
+            // Eligibility error doesn't affect overall state, just no eligibility data
             expect(state.eligiblePaymentMethods).toBe(null);
         });
     });

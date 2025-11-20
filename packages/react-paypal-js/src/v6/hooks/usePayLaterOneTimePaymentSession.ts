@@ -86,7 +86,14 @@ export function usePayLaterOneTimePaymentSession({
         }
 
         return handleDestroy;
-    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy, presentationMode]);
+    }, [
+        sdkInstance,
+        orderId,
+        proxyCallbacks,
+        handleDestroy,
+        presentationMode,
+        setError,
+    ]);
 
     const handleCancel = useCallback(() => {
         sessionRef.current?.cancel();

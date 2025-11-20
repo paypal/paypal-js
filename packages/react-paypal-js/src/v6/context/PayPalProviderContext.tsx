@@ -5,15 +5,12 @@ import {
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
 
-import type {
-    Components,
-    EligiblePaymentMethodsOutput,
-    SdkInstance,
-} from "../types";
+import type { FindEligiblePaymentMethodsResponse } from "../hooks/useEligibleMethods";
+import type { Components, SdkInstance } from "../types";
 
 export interface PayPalState {
     sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
-    eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
+    eligiblePaymentMethods: FindEligiblePaymentMethodsResponse | null;
     loadingStatus: INSTANCE_LOADING_STATE;
     error: Error | null;
 }
@@ -29,7 +26,7 @@ export type InstanceAction =
       }
     | {
           type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY;
-          value: EligiblePaymentMethodsOutput;
+          value: FindEligiblePaymentMethodsResponse;
       }
     | { type: INSTANCE_DISPATCH_ACTION.SET_ERROR; value: Error }
     | {
