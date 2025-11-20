@@ -4,8 +4,8 @@ import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
-import { FindEligiblePaymentMethodsResponse } from "..";
 
+import type { FindEligiblePaymentMethodsResponse } from "../hooks/useEligibleMethods";
 import type { Components, SdkInstance } from "../types";
 
 export interface PayPalState {
