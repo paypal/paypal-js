@@ -294,9 +294,12 @@ describe("useVenmoOneTimePaymentSession", () => {
                 await result.current.handleClick();
             });
 
-            expect(mockVenmoSession.start).toHaveBeenCalledWith({
-                presentationMode: "popup",
-            });
+            expect(mockVenmoSession.start).toHaveBeenCalledWith(
+                {
+                    presentationMode: "popup",
+                },
+                undefined,
+            );
         });
 
         test("should start session with createOrder when provided", async () => {
@@ -374,9 +377,12 @@ describe("useVenmoOneTimePaymentSession", () => {
                     await result.current.handleClick();
                 });
 
-                expect(mockVenmoSession.start).toHaveBeenCalledWith({
-                    presentationMode: mode,
-                });
+                expect(mockVenmoSession.start).toHaveBeenCalledWith(
+                    {
+                        presentationMode: mode,
+                    },
+                    undefined,
+                );
 
                 jest.clearAllMocks();
                 mockVenmoSession = createMockVenmoSession();

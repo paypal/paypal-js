@@ -85,11 +85,7 @@ export function useVenmoOneTimePaymentSession({
             autoRedirect,
         } as VenmoPresentationModeOptions;
 
-        if (createOrder) {
-            await sessionRef.current.start(startOptions, createOrder());
-        } else {
-            await sessionRef.current.start(startOptions);
-        }
+        await sessionRef.current.start(startOptions, createOrder?.());
     }, [
         isMountedRef,
         presentationMode,
