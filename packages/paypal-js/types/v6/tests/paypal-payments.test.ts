@@ -22,8 +22,29 @@ async function main() {
         throw new Error("PayPal v6 namespace missing version property");
     }
 
+    // option 1 - auth with clientToken
     const sdkInstance = await paypal.createInstance({
         clientToken: "fakeValue",
+        components: ["paypal-payments"],
+    });
+
+    // option 2 - auth with clientId only
+    const sdkInstance2 = await paypal.createInstance({
+        clientId: "fakeValue",
+        components: ["paypal-payments"],
+    });
+
+    // option 3 - auth with clientId and single merchantId
+    const sdkInstance3 = await paypal.createInstance({
+        clientId: "fakeValue",
+        merchantId: "fakeValue",
+        components: ["paypal-payments"],
+    });
+
+    // option 4 - auth with clientId and many merchantIds
+    const sdkInstance4 = await paypal.createInstance({
+        clientId: "fakeValue",
+        merchantId: ["fakeValue", "fakeValue2", "fakeValue3"],
         components: ["paypal-payments"],
     });
 
