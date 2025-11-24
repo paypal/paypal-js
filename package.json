@@ -12,20 +12,21 @@
     },
     "scripts": {
         "build": "npm run build --workspaces --if-present",
-        "dev": "concurrently \"npm:dev:*\"",
-        "dev:paypal-js": "npm run dev --workspace=@paypal/paypal-js",
-        "dev:react-paypal-js": "npm run dev --workspace=@paypal/react-paypal-js",
+        "build-storybook:v5": "npm run build-storybook --workspace=@paypal/react-paypal-js",
         "changeset:add": "changeset add",
         "changeset:release": "npm run build && changeset publish",
         "changeset:version": "changeset version && npm i --package-lock-only",
         "clean": "npm exec --workspaces -- npx rimraf node_modules && npx rimraf node_modules",
+        "dev": "concurrently \"npm:dev:*\"",
+        "dev:paypal-js": "npm run dev --workspace=@paypal/paypal-js",
+        "dev:react-paypal-js": "npm run dev --workspace=@paypal/react-paypal-js",
         "docs:v6": "npm run docs:v6 --workspace=@paypal/paypal-js",
         "format": "prettier --write --ignore-unknown .",
         "format:check": "prettier --check .",
         "lint": "npm run lint --workspaces --if-present",
+        "prepare": "husky install",
         "test": "npm run lint && npm run test --workspaces --if-present",
-        "test:e2e": "npm run test:e2e --workspaces --if-present",
-        "prepare": "husky install"
+        "test:e2e": "npm run test:e2e --workspaces --if-present"
     },
     "lint-staged": {
         "*": [
