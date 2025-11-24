@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
@@ -10,8 +10,15 @@ import type {
     PayPalGuestOneTimePaymentSessionOptions,
     PayPalGuestOneTimePaymentSessionPromise,
     PayPalGuestPresentationModeOptions,
+    OnShippingAddressChangeData,
+    OnShippingOptionsChangeData,
 } from "@paypal/paypal-js/sdk-v6";
 import type { BasePaymentSessionReturn } from "../types";
+
+export interface PayPalGuestPaymentSessionReturn
+    extends BasePaymentSessionReturn {
+    buttonRef: { current: HTMLElement | null };
+}
 
 export type UsePayPalGuestPaymentSessionProps = (
     | (Omit<PayPalGuestOneTimePaymentSessionOptions, "orderId"> & {
@@ -28,6 +35,12 @@ export type UsePayPalGuestPaymentSessionProps = (
     presentationMode?: "auto";
     fullPageOverlay?: boolean;
     autoRedirect?: boolean;
+    onShippingAddressChange?: (
+        data: OnShippingAddressChangeData,
+    ) => Promise<void>;
+    onShippingOptionsChange?: (
+        data: OnShippingOptionsChangeData,
+    ) => Promise<void>;
 };
 
 export function usePayPalGuestPaymentSession({
@@ -36,28 +49,22 @@ export function usePayPalGuestPaymentSession({
     createOrder,
     orderId,
     targetElement,
+    onShippingAddressChange,
+    onShippingOptionsChange,
     ...callbacks
-}: UsePayPalGuestPaymentSessionProps): BasePaymentSessionReturn {
+}: UsePayPalGuestPaymentSessionProps): PayPalGuestPaymentSessionReturn {
     const { sdkInstance } = usePayPal();
     const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<PayPalGuestOneTimePaymentSession | null>(null);
     const buttonRef = useRef<HTMLElement>(null);
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
-    const [isProcessing, setIsProcessing] = useState(false);
     const isSessionActiveRef = useRef(false);
-
-    // Track whether shipping callbacks are present to trigger session recreation
-    const hasShippingCallbacks = Boolean(
-        (callbacks as Record<string, unknown>).onShippingAddressChange ||
-            (callbacks as Record<string, unknown>).onShippingOptionsChange,
-    );
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
         sessionRef.current = null;
         isSessionActiveRef.current = false;
-        setIsProcessing(false);
     }, []);
 
     useEffect(() => {
@@ -71,63 +78,30 @@ export function usePayPalGuestPaymentSession({
             return;
         }
 
-        // Resets the button state to allow it to be clicked again after payment flow complete/cancels.
-        const resetState = () => {
-            if (isMountedRef.current) {
-                isSessionActiveRef.current = false;
-                setIsProcessing(false);
-            }
-        };
-
-        // Wraps a callback function to automatically reset button state after completion.
-        const wrapWithReset = <
-            T extends (...args: never[]) => Promise<void> | void,
-        >(
-            callback?: T,
-        ) => {
-            if (!callback) {
-                return callback;
-            }
-
-            return async (...args: Parameters<T>) => {
-                try {
-                    await callback(...args);
-                } finally {
-                    resetState();
-                }
-            };
-        };
-
-        // Creating session callbacks with wrapped versions to reset state.
-        const sessionCallbacks = {
-            ...proxyCallbacks,
-            onApprove: wrapWithReset(proxyCallbacks.onApprove),
-            onCancel: wrapWithReset(proxyCallbacks.onCancel),
-            onError: wrapWithReset(proxyCallbacks.onError),
-        } as typeof proxyCallbacks;
-
         const newSession = sdkInstance.createPayPalGuestOneTimePaymentSession({
             orderId,
-            ...sessionCallbacks,
+            ...proxyCallbacks,
+            ...(onShippingAddressChange && { onShippingAddressChange }),
+            ...(onShippingOptionsChange && { onShippingOptionsChange }),
         });
         sessionRef.current = newSession;
 
         return () => {
             newSession.destroy();
-            resetState();
+            isSessionActiveRef.current = false;
         };
     }, [
         sdkInstance,
         orderId,
         proxyCallbacks,
-        hasShippingCallbacks,
+        onShippingAddressChange,
+        onShippingOptionsChange,
         isMountedRef,
     ]);
 
     const handleCancel = useCallback(() => {
         sessionRef.current?.cancel();
         isSessionActiveRef.current = false;
-        setIsProcessing(false);
     }, []);
 
     const handleClick = useCallback(async () => {
@@ -143,7 +117,6 @@ export function usePayPalGuestPaymentSession({
             return;
         }
 
-        setIsProcessing(true);
         isSessionActiveRef.current = true;
 
         try {
@@ -162,20 +135,9 @@ export function usePayPalGuestPaymentSession({
                 startOptions,
                 checkoutOptionsPromise,
             );
-
-            // If session.start() completes without error, it means:
-            // - For inline: form opened successfully (callbacks will handle reset)
-            // - For popup/modal: window closed without completing (need to reset here)
-            // We reset here to handle popup/modal closure, but wrapped callbacks
-            // will also reset, which is safe (idempotent operation)
-            if (isMountedRef.current) {
-                isSessionActiveRef.current = false;
-                setIsProcessing(false);
-            }
         } catch (err) {
             if (isMountedRef.current) {
                 isSessionActiveRef.current = false;
-                setIsProcessing(false);
                 setError(err instanceof Error ? err : new Error(String(err)));
             }
         }
@@ -194,6 +156,5 @@ export function usePayPalGuestPaymentSession({
         handleCancel,
         handleClick,
         handleDestroy,
-        isProcessing,
     };
 }
