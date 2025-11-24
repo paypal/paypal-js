@@ -1,5 +1,32 @@
 # Changelog
 
+## 9.1.0
+
+### Minor Changes
+
+- 16b2dfe: Add new types for paypal-guest-payments component
+- a1c7246: Upgrade react-paypal-js Typescript version to v5.3.3 and update build configuration.
+- a1c7246: Add V6 instance provider and context hook
+- 6539e8e: simplify createInstance generic type for v6
+
+### Patch Changes
+
+- bee5716: Enhancing the Paypal and PayLater hooks to handle redirect and direct app switch presentation modes.
+- 45b78ce: Update v6 sdk presentation mode props types.
+- b2cbae5: chore: add build-and-deploy-docs github actions workflow
+- 036f31b: feat: use typedoc for generating v6 public interface documentation
+- 6d5e590: feat: use tsdoc for v6 public interface
+- 6a745d7: Updated the properties on the find eligible methods options type.
+- acc3ba2: feat: optimize docs
+- cfb9887: feat: add version to PayPalV6Namespace
+- a1c7246: Refactor paypal provider test utils.
+- eae3d6c: Update presentation mode options types and integration.
+- 249f1e3: Update loadCoreSdkScript function to handle data-namespace attribute.
+- 6d406fd: Refactor loadCoreSdkScript namespace retrieval.
+- c41dab4: feat: add paypal copyright to docs footers
+- 1599832: feat: add jsdoc comments to v6 public interface types
+- 03b0069: chore: docs updates
+
 ## 9.0.1
 
 ### Patch Changes
