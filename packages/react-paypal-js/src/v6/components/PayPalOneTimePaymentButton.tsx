@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 
 import { usePayPalOneTimePaymentSession } from "../hooks/usePayPalOneTimePaymentSession";
+import { isServer } from "../utils";
 
 import type { ButtonProps } from "../types/sdkButtons";
 import type { UsePayPalOneTimePaymentSessionProps } from "../hooks/usePayPalOneTimePaymentSession";
@@ -24,8 +25,9 @@ export const PayPalOneTimePaymentButton = ({
     type,
     ...hookProps
     // TODO not sure the return type is correct, but I can't seem to specify a paypal-button is returned specifically
-}: PayPalOneTimePaymentButtonProps): JSX.Element => {
+}: PayPalOneTimePaymentButtonProps): JSX.Element | null => {
     const { error, handleClick } = usePayPalOneTimePaymentSession(hookProps);
+    const isServerSide = isServer();
 
     useCallback(() => {
         if (error) {
@@ -33,10 +35,9 @@ export const PayPalOneTimePaymentButton = ({
         }
     }, [error]);
 
-    // TODO SSR
     // TODO tests
 
-    return (
+    return isServerSide ? null : (
         <paypal-button
             onClick={handleClick}
             type={type}
