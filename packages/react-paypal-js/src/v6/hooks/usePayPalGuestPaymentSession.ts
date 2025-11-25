@@ -34,7 +34,6 @@ export type UsePayPalGuestPaymentSessionProps = (
     targetElement?: string | HTMLElement;
     presentationMode?: "auto";
     fullPageOverlay?: boolean;
-    autoRedirect?: boolean;
     onShippingAddressChange?: (
         data: OnShippingAddressChangeData,
     ) => Promise<void>;
