@@ -24,7 +24,6 @@ export const PayPalOneTimePaymentButton = ({
     // TODO does type come from the hook return or is this something merchants pass in?
     type,
     ...hookProps
-    // TODO not sure the return type is correct, but I can't seem to specify a paypal-button is returned specifically
 }: PayPalOneTimePaymentButtonProps): JSX.Element | null => {
     const { error, handleClick } = usePayPalOneTimePaymentSession(hookProps);
     const isServerSide = isServer();
