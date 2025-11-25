@@ -8,8 +8,8 @@ declare module "react" {
     }
 }
 
-interface ButtonProps extends React.HTMLAttributes<HTMLElement> {
+interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
     // TODO add type for button types?
     type: string;
-    disabled: boolean;
+    disabled?: boolean;
 }
