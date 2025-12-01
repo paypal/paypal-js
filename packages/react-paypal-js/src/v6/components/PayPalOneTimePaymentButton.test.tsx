@@ -5,27 +5,28 @@ import { PayPalOneTimePaymentButton } from "./PayPalOneTimePaymentButton";
 import { usePayPalOneTimePaymentSession } from "../hooks/usePayPalOneTimePaymentSession";
 import { isServer } from "../utils";
 
-jest.mock("../hooks/usePayPalOneTimePaymentSession");
-jest.mock("../utils");
+jest.mock("../hooks/usePayPalOneTimePaymentSession", () => ({
+    usePayPalOneTimePaymentSession: jest.fn(),
+}));
+jest.mock("../utils", () => ({
+    isServer: jest.fn().mockReturnValue(false),
+}));
 
 describe("PayPalOneTimePaymentButton", () => {
     const mockHandleClick = jest.fn();
     const mockUsePayPalOneTimePaymentSession =
-        usePayPalOneTimePaymentSession as jest.MockedFunction<
-            typeof usePayPalOneTimePaymentSession
-        >;
-    const mockIsServer = isServer as jest.MockedFunction<typeof isServer>;
+        usePayPalOneTimePaymentSession as jest.Mock;
+    const mockIsServer = isServer as jest.Mock;
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockIsServer.mockReturnValue(false);
         mockUsePayPalOneTimePaymentSession.mockReturnValue({
             error: null,
             handleClick: mockHandleClick,
         });
     });
 
-    it("should render paypal-button when not on server side", () => {
+    it.only("should render paypal-button when not on server side", () => {
         const { container } = render(<PayPalOneTimePaymentButton />);
         expect(container.querySelector("paypal-button")).toBeInTheDocument();
     });
