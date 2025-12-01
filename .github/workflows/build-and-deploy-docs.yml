@@ -6,6 +6,8 @@ on:
         # Only run when documentation-related files change to avoid unnecessary builds
         paths:
             - "packages/paypal-js/types/v6/**/*.d.ts"
+            - "packages/react-paypal-js/.storybook/**"
+            - "packages/react-paypal-js/src/**/*.stories.*"
             - ".github/workflows/build-and-deploy-docs.yml"
             - "docs/index.html"
             - "docs/readmes/**"
@@ -38,8 +40,14 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
-            - name: Build documentation
+            - name: Build packages
+              run: npm run build
+
+            - name: Build v6 reference documentation
               run: npm run docs:v6
+
+            - name: Build v5 react storybook
+              run: npm run build-storybook:v5
 
             - name: Setup Pages
               uses: actions/configure-pages@v5

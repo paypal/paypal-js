@@ -90,7 +90,14 @@ export function usePayPalOneTimePaymentSession({
         }
 
         return handleDestroy;
-    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy, presentationMode]);
+    }, [
+        sdkInstance,
+        orderId,
+        proxyCallbacks,
+        handleDestroy,
+        presentationMode,
+        setError,
+    ]);
 
     const handleClick = useCallback(async () => {
         if (!isMountedRef.current) {

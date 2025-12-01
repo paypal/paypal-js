@@ -11,3 +11,4 @@ export {
     type PayPalGuestPaymentSessionReturn,
     type UsePayPalGuestPaymentSessionProps,
 } from "./hooks/usePayPalGuestPaymentSession";
+export * from "./hooks/useEligibleMethods";

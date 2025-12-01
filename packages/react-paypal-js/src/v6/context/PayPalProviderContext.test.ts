@@ -5,11 +5,11 @@ import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
+import { FindEligiblePaymentMethodsResponse } from "../hooks/useEligibleMethods";
 
 import type { PayPalState, InstanceAction } from "./PayPalProviderContext";
 import type {
     SdkInstance,
-    EligiblePaymentMethodsOutput,
     CreateInstanceOptions,
     LoadCoreSdkScriptOptions,
     Components,
@@ -24,40 +24,27 @@ function createMockSdkInstance() {
     });
 }
 
-function createMockEligiblePaymentMethods(): EligiblePaymentMethodsOutput {
+function createMockEligiblePaymentMethods(): FindEligiblePaymentMethodsResponse {
     return {
-        isEligible: jest.fn((paymentMethod) => {
-            switch (paymentMethod) {
-                case "paypal":
-                case "credit":
-                    return true;
-                case "venmo":
-                case "paylater":
-                default:
-                    return false;
-            }
-        }),
-        getDetails: jest.fn((fundingSource) => {
-            if (fundingSource === "credit") {
-                return {
-                    canBeVaulted: true,
-                    countryCode: "US",
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                } as any;
-            }
-            if (fundingSource === "paylater") {
-                return {
-                    canBeVaulted: true,
-                    countryCode: "US",
-                    productCode: "PAY_IN_4",
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                } as any;
-            }
-            return {
-                canBeVaulted: true,
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } as any;
-        }),
+        eligible_methods: {
+            paypal: {
+                can_be_vaulted: true,
+                eligible_in_paypal_network: true,
+                recommended: true,
+                recommended_priority: 1,
+            },
+            paypal_pay_later: {
+                can_be_vaulted: false,
+                eligible_in_paypal_network: true,
+                recommended: true,
+                recommended_priority: 2,
+                country_code: "US",
+                product_code: "PAYLATER",
+            },
+        },
+        supplementary_data: {
+            buyer_country_code: "US",
+        },
     };
 }
 

@@ -11,6 +11,11 @@ import {
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
 import { toError, useCompareMemoize } from "../utils";
+import {
+    FindEligiblePaymentMethodsRequestPayload,
+    FindEligiblePaymentMethodsResponse,
+    useEligibleMethods,
+} from "../hooks/useEligibleMethods";
 import { useError } from "../hooks/useError";
 
 import type {
@@ -26,6 +31,8 @@ type PayPalProviderProps = CreateInstanceOptions<
     readonly [Components, ...Components[]]
 > &
     LoadCoreSdkScriptOptions & {
+        eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
+        eligibleMethodsPayload?: FindEligiblePaymentMethodsRequestPayload;
         children: React.ReactNode;
     };
 
@@ -42,6 +49,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     partnerAttributionId,
     shopperSessionId,
     testBuyerCountry,
+    eligibleMethodsResponse,
+    eligibleMethodsPayload,
     children,
     ...scriptOptions
 }) => {
@@ -55,6 +64,22 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     // Using the error hook here so it can participate in side-effects provided by the hook. The actual error
     // instance is stored in the reducer's state.
     const [, setError] = useError();
+
+    const { eligibleMethods, isLoading } = useEligibleMethods({
+        eligibleMethodsResponse,
+        clientToken,
+        payload: eligibleMethodsPayload,
+        environment: loadCoreScriptOptions.current.environment,
+    });
+
+    useEffect(() => {
+        if (!isLoading && eligibleMethods) {
+            dispatch({
+                type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
+                value: eligibleMethods,
+            });
+        }
+    }, [isLoading, eligibleMethods]);
 
     // Load Core SDK Script
     useEffect(() => {
@@ -157,46 +182,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         testBuyerCountry,
         setError,
     ]);
-
-    // Separate effect for eligibility - runs after instance is created
-    useEffect(() => {
-        // Only run when we have an instance and it's in resolved state
-        if (
-            !state.sdkInstance ||
-            state.loadingStatus !== INSTANCE_LOADING_STATE.RESOLVED
-        ) {
-            return;
-        }
-
-        let isSubscribed = true;
-
-        const loadEligibility = async () => {
-            try {
-                const eligiblePaymentMethods =
-                    await state.sdkInstance?.findEligibleMethods({});
-
-                if (!isSubscribed || !eligiblePaymentMethods) {
-                    return;
-                }
-
-                dispatch({
-                    type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-                    value: eligiblePaymentMethods,
-                });
-            } catch (error) {
-                if (isSubscribed) {
-                    setError(error);
-                    // TODO figure out what to do with an eligibility error
-                }
-            }
-        };
-
-        loadEligibility();
-
-        return () => {
-            isSubscribed = false;
-        };
-    }, [state.sdkInstance, state.loadingStatus, setError]);
 
     const contextValue: PayPalState = useMemo(
         () => ({

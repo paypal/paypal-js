@@ -13,7 +13,6 @@ import type {
     BasePaymentSessionReturn,
 } from "../types";
 
-// TODO: Add all startOptions to this hook
 export type UseVenmoOneTimePaymentSessionProps = (
     | (Omit<VenmoOneTimePaymentSessionOptions, "orderId"> & {
           createOrder: () => VenmoOneTimePaymentSessionPromise;
@@ -86,11 +85,7 @@ export function useVenmoOneTimePaymentSession({
             autoRedirect,
         } as VenmoPresentationModeOptions;
 
-        if (createOrder) {
-            await sessionRef.current.start(startOptions, createOrder());
-        } else {
-            await sessionRef.current.start(startOptions);
-        }
+        await sessionRef.current.start(startOptions, createOrder?.());
     }, [
         isMountedRef,
         presentationMode,
