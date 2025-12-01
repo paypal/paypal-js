@@ -1,5 +1,6 @@
-export type StateType = "canceled" | "failed" | "succeeded";
-
+/**
+ * Session configuration types
+ */
 export type ValidCssSelector =
     | ".invalid"
     | ".invalid.focus"
@@ -55,24 +56,6 @@ export type MerchantStyleObject = Partial<{
         [key in ValidCssProperties]: string | number;
     }>;
 }>;
-
-export type OneTimePaymentFlowResponse = {
-    data: {
-        orderId: string;
-        message?: string;
-        liabilityShift?: string;
-    };
-    state: StateType;
-};
-
-export type SavePaymentFlowResponse = {
-    data: {
-        vaultSetupToken: string;
-        message?: string;
-        liabilityShift?: string;
-    };
-    state: StateType;
-};
 
 export type FieldState = {
     isFocused: boolean;
@@ -148,21 +131,106 @@ export type CardFieldOptions = {
     ariaInvalidErrorMessage?: string;
 };
 
+export type StateType = "canceled" | "failed" | "succeeded";
+
+/**
+ * Card Fields Sessions
+ */
+
 type BaseCardFieldsSession = {
+    /**
+     * This method allows to create and configure individual Card Field components.
+     * 
+     * @param config - Configuration options for creating individual Card Field components and customizing different base aspects such as type, placeholder, styling, and accessibility attributes.
+     * @returns An instance of the created Card Field component that can be appended to the DOM
+     * 
+     * @example
+     * ```typescript
+     * const numberField = cardFieldsInstance.createCardFieldsComponent({
+          type: "number",
+          placeholder: "Enter a number:",
+        });
+        document
+          .querySelector("#paypal-card-fields-number-container")
+          .appendChild(numberField);
+     * ```
+     */
     createCardFieldsComponent: (config: CardFieldOptions) => HTMLElement;
+    /**
+     * This method allows to register event listeners and set callbacks for them.
+     * 
+     * @param eventName - Name of the event to listen for
+     * @param callback - Callback function to be executed when the event is triggered
+     * 
+     * @example
+     * ```typescript
+     * cardFieldsInstance.on("focus", (eventState) => {
+          console.log("Focus event triggered: ", eventState);
+        });
+     * ```
+     */
     on: (
         eventName: MerchantMessagingEvents,
         callback: CardFieldsEventsOptions[MerchantMessagingEvents],
     ) => Promise<void>;
+    /**
+     * This method allows to update the Card Fields session with new options such as amount and cobranded eligibility.
+     * @param options - Configuration options to update the Card Fields session with new options
+     * 
+     * @example
+     * ```typescript
+     * cardFieldsInstance.update({
+            amount: {
+              currencyCode: "EUR",
+              value: "100.00",
+            },
+            isCobrandedEligible: true,
+        });
+     * ```
+     */
     update: (options: UpdateOptions) => void;
+};
+
+export type OneTimePaymentFlowResponse = {
+    data: {
+        orderId: string;
+        message?: string;
+        liabilityShift?: string;
+    };
+    state: StateType;
 };
 
 export type OneTimePaymentSubmitOptions = [orderId: string, data: ExtraFields];
 
 export type CardFieldsOneTimePaymentSession = BaseCardFieldsSession & {
+    /**
+     * This method allows to submit a one-time payment using Card Fields.
+     * 
+     * @param orderId - The unique identifier for the order to be processed.
+     * @param data - Additional payment data
+     * @returns A promise that resolves to the result of the payment flow.
+     * 
+     * @example
+     * ```typescript
+     * const response = await cardFieldsInstance.submit("your-order-id", {
+            billingAddress: {
+              postalCode: "12345",
+            },
+          });
+     * ```
+     */
     submit: (
         ...args: OneTimePaymentSubmitOptions
     ) => Promise<OneTimePaymentFlowResponse>;
+};
+
+export type SavePaymentFlowResponse = {
+    data: {
+        vaultSetupToken: string;
+        message?: string;
+        liabilityShift?: string;
+    };
+    state: StateType;
 };
 
 export type SavePaymentSubmitOptions = [
@@ -171,10 +239,30 @@ export type SavePaymentSubmitOptions = [
 ];
 
 export type CardFieldsSavePaymentSession = BaseCardFieldsSession & {
+    /**
+     * This method allows to submit and save a payment method using Card Fields.
+     * 
+     * @param vaultSetupToken - The unique token for the vault setup to be processed.
+     * @param data - Additional payment data.
+     * @returns A promise that resolves to the result of the save payment flow.
+     * 
+     * @example
+     * ```typescript
+     * const response = await cardFieldsInstance.submit("your-vault-setup-token", {
+            billingAddress: {
+              postalCode: "12345",
+            },
+          });
+     * ```
+     */
     submit: (
         ...args: SavePaymentSubmitOptions
     ) => Promise<SavePaymentFlowResponse>;
 };
+
+/**
+ * Main Card Fields instance interface
+ */
 
 /**
  * CardFieldsInstance interface for creating and managing different types of Card Fields sessions.
