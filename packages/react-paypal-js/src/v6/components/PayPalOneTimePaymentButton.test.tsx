@@ -1,5 +1,6 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
+
 import { PayPalOneTimePaymentButton } from "./PayPalOneTimePaymentButton";
 import { usePayPalOneTimePaymentSession } from "../hooks/usePayPalOneTimePaymentSession";
 import { isServer } from "../utils";

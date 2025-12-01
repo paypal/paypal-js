@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 
 import { usePayPalOneTimePaymentSession } from "../hooks/usePayPalOneTimePaymentSession";
 import { isServer } from "../utils";
+import { BUTTON_TYPES } from "../types/sdkButtons";
 
 import type { ButtonProps } from "../types/sdkButtons";
 import type { UsePayPalOneTimePaymentSessionProps } from "../hooks/usePayPalOneTimePaymentSession";
@@ -20,9 +21,7 @@ type PayPalOneTimePaymentButtonProps = UsePayPalOneTimePaymentSessionProps & {
 
 // TODO docs
 export const PayPalOneTimePaymentButton = ({
-    // TODO add type for button type?
-    // TODO does type come from the hook return or is this something merchants pass in?
-    type,
+    type = BUTTON_TYPES.PAY,
     ...hookProps
 }: PayPalOneTimePaymentButtonProps): JSX.Element | null => {
     const { error, handleClick } = usePayPalOneTimePaymentSession(hookProps);
