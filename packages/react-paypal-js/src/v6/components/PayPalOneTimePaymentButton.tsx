@@ -18,7 +18,6 @@ import type { UsePayPalOneTimePaymentSessionProps } from "../hooks/usePayPalOneT
 type PayPalOneTimePaymentButtonProps = UsePayPalOneTimePaymentSessionProps &
     IntrinsicButtonProps & {
         autoRedirect?: never;
-        someRequiredThing: boolean;
     };
 
 // TODO docs
