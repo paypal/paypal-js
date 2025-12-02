@@ -24,50 +24,109 @@ describe("PayPalOneTimePaymentButton", () => {
             error: null,
             handleClick: mockHandleClick,
         });
+        mockIsServer.mockReturnValue(false);
     });
 
-    it.only("should render paypal-button when not on server side", () => {
-        const { container } = render(<PayPalOneTimePaymentButton />);
+    it("should render paypal-button when not on server side", () => {
+        const { container } = render(
+            <PayPalOneTimePaymentButton
+                onApprove={() => Promise.resolve()}
+                orderId="123"
+                presentationMode="auto"
+            />,
+        );
         expect(container.querySelector("paypal-button")).toBeInTheDocument();
     });
 
     it("should return null when on server side", () => {
         mockIsServer.mockReturnValue(true);
-        const { container } = render(<PayPalOneTimePaymentButton />);
+        const { container } = render(
+            <PayPalOneTimePaymentButton
+                onApprove={() => Promise.resolve()}
+                orderId="123"
+                presentationMode="auto"
+            />,
+        );
         expect(
             container.querySelector("paypal-button"),
         ).not.toBeInTheDocument();
     });
 
     it("should call handleClick when button is clicked", () => {
-        const { container } = render(<PayPalOneTimePaymentButton />);
+        const { container } = render(
+            <PayPalOneTimePaymentButton
+                onApprove={() => Promise.resolve()}
+                orderId="123"
+                presentationMode="auto"
+            />,
+        );
         const button = container.querySelector("paypal-button");
-        fireEvent.click(button!);
+
+        // @ts-expect-error button should be defined at this point, test will error if not
+        fireEvent.click(button);
+
         expect(mockHandleClick).toHaveBeenCalledTimes(1);
     });
 
+    it("should disable the button when disabled=true is given as a prop", () => {
+        const { container } = render(
+            <PayPalOneTimePaymentButton
+                onApprove={() => Promise.resolve()}
+                orderId="123"
+                presentationMode="auto"
+                disabled={true}
+            />,
+        );
+        const button = container.querySelector("paypal-button");
+        expect(button).toHaveAttribute("disabled");
+    });
+
     it("should disable button when error is present", () => {
+        const consoleErrorSpy = jest
+            .spyOn(console, "error")
+            .mockImplementation();
         mockUsePayPalOneTimePaymentSession.mockReturnValue({
             error: new Error("Test error"),
             handleClick: mockHandleClick,
         });
-        const { container } = render(<PayPalOneTimePaymentButton />);
+        const { container } = render(
+            <PayPalOneTimePaymentButton
+                onApprove={() => Promise.resolve()}
+                orderId="123"
+                presentationMode="auto"
+            />,
+        );
         const button = container.querySelector("paypal-button");
         expect(button).toHaveAttribute("disabled");
     });
 
     it("should not disable button when error is null", () => {
-        const { container } = render(<PayPalOneTimePaymentButton />);
+        mockUsePayPalOneTimePaymentSession.mockReturnValue({
+            error: null,
+            handleClick: mockHandleClick,
+        });
+        const { container } = render(
+            <PayPalOneTimePaymentButton
+                onApprove={() => Promise.resolve()}
+                orderId="123"
+                presentationMode="auto"
+            />,
+        );
         const button = container.querySelector("paypal-button");
         expect(button).not.toHaveAttribute("disabled");
     });
 
     it("should pass type prop to paypal-button", () => {
         const { container } = render(
-            <PayPalOneTimePaymentButton type="submit" />,
+            <PayPalOneTimePaymentButton
+                onApprove={() => Promise.resolve()}
+                orderId="123"
+                presentationMode="auto"
+                type="subscribe"
+            />,
         );
         const button = container.querySelector("paypal-button");
-        expect(button).toHaveAttribute("type", "submit");
+        expect(button).toHaveAttribute("type", "subscribe");
     });
 
     it("should pass hook props to usePayPalOneTimePaymentSession", () => {
@@ -75,6 +134,9 @@ describe("PayPalOneTimePaymentButton", () => {
             clientToken: "test-token",
             amount: "10.00",
             currency: "USD",
+            onApprove: () => Promise.resolve(),
+            orderId: "123",
+            presentationMode: "auto" as const,
         };
         render(<PayPalOneTimePaymentButton {...hookProps} />);
         expect(mockUsePayPalOneTimePaymentSession).toHaveBeenCalledWith(
@@ -82,7 +144,7 @@ describe("PayPalOneTimePaymentButton", () => {
         );
     });
 
-    it("should log error to console when error is present", () => {
+    it("should log error to console when an error from the hook is present", () => {
         const consoleErrorSpy = jest
             .spyOn(console, "error")
             .mockImplementation();
@@ -91,7 +153,13 @@ describe("PayPalOneTimePaymentButton", () => {
             error: testError,
             handleClick: mockHandleClick,
         });
-        render(<PayPalOneTimePaymentButton />);
+        render(
+            <PayPalOneTimePaymentButton
+                onApprove={() => Promise.resolve()}
+                orderId="123"
+                presentationMode="auto"
+            />,
+        );
         expect(consoleErrorSpy).toHaveBeenCalledWith(testError);
         consoleErrorSpy.mockRestore();
     });

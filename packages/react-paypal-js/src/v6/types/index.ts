@@ -9,13 +9,3 @@ export interface BasePaymentSessionReturn {
     handleCancel: () => void;
     handleDestroy: () => void;
 }
-
-export const BUTTON_TYPES = {
-    BUYNOW: "buynow",
-    CHECKOUT: "checkout",
-    DONATE: "donate",
-    PAY: "pay",
-    SUBSCRIBE: "subscribe",
-} as const;
-
-export type ButtonTypes = (typeof BUTTON_TYPES)[keyof typeof BUTTON_TYPES];

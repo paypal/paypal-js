@@ -1,10 +1,12 @@
 import "react";
-
-export interface IntrinsicButtonProps
-    extends React.HTMLAttributes<HTMLButtonElement> {
-    type?: ButtonTypes;
+export interface ButtonProps {
+    type?: "buynow" | "checkout" | "donate" | "pay" | "subscribe";
     disabled?: boolean;
 }
+
+interface IntrinsicButtonProps
+    extends React.HTMLAttributes<HTMLButtonElement>,
+        ButtonProps {}
 
 declare module "react" {
     namespace JSX {
