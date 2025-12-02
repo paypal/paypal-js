@@ -1,6 +1,3 @@
-/**
- * Session configuration types
- */
 export type ValidCssSelector =
     | ".invalid"
     | ".invalid.focus"
@@ -138,10 +135,6 @@ export type CardFieldOptions = {
 
 export type StateType = "canceled" | "failed" | "succeeded";
 
-/**
- * Card Fields Sessions
- */
-
 type BaseCardFieldsSession = {
     /**
      * Use this method to create and configure individual Card Field components.
@@ -264,10 +257,6 @@ export type CardFieldsSavePaymentSession = BaseCardFieldsSession & {
         ...args: SavePaymentSubmitOptions
     ) => Promise<SavePaymentFlowResponse>;
 };
-
-/**
- * Main Card Fields instance interface
- */
 
 /**
  * CardFieldsInstance interface for creating and managing different types of Card Fields sessions.
