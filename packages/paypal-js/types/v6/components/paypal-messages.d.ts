@@ -137,7 +137,9 @@ export type LearnMore =
  * Session object for managing PayPal Messages.
  */
 export type PayPalMessagesSession = {
-    fetchContent: (options?: FetchContentOptions) => MessageContent;
+    fetchContent: (
+        options?: FetchContentOptions,
+    ) => Promise<MessageContent | null>;
     createLearnMore: (options?: LearnMoreOptions) => LearnMore;
 };
 
