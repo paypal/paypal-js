@@ -96,7 +96,7 @@ export type EventPayload = {
 };
 
 export type CardFieldsEventsOptions = {
-    [key in MerchantMessagingEvents]: (state: EventPayload) => void;
+    [key in MerchantMessagingEvents]: (eventPayload: EventPayload) => void;
 };
 
 export type OrderAmount = {
@@ -162,8 +162,8 @@ type BaseCardFieldsSession = {
      * 
      * @example
      * ```typescript
-     * cardFieldsInstance.on("focus", (EventPayload) => {
-          console.log("Focus event triggered: ", EventPayload);
+     * cardFieldsInstance.on("focus", (eventPayload) => {
+          console.log("Focus event triggered: ", eventPayload);
         });
      * ```
      */
