@@ -7,3 +7,4 @@ export { usePayPalOneTimePaymentSession } from "./hooks/usePayPalOneTimePaymentS
 export { usePayPalSavePaymentSession } from "./hooks/usePayPalSavePaymentSession";
 export { useVenmoOneTimePaymentSession } from "./hooks/useVenmoOneTimePaymentSession";
 export * from "./hooks/useEligibleMethods";
+export { usePayPalMessages } from "./hooks/usePayPalMessages";
