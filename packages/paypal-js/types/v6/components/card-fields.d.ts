@@ -139,7 +139,7 @@ export type StateType = "canceled" | "failed" | "succeeded";
 
 type BaseCardFieldsSession = {
     /**
-     * This method allows to create and configure individual Card Field components.
+     * Use this method to create and configure individual Card Field components.
      * 
      * @param config - Configuration options for creating individual Card Field components and customizing different base aspects such as type, placeholder, styling, and accessibility attributes.
      * @returns An instance of the created Card Field component that can be appended to the DOM
@@ -148,7 +148,7 @@ type BaseCardFieldsSession = {
      * ```typescript
      * const numberField = cardFieldsInstance.createCardFieldsComponent({
           type: "number",
-          placeholder: "Enter a number:",
+          placeholder: "Enter a number",
         });
         document
           .querySelector("#paypal-card-fields-number-container")
@@ -157,7 +157,7 @@ type BaseCardFieldsSession = {
      */
     createCardFieldsComponent: (config: CardFieldOptions) => HTMLElement;
     /**
-     * This method allows to register event listeners and set callbacks for them.
+     * Use this method to register event listeners and set callbacks for them.
      * 
      * @param eventName - Name of the event to listen for
      * @param callback - Callback function to be executed when the event is triggered
@@ -174,7 +174,7 @@ type BaseCardFieldsSession = {
         callback: CardFieldsEventsOptions[MerchantMessagingEvents],
     ) => Promise<void>;
     /**
-     * This method allows to update the Card Fields session with new options such as amount and cobranded eligibility.
+     * Use this method to update the Card Fields session with new options.
      * @param options - Configuration options to update the Card Fields session with new options
      * 
      * @example
@@ -204,7 +204,7 @@ export type OneTimePaymentSubmitOptions = [orderId: string, data: ExtraFields];
 
 export type CardFieldsOneTimePaymentSession = BaseCardFieldsSession & {
     /**
-     * This method allows to submit a one-time payment using Card Fields.
+     * Use this method to submit a one-time payment using Card Fields.
      * 
      * @param orderId - The unique identifier for the order to be processed.
      * @param data - Additional payment data
@@ -240,7 +240,7 @@ export type SavePaymentSubmitOptions = [
 
 export type CardFieldsSavePaymentSession = BaseCardFieldsSession & {
     /**
-     * This method allows to submit and save a payment method using Card Fields.
+     * Use this method to submit and save a payment method using Card Fields.
      * 
      * @param vaultSetupToken - The unique token for the vault setup to be processed.
      * @param data - Additional payment data.
