@@ -93,8 +93,13 @@ export type EventState = {
     expiry: FieldState;
 };
 
+export type EventPayload = {
+    data: EventState;
+    sender: CardFieldTypes;
+};
+
 export type CardFieldsEventsOptions = {
-    [key in MerchantMessagingEvents]: (state: EventState) => void;
+    [key in MerchantMessagingEvents]: (state: EventPayload) => void;
 };
 
 export type OrderAmount = {
@@ -159,13 +164,13 @@ type BaseCardFieldsSession = {
     /**
      * Use this method to register event listeners and set callbacks for them.
      * 
-     * @param eventName - Name of the event to listen for
-     * @param callback - Callback function to be executed when the event is triggered
+     * @param eventName - Name of the event to listen for.
+     * @param callback - Callback function to be executed when the event is triggered.
      * 
      * @example
      * ```typescript
-     * cardFieldsInstance.on("focus", (eventState) => {
-          console.log("Focus event triggered: ", eventState);
+     * cardFieldsInstance.on("focus", (EventPayload) => {
+          console.log("Focus event triggered: ", EventPayload);
         });
      * ```
      */
@@ -175,7 +180,7 @@ type BaseCardFieldsSession = {
     ) => Promise<void>;
     /**
      * Use this method to update the Card Fields session with new options.
-     * @param options - Configuration options to update the Card Fields session with new options
+     * @param options - Configuration object to update the Card Fields session with new options.
      * 
      * @example
      * ```typescript
@@ -207,7 +212,7 @@ export type CardFieldsOneTimePaymentSession = BaseCardFieldsSession & {
      * Use this method to submit a one-time payment using Card Fields.
      * 
      * @param orderId - The unique identifier for the order to be processed.
-     * @param data - Additional payment data
+     * @param data - Additional payment data.
      * @returns A promise that resolves to the result of the payment flow.
      * 
      * @example
