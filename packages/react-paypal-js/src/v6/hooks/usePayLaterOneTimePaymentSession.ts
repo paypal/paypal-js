@@ -47,12 +47,10 @@ export function usePayLaterOneTimePaymentSession({
 
     // Separate error reporting effect to avoid infinite loops with proxyCallbacks
     useEffect(() => {
-        if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
-            if (!sdkInstance) {
-                setError(new Error("no sdk instance available"));
-            } else {
-                setError(null);
-            }
+        if (sdkInstance) {
+            setError(null);
+        } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
+            setError(new Error("no sdk instance available"));
         }
     }, [sdkInstance, setError, loadingStatus]);
 
