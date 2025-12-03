@@ -6,6 +6,7 @@ import {
     EligiblePaymentMethodsOutput,
     FindEligibleMethodsOptions,
 } from "./components/find-eligible-methods";
+import { CardFieldsInstance } from "./components/card-fields";
 import { PayPalMessagesInstance } from "./components/paypal-messages";
 
 export interface PayPalV6Namespace {
@@ -40,7 +41,8 @@ export type Components =
     | "paypal-guest-payments"
     | "paypal-messages"
     | "venmo-payments"
-    | "paypal-legacy-billing-agreements";
+    | "paypal-legacy-billing-agreements"
+    | "card-fields";
 
 export type PageTypes =
     | "cart"
@@ -75,6 +77,7 @@ export type CreateInstanceOptions<T extends readonly Components[]> = {
  * **Conditionally includes methods based on components:**
  * - `"paypal-payments"` - Adds PayPalPaymentsInstance methods
  * - `"venmo-payments"` - Adds VenmoPaymentsInstance methods
+ * - `"card-fields"` - Adds CardFieldsInstance methods
  * - `"paypal-legacy-billing-agreements"` Adds PayPalLegacyBillingInstance methods
  *
  * @example
@@ -130,7 +133,8 @@ export type SdkInstance<T extends readonly Components[]> = BaseInstance &
     ("venmo-payments" extends T[number] ? VenmoPaymentsInstance : unknown) &
     ("paypal-legacy-billing-agreements" extends T[number]
         ? PayPalLegacyBillingInstance
-        : unknown);
+        : unknown) &
+    ("card-fields" extends T[number] ? CardFieldsInstance : unknown);
 
 /**
  * @internal
@@ -196,6 +200,7 @@ export * from "./components/paypal-guest-payments";
 export * from "./components/paypal-legacy-billing-agreements";
 export * from "./components/venmo-payments";
 export * from "./components/find-eligible-methods";
+export * from "./components/card-fields";
 export * from "./components/paypal-messages";
 
 // export a subset of types from base-component
