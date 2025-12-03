@@ -5,6 +5,10 @@ import {
     PayPalWarning,
     PresentationModeOptionsForAuto,
 } from "./base-component";
+import {
+    OnShippingAddressChangeData,
+    OnShippingOptionsChangeData,
+} from "./paypal-payments";
 
 export type PayPalGuestOneTimePaymentSessionOptions =
     BasePaymentSessionOptions & {
@@ -16,6 +20,13 @@ export type PayPalGuestOneTimePaymentSessionOptions =
 export type PayPalGuestPresentationModeOptions =
     PresentationModeOptionsForAuto & {
         targetElement?: string | EventTarget;
+        buyerCountry?: string;
+        onShippingAddressChange?: (
+            data: OnShippingAddressChangeData,
+        ) => Promise<void>;
+        onShippingOptionsChange?: (
+            data: OnShippingOptionsChangeData,
+        ) => Promise<void>;
     };
 
 export type PayPalGuestOneTimePaymentSessionPromise = Promise<{
