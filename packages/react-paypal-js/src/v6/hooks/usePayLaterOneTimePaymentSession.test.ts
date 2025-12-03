@@ -4,6 +4,7 @@ import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import { usePayPal } from "./usePayPal";
 import { usePayLaterOneTimePaymentSession } from "./usePayLaterOneTimePaymentSession";
 import { useProxyProps } from "../utils";
+import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 
 import type { OneTimePaymentSession } from "../types";
 
@@ -87,6 +88,73 @@ describe("usePayLaterOneTimePaymentSession", () => {
         expectCurrentErrorValue(error);
 
         expect(error).toEqual(new Error("no sdk instance available"));
+    });
+
+    test("should not error if there is no sdkInstance but loading is still pending", () => {
+        const mockOrderId = "123";
+
+        (usePayPal as jest.Mock).mockReturnValue({
+            sdkInstance: null,
+            loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+        });
+
+        const {
+            result: {
+                current: { error },
+            },
+        } = renderHook(() =>
+            usePayLaterOneTimePaymentSession({
+                presentationMode: "auto",
+                orderId: mockOrderId,
+                onApprove: jest.fn(),
+            }),
+        );
+
+        expect(error).toBeNull();
+    });
+
+    test("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
+        const mockOrderId = "123";
+        const mockSession: OneTimePaymentSession = {
+            cancel: jest.fn(),
+            destroy: jest.fn(),
+            start: jest.fn(),
+        };
+        const mockCreatePayLaterOneTimePaymentSession = jest
+            .fn()
+            .mockReturnValue(mockSession);
+
+        // First render: no sdkInstance, should error
+        (usePayPal as jest.Mock).mockReturnValueOnce({
+            sdkInstance: null,
+            loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
+        });
+
+        const { result, rerender } = renderHook(() =>
+            usePayLaterOneTimePaymentSession({
+                presentationMode: "auto",
+                orderId: mockOrderId,
+                onApprove: jest.fn(),
+            }),
+        );
+
+        expectCurrentErrorValue(result.current.error);
+        expect(result.current.error).toEqual(
+            new Error("no sdk instance available"),
+        );
+
+        // Second render: sdkInstance becomes available, error should clear
+        (usePayPal as jest.Mock).mockReturnValue({
+            sdkInstance: {
+                createPayLaterOneTimePaymentSession:
+                    mockCreatePayLaterOneTimePaymentSession,
+            },
+            loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+        });
+
+        rerender();
+
+        expect(result.current.error).toBeNull();
     });
 
     test("should provide a click handler that calls session start", async () => {
