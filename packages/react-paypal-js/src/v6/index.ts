@@ -1,6 +1,7 @@
 export * from "./types";
-export { PayPalProvider } from "./components/PayPalProvider";
 export { PayPalContext } from "./context/PayPalProviderContext";
+export { PayPalOneTimePaymentButton } from "./components/PayPalOneTimePaymentButton";
+export { PayPalProvider } from "./components/PayPalProvider";
 export { usePayPal } from "./hooks/usePayPal";
 export { usePayLaterOneTimePaymentSession } from "./hooks/usePayLaterOneTimePaymentSession";
 export { usePayPalOneTimePaymentSession } from "./hooks/usePayPalOneTimePaymentSession";
