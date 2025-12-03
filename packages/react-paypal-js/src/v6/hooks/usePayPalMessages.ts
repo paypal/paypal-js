@@ -9,13 +9,14 @@ type PayPalMessagesReturn = {
     error: Error | null;
 };
 
-export const usePayPalMessages = (
-    options: PayPalMessagesOptions,
-): PayPalMessagesReturn => {
+export function usePayPalMessages({
+    buyerCountry,
+    currencyCode,
+    shopperSessionId,
+}: PayPalMessagesOptions): PayPalMessagesReturn {
     const { sdkInstance } = usePayPal();
     const sessionRef = useRef<PayPalMessagesSession | null>(null);
     const [error, setError] = useError();
-    const { buyerCountry, currencyCode, shopperSessionId } = options;
 
     useEffect(() => {
         if (!sdkInstance) {
@@ -40,4 +41,4 @@ export const usePayPalMessages = (
     return {
         error,
     };
-};
+}
