@@ -67,7 +67,7 @@ export function usePayPalMessages({
             try {
                 const result = await sessionRef.current.fetchContent(options);
 
-                // fetchContent will return null in the case of an API erro
+                // fetchContent will return null in the case of an API error
                 if (result === null) {
                     setError(
                         new Error("Failed to fetch PayPal Messages content"),
