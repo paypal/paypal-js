@@ -3,7 +3,7 @@ import { useRef } from "react";
 import type { Components } from "./types";
 
 export function isServer(): boolean {
-    return typeof window === "undefined" && typeof document === "undefined";
+    return typeof window === "undefined";
 }
 
 /**
