@@ -82,9 +82,7 @@ describe("PayPalOneTimePaymentButton", () => {
     });
 
     it("should disable button when error is present", () => {
-        const consoleErrorSpy = jest
-            .spyOn(console, "error")
-            .mockImplementation();
+        jest.spyOn(console, "error").mockImplementation();
         mockUsePayPalOneTimePaymentSession.mockReturnValue({
             error: new Error("Test error"),
             handleClick: mockHandleClick,
