@@ -220,6 +220,30 @@ describe("PayPalProvider", () => {
             );
         });
 
+        test("should use default components array when not provided", async () => {
+            const mockCreateInstance = jest
+                .fn()
+                .mockResolvedValue(createMockSdkInstance());
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: mockCreateInstance,
+            });
+
+            // @ts-expect-error components is required, testing defaulting behavior
+            const { state } = renderProvider({
+                clientToken: TEST_CLIENT_TOKEN,
+            });
+
+            await waitFor(() => expectResolvedState(state));
+
+            expect(mockCreateInstance).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    components: ["paypal-payments"],
+                    clientToken: TEST_CLIENT_TOKEN,
+                }),
+            );
+        });
+
         test("should handle createInstance failure", async () => {
             const instanceError = new Error("Instance creation failed");
             const mockCreateInstance = jest

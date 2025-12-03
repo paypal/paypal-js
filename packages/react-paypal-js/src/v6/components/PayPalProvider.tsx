@@ -27,10 +27,12 @@ import type {
 import type { PayPalState } from "../context/PayPalProviderContext";
 import type { usePayPal } from "../hooks/usePayPal";
 
-type PayPalProviderProps = CreateInstanceOptions<
-    readonly [Components, ...Components[]]
+type PayPalProviderProps = Omit<
+    CreateInstanceOptions<readonly [Components, ...Components[]]>,
+    "components"
 > &
     LoadCoreSdkScriptOptions & {
+        components?: Components[];
         eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
         eligibleMethodsPayload?: FindEligiblePaymentMethodsRequestPayload;
         children: React.ReactNode;
@@ -43,7 +45,7 @@ type PayPalProviderProps = CreateInstanceOptions<
 export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     clientMetadataId,
     clientToken,
-    components,
+    components = ["paypal-payments"],
     locale,
     pageType,
     partnerAttributionId,
