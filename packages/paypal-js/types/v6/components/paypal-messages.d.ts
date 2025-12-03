@@ -47,7 +47,7 @@ export type FetchContentOptions = PayPalMessagesOptions & {
 /**
  * Options for configuring Learn More presentations.
  */
-type LearnMoreOptions = PayPalMessagesOptions & {
+export type LearnMoreOptions = PayPalMessagesOptions & {
     amount?: string;
     presentationMode: "AUTO" | "MODAL" | "POPUP" | "REDIRECT";
     onShow?: (data?: object) => void;

@@ -9,10 +9,15 @@ import type {
     MessageContent,
     PayPalMessagesOptions,
     PayPalMessagesSession,
+    LearnMoreOptions,
+    LearnMore,
 } from "../types";
 
 type PayPalMessagesReturn = {
     error: Error | null;
+    handleCreateLearnMore: (
+        options?: LearnMoreOptions,
+    ) => LearnMore | undefined;
     handleFetchContent: (
         options: FetchContentOptions,
     ) => Promise<MessageContent | void>;
@@ -55,7 +60,7 @@ export function usePayPalMessages({
             }
 
             if (!sessionRef.current) {
-                setError(new Error("PayPal session not available"));
+                setError(new Error("PayPal Messages session not available"));
                 return;
             }
 
@@ -79,8 +84,25 @@ export function usePayPalMessages({
         [isMountedRef, setError],
     );
 
+    const handleCreateLearnMore = useCallback(
+        (options?: LearnMoreOptions) => {
+            if (!isMountedRef.current) {
+                return;
+            }
+
+            if (!sessionRef.current) {
+                setError(new Error("PayPal Messages session not available"));
+                return;
+            }
+
+            return sessionRef.current.createLearnMore(options);
+        },
+        [isMountedRef, setError],
+    );
+
     return {
         error,
+        handleCreateLearnMore,
         handleFetchContent,
     };
 }
