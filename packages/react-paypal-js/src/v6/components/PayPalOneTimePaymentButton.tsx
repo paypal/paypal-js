@@ -20,6 +20,15 @@ type PayPalOneTimePaymentButtonProps = UsePayPalOneTimePaymentSessionProps &
  * Note, `autoRedirect` is not allowed because if given a `presentationMode` of `"redirect"` the button
  * would not be able to provide back `redirectURL` from `start`. Advanced integrations that need
  * `redirectURL` should use the {@link usePayPalOneTimePaymentSession} hook directly.
+ *
+ * @example
+ * <PayPalOneTimePaymentButton
+ *   onApprove={() => {
+ *      // ... on approve logic
+ *   }}
+ *   orderId="your-order-id"
+ *   presentationMode="auto"
+ * />
  */
 export const PayPalOneTimePaymentButton = ({
     type = "pay",
