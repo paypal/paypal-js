@@ -68,8 +68,16 @@ describe("usePayLaterOneTimePaymentSession", () => {
         });
     });
 
-    test("should error if there is no sdkInstance when called", () => {
+    test("should error if there is no sdkInstance when called and not create a session", () => {
         const mockOrderId = "123";
+        const mockSession: OneTimePaymentSession = {
+            cancel: jest.fn(),
+            destroy: jest.fn(),
+            start: jest.fn(),
+        };
+        const mockCreatePayLaterOneTimePaymentSession = jest
+            .fn()
+            .mockReturnValue(mockSession);
 
         (usePayPal as jest.Mock).mockReturnValue({ sdkInstance: null });
 
@@ -88,6 +96,7 @@ describe("usePayLaterOneTimePaymentSession", () => {
         expectCurrentErrorValue(error);
 
         expect(error).toEqual(new Error("no sdk instance available"));
+        expect(mockCreatePayLaterOneTimePaymentSession).not.toHaveBeenCalled();
     });
 
     test("should not error if there is no sdkInstance but loading is still pending", () => {

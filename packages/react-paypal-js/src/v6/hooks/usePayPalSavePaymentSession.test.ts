@@ -113,8 +113,16 @@ describe("usePayPalSavePaymentSession", () => {
         });
     });
 
-    test("should error if there is no sdkInstance when called", () => {
+    test("should error if there is no sdkInstance when called and not create a session", () => {
         const mockVaultSetupToken = "vault-setup-token-123";
+        const mockSession: SavePaymentSession = {
+            cancel: jest.fn(),
+            destroy: jest.fn(),
+            start: jest.fn(),
+        };
+        const mockCreatePayPalSavePaymentSession = jest
+            .fn()
+            .mockReturnValue(mockSession);
 
         (usePayPal as jest.Mock).mockReturnValue({
             sdkInstance: null,
@@ -136,6 +144,7 @@ describe("usePayPalSavePaymentSession", () => {
         expectCurrentErrorValue(error);
 
         expect(error).toEqual(new Error("no sdk instance available"));
+        expect(mockCreatePayPalSavePaymentSession).not.toHaveBeenCalled();
     });
 
     test("should not error if there is no sdkInstance but loading is still pending", () => {

@@ -59,7 +59,7 @@ describe("useVenmoOneTimePaymentSession", () => {
         test("should not create session when no SDK instance is available", () => {
             mockUsePayPal.mockReturnValue({
                 sdkInstance: null,
-                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+                loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
             });
@@ -81,6 +81,9 @@ describe("useVenmoOneTimePaymentSession", () => {
             expectCurrentErrorValue(error);
 
             expect(error).toEqual(new Error("no sdk instance available"));
+            expect(
+                mockSdkInstance.createVenmoOneTimePaymentSession,
+            ).not.toHaveBeenCalled();
         });
 
         test("should not error if there is no sdkInstance but loading is still pending", () => {
@@ -106,7 +109,7 @@ describe("useVenmoOneTimePaymentSession", () => {
             expect(error).toBeNull();
         });
 
-        test.only("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
+        test("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
             const mockSession = createMockVenmoSession();
             const mockSdkInstanceNew = createMockSdkInstance(mockSession);
 

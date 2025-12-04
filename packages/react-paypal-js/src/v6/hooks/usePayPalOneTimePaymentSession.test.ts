@@ -53,7 +53,7 @@ describe("usePayPalOneTimePaymentSession", () => {
     });
 
     describe("initialization", () => {
-        test("should error if there is no sdkInstance when called", () => {
+        test("should not create session when no SDK instance is available", () => {
             mockUsePayPal.mockReturnValue({
                 sdkInstance: null,
                 loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
@@ -78,6 +78,9 @@ describe("usePayPalOneTimePaymentSession", () => {
             expectCurrentErrorValue(error);
 
             expect(error).toEqual(new Error("no sdk instance available"));
+            expect(
+                mockSdkInstance.createPayPalOneTimePaymentSession,
+            ).not.toHaveBeenCalled();
         });
 
         test("should not error if there is no sdkInstance but loading is still pending", () => {
