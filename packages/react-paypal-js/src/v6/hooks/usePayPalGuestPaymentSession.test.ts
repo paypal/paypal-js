@@ -69,7 +69,6 @@ describe("usePayPalGuestPaymentSession", () => {
             });
 
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
                 onCancel: jest.fn(),
@@ -93,7 +92,6 @@ describe("usePayPalGuestPaymentSession", () => {
             const onError = jest.fn();
 
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove,
                 onCancel,
@@ -136,7 +134,6 @@ describe("usePayPalGuestPaymentSession", () => {
             const onError = jest.fn();
 
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 createOrder: mockCreateOrder,
                 onApprove,
                 onCancel,
@@ -174,7 +171,6 @@ describe("usePayPalGuestPaymentSession", () => {
             const onApprove = jest.fn();
 
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove,
                 onShippingAddressChange,
@@ -197,7 +193,6 @@ describe("usePayPalGuestPaymentSession", () => {
             const onApprove = jest.fn();
 
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove,
             };
@@ -214,7 +209,6 @@ describe("usePayPalGuestPaymentSession", () => {
 
         test("should return buttonRef in the hook result", () => {
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
@@ -231,7 +225,6 @@ describe("usePayPalGuestPaymentSession", () => {
     describe("session lifecycle", () => {
         test("should destroy session on unmount", () => {
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
@@ -250,7 +243,6 @@ describe("usePayPalGuestPaymentSession", () => {
             const { rerender } = renderHook(
                 ({ orderId }) =>
                     usePayPalGuestPaymentSession({
-                        presentationMode: "auto",
                         orderId,
                         onApprove,
                     }),
@@ -272,7 +264,6 @@ describe("usePayPalGuestPaymentSession", () => {
 
         test("should destroy the previous session when the hook re-runs with a new sdkInstance", () => {
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
@@ -309,7 +300,6 @@ describe("usePayPalGuestPaymentSession", () => {
             const { rerender } = renderHook(
                 ({ hasShipping }) =>
                     usePayPalGuestPaymentSession({
-                        presentationMode: "auto",
                         orderId: "test-order-id",
                         onApprove,
                         ...(hasShipping ? { onShippingAddressChange } : {}),
@@ -338,7 +328,6 @@ describe("usePayPalGuestPaymentSession", () => {
             const { rerender } = renderHook(
                 ({ hasShipping }) =>
                     usePayPalGuestPaymentSession({
-                        presentationMode: "auto",
                         orderId: "test-order-id",
                         onApprove,
                         ...(hasShipping ? { onShippingAddressChange } : {}),
@@ -370,7 +359,6 @@ describe("usePayPalGuestPaymentSession", () => {
             const { rerender } = renderHook(
                 ({ onApprove }) =>
                     usePayPalGuestPaymentSession({
-                        presentationMode: "auto",
                         orderId: "test-order-id",
                         onApprove,
                     }),
@@ -391,7 +379,6 @@ describe("usePayPalGuestPaymentSession", () => {
     describe("handleClick", () => {
         test("should provide a click handler that calls session start with auto presentation mode", async () => {
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
@@ -414,10 +401,9 @@ describe("usePayPalGuestPaymentSession", () => {
 
         test("should include fullPageOverlay in start options when provided", async () => {
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
-                fullPageOverlay: true,
+                fullPageOverlay: { enabled: true },
             };
 
             const { result } = renderHook(() =>
@@ -441,7 +427,6 @@ describe("usePayPalGuestPaymentSession", () => {
             const mockTargetElement = document.createElement("div");
 
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
                 targetElement: mockTargetElement,
@@ -466,7 +451,6 @@ describe("usePayPalGuestPaymentSession", () => {
 
         test("should use buttonRef as targetElement when no targetElement prop provided", async () => {
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
@@ -499,7 +483,6 @@ describe("usePayPalGuestPaymentSession", () => {
                 );
 
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 createOrder: mockCreateOrder,
                 onApprove: jest.fn(),
             };
@@ -523,7 +506,6 @@ describe("usePayPalGuestPaymentSession", () => {
 
         test("should prevent double clicks with isSessionActiveRef guard", async () => {
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
@@ -547,7 +529,6 @@ describe("usePayPalGuestPaymentSession", () => {
 
         test("should set error when session is not available", async () => {
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
@@ -570,7 +551,6 @@ describe("usePayPalGuestPaymentSession", () => {
             mockPayPalSession.start = jest.fn().mockRejectedValue(mockError);
 
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
@@ -589,9 +569,8 @@ describe("usePayPalGuestPaymentSession", () => {
     });
 
     describe("handleCancel", () => {
-        test("should provide a cancel handler that cancels the session", () => {
+        test("should provide a cancel handler that resets session active state", () => {
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
@@ -604,12 +583,11 @@ describe("usePayPalGuestPaymentSession", () => {
                 result.current.handleCancel();
             });
 
-            expect(mockPayPalSession.cancel).toHaveBeenCalled();
+            expect(mockPayPalSession.cancel).not.toHaveBeenCalled();
         });
 
         test("should not throw error when session is not available", () => {
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
@@ -631,7 +609,6 @@ describe("usePayPalGuestPaymentSession", () => {
     describe("handleDestroy", () => {
         test("should provide a destroy handler that destroys the session", () => {
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
@@ -649,7 +626,6 @@ describe("usePayPalGuestPaymentSession", () => {
 
         test("should not throw error when session is not available", () => {
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
@@ -669,7 +645,6 @@ describe("usePayPalGuestPaymentSession", () => {
 
         test("should handle manually destroyed session gracefully", async () => {
             const props: UsePayPalGuestPaymentSessionProps = {
-                presentationMode: "auto",
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
