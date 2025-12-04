@@ -60,10 +60,10 @@ describe("usePayPalGuestPaymentSession", () => {
     });
 
     describe("initialization", () => {
-        test("should error if there is no sdkInstance when called", () => {
+        test("should not create session when no SDK instance is available", () => {
             mockUsePayPal.mockReturnValue({
                 sdkInstance: null,
-                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+                loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
             });
@@ -84,6 +84,71 @@ describe("usePayPalGuestPaymentSession", () => {
             expectCurrentErrorValue(error);
 
             expect(error).toEqual(new Error("no sdk instance available"));
+            expect(
+                mockSdkInstance.createPayPalGuestOneTimePaymentSession,
+            ).not.toHaveBeenCalled();
+        });
+
+        test("should not error if there is no sdkInstance but loading is still pending", () => {
+            mockUsePayPal.mockReturnValue({
+                sdkInstance: null,
+                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+                eligiblePaymentMethods: null,
+                error: null,
+            });
+
+            const props: UsePayPalGuestPaymentSessionProps = {
+                orderId: "test-order-id",
+                onApprove: jest.fn(),
+            };
+
+            const {
+                result: {
+                    current: { error },
+                },
+            } = renderHook(() => usePayPalGuestPaymentSession(props));
+
+            expect(error).toBeNull();
+        });
+
+        test("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
+            const mockSession = createMockPayPalGuestSession();
+            const mockSdkInstanceNew = createMockSdkInstance(mockSession);
+
+            // First render: no sdkInstance and not in PENDING state, should error
+            mockUsePayPal.mockReturnValue({
+                sdkInstance: null,
+                loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
+                eligiblePaymentMethods: null,
+                error: null,
+            });
+
+            const props: UsePayPalGuestPaymentSessionProps = {
+                orderId: "test-order-id",
+                onApprove: jest.fn(),
+            };
+
+            const { result, rerender } = renderHook(() =>
+                usePayPalGuestPaymentSession(props),
+            );
+
+            expectCurrentErrorValue(result.current.error);
+            expect(result.current.error).toEqual(
+                new Error("no sdk instance available"),
+            );
+
+            // Second render: sdkInstance becomes available, error should clear
+            mockUsePayPal.mockReturnValue({
+                // @ts-expect-error mocking sdk instance
+                sdkInstance: mockSdkInstanceNew,
+                loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                eligiblePaymentMethods: null,
+                error: null,
+            });
+
+            rerender();
+
+            expect(result.current.error).toBeNull();
         });
 
         test("should create a BCDC payment session when the hook is called with orderId", () => {
@@ -478,30 +543,7 @@ describe("usePayPalGuestPaymentSession", () => {
             expect(mockCreateOrder).toHaveBeenCalled();
         });
 
-        test("should prevent double clicks with isSessionActiveRef guard", async () => {
-            const props: UsePayPalGuestPaymentSessionProps = {
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-            };
-
-            const { result } = renderHook(() =>
-                usePayPalGuestPaymentSession(props),
-            );
-
-            const firstClick = await act(async () => {
-                await result.current.handleClick();
-            });
-
-            await act(async () => {
-                await result.current.handleClick();
-            });
-
-            await firstClick;
-
-            expect(mockPayPalSession.start).toHaveBeenCalledTimes(1);
-        });
-
-        test("should set error when session is not available", async () => {
+        test("should do nothing if the click handler is called and there is no session", async () => {
             const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
@@ -517,6 +559,11 @@ describe("usePayPalGuestPaymentSession", () => {
                 await result.current.handleClick();
             });
 
+            const { error } = result.current;
+
+            expectCurrentErrorValue(error);
+
+            expect(error).toBeNull();
             expect(mockPayPalSession.start).not.toHaveBeenCalled();
         });
 
