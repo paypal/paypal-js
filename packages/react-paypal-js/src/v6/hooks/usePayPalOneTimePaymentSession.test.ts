@@ -53,10 +53,10 @@ describe("usePayPalOneTimePaymentSession", () => {
     });
 
     describe("initialization", () => {
-        test("should error if there is no sdkInstance when called", () => {
+        test("should not create session when no SDK instance is available", () => {
             mockUsePayPal.mockReturnValue({
                 sdkInstance: null,
-                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+                loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
             });
@@ -78,6 +78,73 @@ describe("usePayPalOneTimePaymentSession", () => {
             expectCurrentErrorValue(error);
 
             expect(error).toEqual(new Error("no sdk instance available"));
+            expect(
+                mockSdkInstance.createPayPalOneTimePaymentSession,
+            ).not.toHaveBeenCalled();
+        });
+
+        test("should not error if there is no sdkInstance but loading is still pending", () => {
+            mockUsePayPal.mockReturnValue({
+                sdkInstance: null,
+                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+                eligiblePaymentMethods: null,
+                error: null,
+            });
+
+            const props: UsePayPalOneTimePaymentSessionProps = {
+                presentationMode: "popup",
+                orderId: "test-order-id",
+                onApprove: jest.fn(),
+            };
+
+            const {
+                result: {
+                    current: { error },
+                },
+            } = renderHook(() => usePayPalOneTimePaymentSession(props));
+
+            expect(error).toBeNull();
+        });
+
+        test("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
+            const mockSession = createMockPayPalSession();
+            const mockSdkInstanceNew = createMockSdkInstance(mockSession);
+
+            // First render: no sdkInstance and not in PENDING state, should error
+            mockUsePayPal.mockReturnValue({
+                sdkInstance: null,
+                loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
+                eligiblePaymentMethods: null,
+                error: null,
+            });
+
+            const props: UsePayPalOneTimePaymentSessionProps = {
+                presentationMode: "popup",
+                orderId: "test-order-id",
+                onApprove: jest.fn(),
+            };
+
+            const { result, rerender } = renderHook(() =>
+                usePayPalOneTimePaymentSession(props),
+            );
+
+            expectCurrentErrorValue(result.current.error);
+            expect(result.current.error).toEqual(
+                new Error("no sdk instance available"),
+            );
+
+            // Second render: sdkInstance becomes available, error should clear
+            mockUsePayPal.mockReturnValue({
+                // @ts-expect-error mocking sdk instance
+                sdkInstance: mockSdkInstanceNew,
+                loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                eligiblePaymentMethods: null,
+                error: null,
+            });
+
+            rerender();
+
+            expect(result.current.error).toBeNull();
         });
 
         test("should create a PayPal payment session when the hook is called with orderId", () => {

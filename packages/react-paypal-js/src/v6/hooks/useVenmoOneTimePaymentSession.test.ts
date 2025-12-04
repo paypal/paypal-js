@@ -59,7 +59,7 @@ describe("useVenmoOneTimePaymentSession", () => {
         test("should not create session when no SDK instance is available", () => {
             mockUsePayPal.mockReturnValue({
                 sdkInstance: null,
-                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+                loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
             });
@@ -81,6 +81,73 @@ describe("useVenmoOneTimePaymentSession", () => {
             expectCurrentErrorValue(error);
 
             expect(error).toEqual(new Error("no sdk instance available"));
+            expect(
+                mockSdkInstance.createVenmoOneTimePaymentSession,
+            ).not.toHaveBeenCalled();
+        });
+
+        test("should not error if there is no sdkInstance but loading is still pending", () => {
+            mockUsePayPal.mockReturnValue({
+                sdkInstance: null,
+                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+                eligiblePaymentMethods: null,
+                error: null,
+            });
+
+            const props: UseVenmoOneTimePaymentSessionProps = {
+                presentationMode: "popup",
+                orderId: "test-order-id",
+                onApprove: jest.fn(),
+            };
+
+            const {
+                result: {
+                    current: { error },
+                },
+            } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+            expect(error).toBeNull();
+        });
+
+        test("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
+            const mockSession = createMockVenmoSession();
+            const mockSdkInstanceNew = createMockSdkInstance(mockSession);
+
+            // First render: no sdkInstance and not in PENDING state, should error
+            mockUsePayPal.mockReturnValue({
+                sdkInstance: null,
+                loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
+                eligiblePaymentMethods: null,
+                error: null,
+            });
+
+            const props: UseVenmoOneTimePaymentSessionProps = {
+                presentationMode: "popup",
+                orderId: "test-order-id",
+                onApprove: jest.fn(),
+            };
+
+            const { result, rerender } = renderHook(() =>
+                useVenmoOneTimePaymentSession(props),
+            );
+
+            expectCurrentErrorValue(result.current.error);
+            expect(result.current.error).toEqual(
+                new Error("no sdk instance available"),
+            );
+
+            // Second render: sdkInstance becomes available, error should clear
+            mockUsePayPal.mockReturnValue({
+                // @ts-expect-error mocking sdk instance
+                sdkInstance: mockSdkInstanceNew,
+                loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                eligiblePaymentMethods: null,
+                error: null,
+            });
+
+            rerender();
+
+            expect(result.current.error).toBeNull();
         });
 
         test("should create Venmo session with orderId when provided", () => {
