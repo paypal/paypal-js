@@ -10,8 +10,6 @@ import type {
     PayPalGuestOneTimePaymentSessionOptions,
     PayPalGuestOneTimePaymentSessionPromise,
     PayPalGuestPresentationModeOptions,
-    OnShippingAddressChangeData,
-    OnShippingOptionsChangeData,
 } from "@paypal/paypal-js/sdk-v6";
 import type { BasePaymentSessionReturn } from "../types";
 
@@ -19,6 +17,10 @@ export interface PayPalGuestPaymentSessionReturn
     extends BasePaymentSessionReturn {
     buttonRef: { current: HTMLElement | null };
 }
+type PayPalGuestPresentationModeHookOptions = Omit<
+    PayPalGuestPresentationModeOptions,
+    "presentationMode"
+>;
 
 export type UsePayPalGuestPaymentSessionProps = (
     | (Omit<PayPalGuestOneTimePaymentSessionOptions, "orderId"> & {
@@ -29,21 +31,10 @@ export type UsePayPalGuestPaymentSessionProps = (
           createOrder?: never;
           orderId: string;
       })
-) & {
-    buyerCountry?: string;
-    targetElement?: string | HTMLElement;
-    presentationMode?: "auto";
-    fullPageOverlay?: boolean;
-    onShippingAddressChange?: (
-        data: OnShippingAddressChangeData,
-    ) => Promise<void>;
-    onShippingOptionsChange?: (
-        data: OnShippingOptionsChangeData,
-    ) => Promise<void>;
-};
+) &
+    PayPalGuestPresentationModeHookOptions;
 
 export function usePayPalGuestPaymentSession({
-    presentationMode = "auto",
     fullPageOverlay,
     createOrder,
     orderId,
@@ -99,7 +90,6 @@ export function usePayPalGuestPaymentSession({
     ]);
 
     const handleCancel = useCallback(() => {
-        sessionRef.current?.cancel();
         isSessionActiveRef.current = false;
     }, []);
 
@@ -121,10 +111,8 @@ export function usePayPalGuestPaymentSession({
         try {
             const target = targetElement || buttonRef.current;
             const startOptions: PayPalGuestPresentationModeOptions = {
-                presentationMode,
-                ...(fullPageOverlay !== undefined && {
-                    fullPageOverlay: { enabled: fullPageOverlay },
-                }),
+                presentationMode: "auto",
+                ...(fullPageOverlay !== undefined && { fullPageOverlay }),
                 ...(target ? { targetElement: target as EventTarget } : {}),
             };
             const checkoutOptionsPromise = createOrder
@@ -140,14 +128,7 @@ export function usePayPalGuestPaymentSession({
                 setError(err instanceof Error ? err : new Error(String(err)));
             }
         }
-    }, [
-        isMountedRef,
-        presentationMode,
-        fullPageOverlay,
-        createOrder,
-        targetElement,
-        setError,
-    ]);
+    }, [isMountedRef, fullPageOverlay, createOrder, targetElement, setError]);
 
     return {
         buttonRef,
