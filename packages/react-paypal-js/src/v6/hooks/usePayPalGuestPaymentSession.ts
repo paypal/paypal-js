@@ -14,7 +14,7 @@ import type {
 } from "@paypal/paypal-js/sdk-v6";
 import type { BasePaymentSessionReturn } from "../types";
 
-export interface PayPalGuestPaymentSessionReturn
+interface PayPalGuestPaymentSessionReturn
     extends Omit<BasePaymentSessionReturn, "handleCancel"> {
     buttonRef: { current: HTMLElement | null };
 }
@@ -101,18 +101,12 @@ export function usePayPalGuestPaymentSession({
         try {
             const startOptions: PayPalGuestPresentationModeOptions = {
                 presentationMode: "auto",
-                ...(fullPageOverlay !== undefined && { fullPageOverlay }),
+                fullPageOverlay,
                 ...(buttonRef.current
                     ? { targetElement: buttonRef.current as EventTarget }
                     : {}),
             };
-            const checkoutOptionsPromise = createOrder
-                ? createOrder()
-                : undefined;
-            await sessionRef.current.start(
-                startOptions,
-                checkoutOptionsPromise,
-            );
+            await sessionRef.current.start(startOptions, createOrder?.());
         } catch (err) {
             if (isMountedRef.current) {
                 setError(err instanceof Error ? err : new Error(String(err)));

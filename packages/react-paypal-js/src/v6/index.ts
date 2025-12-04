@@ -5,9 +5,5 @@ export { usePayLaterOneTimePaymentSession } from "./hooks/usePayLaterOneTimePaym
 export { usePayPalOneTimePaymentSession } from "./hooks/usePayPalOneTimePaymentSession";
 export { usePayPalSavePaymentSession } from "./hooks/usePayPalSavePaymentSession";
 export { useVenmoOneTimePaymentSession } from "./hooks/useVenmoOneTimePaymentSession";
-export {
-    usePayPalGuestPaymentSession,
-    type PayPalGuestPaymentSessionReturn,
-    type UsePayPalGuestPaymentSessionProps,
-} from "./hooks/usePayPalGuestPaymentSession";
+export { usePayPalGuestPaymentSession } from "./hooks/usePayPalGuestPaymentSession";
 export * from "./hooks/useEligibleMethods";

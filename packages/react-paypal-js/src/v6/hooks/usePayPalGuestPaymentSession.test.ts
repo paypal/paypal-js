@@ -459,6 +459,7 @@ describe("usePayPalGuestPaymentSession", () => {
             expect(mockPayPalSession.start).toHaveBeenCalledWith(
                 {
                     presentationMode: "auto",
+                    fullPageOverlay: undefined,
                 },
                 undefined,
             );
@@ -508,6 +509,7 @@ describe("usePayPalGuestPaymentSession", () => {
             expect(mockPayPalSession.start).toHaveBeenCalledWith(
                 {
                     presentationMode: "auto",
+                    fullPageOverlay: undefined,
                     targetElement: mockButton,
                 },
                 undefined,
@@ -537,6 +539,7 @@ describe("usePayPalGuestPaymentSession", () => {
             expect(mockPayPalSession.start).toHaveBeenCalledWith(
                 {
                     presentationMode: "auto",
+                    fullPageOverlay: undefined,
                 },
                 expect.any(Promise),
             );
