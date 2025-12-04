@@ -423,33 +423,7 @@ describe("usePayPalGuestPaymentSession", () => {
             );
         });
 
-        test("should include targetElement in start options when provided", async () => {
-            const mockTargetElement = document.createElement("div");
-
-            const props: UsePayPalGuestPaymentSessionProps = {
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-                targetElement: mockTargetElement,
-            };
-
-            const { result } = renderHook(() =>
-                usePayPalGuestPaymentSession(props),
-            );
-
-            await act(async () => {
-                await result.current.handleClick();
-            });
-
-            expect(mockPayPalSession.start).toHaveBeenCalledWith(
-                {
-                    presentationMode: "auto",
-                    targetElement: mockTargetElement,
-                },
-                undefined,
-            );
-        });
-
-        test("should use buttonRef as targetElement when no targetElement prop provided", async () => {
+        test("should use buttonRef as targetElement when buttonRef is set", async () => {
             const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
@@ -565,44 +539,6 @@ describe("usePayPalGuestPaymentSession", () => {
 
             expectCurrentErrorValue(result.current.error);
             expect(result.current.error).toEqual(mockError);
-        });
-    });
-
-    describe("handleCancel", () => {
-        test("should provide a cancel handler that resets session active state", () => {
-            const props: UsePayPalGuestPaymentSessionProps = {
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-            };
-
-            const { result } = renderHook(() =>
-                usePayPalGuestPaymentSession(props),
-            );
-
-            act(() => {
-                result.current.handleCancel();
-            });
-
-            expect(mockPayPalSession.cancel).not.toHaveBeenCalled();
-        });
-
-        test("should not throw error when session is not available", () => {
-            const props: UsePayPalGuestPaymentSessionProps = {
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-            };
-
-            const { result, unmount } = renderHook(() =>
-                usePayPalGuestPaymentSession(props),
-            );
-
-            unmount();
-
-            expect(() => {
-                act(() => {
-                    result.current.handleCancel();
-                });
-            }).not.toThrow();
         });
     });
 

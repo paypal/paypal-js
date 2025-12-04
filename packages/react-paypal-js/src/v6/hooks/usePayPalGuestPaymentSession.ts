@@ -14,12 +14,12 @@ import type {
 import type { BasePaymentSessionReturn } from "../types";
 
 export interface PayPalGuestPaymentSessionReturn
-    extends BasePaymentSessionReturn {
+    extends Omit<BasePaymentSessionReturn, "handleCancel"> {
     buttonRef: { current: HTMLElement | null };
 }
 type PayPalGuestPresentationModeHookOptions = Omit<
     PayPalGuestPresentationModeOptions,
-    "presentationMode"
+    "presentationMode" | "targetElement"
 >;
 
 export type UsePayPalGuestPaymentSessionProps = (
@@ -38,7 +38,6 @@ export function usePayPalGuestPaymentSession({
     fullPageOverlay,
     createOrder,
     orderId,
-    targetElement,
     onShippingAddressChange,
     onShippingOptionsChange,
     ...callbacks
@@ -78,7 +77,6 @@ export function usePayPalGuestPaymentSession({
 
         return () => {
             newSession.destroy();
-            isSessionActiveRef.current = false;
         };
     }, [
         sdkInstance,
@@ -89,10 +87,6 @@ export function usePayPalGuestPaymentSession({
         isMountedRef,
     ]);
 
-    const handleCancel = useCallback(() => {
-        isSessionActiveRef.current = false;
-    }, []);
-
     const handleClick = useCallback(async () => {
         if (!isMountedRef.current) {
             return;
@@ -102,18 +96,13 @@ export function usePayPalGuestPaymentSession({
             return;
         }
 
-        if (isSessionActiveRef.current) {
-            return;
-        }
-
-        isSessionActiveRef.current = true;
-
         try {
-            const target = targetElement || buttonRef.current;
             const startOptions: PayPalGuestPresentationModeOptions = {
                 presentationMode: "auto",
                 ...(fullPageOverlay !== undefined && { fullPageOverlay }),
-                ...(target ? { targetElement: target as EventTarget } : {}),
+                ...(buttonRef.current
+                    ? { targetElement: buttonRef.current as EventTarget }
+                    : {}),
             };
             const checkoutOptionsPromise = createOrder
                 ? createOrder()
@@ -124,16 +113,14 @@ export function usePayPalGuestPaymentSession({
             );
         } catch (err) {
             if (isMountedRef.current) {
-                isSessionActiveRef.current = false;
                 setError(err instanceof Error ? err : new Error(String(err)));
             }
         }
-    }, [isMountedRef, fullPageOverlay, createOrder, targetElement, setError]);
+    }, [isMountedRef, fullPageOverlay, createOrder, setError]);
 
     return {
         buttonRef,
         error,
-        handleCancel,
         handleClick,
         handleDestroy,
     };
