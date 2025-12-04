@@ -14,8 +14,7 @@ import type {
 } from "@paypal/paypal-js/sdk-v6";
 import type { BasePaymentSessionReturn } from "../types";
 
-interface PayPalGuestPaymentSessionReturn
-    extends Omit<BasePaymentSessionReturn, "handleCancel"> {
+interface PayPalGuestPaymentSessionReturn extends BasePaymentSessionReturn {
     buttonRef: { current: HTMLElement | null };
 }
 type PayPalGuestPresentationModeHookOptions = Omit<
@@ -53,6 +52,10 @@ export function usePayPalGuestPaymentSession({
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
         sessionRef.current = null;
+    }, []);
+
+    const handleCancel = useCallback(() => {
+        sessionRef.current?.cancel();
     }, []);
 
     // Separate error reporting effect to avoid infinite loops with proxyCallbacks
@@ -109,7 +112,7 @@ export function usePayPalGuestPaymentSession({
             await sessionRef.current.start(startOptions, createOrder?.());
         } catch (err) {
             if (isMountedRef.current) {
-                setError(err instanceof Error ? err : new Error(String(err)));
+                setError(err);
             }
         }
     }, [isMountedRef, fullPageOverlay, createOrder, setError]);
@@ -118,6 +121,7 @@ export function usePayPalGuestPaymentSession({
         buttonRef,
         error,
         handleClick,
+        handleCancel,
         handleDestroy,
     };
 }

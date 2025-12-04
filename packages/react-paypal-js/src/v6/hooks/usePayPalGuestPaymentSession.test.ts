@@ -592,6 +592,44 @@ describe("usePayPalGuestPaymentSession", () => {
         });
     });
 
+    describe("handleCancel", () => {
+        test("should provide a cancel handler that cancels the session", () => {
+            const props: UsePayPalGuestPaymentSessionProps = {
+                orderId: "test-order-id",
+                onApprove: jest.fn(),
+            };
+
+            const { result } = renderHook(() =>
+                usePayPalGuestPaymentSession(props),
+            );
+
+            act(() => {
+                result.current.handleCancel();
+            });
+
+            expect(mockPayPalSession.cancel).toHaveBeenCalled();
+        });
+
+        test("should not throw error when session is not available", () => {
+            const props: UsePayPalGuestPaymentSessionProps = {
+                orderId: "test-order-id",
+                onApprove: jest.fn(),
+            };
+
+            const { result, unmount } = renderHook(() =>
+                usePayPalGuestPaymentSession(props),
+            );
+
+            unmount();
+
+            expect(() => {
+                act(() => {
+                    result.current.handleCancel();
+                });
+            }).not.toThrow();
+        });
+    });
+
     describe("handleDestroy", () => {
         test("should provide a destroy handler that destroys the session", () => {
             const props: UsePayPalGuestPaymentSessionProps = {
