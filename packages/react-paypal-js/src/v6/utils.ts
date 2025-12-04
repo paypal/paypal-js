@@ -7,7 +7,7 @@ import type { Components } from "./types";
  * or `document` are not available; `false` otherwise.
  */
 export function isServer(): boolean {
-    return typeof window === "undefined" && typeof document === "undefined";
+    return typeof window === "undefined";
 }
 
 /**
