@@ -40,7 +40,16 @@ type PayPalProviderProps = Omit<
 
 /**
  * {@link PayPalProvider} creates the SDK script, component scripts, runs eligibility, then
- * provides these in {@link PayPalContext} to child components via the {@link usePayPal} hook.
+ * provides these in context to child components via the {@link usePayPal} hook.
+ *
+ * @example
+ * <PayPalProvider
+ *   clientToken={clientToken}
+ *   components={["paypal-payments", "venmo-payments"]}
+ *   pageType="checkout"
+ *  >
+ *      // payment buttons
+ * </PayPalProvider>
  */
 export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     clientMetadataId,
