@@ -40,7 +40,9 @@ export const VenmoOneTimePaymentButton = ({
         }
     }, [error]);
 
-    return isServerSide ? null : (
+    return isServerSide ? (
+        <div />
+    ) : (
         <venmo-button
             onClick={handleClick}
             type={type}

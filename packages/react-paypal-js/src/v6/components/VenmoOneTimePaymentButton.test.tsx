@@ -38,7 +38,7 @@ describe("VenmoOneTimePaymentButton", () => {
         expect(container.querySelector("venmo-button")).toBeInTheDocument();
     });
 
-    it("should return null when on server side", () => {
+    it("should render a div when on server side", () => {
         mockIsServer.mockReturnValue(true);
         const { container } = render(
             <VenmoOneTimePaymentButton
@@ -48,6 +48,7 @@ describe("VenmoOneTimePaymentButton", () => {
             />,
         );
         expect(container.querySelector("venmo-button")).not.toBeInTheDocument();
+        expect(container.querySelector("div")).toBeInTheDocument();
     });
 
     it("should call handleClick when button is clicked", () => {
