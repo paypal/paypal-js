@@ -12,6 +12,7 @@ declare module "react" {
     namespace JSX {
         interface IntrinsicElements {
             "paypal-button": IntrinsicButtonProps;
+            "venmo-button": IntrinsicButtonProps;
         }
     }
 }
