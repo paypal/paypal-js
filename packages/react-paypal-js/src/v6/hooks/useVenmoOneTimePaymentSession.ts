@@ -29,7 +29,6 @@ export type UseVenmoOneTimePaymentSessionProps = (
 export function useVenmoOneTimePaymentSession({
     presentationMode,
     fullPageOverlay,
-    autoRedirect,
     createOrder,
     orderId,
     ...callbacks
@@ -85,7 +84,6 @@ export function useVenmoOneTimePaymentSession({
         const startOptions = {
             presentationMode,
             fullPageOverlay,
-            autoRedirect,
         } as VenmoPresentationModeOptions;
 
         await sessionRef.current.start(startOptions, createOrder?.());
@@ -93,7 +91,6 @@ export function useVenmoOneTimePaymentSession({
         isMountedRef,
         presentationMode,
         fullPageOverlay,
-        autoRedirect,
         createOrder,
         setError,
     ]);
