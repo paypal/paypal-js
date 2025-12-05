@@ -293,6 +293,9 @@ describe("CardFieldsProvider", () => {
             expect(result.current.cardFieldsSession).toBe(
                 newMockCardFieldsOneTimePaymentSession,
             );
+            expect(result.current.cardFieldsSession).not.toBe(
+                mockCardFieldsOneTimePaymentSession,
+            );
         });
 
         test("should update the session when the provider re-runs with a new sessionType", () => {
