@@ -63,11 +63,17 @@ export const CardFieldsProvider = ({
         setCardFieldsError(null);
 
         // Create Card Fields session based on sessionType
-        setCardFieldsSession(
-            sessionType === "one-time-payment"
-                ? sdkInstance.createCardFieldsOneTimePaymentSession()
-                : sdkInstance.createCardFieldsSavePaymentSession(),
-        );
+        try {
+            setCardFieldsSession(
+                sessionType === "one-time-payment"
+                    ? sdkInstance.createCardFieldsOneTimePaymentSession()
+                    : sdkInstance.createCardFieldsSavePaymentSession(),
+            );
+        } catch (error) {
+            const errorMsg = toError(error);
+            setError(errorMsg);
+            setCardFieldsError(errorMsg);
+        }
 
         return () => {
             setCardFieldsSession(null);
