@@ -171,6 +171,26 @@ describe("CardFieldsProvider", () => {
             expect(result.current.cardFieldsError).toBeNull();
             expectCurrentErrorValue(null);
         });
+
+        test("should handle errors when creating the session", () => {
+            const errorMessage = "Failed to create session";
+
+            mockSdkInstance.createCardFieldsOneTimePaymentSession.mockImplementationOnce(
+                () => {
+                    throw new Error(errorMessage);
+                },
+            );
+
+            const { result } = renderCardFieldsProvider({
+                sessionType: oneTimePaymentSessionType,
+            });
+
+            expect(result.current.cardFieldsSession).toBeNull();
+            expect(result.current.cardFieldsError).toEqual(
+                toError(errorMessage),
+            );
+            expectCurrentErrorValue(result.current.cardFieldsError);
+        });
     });
 
     describe("sessionType", () => {
