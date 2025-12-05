@@ -1,4 +1,11 @@
-import React, { JSX, ReactNode, useEffect, useMemo, useState } from "react";
+import React, {
+    JSX,
+    ReactNode,
+    useCallback,
+    useEffect,
+    useMemo,
+    useState,
+} from "react";
 
 import { usePayPal } from "../hooks/usePayPal";
 import {
@@ -44,25 +51,29 @@ export const CardFieldsProvider = ({
     // The actual error instance is stored in the provider's state.
     const [, setError] = useError();
 
+    const handleError = useCallback(
+        (error: Error | null) => {
+            setError(error);
+            setCardFieldsError(error);
+        },
+        [setError],
+    );
+
+    // Effect for reporting sdkInstance availability errors
     useEffect(() => {
-        // Early return: Still loading, wait for sdkInstance
-        if (loadingStatus === INSTANCE_LOADING_STATE.PENDING) {
-            return;
+        if (sdkInstance) {
+            handleError(null);
+        } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
+            handleError(toError("no sdk instance available"));
         }
+    }, [sdkInstance, loadingStatus, handleError]);
 
-        // Error case: Loading finished but no sdkInstance
+    // Effect for creating Card Fields session based on sessionType
+    useEffect(() => {
         if (!sdkInstance) {
-            const errorMsg = toError("no sdk instance available");
-            setError(errorMsg);
-            setCardFieldsError(errorMsg);
             return;
         }
 
-        // Clear previous sdkInstance loading errors
-        setError(null);
-        setCardFieldsError(null);
-
-        // Create Card Fields session based on sessionType
         try {
             const newCardFieldsSession =
                 sessionType === "one-time-payment"
@@ -70,16 +81,15 @@ export const CardFieldsProvider = ({
                     : sdkInstance.createCardFieldsSavePaymentSession();
 
             setCardFieldsSession(newCardFieldsSession);
+            handleError(null);
         } catch (error) {
-            const errorMsg = toError(error);
-            setError(errorMsg);
-            setCardFieldsError(errorMsg);
+            handleError(toError(error));
         }
 
         return () => {
             setCardFieldsSession(null);
         };
-    }, [sdkInstance, loadingStatus, sessionType, setError]);
+    }, [sdkInstance, sessionType, handleError]);
 
     const contextValue: CardFieldsState = useMemo(
         () => ({
