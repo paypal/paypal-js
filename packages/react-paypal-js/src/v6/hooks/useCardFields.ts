@@ -1,6 +1,6 @@
-import { CardFieldsContext } from "../context/CardFieldsContext";
-
 import { useContext } from "react";
+
+import { CardFieldsContext } from "../context/CardFieldsContext";
 
 import type { CardFieldsProvider } from "../components/CardFieldsProvider";
 import type { CardFieldsState } from "../context/CardFieldsContext";

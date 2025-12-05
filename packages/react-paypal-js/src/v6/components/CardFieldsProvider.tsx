@@ -1,4 +1,5 @@
 import React, { JSX, ReactNode, useEffect, useMemo, useState } from "react";
+
 import { usePayPal } from "../hooks/usePayPal";
 import {
     CardFieldsOneTimePaymentSession,
@@ -71,7 +72,7 @@ export const CardFieldsProvider = ({
         return () => {
             setCardFieldsSession(null);
         };
-    }, [sdkInstance, loadingStatus, sessionType]);
+    }, [sdkInstance, loadingStatus, sessionType, setError]);
 
     const contextValue: CardFieldsState = useMemo(
         () => ({

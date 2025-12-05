@@ -1,16 +1,17 @@
-import { usePayPal } from "../hooks/usePayPal";
 import React from "react";
-import { INSTANCE_LOADING_STATE } from "../types";
+import { renderHook } from "@testing-library/react-hooks";
 
+import { usePayPal } from "../hooks/usePayPal";
+import { INSTANCE_LOADING_STATE } from "../types";
 import { expectCurrentErrorValue } from "../hooks/useErrorTestUtil";
+import { CardFieldsProvider, sessionType } from "./CardFieldsProvider";
+import { useCardFields } from "../hooks/useCardFields";
+import { toError } from "../utils";
+
 import type {
     CardFieldsOneTimePaymentSession,
     CardFieldsSavePaymentSession,
 } from "../types";
-import { CardFieldsProvider, sessionType } from "./CardFieldsProvider";
-import { renderHook } from "@testing-library/react-hooks";
-import { useCardFields } from "../hooks/useCardFields";
-import { toError } from "../utils";
 
 jest.mock("../hooks/usePayPal");
 

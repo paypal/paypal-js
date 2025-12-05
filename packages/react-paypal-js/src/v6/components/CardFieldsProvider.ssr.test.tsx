@@ -3,6 +3,7 @@
  */
 
 import React from "react";
+import { renderToString } from "react-dom/server";
 
 import { usePayPal } from "../hooks/usePayPal";
 import { CardFieldsState } from "../context/CardFieldsContext";
@@ -10,7 +11,6 @@ import { useCardFields } from "../hooks/useCardFields";
 import { INSTANCE_LOADING_STATE } from "../types";
 import { isServer } from "../utils";
 import { CardFieldsProvider, sessionType } from "./CardFieldsProvider";
-import { renderToString } from "react-dom/server";
 
 jest.mock("../hooks/usePayPal");
 
