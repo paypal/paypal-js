@@ -59,21 +59,22 @@ export const CardFieldsProvider = ({
         [setError],
     );
 
-    // Effect for reporting sdkInstance availability errors
     useEffect(() => {
-        if (sdkInstance) {
-            handleError(null);
-        } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
-            handleError(toError("no sdk instance available"));
-        }
-    }, [sdkInstance, loadingStatus, handleError]);
-
-    // Effect for creating Card Fields session based on sessionType
-    useEffect(() => {
-        if (!sdkInstance) {
+        // Early return: Still loading, wait for sdkInstance
+        if (loadingStatus === INSTANCE_LOADING_STATE.PENDING) {
             return;
         }
 
+        // Error case: Loading finished but no sdkInstance
+        if (!sdkInstance) {
+            handleError(toError("no sdk instance available"));
+            return;
+        }
+
+        // Clear previous sdkInstance loading errors
+        handleError(null);
+
+        // Create Card Fields session based on sessionType
         try {
             const newCardFieldsSession =
                 sessionType === "one-time-payment"
@@ -81,7 +82,6 @@ export const CardFieldsProvider = ({
                     : sdkInstance.createCardFieldsSavePaymentSession();
 
             setCardFieldsSession(newCardFieldsSession);
-            handleError(null);
         } catch (error) {
             handleError(toError(error));
         }
@@ -89,7 +89,7 @@ export const CardFieldsProvider = ({
         return () => {
             setCardFieldsSession(null);
         };
-    }, [sdkInstance, sessionType, handleError]);
+    }, [sdkInstance, loadingStatus, sessionType, handleError]);
 
     const contextValue: CardFieldsState = useMemo(
         () => ({
