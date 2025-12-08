@@ -39,4 +39,20 @@ describe("useError", () => {
         expect(mockConsoleError).not.toHaveBeenCalled();
         expect(result.current[0]).toBe(mockError);
     });
+
+    test("should not call console.error if there is no error", () => {
+        const mockError = null;
+
+        const mockConsoleError = jest.fn();
+        jest.spyOn(console, "error").mockImplementation(mockConsoleError);
+
+        const { result } = renderHook(() => useError());
+
+        act(() => {
+            result.current[1](mockError);
+        });
+
+        expect(mockConsoleError).not.toHaveBeenCalled();
+        expect(result.current[0]).toBe(mockError);
+    });
 });

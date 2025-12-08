@@ -4,6 +4,7 @@ import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
 import { useError } from "./useError";
 import { useProxyProps } from "../utils";
+import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 
 import type {
     SavePaymentSession,
@@ -32,7 +33,7 @@ export function usePayPalSavePaymentSession({
     vaultSetupToken,
     ...callbacks
 }: PayPalSavePaymentSessionProps): BasePaymentSessionReturn {
-    const { sdkInstance } = usePayPal();
+    const { sdkInstance, loadingStatus } = usePayPal();
     const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<SavePaymentSession | null>(null); // handle cleanup
     const proxyCallbacks = useProxyProps(callbacks);
@@ -45,10 +46,12 @@ export function usePayPalSavePaymentSession({
 
     // Separate error reporting effect to avoid infinite loops with proxyCallbacks
     useEffect(() => {
-        if (!sdkInstance) {
+        if (sdkInstance) {
+            setError(null);
+        } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
             setError(new Error("no sdk instance available"));
         }
-    }, [sdkInstance, setError]);
+    }, [sdkInstance, setError, loadingStatus]);
 
     useEffect(() => {
         if (!sdkInstance) {

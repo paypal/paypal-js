@@ -11,3 +11,5 @@ node_modules
 /playwright/.cache/
 .idea
 .rollup.cache
+
+.vscode

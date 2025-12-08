@@ -1,12 +1,15 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 
 import { expectCurrentErrorValue } from "./useErrorTestUtil";
-import { usePayPalOneTimePaymentSession } from "./usePayPalOneTimePaymentSession";
+import { usePayPalGuestPaymentSession } from "./usePayPalGuestPaymentSession";
 import { usePayPal } from "./usePayPal";
 import { useProxyProps } from "../utils";
-import { INSTANCE_LOADING_STATE, type OneTimePaymentSession } from "../types";
+import {
+    INSTANCE_LOADING_STATE,
+    type PayPalGuestOneTimePaymentSession,
+} from "../types";
 
-import type { UsePayPalOneTimePaymentSessionProps } from "./usePayPalOneTimePaymentSession";
+import type { UsePayPalGuestPaymentSessionProps } from "./usePayPalGuestPaymentSession";
 
 jest.mock("./usePayPal");
 
@@ -19,24 +22,28 @@ const mockUseProxyProps = useProxyProps as jest.MockedFunction<
     typeof useProxyProps
 >;
 
-const createMockPayPalSession = (): OneTimePaymentSession => ({
+const createMockPayPalGuestSession = (): PayPalGuestOneTimePaymentSession => ({
     start: jest.fn().mockResolvedValue(undefined),
     cancel: jest.fn(),
     destroy: jest.fn(),
 });
 
-const createMockSdkInstance = (paypalSession = createMockPayPalSession()) => ({
-    createPayPalOneTimePaymentSession: jest.fn().mockReturnValue(paypalSession),
+const createMockSdkInstance = (
+    paypalSession = createMockPayPalGuestSession(),
+) => ({
+    createPayPalGuestOneTimePaymentSession: jest
+        .fn()
+        .mockReturnValue(paypalSession),
 });
 
-describe("usePayPalOneTimePaymentSession", () => {
-    let mockPayPalSession: OneTimePaymentSession;
+describe("usePayPalGuestPaymentSession", () => {
+    let mockPayPalSession: PayPalGuestOneTimePaymentSession;
     let mockSdkInstance: ReturnType<typeof createMockSdkInstance>;
 
     beforeEach(() => {
         mockUseProxyProps.mockImplementation((callbacks) => callbacks);
 
-        mockPayPalSession = createMockPayPalSession();
+        mockPayPalSession = createMockPayPalGuestSession();
         mockSdkInstance = createMockSdkInstance(mockPayPalSession);
 
         mockUsePayPal.mockReturnValue({
@@ -61,8 +68,7 @@ describe("usePayPalOneTimePaymentSession", () => {
                 error: null,
             });
 
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
                 onCancel: jest.fn(),
@@ -73,13 +79,13 @@ describe("usePayPalOneTimePaymentSession", () => {
                 result: {
                     current: { error },
                 },
-            } = renderHook(() => usePayPalOneTimePaymentSession(props));
+            } = renderHook(() => usePayPalGuestPaymentSession(props));
 
             expectCurrentErrorValue(error);
 
             expect(error).toEqual(new Error("no sdk instance available"));
             expect(
-                mockSdkInstance.createPayPalOneTimePaymentSession,
+                mockSdkInstance.createPayPalGuestOneTimePaymentSession,
             ).not.toHaveBeenCalled();
         });
 
@@ -91,8 +97,7 @@ describe("usePayPalOneTimePaymentSession", () => {
                 error: null,
             });
 
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
@@ -101,13 +106,13 @@ describe("usePayPalOneTimePaymentSession", () => {
                 result: {
                     current: { error },
                 },
-            } = renderHook(() => usePayPalOneTimePaymentSession(props));
+            } = renderHook(() => usePayPalGuestPaymentSession(props));
 
             expect(error).toBeNull();
         });
 
         test("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
-            const mockSession = createMockPayPalSession();
+            const mockSession = createMockPayPalGuestSession();
             const mockSdkInstanceNew = createMockSdkInstance(mockSession);
 
             // First render: no sdkInstance and not in PENDING state, should error
@@ -118,14 +123,13 @@ describe("usePayPalOneTimePaymentSession", () => {
                 error: null,
             });
 
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
             };
 
             const { result, rerender } = renderHook(() =>
-                usePayPalOneTimePaymentSession(props),
+                usePayPalGuestPaymentSession(props),
             );
 
             expectCurrentErrorValue(result.current.error);
@@ -147,27 +151,26 @@ describe("usePayPalOneTimePaymentSession", () => {
             expect(result.current.error).toBeNull();
         });
 
-        test("should create a PayPal payment session when the hook is called with orderId", () => {
+        test("should create a BCDC payment session when the hook is called with orderId", () => {
             const onApprove = jest.fn();
             const onCancel = jest.fn();
             const onError = jest.fn();
 
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove,
                 onCancel,
                 onError,
             };
 
-            renderHook(() => usePayPalOneTimePaymentSession(props));
+            renderHook(() => usePayPalGuestPaymentSession(props));
 
             const createSessionCall =
-                mockSdkInstance.createPayPalOneTimePaymentSession.mock
+                mockSdkInstance.createPayPalGuestOneTimePaymentSession.mock
                     .calls[0][0];
 
             expect(
-                mockSdkInstance.createPayPalOneTimePaymentSession,
+                mockSdkInstance.createPayPalGuestOneTimePaymentSession,
             ).toHaveBeenCalledWith({
                 orderId: "test-order-id",
                 onApprove,
@@ -185,7 +188,7 @@ describe("usePayPalOneTimePaymentSession", () => {
             expect(onError).toHaveBeenCalledWith(new Error("test error"));
         });
 
-        test("should create a PayPal payment session without orderId when createOrder callback is provided", () => {
+        test("should create a BCDC payment session without orderId when createOrder callback is provided", () => {
             const mockCreateOrder = jest
                 .fn()
                 .mockReturnValue(
@@ -195,22 +198,21 @@ describe("usePayPalOneTimePaymentSession", () => {
             const onCancel = jest.fn();
             const onError = jest.fn();
 
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 createOrder: mockCreateOrder,
                 onApprove,
                 onCancel,
                 onError,
             };
 
-            renderHook(() => usePayPalOneTimePaymentSession(props));
+            renderHook(() => usePayPalGuestPaymentSession(props));
 
             const createSessionCall =
-                mockSdkInstance.createPayPalOneTimePaymentSession.mock
+                mockSdkInstance.createPayPalGuestOneTimePaymentSession.mock
                     .calls[0][0];
 
             expect(
-                mockSdkInstance.createPayPalOneTimePaymentSession,
+                mockSdkInstance.createPayPalGuestOneTimePaymentSession,
             ).toHaveBeenCalledWith({
                 orderId: undefined,
                 onApprove,
@@ -218,7 +220,7 @@ describe("usePayPalOneTimePaymentSession", () => {
                 onError,
             });
 
-            const mockData = { test: "data" };
+            const mockData = { orderId: "created-order-id" };
             createSessionCall.onApprove(mockData);
             createSessionCall.onCancel();
             createSessionCall.onError(new Error("test error"));
@@ -227,20 +229,73 @@ describe("usePayPalOneTimePaymentSession", () => {
             expect(onCancel).toHaveBeenCalled();
             expect(onError).toHaveBeenCalledWith(new Error("test error"));
         });
+
+        test("should create session with shipping callbacks when provided", () => {
+            const onShippingAddressChange = jest.fn();
+            const onShippingOptionsChange = jest.fn();
+            const onApprove = jest.fn();
+
+            const props: UsePayPalGuestPaymentSessionProps = {
+                orderId: "test-order-id",
+                onApprove,
+                onShippingAddressChange,
+                onShippingOptionsChange,
+            };
+
+            renderHook(() => usePayPalGuestPaymentSession(props));
+
+            expect(
+                mockSdkInstance.createPayPalGuestOneTimePaymentSession,
+            ).toHaveBeenCalledWith({
+                orderId: "test-order-id",
+                onApprove,
+                onShippingAddressChange,
+                onShippingOptionsChange,
+            });
+        });
+
+        test("should not include shipping callbacks when not provided", () => {
+            const onApprove = jest.fn();
+
+            const props: UsePayPalGuestPaymentSessionProps = {
+                orderId: "test-order-id",
+                onApprove,
+            };
+
+            renderHook(() => usePayPalGuestPaymentSession(props));
+
+            expect(
+                mockSdkInstance.createPayPalGuestOneTimePaymentSession,
+            ).toHaveBeenCalledWith({
+                orderId: "test-order-id",
+                onApprove,
+            });
+        });
+
+        test("should return buttonRef in the hook result", () => {
+            const props: UsePayPalGuestPaymentSessionProps = {
+                orderId: "test-order-id",
+                onApprove: jest.fn(),
+            };
+
+            const { result } = renderHook(() =>
+                usePayPalGuestPaymentSession(props),
+            );
+
+            expect(result.current.buttonRef).toBeDefined();
+            expect(result.current.buttonRef.current).toBeNull();
+        });
     });
 
     describe("session lifecycle", () => {
         test("should destroy session on unmount", () => {
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
             };
 
             const { unmount } = renderHook(() =>
-                usePayPalOneTimePaymentSession(props),
+                usePayPalGuestPaymentSession(props),
             );
 
             unmount();
@@ -250,16 +305,11 @@ describe("usePayPalOneTimePaymentSession", () => {
 
         test("should destroy the previous session when the hook re-runs with a new orderId", () => {
             const onApprove = jest.fn();
-            const onCancel = jest.fn();
-            const onError = jest.fn();
             const { rerender } = renderHook(
                 ({ orderId }) =>
-                    usePayPalOneTimePaymentSession({
-                        presentationMode: "popup",
+                    usePayPalGuestPaymentSession({
                         orderId,
                         onApprove,
-                        onCancel,
-                        onError,
                     }),
                 { initialProps: { orderId: "test-order-id-1" } },
             );
@@ -270,31 +320,26 @@ describe("usePayPalOneTimePaymentSession", () => {
 
             expect(mockPayPalSession.destroy).toHaveBeenCalled();
             expect(
-                mockSdkInstance.createPayPalOneTimePaymentSession,
+                mockSdkInstance.createPayPalGuestOneTimePaymentSession,
             ).toHaveBeenCalledWith({
                 orderId: "test-order-id-2",
                 onApprove,
-                onCancel,
-                onError,
             });
         });
 
         test("should destroy the previous session when the hook re-runs with a new sdkInstance", () => {
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
             };
 
             const { rerender } = renderHook(() =>
-                usePayPalOneTimePaymentSession(props),
+                usePayPalGuestPaymentSession(props),
             );
 
             jest.clearAllMocks();
 
-            const newMockSession = createMockPayPalSession();
+            const newMockSession = createMockPayPalGuestSession();
             const newMockSdkInstance = createMockSdkInstance(newMockSession);
 
             mockUsePayPal.mockReturnValue({
@@ -309,11 +354,66 @@ describe("usePayPalOneTimePaymentSession", () => {
 
             expect(mockPayPalSession.destroy).toHaveBeenCalled();
             expect(
-                newMockSdkInstance.createPayPalOneTimePaymentSession,
+                newMockSdkInstance.createPayPalGuestOneTimePaymentSession,
             ).toHaveBeenCalled();
         });
 
-        test("should not re-run if callbacks are updated", () => {
+        test("should recreate session when shipping callbacks are added", () => {
+            const onApprove = jest.fn();
+            const onShippingAddressChange = jest.fn();
+
+            const { rerender } = renderHook(
+                ({ hasShipping }) =>
+                    usePayPalGuestPaymentSession({
+                        orderId: "test-order-id",
+                        onApprove,
+                        ...(hasShipping ? { onShippingAddressChange } : {}),
+                    }),
+                { initialProps: { hasShipping: false } },
+            );
+
+            jest.clearAllMocks();
+
+            rerender({ hasShipping: true });
+
+            expect(mockPayPalSession.destroy).toHaveBeenCalled();
+            expect(
+                mockSdkInstance.createPayPalGuestOneTimePaymentSession,
+            ).toHaveBeenCalledWith({
+                orderId: "test-order-id",
+                onApprove,
+                onShippingAddressChange,
+            });
+        });
+
+        test("should recreate session when shipping callbacks are removed", () => {
+            const onApprove = jest.fn();
+            const onShippingAddressChange = jest.fn();
+
+            const { rerender } = renderHook(
+                ({ hasShipping }) =>
+                    usePayPalGuestPaymentSession({
+                        orderId: "test-order-id",
+                        onApprove,
+                        ...(hasShipping ? { onShippingAddressChange } : {}),
+                    }),
+                { initialProps: { hasShipping: true } },
+            );
+
+            jest.clearAllMocks();
+
+            rerender({ hasShipping: false });
+
+            expect(mockPayPalSession.destroy).toHaveBeenCalled();
+            expect(
+                mockSdkInstance.createPayPalGuestOneTimePaymentSession,
+            ).toHaveBeenCalledWith({
+                orderId: "test-order-id",
+                onApprove,
+            });
+        });
+
+        test("should not re-run if non-shipping callbacks are updated", () => {
             mockUseProxyProps.mockImplementation(
                 jest.requireActual("../utils").useProxyProps,
             );
@@ -323,8 +423,7 @@ describe("usePayPalOneTimePaymentSession", () => {
 
             const { rerender } = renderHook(
                 ({ onApprove }) =>
-                    usePayPalOneTimePaymentSession({
-                        presentationMode: "popup",
+                    usePayPalGuestPaymentSession({
                         orderId: "test-order-id",
                         onApprove,
                     }),
@@ -337,23 +436,20 @@ describe("usePayPalOneTimePaymentSession", () => {
 
             expect(mockPayPalSession.destroy).not.toHaveBeenCalled();
             expect(
-                mockSdkInstance.createPayPalOneTimePaymentSession,
+                mockSdkInstance.createPayPalGuestOneTimePaymentSession,
             ).not.toHaveBeenCalled();
         });
     });
 
     describe("handleClick", () => {
-        test("should provide a click handler that calls session start with presentation mode", async () => {
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+        test("should provide a click handler that calls session start with auto presentation mode", async () => {
+            const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
             };
 
             const { result } = renderHook(() =>
-                usePayPalOneTimePaymentSession(props),
+                usePayPalGuestPaymentSession(props),
             );
 
             await act(async () => {
@@ -362,9 +458,59 @@ describe("usePayPalOneTimePaymentSession", () => {
 
             expect(mockPayPalSession.start).toHaveBeenCalledWith(
                 {
-                    presentationMode: "popup",
+                    presentationMode: "auto",
                     fullPageOverlay: undefined,
-                    autoRedirect: undefined,
+                },
+                undefined,
+            );
+        });
+
+        test("should include fullPageOverlay in start options when provided", async () => {
+            const props: UsePayPalGuestPaymentSessionProps = {
+                orderId: "test-order-id",
+                onApprove: jest.fn(),
+                fullPageOverlay: { enabled: true },
+            };
+
+            const { result } = renderHook(() =>
+                usePayPalGuestPaymentSession(props),
+            );
+
+            await act(async () => {
+                await result.current.handleClick();
+            });
+
+            expect(mockPayPalSession.start).toHaveBeenCalledWith(
+                {
+                    presentationMode: "auto",
+                    fullPageOverlay: { enabled: true },
+                },
+                undefined,
+            );
+        });
+
+        test("should use buttonRef as targetElement when buttonRef is set", async () => {
+            const props: UsePayPalGuestPaymentSessionProps = {
+                orderId: "test-order-id",
+                onApprove: jest.fn(),
+            };
+
+            const { result } = renderHook(() =>
+                usePayPalGuestPaymentSession(props),
+            );
+
+            const mockButton = document.createElement("button");
+            result.current.buttonRef.current = mockButton;
+
+            await act(async () => {
+                await result.current.handleClick();
+            });
+
+            expect(mockPayPalSession.start).toHaveBeenCalledWith(
+                {
+                    presentationMode: "auto",
+                    fullPageOverlay: undefined,
+                    targetElement: mockButton,
                 },
                 undefined,
             );
@@ -377,16 +523,13 @@ describe("usePayPalOneTimePaymentSession", () => {
                     Promise.resolve({ orderId: "created-order-id" }),
                 );
 
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 createOrder: mockCreateOrder,
                 onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
             };
 
             const { result } = renderHook(() =>
-                usePayPalOneTimePaymentSession(props),
+                usePayPalGuestPaymentSession(props),
             );
 
             await act(async () => {
@@ -395,9 +538,8 @@ describe("usePayPalOneTimePaymentSession", () => {
 
             expect(mockPayPalSession.start).toHaveBeenCalledWith(
                 {
-                    presentationMode: "popup",
+                    presentationMode: "auto",
                     fullPageOverlay: undefined,
-                    autoRedirect: undefined,
                 },
                 expect.any(Promise),
             );
@@ -405,16 +547,13 @@ describe("usePayPalOneTimePaymentSession", () => {
         });
 
         test("should do nothing if the click handler is called and there is no session", async () => {
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
             };
 
             const { result, unmount } = renderHook(() =>
-                usePayPalOneTimePaymentSession(props),
+                usePayPalGuestPaymentSession(props),
             );
 
             unmount();
@@ -431,61 +570,37 @@ describe("usePayPalOneTimePaymentSession", () => {
             expect(mockPayPalSession.start).not.toHaveBeenCalled();
         });
 
-        test("should handle different presentation modes", async () => {
-            const presentationModes = ["auto", "popup", "modal"] as const;
+        test("should handle errors from session.start()", async () => {
+            const mockError = new Error("Session start failed");
+            mockPayPalSession.start = jest.fn().mockRejectedValue(mockError);
 
-            for (const mode of presentationModes) {
-                const props: UsePayPalOneTimePaymentSessionProps = {
-                    presentationMode: mode,
-                    orderId: "test-order-id",
-                    onApprove: jest.fn(),
-                    onCancel: jest.fn(),
-                    onError: jest.fn(),
-                };
+            const props: UsePayPalGuestPaymentSessionProps = {
+                orderId: "test-order-id",
+                onApprove: jest.fn(),
+            };
 
-                const { result } = renderHook(() =>
-                    usePayPalOneTimePaymentSession(props),
-                );
+            const { result } = renderHook(() =>
+                usePayPalGuestPaymentSession(props),
+            );
 
-                await act(async () => {
-                    await result.current.handleClick();
-                });
+            await act(async () => {
+                await result.current.handleClick();
+            });
 
-                expect(mockPayPalSession.start).toHaveBeenCalledWith(
-                    {
-                        presentationMode: mode,
-                        fullPageOverlay: undefined,
-                        autoRedirect: undefined,
-                    },
-                    undefined,
-                );
-
-                jest.clearAllMocks();
-                mockPayPalSession = createMockPayPalSession();
-                mockSdkInstance = createMockSdkInstance(mockPayPalSession);
-                mockUsePayPal.mockReturnValue({
-                    // @ts-expect-error mocking sdk instance
-                    sdkInstance: mockSdkInstance,
-                    loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
-                    eligiblePaymentMethods: null,
-                    error: null,
-                });
-            }
+            expectCurrentErrorValue(result.current.error);
+            expect(result.current.error).toEqual(mockError);
         });
     });
 
     describe("handleCancel", () => {
         test("should provide a cancel handler that cancels the session", () => {
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
             };
 
             const { result } = renderHook(() =>
-                usePayPalOneTimePaymentSession(props),
+                usePayPalGuestPaymentSession(props),
             );
 
             act(() => {
@@ -496,16 +611,13 @@ describe("usePayPalOneTimePaymentSession", () => {
         });
 
         test("should not throw error when session is not available", () => {
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
             };
 
             const { result, unmount } = renderHook(() =>
-                usePayPalOneTimePaymentSession(props),
+                usePayPalGuestPaymentSession(props),
             );
 
             unmount();
@@ -520,16 +632,13 @@ describe("usePayPalOneTimePaymentSession", () => {
 
     describe("handleDestroy", () => {
         test("should provide a destroy handler that destroys the session", () => {
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
             };
 
             const { result } = renderHook(() =>
-                usePayPalOneTimePaymentSession(props),
+                usePayPalGuestPaymentSession(props),
             );
 
             act(() => {
@@ -540,16 +649,13 @@ describe("usePayPalOneTimePaymentSession", () => {
         });
 
         test("should not throw error when session is not available", () => {
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
             };
 
             const { result, unmount } = renderHook(() =>
-                usePayPalOneTimePaymentSession(props),
+                usePayPalGuestPaymentSession(props),
             );
 
             unmount();
@@ -562,16 +668,13 @@ describe("usePayPalOneTimePaymentSession", () => {
         });
 
         test("should handle manually destroyed session gracefully", async () => {
-            const props: UsePayPalOneTimePaymentSessionProps = {
-                presentationMode: "popup",
+            const props: UsePayPalGuestPaymentSessionProps = {
                 orderId: "test-order-id",
                 onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
             };
 
             const { result } = renderHook(() =>
-                usePayPalOneTimePaymentSession(props),
+                usePayPalGuestPaymentSession(props),
             );
 
             act(() => {
@@ -582,11 +685,10 @@ describe("usePayPalOneTimePaymentSession", () => {
                 await result.current.handleClick();
             });
 
-            const { error } = result.current;
-
-            expectCurrentErrorValue(error);
-
-            expect(error).toEqual(new Error("PayPal session not available"));
+            expectCurrentErrorValue(result.current.error);
+            expect(result.current.error).toEqual(
+                new Error("PayPal Guest Checkout session not available"),
+            );
         });
     });
 });

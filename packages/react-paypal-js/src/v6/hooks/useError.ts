@@ -19,7 +19,7 @@ export function useError(
         (newError) => {
             setErrorInternal(newError);
 
-            if (!noConsoleErrors) {
+            if (!noConsoleErrors && newError) {
                 console.error(newError);
             }
         },

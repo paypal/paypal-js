@@ -27,10 +27,12 @@ import type {
 import type { PayPalState } from "../context/PayPalProviderContext";
 import type { usePayPal } from "../hooks/usePayPal";
 
-type PayPalProviderProps = CreateInstanceOptions<
-    readonly [Components, ...Components[]]
+type PayPalProviderProps = Omit<
+    CreateInstanceOptions<readonly [Components, ...Components[]]>,
+    "components"
 > &
     LoadCoreSdkScriptOptions & {
+        components?: Components[];
         eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
         eligibleMethodsPayload?: FindEligiblePaymentMethodsRequestPayload;
         children: React.ReactNode;
@@ -38,12 +40,21 @@ type PayPalProviderProps = CreateInstanceOptions<
 
 /**
  * {@link PayPalProvider} creates the SDK script, component scripts, runs eligibility, then
- * provides these in {@link PayPalContext} to child components via the {@link usePayPal} hook.
+ * provides these in context to child components via the {@link usePayPal} hook.
+ *
+ * @example
+ * <PayPalProvider
+ *   clientToken={clientToken}
+ *   components={["paypal-payments", "venmo-payments"]}
+ *   pageType="checkout"
+ *  >
+ *      // payment buttons
+ * </PayPalProvider>
  */
 export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     clientMetadataId,
     clientToken,
-    components,
+    components = ["paypal-payments"],
     locale,
     pageType,
     partnerAttributionId,

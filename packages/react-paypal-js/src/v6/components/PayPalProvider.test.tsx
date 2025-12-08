@@ -57,19 +57,26 @@ const createInstanceOptions: CreateInstanceOptions<["paypal-payments"]> = {
 };
 
 function renderProvider(
-    instanceOptions = createInstanceOptions,
-    environment: "sandbox" | "production" = "sandbox",
-    debug = false,
-    children?: React.ReactNode,
+    props: Partial<React.ComponentProps<typeof PayPalProvider>> = {},
 ) {
     const { state, TestComponent } = setupTestComponent();
 
+    const {
+        children,
+        clientToken = createInstanceOptions.clientToken,
+        components = createInstanceOptions.components,
+        debug = false,
+        environment = "sandbox",
+        ...restProps
+    } = props;
+
     const result = render(
         <PayPalProvider
-            components={instanceOptions.components}
-            clientToken={instanceOptions.clientToken}
-            environment={environment}
+            components={components}
+            clientToken={clientToken}
             debug={debug}
+            environment={environment}
+            {...restProps}
         >
             <TestComponent>{children}</TestComponent>
         </PayPalProvider>,
@@ -184,7 +191,7 @@ describe("PayPalProvider", () => {
                     return Promise.resolve(createMockPayPalNamespace());
                 });
 
-                renderProvider(createInstanceOptions, environment);
+                renderProvider({ environment, ...createInstanceOptions });
 
                 expect(loadCoreSdkScript).toHaveBeenCalledWith({
                     environment,
@@ -217,6 +224,29 @@ describe("PayPalProvider", () => {
 
             expect(mockCreateInstance).toHaveBeenCalledWith(
                 createInstanceOptions,
+            );
+        });
+
+        test("should use default components array when not provided", async () => {
+            const mockCreateInstance = jest
+                .fn()
+                .mockResolvedValue(createMockSdkInstance());
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: mockCreateInstance,
+            });
+
+            const { state } = renderProvider({
+                clientToken: TEST_CLIENT_TOKEN,
+            });
+
+            await waitFor(() => expectResolvedState(state));
+
+            expect(mockCreateInstance).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    components: ["paypal-payments"],
+                    clientToken: TEST_CLIENT_TOKEN,
+                }),
             );
         });
 
@@ -255,7 +285,6 @@ describe("PayPalProvider", () => {
             (loadCoreSdkScript as jest.Mock).mockResolvedValue({
                 createInstance: mockCreateInstance,
             });
-            // @ts-expect-error renderProvider is typed for single component only
             const { state } = renderProvider(multiComponentOptions);
 
             await waitFor(() => expectResolvedState(state));

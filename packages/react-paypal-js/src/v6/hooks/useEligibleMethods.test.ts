@@ -1,5 +1,6 @@
 import { renderHook } from "@testing-library/react-hooks";
 
+import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import {
     useEligibleMethods,
     fetchEligibleMethods,
@@ -366,7 +367,7 @@ describe("useEligibleMethods", () => {
                     environment: "sandbox",
                 }),
             );
-
+            expectCurrentErrorValue(result.current.error);
             expect(result.current.isLoading).toBe(false);
             expect(result.current.error).toEqual(
                 new Error(
