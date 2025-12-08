@@ -34,6 +34,22 @@ export type UsePayPalGuestPaymentSessionProps = (
 ) &
     PayPalGuestPresentationModeHookOptions;
 
+/**
+ * `usePayPalGuestPaymentSession` is used to interface with a guest checkout session. Guest checkout
+ * sessions require a `<paypal-basic-card-button>` to target for displaying the guest checkout form.
+ *
+ * @example
+ * const { buttonRef, error, handleClick } = usePayPalGuestPaymentSession({ ...arguments });
+ *
+ * return (
+ *   <paypal-basic-card-button
+ *     onClick={handleClick}
+ *     ref={buttonRef}
+ *     {...otherProps}>
+ *   </paypal-basic-card-button>
+ * )
+ *
+ */
 export function usePayPalGuestPaymentSession({
     fullPageOverlay,
     createOrder,
