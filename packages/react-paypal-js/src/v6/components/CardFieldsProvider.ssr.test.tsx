@@ -6,12 +6,12 @@ import React from "react";
 import { renderToString } from "react-dom/server";
 
 import { usePayPal } from "../hooks/usePayPal";
-import { CardFieldsState } from "../context/CardFieldsProviderContext";
 import { useCardFields } from "../hooks/useCardFields";
 import { INSTANCE_LOADING_STATE } from "../types";
 import { isServer } from "../utils";
 import { CardFieldsProvider } from "./CardFieldsProvider";
 
+import type { CardFieldsState } from "../context/CardFieldsProviderContext";
 import type { CardFieldsSessionType } from "../types";
 
 jest.mock("../hooks/usePayPal");

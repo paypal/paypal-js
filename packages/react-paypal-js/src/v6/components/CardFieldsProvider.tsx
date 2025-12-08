@@ -12,21 +12,19 @@ import {
     CardFieldsOneTimePaymentSession,
     CardFieldsSavePaymentSession,
 } from "../types";
-import {
-    CardFieldsContext,
-    CardFieldsState,
-} from "../context/CardFieldsProviderContext";
+import { CardFieldsContext } from "../context/CardFieldsProviderContext";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import { useError } from "../hooks/useError";
 import { toError } from "../utils";
 
+import type { CardFieldsState } from "../context/CardFieldsProviderContext";
 import type { CardFieldsSessionType } from "../types";
 
 export type CardFieldsSession =
     | CardFieldsOneTimePaymentSession
     | CardFieldsSavePaymentSession;
 
-export type CardFieldsProviderProps = {
+type CardFieldsProviderProps = {
     children: ReactNode;
     sessionType: CardFieldsSessionType;
 };
