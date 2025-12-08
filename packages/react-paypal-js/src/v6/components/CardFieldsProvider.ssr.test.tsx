@@ -10,7 +10,9 @@ import { CardFieldsState } from "../context/CardFieldsProviderContext";
 import { useCardFields } from "../hooks/useCardFields";
 import { INSTANCE_LOADING_STATE } from "../types";
 import { isServer } from "../utils";
-import { CardFieldsProvider, sessionType } from "./CardFieldsProvider";
+import { CardFieldsProvider } from "./CardFieldsProvider";
+
+import type { CardFieldsSessionType } from "../types";
 
 jest.mock("../hooks/usePayPal");
 
@@ -32,7 +34,7 @@ function renderSSRCardFieldsProvider({
     sessionType,
     children,
 }: {
-    sessionType: sessionType;
+    sessionType: CardFieldsSessionType;
     children?: React.ReactNode;
 }) {
     const { cardFieldsState, TestComponent } = setupSSRTestComponent();

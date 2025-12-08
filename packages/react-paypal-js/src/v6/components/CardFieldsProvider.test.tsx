@@ -4,13 +4,14 @@ import { renderHook } from "@testing-library/react-hooks";
 import { usePayPal } from "../hooks/usePayPal";
 import { INSTANCE_LOADING_STATE } from "../types";
 import { expectCurrentErrorValue } from "../hooks/useErrorTestUtil";
-import { CardFieldsProvider, sessionType } from "./CardFieldsProvider";
+import { CardFieldsProvider } from "./CardFieldsProvider";
 import { useCardFields } from "../hooks/useCardFields";
 import { toError } from "../utils";
 
 import type {
     CardFieldsOneTimePaymentSession,
     CardFieldsSavePaymentSession,
+    CardFieldsSessionType,
 } from "../types";
 
 jest.mock("../hooks/usePayPal");
@@ -22,8 +23,8 @@ jest.mock("../utils", () => ({
 
 const mockUsePayPal = usePayPal as jest.MockedFunction<typeof usePayPal>;
 
-const oneTimePaymentSessionType: sessionType = "one-time-payment";
-const savePaymentSessionType: sessionType = "save-payment";
+const oneTimePaymentSessionType: CardFieldsSessionType = "one-time-payment";
+const savePaymentSessionType: CardFieldsSessionType = "save-payment";
 
 // Mock Factories
 const createMockOneTimePaymentSession =
@@ -60,7 +61,7 @@ const createMockSdkInstance = ({
 function renderCardFieldsProvider({
     sessionType,
 }: {
-    sessionType: sessionType;
+    sessionType: CardFieldsSessionType;
 }) {
     return renderHook(() => useCardFields(), {
         initialProps: { sessionType },

@@ -20,7 +20,7 @@ import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import { useError } from "../hooks/useError";
 import { toError } from "../utils";
 
-export type sessionType = "one-time-payment" | "save-payment";
+import type { CardFieldsSessionType } from "../types";
 
 export type CardFieldsSession =
     | CardFieldsOneTimePaymentSession
@@ -28,11 +28,11 @@ export type CardFieldsSession =
 
 export type CardFieldsProviderProps = {
     children: ReactNode;
-    sessionType: sessionType;
+    sessionType: CardFieldsSessionType;
 };
 
 /**
- * {@link CardFieldsProvider} creates the appropriate Card Fields session based on the {@link sessionType} prop value, and then provides it to child components that require it
+ * {@link CardFieldsProvider} creates the appropriate Card Fields session based on the `sessionType` prop value, and then provides it to child components that require it
  *
  * @example
  * <CardFieldsProvider sessionType={"one-time-payment"}>
