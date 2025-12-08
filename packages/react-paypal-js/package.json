@@ -87,8 +87,8 @@
         "@types/react": "^17.0.39",
         "@types/react-dom": "^17.0.11",
         "@types/string-template": "^1.0.2",
-        "@typescript-eslint/eslint-plugin": "^5.12.0",
-        "@typescript-eslint/parser": "^5.12.0",
+        "@typescript-eslint/eslint-plugin": "^6.15.0",
+        "@typescript-eslint/parser": "^6.15.0",
         "babel-jest": "^27.5.1",
         "babel-loader": "^8.2.3",
         "eslint": "^8.9.0",
@@ -113,6 +113,7 @@
         "semver": "^7.3.5",
         "standard-version": "^9.3.2",
         "string-template": "^1.0.0",
+        "tslib": "2.6.2",
         "typescript": "5.3.3"
     },
     "peerDependencies": {
