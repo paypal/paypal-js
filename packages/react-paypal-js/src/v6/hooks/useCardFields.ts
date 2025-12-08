@@ -1,9 +1,9 @@
 import { useContext } from "react";
 
-import { CardFieldsContext } from "../context/CardFieldsContext";
+import { CardFieldsContext } from "../context/CardFieldsProviderContext";
 
 import type { CardFieldsProvider } from "../components/CardFieldsProvider";
-import type { CardFieldsState } from "../context/CardFieldsContext";
+import type { CardFieldsState } from "../context/CardFieldsProviderContext";
 
 /**
  * Returns {@link CardFieldsContext} provided by a parent {@link CardFieldsProvider}

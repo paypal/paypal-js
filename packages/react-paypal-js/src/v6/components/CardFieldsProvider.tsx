@@ -15,7 +15,7 @@ import {
 import {
     CardFieldsContext,
     CardFieldsState,
-} from "../context/CardFieldsContext";
+} from "../context/CardFieldsProviderContext";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import { useError } from "../hooks/useError";
 import { toError } from "../utils";
