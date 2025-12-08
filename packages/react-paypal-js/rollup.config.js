@@ -21,6 +21,7 @@ export default [
         plugins: [
             typescript({
                 tsconfig: "./tsconfig.lib.json",
+                outputToFilesystem: true,
                 ...tsconfigOverride,
             }),
             nodeResolve(),
@@ -60,6 +61,7 @@ export default [
         plugins: [
             typescript({
                 tsconfig: "./tsconfig.lib.json",
+                outputToFilesystem: true,
                 ...tsconfigOverride,
             }),
             nodeResolve(),
@@ -96,6 +98,7 @@ export default [
         plugins: [
             typescript({
                 tsconfig: "./tsconfig.v6.json",
+                outputToFilesystem: true,
             }),
             nodeResolve(),
             cleanup({
