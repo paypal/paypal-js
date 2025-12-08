@@ -19,11 +19,8 @@ export type PaymentFlow =
 
 export type FindEligibleMethodsOptions = {
     amount?: string;
-    clientToken?: string;
     currencyCode?: string;
-    merchantId?: string;
     paymentFlow?: PaymentFlow;
-    paymentMethods?: Uppercase<EligiblePaymentMethods>[];
 };
 
 export type FundingSource = "credit" | "paylater" | "paypal" | "venmo" | "card";
