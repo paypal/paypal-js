@@ -8,17 +8,17 @@ import React, {
 } from "react";
 
 import { usePayPal } from "../hooks/usePayPal";
-import {
-    CardFieldsOneTimePaymentSession,
-    CardFieldsSavePaymentSession,
-} from "../types";
 import { CardFieldsContext } from "../context/CardFieldsProviderContext";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import { useError } from "../hooks/useError";
 import { toError } from "../utils";
 
+import type {
+    CardFieldsOneTimePaymentSession,
+    CardFieldsSavePaymentSession,
+    CardFieldsSessionType,
+} from "../types";
 import type { CardFieldsState } from "../context/CardFieldsProviderContext";
-import type { CardFieldsSessionType } from "../types";
 
 export type CardFieldsSession =
     | CardFieldsOneTimePaymentSession
