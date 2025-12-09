@@ -243,7 +243,7 @@ export default {
     ],
 };
 
-export const Default: FC<StoryProps> = ({ amount, styles, style }) => {
+export const Default: FC<StoryProps> = ({ styles, style }) => {
     return (
         <PayPalHostedFieldsProvider
             createOrder={() => {
