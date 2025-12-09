@@ -4,13 +4,14 @@ import { usePayPal } from "./usePayPal";
 import { useError } from "./useError";
 import { useIsMountedRef } from "./useIsMounted";
 
-import type {
-    FetchContentOptions,
-    MessageContent,
-    PayPalMessagesOptions,
-    PayPalMessagesSession,
-    LearnMoreOptions,
-    LearnMore,
+import {
+    type FetchContentOptions,
+    type MessageContent,
+    type PayPalMessagesOptions,
+    type PayPalMessagesSession,
+    type LearnMoreOptions,
+    type LearnMore,
+    INSTANCE_LOADING_STATE,
 } from "../types";
 
 type PayPalMessagesReturn = {
@@ -28,13 +29,15 @@ export function usePayPalMessages({
     currencyCode,
     shopperSessionId,
 }: PayPalMessagesOptions): PayPalMessagesReturn {
-    const { sdkInstance } = usePayPal();
+    const { sdkInstance, loadingStatus } = usePayPal();
     const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<PayPalMessagesSession | null>(null);
     const [error, setError] = useError();
 
     useEffect(() => {
-        if (!sdkInstance) {
+        if (sdkInstance) {
+            setError(null);
+        } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
             setError(new Error("no sdk instance available"));
         }
     }, [sdkInstance, setError]);
@@ -51,6 +54,10 @@ export function usePayPalMessages({
         });
 
         sessionRef.current = newSession;
+
+        return () => {
+            sessionRef.current = null;
+        };
     }, [buyerCountry, currencyCode, sdkInstance, shopperSessionId]);
 
     const handleFetchContent = useCallback(
