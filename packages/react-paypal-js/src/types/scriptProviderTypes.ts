@@ -5,6 +5,7 @@ import type { ReactNode, Dispatch } from "react";
 import type { PayPalScriptOptions } from "@paypal/paypal-js";
 
 export interface ReactPayPalScriptOptions extends PayPalScriptOptions {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Allow any for dynamic SDK options
     [key: string]: any;
 }
 
