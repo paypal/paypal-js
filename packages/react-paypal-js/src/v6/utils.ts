@@ -3,8 +3,7 @@ import { useRef } from "react";
 import type { Components } from "./types";
 
 /**
- * @returns {boolean} `true` if code is running in a server environment where `window`
- * or `document` are not available; `false` otherwise.
+ * @returns {boolean} `true` if code is running in a server environment where `window` is not available; `false` otherwise.
  */
 export function isServer(): boolean {
     return typeof window === "undefined";

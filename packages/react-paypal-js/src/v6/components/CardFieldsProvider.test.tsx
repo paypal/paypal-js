@@ -16,11 +16,6 @@ import type { CardFieldsSessionType } from "./CardFieldsProvider";
 
 jest.mock("../hooks/usePayPal");
 
-jest.mock("../utils", () => ({
-    ...jest.requireActual("../utils"),
-    isServer: () => false,
-}));
-
 const mockUsePayPal = usePayPal as jest.MockedFunction<typeof usePayPal>;
 
 const oneTimePaymentSessionType: CardFieldsSessionType = "one-time-payment";
