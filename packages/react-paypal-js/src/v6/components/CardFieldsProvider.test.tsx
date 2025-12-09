@@ -11,8 +11,8 @@ import { toError } from "../utils";
 import type {
     CardFieldsOneTimePaymentSession,
     CardFieldsSavePaymentSession,
-    CardFieldsSessionType,
 } from "../types";
+import type { CardFieldsSessionType } from "./CardFieldsProvider";
 
 jest.mock("../hooks/usePayPal");
 

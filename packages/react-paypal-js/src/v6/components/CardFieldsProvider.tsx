@@ -19,7 +19,6 @@ import { toError } from "../utils";
 import type {
     CardFieldsOneTimePaymentSession,
     CardFieldsSavePaymentSession,
-    CardFieldsSessionType,
 } from "../types";
 import type {
     CardFieldsSessionState,
@@ -29,6 +28,8 @@ import type {
 export type CardFieldsSession =
     | CardFieldsOneTimePaymentSession
     | CardFieldsSavePaymentSession;
+
+export type CardFieldsSessionType = "one-time-payment" | "save-payment";
 
 type CardFieldsProviderProps = {
     children: ReactNode;

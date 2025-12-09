@@ -15,7 +15,7 @@ import type {
     CardFieldsSessionState,
     CardFieldsStatusState,
 } from "../context/CardFieldsProviderContext";
-import type { CardFieldsSessionType } from "../types";
+import type { CardFieldsSessionType } from "./CardFieldsProvider";
 
 jest.mock("../hooks/usePayPal");
 

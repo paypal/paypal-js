@@ -9,5 +9,3 @@ export interface BasePaymentSessionReturn {
     handleCancel: () => void;
     handleDestroy: () => void;
 }
-
-export type CardFieldsSessionType = "one-time-payment" | "save-payment";
