@@ -12,9 +12,9 @@ import type {
 } from "../context/CardFieldsProviderContext";
 
 /**
- * Returns {@link CardFieldsStatusContext} provided by a parent {@link CardFieldsProvider}
+ * Returns {@link CardFieldsStatusState} provided by a parent {@link CardFieldsProvider}
  *
- * @returns {CardFieldsStatusContext}
+ * @returns {CardFieldsStatusState}
  */
 export function useCardFields(): CardFieldsStatusState {
     const context = useContext(CardFieldsStatusContext);
@@ -29,9 +29,9 @@ export function useCardFields(): CardFieldsStatusState {
 }
 
 /**
- * Returns {@link CardFieldsSessionContext} provided by a parent {@link CardFieldsProvider}
+ * Returns {@link CardFieldsSessionState} provided by a parent {@link CardFieldsProvider}
  *
- * @returns {CardFieldsSessionContext}
+ * @returns {CardFieldsSessionState}
  */
 export function useCardFieldsSession(): CardFieldsSessionState {
     const context = useContext(CardFieldsSessionContext);
