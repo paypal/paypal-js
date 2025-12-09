@@ -5,7 +5,7 @@ import { usePayPal } from "../hooks/usePayPal";
 import { INSTANCE_LOADING_STATE } from "../types";
 import { expectCurrentErrorValue } from "../hooks/useErrorTestUtil";
 import { CardFieldsProvider } from "./CardFieldsProvider";
-import { useCardFields } from "../hooks/useCardFields";
+import { useCardFields, useCardFieldsSession } from "../hooks/useCardFields";
 import { toError } from "../utils";
 
 import type {
@@ -63,14 +63,20 @@ function renderCardFieldsProvider({
 }: {
     sessionType: CardFieldsSessionType;
 }) {
-    return renderHook(() => useCardFields(), {
-        initialProps: { sessionType },
-        wrapper: ({ children, sessionType }) => (
-            <CardFieldsProvider sessionType={sessionType}>
-                {children}
-            </CardFieldsProvider>
-        ),
-    });
+    return renderHook(
+        () => ({
+            status: useCardFields(),
+            session: useCardFieldsSession(),
+        }),
+        {
+            initialProps: { sessionType },
+            wrapper: ({ children, sessionType }) => (
+                <CardFieldsProvider sessionType={sessionType}>
+                    {children}
+                </CardFieldsProvider>
+            ),
+        },
+    );
 }
 
 describe("CardFieldsProvider", () => {
@@ -113,8 +119,8 @@ describe("CardFieldsProvider", () => {
                 sessionType: oneTimePaymentSessionType,
             });
 
-            expect(result.current.cardFieldsSession).toBeNull();
-            expect(result.current.cardFieldsError).toBeNull();
+            expect(result.current.session.cardFieldsSession).toBeNull();
+            expect(result.current.status.cardFieldsError).toBeNull();
             expectCurrentErrorValue(null);
         });
 
@@ -130,11 +136,11 @@ describe("CardFieldsProvider", () => {
                 sessionType: oneTimePaymentSessionType,
             });
 
-            expect(result.current.cardFieldsSession).toBeNull();
-            expect(result.current.cardFieldsError).toEqual(
+            expect(result.current.session.cardFieldsSession).toBeNull();
+            expect(result.current.status.cardFieldsError).toEqual(
                 toError("no sdk instance available"),
             );
-            expectCurrentErrorValue(result.current.cardFieldsError);
+            expectCurrentErrorValue(result.current.status.cardFieldsError);
         });
 
         test("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
@@ -150,11 +156,11 @@ describe("CardFieldsProvider", () => {
                 sessionType: oneTimePaymentSessionType,
             });
 
-            expect(result.current.cardFieldsSession).toBeNull();
-            expect(result.current.cardFieldsError).toEqual(
+            expect(result.current.session.cardFieldsSession).toBeNull();
+            expect(result.current.status.cardFieldsError).toEqual(
                 toError("no sdk instance available"),
             );
-            expectCurrentErrorValue(result.current.cardFieldsError);
+            expectCurrentErrorValue(result.current.status.cardFieldsError);
 
             // Second render: sdkInstance becomes available, error should clear
             mockUsePayPal.mockReturnValue({
@@ -166,10 +172,10 @@ describe("CardFieldsProvider", () => {
             });
 
             rerender();
-            expect(result.current.cardFieldsSession).toBe(
+            expect(result.current.session.cardFieldsSession).toBe(
                 mockCardFieldsOneTimePaymentSession,
             );
-            expect(result.current.cardFieldsError).toBeNull();
+            expect(result.current.status.cardFieldsError).toBeNull();
             expectCurrentErrorValue(null);
         });
 
@@ -186,11 +192,11 @@ describe("CardFieldsProvider", () => {
                 sessionType: oneTimePaymentSessionType,
             });
 
-            expect(result.current.cardFieldsSession).toBeNull();
-            expect(result.current.cardFieldsError).toEqual(
+            expect(result.current.session.cardFieldsSession).toBeNull();
+            expect(result.current.status.cardFieldsError).toEqual(
                 toError(errorMessage),
             );
-            expectCurrentErrorValue(result.current.cardFieldsError);
+            expectCurrentErrorValue(result.current.status.cardFieldsError);
         });
     });
 
@@ -230,10 +236,10 @@ describe("CardFieldsProvider", () => {
                 sessionType: oneTimePaymentSessionType,
             });
 
-            expect(result.current.cardFieldsSession).toBe(
+            expect(result.current.session.cardFieldsSession).toBe(
                 mockCardFieldsOneTimePaymentSession,
             );
-            expect(result.current.cardFieldsSession).not.toBe(
+            expect(result.current.session.cardFieldsSession).not.toBe(
                 mockCardFieldsSavePaymentSession,
             );
         });
@@ -243,10 +249,10 @@ describe("CardFieldsProvider", () => {
                 sessionType: savePaymentSessionType,
             });
 
-            expect(result.current.cardFieldsSession).toBe(
+            expect(result.current.session.cardFieldsSession).toBe(
                 mockCardFieldsSavePaymentSession,
             );
-            expect(result.current.cardFieldsSession).not.toBe(
+            expect(result.current.session.cardFieldsSession).not.toBe(
                 mockCardFieldsOneTimePaymentSession,
             );
         });
@@ -259,7 +265,7 @@ describe("CardFieldsProvider", () => {
                 sessionType: oneTimePaymentSessionType,
             });
 
-            expect(result.current.cardFieldsSession).toBe(
+            expect(result.current.session.cardFieldsSession).toBe(
                 mockCardFieldsOneTimePaymentSession,
             );
 
@@ -291,10 +297,10 @@ describe("CardFieldsProvider", () => {
             expect(
                 newMockSdkInstance.createCardFieldsSavePaymentSession,
             ).not.toHaveBeenCalled();
-            expect(result.current.cardFieldsSession).toBe(
+            expect(result.current.session.cardFieldsSession).toBe(
                 newMockCardFieldsOneTimePaymentSession,
             );
-            expect(result.current.cardFieldsSession).not.toBe(
+            expect(result.current.session.cardFieldsSession).not.toBe(
                 mockCardFieldsOneTimePaymentSession,
             );
         });
@@ -305,22 +311,77 @@ describe("CardFieldsProvider", () => {
                 sessionType: oneTimePaymentSessionType,
             });
 
-            expect(result.current.cardFieldsSession).toBe(
+            expect(result.current.session.cardFieldsSession).toBe(
                 mockCardFieldsOneTimePaymentSession,
             );
-            expect(result.current.cardFieldsSession).not.toBe(
+            expect(result.current.session.cardFieldsSession).not.toBe(
                 mockCardFieldsSavePaymentSession,
             );
 
             // Rerender with save-payment
             rerender({ sessionType: savePaymentSessionType });
 
-            expect(result.current.cardFieldsSession).toBe(
+            expect(result.current.session.cardFieldsSession).toBe(
                 mockCardFieldsSavePaymentSession,
             );
-            expect(result.current.cardFieldsSession).not.toBe(
+            expect(result.current.session.cardFieldsSession).not.toBe(
                 mockCardFieldsOneTimePaymentSession,
             );
+        });
+    });
+
+    describe("Context isolation", () => {
+        const expectedSessionContextKeys = ["cardFieldsSession"] as const;
+        const expectedStatusContextKeys = ["cardFieldsError"] as const;
+
+        describe("useCardFields", () => {
+            test("should only return status context values", () => {
+                const { result } = renderCardFieldsProvider({
+                    sessionType: oneTimePaymentSessionType,
+                });
+
+                const receivedStatusKeys = Object.keys(result.current.status);
+                expect(receivedStatusKeys.sort()).toEqual(
+                    [...expectedStatusContextKeys].sort(),
+                );
+            });
+
+            test("should not return session context values", () => {
+                const { result } = renderCardFieldsProvider({
+                    sessionType: oneTimePaymentSessionType,
+                });
+
+                const receivedStatusKeys = Object.keys(result.current.status);
+                expectedSessionContextKeys.forEach((key) => {
+                    expect(receivedStatusKeys).not.toContain(key);
+                });
+            });
+        });
+
+        describe("useCardFieldsSession", () => {
+            test("should only return session context values", () => {
+                const { result } = renderCardFieldsProvider({
+                    sessionType: oneTimePaymentSessionType,
+                });
+
+                const receivedSessionKeys = Object.keys(result.current.session);
+                expect(receivedSessionKeys.sort()).toEqual(
+                    [...expectedSessionContextKeys].sort(),
+                );
+            });
+
+            test("should not return status context values", () => {
+                const { result } = renderCardFieldsProvider({
+                    sessionType: oneTimePaymentSessionType,
+                });
+
+                const receivedSesssionKeys = Object.keys(
+                    result.current.session,
+                );
+                expectedStatusContextKeys.forEach((key) => {
+                    expect(receivedSesssionKeys).not.toContain(key);
+                });
+            });
         });
     });
 });

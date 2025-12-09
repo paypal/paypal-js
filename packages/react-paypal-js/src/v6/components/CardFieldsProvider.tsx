@@ -8,7 +8,10 @@ import React, {
 } from "react";
 
 import { usePayPal } from "../hooks/usePayPal";
-import { CardFieldsContext } from "../context/CardFieldsProviderContext";
+import {
+    CardFieldsSessionContext,
+    CardFieldsStatusContext,
+} from "../context/CardFieldsProviderContext";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import { useError } from "../hooks/useError";
 import { toError } from "../utils";
@@ -18,7 +21,10 @@ import type {
     CardFieldsSavePaymentSession,
     CardFieldsSessionType,
 } from "../types";
-import type { CardFieldsState } from "../context/CardFieldsProviderContext";
+import type {
+    CardFieldsSessionState,
+    CardFieldsStatusState,
+} from "../context/CardFieldsProviderContext";
 
 export type CardFieldsSession =
     | CardFieldsOneTimePaymentSession
@@ -30,7 +36,7 @@ type CardFieldsProviderProps = {
 };
 
 /**
- * {@link CardFieldsProvider} creates the appropriate Card Fields session based on the `sessionType` prop value, and then provides it to child components that require it
+ * {@link CardFieldsProvider} creates the appropriate Card Fields session based on the `sessionType` prop value, and then provides it to child components that require it.
  *
  * @example
  * <CardFieldsProvider sessionType={"one-time-payment"}>
@@ -89,17 +95,25 @@ export const CardFieldsProvider = ({
         };
     }, [sdkInstance, loadingStatus, sessionType, handleError]);
 
-    const contextValue: CardFieldsState = useMemo(
+    const sessionContextValue: CardFieldsSessionState = useMemo(
         () => ({
             cardFieldsSession,
+        }),
+        [cardFieldsSession],
+    );
+
+    const statusContextValue: CardFieldsStatusState = useMemo(
+        () => ({
             cardFieldsError,
         }),
-        [cardFieldsSession, cardFieldsError],
+        [cardFieldsError],
     );
 
     return (
-        <CardFieldsContext.Provider value={contextValue}>
-            {children}
-        </CardFieldsContext.Provider>
+        <CardFieldsSessionContext.Provider value={sessionContextValue}>
+            <CardFieldsStatusContext.Provider value={statusContextValue}>
+                {children}
+            </CardFieldsStatusContext.Provider>
+        </CardFieldsSessionContext.Provider>
     );
 };

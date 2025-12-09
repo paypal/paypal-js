@@ -6,12 +6,15 @@ import React from "react";
 import { renderToString } from "react-dom/server";
 
 import { usePayPal } from "../hooks/usePayPal";
-import { useCardFields } from "../hooks/useCardFields";
+import { useCardFields, useCardFieldsSession } from "../hooks/useCardFields";
 import { INSTANCE_LOADING_STATE } from "../types";
 import { isServer } from "../utils";
 import { CardFieldsProvider } from "./CardFieldsProvider";
 
-import type { CardFieldsState } from "../context/CardFieldsProviderContext";
+import type {
+    CardFieldsSessionState,
+    CardFieldsStatusState,
+} from "../context/CardFieldsProviderContext";
 import type { CardFieldsSessionType } from "../types";
 
 jest.mock("../hooks/usePayPal");
@@ -23,10 +26,16 @@ jest.mock("../utils", () => ({
 
 const mockUsePayPal = usePayPal as jest.MockedFunction<typeof usePayPal>;
 
+const oneTimePaymentSessionType: CardFieldsSessionType = "one-time-payment";
+const savePaymentSessionType: CardFieldsSessionType = "save-payment";
+
 // Test utilites
-function expectInitialState(state: Partial<CardFieldsState>): void {
-    expect(state.cardFieldsSession).toBe(null);
+function expectInitialStatusState(state: CardFieldsStatusState): void {
     expect(state.cardFieldsError).toBe(null);
+}
+
+function expectInitialSessionState(state: CardFieldsSessionState): void {
+    expect(state.cardFieldsSession).toBe(null);
 }
 
 // Render helpers
@@ -37,7 +46,8 @@ function renderSSRCardFieldsProvider({
     sessionType: CardFieldsSessionType;
     children?: React.ReactNode;
 }) {
-    const { cardFieldsState, TestComponent } = setupSSRTestComponent();
+    const { cardFieldsSessionState, cardFieldsStatusState, TestComponent } =
+        setupSSRTestComponent();
 
     const html = renderToString(
         <CardFieldsProvider sessionType={sessionType}>
@@ -45,13 +55,16 @@ function renderSSRCardFieldsProvider({
         </CardFieldsProvider>,
     );
 
-    return { html, cardFieldsState };
+    return { html, cardFieldsSessionState, cardFieldsStatusState };
 }
 
 function setupSSRTestComponent() {
-    const cardFieldsState: CardFieldsState = {
-        cardFieldsSession: null,
+    const cardFieldsStatusState: CardFieldsStatusState = {
         cardFieldsError: null,
+    };
+
+    const cardFieldsSessionState: CardFieldsSessionState = {
+        cardFieldsSession: null,
     };
 
     function TestComponent({
@@ -59,17 +72,16 @@ function setupSSRTestComponent() {
     }: {
         children?: React.ReactNode;
     }) {
-        try {
-            const newCardFieldsState = useCardFields();
-            Object.assign(cardFieldsState, newCardFieldsState);
-        } catch (error) {
-            cardFieldsState.cardFieldsError = error as Error;
-        }
+        const newCardFieldsStatusState = useCardFields();
+        const newCardFieldsSessionState = useCardFieldsSession();
+
+        Object.assign(cardFieldsStatusState, newCardFieldsStatusState);
+        Object.assign(cardFieldsSessionState, newCardFieldsSessionState);
 
         return <>{children}</>;
     }
 
-    return { cardFieldsState, TestComponent };
+    return { cardFieldsStatusState, cardFieldsSessionState, TestComponent };
 }
 
 describe("CardFieldsProvider SSR", () => {
@@ -98,17 +110,19 @@ describe("CardFieldsProvider SSR", () => {
             // Will throw error if any DOM access is attempted during render
             expect(() =>
                 renderSSRCardFieldsProvider({
-                    sessionType: "one-time-payment",
+                    sessionType: oneTimePaymentSessionType,
                 }),
             ).not.toThrow();
         });
 
         test("should work correctly in SSR context", () => {
-            const { cardFieldsState } = renderSSRCardFieldsProvider({
-                sessionType: "one-time-payment",
-            });
+            const { cardFieldsSessionState, cardFieldsStatusState } =
+                renderSSRCardFieldsProvider({
+                    sessionType: oneTimePaymentSessionType,
+                });
 
-            expectInitialState(cardFieldsState);
+            expectInitialStatusState(cardFieldsStatusState);
+            expectInitialSessionState(cardFieldsSessionState);
         });
 
         test("should render without warnings or errors", () => {
@@ -125,7 +139,7 @@ describe("CardFieldsProvider SSR", () => {
                 .mockImplementation();
 
             const { html } = renderSSRCardFieldsProvider({
-                sessionType: "one-time-payment",
+                sessionType: oneTimePaymentSessionType,
                 children: <div>SSR Content</div>,
             });
 
@@ -140,61 +154,139 @@ describe("CardFieldsProvider SSR", () => {
 
     describe("Hydration Preparation", () => {
         test("should prepare serializable state for client hydration", () => {
-            const { cardFieldsState } = renderSSRCardFieldsProvider({
-                sessionType: "one-time-payment",
-            });
+            const { cardFieldsSessionState, cardFieldsStatusState } =
+                renderSSRCardFieldsProvider({
+                    sessionType: oneTimePaymentSessionType,
+                });
 
             // Server state should be safe for serialization
-            const serializedState = JSON.stringify(cardFieldsState);
+            const serializedSessionState = JSON.stringify(
+                cardFieldsSessionState,
+            );
+            const serializedStatusState = JSON.stringify(cardFieldsStatusState);
 
-            expect(() => JSON.parse(serializedState)).not.toThrow();
+            expect(() => JSON.parse(serializedSessionState)).not.toThrow();
+            expect(() => JSON.parse(serializedStatusState)).not.toThrow();
 
-            const parsedState = JSON.parse(serializedState);
-            expectInitialState(parsedState);
+            const parsedSessionState = JSON.parse(serializedSessionState);
+            const parsedStatusState = JSON.parse(serializedStatusState);
+
+            expectInitialSessionState(parsedSessionState);
+            expectInitialStatusState(parsedStatusState);
         });
 
         test("should maintain consistent state with different options", () => {
-            const { cardFieldsState: cardFieldsState1 } =
-                renderSSRCardFieldsProvider({
-                    sessionType: "one-time-payment",
-                });
-            const { cardFieldsState: cardFieldsState2 } =
-                renderSSRCardFieldsProvider({ sessionType: "save-payment" });
+            const {
+                cardFieldsStatusState: cardFieldsStatusState1,
+                cardFieldsSessionState: cardFieldsSessionState1,
+            } = renderSSRCardFieldsProvider({
+                sessionType: oneTimePaymentSessionType,
+            });
+            const {
+                cardFieldsStatusState: cardFieldsStatusState2,
+                cardFieldsSessionState: cardFieldsSessionState2,
+            } = renderSSRCardFieldsProvider({
+                sessionType: savePaymentSessionType,
+            });
 
             // Both should have consistent initial state regardless of options
-            expectInitialState(cardFieldsState1);
-            expectInitialState(cardFieldsState2);
+            expectInitialStatusState(cardFieldsStatusState1);
+            expectInitialSessionState(cardFieldsSessionState1);
+
+            expectInitialStatusState(cardFieldsStatusState2);
+            expectInitialSessionState(cardFieldsSessionState2);
         });
     });
 
     describe("Multiple renders", () => {
         test("should maintain state consistency across multiple server renders", () => {
-            const { html: html1, cardFieldsState: cardFieldsState1 } =
-                renderSSRCardFieldsProvider({
-                    sessionType: "one-time-payment",
-                });
-            const { html: html2, cardFieldsState: cardFieldsState2 } =
-                renderSSRCardFieldsProvider({
-                    sessionType: "one-time-payment",
-                });
+            const {
+                html: html1,
+                cardFieldsStatusState: cardFieldsStatusState1,
+                cardFieldsSessionState: cardFieldsSessionState1,
+            } = renderSSRCardFieldsProvider({
+                sessionType: oneTimePaymentSessionType,
+            });
+            const {
+                html: html2,
+                cardFieldsStatusState: cardFieldsStatusState2,
+                cardFieldsSessionState: cardFieldsSessionState2,
+            } = renderSSRCardFieldsProvider({
+                sessionType: oneTimePaymentSessionType,
+            });
 
-            expectInitialState(cardFieldsState1);
-            expectInitialState(cardFieldsState2);
+            expectInitialStatusState(cardFieldsStatusState1);
+            expectInitialSessionState(cardFieldsSessionState1);
+            expectInitialStatusState(cardFieldsStatusState2);
+            expectInitialSessionState(cardFieldsSessionState2);
             expect(html1).toBe(html2);
         });
 
         test("should generate consistent HTML across renders", () => {
             const { html: html1 } = renderSSRCardFieldsProvider({
-                sessionType: "one-time-payment",
+                sessionType: oneTimePaymentSessionType,
                 children: <div data-testid="ssr-content">Test Content</div>,
             });
             const { html: html2 } = renderSSRCardFieldsProvider({
-                sessionType: "one-time-payment",
+                sessionType: oneTimePaymentSessionType,
                 children: <div data-testid="ssr-content">Test Content</div>,
             });
 
             expect(html1).toBe(html2);
             expect(html1).toContain('data-testid="ssr-content"');
+        });
+    });
+
+    describe("Context isolation", () => {
+        const expectedSessionContextKeys = ["cardFieldsSession"] as const;
+        const expectedStatusContextKeys = ["cardFieldsError"] as const;
+
+        describe("useCardFields", () => {
+            test("should only return status context values", () => {
+                const { cardFieldsStatusState } = renderSSRCardFieldsProvider({
+                    sessionType: oneTimePaymentSessionType,
+                });
+
+                const receivedStatusKeys = Object.keys(cardFieldsStatusState);
+                expect(receivedStatusKeys.sort()).toEqual(
+                    [...expectedStatusContextKeys].sort(),
+                );
+            });
+
+            test("should not return session context values", () => {
+                const { cardFieldsStatusState } = renderSSRCardFieldsProvider({
+                    sessionType: oneTimePaymentSessionType,
+                });
+
+                const receivedStatusKeys = Object.keys(cardFieldsStatusState);
+                expectedSessionContextKeys.forEach((key) => {
+                    expect(receivedStatusKeys).not.toContain(key);
+                });
+            });
+        });
+
+        describe("useCardFieldsSession", () => {
+            test("should only return session context values", () => {
+                const { cardFieldsSessionState } = renderSSRCardFieldsProvider({
+                    sessionType: oneTimePaymentSessionType,
+                });
+
+                const receivedSessionKeys = Object.keys(cardFieldsSessionState);
+                expect(receivedSessionKeys.sort()).toEqual(
+                    [...expectedSessionContextKeys].sort(),
+                );
+            });
+
+            test("should not return status context values", () => {
+                const { cardFieldsSessionState } = renderSSRCardFieldsProvider({
+                    sessionType: oneTimePaymentSessionType,
+                });
+
+                const receivedSessionKeys = Object.keys(cardFieldsSessionState);
+                expectedStatusContextKeys.forEach((key) => {
+                    expect(receivedSessionKeys).not.toContain(key);
+                });
+            });
         });
     });
 });
