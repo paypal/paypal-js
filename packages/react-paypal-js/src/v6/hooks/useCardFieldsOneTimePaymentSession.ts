@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 
 import { useCardFieldsSession } from "./useCardFields";
 import { useError } from "./useError";
@@ -9,18 +9,31 @@ import type { ExtraFields, OneTimePaymentFlowResponse } from "../types";
 
 export type useCardFieldsOneTimePaymentSessionReturn = {
     submit: SubmitCardFieldsOneTimePayment;
-    error: Error | null;
+    submitResponse: OneTimePaymentFlowResponse | null;
+    submitError: Error | null;
 };
 
-// TODO: Having void as a potential return value doesn't seem right, what to return? undefined instead?
 export type SubmitCardFieldsOneTimePayment = (
     orderId: Promise<string> | string,
     options: ExtraFields,
-) => Promise<OneTimePaymentFlowResponse | void>;
+) => Promise<void>;
 
 export function useCardFieldsOneTimePaymentSession(): useCardFieldsOneTimePaymentSessionReturn {
     const { cardFieldsSession, cardFieldsSessionType } = useCardFieldsSession();
-    const [error, setError] = useError();
+    const [submitResponse, setSubmitResponse] =
+        useState<OneTimePaymentFlowResponse | null>(null);
+    const [submitError, setSubmitError] = useState<Error | null>(null);
+    // Using the error hook here so it can participate in side-effects provided by the hook.
+    // The actual errors are stored in the hook's state.
+    const [, setError] = useError();
+
+    const handleSubmitError = useCallback(
+        (error: Error | null) => {
+            setError(error);
+            setSubmitError(error);
+        },
+        [setError],
+    );
 
     const submit: SubmitCardFieldsOneTimePayment = useCallback(
         async (orderId, options) => {
@@ -28,19 +41,18 @@ export function useCardFieldsOneTimePaymentSession(): useCardFieldsOneTimePaymen
                 cardFieldsSessionType !==
                 CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT
             ) {
-                setError(
+                handleSubmitError(
                     toError(
                         `Invalid session type: expected ${CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT}, got "${cardFieldsSessionType}"`,
                     ),
                 );
-
-                // TODO: Should return something here? If yes, what?
+                setSubmitResponse(null);
                 return;
             }
 
             if (!cardFieldsSession) {
-                setError(toError("CardFields session not available"));
-                // TODO: Should return something here? If yes, what?
+                handleSubmitError(toError("CardFields session not available"));
+                setSubmitResponse(null);
                 return;
             }
 
@@ -50,17 +62,16 @@ export function useCardFieldsOneTimePaymentSession(): useCardFieldsOneTimePaymen
                     id,
                     options,
                 )) as OneTimePaymentFlowResponse;
-                setError(null);
 
-                return submitResult;
+                setSubmitResponse(submitResult);
+                handleSubmitError(null);
             } catch (error) {
-                setError(toError(error));
-                // TODO: Should return something here? If yes, what?
-                return;
+                handleSubmitError(toError(error));
+                setSubmitResponse(null);
             }
         },
-        [cardFieldsSession, cardFieldsSessionType, setError],
+        [cardFieldsSession, cardFieldsSessionType, handleSubmitError],
     );
 
-    return { submit, error };
+    return { submit, submitResponse, submitError };
 }
