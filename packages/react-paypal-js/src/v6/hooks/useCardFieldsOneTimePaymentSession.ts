@@ -13,7 +13,7 @@ export type useCardFieldsOneTimePaymentSessionReturn = {
     error: Error | null;
 };
 
-export type SubmitCardFieldsOneTimePayment = (
+type SubmitCardFieldsOneTimePayment = (
     orderId: Promise<string> | string,
     options: ExtraFields,
 ) => Promise<void>;

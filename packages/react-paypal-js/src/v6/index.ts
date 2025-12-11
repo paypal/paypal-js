@@ -10,7 +10,6 @@ export { useCardFields } from "./hooks/useCardFields";
 export {
     useCardFieldsOneTimePaymentSession,
     type useCardFieldsOneTimePaymentSessionReturn,
-    type SubmitCardFieldsOneTimePayment,
 } from "./hooks/useCardFieldsOneTimePaymentSession";
 export { usePayPal } from "./hooks/usePayPal";
 export { usePayLaterOneTimePaymentSession } from "./hooks/usePayLaterOneTimePaymentSession";
