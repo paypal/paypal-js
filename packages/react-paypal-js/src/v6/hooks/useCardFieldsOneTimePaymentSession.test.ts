@@ -66,7 +66,7 @@ describe("useCardFieldsOneTimePaymentSession", () => {
         );
 
         expect(result.current).toHaveProperty("submit");
-        expect(result.current).toHaveProperty("submitError");
+        expect(result.current).toHaveProperty("error");
         expect(result.current).toHaveProperty("submitResponse");
     });
 
@@ -105,11 +105,11 @@ describe("useCardFieldsOneTimePaymentSession", () => {
             expect(result.current.submitResponse).toEqual(
                 mockSuccessfulSubmitResponse,
             );
-            expect(result.current.submitError).toBeNull();
+            expect(result.current.error).toBeNull();
             expectCurrentErrorValue(null);
         });
 
-        test("should set submitError when session type is invalid", () => {
+        test("should set error when session type is invalid", () => {
             mockUseCardFieldsSession.mockReturnValueOnce({
                 cardFieldsSession: mockCardFieldsOneTimePaymentSession,
                 cardFieldsSessionType: CARD_FIELDS_SESSION_TYPES.SAVE_PAYMENT,
@@ -123,16 +123,16 @@ describe("useCardFieldsOneTimePaymentSession", () => {
                 result.current.submit(mockOrderId, mockOptions);
             });
 
-            const expectedSubmitError = toError(
+            const expectedError = toError(
                 `Invalid session type: expected ${CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT}, got "${CARD_FIELDS_SESSION_TYPES.SAVE_PAYMENT}"`,
             );
 
             expect(result.current.submitResponse).toBeNull();
-            expect(result.current.submitError).toEqual(expectedSubmitError);
-            expectCurrentErrorValue(result.current.submitError);
+            expect(result.current.error).toEqual(expectedError);
+            expectCurrentErrorValue(result.current.error);
         });
 
-        test("should set submitError when session is not available", () => {
+        test("should set error when session is not available", () => {
             mockUseCardFieldsSession.mockReturnValueOnce({
                 cardFieldsSession: null,
                 cardFieldsSessionType:
@@ -147,16 +147,14 @@ describe("useCardFieldsOneTimePaymentSession", () => {
                 result.current.submit(mockOrderId, mockOptions);
             });
 
-            const expectedSubmitError = toError(
-                "CardFields session not available",
-            );
+            const expectedError = toError("CardFields session not available");
 
             expect(result.current.submitResponse).toBeNull();
-            expect(result.current.submitError).toEqual(expectedSubmitError);
-            expectCurrentErrorValue(result.current.submitError);
+            expect(result.current.error).toEqual(expectedError);
+            expectCurrentErrorValue(result.current.error);
         });
 
-        test("should set submitError when session's submit rejects", async () => {
+        test("should set error when session's submit rejects", async () => {
             const submitRejectError = new Error("Submit failed");
             const newMockCardFieldsOneTimePaymentSession =
                 createMockCardFieldsOneTimePaymentSession({
@@ -178,8 +176,8 @@ describe("useCardFieldsOneTimePaymentSession", () => {
             });
 
             expect(result.current.submitResponse).toBeNull();
-            expect(result.current.submitError).toEqual(submitRejectError);
-            expectCurrentErrorValue(result.current.submitError);
+            expect(result.current.error).toEqual(submitRejectError);
+            expectCurrentErrorValue(result.current.error);
         });
 
         test("should handle orderId promise", async () => {
@@ -199,11 +197,11 @@ describe("useCardFieldsOneTimePaymentSession", () => {
             expect(result.current.submitResponse).toEqual(
                 mockSuccessfulSubmitResponse,
             );
-            expect(result.current.submitError).toBeNull();
+            expect(result.current.error).toBeNull();
             expectCurrentErrorValue(null);
         });
 
-        test("should set submitError when orderId promise rejects", async () => {
+        test("should set error when orderId promise rejects", async () => {
             const { result } = renderHook(() =>
                 useCardFieldsOneTimePaymentSession(),
             );
@@ -216,8 +214,8 @@ describe("useCardFieldsOneTimePaymentSession", () => {
             });
 
             expect(result.current.submitResponse).toBeNull();
-            expect(result.current.submitError).toEqual(orderIdError);
-            expectCurrentErrorValue(result.current.submitError);
+            expect(result.current.error).toEqual(orderIdError);
+            expectCurrentErrorValue(result.current.error);
         });
     });
 });

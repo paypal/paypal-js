@@ -10,7 +10,7 @@ import type { ExtraFields, OneTimePaymentFlowResponse } from "../types";
 export type useCardFieldsOneTimePaymentSessionReturn = {
     submit: SubmitCardFieldsOneTimePayment;
     submitResponse: OneTimePaymentFlowResponse | null;
-    submitError: Error | null;
+    error: Error | null;
 };
 
 export type SubmitCardFieldsOneTimePayment = (
@@ -22,18 +22,7 @@ export function useCardFieldsOneTimePaymentSession(): useCardFieldsOneTimePaymen
     const { cardFieldsSession, cardFieldsSessionType } = useCardFieldsSession();
     const [submitResponse, setSubmitResponse] =
         useState<OneTimePaymentFlowResponse | null>(null);
-    const [submitError, setSubmitError] = useState<Error | null>(null);
-    // Using the error hook here so it can participate in side-effects provided by the hook.
-    // The actual errors are stored in the hook's state.
-    const [, setError] = useError();
-
-    const handleSubmitError = useCallback(
-        (error: Error | null) => {
-            setError(error);
-            setSubmitError(error);
-        },
-        [setError],
-    );
+    const [error, setError] = useError();
 
     const submit: SubmitCardFieldsOneTimePayment = useCallback(
         async (orderId, options) => {
@@ -41,7 +30,7 @@ export function useCardFieldsOneTimePaymentSession(): useCardFieldsOneTimePaymen
                 cardFieldsSessionType !==
                 CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT
             ) {
-                handleSubmitError(
+                setError(
                     toError(
                         `Invalid session type: expected ${CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT}, got "${cardFieldsSessionType}"`,
                     ),
@@ -51,7 +40,7 @@ export function useCardFieldsOneTimePaymentSession(): useCardFieldsOneTimePaymen
             }
 
             if (!cardFieldsSession) {
-                handleSubmitError(toError("CardFields session not available"));
+                setError(toError("CardFields session not available"));
                 setSubmitResponse(null);
                 return;
             }
@@ -64,14 +53,14 @@ export function useCardFieldsOneTimePaymentSession(): useCardFieldsOneTimePaymen
                 )) as OneTimePaymentFlowResponse;
 
                 setSubmitResponse(submitResult);
-                handleSubmitError(null);
+                setError(null);
             } catch (error) {
-                handleSubmitError(toError(error));
+                setError(toError(error));
                 setSubmitResponse(null);
             }
         },
-        [cardFieldsSession, cardFieldsSessionType, handleSubmitError],
+        [cardFieldsSession, cardFieldsSessionType, setError],
     );
 
-    return { submit, submitResponse, submitError };
+    return { submit, submitResponse, error };
 }
