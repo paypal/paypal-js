@@ -1,9 +1,13 @@
 import { createContext } from "react";
 
-import type { CardFieldsSession } from "../components/CardFieldsProvider";
+import type {
+    CardFieldsSession,
+    CardFieldsSessionType,
+} from "../components/CardFieldsProvider";
 
 export interface CardFieldsSessionState {
     cardFieldsSession: CardFieldsSession | null;
+    cardFieldsSessionType: CardFieldsSessionType;
 }
 
 export const CardFieldsSessionContext =

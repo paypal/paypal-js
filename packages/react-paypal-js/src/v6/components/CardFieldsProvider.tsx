@@ -29,7 +29,13 @@ export type CardFieldsSession =
     | CardFieldsOneTimePaymentSession
     | CardFieldsSavePaymentSession;
 
-export type CardFieldsSessionType = "one-time-payment" | "save-payment";
+export const CARD_FIELDS_SESSION_TYPES = {
+    ONE_TIME_PAYMENT: "one-time-payment",
+    SAVE_PAYMENT: "save-payment",
+} as const;
+
+export type CardFieldsSessionType =
+    (typeof CARD_FIELDS_SESSION_TYPES)[keyof typeof CARD_FIELDS_SESSION_TYPES];
 
 type CardFieldsProviderProps = {
     children: ReactNode;
@@ -88,7 +94,7 @@ export const CardFieldsProvider = ({
         // Create Card Fields session based on sessionType
         try {
             const newCardFieldsSession =
-                sessionType === "one-time-payment"
+                sessionType === CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT
                     ? sdkInstance.createCardFieldsOneTimePaymentSession()
                     : sdkInstance.createCardFieldsSavePaymentSession();
 
@@ -105,8 +111,9 @@ export const CardFieldsProvider = ({
     const sessionContextValue: CardFieldsSessionState = useMemo(
         () => ({
             cardFieldsSession,
+            cardFieldsSessionType: sessionType,
         }),
-        [cardFieldsSession],
+        [cardFieldsSession, sessionType],
     );
 
     const statusContextValue: CardFieldsStatusState = useMemo(
