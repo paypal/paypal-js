@@ -4,7 +4,7 @@ import { renderHook } from "@testing-library/react-hooks";
 import { usePayPal } from "../hooks/usePayPal";
 import { INSTANCE_LOADING_STATE } from "../types";
 import { expectCurrentErrorValue } from "../hooks/useErrorTestUtil";
-import { CardFieldsProvider } from "./CardFieldsProvider";
+import { CardFieldsProvider } from "./PayPalCardFieldsProvider";
 import { useCardFields, useCardFieldsSession } from "../hooks/useCardFields";
 import { toError } from "../utils";
 
@@ -12,7 +12,7 @@ import type {
     CardFieldsOneTimePaymentSession,
     CardFieldsSavePaymentSession,
 } from "../types";
-import type { CardFieldsSessionType } from "./CardFieldsProvider";
+import type { CardFieldsSessionType } from "./PayPalCardFieldsProvider";
 
 jest.mock("../hooks/usePayPal");
 

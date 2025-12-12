@@ -11,7 +11,7 @@ import { usePayPal } from "../hooks/usePayPal";
 import {
     CardFieldsSessionContext,
     CardFieldsStatusContext,
-} from "../context/CardFieldsProviderContext";
+} from "../context/PayPalCardFieldsProviderContext";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import { useError } from "../hooks/useError";
 import { toError } from "../utils";
@@ -23,7 +23,7 @@ import type {
 import type {
     CardFieldsSessionState,
     CardFieldsStatusState,
-} from "../context/CardFieldsProviderContext";
+} from "../context/PayPalCardFieldsProviderContext";
 
 export type CardFieldsSession =
     | CardFieldsOneTimePaymentSession

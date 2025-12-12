@@ -3,13 +3,13 @@ import { useContext } from "react";
 import {
     CardFieldsSessionContext,
     CardFieldsStatusContext,
-} from "../context/CardFieldsProviderContext";
+} from "../context/PayPalCardFieldsProviderContext";
 
-import type { CardFieldsProvider } from "../components/CardFieldsProvider";
+import type { CardFieldsProvider } from "../components/PayPalCardFieldsProvider";
 import type {
     CardFieldsSessionState,
     CardFieldsStatusState,
-} from "../context/CardFieldsProviderContext";
+} from "../context/PayPalCardFieldsProviderContext";
 
 /**
  * Returns {@link CardFieldsStatusState} provided by a parent {@link CardFieldsProvider}
