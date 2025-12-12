@@ -7,7 +7,9 @@ import type {
 
 export interface CardFieldsSessionState {
     cardFieldsSession: CardFieldsSession | null;
-    cardFieldsSessionType: CardFieldsSessionType;
+    setCardFieldsSessionType: (
+        cardFieldsSessionType: CardFieldsSessionType,
+    ) => void;
 }
 
 export const CardFieldsSessionContext =

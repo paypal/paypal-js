@@ -39,11 +39,15 @@ export type CardFieldsSessionType =
 
 type CardFieldsProviderProps = {
     children: ReactNode;
-    sessionType: CardFieldsSessionType;
 };
 
 /**
- * {@link CardFieldsProvider} creates the appropriate Card Fields session based on the `sessionType` prop value, and then provides it to child components that require it.
+ * {@link CardFieldsProvider} creates a Card Fields session and provides it to child components.
+ *
+ * @remarks
+ * Child components must use either {@link useCardFieldsOneTimePaymentSession} or
+ * {@link useCardFieldsSavePaymentSession} to initialize the appropriate session type.
+ * The session will not be created until one of these hooks is called.
  *
  * @example
  * <PayPalProvider
@@ -51,18 +55,19 @@ type CardFieldsProviderProps = {
  *  clientToken={clientToken}
  *  pageType="checkout"
  * >
- *   <CardFieldsProvider sessionType={"one-time-payment"}>
+ *   <CardFieldsProvider>
  *    <CheckoutForm />
  *   </CardFieldsProvider>
  * </PayPalProvider>
  */
 export const CardFieldsProvider = ({
     children,
-    sessionType,
 }: CardFieldsProviderProps): JSX.Element => {
     const { sdkInstance, loadingStatus } = usePayPal();
     const [cardFieldsSession, setCardFieldsSession] =
         useState<CardFieldsSession | null>(null);
+    const [cardFieldsSessionType, setCardFieldsSessionType] =
+        useState<CardFieldsSessionType | null>(null);
     const [cardFieldsError, setCardFieldsError] = useState<Error | null>(null);
     // Using the error hook here so it can participate in side-effects provided by the hook.
     // The actual error instance is stored in the provider's state.
@@ -91,10 +96,15 @@ export const CardFieldsProvider = ({
         // Clear previous sdkInstance loading errors
         handleError(null);
 
+        if (!cardFieldsSessionType) {
+            return;
+        }
+
         // Create Card Fields session based on sessionType
         try {
             const newCardFieldsSession =
-                sessionType === CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT
+                cardFieldsSessionType ===
+                CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT
                     ? sdkInstance.createCardFieldsOneTimePaymentSession()
                     : sdkInstance.createCardFieldsSavePaymentSession();
 
@@ -106,14 +116,14 @@ export const CardFieldsProvider = ({
         return () => {
             setCardFieldsSession(null);
         };
-    }, [sdkInstance, loadingStatus, sessionType, handleError]);
+    }, [sdkInstance, loadingStatus, cardFieldsSessionType, handleError]);
 
     const sessionContextValue: CardFieldsSessionState = useMemo(
         () => ({
             cardFieldsSession,
-            cardFieldsSessionType: sessionType,
+            setCardFieldsSessionType,
         }),
-        [cardFieldsSession, sessionType],
+        [cardFieldsSession, setCardFieldsSessionType],
     );
 
     const statusContextValue: CardFieldsStatusState = useMemo(
