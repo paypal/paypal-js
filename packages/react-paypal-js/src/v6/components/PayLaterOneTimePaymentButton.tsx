@@ -8,11 +8,6 @@ import type { PayLaterOneTimePaymentSessionProps } from "../hooks/usePayLaterOne
 
 type PayLaterOneTimePaymentButtonProps = PayLaterOneTimePaymentSessionProps &
     PayLaterButtonProps & {
-        /**
-         * This component uses the SDK's default redirect behavior.
-         * To customize redirect behavior (e.g., `autoRedirect: { enabled: false }`),
-         * use the `usePayLaterOneTimePaymentSession` hook directly.
-         */
         autoRedirect?: never;
     };
 
@@ -21,6 +16,10 @@ type PayLaterOneTimePaymentButtonProps = PayLaterOneTimePaymentSessionProps &
  *
  * `PayLaterOneTimePaymentButtonProps` combines the arguments for {@link PayLaterOneTimePaymentSessionProps}
  * and {@link PayLaterButtonProps}.
+ *
+ * Note, `autoRedirect` is not allowed because if given a `presentationMode` of `"redirect"` the button
+ * would not be able to provide back `redirectURL` from `start`. Advanced integrations that need
+ * `redirectURL` should use the {@link usePayLaterOneTimePaymentSession} hook directly.
  *
  * @example
  * <PayLaterOneTimePaymentButton
