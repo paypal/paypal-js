@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-import type { CardFieldsSession } from "../components/CardFieldsProvider";
+import type { CardFieldsSession } from "../components/PayPalCardFieldsProvider";
 
 export interface CardFieldsSessionState {
     cardFieldsSession: CardFieldsSession | null;

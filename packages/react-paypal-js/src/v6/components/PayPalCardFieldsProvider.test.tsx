@@ -4,15 +4,18 @@ import { renderHook } from "@testing-library/react-hooks";
 import { usePayPal } from "../hooks/usePayPal";
 import { INSTANCE_LOADING_STATE } from "../types";
 import { expectCurrentErrorValue } from "../hooks/useErrorTestUtil";
-import { CardFieldsProvider } from "./CardFieldsProvider";
-import { useCardFields, useCardFieldsSession } from "../hooks/useCardFields";
+import { PayPalCardFieldsProvider } from "./PayPalCardFieldsProvider";
+import {
+    usePayPalCardFields,
+    usePayPalCardFieldsSession,
+} from "../hooks/usePayPalCardFields";
 import { toError } from "../utils";
 
 import type {
     CardFieldsOneTimePaymentSession,
     CardFieldsSavePaymentSession,
 } from "../types";
-import type { CardFieldsSessionType } from "./CardFieldsProvider";
+import type { CardFieldsSessionType } from "./PayPalCardFieldsProvider";
 
 jest.mock("../hooks/usePayPal");
 
@@ -60,21 +63,21 @@ function renderCardFieldsProvider({
 }) {
     return renderHook(
         () => ({
-            status: useCardFields(),
-            session: useCardFieldsSession(),
+            status: usePayPalCardFields(),
+            session: usePayPalCardFieldsSession(),
         }),
         {
             initialProps: { sessionType },
             wrapper: ({ children, sessionType }) => (
-                <CardFieldsProvider sessionType={sessionType}>
+                <PayPalCardFieldsProvider sessionType={sessionType}>
                     {children}
-                </CardFieldsProvider>
+                </PayPalCardFieldsProvider>
             ),
         },
     );
 }
 
-describe("CardFieldsProvider", () => {
+describe("PayPalCardFieldsProvider", () => {
     let mockCardFieldsOneTimePaymentSession: CardFieldsOneTimePaymentSession;
     let mockCardFieldsSavePaymentSession: CardFieldsSavePaymentSession;
     let mockSdkInstance: ReturnType<typeof createMockSdkInstance>;
@@ -329,7 +332,7 @@ describe("CardFieldsProvider", () => {
         const expectedSessionContextKeys = ["cardFieldsSession"] as const;
         const expectedStatusContextKeys = ["cardFieldsError"] as const;
 
-        describe("useCardFields", () => {
+        describe("usePayPalCardFields", () => {
             test("should only return status context values", () => {
                 const { result } = renderCardFieldsProvider({
                     sessionType: oneTimePaymentSessionType,
@@ -353,7 +356,7 @@ describe("CardFieldsProvider", () => {
             });
         });
 
-        describe("useCardFieldsSession", () => {
+        describe("usePayPalCardFieldsSession", () => {
             test("should only return session context values", () => {
                 const { result } = renderCardFieldsProvider({
                     sessionType: oneTimePaymentSessionType,
