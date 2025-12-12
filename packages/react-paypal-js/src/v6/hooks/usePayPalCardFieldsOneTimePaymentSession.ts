@@ -25,35 +25,6 @@ type SubmitPayPalCardFieldsOneTimePayment = (
  * a one-time payment session.
  *
  * @returns {usePayPalCardFieldsOneTimePaymentSessionReturn}
- *
- * @example
- * function CheckoutForm() {
- *   const { submit, submitResponse, error } = usePayPalCardFieldsOneTimePaymentSession();
- *
- *   useEffect(() => {
- *     if (submitResponse) {
- *       // Handle payment response
- *       console.log("Submit response received:", submitResponse);
- *     }
- *   }, [submitResponse]);
- *
- *   const handleSubmit = () => {
- *     submit("your-order-id", {
- *       billingAddress: { postalCode: "12345" }
- *     });
- *   };
- *
- *   return (
- *     <div>
- *       <h2>Checkout Form</h2>
- *       <PayPalCardNumberField />
- *       <PayPalCardExpiryField />
- *       <PayPalCardCvvField />
- *       <button onClick={handleSubmit}>Pay Now</button>
- *       {error && <div>Error: {error.message}</div>}
- *     </div>
- *   );
- * }
  */
 export function usePayPalCardFieldsOneTimePaymentSession(): usePayPalCardFieldsOneTimePaymentSessionReturn {
     const { cardFieldsSession, setCardFieldsSessionType } =
