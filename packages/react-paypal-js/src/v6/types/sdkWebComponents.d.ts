@@ -4,15 +4,26 @@ export interface ButtonProps {
     disabled?: boolean;
 }
 
+export interface PayLaterButtonProps {
+    countryCode?: string;
+    productCode?: string;
+    disabled?: boolean;
+}
+
 interface IntrinsicButtonProps
     extends React.HTMLAttributes<HTMLButtonElement>,
         ButtonProps {}
+
+interface IntrinsicPayLaterButtonProps
+    extends React.HTMLAttributes<HTMLButtonElement>,
+        PayLaterButtonProps {}
 
 declare module "react" {
     namespace JSX {
         interface IntrinsicElements {
             "paypal-button": IntrinsicButtonProps;
             "venmo-button": IntrinsicButtonProps;
+            "paypal-pay-later-button": IntrinsicPayLaterButtonProps;
         }
     }
 }
