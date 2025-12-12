@@ -16,12 +16,12 @@ import type {
  *
  * @returns {CardFieldsStatusState}
  */
-export function useCardFields(): CardFieldsStatusState {
+export function usePayPalCardFields(): CardFieldsStatusState {
     const context = useContext(CardFieldsStatusContext);
 
     if (context === null) {
         throw new Error(
-            "useCardFields must be used within a PayPalCardFieldsProvider",
+            "usePayPalCardFields must be used within a PayPalCardFieldsProvider",
         );
     }
 
@@ -33,12 +33,12 @@ export function useCardFields(): CardFieldsStatusState {
  *
  * @returns {CardFieldsSessionState}
  */
-export function useCardFieldsSession(): CardFieldsSessionState {
+export function usePayPalCardFieldsSession(): CardFieldsSessionState {
     const context = useContext(CardFieldsSessionContext);
 
     if (context === null) {
         throw new Error(
-            "useCardFieldsSession must be used within a PayPalCardFieldsProvider",
+            "usePayPalCardFieldsSession must be used within a PayPalCardFieldsProvider",
         );
     }
 
