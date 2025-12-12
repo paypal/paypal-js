@@ -116,7 +116,9 @@ describe("useCardFieldsOneTimePaymentSession", () => {
                 result.current.submit(mockOrderId, mockOptions);
             });
 
-            const expectedError = toError("CardFields session not available");
+            const expectedError = toError(
+                "Submit error: CardFields session not available",
+            );
 
             expect(result.current.submitResponse).toBeNull();
             expect(result.current.error).toEqual(expectedError);

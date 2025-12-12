@@ -40,7 +40,9 @@ export function usePayPalCardFieldsOneTimePaymentSession(): usePayPalCardFieldsO
     const submit: SubmitPayPalCardFieldsOneTimePayment = useCallback(
         async (orderId, options) => {
             if (!cardFieldsSession) {
-                setError(toError("CardFields session not available"));
+                setError(
+                    toError("Submit error: CardFields session not available"),
+                );
                 setSubmitResponse(null);
                 return;
             }
