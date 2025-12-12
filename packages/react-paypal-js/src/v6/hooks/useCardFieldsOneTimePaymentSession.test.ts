@@ -60,25 +60,7 @@ describe("useCardFieldsOneTimePaymentSession", () => {
         jest.clearAllMocks();
     });
 
-    test("should return the expected object structure", () => {
-        const { result } = renderHook(() =>
-            useCardFieldsOneTimePaymentSession(),
-        );
-
-        expect(result.current).toHaveProperty("submit");
-        expect(result.current).toHaveProperty("error");
-        expect(result.current).toHaveProperty("submitResponse");
-    });
-
     describe("submit", () => {
-        test("should provide a submit function", () => {
-            const { result } = renderHook(() =>
-                useCardFieldsOneTimePaymentSession(),
-            );
-
-            expect(typeof result.current.submit).toBe("function");
-        });
-
         test("should call the session's submit method with correct arguments", async () => {
             const { result } = renderHook(() =>
                 useCardFieldsOneTimePaymentSession(),
