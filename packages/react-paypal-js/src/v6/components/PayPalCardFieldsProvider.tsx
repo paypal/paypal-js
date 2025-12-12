@@ -37,7 +37,7 @@ type CardFieldsProviderProps = {
 };
 
 /**
- * {@link CardFieldsProvider} creates the appropriate Card Fields session based on the `sessionType` prop value, and then provides it to child components that require it.
+ * {@link PayPalCardFieldsProvider} creates the appropriate Card Fields session based on the `sessionType` prop value, and then provides it to child components that require it.
  *
  * @example
  * <PayPalProvider
@@ -45,12 +45,12 @@ type CardFieldsProviderProps = {
  *  clientToken={clientToken}
  *  pageType="checkout"
  * >
- *   <CardFieldsProvider sessionType={"one-time-payment"}>
+ *   <PayPalCardFieldsProvider sessionType={"one-time-payment"}>
  *    <CheckoutForm />
- *   </CardFieldsProvider>
+ *   </PayPalCardFieldsProvider>
  * </PayPalProvider>
  */
-export const CardFieldsProvider = ({
+export const PayPalCardFieldsProvider = ({
     children,
     sessionType,
 }: CardFieldsProviderProps): JSX.Element => {

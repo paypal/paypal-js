@@ -4,7 +4,7 @@ import { renderHook } from "@testing-library/react-hooks";
 import { usePayPal } from "../hooks/usePayPal";
 import { INSTANCE_LOADING_STATE } from "../types";
 import { expectCurrentErrorValue } from "../hooks/useErrorTestUtil";
-import { CardFieldsProvider } from "./PayPalCardFieldsProvider";
+import { PayPalCardFieldsProvider } from "./PayPalCardFieldsProvider";
 import { useCardFields, useCardFieldsSession } from "../hooks/useCardFields";
 import { toError } from "../utils";
 
@@ -66,15 +66,15 @@ function renderCardFieldsProvider({
         {
             initialProps: { sessionType },
             wrapper: ({ children, sessionType }) => (
-                <CardFieldsProvider sessionType={sessionType}>
+                <PayPalCardFieldsProvider sessionType={sessionType}>
                     {children}
-                </CardFieldsProvider>
+                </PayPalCardFieldsProvider>
             ),
         },
     );
 }
 
-describe("CardFieldsProvider", () => {
+describe("PayPalCardFieldsProvider", () => {
     let mockCardFieldsOneTimePaymentSession: CardFieldsOneTimePaymentSession;
     let mockCardFieldsSavePaymentSession: CardFieldsSavePaymentSession;
     let mockSdkInstance: ReturnType<typeof createMockSdkInstance>;

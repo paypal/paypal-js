@@ -1,6 +1,6 @@
 export * from "./types";
 export {
-    CardFieldsProvider,
+    PayPalCardFieldsProvider,
     type CardFieldsSessionType,
 } from "./components/PayPalCardFieldsProvider";
 export { PayPalOneTimePaymentButton } from "./components/PayPalOneTimePaymentButton";
