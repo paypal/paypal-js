@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { useCardFieldsSession } from "./useCardFields";
+import { usePayPalCardFieldsSession } from "./usePayPalCardFields";
 import { useError } from "./useError";
-import { CARD_FIELDS_SESSION_TYPES } from "../components/CardFieldsProvider";
+import { CARD_FIELDS_SESSION_TYPES } from "../components/PayPalCardFieldsProvider";
 import { toError } from "../utils";
 
 import type { ExtraFields, OneTimePaymentFlowResponse } from "../types";
@@ -21,14 +21,14 @@ type SubmitPayPalCardFieldsOneTimePayment = (
 /**
  * Hook for managing one-time payment Card Fields sessions.
  *
- * This hook must be used within a {@link CardFieldsProvider} to initialize
+ * This hook must be used within a {@link PayPalCardFieldsProvider} to initialize
  * a one-time payment session.
  *
  * @returns {usePayPalCardFieldsOneTimePaymentSessionReturn}
  */
 export function usePayPalCardFieldsOneTimePaymentSession(): usePayPalCardFieldsOneTimePaymentSessionReturn {
     const { cardFieldsSession, setCardFieldsSessionType } =
-        useCardFieldsSession();
+        usePayPalCardFieldsSession();
     const [submitResponse, setSubmitResponse] =
         useState<OneTimePaymentFlowResponse | null>(null);
     const [error, setError] = useError();

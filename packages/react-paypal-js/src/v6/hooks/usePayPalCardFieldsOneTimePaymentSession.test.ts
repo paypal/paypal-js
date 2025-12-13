@@ -1,9 +1,9 @@
 import { act, renderHook } from "@testing-library/react-hooks";
 
 import { expectCurrentErrorValue } from "./useErrorTestUtil";
-import { useCardFieldsSession } from "./useCardFields";
+import { usePayPalCardFieldsSession } from "./usePayPalCardFields";
 import { usePayPalCardFieldsOneTimePaymentSession } from "./usePayPalCardFieldsOneTimePaymentSession";
-import { CARD_FIELDS_SESSION_TYPES } from "../components/CardFieldsProvider";
+import { CARD_FIELDS_SESSION_TYPES } from "../components/PayPalCardFieldsProvider";
 import { toError } from "../utils";
 
 import type {
@@ -11,11 +11,12 @@ import type {
     OneTimePaymentFlowResponse,
 } from "../types";
 
-jest.mock("./useCardFields");
+jest.mock("./usePayPalCardFields");
 
-const mockUseCardFieldsSession = useCardFieldsSession as jest.MockedFunction<
-    typeof useCardFieldsSession
->;
+const mockUseCardFieldsSession =
+    usePayPalCardFieldsSession as jest.MockedFunction<
+        typeof usePayPalCardFieldsSession
+    >;
 
 const mockOrderId = "test-order-id";
 

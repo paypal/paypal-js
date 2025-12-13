@@ -21,7 +21,7 @@ import type {
 import type {
     CardFieldsSessionState,
     CardFieldsStatusState,
-} from "../context/CardFieldsProviderContext";
+} from "../context/PayPalCardFieldsProviderContext";
 
 jest.mock("../hooks/usePayPal");
 
