@@ -2,4 +2,4 @@
 "@paypal/react-paypal-js": patch
 ---
 
-Created useCardFieldsOneTimePaymentSession hook
+Created usePayPalCardFieldsOneTimePaymentSession hook
