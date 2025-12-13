@@ -8,9 +8,9 @@ export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButto
 export { PayPalProvider } from "./components/PayPalProvider";
 export { useCardFields } from "./hooks/useCardFields";
 export {
-    useCardFieldsOneTimePaymentSession,
-    type useCardFieldsOneTimePaymentSessionReturn,
-} from "./hooks/useCardFieldsOneTimePaymentSession";
+    usePayPalCardFieldsOneTimePaymentSession,
+    type usePayPalCardFieldsOneTimePaymentSessionReturn,
+} from "./hooks/usePayPalCardFieldsOneTimePaymentSession";
 export { usePayPal } from "./hooks/usePayPal";
 export { usePayLaterOneTimePaymentSession } from "./hooks/usePayLaterOneTimePaymentSession";
 export { usePayPalOneTimePaymentSession } from "./hooks/usePayPalOneTimePaymentSession";
