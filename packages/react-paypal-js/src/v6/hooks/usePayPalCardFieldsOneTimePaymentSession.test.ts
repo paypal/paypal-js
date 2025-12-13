@@ -13,7 +13,7 @@ import type {
 
 jest.mock("./usePayPalCardFields");
 
-const mockUseCardFieldsSession =
+const mockUsePayPalCardFieldsSession =
     usePayPalCardFieldsSession as jest.MockedFunction<
         typeof usePayPalCardFieldsSession
     >;
@@ -42,7 +42,7 @@ const createMockCardFieldsOneTimePaymentSession = (
     ...overrides,
 });
 
-describe("useCardFieldsOneTimePaymentSession", () => {
+describe("usePayPalCardFieldsOneTimePaymentSession", () => {
     let mockCardFieldsOneTimePaymentSession: CardFieldsOneTimePaymentSession;
 
     beforeEach(() => {
@@ -53,7 +53,7 @@ describe("useCardFieldsOneTimePaymentSession", () => {
                     .mockResolvedValue(mockSuccessfulSubmitResponse),
             });
 
-        mockUseCardFieldsSession.mockReturnValue({
+        mockUsePayPalCardFieldsSession.mockReturnValue({
             cardFieldsSession: mockCardFieldsOneTimePaymentSession,
             setCardFieldsSessionType: mockSetCardFieldsSessionType,
         });
@@ -100,11 +100,11 @@ describe("useCardFieldsOneTimePaymentSession", () => {
                 mockSuccessfulSubmitResponse,
             );
             expect(result.current.error).toBeNull();
-            expectCurrentErrorValue(null);
+            expectCurrentErrorValue(result.current.error);
         });
 
         test("should set error when session is not available", () => {
-            mockUseCardFieldsSession.mockReturnValueOnce({
+            mockUsePayPalCardFieldsSession.mockReturnValueOnce({
                 cardFieldsSession: null,
                 setCardFieldsSessionType: mockSetCardFieldsSessionType,
             });
@@ -133,7 +133,7 @@ describe("useCardFieldsOneTimePaymentSession", () => {
                     submit: jest.fn().mockRejectedValue(submitRejectError),
                 });
 
-            mockUseCardFieldsSession.mockReturnValueOnce({
+            mockUsePayPalCardFieldsSession.mockReturnValueOnce({
                 cardFieldsSession: newMockCardFieldsOneTimePaymentSession,
                 setCardFieldsSessionType: mockSetCardFieldsSessionType,
             });
@@ -169,7 +169,7 @@ describe("useCardFieldsOneTimePaymentSession", () => {
                 mockSuccessfulSubmitResponse,
             );
             expect(result.current.error).toBeNull();
-            expectCurrentErrorValue(null);
+            expectCurrentErrorValue(result.current.error);
         });
 
         test("should set error when orderId promise rejects", async () => {
