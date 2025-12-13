@@ -3,7 +3,7 @@ import { createContext } from "react";
 import type {
     CardFieldsSession,
     CardFieldsSessionType,
-} from "../components/CardFieldsProvider";
+} from "../components/PayPalCardFieldsProvider";
 
 export interface CardFieldsSessionState {
     cardFieldsSession: CardFieldsSession | null;

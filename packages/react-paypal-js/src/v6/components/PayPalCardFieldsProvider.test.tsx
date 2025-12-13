@@ -6,9 +6,12 @@ import { INSTANCE_LOADING_STATE } from "../types";
 import { expectCurrentErrorValue } from "../hooks/useErrorTestUtil";
 import {
     CARD_FIELDS_SESSION_TYPES,
-    CardFieldsProvider,
-} from "./CardFieldsProvider";
-import { useCardFields, useCardFieldsSession } from "../hooks/useCardFields";
+    PayPalCardFieldsProvider,
+} from "./PayPalCardFieldsProvider";
+import {
+    usePayPalCardFields,
+    usePayPalCardFieldsSession,
+} from "../hooks/usePayPalCardFields";
 import { toError } from "../utils";
 
 import type {
@@ -59,18 +62,18 @@ const createMockSdkInstance = ({
 function renderCardFieldsProvider() {
     return renderHook(
         () => ({
-            status: useCardFields(),
-            session: useCardFieldsSession(),
+            status: usePayPalCardFields(),
+            session: usePayPalCardFieldsSession(),
         }),
         {
             wrapper: ({ children }) => (
-                <CardFieldsProvider>{children}</CardFieldsProvider>
+                <PayPalCardFieldsProvider>{children}</PayPalCardFieldsProvider>
             ),
         },
     );
 }
 
-describe("CardFieldsProvider", () => {
+describe("PayPalCardFieldsProvider", () => {
     let mockCardFieldsOneTimePaymentSession: CardFieldsOneTimePaymentSession;
     let mockCardFieldsSavePaymentSession: CardFieldsSavePaymentSession;
     let mockSdkInstance: ReturnType<typeof createMockSdkInstance>;
@@ -300,7 +303,7 @@ describe("CardFieldsProvider", () => {
             "cardFieldsError",
         ] as const satisfies (keyof CardFieldsStatusState)[];
 
-        describe("useCardFields", () => {
+        describe("usePayPalCardFields", () => {
             test("should only return status context values", () => {
                 const { result } = renderCardFieldsProvider();
 
@@ -320,7 +323,7 @@ describe("CardFieldsProvider", () => {
             });
         });
 
-        describe("useCardFieldsSession", () => {
+        describe("usePayPalCardFieldsSession", () => {
             test("should only return session context values", () => {
                 const { result } = renderCardFieldsProvider();
 

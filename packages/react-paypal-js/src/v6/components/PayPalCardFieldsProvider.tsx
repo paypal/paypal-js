@@ -11,7 +11,7 @@ import { usePayPal } from "../hooks/usePayPal";
 import {
     CardFieldsSessionContext,
     CardFieldsStatusContext,
-} from "../context/CardFieldsProviderContext";
+} from "../context/PayPalCardFieldsProviderContext";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import { useError } from "../hooks/useError";
 import { toError } from "../utils";
@@ -23,7 +23,7 @@ import type {
 import type {
     CardFieldsSessionState,
     CardFieldsStatusState,
-} from "../context/CardFieldsProviderContext";
+} from "../context/PayPalCardFieldsProviderContext";
 
 export type CardFieldsSession =
     | CardFieldsOneTimePaymentSession
@@ -42,11 +42,11 @@ type CardFieldsProviderProps = {
 };
 
 /**
- * {@link CardFieldsProvider} creates a Card Fields session and provides it to child components.
+ * {@link PayPalCardFieldsProvider} creates a Card Fields session and provides it to child components.
  *
  * @remarks
- * Child components must use either {@link useCardFieldsOneTimePaymentSession} or
- * {@link useCardFieldsSavePaymentSession} to initialize the appropriate session type.
+ * Child components must use either {@link usePayPalCardFieldsOneTimePaymentSession} or
+ * {@link usePayPalCardFieldsSavePaymentSession} to initialize the appropriate session type.
  * The session will not be created until one of these hooks is called.
  *
  * @example
@@ -55,12 +55,12 @@ type CardFieldsProviderProps = {
  *  clientToken={clientToken}
  *  pageType="checkout"
  * >
- *   <CardFieldsProvider>
+ *   <PayPalCardFieldsProvider>
  *    <CheckoutForm />
- *   </CardFieldsProvider>
+ *   </PayPalCardFieldsProvider>
  * </PayPalProvider>
  */
-export const CardFieldsProvider = ({
+export const PayPalCardFieldsProvider = ({
     children,
 }: CardFieldsProviderProps): JSX.Element => {
     const { sdkInstance, loadingStatus } = usePayPal();
