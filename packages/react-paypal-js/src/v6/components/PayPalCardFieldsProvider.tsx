@@ -24,6 +24,7 @@ import type {
     CardFieldsSessionState,
     CardFieldsStatusState,
 } from "../context/PayPalCardFieldsProviderContext";
+import type { usePayPalCardFieldsOneTimePaymentSession } from "../hooks/usePayPalCardFieldsOneTimePaymentSession";
 
 export type CardFieldsSession =
     | CardFieldsOneTimePaymentSession
@@ -46,7 +47,7 @@ type CardFieldsProviderProps = {
  *
  * @remarks
  * Child components must use either {@link usePayPalCardFieldsOneTimePaymentSession} or
- * {@link usePayPalCardFieldsSavePaymentSession} to initialize the appropriate session type.
+ * usePayPalCardFieldsSavePaymentSession to initialize the appropriate session type.
  * The session will not be created until one of these hooks is called.
  *
  * @example

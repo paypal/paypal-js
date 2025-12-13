@@ -6,6 +6,7 @@ import { CARD_FIELDS_SESSION_TYPES } from "../components/PayPalCardFieldsProvide
 import { toError } from "../utils";
 
 import type { ExtraFields, OneTimePaymentFlowResponse } from "../types";
+import type { PayPalCardFieldsProvider } from "../components/PayPalCardFieldsProvider";
 
 export type usePayPalCardFieldsOneTimePaymentSessionReturn = {
     submit: SubmitPayPalCardFieldsOneTimePayment;
