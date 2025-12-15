@@ -125,21 +125,6 @@ describe("PayLaterOneTimePaymentButton", () => {
         expect(button).not.toHaveAttribute("disabled");
     });
 
-    it("should pass countryCode and productCode props to paypal-pay-later-button", () => {
-        const { container } = render(
-            <PayLaterOneTimePaymentButton
-                onApprove={() => Promise.resolve()}
-                orderId="123"
-                presentationMode="auto"
-                countryCode="GB"
-                productCode="PAYLATER"
-            />,
-        );
-        const button = container.querySelector("paypal-pay-later-button");
-        expect(button).toHaveAttribute("countrycode", "GB");
-        expect(button).toHaveAttribute("productcode", "PAYLATER");
-    });
-
     it("should pass hook props to usePayLaterOneTimePaymentSession", () => {
         const hookProps = {
             clientToken: "test-token",
@@ -201,34 +186,7 @@ describe("PayLaterOneTimePaymentButton", () => {
             expect(button).toHaveAttribute("productcode", "PAYLATER");
         });
 
-        it("should allow manual props to override eligibility context values", () => {
-            mockUsePayPal.mockReturnValue({
-                eligiblePaymentMethods: {
-                    eligible_methods: {
-                        paypal_pay_later: {
-                            country_code: "US",
-                            product_code: "PAYLATER",
-                        },
-                    },
-                },
-            });
-
-            const { container } = render(
-                <PayLaterOneTimePaymentButton
-                    onApprove={() => Promise.resolve()}
-                    orderId="123"
-                    presentationMode="auto"
-                    countryCode="GB"
-                    productCode="PAYLATER"
-                />,
-            );
-
-            const button = container.querySelector("paypal-pay-later-button");
-            expect(button).toHaveAttribute("countrycode", "GB");
-            expect(button).toHaveAttribute("productcode", "PAYLATER");
-        });
-
-        it("should handle when eligibility was not fetched and no manual props provided", () => {
+        it("should handle when eligibility was not fetched", () => {
             mockUsePayPal.mockReturnValue({
                 eligiblePaymentMethods: null,
             });
@@ -246,7 +204,7 @@ describe("PayLaterOneTimePaymentButton", () => {
             expect(button).not.toHaveAttribute("productcode");
         });
 
-        it("should handle missing paypal_pay_later in eligibility context", () => {
+        it("should handle when PayLater is not in the eligibility response", () => {
             mockUsePayPal.mockReturnValue({
                 eligiblePaymentMethods: {
                     eligible_methods: {},
@@ -264,32 +222,6 @@ describe("PayLaterOneTimePaymentButton", () => {
             const button = container.querySelector("paypal-pay-later-button");
             expect(button).not.toHaveAttribute("countrycode");
             expect(button).not.toHaveAttribute("productcode");
-        });
-
-        it("should use eligibility for one prop and manual override for another", () => {
-            mockUsePayPal.mockReturnValue({
-                eligiblePaymentMethods: {
-                    eligible_methods: {
-                        paypal_pay_later: {
-                            country_code: "US",
-                            product_code: "PAYLATER",
-                        },
-                    },
-                },
-            });
-
-            const { container } = render(
-                <PayLaterOneTimePaymentButton
-                    onApprove={() => Promise.resolve()}
-                    orderId="123"
-                    presentationMode="auto"
-                    countryCode="GB"
-                />,
-            );
-
-            const button = container.querySelector("paypal-pay-later-button");
-            expect(button).toHaveAttribute("countrycode", "GB");
-            expect(button).toHaveAttribute("productcode", "PAYLATER");
         });
     });
 });
