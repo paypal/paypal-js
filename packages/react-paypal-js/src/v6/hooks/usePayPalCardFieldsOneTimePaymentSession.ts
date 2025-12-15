@@ -8,7 +8,7 @@ import { toError } from "../utils";
 import type { SubmitOptions, OneTimePaymentFlowResponse } from "../types";
 import type { PayPalCardFieldsProvider } from "../components/PayPalCardFieldsProvider";
 
-export type usePayPalCardFieldsOneTimePaymentSessionReturn = {
+export type usePayPalCardFieldsOneTimePaymentSessionResult = {
     submit: SubmitPayPalCardFieldsOneTimePayment;
     submitResponse: OneTimePaymentFlowResponse | null;
     error: Error | null;
@@ -25,9 +25,9 @@ type SubmitPayPalCardFieldsOneTimePayment = (
  * This hook must be used within a {@link PayPalCardFieldsProvider} to initialize
  * a one-time payment session.
  *
- * @returns {usePayPalCardFieldsOneTimePaymentSessionReturn}
+ * @returns {usePayPalCardFieldsOneTimePaymentSessionResult}
  */
-export function usePayPalCardFieldsOneTimePaymentSession(): usePayPalCardFieldsOneTimePaymentSessionReturn {
+export function usePayPalCardFieldsOneTimePaymentSession(): usePayPalCardFieldsOneTimePaymentSessionResult {
     const { cardFieldsSession, setCardFieldsSessionType } =
         usePayPalCardFieldsSession();
     const [submitResponse, setSubmitResponse] =

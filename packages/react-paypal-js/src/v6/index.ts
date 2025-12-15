@@ -9,7 +9,7 @@ export { PayPalProvider } from "./components/PayPalProvider";
 export { usePayPalCardFields } from "./hooks/usePayPalCardFields";
 export {
     usePayPalCardFieldsOneTimePaymentSession,
-    type usePayPalCardFieldsOneTimePaymentSessionReturn,
+    type usePayPalCardFieldsOneTimePaymentSessionResult,
 } from "./hooks/usePayPalCardFieldsOneTimePaymentSession";
 export { usePayPal } from "./hooks/usePayPal";
 export { usePayLaterOneTimePaymentSession } from "./hooks/usePayLaterOneTimePaymentSession";
