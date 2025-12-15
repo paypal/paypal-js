@@ -112,8 +112,8 @@ describe("PayPalCardFieldsProvider", () => {
             const { result } = renderCardFieldsProvider();
 
             expect(result.current.session.cardFieldsSession).toBeNull();
-            expect(result.current.status.cardFieldsError).toBeNull();
-            expectCurrentErrorValue(result.current.status.cardFieldsError);
+            expect(result.current.status.error).toBeNull();
+            expectCurrentErrorValue(result.current.status.error);
         });
 
         test("should error if there is no sdkInstance and loading is rejected", () => {
@@ -127,10 +127,10 @@ describe("PayPalCardFieldsProvider", () => {
             const { result } = renderCardFieldsProvider();
 
             expect(result.current.session.cardFieldsSession).toBeNull();
-            expect(result.current.status.cardFieldsError).toEqual(
+            expect(result.current.status.error).toEqual(
                 toError("no sdk instance available"),
             );
-            expectCurrentErrorValue(result.current.status.cardFieldsError);
+            expectCurrentErrorValue(result.current.status.error);
         });
 
         test("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
@@ -145,10 +145,10 @@ describe("PayPalCardFieldsProvider", () => {
             const { result, rerender } = renderCardFieldsProvider();
 
             expect(result.current.session.cardFieldsSession).toBeNull();
-            expect(result.current.status.cardFieldsError).toEqual(
+            expect(result.current.status.error).toEqual(
                 toError("no sdk instance available"),
             );
-            expectCurrentErrorValue(result.current.status.cardFieldsError);
+            expectCurrentErrorValue(result.current.status.error);
 
             // Second render: sdkInstance becomes available, error should clear
             mockUsePayPal.mockReturnValue({
@@ -161,8 +161,8 @@ describe("PayPalCardFieldsProvider", () => {
 
             rerender();
             expect(result.current.session.cardFieldsSession).toBeNull();
-            expect(result.current.status.cardFieldsError).toBeNull();
-            expectCurrentErrorValue(result.current.status.cardFieldsError);
+            expect(result.current.status.error).toBeNull();
+            expectCurrentErrorValue(result.current.status.error);
         });
     });
 
@@ -171,8 +171,8 @@ describe("PayPalCardFieldsProvider", () => {
             const { result } = renderCardFieldsProvider();
 
             expect(result.current.session.cardFieldsSession).toBeNull();
-            expect(result.current.status.cardFieldsError).toBeNull();
-            expectCurrentErrorValue(result.current.status.cardFieldsError);
+            expect(result.current.status.error).toBeNull();
+            expectCurrentErrorValue(result.current.status.error);
             expect(
                 mockSdkInstance.createCardFieldsOneTimePaymentSession,
             ).not.toHaveBeenCalled();
@@ -197,8 +197,8 @@ describe("PayPalCardFieldsProvider", () => {
             expect(result.current.session.cardFieldsSession).toBe(
                 mockCardFieldsOneTimePaymentSession,
             );
-            expect(result.current.status.cardFieldsError).toBeNull();
-            expectCurrentErrorValue(result.current.status.cardFieldsError);
+            expect(result.current.status.error).toBeNull();
+            expectCurrentErrorValue(result.current.status.error);
         });
 
         test("should create save-payment session when sessionType is set to save-payment", () => {
@@ -217,8 +217,8 @@ describe("PayPalCardFieldsProvider", () => {
             expect(result.current.session.cardFieldsSession).toBe(
                 mockCardFieldsSavePaymentSession,
             );
-            expect(result.current.status.cardFieldsError).toBeNull();
-            expectCurrentErrorValue(result.current.status.cardFieldsError);
+            expect(result.current.status.error).toBeNull();
+            expectCurrentErrorValue(result.current.status.error);
         });
 
         test("should handle errors when creating a session", () => {
@@ -239,10 +239,8 @@ describe("PayPalCardFieldsProvider", () => {
             );
 
             expect(result.current.session.cardFieldsSession).toBeNull();
-            expect(result.current.status.cardFieldsError).toEqual(
-                toError(errorMessage),
-            );
-            expectCurrentErrorValue(result.current.status.cardFieldsError);
+            expect(result.current.status.error).toEqual(toError(errorMessage));
+            expectCurrentErrorValue(result.current.status.error);
         });
 
         test("should create new session when the provider re-runs with a new sdkInstance", () => {
@@ -289,8 +287,8 @@ describe("PayPalCardFieldsProvider", () => {
             expect(result.current.session.cardFieldsSession).not.toBe(
                 mockCardFieldsOneTimePaymentSession,
             );
-            expect(result.current.status.cardFieldsError).toBeNull();
-            expectCurrentErrorValue(result.current.status.cardFieldsError);
+            expect(result.current.status.error).toBeNull();
+            expectCurrentErrorValue(result.current.status.error);
         });
     });
 
@@ -300,7 +298,7 @@ describe("PayPalCardFieldsProvider", () => {
             "setCardFieldsSessionType",
         ] as const satisfies (keyof CardFieldsSessionState)[];
         const expectedStatusContextKeys = [
-            "cardFieldsError",
+            "error",
         ] as const satisfies (keyof CardFieldsStatusState)[];
 
         describe("usePayPalCardFields", () => {

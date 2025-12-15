@@ -129,7 +129,7 @@ export const PayPalCardFieldsProvider = ({
 
     const statusContextValue: CardFieldsStatusState = useMemo(
         () => ({
-            cardFieldsError,
+            error: cardFieldsError,
         }),
         [cardFieldsError],
     );
