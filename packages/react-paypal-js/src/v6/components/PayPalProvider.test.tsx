@@ -46,11 +46,6 @@ jest.mock("@paypal/paypal-js/sdk-v6", () => ({
     loadCoreSdkScript: jest.fn(),
 }));
 
-jest.mock("../utils", () => ({
-    ...jest.requireActual("../utils"),
-    isServer: () => false,
-}));
-
 const createInstanceOptions: CreateInstanceOptions<["paypal-payments"]> = {
     components: ["paypal-payments"],
     clientToken: TEST_CLIENT_TOKEN,

@@ -1,12 +1,12 @@
 export * from "./types";
 export {
-    CardFieldsProvider,
+    PayPalCardFieldsProvider,
     type CardFieldsSessionType,
-} from "./components/CardFieldsProvider";
+} from "./components/PayPalCardFieldsProvider";
 export { PayPalOneTimePaymentButton } from "./components/PayPalOneTimePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
 export { PayPalProvider } from "./components/PayPalProvider";
-export { useCardFields } from "./hooks/useCardFields";
+export { usePayPalCardFields } from "./hooks/usePayPalCardFields";
 export { usePayPal } from "./hooks/usePayPal";
 export { usePayLaterOneTimePaymentSession } from "./hooks/usePayLaterOneTimePaymentSession";
 export { usePayPalOneTimePaymentSession } from "./hooks/usePayPalOneTimePaymentSession";
