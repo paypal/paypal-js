@@ -6,11 +6,15 @@ export interface ButtonProps {
 
 export interface PayLaterButtonProps {
     /**
-     * Required for the button to render. Available from the eligibility API response: `eligible_methods.paypal_pay_later.country_code`.
+     * Required for the button to render. Automatically populated from the eligibility API response
+     * (`eligible_methods.paypal_pay_later.country_code`) when using `PayLaterOneTimePaymentButton`.
+     * Can be provided manually as an override if needed.
      */
     countryCode?: string;
     /**
-     * Required for the button to render. Available from the eligibility API response: `eligible_methods.paypal_pay_later.product_code`.
+     * Required for the button to render. Automatically populated from the eligibility API response
+     * (`eligible_methods.paypal_pay_later.product_code`) when using `PayLaterOneTimePaymentButton`.
+     * Can be provided manually as an override if needed.
      */
     productCode?: string;
     disabled?: boolean;
