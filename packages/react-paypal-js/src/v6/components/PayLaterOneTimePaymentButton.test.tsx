@@ -3,10 +3,14 @@ import { render, fireEvent } from "@testing-library/react";
 
 import { PayLaterOneTimePaymentButton } from "./PayLaterOneTimePaymentButton";
 import { usePayLaterOneTimePaymentSession } from "../hooks/usePayLaterOneTimePaymentSession";
+import { usePayPal } from "../hooks/usePayPal";
 import { isServer } from "../utils";
 
 jest.mock("../hooks/usePayLaterOneTimePaymentSession", () => ({
     usePayLaterOneTimePaymentSession: jest.fn(),
+}));
+jest.mock("../hooks/usePayPal", () => ({
+    usePayPal: jest.fn(),
 }));
 jest.mock("../utils", () => ({
     isServer: jest.fn().mockReturnValue(false),
@@ -16,6 +20,7 @@ describe("PayLaterOneTimePaymentButton", () => {
     const mockHandleClick = jest.fn();
     const mockUsePayLaterOneTimePaymentSession =
         usePayLaterOneTimePaymentSession as jest.Mock;
+    const mockUsePayPal = usePayPal as jest.Mock;
     const mockIsServer = isServer as jest.Mock;
 
     beforeEach(() => {
@@ -23,6 +28,9 @@ describe("PayLaterOneTimePaymentButton", () => {
         mockUsePayLaterOneTimePaymentSession.mockReturnValue({
             error: null,
             handleClick: mockHandleClick,
+        });
+        mockUsePayPal.mockReturnValue({
+            eligiblePaymentMethods: null,
         });
         mockIsServer.mockReturnValue(false);
     });
@@ -124,12 +132,12 @@ describe("PayLaterOneTimePaymentButton", () => {
                 orderId="123"
                 presentationMode="auto"
                 countryCode="GB"
-                productCode="PAY_LATER_SHORT_TERM"
+                productCode="PAYLATER"
             />,
         );
         const button = container.querySelector("paypal-pay-later-button");
         expect(button).toHaveAttribute("countrycode", "GB");
-        expect(button).toHaveAttribute("productcode", "PAY_LATER_SHORT_TERM");
+        expect(button).toHaveAttribute("productcode", "PAYLATER");
     });
 
     it("should pass hook props to usePayLaterOneTimePaymentSession", () => {
@@ -165,5 +173,123 @@ describe("PayLaterOneTimePaymentButton", () => {
         );
         expect(consoleErrorSpy).toHaveBeenCalledWith(testError);
         consoleErrorSpy.mockRestore();
+    });
+
+    describe("auto-population from eligibility context", () => {
+        it("should auto-populate countryCode and productCode from eligibility context", () => {
+            mockUsePayPal.mockReturnValue({
+                eligiblePaymentMethods: {
+                    eligible_methods: {
+                        paypal_pay_later: {
+                            country_code: "US",
+                            product_code: "PAYLATER",
+                        },
+                    },
+                },
+            });
+
+            const { container } = render(
+                <PayLaterOneTimePaymentButton
+                    onApprove={() => Promise.resolve()}
+                    orderId="123"
+                    presentationMode="auto"
+                />,
+            );
+
+            const button = container.querySelector("paypal-pay-later-button");
+            expect(button).toHaveAttribute("countrycode", "US");
+            expect(button).toHaveAttribute("productcode", "PAYLATER");
+        });
+
+        it("should allow manual props to override eligibility context values", () => {
+            mockUsePayPal.mockReturnValue({
+                eligiblePaymentMethods: {
+                    eligible_methods: {
+                        paypal_pay_later: {
+                            country_code: "US",
+                            product_code: "PAYLATER",
+                        },
+                    },
+                },
+            });
+
+            const { container } = render(
+                <PayLaterOneTimePaymentButton
+                    onApprove={() => Promise.resolve()}
+                    orderId="123"
+                    presentationMode="auto"
+                    countryCode="GB"
+                    productCode="PAYLATER"
+                />,
+            );
+
+            const button = container.querySelector("paypal-pay-later-button");
+            expect(button).toHaveAttribute("countrycode", "GB");
+            expect(button).toHaveAttribute("productcode", "PAYLATER");
+        });
+
+        it("should handle when eligibility was not fetched and no manual props provided", () => {
+            mockUsePayPal.mockReturnValue({
+                eligiblePaymentMethods: null,
+            });
+
+            const { container } = render(
+                <PayLaterOneTimePaymentButton
+                    onApprove={() => Promise.resolve()}
+                    orderId="123"
+                    presentationMode="auto"
+                />,
+            );
+
+            const button = container.querySelector("paypal-pay-later-button");
+            expect(button).not.toHaveAttribute("countrycode");
+            expect(button).not.toHaveAttribute("productcode");
+        });
+
+        it("should handle missing paypal_pay_later in eligibility context", () => {
+            mockUsePayPal.mockReturnValue({
+                eligiblePaymentMethods: {
+                    eligible_methods: {},
+                },
+            });
+
+            const { container } = render(
+                <PayLaterOneTimePaymentButton
+                    onApprove={() => Promise.resolve()}
+                    orderId="123"
+                    presentationMode="auto"
+                />,
+            );
+
+            const button = container.querySelector("paypal-pay-later-button");
+            expect(button).not.toHaveAttribute("countrycode");
+            expect(button).not.toHaveAttribute("productcode");
+        });
+
+        it("should use eligibility for one prop and manual override for another", () => {
+            mockUsePayPal.mockReturnValue({
+                eligiblePaymentMethods: {
+                    eligible_methods: {
+                        paypal_pay_later: {
+                            country_code: "US",
+                            product_code: "PAYLATER",
+                        },
+                    },
+                },
+            });
+
+            const { container } = render(
+                <PayLaterOneTimePaymentButton
+                    onApprove={() => Promise.resolve()}
+                    orderId="123"
+                    presentationMode="auto"
+                    countryCode="GB"
+                />,
+            );
+
+            const button = container.querySelector("paypal-pay-later-button");
+            expect(button).toHaveAttribute("countrycode", "GB");
+            expect(button).toHaveAttribute("productcode", "PAYLATER");
+        });
     });
 });
