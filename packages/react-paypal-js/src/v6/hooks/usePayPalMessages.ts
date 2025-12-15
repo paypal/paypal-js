@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from "react";
 import { usePayPal } from "./usePayPal";
 import { useError } from "./useError";
 import { useIsMountedRef } from "./useIsMounted";
-
 import {
     type FetchContentOptions,
     type MessageContent,
@@ -55,7 +54,7 @@ export function usePayPalMessages({
         } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
             setError(new Error("no sdk instance available"));
         }
-    }, [sdkInstance, setError]);
+    }, [sdkInstance, setError, loadingStatus]);
 
     useEffect(() => {
         if (!sdkInstance) {
