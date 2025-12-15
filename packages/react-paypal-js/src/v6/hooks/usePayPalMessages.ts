@@ -25,6 +25,20 @@ type PayPalMessagesReturn = {
     ) => Promise<MessageContent | void>;
 };
 
+/**
+ * `usePayPalMessages` is used to create a PayPal Messages session for fetching messaging content
+ * and creating learn more modals.
+ *
+ * @param {PayPalMessagesOptions} options - Configuration options including buyerCountry, currencyCode, and shopperSessionId
+ * @returns {PayPalMessagesReturn} An object containing error state, isReady status, and handlers for creating learn more modals and fetching content
+ *
+ * @example
+ * const { error, isReady, handleCreateLearnMore, handleFetchContent } = usePayPalMessages({
+ *   buyerCountry: 'US',
+ *   currencyCode: 'USD',
+ *   shopperSessionId: 'session-123'
+ * });
+ */
 export function usePayPalMessages({
     buyerCountry,
     currencyCode,
