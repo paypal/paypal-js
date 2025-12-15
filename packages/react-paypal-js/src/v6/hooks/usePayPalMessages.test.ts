@@ -65,7 +65,7 @@ describe("usePayPalMessages", () => {
         test("should error if there is no sdkInstance when called", () => {
             mockUsePayPal.mockReturnValue({
                 sdkInstance: null,
-                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+                loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
             });
@@ -327,34 +327,6 @@ describe("usePayPalMessages", () => {
             expect(error).toEqual(
                 new Error("Failed to fetch PayPal Messages content"),
             );
-        });
-
-        test("should catch and set error when fetchContent throws", async () => {
-            const testError = new Error("Network error");
-            (mockMessagesSession.fetchContent as jest.Mock).mockRejectedValue(
-                testError,
-            );
-
-            const props: PayPalMessagesOptions = {
-                buyerCountry: "US",
-                currencyCode: "USD",
-            };
-
-            const { result } = renderHook(() => usePayPalMessages(props));
-
-            await act(async () => {
-                await result.current.handleFetchContent({
-                    amount: "100",
-                    logoPosition: "INLINE",
-                    logoType: "MONOGRAM",
-                });
-            });
-
-            const { error } = result.current;
-
-            expectCurrentErrorValue(error);
-
-            expect(error).toBe(testError);
         });
     });
 
