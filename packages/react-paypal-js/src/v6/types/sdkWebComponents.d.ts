@@ -6,11 +6,11 @@ export interface ButtonProps {
 
 export interface PayLaterButtonProps {
     /**
-     * Required for the button to render. Available from `findEligibleMethods().getDetails("PAYLATER").countryCode`.
+     * Required for the button to render. Available from the eligibility API response: `eligible_methods.paypal_pay_later.country_code`.
      */
     countryCode?: string;
     /**
-     * Required for the button to render. Available from `findEligibleMethods().getDetails("PAYLATER").productCode`.
+     * Required for the button to render. Available from the eligibility API response: `eligible_methods.paypal_pay_later.product_code`.
      */
     productCode?: string;
     disabled?: boolean;
