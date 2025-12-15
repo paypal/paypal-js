@@ -5,7 +5,13 @@ export interface ButtonProps {
 }
 
 export interface PayLaterButtonProps {
+    /**
+     * Required for the button to render. Available from `findEligibleMethods().getDetails("PAYLATER").countryCode`.
+     */
     countryCode?: string;
+    /**
+     * Required for the button to render. Available from `findEligibleMethods().getDetails("PAYLATER").productCode`.
+     */
     productCode?: string;
     disabled?: boolean;
 }
