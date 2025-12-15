@@ -5,7 +5,7 @@ import { useError } from "./useError";
 import { CARD_FIELDS_SESSION_TYPES } from "../components/PayPalCardFieldsProvider";
 import { toError } from "../utils";
 
-import type { ExtraFields, OneTimePaymentFlowResponse } from "../types";
+import type { SubmitOptions, OneTimePaymentFlowResponse } from "../types";
 import type { PayPalCardFieldsProvider } from "../components/PayPalCardFieldsProvider";
 
 export type usePayPalCardFieldsOneTimePaymentSessionReturn = {
@@ -16,7 +16,7 @@ export type usePayPalCardFieldsOneTimePaymentSessionReturn = {
 
 type SubmitPayPalCardFieldsOneTimePayment = (
     orderId: Promise<string> | string,
-    options: ExtraFields,
+    options?: SubmitOptions,
 ) => Promise<void>;
 
 /**
