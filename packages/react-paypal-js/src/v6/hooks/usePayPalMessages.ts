@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { usePayPal } from "./usePayPal";
 import { useError } from "./useError";
@@ -16,6 +16,7 @@ import {
 
 type PayPalMessagesReturn = {
     error: Error | null;
+    isReady: boolean;
     handleCreateLearnMore: (
         options?: LearnMoreOptions,
     ) => LearnMore | undefined;
@@ -31,7 +32,7 @@ export function usePayPalMessages({
 }: PayPalMessagesOptions): PayPalMessagesReturn {
     const { sdkInstance, loadingStatus } = usePayPal();
     const isMountedRef = useIsMountedRef();
-    const sessionRef = useRef<PayPalMessagesSession | null>(null);
+    const [session, setSession] = useState<PayPalMessagesSession | null>(null);
     const [error, setError] = useError();
 
     useEffect(() => {
@@ -53,10 +54,10 @@ export function usePayPalMessages({
             shopperSessionId,
         });
 
-        sessionRef.current = newSession;
+        setSession(newSession);
 
         return () => {
-            sessionRef.current = null;
+            setSession(null);
         };
     }, [buyerCountry, currencyCode, sdkInstance, shopperSessionId]);
 
@@ -66,29 +67,22 @@ export function usePayPalMessages({
                 return;
             }
 
-            if (!sessionRef.current) {
+            if (!session) {
                 setError(new Error("PayPal Messages session not available"));
                 return;
             }
 
-            try {
-                const result = await sessionRef.current.fetchContent(options);
+            const result = await session.fetchContent(options);
 
-                // fetchContent will return null in the case of an API error
-                if (result === null) {
-                    setError(
-                        new Error("Failed to fetch PayPal Messages content"),
-                    );
-                    return;
-                }
-
-                return result;
-            } catch (err) {
-                setError(err as Error);
+            // fetchContent will return null in the case of an API error
+            if (result === null) {
+                setError(new Error("Failed to fetch PayPal Messages content"));
                 return;
             }
+
+            return result;
         },
-        [isMountedRef, setError],
+        [isMountedRef, session, setError],
     );
 
     const handleCreateLearnMore = useCallback(
@@ -97,18 +91,19 @@ export function usePayPalMessages({
                 return;
             }
 
-            if (!sessionRef.current) {
+            if (!session) {
                 setError(new Error("PayPal Messages session not available"));
                 return;
             }
 
-            return sessionRef.current.createLearnMore(options);
+            return session.createLearnMore(options);
         },
-        [isMountedRef, setError],
+        [isMountedRef, session, setError],
     );
 
     return {
         error,
+        isReady: Boolean(session),
         handleCreateLearnMore,
         handleFetchContent,
     };
