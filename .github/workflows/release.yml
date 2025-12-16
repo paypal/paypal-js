@@ -5,6 +5,10 @@ on:
         branches:
             - main
 
+permissions:
+    id-token: write # Required for OIDC
+    contents: read
+
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
@@ -24,13 +28,12 @@ jobs:
             - name: ⎔ Setup node
               uses: actions/setup-node@v3
               with:
-                  node-version: ${{ env.NVMRC }}
+                  # Hard-coding to 24 to get an npm version greater than 11.5.1 for trusted publishing.
+                  # See https://docs.npmjs.com/trusted-publishers.
+                  node-version: 24 # ${{ env.NVMRC }}
 
             - name: 📥 Download deps
               uses: bahmutov/npm-install@v1
-
-            - name: Setup npmrc
-              run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
 
             - name: 🚢 Create Release Pull Request or Publish to npm
               id: changesets
