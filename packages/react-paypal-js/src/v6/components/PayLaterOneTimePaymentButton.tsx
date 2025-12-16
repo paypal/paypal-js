@@ -57,7 +57,7 @@ export const PayLaterOneTimePaymentButton = ({
             onClick={handleClick}
             countryCode={countryCode}
             productCode={productCode}
-            disabled={disabled || error !== null ? true : undefined}
+            disabled={disabled || !!error || undefined}
         ></paypal-pay-later-button>
     );
 };
