@@ -118,7 +118,7 @@ export type BillingAddress = {
     countryCode?: string;
 };
 
-export type ExtraFields = {
+export type SubmitOptions = {
     name?: string;
     billingAddress?: BillingAddress;
 };
@@ -198,7 +198,10 @@ export type OneTimePaymentFlowResponse = {
     state: StateType;
 };
 
-export type OneTimePaymentSubmitOptions = [orderId: string, data: ExtraFields];
+export type OneTimePaymentSubmitOptions = [
+    orderId: string,
+    data?: SubmitOptions,
+];
 
 export type CardFieldsOneTimePaymentSession = BaseCardFieldsSession & {
     /**
@@ -233,7 +236,7 @@ export type SavePaymentFlowResponse = {
 
 export type SavePaymentSubmitOptions = [
     vaultSetupToken: string,
-    data: ExtraFields,
+    data?: SubmitOptions,
 ];
 
 export type CardFieldsSavePaymentSession = BaseCardFieldsSession & {
