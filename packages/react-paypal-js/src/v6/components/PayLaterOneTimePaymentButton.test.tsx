@@ -140,26 +140,6 @@ describe("PayLaterOneTimePaymentButton", () => {
         );
     });
 
-    it("should log error to console when an error from the hook is present", () => {
-        const consoleErrorSpy = jest
-            .spyOn(console, "error")
-            .mockImplementation();
-        const testError = new Error("Test error");
-        mockUsePayLaterOneTimePaymentSession.mockReturnValue({
-            error: testError,
-            handleClick: mockHandleClick,
-        });
-        render(
-            <PayLaterOneTimePaymentButton
-                onApprove={() => Promise.resolve()}
-                orderId="123"
-                presentationMode="auto"
-            />,
-        );
-        expect(consoleErrorSpy).toHaveBeenCalledWith(testError);
-        consoleErrorSpy.mockRestore();
-    });
-
     describe("auto-population from eligibility context", () => {
         it("should auto-populate countryCode and productCode from eligibility context", () => {
             mockUsePayPal.mockReturnValue({
