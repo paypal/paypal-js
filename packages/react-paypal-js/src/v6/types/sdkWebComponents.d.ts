@@ -4,10 +4,6 @@ export interface ButtonProps {
     disabled?: boolean;
 }
 
-export interface PayLaterButtonProps {
-    disabled?: boolean;
-}
-
 interface IntrinsicButtonProps
     extends React.HTMLAttributes<HTMLButtonElement>,
         ButtonProps {}
