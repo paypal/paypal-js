@@ -45,7 +45,7 @@ export function usePayPalMessages({
 }: PayPalMessagesOptions): PayPalMessagesReturn {
     const { sdkInstance, loadingStatus } = usePayPal();
     const isMountedRef = useIsMountedRef();
-    const [session, setSession] = useState<PayPalMessagesSession | null>(null); //useRef
+    const [session, setSession] = useState<PayPalMessagesSession | null>(null);
     const [error, setError] = useError();
 
     useEffect(() => {
