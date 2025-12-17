@@ -3,6 +3,7 @@ export {
     PayPalCardFieldsProvider,
     type CardFieldsSessionType,
 } from "./components/PayPalCardFieldsProvider";
+export { PayLaterOneTimePaymentButton } from "./components/PayLaterOneTimePaymentButton";
 export { PayPalOneTimePaymentButton } from "./components/PayPalOneTimePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
 export { PayPalProvider } from "./components/PayPalProvider";
