@@ -1,6 +1,5 @@
 ---
-"@paypal/react-paypal-js": patch
-"@paypal/paypal-js": patch
+"@paypal/paypal-js": minor
 ---
 
-Enhancing the Paypal and PayLater hooks to handle redirect and direct app switch presentation modes.
+Add v6 types for direct app switch presentation mode ([PR #739](https://github.com/paypal/paypal-js/pull/739))

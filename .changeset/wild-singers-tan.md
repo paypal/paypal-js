@@ -1,6 +1,5 @@
 ---
-"@paypal/react-paypal-js": patch
-"@paypal/paypal-js": patch
+"@paypal/paypal-js": minor
 ---
 
-Created usePayPalCardFieldsOneTimePaymentSession hook
+Update v6 card field types ([PR #762](https://github.com/paypal/paypal-js/pull/762))

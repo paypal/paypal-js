@@ -1,6 +1,5 @@
 ---
-"@paypal/react-paypal-js": minor
 "@paypal/paypal-js": minor
 ---
 
-Upgrade react-paypal-js Typescript version to v5.3.3 and update build configuration.
+Update dependencies, warn when loader is used server-side ([PR #695](https://github.com/paypal/paypal-js/pull/695))
