@@ -1,5 +1,36 @@
 # Changelog
 
+## 9.1.0
+
+### Minor Changes
+
+- 16b2dfe: Add new types for paypal-guest-payments component
+- a1c7246: Update dependencies, warn when loader is used server-side ([PR #695](https://github.com/paypal/paypal-js/pull/695))
+- bee5716: Add v6 types for direct app switch presentation mode ([PR #739](https://github.com/paypal/paypal-js/pull/739))
+- 6539e8e: simplify createInstance generic type for v6
+- c1c411b: Update v6 card field types ([PR #762](https://github.com/paypal/paypal-js/pull/762))
+
+### Patch Changes
+
+- 4a6321e: Updates the paypal guest payments presentation mode options type with more properties.
+- d08e6a0: Adjust FindEligibleMethodsOptions type
+- 45b78ce: Update v6 sdk presentation mode props types.
+- b2cbae5: chore: add build-and-deploy-docs github actions workflow
+- 036f31b: feat: use typedoc for generating v6 public interface documentation
+- 6d5e590: feat: use tsdoc for v6 public interface
+- 4adcd4e: Updates loadCoreSdkScript to not log when called server-side.
+- 6a745d7: Updated the properties on the find eligible methods options type.
+- acc3ba2: feat: optimize docs
+- cfb9887: feat: add version to PayPalV6Namespace
+- eae3d6c: Update v6 types to use `undefined` instead of `never` ([PR #732](https://github.com/paypal/paypal-js/pull/732))
+- 4023efd: Adds types for the v6 paypal messages SDK component.
+- 249f1e3: Update loadCoreSdkScript function to handle data-namespace attribute.
+- 6d406fd: Refactor loadCoreSdkScript namespace retrieval.
+- c41dab4: feat: add paypal copyright to docs footers
+- 89e81bf: Added types for V6 Card Fields
+- 1599832: feat: add jsdoc comments to v6 public interface types
+- 03b0069: chore: docs updates
+
 ## 9.0.1
 
 ### Patch Changes
