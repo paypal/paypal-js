@@ -200,7 +200,7 @@ export type OneTimePaymentFlowResponse = {
 
 export type OneTimePaymentSubmitOptions = [
     orderId: string,
-    data?: SubmitOptions,
+    options?: SubmitOptions,
 ];
 
 export type CardFieldsOneTimePaymentSession = BaseCardFieldsSession & {
@@ -208,7 +208,7 @@ export type CardFieldsOneTimePaymentSession = BaseCardFieldsSession & {
      * Use this method to submit a one-time payment using Card Fields.
      * 
      * @param orderId - The unique identifier for the order to be processed.
-     * @param data - Additional payment data.
+     * @param options - Additional payment options.
      * @returns A promise that resolves to the result of the payment flow.
      * 
      * @example
@@ -216,6 +216,7 @@ export type CardFieldsOneTimePaymentSession = BaseCardFieldsSession & {
      * const response = await cardFieldsInstance.submit("your-order-id", {
             billingAddress: {
               postalCode: "12345",
+              countryCode: "US",
             },
           });
      * ```
@@ -236,7 +237,7 @@ export type SavePaymentFlowResponse = {
 
 export type SavePaymentSubmitOptions = [
     vaultSetupToken: string,
-    data?: SubmitOptions,
+    options?: SubmitOptions,
 ];
 
 export type CardFieldsSavePaymentSession = BaseCardFieldsSession & {
@@ -244,7 +245,7 @@ export type CardFieldsSavePaymentSession = BaseCardFieldsSession & {
      * Use this method to submit and save a payment method using Card Fields.
      * 
      * @param vaultSetupToken - The unique token for the vault setup to be processed.
-     * @param data - Additional payment data.
+     * @param options - Additional payment options.
      * @returns A promise that resolves to the result of the save payment flow.
      * 
      * @example
@@ -252,6 +253,7 @@ export type CardFieldsSavePaymentSession = BaseCardFieldsSession & {
      * const response = await cardFieldsInstance.submit("your-vault-setup-token", {
             billingAddress: {
               postalCode: "12345",
+              countryCode: "US",
             },
           });
      * ```
