@@ -45,6 +45,8 @@ export function usePayLaterOneTimePaymentSession({
         sessionRef.current = null;
     }, []);
 
+    // TODO review this setup, do we need to keep a separate useEffect
+    // for errors? it seems like an anti-pattern.
     // Separate error reporting effect to avoid infinite loops with proxyCallbacks
     useEffect(() => {
         if (sdkInstance) {

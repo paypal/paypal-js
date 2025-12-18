@@ -122,6 +122,8 @@ export async function fetchEligibleMethods(
 
         return data;
     } catch (error) {
+        console.log(">>>>>>>>>>>>>>>>>>>>>", error);
+
         throw new Error(
             `Failed to fetch eligible methods: ${error instanceof Error ? error.message : String(error)}`,
         );
@@ -135,12 +137,16 @@ export function useEligibleMethods({
     environment,
 }: FindEligiblePaymentMethodsOptions): {
     eligibleMethods: FindEligiblePaymentMethodsResponse | null;
-    isLoading: boolean;
     error: Error | null;
 } {
+    // TODO we removed the isLoading state here because it's replicating
+    // information that can already be derived elsewhere.
+    //
+    // TODO I think this hook is causing itself to re-render and call
+    // the fetch method again incorrectly.
+
     const [eligibleMethods, setEligibleMethods] =
         useState<FindEligiblePaymentMethodsResponse | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useError();
     const memoizedPayload = useDeepCompareMemoize(payload);
     const memoizedEligibleMethodsResponse = useDeepCompareMemoize(
@@ -153,7 +159,6 @@ export function useEligibleMethods({
 
         if (memoizedEligibleMethodsResponse) {
             setEligibleMethods(memoizedEligibleMethodsResponse);
-            setIsLoading(false);
             return;
         }
 
@@ -163,14 +168,10 @@ export function useEligibleMethods({
                     "clientToken is required when eligibleMethodsResponse is not provided",
                 ),
             );
-            setIsLoading(false);
             return;
         }
 
         async function getEligibility() {
-            setError(null);
-            setIsLoading(true);
-
             try {
                 const methods = await fetchEligibleMethods({
                     clientToken,
@@ -181,7 +182,7 @@ export function useEligibleMethods({
 
                 if (isSubscribed) {
                     setEligibleMethods(methods);
-                    setIsLoading(false);
+                    setError(null);
                 }
             } catch (error) {
                 if (
@@ -193,7 +194,6 @@ export function useEligibleMethods({
                             ? error
                             : new Error(String(error)),
                     );
-                    setIsLoading(false);
                 }
             }
         }
@@ -212,5 +212,5 @@ export function useEligibleMethods({
         setError,
     ]);
 
-    return { eligibleMethods, isLoading, error };
+    return { eligibleMethods, error };
 }

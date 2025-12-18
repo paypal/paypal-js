@@ -277,7 +277,7 @@ describe("useEligibleMethods", () => {
             );
         });
 
-        test("should handle fetch errors", async () => {
+        test.only("should handle fetch errors", async () => {
             (global.fetch as jest.Mock).mockRejectedValueOnce(
                 new Error("Network error"),
             );

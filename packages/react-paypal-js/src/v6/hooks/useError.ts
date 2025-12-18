@@ -1,4 +1,4 @@
-import { useCallback, useState, useRef } from "react";
+import { useCallback, useState } from "react";
 
 /**
  * Sets the `error` returned by {@link useError}. Also, calls `console.error` with the given {@link Error}.
@@ -14,27 +14,36 @@ export function useError(
     noConsoleErrors = false,
 ): [Error | null, TypeSetError] {
     const [error, setErrorInternal] = useState<Error | null>(null);
-    const noConsoleErrorsRef = useRef(noConsoleErrors);
-    noConsoleErrorsRef.current = noConsoleErrors;
+
+    // TODO there's a potential pitfall here where setting the error to different
+    // values in different parts of a parent component would cause an infinite
+    // loop because setting the error triggers a re-render and the next time
+    // we're in this hook, the error could have changed.
+    //
+    // TODO this hook was updated to check that the new error is the same as the
+    // previous error, so that it doesn't trigger another re-render for the same
+    // error.
 
     const setError = useCallback(
         (newError) => {
-            // Don't trigger a re-render if the error is the same
-            if (
-                newError?.message === error?.message &&
-                error?.name === newError?.name
-            ) {
-                return;
-            } else if (newError === error) {
+            if (newError === error) {
                 return;
             }
+
+            if (
+                newError?.name === error?.name &&
+                newError?.message === error?.message
+            ) {
+                return;
+            }
+
             setErrorInternal(newError);
 
-            if (!noConsoleErrorsRef.current && newError) {
+            if (!noConsoleErrors) {
                 console.error(newError);
             }
         },
-        [error],
+        [error, noConsoleErrors],
     );
 
     return [error, setError];
