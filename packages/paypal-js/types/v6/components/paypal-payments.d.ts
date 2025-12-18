@@ -117,6 +117,8 @@ export type SavePaymentSession = Omit<BasePaymentSession, "start"> & {
         presentationModeOptions: PayPalPresentationModeOptions,
         paymentSessionPromise?: Promise<{ vaultSetupToken: string }>,
     ) => Promise<void>;
+    hasReturned?: () => boolean;
+    resume?: () => Promise<void>;
 };
 
 export type PayLaterOneTimePaymentSessionOptions =
