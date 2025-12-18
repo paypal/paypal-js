@@ -25,7 +25,7 @@ type SubmitPayPalCardFieldsSavePayment = (
  * This hook must be used within a {@link PayPalCardFieldsProvider} to initialize
  * a save payment session.
  *
- * @returns {usePayPalCardFieldsOneTimePaymentSessionResult}
+ * @returns {usePayPalCardFieldsSavePaymentSessionResult}
  */
 export function usePayPalCardFieldsSavePaymentSession(): usePayPalCardFieldsSavePaymentSessionResult {
     const { cardFieldsSession, setCardFieldsSessionType } =
