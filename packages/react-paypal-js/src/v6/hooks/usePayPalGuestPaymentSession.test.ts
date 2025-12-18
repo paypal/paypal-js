@@ -89,6 +89,35 @@ describe("usePayPalGuestPaymentSession", () => {
             ).not.toHaveBeenCalled();
         });
 
+        test("should set error when createPayPalGuestOneTimePaymentSession is not available on SDK instance", () => {
+            mockUsePayPal.mockReturnValue({
+                // @ts-expect-error mocking incomplete sdk instance
+                sdkInstance: {},
+                loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                eligiblePaymentMethods: null,
+                error: null,
+            });
+
+            const props: UsePayPalGuestPaymentSessionProps = {
+                orderId: "test-order-id",
+                onApprove: jest.fn(),
+            };
+
+            const {
+                result: {
+                    current: { error },
+                },
+            } = renderHook(() => usePayPalGuestPaymentSession(props));
+
+            expectCurrentErrorValue(error);
+
+            expect(error).toEqual(
+                new Error(
+                    "createPayPalGuestOneTimePaymentSession is not available on the SDK instance, make sure the 'paypal-guest-payments' component is included in the PayPalProvider components array prop.",
+                ),
+            );
+        });
+
         test("should not error if there is no sdkInstance but loading is still pending", () => {
             mockUsePayPal.mockReturnValue({
                 sdkInstance: null,
