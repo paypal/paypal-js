@@ -75,36 +75,32 @@ export function usePayPalGuestPaymentSession({
     }, []);
 
     // Separate error reporting effect to avoid infinite loops with proxyCallbacks
-    useEffect(() => {
-        const errorMessage = "no sdk instance available";
-        if (sdkInstance) {
-            // Only clear error if it was the "no sdk instance available" error
-            if (error?.message === errorMessage) {
-                setError(null);
-            }
-        } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
-            if (error?.message !== errorMessage) {
-                setError(new Error(errorMessage));
-            }
-        }
-    }, [sdkInstance, setError, loadingStatus, error]);
+    // useEffect(() => {
+    //     if (sdkInstance) { // sdkInstance = null
+    //         setError(null);
+    //     } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
+    //         setError(new Error("no sdk instance available"));
+    //     }
+    // }, [sdkInstance, setError, loadingStatus]);
 
     useEffect(() => {
         if (!sdkInstance) {
+            if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
+                setError(new Error("no sdk instance available"));
+            }
             return;
         }
 
         if (!sdkInstance.createPayPalGuestOneTimePaymentSession) {
-            const errorMessage =
-                "createPayPalGuestOneTimePaymentSession is not available on the SDK instance, make sure the 'paypal-guest-payments' component is included in the PayPalProvider components array prop.";
-
-            // Only set error if it's not already set with the same message
-            if (error?.message !== errorMessage) {
-                setError(new Error(errorMessage));
-            }
+            setError(
+                new Error(
+                    "createPayPalGuestOneTimePaymentSession is not available on the SDK instance, make sure the 'paypal-guest-payments' component is included in the PayPalProvider components array prop.",
+                ),
+            );
             return;
         }
 
+        setError(null);
         const newSession = sdkInstance.createPayPalGuestOneTimePaymentSession({
             orderId,
             ...proxyCallbacks,
@@ -124,7 +120,7 @@ export function usePayPalGuestPaymentSession({
         onShippingOptionsChange,
         isMountedRef,
         setError,
-        error,
+        loadingStatus,
     ]);
 
     const handleClick = useCallback(async () => {

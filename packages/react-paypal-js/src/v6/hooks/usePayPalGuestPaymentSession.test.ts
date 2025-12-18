@@ -92,7 +92,10 @@ describe("usePayPalGuestPaymentSession", () => {
         test("should set error when createPayPalGuestOneTimePaymentSession is not available on SDK instance", () => {
             mockUsePayPal.mockReturnValue({
                 // @ts-expect-error mocking incomplete sdk instance
-                sdkInstance: {},
+                sdkInstance: {
+                    // getLocale
+                    // findEligibleMethods
+                },
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,

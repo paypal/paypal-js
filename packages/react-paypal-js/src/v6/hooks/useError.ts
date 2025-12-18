@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef } from "react";
 
 /**
  * Sets the `error` returned by {@link useError}. Also, calls `console.error` with the given {@link Error}.
@@ -14,16 +14,27 @@ export function useError(
     noConsoleErrors = false,
 ): [Error | null, TypeSetError] {
     const [error, setErrorInternal] = useState<Error | null>(null);
+    const noConsoleErrorsRef = useRef(noConsoleErrors);
+    noConsoleErrorsRef.current = noConsoleErrors;
 
     const setError = useCallback(
         (newError) => {
+            // Don't trigger a re-render if the error is the same
+            if (
+                newError?.message === error?.message &&
+                error?.name === newError?.name
+            ) {
+                return;
+            } else if (newError === error) {
+                return;
+            }
             setErrorInternal(newError);
 
-            if (!noConsoleErrors && newError) {
+            if (!noConsoleErrorsRef.current && newError) {
                 console.error(newError);
             }
         },
-        [noConsoleErrors],
+        [error],
     );
 
     return [error, setError];
