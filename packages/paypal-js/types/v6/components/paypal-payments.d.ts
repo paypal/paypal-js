@@ -272,4 +272,7 @@ export interface PayPalPaymentsInstance {
     createPayPalCreditOneTimePaymentSession: (
         paymentSessionOptions: PayPalCreditOneTimePaymentSessionOptions,
     ) => OneTimePaymentSession;
+    createPayPalCreditSavePaymentSession: (
+        paymentSessionOptions: SavePaymentSessionOptions,
+    ) => SavePaymentSession;
 }
