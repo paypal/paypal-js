@@ -12,6 +12,10 @@ export {
     usePayPalCardFieldsOneTimePaymentSession,
     type usePayPalCardFieldsOneTimePaymentSessionResult,
 } from "./hooks/usePayPalCardFieldsOneTimePaymentSession";
+export {
+    usePayPalCardFieldsSavePaymentSession,
+    type usePayPalCardFieldsSavePaymentSessionResult,
+} from "./hooks/usePayPalCardFieldsSavePaymentSession";
 export { usePayPal } from "./hooks/usePayPal";
 export { usePayLaterOneTimePaymentSession } from "./hooks/usePayLaterOneTimePaymentSession";
 export { usePayPalOneTimePaymentSession } from "./hooks/usePayPalOneTimePaymentSession";

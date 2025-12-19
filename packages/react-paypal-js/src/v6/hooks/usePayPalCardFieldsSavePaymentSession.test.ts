@@ -2,13 +2,13 @@ import { act, renderHook } from "@testing-library/react-hooks";
 
 import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import { usePayPalCardFieldsSession } from "./usePayPalCardFields";
-import { usePayPalCardFieldsOneTimePaymentSession } from "./usePayPalCardFieldsOneTimePaymentSession";
+import { usePayPalCardFieldsSavePaymentSession } from "./usePayPalCardFieldsSavePaymentSession";
 import { CARD_FIELDS_SESSION_TYPES } from "../components/PayPalCardFieldsProvider";
 import { toError } from "../utils";
 
 import type {
-    CardFieldsOneTimePaymentSession,
-    OneTimePaymentFlowResponse,
+    CardFieldsSavePaymentSession,
+    SavePaymentFlowResponse,
 } from "../types";
 
 jest.mock("./usePayPalCardFields");
@@ -18,13 +18,13 @@ const mockUsePayPalCardFieldsSession =
         typeof usePayPalCardFieldsSession
     >;
 
-const mockOrderId = "test-order-id";
+const mockVaultSetupToken = "test-vault-setup-token";
 
-const mockOptions = { billingAddress: { postalCode: "12345" } };
+const mockOptions = { billingAddress: { countryCode: "US" } };
 
-const mockSuccessfulSubmitResponse: OneTimePaymentFlowResponse = {
+const mockSuccessfulSubmitResponse: SavePaymentFlowResponse = {
     data: {
-        orderId: mockOrderId,
+        vaultSetupToken: mockVaultSetupToken,
     },
     state: "succeeded",
 };
@@ -32,9 +32,9 @@ const mockSuccessfulSubmitResponse: OneTimePaymentFlowResponse = {
 const mockSetCardFieldsSessionType = jest.fn();
 
 // Mock Factories
-const createMockCardFieldsOneTimePaymentSession = (
-    overrides?: Partial<CardFieldsOneTimePaymentSession>,
-): CardFieldsOneTimePaymentSession => ({
+const createMockCardFieldsSavePaymentSession = (
+    overrides?: Partial<CardFieldsSavePaymentSession>,
+): CardFieldsSavePaymentSession => ({
     submit: jest.fn().mockResolvedValue(undefined),
     on: jest.fn(),
     update: jest.fn(),
@@ -42,19 +42,19 @@ const createMockCardFieldsOneTimePaymentSession = (
     ...overrides,
 });
 
-describe("usePayPalCardFieldsOneTimePaymentSession", () => {
-    let mockCardFieldsOneTimePaymentSession: CardFieldsOneTimePaymentSession;
+describe("usePayPalCardFieldsSavePaymentSession", () => {
+    let mockCardFieldsSavePaymentSession: CardFieldsSavePaymentSession;
 
     beforeEach(() => {
-        mockCardFieldsOneTimePaymentSession =
-            createMockCardFieldsOneTimePaymentSession({
+        mockCardFieldsSavePaymentSession =
+            createMockCardFieldsSavePaymentSession({
                 submit: jest
                     .fn()
                     .mockResolvedValue(mockSuccessfulSubmitResponse),
             });
 
         mockUsePayPalCardFieldsSession.mockReturnValue({
-            cardFieldsSession: mockCardFieldsOneTimePaymentSession,
+            cardFieldsSession: mockCardFieldsSavePaymentSession,
             setCardFieldsSessionType: mockSetCardFieldsSessionType,
         });
     });
@@ -63,28 +63,28 @@ describe("usePayPalCardFieldsOneTimePaymentSession", () => {
         jest.clearAllMocks();
     });
 
-    test("should call setCardFieldsSessionType with 'one-time-payment value' on mount", () => {
-        renderHook(() => usePayPalCardFieldsOneTimePaymentSession());
+    test("should call setCardFieldsSessionType with 'save-payment' value on mount", () => {
+        renderHook(() => usePayPalCardFieldsSavePaymentSession());
 
         expect(mockSetCardFieldsSessionType).toHaveBeenCalledTimes(1);
         expect(mockSetCardFieldsSessionType).toHaveBeenCalledWith(
-            CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+            CARD_FIELDS_SESSION_TYPES.SAVE_PAYMENT,
         );
     });
 
     describe("submit", () => {
         test("should update submitResponse with the session's submit response", async () => {
             const { result } = renderHook(() =>
-                usePayPalCardFieldsOneTimePaymentSession(),
+                usePayPalCardFieldsSavePaymentSession(),
             );
 
             await act(async () => {
-                await result.current.submit(mockOrderId, mockOptions);
+                await result.current.submit(mockVaultSetupToken, mockOptions);
             });
 
             expect(
-                mockCardFieldsOneTimePaymentSession.submit,
-            ).toHaveBeenCalledWith(mockOrderId, mockOptions);
+                mockCardFieldsSavePaymentSession.submit,
+            ).toHaveBeenCalledWith(mockVaultSetupToken, mockOptions);
             expect(result.current.submitResponse).toEqual(
                 mockSuccessfulSubmitResponse,
             );
@@ -99,11 +99,11 @@ describe("usePayPalCardFieldsOneTimePaymentSession", () => {
             });
 
             const { result } = renderHook(() =>
-                usePayPalCardFieldsOneTimePaymentSession(),
+                usePayPalCardFieldsSavePaymentSession(),
             );
 
             await act(async () => {
-                await result.current.submit(mockOrderId, mockOptions);
+                await result.current.submit(mockVaultSetupToken, mockOptions);
             });
 
             const expectedError = toError(
@@ -111,7 +111,7 @@ describe("usePayPalCardFieldsOneTimePaymentSession", () => {
             );
 
             expect(
-                mockCardFieldsOneTimePaymentSession.submit,
+                mockCardFieldsSavePaymentSession.submit,
             ).not.toHaveBeenCalled();
             expect(result.current.submitResponse).toBeNull();
             expect(result.current.error).toEqual(expectedError);
@@ -120,22 +120,22 @@ describe("usePayPalCardFieldsOneTimePaymentSession", () => {
 
         test("should set error when session's submit rejects", async () => {
             const submitRejectError = toError("Submit failed");
-            const newMockCardFieldsOneTimePaymentSession =
-                createMockCardFieldsOneTimePaymentSession({
+            const newMockCardFieldsSavePaymentSession =
+                createMockCardFieldsSavePaymentSession({
                     submit: jest.fn().mockRejectedValue(submitRejectError),
                 });
 
             mockUsePayPalCardFieldsSession.mockReturnValueOnce({
-                cardFieldsSession: newMockCardFieldsOneTimePaymentSession,
+                cardFieldsSession: newMockCardFieldsSavePaymentSession,
                 setCardFieldsSessionType: mockSetCardFieldsSessionType,
             });
 
             const { result } = renderHook(() =>
-                usePayPalCardFieldsOneTimePaymentSession(),
+                usePayPalCardFieldsSavePaymentSession(),
             );
 
             await act(async () => {
-                await result.current.submit(mockOrderId, mockOptions);
+                await result.current.submit(mockVaultSetupToken, mockOptions);
             });
 
             expect(result.current.submitResponse).toBeNull();
@@ -143,20 +143,23 @@ describe("usePayPalCardFieldsOneTimePaymentSession", () => {
             expectCurrentErrorValue(result.current.error);
         });
 
-        test("should handle orderId being a promise", async () => {
+        test("should handle vaultSetupToken being a promise", async () => {
             const { result } = renderHook(() =>
-                usePayPalCardFieldsOneTimePaymentSession(),
+                usePayPalCardFieldsSavePaymentSession(),
             );
 
-            const orderIdPromise = Promise.resolve(mockOrderId);
+            const vaultSetupTokenPromise = Promise.resolve(mockVaultSetupToken);
 
             await act(async () => {
-                await result.current.submit(orderIdPromise, mockOptions);
+                await result.current.submit(
+                    vaultSetupTokenPromise,
+                    mockOptions,
+                );
             });
 
             expect(
-                mockCardFieldsOneTimePaymentSession.submit,
-            ).toHaveBeenCalledWith(mockOrderId, mockOptions);
+                mockCardFieldsSavePaymentSession.submit,
+            ).toHaveBeenCalledWith(mockVaultSetupToken, mockOptions);
             expect(result.current.submitResponse).toEqual(
                 mockSuccessfulSubmitResponse,
             );
@@ -164,23 +167,26 @@ describe("usePayPalCardFieldsOneTimePaymentSession", () => {
             expectCurrentErrorValue(result.current.error);
         });
 
-        test("should set error when orderId promise rejects", async () => {
+        test("should set error when vaultSetupToken promise rejects", async () => {
             const { result } = renderHook(() =>
-                usePayPalCardFieldsOneTimePaymentSession(),
+                usePayPalCardFieldsSavePaymentSession(),
             );
 
-            const orderIdError = toError("Order ID fetch failed");
-            const orderIdPromise = Promise.reject(orderIdError);
+            const vaultSetupTokenError = toError("Vault Setup Token failed");
+            const vaultSetupTokenPromise = Promise.reject(vaultSetupTokenError);
 
             await act(async () => {
-                await result.current.submit(orderIdPromise, mockOptions);
+                await result.current.submit(
+                    vaultSetupTokenPromise,
+                    mockOptions,
+                );
             });
 
             expect(
-                mockCardFieldsOneTimePaymentSession.submit,
+                mockCardFieldsSavePaymentSession.submit,
             ).not.toHaveBeenCalled();
             expect(result.current.submitResponse).toBeNull();
-            expect(result.current.error).toEqual(orderIdError);
+            expect(result.current.error).toEqual(vaultSetupTokenError);
             expectCurrentErrorValue(result.current.error);
         });
     });
