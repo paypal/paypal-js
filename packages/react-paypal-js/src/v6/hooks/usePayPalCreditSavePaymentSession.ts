@@ -64,8 +64,37 @@ export function usePayPalCreditSavePaymentSession({
         });
         sessionRef.current = newSession;
 
+        const shouldCheckResume =
+            presentationMode === "redirect" ||
+            presentationMode === "direct-app-switch";
+
+        if (shouldCheckResume) {
+            const handleReturnFromPayPal = async () => {
+                try {
+                    if (!newSession) {
+                        return;
+                    }
+                    const isResumeFlow = newSession.hasReturned?.();
+                    if (isResumeFlow) {
+                        await newSession.resume?.();
+                    }
+                } catch (err) {
+                    setError(err as Error);
+                }
+            };
+
+            handleReturnFromPayPal();
+        }
+
         return handleDestroy;
-    }, [sdkInstance, vaultSetupToken, proxyCallbacks, handleDestroy]);
+    }, [
+        sdkInstance,
+        vaultSetupToken,
+        proxyCallbacks,
+        handleDestroy,
+        presentationMode,
+        setError,
+    ]);
 
     const handleCancel = useCallback(() => {
         sessionRef.current?.cancel();

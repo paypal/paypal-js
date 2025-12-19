@@ -20,3 +20,5 @@ export { useVenmoOneTimePaymentSession } from "./hooks/useVenmoOneTimePaymentSes
 export { usePayPalGuestPaymentSession } from "./hooks/usePayPalGuestPaymentSession";
 export * from "./hooks/useEligibleMethods";
 export { usePayPalMessages } from "./hooks/usePayPalMessages";
+export { usePayPalCreditOneTimePaymentSession } from "./hooks/usePayPalCreditOneTimePaymentSession";
+export { usePayPalCreditSavePaymentSession } from "./hooks/usePayPalCreditSavePaymentSession";
