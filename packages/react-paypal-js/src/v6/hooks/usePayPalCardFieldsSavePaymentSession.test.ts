@@ -73,7 +73,7 @@ describe("usePayPalCardFieldsSavePaymentSession", () => {
     });
 
     describe("submit", () => {
-        test("should call the session's submit method with correct arguments", async () => {
+        test("should update submitResponse with the session's submit response", async () => {
             const { result } = renderHook(() =>
                 usePayPalCardFieldsSavePaymentSession(),
             );
@@ -85,17 +85,6 @@ describe("usePayPalCardFieldsSavePaymentSession", () => {
             expect(
                 mockCardFieldsSavePaymentSession.submit,
             ).toHaveBeenCalledWith(mockVaultSetupToken, mockOptions);
-        });
-
-        test("should update submitResponse with the session's submit response", async () => {
-            const { result } = renderHook(() =>
-                usePayPalCardFieldsSavePaymentSession(),
-            );
-
-            await act(async () => {
-                await result.current.submit(mockVaultSetupToken, mockOptions);
-            });
-
             expect(result.current.submitResponse).toEqual(
                 mockSuccessfulSubmitResponse,
             );
@@ -121,6 +110,9 @@ describe("usePayPalCardFieldsSavePaymentSession", () => {
                 "Submit error: CardFields session not available",
             );
 
+            expect(
+                mockCardFieldsSavePaymentSession.submit,
+            ).not.toHaveBeenCalled();
             expect(result.current.submitResponse).toBeNull();
             expect(result.current.error).toEqual(expectedError);
             expectCurrentErrorValue(result.current.error);

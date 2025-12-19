@@ -73,7 +73,7 @@ describe("usePayPalCardFieldsOneTimePaymentSession", () => {
     });
 
     describe("submit", () => {
-        test("should call the session's submit method with correct arguments", async () => {
+        test("should update submitResponse with the session's submit response", async () => {
             const { result } = renderHook(() =>
                 usePayPalCardFieldsOneTimePaymentSession(),
             );
@@ -85,17 +85,6 @@ describe("usePayPalCardFieldsOneTimePaymentSession", () => {
             expect(
                 mockCardFieldsOneTimePaymentSession.submit,
             ).toHaveBeenCalledWith(mockOrderId, mockOptions);
-        });
-
-        test("should update submitResponse with the session's submit response", async () => {
-            const { result } = renderHook(() =>
-                usePayPalCardFieldsOneTimePaymentSession(),
-            );
-
-            await act(async () => {
-                await result.current.submit(mockOrderId, mockOptions);
-            });
-
             expect(result.current.submitResponse).toEqual(
                 mockSuccessfulSubmitResponse,
             );
@@ -121,6 +110,9 @@ describe("usePayPalCardFieldsOneTimePaymentSession", () => {
                 "Submit error: CardFields session not available",
             );
 
+            expect(
+                mockCardFieldsOneTimePaymentSession.submit,
+            ).not.toHaveBeenCalled();
             expect(result.current.submitResponse).toBeNull();
             expect(result.current.error).toEqual(expectedError);
             expectCurrentErrorValue(result.current.error);
