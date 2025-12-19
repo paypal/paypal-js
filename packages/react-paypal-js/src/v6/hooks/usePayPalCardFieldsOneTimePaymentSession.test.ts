@@ -127,7 +127,7 @@ describe("usePayPalCardFieldsOneTimePaymentSession", () => {
         });
 
         test("should set error when session's submit rejects", async () => {
-            const submitRejectError = new Error("Submit failed");
+            const submitRejectError = toError("Submit failed");
             const newMockCardFieldsOneTimePaymentSession =
                 createMockCardFieldsOneTimePaymentSession({
                     submit: jest.fn().mockRejectedValue(submitRejectError),
@@ -177,7 +177,7 @@ describe("usePayPalCardFieldsOneTimePaymentSession", () => {
                 usePayPalCardFieldsOneTimePaymentSession(),
             );
 
-            const orderIdError = new Error("Order ID fetch failed");
+            const orderIdError = toError("Order ID fetch failed");
             const orderIdPromise = Promise.reject(orderIdError);
 
             await act(async () => {

@@ -127,7 +127,7 @@ describe("usePayPalCardFieldsSavePaymentSession", () => {
         });
 
         test("should set error when session's submit rejects", async () => {
-            const submitRejectError = new Error("Submit failed");
+            const submitRejectError = toError("Submit failed");
             const newMockCardFieldsSavePaymentSession =
                 createMockCardFieldsSavePaymentSession({
                     submit: jest.fn().mockRejectedValue(submitRejectError),
@@ -180,7 +180,7 @@ describe("usePayPalCardFieldsSavePaymentSession", () => {
                 usePayPalCardFieldsSavePaymentSession(),
             );
 
-            const vaultSetupTokenError = new Error("Vault Setup Token failed");
+            const vaultSetupTokenError = toError("Vault Setup Token failed");
             const vaultSetupTokenPromise = Promise.reject(vaultSetupTokenError);
 
             await act(async () => {
