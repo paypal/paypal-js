@@ -29,26 +29,51 @@ import type { usePayPal } from "../hooks/usePayPal";
 
 type PayPalProviderProps = Omit<
     CreateInstanceOptions<readonly [Components, ...Components[]]>,
-    "components"
+    "components" | "clientToken"
 > &
     LoadCoreSdkScriptOptions & {
         components?: Components[];
         eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
         eligibleMethodsPayload?: FindEligiblePaymentMethodsRequestPayload;
         children: React.ReactNode;
+        clientToken?: string;
     };
 
 /**
  * {@link PayPalProvider} creates the SDK script, component scripts, runs eligibility, then
  * provides these in context to child components via the {@link usePayPal} hook.
  *
+ * The clientToken can be provided asynchronously, allowing merchants to render the provider
+ * and its children (e.g., product page content) before the token is fetched. The SDK will
+ * initialize once the clientToken becomes available.
+ *
  * @example
+ * // Example 1: clientToken is already available when provider mounts
+ * const clientToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9..."; // Pre-fetched
+ *
  * <PayPalProvider
  *   clientToken={clientToken}
  *   components={["paypal-payments", "venmo-payments"]}
  *   pageType="checkout"
  *  >
- *      // payment buttons
+ *      <PayPalButton />
+ * </PayPalProvider>
+ *
+ * @example
+ * // Example 2: clientToken is fetched asynchronously after provider mounts
+ * const [clientToken, setClientToken] = useState(); // Initially undefined
+ *
+ * useEffect(() => {
+ *   fetchClientToken().then(setClientToken);
+ * }, []);
+ *
+ * <PayPalProvider
+ *   clientToken={clientToken} // undefined initially, set later
+ *   components={["paypal-payments"]}
+ *   pageType="checkout"
+ *  >
+ *      <ProductPage /> // Renders immediately
+ *      <PayPalButton /> // Waits for SDK initialization
  * </PayPalProvider>
  */
 export const PayPalProvider: React.FC<PayPalProviderProps> = ({
@@ -84,13 +109,35 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     });
 
     useEffect(() => {
-        if (!isLoading && eligibleMethods) {
+        // Only set eligibility if we have a valid clientToken and methods
+        if (!isLoading && eligibleMethods && clientToken) {
             dispatch({
                 type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
                 value: eligibleMethods,
             });
         }
-    }, [isLoading, eligibleMethods]);
+    }, [isLoading, eligibleMethods, clientToken]);
+
+    // Warn if clientToken is not provided within a reasonable time
+    useEffect(() => {
+        if (clientToken) {
+            return; // Token already provided
+        }
+
+        const timeoutId = setTimeout(() => {
+            if (!clientToken) {
+                console.warn(
+                    "[PayPal SDK] clientToken has not been provided after 15 seconds. " +
+                        "SDK initialization is blocked. Please ensure clientToken is being fetched and provided to PayPalProvider. " +
+                        "If this is intentional, you can ignore this warning.",
+                );
+            }
+        }, 15000); // 15 seconds
+
+        return () => {
+            clearTimeout(timeoutId);
+        };
+    }, [clientToken]);
 
     // Load Core SDK Script
     useEffect(() => {
@@ -132,6 +179,11 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     // Create SDK Instance
     useEffect(() => {
         if (!paypalNamespace) {
+            return;
+        }
+
+        // Wait for clientToken before creating instance
+        if (!clientToken) {
             return;
         }
 
