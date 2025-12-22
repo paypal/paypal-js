@@ -31,5 +31,3 @@ jobs:
 
             - name: 🚢 Publish alpha package of react-paypal-js
               run: npm run publish-react-paypal-js-alpha
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
