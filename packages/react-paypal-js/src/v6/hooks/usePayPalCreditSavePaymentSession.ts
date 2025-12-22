@@ -106,7 +106,7 @@ export function usePayPalCreditSavePaymentSession({
         }
 
         if (!sessionRef.current) {
-            setError(new Error("Save Payment session not available"));
+            setError(new Error("Credit Save Payment session not available"));
             return;
         }
 
