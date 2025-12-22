@@ -26,7 +26,8 @@
         "lint": "npm run lint --workspaces --if-present",
         "prepare": "husky install",
         "test": "npm run lint && npm run test --workspaces --if-present",
-        "test:e2e": "npm run test:e2e --workspaces --if-present"
+        "test:e2e": "npm run test:e2e --workspaces --if-present",
+        "publish-react-paypal-js-alpha": "npm run build && npm publish --workspace=react-paypal-js --tag alpha"
     },
     "lint-staged": {
         "*": [
