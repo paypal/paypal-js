@@ -1,11 +1,9 @@
-name: Release
+name: Alpha Release for react-paypal-js
 
 on: workflow_dispatch
 
 permissions:
     id-token: write # Required for OIDC
-
-concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
     release:
