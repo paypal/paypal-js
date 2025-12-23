@@ -5,7 +5,8 @@ import { useIsMountedRef } from "./useIsMounted";
 import { useError } from "./useError";
 import { useProxyProps } from "../utils";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
-import {
+
+import type {
     BasePaymentSessionReturn,
     OneTimePaymentSession,
     PayPalPresentationModeOptions,
@@ -47,6 +48,7 @@ export function usePayPalCreditOneTimePaymentSession({
         sessionRef.current?.cancel();
     }, []);
 
+    // Separate error reporting effect to avoid infinite loops with proxyCallbacks
     useEffect(() => {
         if (sdkInstance) {
             setError(null);
