@@ -157,9 +157,9 @@ export function useEligibleMethods({
             return;
         }
 
+        // Wait for clientToken to be available before fetching eligibility
+        // This allows the provider to render while the token is being fetched
         if (!clientToken) {
-            // Wait for clientToken to be provided - don't error, just stay in loading state
-            // This allows the provider to render children while waiting for the token
             setIsLoading(true);
             setError(null);
             return;

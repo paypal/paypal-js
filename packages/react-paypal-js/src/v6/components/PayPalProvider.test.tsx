@@ -487,6 +487,47 @@ describe("PayPalProvider", () => {
             });
             expect(mockCreateInstance).toHaveBeenCalledTimes(2);
         });
+
+        test("should warn after 15 seconds if clientToken is not provided", async () => {
+            jest.useFakeTimers();
+            const consoleWarnSpy = jest
+                .spyOn(console, "warn")
+                .mockImplementation(() => {});
+
+            const mockCreateInstance = jest
+                .fn()
+                .mockResolvedValue(createMockSdkInstance());
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: mockCreateInstance,
+            });
+
+            const { TestComponent } = setupTestComponent();
+            render(
+                <PayPalProvider
+                    components={["paypal-payments"]}
+                    clientToken={undefined}
+                    environment="sandbox"
+                >
+                    <TestComponent />
+                </PayPalProvider>,
+            );
+
+            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
+
+            // Should not warn before timeout
+            jest.advanceTimersByTime(14999);
+            expect(consoleWarnSpy).not.toHaveBeenCalled();
+
+            // Should warn after 15 seconds
+            jest.advanceTimersByTime(1);
+            expect(consoleWarnSpy).toHaveBeenCalledWith(
+                "clientToken is not available. SDK cannot initialize without clientToken.",
+            );
+
+            consoleWarnSpy.mockRestore();
+            jest.useRealTimers();
+        });
     });
 
     describe("Eligibility Loading", () => {

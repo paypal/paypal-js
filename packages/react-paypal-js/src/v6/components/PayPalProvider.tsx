@@ -118,21 +118,19 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         }
     }, [isLoading, eligibleMethods, clientToken]);
 
-    // Warn if clientToken is not provided within a reasonable time
+    // Warn if clientToken is not available within a 15s time
     useEffect(() => {
         if (clientToken) {
-            return; // Token already provided
+            return;
         }
 
         const timeoutId = setTimeout(() => {
             if (!clientToken) {
                 console.warn(
-                    "[PayPal SDK] clientToken has not been provided after 15 seconds. " +
-                        "SDK initialization is blocked. Please ensure clientToken is being fetched and provided to PayPalProvider. " +
-                        "If this is intentional, you can ignore this warning.",
+                    "clientToken is not available. SDK cannot initialize without clientToken.",
                 );
             }
-        }, 15000); // 15 seconds
+        }, 15000);
 
         return () => {
             clearTimeout(timeoutId);

@@ -278,6 +278,10 @@ describe("useEligibleMethods", () => {
         });
 
         test("should handle fetch errors", async () => {
+            const consoleErrorSpy = jest
+                .spyOn(console, "error")
+                .mockImplementation(() => {});
+
             (global.fetch as jest.Mock).mockRejectedValueOnce(
                 new Error("Network error"),
             );
@@ -296,6 +300,8 @@ describe("useEligibleMethods", () => {
             expect(result.current.error).toEqual(
                 new Error("Failed to fetch eligible methods: Network error"),
             );
+
+            consoleErrorSpy.mockRestore();
         });
 
         test("should abort fetch on unmount", async () => {
@@ -360,22 +366,51 @@ describe("useEligibleMethods", () => {
     });
 
     describe("error handling", () => {
-        test("should return error when neither eligibleMethodsResponse nor clientToken is provided", () => {
+        test("should wait gracefully when clientToken is not available", () => {
             const { result } = renderHook(() =>
                 useEligibleMethods({
-                    clientToken: "",
+                    clientToken: undefined,
                     environment: "sandbox",
                 }),
             );
-            expectCurrentErrorValue(result.current.error);
-            expect(result.current.isLoading).toBe(false);
-            expect(result.current.error).toEqual(
-                new Error(
-                    "clientToken is required when eligibleMethodsResponse is not provided",
-                ),
-            );
+
+            expect(result.current.isLoading).toBe(true);
+            expect(result.current.error).toBeNull();
             expect(result.current.eligibleMethods).toBeNull();
             expect(global.fetch).not.toHaveBeenCalled();
+        });
+
+        test("should fetch when clientToken becomes available", async () => {
+            (global.fetch as jest.Mock).mockResolvedValueOnce({
+                ok: true,
+                json: async () => mockResponse,
+            });
+
+            const { result, rerender, waitForNextUpdate } = renderHook(
+                ({ clientToken }) =>
+                    useEligibleMethods({
+                        clientToken,
+                        environment: "sandbox",
+                    }),
+                {
+                    initialProps: {
+                        clientToken: undefined as string | undefined,
+                    },
+                },
+            );
+
+            expect(result.current.isLoading).toBe(true);
+            expect(result.current.error).toBeNull();
+            expect(global.fetch).not.toHaveBeenCalled();
+
+            rerender({ clientToken: mockClientToken });
+
+            await waitForNextUpdate();
+
+            expect(result.current.isLoading).toBe(false);
+            expect(result.current.eligibleMethods).toEqual(mockResponse);
+            expect(result.current.error).toBeNull();
+            expect(global.fetch).toHaveBeenCalledTimes(1);
         });
     });
 
