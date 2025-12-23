@@ -1,5 +1,45 @@
 # Changelog
 
+## 9.0.0
+
+### Major Changes
+
+- 62bf29b: Updated v6 SDK React error handling
+
+### Minor Changes
+
+- 62bf29b: Upgrade react-paypal-js Typescript version to v5.3.3 and update build configuration.
+- 62bf29b: Add V6 instance provider and context hook
+- 62bf29b: Adds 2 methods for client side and server side eligibility methods requests.
+- cd1dc60: Adds rollup plugin copy to include type declaration files in the build.
+
+### Patch Changes
+
+- 62bf29b: Add `<PayPalOneTimePaymentButton>`
+- 0c02589: Created usePayPalCardFieldsSavePaymentSession hook
+- 62bf29b: Fixes a build warning log by upgrading typescript-eslint packages from v5 to v6.
+- 62bf29b: Enhancing the Paypal and PayLater hooks to handle redirect and direct app switch presentation modes.
+- 62bf29b: Refactor to use names PayPalCardFieldsProvider and PayPalCardFieldsProviderContext
+- 62bf29b: Add v6 paypal-messages hook and types.
+- 62bf29b: Adds an early resolve to loadCoreSdkScript if a v6 core script already exists.
+- 62bf29b: Update createOrder call in useVenmoOneTimePaymentSession hook to match usePayLaterOneTimePaymentSession
+- 62bf29b: Adding PayLater UI Component
+- 62bf29b: Refactor paypal provider test utils.
+- 62bf29b: feat: add v5 storybook to github pages
+- 62bf29b: Update presentation mode options types and integration.
+- 62bf29b: - Default `PayPalProvider` `components` to `["paypal-payments"]`.
+    - Update session hooks to check `loadingStatus` before returning an error for no `sdkInstance`.
+    - `PayPalContext` export was removed since merchants won't need to use that directly.
+    - Check only `window` for `isServer` SSR function.
+- 62bf29b: Created CardFieldsProvider and context for creating and providing Card Fields sessions
+- 62bf29b: Adds v6 venmo ui component.
+- 62bf29b: Fix lint warnings.
+- 62bf29b: Implementing BCDC hook.
+- 62bf29b: Created usePayPalCardFieldsOneTimePaymentSession hook
+- 62bf29b: Remove ssr tests.
+- Updated dependencies [fb88a98]
+    - @paypal/paypal-js@9.1.1
+
 ## 8.9.2
 
 ### Patch Changes
