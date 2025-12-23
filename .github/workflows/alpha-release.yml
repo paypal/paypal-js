@@ -1,0 +1,33 @@
+name: Alpha Release for react-paypal-js
+
+on: workflow_dispatch
+
+permissions:
+    id-token: write # Required for OIDC
+
+jobs:
+    release:
+        name: Release
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repo
+              uses: actions/checkout@v3
+              with:
+                  # This makes Actions fetch all Git history so that Changesets can generate changelogs with the correct commits
+                  fetch-depth: 0
+
+            - name: 🤝 Set Node version from .nvmrc
+              run: echo NVMRC=`cat .nvmrc` >> $GITHUB_ENV
+
+            - name: ⎔ Setup node
+              uses: actions/setup-node@v3
+              with:
+                  # Hard-coding to 24 to get an npm version greater than 11.5.1 for trusted publishing.
+                  # See https://docs.npmjs.com/trusted-publishers.
+                  node-version: 24 # ${{ env.NVMRC }}
+
+            - name: 📥 Download deps
+              uses: bahmutov/npm-install@v1
+
+            - name: 🚢 Publish alpha package of react-paypal-js
+              run: npm run publish-react-paypal-js-alpha
