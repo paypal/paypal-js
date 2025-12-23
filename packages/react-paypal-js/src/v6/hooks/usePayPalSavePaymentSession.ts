@@ -14,7 +14,7 @@ import type {
 } from "../types";
 
 export type PayPalSavePaymentSessionProps = (
-    | (Omit<SavePaymentSessionOptions, "orderId"> & {
+    | (Omit<SavePaymentSessionOptions, "vaultSetupToken"> & {
           createVaultToken: () => Promise<{ vaultSetupToken: string }>;
           vaultSetupToken?: never;
       })
@@ -25,6 +25,25 @@ export type PayPalSavePaymentSessionProps = (
 ) &
     PayPalPresentationModeOptions;
 
+/**
+ * Hook for managing a PayPal save payment session, vault without purchase.
+ *
+ * This hook creates and manages a PayPal save payment session for vaulting payment methods.
+ * It supports multiple presentation modes and handles session lifecycle, resume flows for redirect-based
+ * flows, and provides methods to start, cancel, and destroy the session.
+ *
+ * @example
+ * const { error, handleClick, handleCancel, handleDestroy } = usePayPalSavePaymentSession({
+ *   presentationMode: 'popup',
+ *   createVaultToken: async () => ({ vaultSetupToken: 'VAULT-TOKEN-123' }),
+ *   onApprove: (data) => console.log('Vaulted:', data),
+ *   onCancel: () => console.log('Cancelled'),
+ * });
+ *
+ * return (
+ *   <paypal-button onClick={handleClick}></paypal-button>
+ * )
+ */
 export function usePayPalSavePaymentSession({
     presentationMode,
     fullPageOverlay,

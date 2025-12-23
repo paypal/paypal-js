@@ -25,6 +25,27 @@ export type UsePayPalCreditOneTimePaymentSessionProps = (
 ) &
     PayPalPresentationModeOptions;
 
+/**
+ * Hook for managing PayPal Credit one-time payment sessions.
+ *
+ * This hook creates and manages a PayPal Credit payment session. It handles session lifecycle, resume flows
+ * for redirect-based flows, and provides methods to start, cancel, and destroy the session.
+ *
+ *
+ * @example
+ * const { error, handleClick, handleCancel, handleDestroy } = usePayPalCreditOneTimePaymentSession({
+ *   presentationMode: 'popup',
+ *   createOrder: async () => ({ orderId: 'ORDER-123' }),
+ *   onApprove: (data) => console.log('Approved:', data),
+ *   onCancel: () => console.log('Cancelled'),
+ * });
+ * const { eligiblePaymentMethods } = usePayPal();
+ * const countryCode = eligiblePaymentMethods.eligible_methods.paypal_credit.country_code;
+ *
+ * return (
+ *   <paypal-credit-button countryCode={countryCode} onClick={handleClick}></paypal-credit-button>
+ * )
+ */
 export function usePayPalCreditOneTimePaymentSession({
     presentationMode,
     fullPageOverlay,
