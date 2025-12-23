@@ -109,14 +109,13 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     });
 
     useEffect(() => {
-        // Only set eligibility if we have a valid clientToken and methods
-        if (!isLoading && eligibleMethods && clientToken) {
+        if (!isLoading && eligibleMethods) {
             dispatch({
                 type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
                 value: eligibleMethods,
             });
         }
-    }, [isLoading, eligibleMethods, clientToken]);
+    }, [isLoading, eligibleMethods]);
 
     // Warn if clientToken is not available within a 15s time
     useEffect(() => {

@@ -161,7 +161,6 @@ export function useEligibleMethods({
         // This allows the provider to render while the token is being fetched
         if (!clientToken) {
             setIsLoading(true);
-            setError(null);
             return;
         }
 
