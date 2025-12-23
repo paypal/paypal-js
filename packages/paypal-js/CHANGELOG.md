@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.1.1
+
+### Patch Changes
+
+- fb88a98: Renamed V6 Card Fields submit methods arguments names to better represent expected values
+
 ## 9.1.0
 
 ### Minor Changes
