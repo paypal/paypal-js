@@ -1,6 +1,5 @@
 import { renderHook } from "@testing-library/react-hooks";
 
-import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import {
     useEligibleMethods,
     fetchEligibleMethods,

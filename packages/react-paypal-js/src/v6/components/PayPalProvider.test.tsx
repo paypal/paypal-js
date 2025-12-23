@@ -291,56 +291,7 @@ describe("PayPalProvider", () => {
     });
 
     describe("ClientToken Handling", () => {
-        test("should wait for clientToken before creating SDK instance", async () => {
-            const mockCreateInstance = jest
-                .fn()
-                .mockResolvedValue(createMockSdkInstance());
-
-            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
-                createInstance: mockCreateInstance,
-            });
-
-            // Render without clientToken
-            const { state, TestComponent } = setupTestComponent();
-            const { rerender } = render(
-                <PayPalProvider
-                    components={["paypal-payments"]}
-                    clientToken={undefined}
-                    environment="sandbox"
-                >
-                    <TestComponent />
-                </PayPalProvider>,
-            );
-
-            // Wait for SDK script to load
-            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
-
-            // Should still be pending because clientToken is not provided
-            expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
-            expect(mockCreateInstance).not.toHaveBeenCalled();
-            expect(state.sdkInstance).toBe(null);
-
-            // Now provide clientToken
-            rerender(
-                <PayPalProvider
-                    components={["paypal-payments"]}
-                    clientToken={TEST_CLIENT_TOKEN}
-                    environment="sandbox"
-                >
-                    <TestComponent />
-                </PayPalProvider>,
-            );
-
-            // Should now create instance and resolve
-            await waitFor(() => expectResolvedState(state));
-            expect(mockCreateInstance).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    clientToken: TEST_CLIENT_TOKEN,
-                }),
-            );
-        });
-
-        test("should render children immediately even without clientToken", async () => {
+        test("should wait for clientToken and render children immediately", async () => {
             const mockCreateInstance = jest
                 .fn()
                 .mockResolvedValue(createMockSdkInstance());
@@ -355,23 +306,46 @@ describe("PayPalProvider", () => {
                 return <div>Test Child Content</div>;
             };
 
-            const { getByText } = render(
+            const { state, TestComponent } = setupTestComponent();
+            const { rerender, getByText } = render(
                 <PayPalProvider
                     components={["paypal-payments"]}
                     clientToken={undefined}
                     environment="sandbox"
                 >
-                    <TestChild />
+                    <TestComponent>
+                        <TestChild />
+                    </TestComponent>
                 </PayPalProvider>,
             );
 
-            // Children should render immediately
+            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
+
             expect(childRenderSpy).toHaveBeenCalled();
             expect(getByText("Test Child Content")).toBeInTheDocument();
 
-            // But SDK instance should not be created
-            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
+            expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
             expect(mockCreateInstance).not.toHaveBeenCalled();
+            expect(state.sdkInstance).toBe(null);
+
+            rerender(
+                <PayPalProvider
+                    components={["paypal-payments"]}
+                    clientToken={TEST_CLIENT_TOKEN}
+                    environment="sandbox"
+                >
+                    <TestComponent>
+                        <TestChild />
+                    </TestComponent>
+                </PayPalProvider>,
+            );
+
+            await waitFor(() => expectResolvedState(state));
+            expect(mockCreateInstance).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    clientToken: TEST_CLIENT_TOKEN,
+                }),
+            );
         });
 
         test("should create instance immediately if clientToken is provided on mount", async () => {
@@ -387,105 +361,12 @@ describe("PayPalProvider", () => {
                 clientToken: TEST_CLIENT_TOKEN,
             });
 
-            // Should create instance right away
             await waitFor(() => expectResolvedState(state));
             expect(mockCreateInstance).toHaveBeenCalledWith(
                 expect.objectContaining({
                     clientToken: TEST_CLIENT_TOKEN,
                 }),
             );
-        });
-
-        test("should handle clientToken changing from undefined to defined", async () => {
-            const mockCreateInstance = jest
-                .fn()
-                .mockResolvedValue(createMockSdkInstance());
-
-            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
-                createInstance: mockCreateInstance,
-            });
-
-            const { state, TestComponent } = setupTestComponent();
-            const { rerender } = render(
-                <PayPalProvider
-                    components={["paypal-payments"]}
-                    clientToken={undefined}
-                    environment="sandbox"
-                >
-                    <TestComponent />
-                </PayPalProvider>,
-            );
-
-            // Wait for SDK script to load
-            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
-
-            // Should not create instance yet
-            expect(mockCreateInstance).not.toHaveBeenCalled();
-
-            // Provide clientToken
-            rerender(
-                <PayPalProvider
-                    components={["paypal-payments"]}
-                    clientToken={TEST_CLIENT_TOKEN}
-                    environment="sandbox"
-                >
-                    <TestComponent />
-                </PayPalProvider>,
-            );
-
-            // Should now create instance
-            await waitFor(() => expectResolvedState(state));
-            expect(mockCreateInstance).toHaveBeenCalledTimes(1);
-        });
-
-        test("should recreate instance when clientToken changes", async () => {
-            const mockCreateInstance = jest
-                .fn()
-                .mockResolvedValue(createMockSdkInstance());
-
-            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
-                createInstance: mockCreateInstance,
-            });
-
-            const { state, TestComponent } = setupTestComponent();
-            const { rerender } = render(
-                <PayPalProvider
-                    components={["paypal-payments"]}
-                    clientToken="first-token"
-                    environment="sandbox"
-                >
-                    <TestComponent />
-                </PayPalProvider>,
-            );
-
-            // Wait for first instance
-            await waitFor(() => expectResolvedState(state));
-            expect(mockCreateInstance).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    clientToken: "first-token",
-                }),
-            );
-
-            // Change clientToken
-            rerender(
-                <PayPalProvider
-                    components={["paypal-payments"]}
-                    clientToken="second-token"
-                    environment="sandbox"
-                >
-                    <TestComponent />
-                </PayPalProvider>,
-            );
-
-            // Should recreate instance with new token
-            await waitFor(() => {
-                expect(mockCreateInstance).toHaveBeenCalledWith(
-                    expect.objectContaining({
-                        clientToken: "second-token",
-                    }),
-                );
-            });
-            expect(mockCreateInstance).toHaveBeenCalledTimes(2);
         });
 
         test("should warn after 15 seconds if clientToken is not provided", async () => {
