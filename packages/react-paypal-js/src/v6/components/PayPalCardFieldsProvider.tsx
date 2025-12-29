@@ -181,19 +181,17 @@ export const PayPalCardFieldsProvider = ({
             return;
         }
 
-        // Build update configuration from proxy props
+        // Build update configuration from props
         const updateOptions: UpdateOptions = {};
         let hasUpdates = false;
 
-        if (proxyUpdateConfig.amount !== undefined) {
-            updateOptions.amount =
-                proxyUpdateConfig.amount as UpdateOptions["amount"];
+        if (amount !== undefined) {
+            updateOptions.amount = amount;
             hasUpdates = true;
         }
 
-        if (proxyUpdateConfig.isCobrandedEligible !== undefined) {
-            updateOptions.isCobrandedEligible =
-                proxyUpdateConfig.isCobrandedEligible as boolean;
+        if (isCobrandedEligible !== undefined) {
+            updateOptions.isCobrandedEligible = isCobrandedEligible;
             hasUpdates = true;
         }
 
@@ -209,7 +207,7 @@ export const PayPalCardFieldsProvider = ({
                 toError(`Failed to update card fields configuration: ${error}`),
             );
         }
-    }, [cardFieldsSession, proxyUpdateConfig, handleError]);
+    }, [cardFieldsSession, amount, isCobrandedEligible, handleError]); // Track actual prop values to trigger updates
 
     const sessionContextValue: CardFieldsSessionState = useMemo(
         () => ({
