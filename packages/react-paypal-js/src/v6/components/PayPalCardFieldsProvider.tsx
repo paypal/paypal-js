@@ -8,6 +8,7 @@ import React, {
 } from "react";
 
 import { usePayPal } from "../hooks/usePayPal";
+import { useProxyProps } from "../../hooks/useProxyProps";
 import {
     CardFieldsSessionContext,
     CardFieldsStatusContext,
@@ -19,6 +20,9 @@ import { toError } from "../utils";
 import type {
     CardFieldsOneTimePaymentSession,
     CardFieldsSavePaymentSession,
+    MerchantMessagingEvents,
+    CardFieldsEventsOptions,
+    UpdateOptions,
 } from "../types";
 import type {
     CardFieldsSessionState,
@@ -39,9 +43,12 @@ export const CARD_FIELDS_SESSION_TYPES = {
 export type CardFieldsSessionType =
     (typeof CARD_FIELDS_SESSION_TYPES)[keyof typeof CARD_FIELDS_SESSION_TYPES];
 
+type CardFieldsEventHandlers = Partial<CardFieldsEventsOptions>;
+
 type CardFieldsProviderProps = {
     children: ReactNode;
-};
+} & CardFieldsEventHandlers &
+    UpdateOptions;
 
 /**
  * {@link PayPalCardFieldsProvider} creates a Card Fields session and provides it to child components.
@@ -57,13 +64,22 @@ type CardFieldsProviderProps = {
  *  clientToken={clientToken}
  *  pageType="checkout"
  * >
- *   <PayPalCardFieldsProvider>
- *    <CheckoutForm />
+ *   <PayPalCardFieldsProvider
+ *     blur={(event) => console.log('Blur:', event)}
+ *     validitychange={(event) => console.log('Validity:', event)}
+ *     cardtypechange={(event) => console.log('Card type:', event)}
+ *     amount={{ currencyCode: "USD", value: "100.00" }}
+ *     isCobrandedEligible={true}
+ *   >
+ *     <CheckoutForm />
  *   </PayPalCardFieldsProvider>
  * </PayPalProvider>
  */
 export const PayPalCardFieldsProvider = ({
     children,
+    amount,
+    isCobrandedEligible,
+    ...eventHandlers
 }: CardFieldsProviderProps): JSX.Element => {
     const { sdkInstance, loadingStatus } = usePayPal();
     const [cardFieldsSession, setCardFieldsSession] =
@@ -71,9 +87,18 @@ export const PayPalCardFieldsProvider = ({
     const [cardFieldsSessionType, setCardFieldsSessionType] =
         useState<CardFieldsSessionType | null>(null);
     const [cardFieldsError, setCardFieldsError] = useState<Error | null>(null);
-    // Using the error hook here so it can participate in side-effects provided by the hook.
-    // The actual error instance is stored in the provider's state.
     const [, setError] = useError();
+
+    // Use proxy props for event handlers to avoid re-renders
+    const proxyEventHandlers = useProxyProps(
+        eventHandlers as Record<PropertyKey, unknown>,
+    );
+
+    // Use proxy props for update configuration
+    const proxyUpdateConfig = useProxyProps({
+        amount,
+        isCobrandedEligible,
+    } as Record<PropertyKey, unknown>);
 
     const handleError = useCallback(
         (error: Error | null) => {
@@ -83,6 +108,7 @@ export const PayPalCardFieldsProvider = ({
         [setError],
     );
 
+    // Effect to create Card Fields session
     useEffect(() => {
         // Early return: Still loading, wait for sdkInstance
         if (loadingStatus === INSTANCE_LOADING_STATE.PENDING) {
@@ -98,6 +124,7 @@ export const PayPalCardFieldsProvider = ({
         // Clear previous sdkInstance loading errors
         handleError(null);
 
+        // Wait for session type to be set by child hooks
         if (!cardFieldsSessionType) {
             return;
         }
@@ -115,10 +142,74 @@ export const PayPalCardFieldsProvider = ({
             handleError(toError(error));
         }
 
+        // Cleanup: destroy session on unmount or when dependencies change
         return () => {
             setCardFieldsSession(null);
         };
     }, [sdkInstance, loadingStatus, cardFieldsSessionType, handleError]);
+
+    // Register event handlers using proxy props
+    useEffect(() => {
+        if (!cardFieldsSession) {
+            return;
+        }
+
+        try {
+            /* 
+            Register all event handlers that are defined
+            by iterating over the keys of proxyEventHandlers directly
+            */
+            (
+                Object.keys(proxyEventHandlers) as MerchantMessagingEvents[]
+            ).forEach((eventName) => {
+                const handler = proxyEventHandlers[eventName];
+                if (handler && typeof handler === "function") {
+                    cardFieldsSession.on(
+                        eventName,
+                        handler as CardFieldsEventsOptions[typeof eventName],
+                    );
+                }
+            });
+        } catch (error) {
+            handleError(toError(`Failed to register event handlers: ${error}`));
+        }
+    }, [cardFieldsSession, proxyEventHandlers, handleError]);
+
+    // Update session configuration when props change
+    useEffect(() => {
+        if (!cardFieldsSession) {
+            return;
+        }
+
+        // Build update configuration from proxy props
+        const updateOptions: UpdateOptions = {};
+        let hasUpdates = false;
+
+        if (proxyUpdateConfig.amount !== undefined) {
+            updateOptions.amount =
+                proxyUpdateConfig.amount as UpdateOptions["amount"];
+            hasUpdates = true;
+        }
+
+        if (proxyUpdateConfig.isCobrandedEligible !== undefined) {
+            updateOptions.isCobrandedEligible =
+                proxyUpdateConfig.isCobrandedEligible as boolean;
+            hasUpdates = true;
+        }
+
+        // Only call update if there are configuration changes
+        if (!hasUpdates) {
+            return;
+        }
+
+        try {
+            cardFieldsSession.update(updateOptions);
+        } catch (error) {
+            handleError(
+                toError(`Failed to update card fields configuration: ${error}`),
+            );
+        }
+    }, [cardFieldsSession, proxyUpdateConfig, handleError]);
 
     const sessionContextValue: CardFieldsSessionState = useMemo(
         () => ({
