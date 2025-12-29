@@ -94,12 +94,6 @@ export const PayPalCardFieldsProvider = ({
         eventHandlers as Record<PropertyKey, unknown>,
     );
 
-    // Use proxy props for update configuration
-    const proxyUpdateConfig = useProxyProps({
-        amount,
-        isCobrandedEligible,
-    } as Record<PropertyKey, unknown>);
-
     const handleError = useCallback(
         (error: Error | null) => {
             setError(error);
