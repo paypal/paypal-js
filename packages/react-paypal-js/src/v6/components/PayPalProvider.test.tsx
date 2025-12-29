@@ -290,6 +290,127 @@ describe("PayPalProvider", () => {
         });
     });
 
+    describe("ClientToken Handling", () => {
+        test("should wait for clientToken and render children immediately", async () => {
+            const mockCreateInstance = jest
+                .fn()
+                .mockResolvedValue(createMockSdkInstance());
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: mockCreateInstance,
+            });
+
+            const childRenderSpy = jest.fn();
+            const TestChild = () => {
+                childRenderSpy();
+                return <div>Test Child Content</div>;
+            };
+
+            const { state, TestComponent } = setupTestComponent();
+            const { rerender, getByText } = render(
+                <PayPalProvider
+                    components={["paypal-payments"]}
+                    clientToken={undefined}
+                    deferLoading={true}
+                    environment="sandbox"
+                >
+                    <TestComponent>
+                        <TestChild />
+                    </TestComponent>
+                </PayPalProvider>,
+            );
+
+            expect(childRenderSpy).toHaveBeenCalled();
+            expect(getByText("Test Child Content")).toBeInTheDocument();
+
+            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+            expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
+            expect(mockCreateInstance).not.toHaveBeenCalled();
+            expect(state.sdkInstance).toBe(null);
+
+            rerender(
+                <PayPalProvider
+                    components={["paypal-payments"]}
+                    clientToken={TEST_CLIENT_TOKEN}
+                    deferLoading={true}
+                    environment="sandbox"
+                >
+                    <TestComponent>
+                        <TestChild />
+                    </TestComponent>
+                </PayPalProvider>,
+            );
+
+            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
+            await waitFor(() => expectResolvedState(state));
+            expect(mockCreateInstance).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    clientToken: TEST_CLIENT_TOKEN,
+                }),
+            );
+        });
+
+        test("should create instance immediately if clientToken is provided on mount", async () => {
+            const mockCreateInstance = jest
+                .fn()
+                .mockResolvedValue(createMockSdkInstance());
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: mockCreateInstance,
+            });
+
+            const { state } = renderProvider({
+                clientToken: TEST_CLIENT_TOKEN,
+            });
+
+            await waitFor(() => expectResolvedState(state));
+            expect(mockCreateInstance).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    clientToken: TEST_CLIENT_TOKEN,
+                }),
+            );
+        });
+
+        test("should defer SDK loading when clientToken is not provided", async () => {
+            const mockCreateInstance = jest
+                .fn()
+                .mockResolvedValue(createMockSdkInstance());
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: mockCreateInstance,
+            });
+
+            const childRenderSpy = jest.fn();
+            const TestChild = () => {
+                childRenderSpy();
+                return <div>Test Child Content</div>;
+            };
+
+            const { state, TestComponent } = setupTestComponent();
+            const { getByText } = render(
+                <PayPalProvider
+                    components={["paypal-payments"]}
+                    clientToken={undefined}
+                    deferLoading={true}
+                    environment="sandbox"
+                >
+                    <TestComponent>
+                        <TestChild />
+                    </TestComponent>
+                </PayPalProvider>,
+            );
+
+            // Children should render immediately
+            expect(childRenderSpy).toHaveBeenCalled();
+            expect(getByText("Test Child Content")).toBeInTheDocument();
+
+            // SDK should NOT be loaded without clientToken when deferLoading is true
+            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+            expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
+            expect(state.sdkInstance).toBe(null);
+        });
+    });
+
     describe("Eligibility Loading", () => {
         test("should load eligible payment methods", async () => {
             const { state } = renderProvider();

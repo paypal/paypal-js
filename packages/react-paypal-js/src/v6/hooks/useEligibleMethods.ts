@@ -65,7 +65,7 @@ export type FindEligiblePaymentMethodsRequestPayload = {
 };
 
 type FindEligiblePaymentMethodsOptions = {
-    clientToken: string;
+    clientToken?: string;
     eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
     environment?: "production" | "sandbox";
     payload?: FindEligiblePaymentMethodsRequestPayload;
@@ -157,13 +157,10 @@ export function useEligibleMethods({
             return;
         }
 
+        // Wait for clientToken to be available before fetching eligibility
+        // This allows the provider to render while the token is being fetched
         if (!clientToken) {
-            setError(
-                new Error(
-                    "clientToken is required when eligibleMethodsResponse is not provided",
-                ),
-            );
-            setIsLoading(false);
+            setIsLoading(true);
             return;
         }
 
