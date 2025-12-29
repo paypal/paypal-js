@@ -37,15 +37,16 @@ type PayPalProviderProps = Omit<
         eligibleMethodsPayload?: FindEligiblePaymentMethodsRequestPayload;
         children: React.ReactNode;
         clientToken?: string;
+        deferLoading?: boolean;
     };
 
 /**
  * {@link PayPalProvider} creates the SDK script, component scripts, runs eligibility, then
  * provides these in context to child components via the {@link usePayPal} hook.
  *
- * The clientToken can be provided asynchronously, allowing merchants to render the provider
- * and its children (e.g., product page content) before the token is fetched. The SDK will
- * initialize once the clientToken becomes available.
+ * When deferLoading is set to true, the SDK script loading is automatically deferred until
+ * clientToken is provided. This allows merchants to render the provider and its children
+ * (e.g., product page content) before the token is fetched.
  *
  * @example
  * // Example 1: clientToken is already available when provider mounts
@@ -60,7 +61,8 @@ type PayPalProviderProps = Omit<
  * </PayPalProvider>
  *
  * @example
- * // Example 2: clientToken is fetched asynchronously after provider mounts
+ * // Example 2: clientToken is fetched asynchronously with deferLoading
+ * // SDK loading is deferred until clientToken is available
  * const [clientToken, setClientToken] = useState(); // Initially undefined
  *
  * useEffect(() => {
@@ -68,8 +70,9 @@ type PayPalProviderProps = Omit<
  * }, []);
  *
  * <PayPalProvider
- *   clientToken={clientToken} // undefined initially, set later
+ *   clientToken={clientToken} // undefined initially, SDK loads when set
  *   components={["paypal-payments"]}
+ *   deferLoading={true}
  *   pageType="checkout"
  *  >
  *      <ProductPage /> // Renders immediately
@@ -87,6 +90,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     testBuyerCountry,
     eligibleMethodsResponse,
     eligibleMethodsPayload,
+    deferLoading = false,
     children,
     ...scriptOptions
 }) => {
@@ -117,27 +121,12 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         }
     }, [isLoading, eligibleMethods]);
 
-    // Warn if clientToken is not available within a 15s time
     useEffect(() => {
-        if (clientToken) {
+        // Defer SDK loading when deferLoading is true and clientToken is not yet available
+        if (deferLoading && !clientToken) {
             return;
         }
 
-        const timeoutId = setTimeout(() => {
-            if (!clientToken) {
-                console.warn(
-                    "clientToken is not available. SDK cannot initialize without clientToken.",
-                );
-            }
-        }, 15000);
-
-        return () => {
-            clearTimeout(timeoutId);
-        };
-    }, [clientToken]);
-
-    // Load Core SDK Script
-    useEffect(() => {
         let isSubscribed = true;
 
         const loadSdk = async () => {
@@ -171,7 +160,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         return () => {
             isSubscribed = false;
         };
-    }, [setError]);
+    }, [clientToken, deferLoading, setError]);
 
     // Create SDK Instance
     useEffect(() => {
@@ -179,7 +168,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             return;
         }
 
-        // Wait for clientToken before creating instance
         if (!clientToken) {
             return;
         }

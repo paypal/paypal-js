@@ -311,6 +311,28 @@ describe("PayPalProvider", () => {
                 <PayPalProvider
                     components={["paypal-payments"]}
                     clientToken={undefined}
+                    deferLoading={true}
+                    environment="sandbox"
+                >
+                    <TestComponent>
+                        <TestChild />
+                    </TestComponent>
+                </PayPalProvider>,
+            );
+
+            expect(childRenderSpy).toHaveBeenCalled();
+            expect(getByText("Test Child Content")).toBeInTheDocument();
+
+            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+            expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
+            expect(mockCreateInstance).not.toHaveBeenCalled();
+            expect(state.sdkInstance).toBe(null);
+
+            rerender(
+                <PayPalProvider
+                    components={["paypal-payments"]}
+                    clientToken={TEST_CLIENT_TOKEN}
+                    deferLoading={true}
                     environment="sandbox"
                 >
                     <TestComponent>
@@ -320,26 +342,6 @@ describe("PayPalProvider", () => {
             );
 
             await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
-
-            expect(childRenderSpy).toHaveBeenCalled();
-            expect(getByText("Test Child Content")).toBeInTheDocument();
-
-            expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
-            expect(mockCreateInstance).not.toHaveBeenCalled();
-            expect(state.sdkInstance).toBe(null);
-
-            rerender(
-                <PayPalProvider
-                    components={["paypal-payments"]}
-                    clientToken={TEST_CLIENT_TOKEN}
-                    environment="sandbox"
-                >
-                    <TestComponent>
-                        <TestChild />
-                    </TestComponent>
-                </PayPalProvider>,
-            );
-
             await waitFor(() => expectResolvedState(state));
             expect(mockCreateInstance).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -369,12 +371,7 @@ describe("PayPalProvider", () => {
             );
         });
 
-        test("should warn after 15 seconds if clientToken is not provided", async () => {
-            jest.useFakeTimers();
-            const consoleWarnSpy = jest
-                .spyOn(console, "warn")
-                .mockImplementation(() => {});
-
+        test("should defer SDK loading when clientToken is not provided", async () => {
             const mockCreateInstance = jest
                 .fn()
                 .mockResolvedValue(createMockSdkInstance());
@@ -383,31 +380,34 @@ describe("PayPalProvider", () => {
                 createInstance: mockCreateInstance,
             });
 
-            const { TestComponent } = setupTestComponent();
-            render(
+            const childRenderSpy = jest.fn();
+            const TestChild = () => {
+                childRenderSpy();
+                return <div>Test Child Content</div>;
+            };
+
+            const { state, TestComponent } = setupTestComponent();
+            const { getByText } = render(
                 <PayPalProvider
                     components={["paypal-payments"]}
                     clientToken={undefined}
+                    deferLoading={true}
                     environment="sandbox"
                 >
-                    <TestComponent />
+                    <TestComponent>
+                        <TestChild />
+                    </TestComponent>
                 </PayPalProvider>,
             );
 
-            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
+            // Children should render immediately
+            expect(childRenderSpy).toHaveBeenCalled();
+            expect(getByText("Test Child Content")).toBeInTheDocument();
 
-            // Should not warn before timeout
-            jest.advanceTimersByTime(14999);
-            expect(consoleWarnSpy).not.toHaveBeenCalled();
-
-            // Should warn after 15 seconds
-            jest.advanceTimersByTime(1);
-            expect(consoleWarnSpy).toHaveBeenCalledWith(
-                "clientToken is not available. SDK cannot initialize without clientToken.",
-            );
-
-            consoleWarnSpy.mockRestore();
-            jest.useRealTimers();
+            // SDK should NOT be loaded without clientToken when deferLoading is true
+            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+            expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
+            expect(state.sdkInstance).toBe(null);
         });
     });
 
