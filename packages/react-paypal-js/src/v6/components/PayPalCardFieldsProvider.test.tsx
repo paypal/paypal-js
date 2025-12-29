@@ -31,16 +31,26 @@ const mockUsePayPal = usePayPal as jest.MockedFunction<typeof usePayPal>;
 const createMockOneTimePaymentSession =
     (): CardFieldsOneTimePaymentSession => ({
         createCardFieldsComponent: jest.fn(),
-        on: jest.fn(),
-        submit: jest.fn(),
-        update: jest.fn(),
+        on: jest.fn() as jest.MockedFunction<
+            CardFieldsOneTimePaymentSession["on"]
+        >,
+        submit: jest.fn() as jest.MockedFunction<
+            CardFieldsOneTimePaymentSession["submit"]
+        >,
+        update: jest.fn() as jest.MockedFunction<
+            CardFieldsOneTimePaymentSession["update"]
+        >,
     });
 
 const createMockSavePaymentSession = (): CardFieldsSavePaymentSession => ({
     createCardFieldsComponent: jest.fn(),
-    on: jest.fn(),
-    submit: jest.fn(),
-    update: jest.fn(),
+    on: jest.fn() as jest.MockedFunction<CardFieldsSavePaymentSession["on"]>,
+    submit: jest.fn() as jest.MockedFunction<
+        CardFieldsSavePaymentSession["submit"]
+    >,
+    update: jest.fn() as jest.MockedFunction<
+        CardFieldsSavePaymentSession["update"]
+    >,
 });
 
 const createMockSdkInstance = ({
@@ -339,6 +349,509 @@ describe("PayPalCardFieldsProvider", () => {
                 );
                 expectedStatusContextKeys.forEach((key) => {
                     expect(receivedSesssionKeys).not.toContain(key);
+                });
+            });
+        });
+    });
+
+    describe("event handlers", () => {
+        test("should register event handlers on session creation", () => {
+            const onBlur = jest.fn();
+            const onValidityChange = jest.fn();
+            const onCardTypeChange = jest.fn();
+
+            const { result } = renderHook(
+                () => ({
+                    status: usePayPalCardFields(),
+                    session: usePayPalCardFieldsSession(),
+                }),
+                {
+                    wrapper: ({ children }) => (
+                        <PayPalCardFieldsProvider
+                            blur={onBlur}
+                            validitychange={onValidityChange}
+                            cardtypechange={onCardTypeChange}
+                        >
+                            {children}
+                        </PayPalCardFieldsProvider>
+                    ),
+                },
+            );
+
+            act(() => {
+                result.current.session.setCardFieldsSessionType(
+                    CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+                );
+            });
+
+            // Check that on() was called with the correct event names
+            expect(
+                mockCardFieldsOneTimePaymentSession.on,
+            ).toHaveBeenCalledTimes(3);
+
+            const calls = (mockCardFieldsOneTimePaymentSession.on as jest.Mock)
+                .mock.calls;
+
+            // Verify event names are registered
+            const eventNames = calls.map((call) => call[0]);
+            expect(eventNames).toContain("blur");
+            expect(eventNames).toContain("validitychange");
+            expect(eventNames).toContain("cardtypechange");
+
+            // Verify handlers work by calling them (they're wrapped by proxy)
+            const blurCall = calls.find((call) => call[0] === "blur");
+            const validityCall = calls.find(
+                (call) => call[0] === "validitychange",
+            );
+            const cardTypeCall = calls.find(
+                (call) => call[0] === "cardtypechange",
+            );
+
+            // Test that the proxy handlers call the original functions
+            blurCall?.[1]?.({});
+            expect(onBlur).toHaveBeenCalled();
+
+            validityCall?.[1]?.({});
+            expect(onValidityChange).toHaveBeenCalled();
+
+            cardTypeCall?.[1]?.({});
+            expect(onCardTypeChange).toHaveBeenCalled();
+        });
+
+        test("should only register handlers that are provided", () => {
+            const onFocus = jest.fn();
+
+            const { result } = renderHook(
+                () => ({
+                    status: usePayPalCardFields(),
+                    session: usePayPalCardFieldsSession(),
+                }),
+                {
+                    wrapper: ({ children }) => (
+                        <PayPalCardFieldsProvider focus={onFocus}>
+                            {children}
+                        </PayPalCardFieldsProvider>
+                    ),
+                },
+            );
+
+            act(() => {
+                result.current.session.setCardFieldsSessionType(
+                    CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+                );
+            });
+
+            // Should only register focus handler
+            expect(
+                mockCardFieldsOneTimePaymentSession.on,
+            ).toHaveBeenCalledTimes(1);
+
+            const calls = (mockCardFieldsOneTimePaymentSession.on as jest.Mock)
+                .mock.calls;
+            expect(calls[0][0]).toBe("focus");
+
+            // Test that the proxy handler calls the original function
+            calls[0][1]?.({});
+            expect(onFocus).toHaveBeenCalled();
+        });
+
+        test("should handle errors when registering event handlers", () => {
+            const onBlur = jest.fn();
+            const errorMessage = "Failed to register handler";
+
+            (
+                mockCardFieldsOneTimePaymentSession.on as jest.Mock
+            ).mockImplementationOnce(() => {
+                throw new Error(errorMessage);
+            });
+
+            const { result } = renderHook(
+                () => ({
+                    status: usePayPalCardFields(),
+                    session: usePayPalCardFieldsSession(),
+                }),
+                {
+                    wrapper: ({ children }) => (
+                        <PayPalCardFieldsProvider blur={onBlur}>
+                            {children}
+                        </PayPalCardFieldsProvider>
+                    ),
+                },
+            );
+
+            act(() => {
+                result.current.session.setCardFieldsSessionType(
+                    CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+                );
+            });
+
+            // The error message will include "Error: " prefix when Error is converted to string
+            expect(result.current.status.error).toEqual(
+                toError(
+                    `Failed to register event handlers: Error: ${errorMessage}`,
+                ),
+            );
+            expectCurrentErrorValue(result.current.status.error);
+        });
+
+        test("should call update when amount object reference changes (even with same values)", () => {
+            const { result, rerender } = renderHook(
+                () => ({
+                    status: usePayPalCardFields(),
+                    session: usePayPalCardFieldsSession(),
+                }),
+                {
+                    wrapper: ({ children }) => (
+                        <PayPalCardFieldsProvider
+                            amount={{ currencyCode: "USD", value: "100.00" }} // New object each render
+                        >
+                            {children}
+                        </PayPalCardFieldsProvider>
+                    ),
+                },
+            );
+
+            act(() => {
+                result.current.session.setCardFieldsSessionType(
+                    CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+                );
+            });
+
+            expect(
+                mockCardFieldsOneTimePaymentSession.update,
+            ).toHaveBeenCalledTimes(1);
+
+            // Clear the mock to track new calls
+            (
+                mockCardFieldsOneTimePaymentSession.update as jest.Mock
+            ).mockClear();
+
+            // Re-render multiple times (amount object reference changes each time)
+            rerender();
+            rerender();
+            rerender();
+
+            // Since amount is in the dependency array and the reference changes each time,
+            // update() will be called on each render
+            expect(
+                mockCardFieldsOneTimePaymentSession.update,
+            ).toHaveBeenCalledTimes(3);
+
+            // All calls should have the same amount value
+            const calls = (
+                mockCardFieldsOneTimePaymentSession.update as jest.Mock
+            ).mock.calls;
+            calls.forEach((call) => {
+                expect(call[0]).toEqual({
+                    amount: { currencyCode: "USD", value: "100.00" },
+                });
+            });
+        });
+    });
+
+    describe("update configuration", () => {
+        test("should call update when amount prop is provided", () => {
+            const amount = { currencyCode: "USD", value: "100.00" };
+
+            const { result } = renderHook(
+                () => ({
+                    status: usePayPalCardFields(),
+                    session: usePayPalCardFieldsSession(),
+                }),
+                {
+                    wrapper: ({ children }) => (
+                        <PayPalCardFieldsProvider amount={amount}>
+                            {children}
+                        </PayPalCardFieldsProvider>
+                    ),
+                },
+            );
+
+            act(() => {
+                result.current.session.setCardFieldsSessionType(
+                    CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+                );
+            });
+
+            expect(
+                mockCardFieldsOneTimePaymentSession.update,
+            ).toHaveBeenCalledWith({
+                amount,
+            });
+        });
+
+        test("should call update when isCobrandedEligible prop is provided", () => {
+            const { result } = renderHook(
+                () => ({
+                    status: usePayPalCardFields(),
+                    session: usePayPalCardFieldsSession(),
+                }),
+                {
+                    wrapper: ({ children }) => (
+                        <PayPalCardFieldsProvider isCobrandedEligible={true}>
+                            {children}
+                        </PayPalCardFieldsProvider>
+                    ),
+                },
+            );
+
+            act(() => {
+                result.current.session.setCardFieldsSessionType(
+                    CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+                );
+            });
+
+            expect(
+                mockCardFieldsOneTimePaymentSession.update,
+            ).toHaveBeenCalledWith({
+                isCobrandedEligible: true,
+            });
+        });
+
+        test("should call update with both amount and isCobrandedEligible", () => {
+            const amount = { currencyCode: "EUR", value: "50.00" };
+
+            const { result } = renderHook(
+                () => ({
+                    status: usePayPalCardFields(),
+                    session: usePayPalCardFieldsSession(),
+                }),
+                {
+                    wrapper: ({ children }) => (
+                        <PayPalCardFieldsProvider
+                            amount={amount}
+                            isCobrandedEligible={false}
+                        >
+                            {children}
+                        </PayPalCardFieldsProvider>
+                    ),
+                },
+            );
+
+            act(() => {
+                result.current.session.setCardFieldsSessionType(
+                    CARD_FIELDS_SESSION_TYPES.SAVE_PAYMENT,
+                );
+            });
+
+            expect(
+                mockCardFieldsSavePaymentSession.update,
+            ).toHaveBeenCalledWith({
+                amount,
+                isCobrandedEligible: false,
+            });
+        });
+
+        test("should call update when amount prop changes", () => {
+            const initialAmount = { currencyCode: "USD", value: "100.00" };
+            const updatedAmount = { currencyCode: "USD", value: "200.00" };
+
+            let currentAmount = initialAmount;
+
+            const { result, rerender } = renderHook(
+                () => ({
+                    status: usePayPalCardFields(),
+                    session: usePayPalCardFieldsSession(),
+                }),
+                {
+                    wrapper: ({ children }) => (
+                        <PayPalCardFieldsProvider amount={currentAmount}>
+                            {children}
+                        </PayPalCardFieldsProvider>
+                    ),
+                },
+            );
+
+            act(() => {
+                result.current.session.setCardFieldsSessionType(
+                    CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+                );
+            });
+
+            expect(
+                mockCardFieldsOneTimePaymentSession.update,
+            ).toHaveBeenCalledWith({
+                amount: initialAmount,
+            });
+
+            // Clear previous calls to track new ones
+            (
+                mockCardFieldsOneTimePaymentSession.update as jest.Mock
+            ).mockClear();
+
+            // Update the amount prop with a different value
+            currentAmount = updatedAmount;
+            rerender();
+
+            // The update should be called with the new amount
+            expect(
+                mockCardFieldsOneTimePaymentSession.update,
+            ).toHaveBeenCalledWith({
+                amount: updatedAmount,
+            });
+            expect(
+                mockCardFieldsOneTimePaymentSession.update,
+            ).toHaveBeenCalledTimes(1);
+        });
+
+        test("should not call update when no update props are provided", () => {
+            const { result } = renderHook(
+                () => ({
+                    status: usePayPalCardFields(),
+                    session: usePayPalCardFieldsSession(),
+                }),
+                {
+                    wrapper: ({ children }) => (
+                        <PayPalCardFieldsProvider>
+                            {children}
+                        </PayPalCardFieldsProvider>
+                    ),
+                },
+            );
+
+            act(() => {
+                result.current.session.setCardFieldsSessionType(
+                    CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+                );
+            });
+
+            expect(
+                mockCardFieldsOneTimePaymentSession.update,
+            ).not.toHaveBeenCalled();
+        });
+
+        test("should handle errors when calling update", () => {
+            const errorMessage = "Update failed";
+            const amount = { currencyCode: "USD", value: "100.00" };
+
+            (
+                mockCardFieldsOneTimePaymentSession.update as jest.Mock
+            ).mockImplementationOnce(() => {
+                throw new Error(errorMessage);
+            });
+
+            const { result } = renderHook(
+                () => ({
+                    status: usePayPalCardFields(),
+                    session: usePayPalCardFieldsSession(),
+                }),
+                {
+                    wrapper: ({ children }) => (
+                        <PayPalCardFieldsProvider amount={amount}>
+                            {children}
+                        </PayPalCardFieldsProvider>
+                    ),
+                },
+            );
+
+            act(() => {
+                result.current.session.setCardFieldsSessionType(
+                    CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+                );
+            });
+
+            // The error message will include "Error: " prefix when Error is converted to string
+            expect(result.current.status.error).toEqual(
+                toError(
+                    `Failed to update card fields configuration: Error: ${errorMessage}`,
+                ),
+            );
+            expectCurrentErrorValue(result.current.status.error);
+        });
+    });
+
+    describe("useProxyProps optimization", () => {
+        test("should not re-register handlers when handler reference changes", () => {
+            const { result, rerender } = renderHook(
+                () => ({
+                    status: usePayPalCardFields(),
+                    session: usePayPalCardFieldsSession(),
+                    handler: jest.fn(), // New function on each render
+                }),
+                {
+                    wrapper: ({ children }) => {
+                        const handler = jest.fn(); // New function each render
+                        return (
+                            <PayPalCardFieldsProvider blur={handler}>
+                                {children}
+                            </PayPalCardFieldsProvider>
+                        );
+                    },
+                },
+            );
+
+            act(() => {
+                result.current.session.setCardFieldsSessionType(
+                    CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+                );
+            });
+
+            const initialCallCount = (
+                mockCardFieldsOneTimePaymentSession.on as jest.Mock
+            ).mock.calls.length;
+
+            // Re-render multiple times (handler reference changes each time due to inline function)
+            rerender();
+            rerender();
+            rerender();
+
+            // on() should not be called again due to useProxyProps
+            expect(
+                (mockCardFieldsOneTimePaymentSession.on as jest.Mock).mock.calls
+                    .length,
+            ).toBe(initialCallCount);
+        });
+
+        test("should call update when amount reference changes (even with same values)", () => {
+            const { result, rerender } = renderHook(
+                () => ({
+                    status: usePayPalCardFields(),
+                    session: usePayPalCardFieldsSession(),
+                }),
+                {
+                    wrapper: ({ children }) => (
+                        <PayPalCardFieldsProvider
+                            amount={{ currencyCode: "USD", value: "100.00" }} // New object each render
+                        >
+                            {children}
+                        </PayPalCardFieldsProvider>
+                    ),
+                },
+            );
+
+            act(() => {
+                result.current.session.setCardFieldsSessionType(
+                    CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+                );
+            });
+
+            expect(
+                mockCardFieldsOneTimePaymentSession.update,
+            ).toHaveBeenCalledTimes(1);
+
+            // Clear mock to track new calls
+            (
+                mockCardFieldsOneTimePaymentSession.update as jest.Mock
+            ).mockClear();
+
+            // Re-render multiple times (amount object reference changes each time)
+            rerender();
+            rerender();
+            rerender();
+
+            // Since amount is in the dependency array and the reference changes,
+            // update() will be called on each render (this matches SDK behavior)
+            expect(
+                mockCardFieldsOneTimePaymentSession.update,
+            ).toHaveBeenCalledTimes(3);
+
+            // Verify all calls have the same value
+            const calls = (
+                mockCardFieldsOneTimePaymentSession.update as jest.Mock
+            ).mock.calls;
+            calls.forEach((call) => {
+                expect(call[0]).toEqual({
+                    amount: { currencyCode: "USD", value: "100.00" },
                 });
             });
         });
