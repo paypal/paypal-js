@@ -26,15 +26,15 @@ React developers think in terms of components and not about loading external scr
 
 **Features**
 
--   Enforce async loading the JS SDK upfront so when it's time to render the buttons to your buyer, they render immediately.
--   Abstract away the complexity around loading the JS SDK with the global [PayPalScriptProvider](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalscriptprovider--default) component.
--   Support dispatching actions to reload the JS SDK and re-render components when global parameters like `currency` change.
--   Easy to use components for all the different Braintree/PayPal product offerings:
-    -   [PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default)
-    -   [PayPalMarks](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalmarks--default)
-    -   [PayPalMessages](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalmessages--default)
-    -   [PayPalHostedFields](https://paypal.github.io/react-paypal-js/?path=/docs/paypal-paypalhostedfields--default)
-    -   [BraintreePayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/braintree-braintreepaypalbuttons--default)
+- Enforce async loading the JS SDK upfront so when it's time to render the buttons to your buyer, they render immediately.
+- Abstract away the complexity around loading the JS SDK with the global [PayPalScriptProvider](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalscriptprovider--default) component.
+- Support dispatching actions to reload the JS SDK and re-render components when global parameters like `currency` change.
+- Easy to use components for all the different Braintree/PayPal product offerings:
+    - [PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default)
+    - [PayPalMarks](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalmarks--default)
+    - [PayPalMessages](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalmessages--default)
+    - [PayPalHostedFields](https://paypal.github.io/react-paypal-js/?path=/docs/paypal-paypalhostedfields--default)
+    - [BraintreePayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/braintree-braintreepaypalbuttons--default)
 
 ## Installation
 
@@ -92,8 +92,8 @@ The [JS SDK Configuration guide](https://developer.paypal.com/docs/business/java
 
 Use the optional PayPalScriptProvider `deferLoading` prop to control when the JS SDK script loads.
 
--   This prop is set to false by default since we usually know all the sdk script params upfront and want to load the script right away so components like `<PayPalButtons />` render immediately.
--   This prop can be set to true to prevent loading the JS SDK script when the PayPalScriptProvider renders. Use `deferLoading={true}` initially and then dispatch an action later on in the app's life cycle to load the sdk script.
+- This prop is set to false by default since we usually know all the sdk script params upfront and want to load the script right away so components like `<PayPalButtons />` render immediately.
+- This prop can be set to true to prevent loading the JS SDK script when the PayPalScriptProvider renders. Use `deferLoading={true}` initially and then dispatch an action later on in the app's life cycle to load the sdk script.
 
 ```jsx
 <PayPalScriptProvider deferLoading={true} options={initialOptions}>
@@ -109,10 +109,10 @@ The `<PayPalScriptProvider />` component is designed to be used with the `usePay
 
 The `usePayPalScriptReducer` hook provides an easy way to tap into the loading state of the JS SDK script. This state can be used to show a loading spinner while the script loads or an error message if it fails to load. The following derived attributes are provided for tracking this loading state:
 
--   isInitial - not started (only used when passing `deferLoading={true}`)
--   isPending - loading (default)
--   isResolved - successfully loaded
--   isRejected - failed to load
+- isInitial - not started (only used when passing `deferLoading={true}`)
+- isPending - loading (default)
+- isResolved - successfully loaded
+- isRejected - failed to load
 
 For example, here's how you can use it to show a loading spinner.
 

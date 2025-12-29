@@ -35,9 +35,9 @@ The [default JS SDK code snippet](https://developer.paypal.com/docs/checkout/sta
 
 The above snippet can be difficult to implement in a non-blocking way, especially in single page web apps. This is where the paypal-js library comes in. It provides the following benefits over the above snippet:
 
--   Async script loading to ensure page rendering isn't blocked.
--   A [Promise API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) to know when script loading is complete.
--   A convenient way to reload the script when query parameters or data attributes change.
+- Async script loading to ensure page rendering isn't blocked.
+- A [Promise API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) to know when script loading is complete.
+- A convenient way to reload the script when query parameters or data attributes change.
 
 ## Installation
 
@@ -53,8 +53,8 @@ Import the `loadScript` function for asynchronously loading the Paypal JS SDK.
 
 ### `loadScript(options)`
 
--   accepts an object for passing query parameters and attributes to the JS SDK.
--   returns a Promise that resolves with `window.paypal` after the JS SDK is finished loading.
+- accepts an object for passing query parameters and attributes to the JS SDK.
+- returns a Promise that resolves with `window.paypal` after the JS SDK is finished loading.
 
 #### Async/Await
 
@@ -249,8 +249,8 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
 
 The `loadCustomScript` function is a generic script loader function that works with any url.
 
--   accepts an object for defining the script url and attributes.
--   returns a promise to indicate if the script was successfully loaded.
+- accepts an object for defining the script url and attributes.
+- returns a promise to indicate if the script was successfully loaded.
 
 #### Async/Await
 
