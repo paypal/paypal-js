@@ -13,7 +13,7 @@ import type {
     BasePaymentSessionReturn,
 } from "../types";
 
-export type PayPalSavePaymentSessionProps = (
+export type PayPalCreditSavePaymentSessionProps = (
     | (Omit<SavePaymentSessionOptions, "vaultSetupToken"> & {
           createVaultToken: () => Promise<{ vaultSetupToken: string }>;
           vaultSetupToken?: never;
@@ -26,32 +26,33 @@ export type PayPalSavePaymentSessionProps = (
     PayPalPresentationModeOptions;
 
 /**
- * Hook for managing a PayPal save payment session, vault without purchase.
+ * Hook for managing PayPal Credit save payment sessions.
  *
- * This hook creates and manages a PayPal save payment session for vaulting payment methods.
- * It supports multiple presentation modes and handles session lifecycle, resume flows for redirect-based
- * flows, and provides methods to start, cancel, and destroy the session.
+ * This hook creates and manages a PayPal Credit save payment session for vaulting payment methods.
+ * It handles session lifecycle, resume flows for redirect-based flows, and provides methods to start, cancel, and destroy the session.
  *
  * @example
- * const { error, handleClick, handleCancel, handleDestroy } = usePayPalSavePaymentSession({
- *   presentationMode: 'popup',
+ * const { error, handleClick, handleCancel, handleDestroy } = usePayPalCreditSavePaymentSession({
+ *   presentationMode: 'redirect',
  *   createVaultToken: async () => ({ vaultSetupToken: 'VAULT-TOKEN-123' }),
  *   onApprove: (data) => console.log('Vaulted:', data),
  *   onCancel: () => console.log('Cancelled'),
  * });
+ * const { eligiblePaymentMethods } = usePayPal();
+ * const countryCode = eligiblePaymentMethods.eligible_methods.paypal_credit.country_code;
  *
  * return (
- *   <paypal-button onClick={handleClick}></paypal-button>
+ *   <paypal-credit-button countryCode={countryCode} onClick={handleClick}></paypal-credit-button>
  * )
  */
-export function usePayPalSavePaymentSession({
+export function usePayPalCreditSavePaymentSession({
     presentationMode,
     fullPageOverlay,
     autoRedirect,
     createVaultToken,
     vaultSetupToken,
     ...callbacks
-}: PayPalSavePaymentSessionProps): BasePaymentSessionReturn {
+}: PayPalCreditSavePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance, loadingStatus } = usePayPal();
     const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<SavePaymentSession | null>(null);
@@ -125,7 +126,7 @@ export function usePayPalSavePaymentSession({
         }
 
         if (!sessionRef.current) {
-            setError(new Error("Save Payment session not available"));
+            setError(new Error("Credit Save Payment session not available"));
             return;
         }
 
@@ -152,7 +153,7 @@ export function usePayPalSavePaymentSession({
     return {
         error,
         handleCancel,
-        handleClick,
         handleDestroy,
+        handleClick,
     };
 }
