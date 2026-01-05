@@ -36,7 +36,7 @@ export function usePayLaterOneTimePaymentSession({
 }: PayLaterOneTimePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance, loadingStatus } = usePayPal();
     const isMountedRef = useIsMountedRef();
-    const sessionRef = useRef<OneTimePaymentSession | null>(null); // handle cleanup
+    const sessionRef = useRef<OneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
 

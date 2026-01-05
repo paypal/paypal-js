@@ -117,6 +117,8 @@ export type SavePaymentSession = Omit<BasePaymentSession, "start"> & {
         presentationModeOptions: PayPalPresentationModeOptions,
         paymentSessionPromise?: Promise<{ vaultSetupToken: string }>,
     ) => Promise<void>;
+    hasReturned?: () => boolean;
+    resume?: () => Promise<void>;
 };
 
 export type PayLaterOneTimePaymentSessionOptions =
@@ -272,4 +274,34 @@ export interface PayPalPaymentsInstance {
     createPayPalCreditOneTimePaymentSession: (
         paymentSessionOptions: PayPalCreditOneTimePaymentSessionOptions,
     ) => OneTimePaymentSession;
+    /**
+     * Creates a PayPal Credit save payment session for storing PayPal Credit payment methods for future use.
+     *
+     * @remarks
+     * This method allows you to set up vault payment sessions where customers can save
+     * their PayPal Credit payment method for future transactions without re-entering details.
+     * Available in supported countries.
+     *
+     * @param paymentSessionOptions - Configuration options for the PayPal Credit save payment session
+     * @returns A session object that can be used to start the PayPal Credit vault setup flow
+     *
+     * @example
+     * ```typescript
+     * const savePayPalCreditSession = sdkInstance.createPayPalCreditSavePaymentSession({
+     *   vaultSetupToken: 'your-vault-setup-token',
+     *   onApprove: (data) => {
+     *     console.log('PayPal Credit payment method saved:', data);
+     *   },
+     *   onCancel: () => {
+     *     console.log('Save PayPal Credit payment canceled');
+     *   },
+     *   onError: (data) => {
+     *     console.error('Save PayPal Credit payment error:', data);
+     *   }
+     * });
+     * ```
+     */
+    createPayPalCreditSavePaymentSession: (
+        paymentSessionOptions: SavePaymentSessionOptions,
+    ) => SavePaymentSession;
 }

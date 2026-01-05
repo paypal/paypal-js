@@ -7,60 +7,66 @@ import { useProxyProps } from "../utils";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 
 import type {
-    SavePaymentSession,
-    PayPalPresentationModeOptions,
-    SavePaymentSessionOptions,
     BasePaymentSessionReturn,
+    OneTimePaymentSession,
+    PayPalPresentationModeOptions,
+    PayPalCreditOneTimePaymentSessionOptions,
 } from "../types";
 
-export type PayPalSavePaymentSessionProps = (
-    | (Omit<SavePaymentSessionOptions, "vaultSetupToken"> & {
-          createVaultToken: () => Promise<{ vaultSetupToken: string }>;
-          vaultSetupToken?: never;
+export type UsePayPalCreditOneTimePaymentSessionProps = (
+    | (Omit<PayPalCreditOneTimePaymentSessionOptions, "orderId"> & {
+          createOrder: () => Promise<{ orderId: string }>;
+          orderId?: never;
       })
-    | (SavePaymentSessionOptions & {
-          createVaultToken?: never;
-          vaultSetupToken: string;
+    | (PayPalCreditOneTimePaymentSessionOptions & {
+          createOrder?: never;
+          orderId: string;
       })
 ) &
     PayPalPresentationModeOptions;
 
 /**
- * Hook for managing a PayPal save payment session, vault without purchase.
+ * Hook for managing PayPal Credit one-time payment sessions.
  *
- * This hook creates and manages a PayPal save payment session for vaulting payment methods.
- * It supports multiple presentation modes and handles session lifecycle, resume flows for redirect-based
- * flows, and provides methods to start, cancel, and destroy the session.
+ * This hook creates and manages a PayPal Credit payment session. It handles session lifecycle, resume flows
+ * for redirect-based flows, and provides methods to start, cancel, and destroy the session.
+ *
  *
  * @example
- * const { error, handleClick, handleCancel, handleDestroy } = usePayPalSavePaymentSession({
+ * const { error, handleClick, handleCancel, handleDestroy } = usePayPalCreditOneTimePaymentSession({
  *   presentationMode: 'popup',
- *   createVaultToken: async () => ({ vaultSetupToken: 'VAULT-TOKEN-123' }),
- *   onApprove: (data) => console.log('Vaulted:', data),
+ *   createOrder: async () => ({ orderId: 'ORDER-123' }),
+ *   onApprove: (data) => console.log('Approved:', data),
  *   onCancel: () => console.log('Cancelled'),
  * });
+ * const { eligiblePaymentMethods } = usePayPal();
+ * const countryCode = eligiblePaymentMethods.eligible_methods.paypal_credit.country_code;
  *
  * return (
- *   <paypal-button onClick={handleClick}></paypal-button>
+ *   <paypal-credit-button countryCode={countryCode} onClick={handleClick}></paypal-credit-button>
  * )
  */
-export function usePayPalSavePaymentSession({
+export function usePayPalCreditOneTimePaymentSession({
     presentationMode,
     fullPageOverlay,
     autoRedirect,
-    createVaultToken,
-    vaultSetupToken,
+    createOrder,
+    orderId,
     ...callbacks
-}: PayPalSavePaymentSessionProps): BasePaymentSessionReturn {
+}: UsePayPalCreditOneTimePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance, loadingStatus } = usePayPal();
     const isMountedRef = useIsMountedRef();
-    const sessionRef = useRef<SavePaymentSession | null>(null);
+    const sessionRef = useRef<OneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
         sessionRef.current = null;
+    }, []);
+
+    const handleCancel = useCallback(() => {
+        sessionRef.current?.cancel();
     }, []);
 
     // Separate error reporting effect to avoid infinite loops with proxyCallbacks
@@ -77,12 +83,15 @@ export function usePayPalSavePaymentSession({
             return;
         }
 
-        const newSession = sdkInstance.createPayPalSavePaymentSession({
-            vaultSetupToken,
+        // Create session (can be created without orderId for resume detection)
+        const newSession = sdkInstance.createPayPalCreditOneTimePaymentSession({
+            orderId,
             ...proxyCallbacks,
         });
+
         sessionRef.current = newSession;
 
+        // Only check for resume flow in redirect-based presentation modes
         const shouldCheckResume =
             presentationMode === "redirect" ||
             presentationMode === "direct-app-switch";
@@ -108,16 +117,12 @@ export function usePayPalSavePaymentSession({
         return handleDestroy;
     }, [
         sdkInstance,
-        vaultSetupToken,
+        orderId,
         proxyCallbacks,
         handleDestroy,
         presentationMode,
         setError,
     ]);
-
-    const handleCancel = useCallback(() => {
-        sessionRef.current?.cancel();
-    }, []);
 
     const handleClick = useCallback(async () => {
         if (!isMountedRef.current) {
@@ -125,7 +130,7 @@ export function usePayPalSavePaymentSession({
         }
 
         if (!sessionRef.current) {
-            setError(new Error("Save Payment session not available"));
+            setError(new Error("PayPal session not available"));
             return;
         }
 
@@ -135,24 +140,24 @@ export function usePayPalSavePaymentSession({
             autoRedirect,
         } as PayPalPresentationModeOptions;
 
-        if (createVaultToken) {
-            await sessionRef.current.start(startOptions, createVaultToken());
-        } else {
-            await sessionRef.current.start(startOptions);
-        }
+        const result = await sessionRef.current.start(
+            startOptions,
+            createOrder?.(),
+        );
+        return result;
     }, [
         isMountedRef,
         presentationMode,
         fullPageOverlay,
         autoRedirect,
-        createVaultToken,
+        createOrder,
         setError,
     ]);
 
     return {
         error,
-        handleCancel,
         handleClick,
         handleDestroy,
+        handleCancel,
     };
 }
