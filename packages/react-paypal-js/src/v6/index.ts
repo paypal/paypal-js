@@ -33,7 +33,7 @@ export { usePayPalMessages } from "./hooks/usePayPalMessages";
 export { usePayPalCreditOneTimePaymentSession } from "./hooks/usePayPalCreditOneTimePaymentSession";
 export { usePayPalCreditSavePaymentSession } from "./hooks/usePayPalCreditSavePaymentSession";
 
-// React 19+ JSX types augmentation
+// React 19+ JSX SDK Web Components type declaration
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
@@ -45,7 +45,7 @@ declare global {
     }
 }
 
-// React 17/18 JSX types augmentation (for backwards compatibility)
+// React 17/18 JSX SDK Web Components type declaration (for backwards compatibility)
 declare module "react" {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
