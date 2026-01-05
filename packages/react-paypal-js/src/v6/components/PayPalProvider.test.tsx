@@ -311,7 +311,6 @@ describe("PayPalProvider", () => {
                 <PayPalProvider
                     components={["paypal-payments"]}
                     clientToken={undefined}
-                    deferLoading={true}
                     environment="sandbox"
                 >
                     <TestComponent>
@@ -322,17 +321,14 @@ describe("PayPalProvider", () => {
 
             expect(childRenderSpy).toHaveBeenCalled();
             expect(getByText("Test Child Content")).toBeInTheDocument();
-
             expect(loadCoreSdkScript).not.toHaveBeenCalled();
             expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
-            expect(mockCreateInstance).not.toHaveBeenCalled();
             expect(state.sdkInstance).toBe(null);
 
             rerender(
                 <PayPalProvider
                     components={["paypal-payments"]}
                     clientToken={TEST_CLIENT_TOKEN}
-                    deferLoading={true}
                     environment="sandbox"
                 >
                     <TestComponent>
@@ -371,7 +367,19 @@ describe("PayPalProvider", () => {
             );
         });
 
-        test("should defer SDK loading when clientToken is not provided", async () => {
+        test("should handle Promise rejection for clientToken", async () => {
+            const tokenError = new Error("Token fetch failed");
+            const tokenPromise = Promise.reject(tokenError);
+
+            const { state } = renderProvider({
+                clientToken: tokenPromise,
+            });
+
+            await waitFor(() => expectRejectedState(state, tokenError));
+            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+        });
+
+        test("should resolve Promise and load SDK when clientToken is a Promise", async () => {
             const mockCreateInstance = jest
                 .fn()
                 .mockResolvedValue(createMockSdkInstance());
@@ -386,12 +394,16 @@ describe("PayPalProvider", () => {
                 return <div>Test Child Content</div>;
             };
 
+            let resolveToken: (value: string) => void;
+            const tokenPromise = new Promise<string>((resolve) => {
+                resolveToken = resolve;
+            });
+
             const { state, TestComponent } = setupTestComponent();
             const { getByText } = render(
                 <PayPalProvider
                     components={["paypal-payments"]}
-                    clientToken={undefined}
-                    deferLoading={true}
+                    clientToken={tokenPromise}
                     environment="sandbox"
                 >
                     <TestComponent>
@@ -400,14 +412,14 @@ describe("PayPalProvider", () => {
                 </PayPalProvider>,
             );
 
-            // Children should render immediately
             expect(childRenderSpy).toHaveBeenCalled();
             expect(getByText("Test Child Content")).toBeInTheDocument();
-
-            // SDK should NOT be loaded without clientToken when deferLoading is true
             expect(loadCoreSdkScript).not.toHaveBeenCalled();
-            expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
-            expect(state.sdkInstance).toBe(null);
+
+            resolveToken!(TEST_CLIENT_TOKEN);
+
+            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
+            await waitFor(() => expectResolvedState(state));
         });
     });
 
