@@ -55,7 +55,7 @@ export function usePayPalCreditSavePaymentSession({
 }: PayPalCreditSavePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance, loadingStatus } = usePayPal();
     const isMountedRef = useIsMountedRef();
-    const sessionRef = useRef<SavePaymentSession | null>(null); // handle cleanup
+    const sessionRef = useRef<SavePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
 
