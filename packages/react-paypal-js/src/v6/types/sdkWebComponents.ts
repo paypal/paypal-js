@@ -20,18 +20,17 @@ export interface PayLaterButtonProps extends HTMLAttributes<HTMLButtonElement> {
 }
 
 export interface PayPalBasicCardButtonProps
-    extends React.HTMLAttributes<HTMLElement> {
+    extends HTMLAttributes<HTMLButtonElement> {
     buyerCountry: string;
-    ref?: React.Ref<HTMLElement>;
+    ref?: React.Ref<HTMLButtonElement>;
 }
 
 export interface PayPalCreditButtonProps
-    extends React.HTMLAttributes<HTMLElement> {
+    extends HTMLAttributes<HTMLButtonElement> {
     countryCode?: string;
 }
 
-export interface PayPalMessagesElement
-    extends React.HTMLAttributes<HTMLElement> {
+export interface PayPalMessagesElement extends HTMLAttributes<HTMLElement> {
     amount?: string;
     "auto-bootstrap"?: boolean;
     "buyer-country"?: string;
@@ -40,7 +39,7 @@ export interface PayPalMessagesElement
     "logo-type"?: "MONOGRAM" | "WORDMARK";
     "offer-types"?: string;
     "presentation-mode"?: "AUTO" | "MODAL" | "POPUP" | "REDIRECT";
-    ref?: React.Ref<PayPalMessagesElement>;
+    ref?: React.Ref<HTMLElement>;
     "text-color"?: "BLACK" | "MONOCHROME" | "WHITE";
 
     // Event handlers for custom events
