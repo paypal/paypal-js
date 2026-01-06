@@ -290,6 +290,148 @@ describe("PayPalProvider", () => {
         });
     });
 
+    describe("ClientToken Handling", () => {
+        test("should wait for clientToken and render children immediately", async () => {
+            const mockCreateInstance = jest
+                .fn()
+                .mockResolvedValue(createMockSdkInstance());
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: mockCreateInstance,
+            });
+
+            const childRenderSpy = jest.fn();
+            const TestChild = () => {
+                childRenderSpy();
+                return <div>Test Child Content</div>;
+            };
+
+            const { state, TestComponent } = setupTestComponent();
+            const { rerender, getByText } = render(
+                <PayPalProvider
+                    components={["paypal-payments"]}
+                    clientToken={undefined}
+                    environment="sandbox"
+                >
+                    <TestComponent>
+                        <TestChild />
+                    </TestComponent>
+                </PayPalProvider>,
+            );
+
+            expect(childRenderSpy).toHaveBeenCalled();
+            expect(getByText("Test Child Content")).toBeInTheDocument();
+            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+            expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
+            expect(state.sdkInstance).toBe(null);
+
+            rerender(
+                <PayPalProvider
+                    components={["paypal-payments"]}
+                    clientToken={TEST_CLIENT_TOKEN}
+                    environment="sandbox"
+                >
+                    <TestComponent>
+                        <TestChild />
+                    </TestComponent>
+                </PayPalProvider>,
+            );
+
+            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
+            await waitFor(() => expectResolvedState(state));
+            expect(mockCreateInstance).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    clientToken: TEST_CLIENT_TOKEN,
+                }),
+            );
+        });
+
+        test("should create instance immediately if clientToken is provided on mount", async () => {
+            const mockCreateInstance = jest
+                .fn()
+                .mockResolvedValue(createMockSdkInstance());
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: mockCreateInstance,
+            });
+
+            const { state } = renderProvider({
+                clientToken: TEST_CLIENT_TOKEN,
+            });
+
+            await waitFor(() => expectResolvedState(state));
+            expect(mockCreateInstance).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    clientToken: TEST_CLIENT_TOKEN,
+                }),
+            );
+        });
+
+        test("should handle Promise rejection for clientToken", async () => {
+            const tokenError = new Error("Token fetch failed");
+            const tokenPromise = Promise.reject(tokenError);
+
+            tokenPromise.catch(() => {});
+
+            const { state } = renderProvider({
+                clientToken: tokenPromise,
+            });
+
+            await waitFor(() => {
+                expect(state.loadingStatus).toBe(
+                    INSTANCE_LOADING_STATE.REJECTED,
+                );
+                expect(state.error?.message).toBe(
+                    "Failed to resolve clientToken. Expected a Promise that resolves to a string, but it was rejected with: Token fetch failed",
+                );
+            });
+            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+        });
+
+        test("should resolve Promise and load SDK when clientToken is a Promise", async () => {
+            const mockCreateInstance = jest
+                .fn()
+                .mockResolvedValue(createMockSdkInstance());
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: mockCreateInstance,
+            });
+
+            const childRenderSpy = jest.fn();
+            const TestChild = () => {
+                childRenderSpy();
+                return <div>Test Child Content</div>;
+            };
+
+            let resolveToken: (value: string) => void;
+            const tokenPromise = new Promise<string>((resolve) => {
+                resolveToken = resolve;
+            });
+
+            const { state, TestComponent } = setupTestComponent();
+            const { getByText } = render(
+                <PayPalProvider
+                    components={["paypal-payments"]}
+                    clientToken={tokenPromise}
+                    environment="sandbox"
+                >
+                    <TestComponent>
+                        <TestChild />
+                    </TestComponent>
+                </PayPalProvider>,
+            );
+
+            expect(childRenderSpy).toHaveBeenCalled();
+            expect(getByText("Test Child Content")).toBeInTheDocument();
+            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+
+            resolveToken!(TEST_CLIENT_TOKEN);
+
+            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
+            await waitFor(() => expectResolvedState(state));
+        });
+    });
+
     describe("Eligibility Loading", () => {
         test("should load eligible payment methods", async () => {
             const { state } = renderProvider();
