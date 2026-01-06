@@ -371,11 +371,20 @@ describe("PayPalProvider", () => {
             const tokenError = new Error("Token fetch failed");
             const tokenPromise = Promise.reject(tokenError);
 
+            tokenPromise.catch(() => {});
+
             const { state } = renderProvider({
                 clientToken: tokenPromise,
             });
 
-            await waitFor(() => expectRejectedState(state, tokenError));
+            await waitFor(() => {
+                expect(state.loadingStatus).toBe(
+                    INSTANCE_LOADING_STATE.REJECTED,
+                );
+                expect(state.error?.message).toBe(
+                    "Failed to resolve clientToken. Expected a Promise that resolves to a string, but it was rejected with: Token fetch failed",
+                );
+            });
             expect(loadCoreSdkScript).not.toHaveBeenCalled();
         });
 

@@ -146,10 +146,13 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     token = await clientToken;
                     setClientTokenValue(token);
                 } catch (error) {
-                    setError(error);
+                    const clientTokenError = new Error(
+                        `Failed to resolve clientToken. Expected a Promise that resolves to a string, but it was rejected with: ${toError(error).message}`,
+                    );
+                    setError(clientTokenError);
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                        value: toError(error),
+                        value: clientTokenError,
                     });
                     return;
                 }
