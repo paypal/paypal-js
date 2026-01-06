@@ -1,10 +1,4 @@
-import type {
-    ButtonProps,
-    PayLaterButtonProps,
-    PayPalBasicCardButtonProps,
-    PayPalCreditButtonProps,
-    PayPalMessagesElement,
-} from "./types/sdkWebComponents";
+import type { SDKWebComponents } from "./types/sdkWebComponents";
 
 export * from "./types";
 export type {
@@ -47,15 +41,7 @@ export { usePayPalCreditSavePaymentSession } from "./hooks/usePayPalCreditSavePa
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
-        interface IntrinsicElements {
-            "paypal-button": ButtonProps;
-            "venmo-button": ButtonProps;
-            "paypal-pay-later-button": PayLaterButtonProps;
-            "paypal-credit-button": PayPalCreditButtonProps;
-            "paypal-basic-card-button": PayPalBasicCardButtonProps;
-            "paypal-basic-card-container": React.HTMLAttributes<HTMLElement>;
-            "paypal-message": PayPalMessagesElement;
-        }
+        interface IntrinsicElements extends SDKWebComponents {}
     }
 }
 
@@ -63,14 +49,6 @@ declare global {
 declare module "react" {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
-        interface IntrinsicElements {
-            "paypal-button": ButtonProps;
-            "venmo-button": ButtonProps;
-            "paypal-pay-later-button": PayLaterButtonProps;
-            "paypal-credit-button": PayPalCreditButtonProps;
-            "paypal-basic-card-button": PayPalBasicCardButtonProps;
-            "paypal-basic-card-container": React.HTMLAttributes<HTMLElement>;
-            "paypal-message": PayPalMessagesElement;
-        }
+        interface IntrinsicElements extends SDKWebComponents {}
     }
 }

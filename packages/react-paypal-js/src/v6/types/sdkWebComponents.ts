@@ -71,3 +71,13 @@ export interface PayPalMessagesElement extends HTMLAttributes<HTMLElement> {
 
     setContent?: (content: Record<string, unknown>) => void;
 }
+
+export type SDKWebComponents = {
+    "paypal-button": ButtonProps;
+    "venmo-button": ButtonProps;
+    "paypal-pay-later-button": PayLaterButtonProps;
+    "paypal-credit-button": PayPalCreditButtonProps;
+    "paypal-basic-card-button": PayPalBasicCardButtonProps;
+    "paypal-basic-card-container": React.HTMLAttributes<HTMLElement>;
+    "paypal-message": PayPalMessagesElement;
+};
