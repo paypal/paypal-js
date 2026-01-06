@@ -1,10 +1,20 @@
 import type {
-    IntrinsicButtonProps,
-    IntrinsicPayLaterButtonProps,
+    ButtonProps,
+    PayLaterButtonProps,
+    PayPalBasicCardButtonProps,
+    PayPalCreditButtonProps,
+    PayPalMessagesElement,
 } from "./types/sdkWebComponents";
 
 export * from "./types";
-export type { ButtonProps } from "./types/sdkWebComponents";
+export type {
+    ButtonProps,
+    InternalButtonProps,
+    PayLaterButtonProps,
+    PayPalBasicCardButtonProps,
+    PayPalCreditButtonProps,
+    PayPalMessagesElement,
+} from "./types/sdkWebComponents";
 export {
     PayPalCardFieldsProvider,
     type CardFieldsSessionType,
@@ -38,9 +48,13 @@ declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
         interface IntrinsicElements {
-            "paypal-button": IntrinsicButtonProps;
-            "venmo-button": IntrinsicButtonProps;
-            "paypal-pay-later-button": IntrinsicPayLaterButtonProps;
+            "paypal-button": ButtonProps;
+            "venmo-button": ButtonProps;
+            "paypal-pay-later-button": PayLaterButtonProps;
+            "paypal-credit-button": PayPalCreditButtonProps;
+            "paypal-basic-card-button": PayPalBasicCardButtonProps;
+            "paypal-basic-card-container": React.HTMLAttributes<HTMLElement>;
+            "paypal-message": PayPalMessagesElement;
         }
     }
 }
@@ -50,9 +64,13 @@ declare module "react" {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
         interface IntrinsicElements {
-            "paypal-button": IntrinsicButtonProps;
-            "venmo-button": IntrinsicButtonProps;
-            "paypal-pay-later-button": IntrinsicPayLaterButtonProps;
+            "paypal-button": ButtonProps;
+            "venmo-button": ButtonProps;
+            "paypal-pay-later-button": PayLaterButtonProps;
+            "paypal-credit-button": PayPalCreditButtonProps;
+            "paypal-basic-card-button": PayPalBasicCardButtonProps;
+            "paypal-basic-card-container": React.HTMLAttributes<HTMLElement>;
+            "paypal-message": PayPalMessagesElement;
         }
     }
 }
