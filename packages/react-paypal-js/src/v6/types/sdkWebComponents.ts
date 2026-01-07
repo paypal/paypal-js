@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from "react";
+import type { HTMLAttributes, Ref } from "react";
 
 export interface InternalButtonProps {
     type?: "buynow" | "checkout" | "donate" | "pay" | "subscribe";
@@ -22,7 +22,7 @@ export interface PayLaterButtonProps extends HTMLAttributes<HTMLButtonElement> {
 export interface PayPalBasicCardButtonProps
     extends HTMLAttributes<HTMLButtonElement> {
     buyerCountry: string;
-    ref?: React.Ref<HTMLElement>;
+    ref?: Ref<HTMLElement>;
 }
 
 export interface PayPalCreditButtonProps
@@ -39,7 +39,7 @@ export interface PayPalMessagesElement extends HTMLAttributes<HTMLElement> {
     "logo-type"?: "MONOGRAM" | "WORDMARK";
     "offer-types"?: string;
     "presentation-mode"?: "AUTO" | "MODAL" | "POPUP" | "REDIRECT";
-    ref?: React.Ref<PayPalMessagesElement>;
+    ref?: Ref<PayPalMessagesElement>;
     "text-color"?: "BLACK" | "MONOCHROME" | "WHITE";
 
     // Event handlers for custom events
@@ -78,6 +78,6 @@ export type SDKWebComponents = {
     "paypal-pay-later-button": PayLaterButtonProps;
     "paypal-credit-button": PayPalCreditButtonProps;
     "paypal-basic-card-button": PayPalBasicCardButtonProps;
-    "paypal-basic-card-container": React.HTMLAttributes<HTMLElement>;
+    "paypal-basic-card-container": HTMLAttributes<HTMLElement>;
     "paypal-message": PayPalMessagesElement;
 };
