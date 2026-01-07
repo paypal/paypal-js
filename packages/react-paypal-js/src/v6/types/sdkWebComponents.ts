@@ -22,7 +22,7 @@ export interface PayLaterButtonProps extends HTMLAttributes<HTMLButtonElement> {
 export interface PayPalBasicCardButtonProps
     extends HTMLAttributes<HTMLButtonElement> {
     buyerCountry: string;
-    ref?: React.Ref<HTMLButtonElement>;
+    ref?: React.Ref<HTMLElement>;
 }
 
 export interface PayPalCreditButtonProps
@@ -39,7 +39,7 @@ export interface PayPalMessagesElement extends HTMLAttributes<HTMLElement> {
     "logo-type"?: "MONOGRAM" | "WORDMARK";
     "offer-types"?: string;
     "presentation-mode"?: "AUTO" | "MODAL" | "POPUP" | "REDIRECT";
-    ref?: React.Ref<HTMLElement>;
+    ref?: React.Ref<PayPalMessagesElement>;
     "text-color"?: "BLACK" | "MONOCHROME" | "WHITE";
 
     // Event handlers for custom events
