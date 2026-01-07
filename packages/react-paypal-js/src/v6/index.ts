@@ -1,10 +1,14 @@
-import type {
-    IntrinsicButtonProps,
-    IntrinsicPayLaterButtonProps,
-} from "./types/sdkWebComponents";
+import type { SDKWebComponents } from "./types/sdkWebComponents";
 
 export * from "./types";
-export type { ButtonProps } from "./types/sdkWebComponents";
+export type {
+    ButtonProps,
+    InternalButtonProps,
+    PayLaterButtonProps,
+    PayPalBasicCardButtonProps,
+    PayPalCreditButtonProps,
+    PayPalMessagesElement,
+} from "./types/sdkWebComponents";
 export {
     PayPalCardFieldsProvider,
     type CardFieldsSessionType,
@@ -37,11 +41,7 @@ export { usePayPalCreditSavePaymentSession } from "./hooks/usePayPalCreditSavePa
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
-        interface IntrinsicElements {
-            "paypal-button": IntrinsicButtonProps;
-            "venmo-button": IntrinsicButtonProps;
-            "paypal-pay-later-button": IntrinsicPayLaterButtonProps;
-        }
+        interface IntrinsicElements extends SDKWebComponents {}
     }
 }
 
@@ -49,10 +49,6 @@ declare global {
 declare module "react" {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
-        interface IntrinsicElements {
-            "paypal-button": IntrinsicButtonProps;
-            "venmo-button": IntrinsicButtonProps;
-            "paypal-pay-later-button": IntrinsicPayLaterButtonProps;
-        }
+        interface IntrinsicElements extends SDKWebComponents {}
     }
 }
