@@ -35,8 +35,9 @@ export const PayLaterOneTimePaymentButton = ({
     disabled = false,
     ...hookProps
 }: PayLaterOneTimePaymentButtonProps): JSX.Element | null => {
-    const { error, handleClick } = usePayLaterOneTimePaymentSession(hookProps);
     const { eligiblePaymentMethods } = usePayPal();
+    const { error, isPending, handleClick } =
+        usePayLaterOneTimePaymentSession(hookProps);
     const isServerSide = isServer();
 
     const payLaterDetails =
@@ -49,6 +50,10 @@ export const PayLaterOneTimePaymentButton = ({
             console.error(error);
         }
     }, [error]);
+
+    if (isPending) {
+        return null;
+    }
 
     return isServerSide ? (
         <div />

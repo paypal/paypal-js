@@ -36,7 +36,8 @@ export const PayPalSavePaymentButton = ({
     disabled = false,
     ...hookProps
 }: PayPalSavePaymentButtonProps): JSX.Element | null => {
-    const { error, handleClick } = usePayPalSavePaymentSession(hookProps);
+    const { error, isPending, handleClick } =
+        usePayPalSavePaymentSession(hookProps);
     const isServerSide = isServer();
 
     useEffect(() => {
@@ -44,6 +45,10 @@ export const PayPalSavePaymentButton = ({
             console.error(error);
         }
     }, [error]);
+
+    if (isPending) {
+        return null;
+    }
 
     return isServerSide ? (
         <div />

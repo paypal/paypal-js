@@ -28,6 +28,7 @@ describe("PayPalSavePaymentButton", () => {
         jest.clearAllMocks();
         mockUsePayPalSavePaymentSession.mockReturnValue({
             error: null,
+            isPending: false,
             handleClick: mockHandleClick,
         });
         mockIsServer.mockReturnValue(false);
@@ -74,6 +75,7 @@ describe("PayPalSavePaymentButton", () => {
         jest.spyOn(console, "error").mockImplementation();
         mockUsePayPalSavePaymentSession.mockReturnValue({
             error: new Error("Test error"),
+            isPending: false,
             handleClick: mockHandleClick,
         });
         const { container } = render(
@@ -86,6 +88,7 @@ describe("PayPalSavePaymentButton", () => {
     it("should not disable button when error is null", () => {
         mockUsePayPalSavePaymentSession.mockReturnValue({
             error: null,
+            isPending: false,
             handleClick: mockHandleClick,
         });
         const { container } = render(
@@ -93,6 +96,21 @@ describe("PayPalSavePaymentButton", () => {
         );
         const button = container.querySelector("paypal-button");
         expect(button).not.toHaveAttribute("disabled");
+    });
+
+    it("should return null when isPending is true", () => {
+        mockUsePayPalSavePaymentSession.mockReturnValue({
+            error: null,
+            isPending: true,
+            handleClick: mockHandleClick,
+        });
+        const { container } = render(
+            <PayPalSavePaymentButton {...defaultProps} />,
+        );
+        expect(
+            container.querySelector("paypal-button"),
+        ).not.toBeInTheDocument();
+        expect(container.firstChild).toBeNull();
     });
 
     it("should pass type prop to paypal-button", () => {
@@ -120,6 +138,7 @@ describe("PayPalSavePaymentButton", () => {
         const testError = new Error("Test error");
         mockUsePayPalSavePaymentSession.mockReturnValue({
             error: testError,
+            isPending: false,
             handleClick: mockHandleClick,
         });
         render(<PayPalSavePaymentButton {...defaultProps} />);

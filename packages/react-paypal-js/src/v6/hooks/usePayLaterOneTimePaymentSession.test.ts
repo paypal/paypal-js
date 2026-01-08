@@ -166,6 +166,30 @@ describe("usePayLaterOneTimePaymentSession", () => {
         expect(result.current.error).toBeNull();
     });
 
+    test.each([
+        [INSTANCE_LOADING_STATE.PENDING, true],
+        [INSTANCE_LOADING_STATE.RESOLVED, false],
+        [INSTANCE_LOADING_STATE.REJECTED, false],
+    ])(
+        "should return isPending as %s when loadingStatus is %s",
+        (loadingStatus, expectedIsPending) => {
+            (usePayPal as jest.Mock).mockReturnValue({
+                sdkInstance: null,
+                loadingStatus,
+            });
+
+            const { result } = renderHook(() =>
+                usePayLaterOneTimePaymentSession({
+                    presentationMode: "popup",
+                    orderId: "test-order-id",
+                    onApprove: jest.fn(),
+                }),
+            );
+
+            expect(result.current.isPending).toBe(expectedIsPending);
+        },
+    );
+
     test("should provide a click handler that calls session start", async () => {
         const mockStart = jest.fn();
         const mockSession: OneTimePaymentSession = {

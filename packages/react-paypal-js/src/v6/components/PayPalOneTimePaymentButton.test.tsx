@@ -22,6 +22,7 @@ describe("PayPalOneTimePaymentButton", () => {
         jest.clearAllMocks();
         mockUsePayPalOneTimePaymentSession.mockReturnValue({
             error: null,
+            isPending: false,
             handleClick: mockHandleClick,
         });
         mockIsServer.mockReturnValue(false);
@@ -85,6 +86,7 @@ describe("PayPalOneTimePaymentButton", () => {
         jest.spyOn(console, "error").mockImplementation();
         mockUsePayPalOneTimePaymentSession.mockReturnValue({
             error: new Error("Test error"),
+            isPending: false,
             handleClick: mockHandleClick,
         });
         const { container } = render(
@@ -101,6 +103,7 @@ describe("PayPalOneTimePaymentButton", () => {
     it("should not disable button when error is null", () => {
         mockUsePayPalOneTimePaymentSession.mockReturnValue({
             error: null,
+            isPending: false,
             handleClick: mockHandleClick,
         });
         const { container } = render(
@@ -112,6 +115,25 @@ describe("PayPalOneTimePaymentButton", () => {
         );
         const button = container.querySelector("paypal-button");
         expect(button).not.toHaveAttribute("disabled");
+    });
+
+    it("should return null when isPending is true", () => {
+        mockUsePayPalOneTimePaymentSession.mockReturnValue({
+            error: null,
+            isPending: true,
+            handleClick: mockHandleClick,
+        });
+        const { container } = render(
+            <PayPalOneTimePaymentButton
+                onApprove={() => Promise.resolve()}
+                orderId="123"
+                presentationMode="auto"
+            />,
+        );
+        expect(
+            container.querySelector("paypal-button"),
+        ).not.toBeInTheDocument();
+        expect(container.firstChild).toBeNull();
     });
 
     it("should pass type prop to paypal-button", () => {
@@ -149,6 +171,7 @@ describe("PayPalOneTimePaymentButton", () => {
         const testError = new Error("Test error");
         mockUsePayPalOneTimePaymentSession.mockReturnValue({
             error: testError,
+            isPending: false,
             handleClick: mockHandleClick,
         });
         render(
