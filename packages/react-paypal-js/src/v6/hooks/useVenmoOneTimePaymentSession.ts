@@ -39,6 +39,8 @@ export function useVenmoOneTimePaymentSession({
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
 
+    const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
+
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
         sessionRef.current = null;
@@ -97,6 +99,7 @@ export function useVenmoOneTimePaymentSession({
 
     return {
         error,
+        isPending,
         handleCancel,
         handleClick,
         handleDestroy,

@@ -57,6 +57,7 @@ export function usePayPalSavePaymentSession({
     const sessionRef = useRef<SavePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
+    const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
@@ -151,8 +152,9 @@ export function usePayPalSavePaymentSession({
 
     return {
         error,
-        handleCancel,
+        isPending,
         handleClick,
+        handleCancel,
         handleDestroy,
     };
 }

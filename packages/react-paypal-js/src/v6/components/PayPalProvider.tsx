@@ -81,6 +81,23 @@ type PayPalProviderProps = Omit<
  * >
  *   <PayPalButton />
  * </PayPalProvider>
+ *
+ * @example
+ * // Show custom loader while SDK initializes
+ * function MyCheckout() {
+ *   const { loadingStatus } = usePayPal();
+ *   const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
+ *
+ *   if (isPending) {
+ *     return <div>Loading PayPal SDK...</div>;
+ *   }
+ *
+ *   return <PayPalButton orderId="ORDER-123" />;
+ * }
+ *
+ * <PayPalProvider clientToken={token} pageType="checkout">
+ *   <MyCheckout />
+ * </PayPalProvider>
  */
 export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     clientMetadataId,

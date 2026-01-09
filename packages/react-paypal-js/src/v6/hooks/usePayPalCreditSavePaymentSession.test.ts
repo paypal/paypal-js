@@ -151,6 +151,34 @@ describe("usePayPalCreditSavePaymentSession", () => {
             expect(result.current.error).toBeNull();
         });
 
+        test.each([
+            [INSTANCE_LOADING_STATE.PENDING, true],
+            [INSTANCE_LOADING_STATE.RESOLVED, false],
+            [INSTANCE_LOADING_STATE.REJECTED, false],
+        ])(
+            "should return isPending as %s when loadingStatus is %s",
+            (loadingStatus, expectedIsPending) => {
+                mockUsePayPal.mockReturnValue({
+                    sdkInstance: null,
+                    loadingStatus,
+                    eligiblePaymentMethods: null,
+                    error: null,
+                });
+
+                const props: PayPalCreditSavePaymentSessionProps = {
+                    presentationMode: "popup",
+                    vaultSetupToken: "test-vault-token",
+                    onApprove: jest.fn(),
+                };
+
+                const { result } = renderHook(() =>
+                    usePayPalCreditSavePaymentSession(props),
+                );
+
+                expect(result.current.isPending).toBe(expectedIsPending);
+            },
+        );
+
         test("should create a PayPal save payment session when called with vaultSetupToken", () => {
             const onApprove = jest.fn();
             const onCancel = jest.fn();

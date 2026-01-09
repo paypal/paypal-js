@@ -35,7 +35,8 @@ export const PayPalOneTimePaymentButton = ({
     disabled = false,
     ...hookProps
 }: PayPalOneTimePaymentButtonProps): JSX.Element | null => {
-    const { error, handleClick } = usePayPalOneTimePaymentSession(hookProps);
+    const { error, isPending, handleClick } =
+        usePayPalOneTimePaymentSession(hookProps);
     const isServerSide = isServer();
 
     useEffect(() => {
@@ -50,7 +51,9 @@ export const PayPalOneTimePaymentButton = ({
         <paypal-button
             onClick={handleClick}
             type={type}
-            disabled={disabled || error !== null ? true : undefined}
+            disabled={
+                disabled || isPending || error !== null ? true : undefined
+            }
         ></paypal-button>
     );
 };

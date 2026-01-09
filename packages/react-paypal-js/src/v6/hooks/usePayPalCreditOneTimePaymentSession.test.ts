@@ -149,6 +149,34 @@ describe("usePayPalCreditOneTimePaymentSession", () => {
             expect(result.current.error).toBeNull();
         });
 
+        test.each([
+            [INSTANCE_LOADING_STATE.PENDING, true],
+            [INSTANCE_LOADING_STATE.RESOLVED, false],
+            [INSTANCE_LOADING_STATE.REJECTED, false],
+        ])(
+            "should return isPending as %s when loadingStatus is %s",
+            (loadingStatus, expectedIsPending) => {
+                mockUsePayPal.mockReturnValue({
+                    sdkInstance: null,
+                    loadingStatus,
+                    eligiblePaymentMethods: null,
+                    error: null,
+                });
+
+                const props: UsePayPalCreditOneTimePaymentSessionProps = {
+                    presentationMode: "popup",
+                    orderId: "test-order-id",
+                    onApprove: jest.fn(),
+                };
+
+                const { result } = renderHook(() =>
+                    usePayPalCreditOneTimePaymentSession(props),
+                );
+
+                expect(result.current.isPending).toBe(expectedIsPending);
+            },
+        );
+
         test("should create a PayPal payment session when the hook is called with orderId", () => {
             const onApprove = jest.fn();
             const onCancel = jest.fn();

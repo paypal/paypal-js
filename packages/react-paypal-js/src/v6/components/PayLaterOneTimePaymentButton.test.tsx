@@ -27,6 +27,7 @@ describe("PayLaterOneTimePaymentButton", () => {
         jest.clearAllMocks();
         mockUsePayLaterOneTimePaymentSession.mockReturnValue({
             error: null,
+            isPending: false,
             handleClick: mockHandleClick,
         });
         mockUsePayPal.mockReturnValue({
@@ -96,6 +97,7 @@ describe("PayLaterOneTimePaymentButton", () => {
         jest.spyOn(console, "error").mockImplementation();
         mockUsePayLaterOneTimePaymentSession.mockReturnValue({
             error: new Error("Test error"),
+            isPending: false,
             handleClick: mockHandleClick,
         });
         const { container } = render(
@@ -112,6 +114,7 @@ describe("PayLaterOneTimePaymentButton", () => {
     it("should not disable button when error is null", () => {
         mockUsePayLaterOneTimePaymentSession.mockReturnValue({
             error: null,
+            isPending: false,
             handleClick: mockHandleClick,
         });
         const { container } = render(
@@ -123,6 +126,25 @@ describe("PayLaterOneTimePaymentButton", () => {
         );
         const button = container.querySelector("paypal-pay-later-button");
         expect(button).not.toHaveAttribute("disabled");
+    });
+
+    it("should return null when isPending is true", () => {
+        mockUsePayLaterOneTimePaymentSession.mockReturnValue({
+            error: null,
+            isPending: true,
+            handleClick: mockHandleClick,
+        });
+        const { container } = render(
+            <PayLaterOneTimePaymentButton
+                onApprove={() => Promise.resolve()}
+                orderId="123"
+                presentationMode="auto"
+            />,
+        );
+        expect(
+            container.querySelector("paypal-pay-later-button"),
+        ).not.toBeInTheDocument();
+        expect(container.firstChild).toBeNull();
     });
 
     it("should pass hook props to usePayLaterOneTimePaymentSession", () => {

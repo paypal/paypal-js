@@ -31,7 +31,8 @@ export const VenmoOneTimePaymentButton = ({
     disabled = false,
     ...hookProps
 }: VenmoOneTimePaymentButtonProps): JSX.Element | null => {
-    const { error, handleClick } = useVenmoOneTimePaymentSession(hookProps);
+    const { error, isPending, handleClick } =
+        useVenmoOneTimePaymentSession(hookProps);
     const isServerSide = isServer();
 
     useEffect(() => {
@@ -46,7 +47,9 @@ export const VenmoOneTimePaymentButton = ({
         <venmo-button
             onClick={handleClick}
             type={type}
-            disabled={disabled || error !== null ? true : undefined}
+            disabled={
+                disabled || isPending || error !== null ? true : undefined
+            }
         ></venmo-button>
     );
 };
