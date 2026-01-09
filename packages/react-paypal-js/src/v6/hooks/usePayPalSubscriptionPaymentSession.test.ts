@@ -115,6 +115,36 @@ describe("usePayPalSubscriptionPaymentSession", () => {
             expect(error).toBeNull();
         });
 
+        test.each([
+            [INSTANCE_LOADING_STATE.PENDING, true],
+            [INSTANCE_LOADING_STATE.RESOLVED, false],
+            [INSTANCE_LOADING_STATE.REJECTED, false],
+        ])(
+            "should return isPending as %s when loadingStatus is %s",
+            (loadingStatus, expectedIsPending) => {
+                mockUsePayPal.mockReturnValue({
+                    sdkInstance: null,
+                    loadingStatus,
+                    eligiblePaymentMethods: null,
+                    error: null,
+                });
+
+                const props: UsePayPalSubscriptionPaymentSessionProps = {
+                    presentationMode: "popup",
+                    createSubscription: jest.fn().mockResolvedValue({
+                        subscriptionId: "test-subscription-id",
+                    }),
+                    onApprove: jest.fn(),
+                };
+
+                const { result } = renderHook(() =>
+                    usePayPalSubscriptionPaymentSession(props),
+                );
+
+                expect(result.current.isPending).toBe(expectedIsPending);
+            },
+        );
+
         test("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
             const mockSession = createMockPayPalSession();
             const mockSdkInstanceNew = createMockSdkInstance(mockSession);
