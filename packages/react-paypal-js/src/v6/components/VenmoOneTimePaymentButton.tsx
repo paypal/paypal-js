@@ -41,17 +41,15 @@ export const VenmoOneTimePaymentButton = ({
         }
     }, [error]);
 
-    if (isPending) {
-        return null;
-    }
-
     return isServerSide ? (
         <div />
     ) : (
         <venmo-button
             onClick={handleClick}
             type={type}
-            disabled={disabled || error !== null ? true : undefined}
+            disabled={
+                disabled || isPending || error !== null ? true : undefined
+            }
         ></venmo-button>
     );
 };

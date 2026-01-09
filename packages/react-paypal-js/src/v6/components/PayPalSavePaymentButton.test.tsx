@@ -98,7 +98,7 @@ describe("PayPalSavePaymentButton", () => {
         expect(button).not.toHaveAttribute("disabled");
     });
 
-    it("should return null when isPending is true", () => {
+    it("should disable button when isPending is true", () => {
         mockUsePayPalSavePaymentSession.mockReturnValue({
             error: null,
             isPending: true,
@@ -107,10 +107,9 @@ describe("PayPalSavePaymentButton", () => {
         const { container } = render(
             <PayPalSavePaymentButton {...defaultProps} />,
         );
-        expect(
-            container.querySelector("paypal-button"),
-        ).not.toBeInTheDocument();
-        expect(container.firstChild).toBeNull();
+        const button = container.querySelector("paypal-button");
+        expect(button).toBeInTheDocument();
+        expect(button).toHaveAttribute("disabled");
     });
 
     it("should pass type prop to paypal-button", () => {

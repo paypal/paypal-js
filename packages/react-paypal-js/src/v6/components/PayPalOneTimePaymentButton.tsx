@@ -45,17 +45,15 @@ export const PayPalOneTimePaymentButton = ({
         }
     }, [error]);
 
-    if (isPending) {
-        return null;
-    }
-
     return isServerSide ? (
         <div />
     ) : (
         <paypal-button
             onClick={handleClick}
             type={type}
-            disabled={disabled || error !== null ? true : undefined}
+            disabled={
+                disabled || isPending || error !== null ? true : undefined
+            }
         ></paypal-button>
     );
 };

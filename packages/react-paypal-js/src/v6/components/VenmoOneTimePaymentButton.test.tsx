@@ -116,7 +116,7 @@ describe("VenmoOneTimePaymentButton", () => {
         expect(button).not.toHaveAttribute("disabled");
     });
 
-    it("should return null when isPending is true", () => {
+    it("should disable button when isPending is true", () => {
         mockUseVenmoOneTimePaymentSession.mockReturnValue({
             error: null,
             isPending: true,
@@ -129,8 +129,9 @@ describe("VenmoOneTimePaymentButton", () => {
                 presentationMode="auto"
             />,
         );
-        expect(container.querySelector("venmo-button")).not.toBeInTheDocument();
-        expect(container.firstChild).toBeNull();
+        const button = container.querySelector("venmo-button");
+        expect(button).toBeInTheDocument();
+        expect(button).toHaveAttribute("disabled");
     });
 
     it("should pass type prop to venmo-button", () => {

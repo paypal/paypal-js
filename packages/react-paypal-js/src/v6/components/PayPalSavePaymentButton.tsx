@@ -46,16 +46,14 @@ export const PayPalSavePaymentButton = ({
         }
     }, [error]);
 
-    if (isPending) {
-        return null;
-    }
-
     return isServerSide ? (
         <div />
     ) : (
         <paypal-button
             type={type}
-            disabled={disabled || error !== null ? true : undefined}
+            disabled={
+                disabled || isPending || error !== null ? true : undefined
+            }
             onClick={handleClick}
         ></paypal-button>
     );
