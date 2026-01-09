@@ -51,6 +51,7 @@ export function usePayPalSubscriptionPaymentSession({
     const sessionRef = useRef<PayPalSubscriptionPaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
+    const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
@@ -114,6 +115,7 @@ export function usePayPalSubscriptionPaymentSession({
 
     return {
         error,
+        isPending,
         handleClick,
         handleCancel,
         handleDestroy,
