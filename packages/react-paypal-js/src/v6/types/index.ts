@@ -5,6 +5,7 @@ export type * from "./sdkWebComponents";
 
 export interface BasePaymentSessionReturn {
     error: Error | null;
+    isPending: boolean;
     handleClick: () => Promise<{ redirectURL?: string } | void>;
     handleCancel: () => void;
     handleDestroy: () => void;

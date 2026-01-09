@@ -150,6 +150,34 @@ describe("useVenmoOneTimePaymentSession", () => {
             expect(result.current.error).toBeNull();
         });
 
+        test.each([
+            [INSTANCE_LOADING_STATE.PENDING, true],
+            [INSTANCE_LOADING_STATE.RESOLVED, false],
+            [INSTANCE_LOADING_STATE.REJECTED, false],
+        ])(
+            "should return isPending as %s when loadingStatus is %s",
+            (loadingStatus, expectedIsPending) => {
+                mockUsePayPal.mockReturnValue({
+                    sdkInstance: null,
+                    loadingStatus,
+                    eligiblePaymentMethods: null,
+                    error: null,
+                });
+
+                const props: UseVenmoOneTimePaymentSessionProps = {
+                    presentationMode: "popup",
+                    orderId: "test-order-id",
+                    onApprove: jest.fn(),
+                };
+
+                const { result } = renderHook(() =>
+                    useVenmoOneTimePaymentSession(props),
+                );
+
+                expect(result.current.isPending).toBe(expectedIsPending);
+            },
+        );
+
         test("should create Venmo session with orderId when provided", () => {
             const onApprove = jest.fn();
             const onCancel = jest.fn();

@@ -39,6 +39,7 @@ export function usePayLaterOneTimePaymentSession({
     const sessionRef = useRef<OneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
+    const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
 
     const handleDestroy = useCallback(() => {
         sessionRef.current?.destroy();
@@ -134,6 +135,7 @@ export function usePayLaterOneTimePaymentSession({
 
     return {
         error,
+        isPending,
         handleCancel,
         handleClick,
         handleDestroy,

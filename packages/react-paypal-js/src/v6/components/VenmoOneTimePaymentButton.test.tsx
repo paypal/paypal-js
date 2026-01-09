@@ -22,6 +22,7 @@ describe("VenmoOneTimePaymentButton", () => {
         jest.clearAllMocks();
         mockUseVenmoOneTimePaymentSession.mockReturnValue({
             error: null,
+            isPending: false,
             handleClick: mockHandleClick,
         });
         mockIsServer.mockReturnValue(false);
@@ -84,6 +85,7 @@ describe("VenmoOneTimePaymentButton", () => {
         jest.spyOn(console, "error").mockImplementation();
         mockUseVenmoOneTimePaymentSession.mockReturnValue({
             error: new Error("Test error"),
+            isPending: false,
             handleClick: mockHandleClick,
         });
         const { container } = render(
@@ -100,6 +102,7 @@ describe("VenmoOneTimePaymentButton", () => {
     it("should not disable button when error is null", () => {
         mockUseVenmoOneTimePaymentSession.mockReturnValue({
             error: null,
+            isPending: false,
             handleClick: mockHandleClick,
         });
         const { container } = render(
@@ -111,6 +114,24 @@ describe("VenmoOneTimePaymentButton", () => {
         );
         const button = container.querySelector("venmo-button");
         expect(button).not.toHaveAttribute("disabled");
+    });
+
+    it("should disable button when isPending is true", () => {
+        mockUseVenmoOneTimePaymentSession.mockReturnValue({
+            error: null,
+            isPending: true,
+            handleClick: mockHandleClick,
+        });
+        const { container } = render(
+            <VenmoOneTimePaymentButton
+                onApprove={() => Promise.resolve()}
+                orderId="123"
+                presentationMode="auto"
+            />,
+        );
+        const button = container.querySelector("venmo-button");
+        expect(button).toBeInTheDocument();
+        expect(button).toHaveAttribute("disabled");
     });
 
     it("should pass type prop to venmo-button", () => {
@@ -148,6 +169,7 @@ describe("VenmoOneTimePaymentButton", () => {
         const testError = new Error("Test error");
         mockUseVenmoOneTimePaymentSession.mockReturnValue({
             error: testError,
+            isPending: false,
             handleClick: mockHandleClick,
         });
         render(
