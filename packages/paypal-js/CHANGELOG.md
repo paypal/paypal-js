@@ -1,5 +1,12 @@
 # Changelog
 
+## 9.1.1
+
+### Patch Changes
+
+- 06ad677: Updates the paypal-payments instance to include the Credit save payment method.
+- fb88a98: Renamed V6 Card Fields submit methods arguments names to better represent expected values
+
 ## 9.1.0
 
 ### Minor Changes
