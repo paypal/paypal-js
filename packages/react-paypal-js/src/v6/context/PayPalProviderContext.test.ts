@@ -5,12 +5,12 @@ import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
-import { FindEligiblePaymentMethodsResponse } from "../hooks/useEligibleMethods";
 
 import type { PayPalState, InstanceAction } from "./PayPalProviderContext";
 import type {
     SdkInstance,
     CreateInstanceOptions,
+    FindEligiblePaymentMethodsResponse,
     LoadCoreSdkScriptOptions,
     Components,
 } from "../types";

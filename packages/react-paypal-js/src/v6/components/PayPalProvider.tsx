@@ -13,7 +13,6 @@ import {
 import { toError, useCompareMemoize } from "../utils";
 import {
     FindEligiblePaymentMethodsRequestPayload,
-    FindEligiblePaymentMethodsResponse,
     useEligibleMethods,
 } from "../hooks/useEligibleMethods";
 import { useError } from "../hooks/useError";
@@ -21,6 +20,7 @@ import { useError } from "../hooks/useError";
 import type {
     Components,
     CreateInstanceOptions,
+    FindEligiblePaymentMethodsResponse,
     LoadCoreSdkScriptOptions,
     PayPalV6Namespace,
 } from "../types";

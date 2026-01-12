@@ -3,9 +3,10 @@ import { renderHook } from "@testing-library/react-hooks";
 import {
     useEligibleMethods,
     fetchEligibleMethods,
-    type FindEligiblePaymentMethodsResponse,
     type FindEligiblePaymentMethodsRequestPayload,
 } from "./useEligibleMethods";
+
+import type { FindEligiblePaymentMethodsResponse } from "../types";
 
 // Mock fetch globally
 global.fetch = jest.fn();
