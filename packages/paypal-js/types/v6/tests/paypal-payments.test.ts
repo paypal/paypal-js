@@ -1,5 +1,9 @@
 import { loadCoreSdkScript } from "../../../src/v6";
-import type { OnApproveDataOneTimePayments, PayPalV6Namespace } from "../index";
+import type {
+    OnApproveDataOneTimePayments,
+    OnCancelDataOneTimePayments,
+    PayPalV6Namespace,
+} from "../index";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function main() {
@@ -46,8 +50,15 @@ async function main() {
         return Promise.resolve();
     }
 
+    function onCancelCallback({ orderId }: OnCancelDataOneTimePayments) {
+        console.log({
+            orderId,
+        });
+    }
+
     const paypalPaymentSession = sdkInstance.createPayPalOneTimePaymentSession({
         onApprove: onApproveCallback,
+        onCancel: onCancelCallback,
     });
 
     const createOrder = () => Promise.resolve({ orderId: "ABC123" });

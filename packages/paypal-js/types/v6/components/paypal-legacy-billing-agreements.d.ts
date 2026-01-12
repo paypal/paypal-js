@@ -15,12 +15,17 @@ export type OnApproveDataBillingAgreements = {
     payerId?: string;
 };
 
+export type OnCancelDataBillingAgreements = {
+    billingToken?: string;
+};
+
 export type PayPalLegacyBillingAgreementsSessionOptions = Omit<
     BasePaymentSessionOptions,
-    "onApprove"
+    "onApprove" | "onCancel"
 > & {
     billingToken?: string;
     onApprove: (data: OnApproveDataBillingAgreements) => Promise<void>;
+    onCancel?: (data: OnCancelDataBillingAgreements) => void;
 };
 
 export type PayPalLegacyBillingPresentationModeOptions =

@@ -74,6 +74,10 @@ export type OnApproveDataSavePayments = {
     payerId?: string;
 };
 
+export type OnCancelDataSavePayments = {
+    vaultSetupToken?: string;
+};
+
 export type PayPalOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
     orderId?: string;
     onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;
@@ -87,12 +91,13 @@ export type PayPalOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
 
 export type SavePaymentSessionOptions = Omit<
     BasePaymentSessionOptions,
-    "onApprove"
+    "onApprove" | "onCancel"
 > & {
     clientMetadataId?: string;
     orderId?: never;
     vaultSetupToken?: string;
-    onApprove?: (data?: OnApproveDataSavePayments) => void;
+    onApprove: (data: OnApproveDataSavePayments) => Promise<void>;
+    onCancel?: (data?: OnCancelDataSavePayments) => void;
 };
 
 export type PayPalPresentationModeOptions =

@@ -208,6 +208,7 @@ export {
     CreateOrderCallback,
     CreateOrderPromise,
     OnApproveDataOneTimePayments,
+    OnCancelDataOneTimePayments,
     OnCompleteData,
     OnErrorData,
 } from "./components/base-component";
