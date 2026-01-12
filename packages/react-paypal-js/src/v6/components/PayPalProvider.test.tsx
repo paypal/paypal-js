@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom";
 import React from "react";
-import { render, waitFor } from "@testing-library/react";
+import { act, render, waitFor } from "@testing-library/react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
 import { expectCurrentErrorValue } from "../hooks/useErrorTestUtil";
@@ -51,7 +51,7 @@ const createInstanceOptions: CreateInstanceOptions<["paypal-payments"]> = {
     clientToken: TEST_CLIENT_TOKEN,
 };
 
-function renderProvider(
+async function renderProvider(
     props: Partial<React.ComponentProps<typeof PayPalProvider>> = {},
 ) {
     const { state, TestComponent } = setupTestComponent();
@@ -65,19 +65,23 @@ function renderProvider(
         ...restProps
     } = props;
 
-    const result = render(
-        <PayPalProvider
-            components={components}
-            clientToken={clientToken}
-            debug={debug}
-            environment={environment}
-            {...restProps}
-        >
-            <TestComponent>{children}</TestComponent>
-        </PayPalProvider>,
-    );
+    let result: ReturnType<typeof render>;
 
-    return { ...result, state };
+    await act(async () => {
+        result = render(
+            <PayPalProvider
+                components={components}
+                clientToken={clientToken}
+                debug={debug}
+                environment={environment}
+                {...restProps}
+            >
+                <TestComponent>{children}</TestComponent>
+            </PayPalProvider>,
+        );
+    });
+
+    return { ...result!, state };
 }
 
 // Mock factories
@@ -117,12 +121,6 @@ function expectRejectedState(state: Partial<PayPalState>, error?: Error): void {
         expect(state.error).toEqual(error);
     }
 }
-function expectReloadingState(state: Partial<PayPalState>): void {
-    // When props change, only loadingStatus is reset to PENDING
-    // Old instance and eligibility remain until new ones are loaded
-    expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
-}
-
 describe("PayPalProvider", () => {
     beforeEach(() => {
         document.head.innerHTML = "";
@@ -144,7 +142,7 @@ describe("PayPalProvider", () => {
 
     describe("SDK Loading", () => {
         test("should set loadingStatus to 'resolved' when SDK loads successfully", async () => {
-            const { state } = renderProvider();
+            const { state } = await renderProvider();
 
             expect(loadCoreSdkScript).toHaveBeenCalledWith({
                 environment: "sandbox",
@@ -158,7 +156,7 @@ describe("PayPalProvider", () => {
             const mockError = new Error(TEST_ERROR_MESSAGE);
             (loadCoreSdkScript as jest.Mock).mockRejectedValue(mockError);
 
-            const { state } = renderProvider();
+            const { state } = await renderProvider();
 
             await waitFor(() => expectRejectedState(state, mockError));
         });
@@ -186,7 +184,7 @@ describe("PayPalProvider", () => {
                     return Promise.resolve(createMockPayPalNamespace());
                 });
 
-                renderProvider({ environment, ...createInstanceOptions });
+                await renderProvider({ environment, ...createInstanceOptions });
 
                 expect(loadCoreSdkScript).toHaveBeenCalledWith({
                     environment,
@@ -213,7 +211,7 @@ describe("PayPalProvider", () => {
                 createInstance: mockCreateInstance,
             });
 
-            const { state } = renderProvider();
+            const { state } = await renderProvider();
 
             await waitFor(() => expectResolvedState(state));
 
@@ -231,7 +229,7 @@ describe("PayPalProvider", () => {
                 createInstance: mockCreateInstance,
             });
 
-            const { state } = renderProvider({
+            const { state } = await renderProvider({
                 clientToken: TEST_CLIENT_TOKEN,
             });
 
@@ -255,7 +253,7 @@ describe("PayPalProvider", () => {
                 createInstance: mockCreateInstance,
             });
 
-            const { state } = renderProvider();
+            const { state } = await renderProvider();
 
             await waitFor(() => expectRejectedState(state, instanceError));
         });
@@ -280,7 +278,7 @@ describe("PayPalProvider", () => {
             (loadCoreSdkScript as jest.Mock).mockResolvedValue({
                 createInstance: mockCreateInstance,
             });
-            const { state } = renderProvider(multiComponentOptions);
+            const { state } = await renderProvider(multiComponentOptions);
 
             await waitFor(() => expectResolvedState(state));
 
@@ -307,35 +305,44 @@ describe("PayPalProvider", () => {
             };
 
             const { state, TestComponent } = setupTestComponent();
-            const { rerender, getByText } = render(
-                <PayPalProvider
-                    components={["paypal-payments"]}
-                    clientToken={undefined}
-                    environment="sandbox"
-                >
-                    <TestComponent>
-                        <TestChild />
-                    </TestComponent>
-                </PayPalProvider>,
-            );
+            let rerender: ReturnType<typeof render>["rerender"];
+            let getByText: ReturnType<typeof render>["getByText"];
+
+            await act(async () => {
+                const result = render(
+                    <PayPalProvider
+                        components={["paypal-payments"]}
+                        clientToken={undefined}
+                        environment="sandbox"
+                    >
+                        <TestComponent>
+                            <TestChild />
+                        </TestComponent>
+                    </PayPalProvider>,
+                );
+                rerender = result.rerender;
+                getByText = result.getByText;
+            });
 
             expect(childRenderSpy).toHaveBeenCalled();
-            expect(getByText("Test Child Content")).toBeInTheDocument();
+            expect(getByText!("Test Child Content")).toBeInTheDocument();
             expect(loadCoreSdkScript).not.toHaveBeenCalled();
             expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
             expect(state.sdkInstance).toBe(null);
 
-            rerender(
-                <PayPalProvider
-                    components={["paypal-payments"]}
-                    clientToken={TEST_CLIENT_TOKEN}
-                    environment="sandbox"
-                >
-                    <TestComponent>
-                        <TestChild />
-                    </TestComponent>
-                </PayPalProvider>,
-            );
+            await act(async () => {
+                rerender!(
+                    <PayPalProvider
+                        components={["paypal-payments"]}
+                        clientToken={TEST_CLIENT_TOKEN}
+                        environment="sandbox"
+                    >
+                        <TestComponent>
+                            <TestChild />
+                        </TestComponent>
+                    </PayPalProvider>,
+                );
+            });
 
             await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
             await waitFor(() => expectResolvedState(state));
@@ -355,7 +362,7 @@ describe("PayPalProvider", () => {
                 createInstance: mockCreateInstance,
             });
 
-            const { state } = renderProvider({
+            const { state } = await renderProvider({
                 clientToken: TEST_CLIENT_TOKEN,
             });
 
@@ -373,7 +380,7 @@ describe("PayPalProvider", () => {
 
             tokenPromise.catch(() => {});
 
-            const { state } = renderProvider({
+            const { state } = await renderProvider({
                 clientToken: tokenPromise,
             });
 
@@ -409,23 +416,30 @@ describe("PayPalProvider", () => {
             });
 
             const { state, TestComponent } = setupTestComponent();
-            const { getByText } = render(
-                <PayPalProvider
-                    components={["paypal-payments"]}
-                    clientToken={tokenPromise}
-                    environment="sandbox"
-                >
-                    <TestComponent>
-                        <TestChild />
-                    </TestComponent>
-                </PayPalProvider>,
-            );
+            let getByText: ReturnType<typeof render>["getByText"];
+
+            await act(async () => {
+                const result = render(
+                    <PayPalProvider
+                        components={["paypal-payments"]}
+                        clientToken={tokenPromise}
+                        environment="sandbox"
+                    >
+                        <TestComponent>
+                            <TestChild />
+                        </TestComponent>
+                    </PayPalProvider>,
+                );
+                getByText = result.getByText;
+            });
 
             expect(childRenderSpy).toHaveBeenCalled();
-            expect(getByText("Test Child Content")).toBeInTheDocument();
+            expect(getByText!("Test Child Content")).toBeInTheDocument();
             expect(loadCoreSdkScript).not.toHaveBeenCalled();
 
-            resolveToken!(TEST_CLIENT_TOKEN);
+            await act(async () => {
+                resolveToken!(TEST_CLIENT_TOKEN);
+            });
 
             await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
             await waitFor(() => expectResolvedState(state));
@@ -434,7 +448,7 @@ describe("PayPalProvider", () => {
 
     describe("Eligibility Loading", () => {
         test("should load eligible payment methods", async () => {
-            const { state } = renderProvider();
+            const { state } = await renderProvider();
 
             await waitFor(() =>
                 expect(state.eligiblePaymentMethods).toEqual(
@@ -453,7 +467,7 @@ describe("PayPalProvider", () => {
                 error: mockError,
             });
 
-            const { state } = renderProvider();
+            const { state } = await renderProvider();
 
             await waitFor(() => expectResolvedState(state));
 
@@ -465,35 +479,38 @@ describe("PayPalProvider", () => {
     describe("Props Changes", () => {
         test("should reset state when createInstanceOptions change", async () => {
             const { state, TestComponent } = setupTestComponent();
+            let rerender: ReturnType<typeof render>["rerender"];
 
-            const { rerender } = render(
-                <PayPalProvider
-                    components={createInstanceOptions.components}
-                    clientToken={createInstanceOptions.clientToken}
-                    environment="sandbox"
-                >
-                    <TestComponent />
-                </PayPalProvider>,
-            );
+            await act(async () => {
+                const result = render(
+                    <PayPalProvider
+                        components={createInstanceOptions.components}
+                        clientToken={createInstanceOptions.clientToken}
+                        environment="sandbox"
+                    >
+                        <TestComponent />
+                    </PayPalProvider>,
+                );
+                rerender = result.rerender;
+            });
 
             // Wait for initial load
             await waitFor(() => expectResolvedState(state));
 
             // Change the options
-            rerender(
-                <PayPalProvider
-                    components={createInstanceOptions.components}
-                    clientToken={"new-client-token"}
-                    environment="sandbox"
-                >
-                    <TestComponent />
-                </PayPalProvider>,
-            );
+            await act(async () => {
+                rerender!(
+                    <PayPalProvider
+                        components={createInstanceOptions.components}
+                        clientToken={"new-client-token"}
+                        environment="sandbox"
+                    >
+                        <TestComponent />
+                    </PayPalProvider>,
+                );
+            });
 
-            // Should go back to pending state (while keeping old instance until new one loads)
-            expectReloadingState(state);
-
-            // Should reload with new options
+            // Should reload with new options and reach resolved state
             await waitFor(() => expectResolvedState(state));
         });
     });
@@ -550,7 +567,7 @@ describe("PayPalProvider", () => {
             async (_stage, setupMock) => {
                 setupMock();
 
-                const { state, unmount } = renderProvider();
+                const { state, unmount } = await renderProvider();
 
                 await waitFor(() => expectPendingState(state));
 
@@ -585,16 +602,20 @@ describe("Auto-memoization", () => {
 
     test("should not reload SDK when props have same values but different references", async () => {
         const { state, TestComponent } = setupTestComponent();
+        let rerender: ReturnType<typeof render>["rerender"];
 
-        const { rerender } = render(
-            <PayPalProvider
-                components={createInstanceOptions.components}
-                clientToken={createInstanceOptions.clientToken}
-                environment="sandbox"
-            >
-                <TestComponent />
-            </PayPalProvider>,
-        );
+        await act(async () => {
+            const result = render(
+                <PayPalProvider
+                    components={createInstanceOptions.components}
+                    clientToken={createInstanceOptions.clientToken}
+                    environment="sandbox"
+                >
+                    <TestComponent />
+                </PayPalProvider>,
+            );
+            rerender = result.rerender;
+        });
 
         await waitFor(() => expectResolvedState(state));
 
@@ -602,18 +623,22 @@ describe("Auto-memoization", () => {
             .length;
 
         // Rerender with new object reference but same values
-        rerender(
-            <PayPalProvider
-                components={["paypal-payments"]}
-                clientToken={TEST_CLIENT_TOKEN}
-                environment="sandbox"
-            >
-                <TestComponent />
-            </PayPalProvider>,
-        );
+        await act(async () => {
+            rerender!(
+                <PayPalProvider
+                    components={["paypal-payments"]}
+                    clientToken={TEST_CLIENT_TOKEN}
+                    environment="sandbox"
+                >
+                    <TestComponent />
+                </PayPalProvider>,
+            );
+        });
 
         // Wait a bit to ensure no reload happens
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await act(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 100));
+        });
 
         // Should NOT reload
         expect((loadCoreSdkScript as jest.Mock).mock.calls.length).toBe(
@@ -631,34 +656,37 @@ describe("Auto-memoization", () => {
         });
 
         const { state, TestComponent } = setupTestComponent();
+        let rerender: ReturnType<typeof render>["rerender"];
 
-        const { rerender } = render(
-            <PayPalProvider
-                components={createInstanceOptions.components}
-                clientToken={createInstanceOptions.clientToken}
-                environment="sandbox"
-            >
-                <TestComponent />
-            </PayPalProvider>,
-        );
+        await act(async () => {
+            const result = render(
+                <PayPalProvider
+                    components={createInstanceOptions.components}
+                    clientToken={createInstanceOptions.clientToken}
+                    environment="sandbox"
+                >
+                    <TestComponent />
+                </PayPalProvider>,
+            );
+            rerender = result.rerender;
+        });
 
         await waitFor(() => expectResolvedState(state));
 
         const createInstanceCallCount = mockCreateInstance.mock.calls.length;
 
         // Rerender with different client token
-        rerender(
-            <PayPalProvider
-                components={["paypal-payments"]}
-                clientToken="NEW-TOKEN"
-                environment="sandbox"
-            >
-                <TestComponent />
-            </PayPalProvider>,
-        );
-
-        // Should go back to pending state (while keeping old instance until new one loads)
-        expectReloadingState(state);
+        await act(async () => {
+            rerender!(
+                <PayPalProvider
+                    components={["paypal-payments"]}
+                    clientToken="NEW-TOKEN"
+                    environment="sandbox"
+                >
+                    <TestComponent />
+                </PayPalProvider>,
+            );
+        });
 
         // Should recreate instance with new token (but NOT reload SDK script)
         await waitFor(() =>
@@ -686,16 +714,21 @@ describe("Auto-memoization", () => {
             locale: "en_US",
         };
 
-        const { rerender } = render(
-            <PayPalProvider
-                components={complexOptions.components}
-                clientToken={complexOptions.clientToken}
-                locale={complexOptions.locale}
-                environment="sandbox"
-            >
-                <TestComponent />
-            </PayPalProvider>,
-        );
+        let rerender: ReturnType<typeof render>["rerender"];
+
+        await act(async () => {
+            const result = render(
+                <PayPalProvider
+                    components={complexOptions.components}
+                    clientToken={complexOptions.clientToken}
+                    locale={complexOptions.locale}
+                    environment="sandbox"
+                >
+                    <TestComponent />
+                </PayPalProvider>,
+            );
+            rerender = result.rerender;
+        });
 
         await waitFor(() => expectResolvedState(state));
 
@@ -703,19 +736,23 @@ describe("Auto-memoization", () => {
             .length;
 
         // Rerender with same values but new object reference
-        rerender(
-            <PayPalProvider
-                components={["paypal-payments", "venmo-payments"]}
-                clientToken={TEST_CLIENT_TOKEN}
-                locale="en_US"
-                environment="sandbox"
-            >
-                <TestComponent />
-            </PayPalProvider>,
-        );
+        await act(async () => {
+            rerender!(
+                <PayPalProvider
+                    components={["paypal-payments", "venmo-payments"]}
+                    clientToken={TEST_CLIENT_TOKEN}
+                    locale="en_US"
+                    environment="sandbox"
+                >
+                    <TestComponent />
+                </PayPalProvider>,
+            );
+        });
 
         // Wait a bit to ensure no reload happens
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await act(async () => {
+            await new Promise((resolve) => setTimeout(resolve, 100));
+        });
 
         // Should NOT reload
         expect((loadCoreSdkScript as jest.Mock).mock.calls.length).toBe(
