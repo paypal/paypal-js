@@ -11,6 +11,10 @@ export type OnApproveDataOneTimePayments = {
     billingToken?: string;
 };
 
+export type OnCancelDataOneTimePayments = {
+    orderId?: string;
+};
+
 export type OnCompleteData = {
     paymentSessionState: "approved" | "canceled" | "error";
 };
@@ -34,7 +38,7 @@ export type OnErrorData = PayPalError;
  */
 export type BasePaymentSessionOptions = {
     onApprove: (data: OnApproveDataOneTimePayments) => Promise<void>;
-    onCancel?: () => void;
+    onCancel?: (data: OnCancelDataOneTimePayments) => void;
     onComplete?: (data: OnCompleteData) => void;
     onError?: (data: OnErrorData) => void;
     testBuyerCountry?: string;
