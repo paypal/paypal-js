@@ -97,7 +97,7 @@ export type SavePaymentSessionOptions = Omit<
     orderId?: never;
     vaultSetupToken?: string;
     onApprove?: (data: OnApproveDataSavePayments) => Promise<void>;
-    onCancel?: (data?: OnCancelDataSavePayments) => void;
+    onCancel?: (data: OnCancelDataSavePayments) => void;
 };
 
 export type PayPalPresentationModeOptions =
