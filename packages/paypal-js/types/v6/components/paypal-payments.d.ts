@@ -96,7 +96,7 @@ export type SavePaymentSessionOptions = Omit<
     clientMetadataId?: string;
     orderId?: never;
     vaultSetupToken?: string;
-    onApprove: (data: OnApproveDataSavePayments) => Promise<void>;
+    onApprove?: (data: OnApproveDataSavePayments) => Promise<void>;
     onCancel?: (data?: OnCancelDataSavePayments) => void;
 };
 
