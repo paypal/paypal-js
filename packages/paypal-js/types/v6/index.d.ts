@@ -5,6 +5,7 @@ import { VenmoPaymentsInstance } from "./components/venmo-payments";
 import {
     EligiblePaymentMethodsOutput,
     FindEligibleMethodsOptions,
+    FindEligiblePaymentMethodsResponse,
 } from "./components/find-eligible-methods";
 import { CardFieldsInstance } from "./components/card-fields";
 import { PayPalMessagesInstance } from "./components/paypal-messages";
@@ -179,6 +180,9 @@ export interface BaseInstance {
      * ```
      */
     updateLocale: (locale: string) => void;
+    hydrateEligibleMethods: (
+        eligibleMethodsResponse: FindEligiblePaymentMethodsResponse,
+    ) => EligiblePaymentMethodsOutput;
 }
 
 interface CoreSdkScriptDataAttributes {

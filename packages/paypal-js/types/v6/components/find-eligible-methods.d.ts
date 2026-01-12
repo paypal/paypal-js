@@ -45,6 +45,24 @@ export type FindEligibleMethodsGetDetails<T extends FundingSource> =
           ? PayLaterEligiblePaymentMethodDetails
           : BaseEligiblePaymentMethodDetails;
 
+type EligiblePaymentMethodDetails = {
+    can_be_vaulted?: boolean;
+    eligible_in_paypal_network?: boolean;
+    recommended?: boolean;
+    recommended_priority?: number;
+    country_code?: PayLaterCountryCodes | PayPalCreditCountryCodes;
+    product_code?: PayLaterProductCodes;
+};
+
+export type FindEligiblePaymentMethodsResponse = {
+    eligible_methods: {
+        [key in EligiblePaymentMethods]?: EligiblePaymentMethodDetails;
+    };
+    supplementary_data?: {
+        buyer_country_code?: string;
+    };
+};
+
 /**
  * Result object returned by `findEligibleMethods()` containing methods to check payment method eligibility and retrieve payment method details.
  *
