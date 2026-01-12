@@ -5,9 +5,7 @@ import { useError } from "./useError";
 
 import type {
     EligiblePaymentMethods,
-    PayLaterCountryCodes,
-    PayLaterProductCodes,
-    PayPalCreditCountryCodes,
+    FindEligiblePaymentMethodsResponse,
 } from "../types";
 
 type PhoneNumber = {
@@ -69,24 +67,6 @@ type FindEligiblePaymentMethodsOptions = {
     eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
     environment?: "production" | "sandbox";
     payload?: FindEligiblePaymentMethodsRequestPayload;
-};
-
-type EligiblePaymentMethodDetails = {
-    can_be_vaulted?: boolean;
-    eligible_in_paypal_network?: boolean;
-    recommended?: boolean;
-    recommended_priority?: number;
-    country_code?: PayLaterCountryCodes | PayPalCreditCountryCodes;
-    product_code?: PayLaterProductCodes;
-};
-
-export type FindEligiblePaymentMethodsResponse = {
-    eligible_methods: {
-        [key in EligiblePaymentMethods]?: EligiblePaymentMethodDetails;
-    };
-    supplementary_data?: {
-        buyer_country_code?: string;
-    };
 };
 
 export async function fetchEligibleMethods(
