@@ -185,6 +185,20 @@ export interface BaseInstance {
      * ```
      */
     updateLocale: (locale: string) => void;
+    /**
+     * Hydrates the SDK instance with eligible payment methods from a pre-fetched response.
+     *
+     * @remarks
+     * This method allows you to provide a pre-fetched response to the SDK and receive a formatted output, the same as what is returned by `findEligibleMethods()`.
+     *
+     * @param eligibleMethodsResponse - The response object from the Eligibility API Request
+     * @returns A formatted output containing formatted payment methods eligibility information
+     *
+     * @example
+     * ```typescript
+     * sdkInstance.hydrateEligibleMethods(eligibleMethodsResponse);
+     * ```
+     */
     hydrateEligibleMethods: (
         eligibleMethodsResponse: FindEligiblePaymentMethodsResponse,
     ) => EligiblePaymentMethodsOutput;
