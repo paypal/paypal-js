@@ -9,6 +9,7 @@ import {
 } from "./components/find-eligible-methods";
 import { CardFieldsInstance } from "./components/card-fields";
 import { PayPalMessagesInstance } from "./components/paypal-messages";
+import { PayPalSubscriptionsInstance } from "./components/paypal-subscriptions";
 
 export interface PayPalV6Namespace {
     /**
@@ -41,6 +42,7 @@ export type Components =
     | "paypal-payments"
     | "paypal-guest-payments"
     | "paypal-messages"
+    | "paypal-subscriptions"
     | "venmo-payments"
     | "paypal-legacy-billing-agreements"
     | "card-fields";
@@ -135,7 +137,10 @@ export type SdkInstance<T extends readonly Components[]> = BaseInstance &
     ("paypal-legacy-billing-agreements" extends T[number]
         ? PayPalLegacyBillingInstance
         : unknown) &
-    ("card-fields" extends T[number] ? CardFieldsInstance : unknown);
+    ("card-fields" extends T[number] ? CardFieldsInstance : unknown) &
+    ("paypal-subscriptions" extends T[number]
+        ? PayPalSubscriptionsInstance
+        : unknown);
 
 /**
  * @internal
@@ -206,12 +211,14 @@ export * from "./components/venmo-payments";
 export * from "./components/find-eligible-methods";
 export * from "./components/card-fields";
 export * from "./components/paypal-messages";
+export * from "./components/paypal-subscriptions";
 
 // export a subset of types from base-component
 export {
     CreateOrderCallback,
     CreateOrderPromise,
     OnApproveDataOneTimePayments,
+    OnCancelDataOneTimePayments,
     OnCompleteData,
     OnErrorData,
 } from "./components/base-component";

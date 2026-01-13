@@ -15,7 +15,9 @@ export {
 } from "./components/PayPalCardFieldsProvider";
 export { PayLaterOneTimePaymentButton } from "./components/PayLaterOneTimePaymentButton";
 export { PayPalOneTimePaymentButton } from "./components/PayPalOneTimePaymentButton";
+export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
+export { PayPalGuestPaymentButton } from "./components/PayPalGuestPaymentButton";
 export { PayPalProvider } from "./components/PayPalProvider";
 export { usePayPalCardFields } from "./hooks/usePayPalCardFields";
 export {
@@ -36,6 +38,7 @@ export * from "./hooks/useEligibleMethods";
 export { usePayPalMessages } from "./hooks/usePayPalMessages";
 export { usePayPalCreditOneTimePaymentSession } from "./hooks/usePayPalCreditOneTimePaymentSession";
 export { usePayPalCreditSavePaymentSession } from "./hooks/usePayPalCreditSavePaymentSession";
+export { usePayPalSubscriptionPaymentSession } from "./hooks/usePayPalSubscriptionPaymentSession";
 
 // React 19+ JSX SDK Web Components type declaration
 declare global {

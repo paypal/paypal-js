@@ -1,6 +1,7 @@
 import { loadCoreSdkScript } from "../../../src/v6";
 import type {
     OnApproveDataBillingAgreements,
+    OnCancelDataBillingAgreements,
     PayPalV6Namespace,
 } from "../index";
 
@@ -49,9 +50,16 @@ async function main() {
         return Promise.resolve();
     }
 
+    function onCancelCallback({ billingToken }: OnCancelDataBillingAgreements) {
+        console.log({
+            billingToken,
+        });
+    }
+
     const paypalPaymentSession =
         sdkInstance.createPayPalBillingAgreementWithoutPurchase({
             onApprove: onApproveCallback,
+            onCancel: onCancelCallback,
         });
 
     const createBillingToken = () =>
