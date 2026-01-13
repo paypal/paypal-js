@@ -8,7 +8,7 @@ import React, {
 } from "react";
 
 import { usePayPal } from "../hooks/usePayPal";
-import { useProxyProps } from "../../hooks/useProxyProps";
+import { useProxyProps } from "../utils";
 import {
     CardFieldsSessionContext,
     CardFieldsStatusContext,
