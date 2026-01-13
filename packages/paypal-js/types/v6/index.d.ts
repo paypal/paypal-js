@@ -5,6 +5,7 @@ import { VenmoPaymentsInstance } from "./components/venmo-payments";
 import {
     EligiblePaymentMethodsOutput,
     FindEligibleMethodsOptions,
+    FindEligiblePaymentMethodsResponse,
 } from "./components/find-eligible-methods";
 import { CardFieldsInstance } from "./components/card-fields";
 import { PayPalMessagesInstance } from "./components/paypal-messages";
@@ -184,6 +185,27 @@ export interface BaseInstance {
      * ```
      */
     updateLocale: (locale: string) => void;
+    /**
+     * Hydrates the SDK instance with eligible payment methods from a pre-fetched response.
+     *
+     * @remarks
+     * This method allows you to provide a pre-fetched response to the SDK and receive a formatted output, the same as what is returned by `findEligibleMethods()`.
+     *
+     * @param eligibleMethodsResponse - The response object from the Eligibility API Request
+     * @returns A formatted output containing formatted payment methods eligibility information
+     *
+     * @example
+     * ```typescript
+     * const paymentMethods = sdkInstance.hydrateEligibleMethods(eligibleMethodsResponse);
+     * const isPayPalEligible = paymentMethods.isEligible("paypal");
+     * if (isPayPalEligible) {
+     *   // Render PayPal button
+     * }
+     * ```
+     */
+    hydrateEligibleMethods: (
+        eligibleMethodsResponse: FindEligiblePaymentMethodsResponse,
+    ) => EligiblePaymentMethodsOutput;
 }
 
 interface CoreSdkScriptDataAttributes {

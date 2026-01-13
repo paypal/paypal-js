@@ -5,8 +5,11 @@ import {
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
 
-import type { FindEligiblePaymentMethodsResponse } from "../hooks/useEligibleMethods";
-import type { Components, SdkInstance } from "../types";
+import type {
+    Components,
+    SdkInstance,
+    FindEligiblePaymentMethodsResponse,
+} from "../types";
 
 export interface PayPalState {
     sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
