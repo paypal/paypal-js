@@ -1,5 +1,19 @@
 # Changelog
 
+## 9.2.0
+
+### Minor Changes
+
+- 99b63b3: Adds paypal-subscriptions component types.
+- 4f8534d: Add v6 types for optional clientId support
+- de0f777: Add v6 types for onCancel() callback
+- 47db663: Adds type declarations for the base create instance method: hydrateEligibleMethods
+
+### Patch Changes
+
+- 06ad677: Updates the paypal-payments instance to include the Credit save payment method.
+- fb88a98: Renamed V6 Card Fields submit methods arguments names to better represent expected values
+
 ## 9.1.0
 
 ### Minor Changes
