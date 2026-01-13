@@ -196,7 +196,11 @@ export interface BaseInstance {
      *
      * @example
      * ```typescript
-     * sdkInstance.hydrateEligibleMethods(eligibleMethodsResponse);
+     * const paymentMethods = sdkInstance.hydrateEligibleMethods(eligibleMethodsResponse);
+     * const isPayPalEligible = paymentMethods.isEligible("paypal");
+     * if (isPayPalEligible) {
+     *   // Render PayPal button
+     * }
      * ```
      */
     hydrateEligibleMethods: (
