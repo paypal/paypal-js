@@ -23,7 +23,7 @@ async function main() {
     }
 
     const sdkInstance = await paypal.createInstance({
-        clientToken: "fakeValue",
+        clientId: "fakeValue",
         components: [
             "paypal-payments",
             "paypal-guest-payments",
