@@ -21,7 +21,8 @@ export interface PayLaterButtonProps extends HTMLAttributes<HTMLButtonElement> {
 
 export interface PayPalBasicCardButtonProps
     extends HTMLAttributes<HTMLButtonElement> {
-    buyerCountry: string;
+    buyerCountry?: string;
+    disabled?: boolean;
     ref?: Ref<HTMLElement>;
 }
 
