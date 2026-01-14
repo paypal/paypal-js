@@ -8,14 +8,13 @@ import React, {
 } from "react";
 
 import { usePayPal } from "../hooks/usePayPal";
-import { useProxyProps } from "../utils";
+import { useProxyProps, useDeepCompareMemoize, toError } from "../utils";
 import {
     CardFieldsSessionContext,
     CardFieldsStatusContext,
 } from "../context/PayPalCardFieldsProviderContext";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import { useError } from "../hooks/useError";
-import { toError } from "../utils";
 
 import type {
     CardFieldsOneTimePaymentSession,
@@ -59,16 +58,18 @@ type CardFieldsProviderProps = {
  * The session will not be created until one of these hooks is called.
  *
  * @example
+ * const memoizedAmount = useDeepCompareMemoize({ currencyCode: "USD", value: "100.00" });
+ * const onBlur = useCallback((event) => { ... }, []);
  * <PayPalProvider
  *  components={["card-fields"]}
  *  clientToken={clientToken}
  *  pageType="checkout"
  * >
  *   <PayPalCardFieldsProvider
- *     blur={(event) => console.log('Blur:', event)}
+ *     blur={onBlur}
  *     validitychange={(event) => console.log('Validity:', event)}
  *     cardtypechange={(event) => console.log('Card type:', event)}
- *     amount={{ currencyCode: "USD", value: "100.00" }}
+ *     amount={memoizedAmount}
  *     isCobrandedEligible={true}
  *   >
  *     <CheckoutForm />
@@ -93,6 +94,12 @@ export const PayPalCardFieldsProvider = ({
     const proxyEventHandlers = useProxyProps(
         eventHandlers as Record<PropertyKey, unknown>,
     );
+    // Deep memoize event handlers to avoid unnecessary re-registration
+    const memoizedProxyEventHandlers =
+        useDeepCompareMemoize(proxyEventHandlers);
+
+    // Memoize amount to avoid unnecessary updates when value hasn't changed
+    const memoizedAmount = useDeepCompareMemoize(amount);
 
     const handleError = useCallback(
         (error: Error | null) => {
@@ -142,7 +149,15 @@ export const PayPalCardFieldsProvider = ({
         };
     }, [sdkInstance, loadingStatus, cardFieldsSessionType, handleError]);
 
-    // Register event handlers using proxy props
+    /**
+     * Registers Card Fields event handlers with the session.
+     * Uses useProxyProps for stable handler references and useDeepCompareMemoize to avoid
+     * unnecessary re-registrations when handler values have not changed.
+     *
+     * @remarks
+     * For best performance, wrap handler functions with useCallback or useDeepCompareMemoize
+     * before passing them as props to avoid unnecessary SDK event handler re-registrations.
+     */
     useEffect(() => {
         if (!cardFieldsSession) {
             return;
@@ -154,9 +169,11 @@ export const PayPalCardFieldsProvider = ({
             by iterating over the keys of proxyEventHandlers directly
             */
             (
-                Object.keys(proxyEventHandlers) as MerchantMessagingEvents[]
+                Object.keys(
+                    memoizedProxyEventHandlers,
+                ) as MerchantMessagingEvents[]
             ).forEach((eventName) => {
-                const handler = proxyEventHandlers[eventName];
+                const handler = memoizedProxyEventHandlers[eventName];
                 if (handler && typeof handler === "function") {
                     cardFieldsSession.on(
                         eventName,
@@ -167,7 +184,7 @@ export const PayPalCardFieldsProvider = ({
         } catch (error) {
             handleError(toError(`Failed to register event handlers: ${error}`));
         }
-    }, [cardFieldsSession, proxyEventHandlers, handleError]);
+    }, [cardFieldsSession, memoizedProxyEventHandlers, handleError]);
 
     // Update session configuration when props change
     useEffect(() => {
@@ -178,9 +195,8 @@ export const PayPalCardFieldsProvider = ({
         // Build update configuration from props
         const updateOptions: UpdateOptions = {};
         let hasUpdates = false;
-
-        if (amount !== undefined) {
-            updateOptions.amount = amount;
+        if (memoizedAmount !== undefined) {
+            updateOptions.amount = memoizedAmount;
             hasUpdates = true;
         }
 
@@ -201,7 +217,7 @@ export const PayPalCardFieldsProvider = ({
                 toError(`Failed to update card fields configuration: ${error}`),
             );
         }
-    }, [cardFieldsSession, amount, isCobrandedEligible, handleError]); // Track actual prop values to trigger updates
+    }, [cardFieldsSession, memoizedAmount, isCobrandedEligible, handleError]);
 
     const sessionContextValue: CardFieldsSessionState = useMemo(
         () => ({
