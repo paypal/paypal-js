@@ -94,9 +94,6 @@ export const PayPalCardFieldsProvider = ({
     const proxyEventHandlers = useProxyProps(
         eventHandlers as Record<PropertyKey, unknown>,
     );
-    // Deep memoize event handlers to avoid unnecessary re-registration
-    const memoizedProxyEventHandlers =
-        useDeepCompareMemoize(proxyEventHandlers);
 
     // Memoize amount to avoid unnecessary updates when value hasn't changed
     const memoizedAmount = useDeepCompareMemoize(amount);
@@ -169,11 +166,9 @@ export const PayPalCardFieldsProvider = ({
             by iterating over the keys of proxyEventHandlers directly
             */
             (
-                Object.keys(
-                    memoizedProxyEventHandlers,
-                ) as MerchantMessagingEvents[]
+                Object.keys(proxyEventHandlers) as MerchantMessagingEvents[]
             ).forEach((eventName) => {
-                const handler = memoizedProxyEventHandlers[eventName];
+                const handler = proxyEventHandlers[eventName];
                 if (handler && typeof handler === "function") {
                     cardFieldsSession.on(
                         eventName,
@@ -184,7 +179,7 @@ export const PayPalCardFieldsProvider = ({
         } catch (error) {
             handleError(toError(`Failed to register event handlers: ${error}`));
         }
-    }, [cardFieldsSession, memoizedProxyEventHandlers, handleError]);
+    }, [cardFieldsSession, proxyEventHandlers, handleError]);
 
     // Update session configuration when props change
     useEffect(() => {
