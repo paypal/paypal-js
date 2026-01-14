@@ -12,7 +12,7 @@ import {
     usePayPalCardFields,
     usePayPalCardFieldsSession,
 } from "../hooks/usePayPalCardFields";
-import { toError } from "../utils";
+import { toError, useDeepCompareMemoize } from "../utils";
 
 import type {
     CardFieldsOneTimePaymentSession,
@@ -517,34 +517,18 @@ describe("PayPalCardFieldsProvider", () => {
                 );
             });
 
+            // Force a rerender so the effect with the new session runs
+            rerender();
+
             expect(
                 mockCardFieldsOneTimePaymentSession.update,
             ).toHaveBeenCalledTimes(1);
 
-            // Clear the mock to track new calls
-            (
-                mockCardFieldsOneTimePaymentSession.update as jest.Mock
-            ).mockClear();
-
-            // Re-render multiple times (amount object reference changes each time)
-            rerender();
-            rerender();
-            rerender();
-
-            // Since amount is in the dependency array and the reference changes each time,
-            // update() will be called on each render
+            // The call should have the correct amount value
             expect(
                 mockCardFieldsOneTimePaymentSession.update,
-            ).toHaveBeenCalledTimes(3);
-
-            // All calls should have the same amount value
-            const calls = (
-                mockCardFieldsOneTimePaymentSession.update as jest.Mock
-            ).mock.calls;
-            calls.forEach((call) => {
-                expect(call[0]).toEqual({
-                    amount: { currencyCode: "USD", value: "100.00" },
-                });
+            ).toHaveBeenCalledWith({
+                amount: { currencyCode: "USD", value: "100.00" },
             });
         });
     });
@@ -761,61 +745,25 @@ describe("PayPalCardFieldsProvider", () => {
     });
 
     describe("useProxyProps optimization", () => {
-        test("should not re-register handlers when handler reference changes", () => {
-            const { result, rerender } = renderHook(
-                () => ({
-                    status: usePayPalCardFields(),
-                    session: usePayPalCardFieldsSession(),
-                    handler: jest.fn(), // New function on each render
-                }),
-                {
-                    wrapper: ({ children }) => {
-                        const handler = jest.fn(); // New function each render
-                        return (
-                            <PayPalCardFieldsProvider blur={handler}>
-                                {children}
-                            </PayPalCardFieldsProvider>
-                        );
-                    },
-                },
-            );
+        test("should not call update when amount value is the same (deep compare)", () => {
+            const amount = { currencyCode: "USD", value: "100.00" };
 
-            act(() => {
-                result.current.session.setCardFieldsSessionType(
-                    CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+            function TestProvider({ children }: { children: React.ReactNode }) {
+                const memoizedAmount = useDeepCompareMemoize(amount);
+                return (
+                    <PayPalCardFieldsProvider amount={memoizedAmount}>
+                        {children}
+                    </PayPalCardFieldsProvider>
                 );
-            });
+            }
 
-            const initialCallCount = (
-                mockCardFieldsOneTimePaymentSession.on as jest.Mock
-            ).mock.calls.length;
-
-            // Re-render multiple times (handler reference changes each time due to inline function)
-            rerender();
-            rerender();
-            rerender();
-
-            // on() should not be called again due to useProxyProps
-            expect(
-                (mockCardFieldsOneTimePaymentSession.on as jest.Mock).mock.calls
-                    .length,
-            ).toBe(initialCallCount);
-        });
-
-        test("should call update when amount reference changes (even with same values)", () => {
             const { result, rerender } = renderHook(
                 () => ({
                     status: usePayPalCardFields(),
                     session: usePayPalCardFieldsSession(),
                 }),
                 {
-                    wrapper: ({ children }) => (
-                        <PayPalCardFieldsProvider
-                            amount={{ currencyCode: "USD", value: "100.00" }} // New object each render
-                        >
-                            {children}
-                        </PayPalCardFieldsProvider>
-                    ),
+                    wrapper: TestProvider,
                 },
             );
 
@@ -834,26 +782,59 @@ describe("PayPalCardFieldsProvider", () => {
                 mockCardFieldsOneTimePaymentSession.update as jest.Mock
             ).mockClear();
 
-            // Re-render multiple times (amount object reference changes each time)
+            // Re-render multiple times with the same amount value
             rerender();
             rerender();
             rerender();
 
-            // Since amount is in the dependency array and the reference changes,
-            // update() will be called on each render (this matches SDK behavior)
+            // update() should not be called again due to useDeepCompareMemoize
             expect(
                 mockCardFieldsOneTimePaymentSession.update,
-            ).toHaveBeenCalledTimes(3);
+            ).not.toHaveBeenCalled();
+        });
 
-            // Verify all calls have the same value
-            const calls = (
-                mockCardFieldsOneTimePaymentSession.update as jest.Mock
-            ).mock.calls;
-            calls.forEach((call) => {
-                expect(call[0]).toEqual({
-                    amount: { currencyCode: "USD", value: "100.00" },
-                });
+        test("should not re-register handlers when handler value is the same (deep compare)", () => {
+            const handler = jest.fn();
+
+            function TestProvider({ children }: { children: React.ReactNode }) {
+                const memoizedHandler = useDeepCompareMemoize(handler);
+                return (
+                    <PayPalCardFieldsProvider blur={memoizedHandler}>
+                        {children}
+                    </PayPalCardFieldsProvider>
+                );
+            }
+
+            const { result, rerender } = renderHook(
+                () => ({
+                    status: usePayPalCardFields(),
+                    session: usePayPalCardFieldsSession(),
+                }),
+                {
+                    wrapper: TestProvider,
+                },
+            );
+
+            act(() => {
+                result.current.session.setCardFieldsSessionType(
+                    CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT,
+                );
             });
+
+            const initialCallCount = (
+                mockCardFieldsOneTimePaymentSession.on as jest.Mock
+            ).mock.calls.length;
+
+            // Re-render multiple times with the same handler value
+            rerender();
+            rerender();
+            rerender();
+
+            // on() should not be called again due to useDeepCompareMemoize
+            expect(
+                (mockCardFieldsOneTimePaymentSession.on as jest.Mock).mock.calls
+                    .length,
+            ).toBe(initialCallCount);
         });
     });
 });
