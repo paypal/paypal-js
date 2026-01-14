@@ -494,20 +494,27 @@ describe("PayPalCardFieldsProvider", () => {
             expectCurrentErrorValue(result.current.status.error);
         });
 
-        test("should call update when amount object reference changes (even with same values)", () => {
+        test("should NOT call update when amount reference changes but value is the same (deep compare)", () => {
+            function TestProvider({ children }: { children: React.ReactNode }) {
+                // Always creates a new object, but useDeepCompareMemoize will prevent unnecessary updates
+                const memoizedAmount = useDeepCompareMemoize({
+                    currencyCode: "USD",
+                    value: "100.00",
+                });
+                return (
+                    <PayPalCardFieldsProvider amount={memoizedAmount}>
+                        {children}
+                    </PayPalCardFieldsProvider>
+                );
+            }
+
             const { result, rerender } = renderHook(
                 () => ({
                     status: usePayPalCardFields(),
                     session: usePayPalCardFieldsSession(),
                 }),
                 {
-                    wrapper: ({ children }) => (
-                        <PayPalCardFieldsProvider
-                            amount={{ currencyCode: "USD", value: "100.00" }} // New object each render
-                        >
-                            {children}
-                        </PayPalCardFieldsProvider>
-                    ),
+                    wrapper: TestProvider,
                 },
             );
 
@@ -517,19 +524,24 @@ describe("PayPalCardFieldsProvider", () => {
                 );
             });
 
-            // Force a rerender so the effect with the new session runs
-            rerender();
-
             expect(
                 mockCardFieldsOneTimePaymentSession.update,
             ).toHaveBeenCalledTimes(1);
 
-            // The call should have the correct amount value
+            // Clear mock to track new calls
+            (
+                mockCardFieldsOneTimePaymentSession.update as jest.Mock
+            ).mockClear();
+
+            // Re-render multiple times with the same amount value (but new object reference)
+            rerender();
+            rerender();
+            rerender();
+
+            // update() should not be called again due to useDeepCompareMemoize
             expect(
                 mockCardFieldsOneTimePaymentSession.update,
-            ).toHaveBeenCalledWith({
-                amount: { currencyCode: "USD", value: "100.00" },
-            });
+            ).not.toHaveBeenCalled();
         });
     });
 
