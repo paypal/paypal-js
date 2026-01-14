@@ -642,6 +642,26 @@ describe("PayPalProvider", () => {
             );
             expect(mockHydrateEligibleMethods).toHaveBeenCalledTimes(2);
         });
+
+        test("should handle error when findEligibleMethods fails", async () => {
+            const mockError = new Error("findEligibleMethods failed");
+            const mockFindEligibleMethods = jest
+                .fn()
+                .mockRejectedValue(mockError);
+            const mockInstance = {
+                ...createMockSdkInstance(),
+                findEligibleMethods: mockFindEligibleMethods,
+            };
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: jest.fn().mockResolvedValue(mockInstance),
+            });
+
+            const { state } = await renderProvider();
+
+            await waitFor(() => expectRejectedState(state, mockError));
+            expect(state.eligiblePaymentMethods).toBe(null);
+        });
     });
 
     describe("Props Changes", () => {
