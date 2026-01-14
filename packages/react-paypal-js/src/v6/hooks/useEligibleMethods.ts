@@ -1,11 +1,9 @@
-import { useState, useEffect } from "react";
-
-import { useDeepCompareMemoize } from "../utils";
-import { useError } from "./useError";
-
-import type {
-    EligiblePaymentMethods,
-    FindEligiblePaymentMethodsResponse,
+import { usePayPal } from "../hooks/usePayPal";
+import {
+    INSTANCE_LOADING_STATE,
+    type EligiblePaymentMethods,
+    type EligiblePaymentMethodsOutput,
+    type FindEligiblePaymentMethodsResponse,
 } from "../types";
 
 type PhoneNumber = {
@@ -64,7 +62,6 @@ export type FindEligiblePaymentMethodsRequestPayload = {
 
 type FindEligiblePaymentMethodsOptions = {
     clientToken?: string;
-    eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
     environment?: "production" | "sandbox";
     payload?: FindEligiblePaymentMethodsRequestPayload;
 };
@@ -108,86 +105,16 @@ export async function fetchEligibleMethods(
     }
 }
 
-export function useEligibleMethods({
-    eligibleMethodsResponse,
-    clientToken,
-    payload,
-    environment,
-}: FindEligiblePaymentMethodsOptions): {
-    eligibleMethods: FindEligiblePaymentMethodsResponse | null;
+export function useEligibleMethods(): {
+    eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
     isLoading: boolean;
     error: Error | null;
 } {
-    const [eligibleMethods, setEligibleMethods] =
-        useState<FindEligiblePaymentMethodsResponse | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useError();
-    const memoizedPayload = useDeepCompareMemoize(payload);
-    const memoizedEligibleMethodsResponse = useDeepCompareMemoize(
-        eligibleMethodsResponse,
-    );
+    const { loadingStatus, eligiblePaymentMethods, error } = usePayPal();
 
-    useEffect(() => {
-        const abortController = new AbortController();
-        let isSubscribed = true;
-
-        if (memoizedEligibleMethodsResponse) {
-            setEligibleMethods(memoizedEligibleMethodsResponse);
-            setIsLoading(false);
-            return;
-        }
-
-        // Wait for clientToken to be available before fetching eligibility
-        // This allows the provider to render while the token is being fetched
-        if (!clientToken) {
-            setIsLoading(true);
-            return;
-        }
-
-        async function getEligibility() {
-            setError(null);
-            setIsLoading(true);
-
-            try {
-                const methods = await fetchEligibleMethods({
-                    clientToken,
-                    payload: memoizedPayload,
-                    signal: abortController.signal,
-                    environment,
-                });
-
-                if (isSubscribed) {
-                    setEligibleMethods(methods);
-                    setIsLoading(false);
-                }
-            } catch (error) {
-                if (
-                    isSubscribed &&
-                    !(error instanceof Error && error.name === "AbortError")
-                ) {
-                    setError(
-                        error instanceof Error
-                            ? error
-                            : new Error(String(error)),
-                    );
-                    setIsLoading(false);
-                }
-            }
-        }
-
-        getEligibility();
-
-        return () => {
-            isSubscribed = false;
-            abortController.abort();
-        };
-    }, [
-        clientToken,
-        memoizedPayload,
-        memoizedEligibleMethodsResponse,
-        environment,
-        setError,
-    ]);
-
-    return { eligibleMethods, isLoading, error };
+    return {
+        eligiblePaymentMethods,
+        isLoading: loadingStatus === INSTANCE_LOADING_STATE.PENDING,
+        error,
+    };
 }

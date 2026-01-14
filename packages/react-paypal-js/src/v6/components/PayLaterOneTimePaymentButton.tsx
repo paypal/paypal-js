@@ -40,10 +40,9 @@ export const PayLaterOneTimePaymentButton = ({
         usePayLaterOneTimePaymentSession(hookProps);
     const isServerSide = isServer();
 
-    const payLaterDetails =
-        eligiblePaymentMethods?.eligible_methods?.paypal_pay_later;
-    const countryCode = payLaterDetails?.country_code;
-    const productCode = payLaterDetails?.product_code;
+    const payLaterDetails = eligiblePaymentMethods?.getDetails("paylater");
+    const countryCode = payLaterDetails?.countryCode;
+    const productCode = payLaterDetails?.productCode;
 
     useEffect(() => {
         if (error) {

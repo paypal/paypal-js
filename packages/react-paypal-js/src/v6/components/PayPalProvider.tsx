@@ -11,10 +11,6 @@ import {
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
 import { toError, useCompareMemoize } from "../utils";
-import {
-    FindEligiblePaymentMethodsRequestPayload,
-    useEligibleMethods,
-} from "../hooks/useEligibleMethods";
 import { useError } from "../hooks/useError";
 
 import type {
@@ -34,7 +30,6 @@ type PayPalProviderProps = Omit<
     LoadCoreSdkScriptOptions & {
         components?: Components[];
         eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
-        eligibleMethodsPayload?: FindEligiblePaymentMethodsRequestPayload;
         children: React.ReactNode;
         clientToken?: string | Promise<string>;
     };
@@ -109,7 +104,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     shopperSessionId,
     testBuyerCountry,
     eligibleMethodsResponse,
-    eligibleMethodsPayload,
     children,
     ...scriptOptions
 }) => {
