@@ -58,7 +58,8 @@ type CardFieldsProviderProps = {
  * The session will not be created until one of these hooks is called.
  *
  * @example
- * const memoizedAmount = useDeepCompareMemoize({ currencyCode: "USD", value: "100.00" });
+ * // Amount can be updated dynamically
+ * const [amount, setAmount] = useState<OrderAmount>({ value: "10.00", currencyCode: "USD" });
  * const onBlur = useCallback((event) => { ... }, []);
  * <PayPalProvider
  *  components={["card-fields"]}
@@ -69,7 +70,7 @@ type CardFieldsProviderProps = {
  *     blur={onBlur}
  *     validitychange={(event) => console.log('Validity:', event)}
  *     cardtypechange={(event) => console.log('Card type:', event)}
- *     amount={memoizedAmount}
+ *     amount={amount}
  *     isCobrandedEligible={true}
  *   >
  *     <CheckoutForm />
