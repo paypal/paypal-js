@@ -141,9 +141,13 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
                 // ignore errors when disabling the component
             });
         } else {
-            initActions.enable().catch(() => {
-                // ignore errors when enabling the component
-            });
+            // enable() can return either a Promise or void synchronously
+            const enableResult = initActions.enable();
+            if (enableResult instanceof Promise) {
+                enableResult.catch(() => {
+                    // ignore errors when enabling the component
+                });
+            }
         }
     }, [disabled, initActions]);
 
