@@ -10,7 +10,7 @@ import type { PayPalState, InstanceAction } from "./PayPalProviderContext";
 import type {
     SdkInstance,
     CreateInstanceOptions,
-    FindEligiblePaymentMethodsResponse,
+    EligiblePaymentMethodsOutput,
     LoadCoreSdkScriptOptions,
     Components,
 } from "../types";
@@ -24,27 +24,10 @@ function createMockSdkInstance() {
     });
 }
 
-function createMockEligiblePaymentMethods(): FindEligiblePaymentMethodsResponse {
+function createMockEligiblePaymentMethods(): EligiblePaymentMethodsOutput {
     return {
-        eligible_methods: {
-            paypal: {
-                can_be_vaulted: true,
-                eligible_in_paypal_network: true,
-                recommended: true,
-                recommended_priority: 1,
-            },
-            paypal_pay_later: {
-                can_be_vaulted: false,
-                eligible_in_paypal_network: true,
-                recommended: true,
-                recommended_priority: 2,
-                country_code: "US",
-                product_code: "PAYLATER",
-            },
-        },
-        supplementary_data: {
-            buyer_country_code: "US",
-        },
+        isEligible: jest.fn().mockReturnValue(true),
+        getDetails: jest.fn().mockReturnValue({ canBeVaulted: true }),
     };
 }
 

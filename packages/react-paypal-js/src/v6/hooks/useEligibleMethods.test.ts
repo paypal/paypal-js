@@ -1,3 +1,4 @@
+import React from "react";
 import { renderHook } from "@testing-library/react-hooks";
 
 import {
@@ -5,8 +6,11 @@ import {
     fetchEligibleMethods,
     type FindEligiblePaymentMethodsRequestPayload,
 } from "./useEligibleMethods";
+import { PayPalContext } from "../context/PayPalProviderContext";
+import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 
 import type { FindEligiblePaymentMethodsResponse } from "../types";
+import type { PayPalState } from "../context/PayPalProviderContext";
 
 // Mock fetch globally
 global.fetch = jest.fn();
@@ -163,452 +167,175 @@ describe("fetchEligibleMethods", () => {
 });
 
 describe("useEligibleMethods", () => {
-    const mockClientToken = "test-client-token";
-    const mockResponse: FindEligiblePaymentMethodsResponse = {
-        eligible_methods: {
-            paypal: {
-                can_be_vaulted: true,
-                eligible_in_paypal_network: true,
-                recommended: true,
-            },
-        },
-    };
+    // Helper to create a wrapper with mocked context
+    function createWrapper(contextValue: Partial<PayPalState>) {
+        const fullContext: PayPalState = {
+            sdkInstance: null,
+            eligiblePaymentMethods: null,
+            loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+            error: null,
+            ...contextValue,
+        };
 
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
-
-    describe("with eligibleMethodsResponse provided", () => {
-        test("should immediately return the provided response without fetching", () => {
-            const { result } = renderHook(() =>
-                useEligibleMethods({
-                    eligibleMethodsResponse: mockResponse,
-                    clientToken: mockClientToken,
-                    environment: "sandbox",
-                }),
+        return function Wrapper({ children }: { children: React.ReactNode }) {
+            return React.createElement(
+                PayPalContext.Provider,
+                { value: fullContext },
+                children,
             );
+        };
+    }
 
-            expect(result.current.isLoading).toBe(false);
-            expect(result.current.eligibleMethods).toEqual(mockResponse);
-            expect(result.current.error).toBeNull();
-            expect(global.fetch).not.toHaveBeenCalled();
+    describe("context consumption", () => {
+        test("should throw error when used outside of PayPalProvider", () => {
+            const { result } = renderHook(() => useEligibleMethods());
+
+            expect(result.error).toEqual(
+                new Error("usePayPal must be used within a PayPalProvider"),
+            );
         });
 
-        test("should not fetch even if clientToken changes when response is provided", () => {
-            const { result, rerender } = renderHook(
-                ({ clientToken }) =>
-                    useEligibleMethods({
-                        eligibleMethodsResponse: mockResponse,
-                        clientToken,
-                        environment: "sandbox",
-                    }),
-                {
-                    initialProps: { clientToken: "token-1" },
-                },
-            );
-
-            expect(result.current.isLoading).toBe(false);
-
-            rerender({ clientToken: "token-2" });
-
-            expect(global.fetch).not.toHaveBeenCalled();
-            expect(result.current.eligibleMethods).toEqual(mockResponse);
-        });
-    });
-
-    describe("with clientToken (fetching eligibility)", () => {
-        test("should fetch eligible methods successfully", async () => {
-            (global.fetch as jest.Mock).mockResolvedValueOnce({
-                ok: true,
-                json: async () => mockResponse,
-            });
-
-            const { result, waitForNextUpdate } = renderHook(() =>
-                useEligibleMethods({
-                    clientToken: mockClientToken,
-                    environment: "sandbox",
-                }),
-            );
-
-            expect(result.current.isLoading).toBe(true);
-            expect(result.current.eligibleMethods).toBeNull();
-
-            await waitForNextUpdate();
-
-            expect(result.current.isLoading).toBe(false);
-            expect(result.current.eligibleMethods).toEqual(mockResponse);
-            expect(result.current.error).toBeNull();
-            expect(global.fetch).toHaveBeenCalledTimes(1);
-        });
-
-        test("should pass payload to the fetch function", async () => {
-            const mockPayload: FindEligiblePaymentMethodsRequestPayload = {
-                purchase_units: [
-                    {
-                        amount: {
-                            currency_code: "USD",
-                        },
-                    },
-                ],
+        test("should return eligiblePaymentMethods from context", () => {
+            const mockEligibility = {
+                isEligible: jest.fn(),
+                getDetails: jest.fn(),
             };
 
-            (global.fetch as jest.Mock).mockResolvedValueOnce({
-                ok: true,
-                json: async () => mockResponse,
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    eligiblePaymentMethods: mockEligibility,
+                    loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                }),
             });
 
-            const { result, waitForNextUpdate } = renderHook(() =>
-                useEligibleMethods({
-                    clientToken: mockClientToken,
-                    payload: mockPayload,
-                    environment: "sandbox",
-                }),
-            );
-
-            await waitForNextUpdate();
-
-            expect(result.current.isLoading).toBe(false);
-
-            expect(global.fetch).toHaveBeenCalledWith(
-                expect.any(String),
-                expect.objectContaining({
-                    body: JSON.stringify(mockPayload),
-                }),
+            expect(result.current.eligiblePaymentMethods).toEqual(
+                mockEligibility,
             );
         });
 
-        test("should handle fetch errors", async () => {
-            const consoleErrorSpy = jest
-                .spyOn(console, "error")
-                .mockImplementation(() => {});
-
-            (global.fetch as jest.Mock).mockRejectedValueOnce(
-                new Error("Network error"),
-            );
-
-            const { result, waitForNextUpdate } = renderHook(() =>
-                useEligibleMethods({
-                    clientToken: mockClientToken,
-                    environment: "sandbox",
+        test("should return null for eligiblePaymentMethods when context has no eligibility data", () => {
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    eligiblePaymentMethods: null,
+                    loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 }),
-            );
+            });
 
-            await waitForNextUpdate();
-
-            expect(result.current.isLoading).toBe(false);
-            expect(result.current.eligibleMethods).toBeNull();
-            expect(result.current.error).toEqual(
-                new Error("Failed to fetch eligible methods: Network error"),
-            );
-
-            consoleErrorSpy.mockRestore();
+            expect(result.current.eligiblePaymentMethods).toBe(null);
         });
 
-        test("should abort fetch on unmount", async () => {
-            (global.fetch as jest.Mock).mockImplementationOnce(
-                () =>
-                    new Promise((resolve) => {
-                        setTimeout(() => {
-                            resolve({
-                                ok: true,
-                                json: async () => mockResponse,
-                            });
-                        }, 100);
-                    }),
-            );
+        test("should return error from context", () => {
+            const mockError = new Error("Test error");
 
-            const { unmount } = renderHook(() =>
-                useEligibleMethods({
-                    clientToken: mockClientToken,
-                    environment: "sandbox",
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    error: mockError,
+                    loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 }),
-            );
+            });
 
-            unmount();
-
-            // Verify abort was called
-            const fetchCall = (global.fetch as jest.Mock).mock.calls[0];
-            const signal = fetchCall[1].signal;
-            expect(signal.aborted).toBe(true);
+            expect(result.current.error).toBe(mockError);
         });
 
-        test("should not update state if component unmounts before fetch completes", async () => {
-            (global.fetch as jest.Mock).mockImplementationOnce(
-                () =>
-                    new Promise((resolve) => {
-                        setTimeout(() => {
-                            resolve({
-                                ok: true,
-                                json: async () => mockResponse,
-                            });
-                        }, 100);
-                    }),
-            );
-
-            const { result, unmount } = renderHook(() =>
-                useEligibleMethods({
-                    clientToken: mockClientToken,
-                    environment: "sandbox",
+        test("should return null for error when context has no error", () => {
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    error: null,
+                    loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 }),
-            );
+            });
 
-            expect(result.current.isLoading).toBe(true);
-
-            unmount();
-
-            // Wait a bit to ensure the fetch would have completed
-            await new Promise((resolve) => setTimeout(resolve, 150));
-
-            // State should remain in loading state since component unmounted
-            expect(result.current.isLoading).toBe(true);
-            expect(result.current.eligibleMethods).toBeNull();
+            expect(result.current.error).toBe(null);
         });
     });
 
-    describe("error handling", () => {
-        test("should wait gracefully when clientToken is not available", () => {
-            const { result } = renderHook(() =>
-                useEligibleMethods({
-                    clientToken: undefined,
-                    environment: "sandbox",
+    describe("isLoading state", () => {
+        test("should return isLoading=true when loadingStatus is PENDING", () => {
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    loadingStatus: INSTANCE_LOADING_STATE.PENDING,
                 }),
-            );
-
-            expect(result.current.isLoading).toBe(true);
-            expect(result.current.error).toBeNull();
-            expect(result.current.eligibleMethods).toBeNull();
-            expect(global.fetch).not.toHaveBeenCalled();
-        });
-
-        test("should fetch when clientToken becomes available", async () => {
-            (global.fetch as jest.Mock).mockResolvedValueOnce({
-                ok: true,
-                json: async () => mockResponse,
             });
 
-            const { result, rerender, waitForNextUpdate } = renderHook(
-                ({ clientToken }) =>
-                    useEligibleMethods({
-                        clientToken,
-                        environment: "sandbox",
-                    }),
-                {
-                    initialProps: {
-                        clientToken: undefined as string | undefined,
-                    },
-                },
-            );
-
             expect(result.current.isLoading).toBe(true);
-            expect(result.current.error).toBeNull();
-            expect(global.fetch).not.toHaveBeenCalled();
+        });
 
-            rerender({ clientToken: mockClientToken });
-
-            await waitForNextUpdate();
+        test("should return isLoading=false when loadingStatus is RESOLVED", () => {
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                }),
+            });
 
             expect(result.current.isLoading).toBe(false);
-            expect(result.current.eligibleMethods).toEqual(mockResponse);
-            expect(result.current.error).toBeNull();
-            expect(global.fetch).toHaveBeenCalledTimes(1);
+        });
+
+        test("should return isLoading=false when loadingStatus is REJECTED", () => {
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
+                    error: new Error("Failed"),
+                }),
+            });
+
+            expect(result.current.isLoading).toBe(false);
         });
     });
 
-    describe("memoization and re-fetching", () => {
-        test("should not re-fetch when payload reference changes but content is the same", async () => {
-            (global.fetch as jest.Mock).mockResolvedValue({
-                ok: true,
-                json: async () => mockResponse,
-            });
-
-            const payload1 = {
-                purchase_units: [{ amount: { currency_code: "USD" } }],
+    describe("complete return value structure", () => {
+        test("should return correct shape with all fields from context", () => {
+            const mockEligibility = {
+                isEligible: jest.fn(),
+                getDetails: jest.fn(),
             };
 
-            const { waitForNextUpdate, rerender } = renderHook(
-                ({ payload }) =>
-                    useEligibleMethods({
-                        clientToken: mockClientToken,
-                        payload,
-                        environment: "sandbox",
-                    }),
-                {
-                    initialProps: { payload: payload1 },
-                },
-            );
-
-            await waitForNextUpdate();
-
-            expect(global.fetch).toHaveBeenCalledTimes(1);
-
-            // Clear mocks to track new calls
-            jest.clearAllMocks();
-
-            // Create new object with same content
-            const payload2 = {
-                purchase_units: [{ amount: { currency_code: "USD" } }],
-            };
-
-            rerender({ payload: payload2 });
-
-            // Should not fetch again
-            await new Promise((resolve) => setTimeout(resolve, 100));
-            expect(global.fetch).not.toHaveBeenCalled();
-        });
-
-        test("should re-fetch when payload content actually changes", async () => {
-            (global.fetch as jest.Mock).mockResolvedValue({
-                ok: true,
-                json: async () => mockResponse,
-            });
-
-            const payload1 = {
-                purchase_units: [{ amount: { currency_code: "USD" } }],
-            };
-
-            const { waitForNextUpdate, rerender } = renderHook(
-                ({ payload }) =>
-                    useEligibleMethods({
-                        clientToken: mockClientToken,
-                        payload,
-                        environment: "sandbox",
-                    }),
-                {
-                    initialProps: { payload: payload1 },
-                },
-            );
-
-            await waitForNextUpdate();
-
-            expect(global.fetch).toHaveBeenCalledTimes(1);
-
-            // Clear mocks to track new calls
-            jest.clearAllMocks();
-
-            // Create new object with different content
-            const payload2 = {
-                purchase_units: [{ amount: { currency_code: "EUR" } }],
-            };
-
-            rerender({ payload: payload2 });
-
-            await waitForNextUpdate();
-
-            expect(global.fetch).toHaveBeenCalledTimes(1);
-        });
-
-        test("should not re-fetch when eligibleMethodsResponse reference changes but content is the same", () => {
-            const response1 = {
-                eligible_methods: {
-                    paypal: { can_be_vaulted: true },
-                },
-            };
-
-            const { result, rerender } = renderHook(
-                ({ response }) =>
-                    useEligibleMethods({
-                        eligibleMethodsResponse: response,
-                        clientToken: mockClientToken,
-                        environment: "sandbox",
-                    }),
-                {
-                    initialProps: { response: response1 },
-                },
-            );
-
-            expect(result.current.isLoading).toBe(false);
-            expect(result.current.eligibleMethods).toEqual(response1);
-
-            // Create new object with same content
-            const response2 = {
-                eligible_methods: {
-                    paypal: { can_be_vaulted: true },
-                },
-            };
-
-            rerender({ response: response2 });
-
-            expect(global.fetch).not.toHaveBeenCalled();
-            expect(result.current.eligibleMethods).toEqual(response2);
-        });
-
-        test("should re-fetch when clientToken changes", async () => {
-            (global.fetch as jest.Mock).mockResolvedValue({
-                ok: true,
-                json: async () => mockResponse,
-            });
-
-            const { waitForNextUpdate, rerender } = renderHook(
-                ({ clientToken }) =>
-                    useEligibleMethods({
-                        clientToken,
-                        environment: "sandbox",
-                    }),
-                {
-                    initialProps: { clientToken: "token-1" },
-                },
-            );
-
-            await waitForNextUpdate();
-
-            expect(global.fetch).toHaveBeenCalledTimes(1);
-
-            jest.clearAllMocks();
-
-            rerender({ clientToken: "token-2" });
-
-            await waitForNextUpdate();
-
-            expect(global.fetch).toHaveBeenCalledTimes(1);
-
-            expect(global.fetch).toHaveBeenCalledWith(
-                expect.any(String),
-                expect.objectContaining({
-                    headers: expect.objectContaining({
-                        Authorization: "Bearer token-2",
-                    }),
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    eligiblePaymentMethods: mockEligibility,
+                    loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                    error: null,
                 }),
-            );
-        });
-
-        test("should re-fetch when environment changes", async () => {
-            (global.fetch as jest.Mock).mockResolvedValue({
-                ok: true,
-                json: async () => mockResponse,
             });
 
-            const { waitForNextUpdate, rerender } = renderHook(
-                ({ environment }) =>
-                    useEligibleMethods({
-                        clientToken: mockClientToken,
-                        environment,
-                    }),
-                {
-                    initialProps: {
-                        environment: "sandbox" as "sandbox" | "production",
-                    },
-                },
-            );
+            expect(result.current).toEqual({
+                eligiblePaymentMethods: mockEligibility,
+                isLoading: false,
+                error: null,
+            });
+        });
 
-            await waitForNextUpdate();
+        test("should return correct shape during loading state", () => {
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    eligiblePaymentMethods: null,
+                    loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+                    error: null,
+                }),
+            });
 
-            expect(global.fetch).toHaveBeenCalledTimes(1);
-            expect(global.fetch).toHaveBeenCalledWith(
-                "https://api-m.sandbox.paypal.com/v2/payments/find-eligible-methods",
-                expect.any(Object),
-            );
+            expect(result.current).toEqual({
+                eligiblePaymentMethods: null,
+                isLoading: true,
+                error: null,
+            });
+        });
 
-            jest.clearAllMocks();
+        test("should return correct shape during error state", () => {
+            const mockError = new Error("SDK failed to load");
 
-            rerender({ environment: "production" });
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    eligiblePaymentMethods: null,
+                    loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
+                    error: mockError,
+                }),
+            });
 
-            await waitForNextUpdate();
-
-            expect(global.fetch).toHaveBeenCalledTimes(1);
-            expect(global.fetch).toHaveBeenCalledWith(
-                "https://api-m.paypal.com/v2/payments/find-eligible-methods",
-                expect.any(Object),
-            );
+            expect(result.current).toEqual({
+                eligiblePaymentMethods: null,
+                isLoading: false,
+                error: mockError,
+            });
         });
     });
 });

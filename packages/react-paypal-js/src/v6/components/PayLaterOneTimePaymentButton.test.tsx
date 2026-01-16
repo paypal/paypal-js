@@ -166,12 +166,12 @@ describe("PayLaterOneTimePaymentButton", () => {
         it("should auto-populate countryCode and productCode from eligibility context", () => {
             mockUsePayPal.mockReturnValue({
                 eligiblePaymentMethods: {
-                    eligible_methods: {
-                        paypal_pay_later: {
-                            country_code: "US",
-                            product_code: "PAYLATER",
-                        },
-                    },
+                    isEligible: jest.fn().mockReturnValue(true),
+                    getDetails: jest.fn().mockReturnValue({
+                        countryCode: "US",
+                        productCode: "PAYLATER",
+                        canBeVaulted: false,
+                    }),
                 },
             });
 
@@ -206,10 +206,11 @@ describe("PayLaterOneTimePaymentButton", () => {
             expect(button).not.toHaveAttribute("productcode");
         });
 
-        it("should handle when PayLater is not in the eligibility response", () => {
+        it("should handle when PayLater details are not available", () => {
             mockUsePayPal.mockReturnValue({
                 eligiblePaymentMethods: {
-                    eligible_methods: {},
+                    isEligible: jest.fn().mockReturnValue(false),
+                    getDetails: jest.fn().mockReturnValue(undefined),
                 },
             });
 

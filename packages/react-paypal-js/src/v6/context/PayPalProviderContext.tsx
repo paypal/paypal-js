@@ -8,12 +8,12 @@ import {
 import type {
     Components,
     SdkInstance,
-    FindEligiblePaymentMethodsResponse,
+    EligiblePaymentMethodsOutput,
 } from "../types";
 
 export interface PayPalState {
     sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
-    eligiblePaymentMethods: FindEligiblePaymentMethodsResponse | null;
+    eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
     loadingStatus: INSTANCE_LOADING_STATE;
     error: Error | null;
 }
@@ -29,7 +29,7 @@ export type InstanceAction =
       }
     | {
           type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY;
-          value: FindEligiblePaymentMethodsResponse;
+          value: EligiblePaymentMethodsOutput;
       }
     | { type: INSTANCE_DISPATCH_ACTION.SET_ERROR; value: Error }
     | {

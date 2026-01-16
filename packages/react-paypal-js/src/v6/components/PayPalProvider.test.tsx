@@ -6,7 +6,6 @@ import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 import { expectCurrentErrorValue } from "../hooks/useErrorTestUtil";
 import { PayPalProvider } from "./PayPalProvider";
 import { usePayPal } from "../hooks/usePayPal";
-import { useEligibleMethods } from "../hooks/useEligibleMethods";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 
 import type { CreateInstanceOptions, PayPalV6Namespace } from "../types";
@@ -36,11 +35,6 @@ export const TEST_ELIGIBILITY_HOOK_RESULT = {
         buyer_country_code: "US",
     },
 };
-
-jest.mock("../hooks/useEligibleMethods", () => ({
-    useEligibleMethods: jest.fn(),
-    fetchEligibleMethods: jest.fn(),
-}));
 
 jest.mock("@paypal/paypal-js/sdk-v6", () => ({
     loadCoreSdkScript: jest.fn(),
@@ -91,6 +85,9 @@ function createMockSdkInstance() {
         findEligibleMethods: jest
             .fn()
             .mockResolvedValue(TEST_SDK_ELIGIBILITY_RESULT),
+        hydrateEligibleMethods: jest
+            .fn()
+            .mockReturnValue(TEST_SDK_ELIGIBILITY_RESULT),
         createPayPalOneTimePaymentSession: jest.fn(),
         updateLocale: jest.fn(),
     };
@@ -127,12 +124,6 @@ describe("PayPalProvider", () => {
         (loadCoreSdkScript as jest.Mock).mockResolvedValue(
             createMockPayPalNamespace(),
         );
-        // Set up default mock for useEligibleMethods for all tests
-        (useEligibleMethods as jest.Mock).mockReturnValue({
-            eligibleMethods: TEST_ELIGIBILITY_HOOK_RESULT,
-            isLoading: false,
-            error: null,
-        });
     });
 
     afterEach(() => {
@@ -447,31 +438,228 @@ describe("PayPalProvider", () => {
     });
 
     describe("Eligibility Loading", () => {
-        test("should load eligible payment methods", async () => {
-            const { state } = await renderProvider();
+        test("should call findEligibleMethods when no eligibleMethodsResponse is provided", async () => {
+            const mockFindEligibleMethods = jest
+                .fn()
+                .mockResolvedValue(TEST_SDK_ELIGIBILITY_RESULT);
+            const mockInstance = {
+                ...createMockSdkInstance(),
+                findEligibleMethods: mockFindEligibleMethods,
+            };
 
-            await waitFor(() =>
-                expect(state.eligiblePaymentMethods).toEqual(
-                    TEST_ELIGIBILITY_HOOK_RESULT,
-                ),
-            );
-        });
-
-        test("should handle eligibility loading failure gracefully", async () => {
-            const mockError = new Error("Eligibility failed");
-
-            // Mock the hook to return an error
-            (useEligibleMethods as jest.Mock).mockReturnValue({
-                eligibleMethods: null,
-                isLoading: false,
-                error: mockError,
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: jest.fn().mockResolvedValue(mockInstance),
             });
 
             const { state } = await renderProvider();
 
             await waitFor(() => expectResolvedState(state));
 
-            // Eligibility error doesn't affect overall state, just no eligibility data
+            expect(mockFindEligibleMethods).toHaveBeenCalledWith({});
+            await waitFor(() =>
+                expect(state.eligiblePaymentMethods).toEqual(
+                    TEST_SDK_ELIGIBILITY_RESULT,
+                ),
+            );
+        });
+
+        test("should call hydrateEligibleMethods when eligibleMethodsResponse is provided", async () => {
+            const mockHydrateEligibleMethods = jest
+                .fn()
+                .mockReturnValue(TEST_SDK_ELIGIBILITY_RESULT);
+            const mockFindEligibleMethods = jest
+                .fn()
+                .mockResolvedValue(TEST_SDK_ELIGIBILITY_RESULT);
+            const mockInstance = {
+                ...createMockSdkInstance(),
+                hydrateEligibleMethods: mockHydrateEligibleMethods,
+                findEligibleMethods: mockFindEligibleMethods,
+            };
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: jest.fn().mockResolvedValue(mockInstance),
+            });
+
+            const { state } = await renderProvider({
+                eligibleMethodsResponse: TEST_ELIGIBILITY_HOOK_RESULT,
+            });
+
+            await waitFor(() => expectResolvedState(state));
+
+            expect(mockHydrateEligibleMethods).toHaveBeenCalledWith(
+                TEST_ELIGIBILITY_HOOK_RESULT,
+            );
+            expect(mockFindEligibleMethods).not.toHaveBeenCalled();
+            await waitFor(() =>
+                expect(state.eligiblePaymentMethods).toEqual(
+                    TEST_SDK_ELIGIBILITY_RESULT,
+                ),
+            );
+        });
+
+        test("should store eligibility result in context state", async () => {
+            const eligibilityResult = {
+                paypal: { eligible: true, recommended: true },
+                venmo: { eligible: false },
+            };
+
+            const mockInstance = {
+                ...createMockSdkInstance(),
+                findEligibleMethods: jest
+                    .fn()
+                    .mockResolvedValue(eligibilityResult),
+            };
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: jest.fn().mockResolvedValue(mockInstance),
+            });
+
+            const { state } = await renderProvider();
+
+            await waitFor(() => expectResolvedState(state));
+            await waitFor(() =>
+                expect(state.eligiblePaymentMethods).toEqual(eligibilityResult),
+            );
+        });
+
+        test("should not run eligibility effect until sdkInstance is available", async () => {
+            const mockFindEligibleMethods = jest
+                .fn()
+                .mockResolvedValue(TEST_SDK_ELIGIBILITY_RESULT);
+            const mockInstance = {
+                ...createMockSdkInstance(),
+                findEligibleMethods: mockFindEligibleMethods,
+            };
+
+            let resolveCreateInstance: (value: typeof mockInstance) => void;
+            const createInstancePromise = new Promise<typeof mockInstance>(
+                (resolve) => {
+                    resolveCreateInstance = resolve;
+                },
+            );
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: jest
+                    .fn()
+                    .mockReturnValue(createInstancePromise),
+            });
+
+            const { state, TestComponent } = setupTestComponent();
+
+            await act(async () => {
+                render(
+                    <PayPalProvider
+                        components={["paypal-payments"]}
+                        clientToken={TEST_CLIENT_TOKEN}
+                        environment="sandbox"
+                    >
+                        <TestComponent />
+                    </PayPalProvider>,
+                );
+            });
+
+            // findEligibleMethods should not be called yet
+            expect(mockFindEligibleMethods).not.toHaveBeenCalled();
+            expect(state.eligiblePaymentMethods).toBe(null);
+
+            // Resolve instance creation
+            await act(async () => {
+                resolveCreateInstance!(mockInstance);
+            });
+
+            await waitFor(() => {
+                expect(mockFindEligibleMethods).toHaveBeenCalledWith({});
+            });
+        });
+
+        test("should update eligibility when eligibleMethodsResponse prop changes", async () => {
+            const hydrateResult1 = { paypal: { eligible: true } };
+            const hydrateResult2 = {
+                paypal: { eligible: true },
+                venmo: { eligible: true },
+            };
+
+            const mockHydrateEligibleMethods = jest
+                .fn()
+                .mockReturnValueOnce(hydrateResult1)
+                .mockReturnValueOnce(hydrateResult2);
+
+            const mockInstance = {
+                ...createMockSdkInstance(),
+                hydrateEligibleMethods: mockHydrateEligibleMethods,
+            };
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: jest.fn().mockResolvedValue(mockInstance),
+            });
+
+            const initialResponse = {
+                eligible_methods: { paypal: { can_be_vaulted: true } },
+            };
+            const updatedResponse = {
+                eligible_methods: {
+                    paypal: { can_be_vaulted: true },
+                    venmo: { can_be_vaulted: false },
+                },
+            };
+
+            const { state, TestComponent } = setupTestComponent();
+            let rerender: ReturnType<typeof render>["rerender"];
+
+            await act(async () => {
+                const result = render(
+                    <PayPalProvider
+                        components={["paypal-payments"]}
+                        clientToken={TEST_CLIENT_TOKEN}
+                        environment="sandbox"
+                        eligibleMethodsResponse={initialResponse}
+                    >
+                        <TestComponent />
+                    </PayPalProvider>,
+                );
+                rerender = result.rerender;
+            });
+
+            await waitFor(() =>
+                expect(state.eligiblePaymentMethods).toEqual(hydrateResult1),
+            );
+
+            await act(async () => {
+                rerender!(
+                    <PayPalProvider
+                        components={["paypal-payments"]}
+                        clientToken={TEST_CLIENT_TOKEN}
+                        environment="sandbox"
+                        eligibleMethodsResponse={updatedResponse}
+                    >
+                        <TestComponent />
+                    </PayPalProvider>,
+                );
+            });
+
+            await waitFor(() =>
+                expect(state.eligiblePaymentMethods).toEqual(hydrateResult2),
+            );
+            expect(mockHydrateEligibleMethods).toHaveBeenCalledTimes(2);
+        });
+
+        test("should handle error when findEligibleMethods fails", async () => {
+            const mockError = new Error("findEligibleMethods failed");
+            const mockFindEligibleMethods = jest
+                .fn()
+                .mockRejectedValue(mockError);
+            const mockInstance = {
+                ...createMockSdkInstance(),
+                findEligibleMethods: mockFindEligibleMethods,
+            };
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: jest.fn().mockResolvedValue(mockInstance),
+            });
+
+            const { state } = await renderProvider();
+
+            await waitFor(() => expectRejectedState(state, mockError));
             expect(state.eligiblePaymentMethods).toBe(null);
         });
     });

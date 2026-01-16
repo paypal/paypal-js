@@ -11,10 +11,6 @@ import {
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
 import { toError, useCompareMemoize } from "../utils";
-import {
-    FindEligiblePaymentMethodsRequestPayload,
-    useEligibleMethods,
-} from "../hooks/useEligibleMethods";
 import { useError } from "../hooks/useError";
 
 import type {
@@ -34,7 +30,6 @@ type PayPalProviderProps = Omit<
     LoadCoreSdkScriptOptions & {
         components?: Components[];
         eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
-        eligibleMethodsPayload?: FindEligiblePaymentMethodsRequestPayload;
         children: React.ReactNode;
         clientToken?: string | Promise<string>;
     };
@@ -109,12 +104,10 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     shopperSessionId,
     testBuyerCountry,
     eligibleMethodsResponse,
-    eligibleMethodsPayload,
     children,
     ...scriptOptions
 }) => {
     const memoizedComponents = useCompareMemoize(components);
-
     const [paypalNamespace, setPaypalNamespace] =
         useState<PayPalV6Namespace | null>(null);
     const [state, dispatch] = useReducer(instanceReducer, initialState);
@@ -123,25 +116,9 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     >(undefined);
     // Ref to hold script options to avoid re-running effect
     const loadCoreScriptOptions = useRef(scriptOptions);
-    // Using the error hook here so it can participate in side-effects provided by the hook. The actual error
-    // instance is stored in the reducer's state.
+    // Using the error hook here so it can participate in side-effects provided by the hook.
+    // The actual error instance is stored in the reducer's state.
     const [, setError] = useError();
-
-    const { eligibleMethods, isLoading } = useEligibleMethods({
-        eligibleMethodsResponse,
-        clientToken: clientTokenValue,
-        payload: eligibleMethodsPayload,
-        environment: loadCoreScriptOptions.current.environment,
-    });
-
-    useEffect(() => {
-        if (!isLoading && eligibleMethods) {
-            dispatch({
-                type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-                value: eligibleMethods,
-            });
-        }
-    }, [isLoading, eligibleMethods]);
 
     // Load Core SDK script
     useEffect(() => {
@@ -273,6 +250,44 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         testBuyerCountry,
         setError,
     ]);
+
+    useEffect(() => {
+        const sdkInstance = state.sdkInstance;
+        if (!sdkInstance) {
+            return;
+        }
+
+        let isSubscribed = true;
+
+        const setEligibility = async () => {
+            try {
+                const eligiblePaymentMethods = eligibleMethodsResponse
+                    ? sdkInstance.hydrateEligibleMethods(
+                          eligibleMethodsResponse,
+                      )
+                    : await sdkInstance.findEligibleMethods({});
+
+                dispatch({
+                    type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
+                    value: eligiblePaymentMethods,
+                });
+            } catch (error) {
+                if (isSubscribed) {
+                    setError(error);
+                    dispatch({
+                        type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
+                        value: toError(error),
+                    });
+                }
+            }
+        };
+
+        setEligibility();
+
+        return () => {
+            isSubscribed = false;
+        };
+    }, [state.sdkInstance, eligibleMethodsResponse, setError]);
 
     const contextValue: PayPalState = useMemo(
         () => ({
