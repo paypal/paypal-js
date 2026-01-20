@@ -4,9 +4,9 @@ import { usePayPalSavePaymentSession } from "../hooks/usePayPalSavePaymentSessio
 import { isServer } from "../utils";
 
 import type { ButtonProps } from "../types";
-import type { PayPalSavePaymentSessionProps } from "../hooks/usePayPalSavePaymentSession";
+import type { UsePayPalSavePaymentSessionProps } from "../hooks/usePayPalSavePaymentSession";
 
-type PayPalSavePaymentButtonProps = PayPalSavePaymentSessionProps &
+type PayPalSavePaymentButtonProps = UsePayPalSavePaymentSessionProps &
     ButtonProps & {
         autoRedirect?: never;
     };
@@ -15,7 +15,7 @@ type PayPalSavePaymentButtonProps = PayPalSavePaymentSessionProps &
  * `PayPalSavePaymentButton` is a button that provides a PayPal vault/save payment flow
  * (without purchase).
  *
- * `PayPalSavePaymentButtonProps` combines the arguments for {@link PayPalSavePaymentSessionProps}
+ * `PayPalSavePaymentButtonProps` combines the arguments for {@link UsePayPalSavePaymentSessionProps}
  * and {@link ButtonProps}.
  *
  * Note, `autoRedirect` is not allowed because if given a `presentationMode` of `"redirect"` the button

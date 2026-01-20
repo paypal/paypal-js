@@ -8,7 +8,7 @@ import { toError } from "../utils";
 import type { SavePaymentFlowResponse, SubmitOptions } from "../types";
 import type { PayPalCardFieldsProvider } from "../components/PayPalCardFieldsProvider";
 
-export type usePayPalCardFieldsSavePaymentSessionResult = {
+export type UsePayPalCardFieldsSavePaymentSessionResult = {
     submit: SubmitPayPalCardFieldsSavePayment;
     submitResponse: SavePaymentFlowResponse | null;
     error: Error | null;
@@ -25,9 +25,9 @@ type SubmitPayPalCardFieldsSavePayment = (
  * This hook must be used within a {@link PayPalCardFieldsProvider} to initialize
  * a save payment session.
  *
- * @returns {usePayPalCardFieldsSavePaymentSessionResult}
+ * @returns {UsePayPalCardFieldsSavePaymentSessionResult}
  */
-export function usePayPalCardFieldsSavePaymentSession(): usePayPalCardFieldsSavePaymentSessionResult {
+export function usePayPalCardFieldsSavePaymentSession(): UsePayPalCardFieldsSavePaymentSessionResult {
     const { cardFieldsSession, setCardFieldsSessionType } =
         usePayPalCardFieldsSession();
     const [submitResponse, setSubmitResponse] =

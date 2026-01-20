@@ -14,7 +14,7 @@ import type {
     PayPalPresentationModeOptions,
 } from "../types";
 
-export type PayLaterOneTimePaymentSessionProps = (
+export type UsePayLaterOneTimePaymentSessionProps = (
     | (Omit<PayLaterOneTimePaymentSessionOptions, "orderId"> & {
           createOrder: CreateOrderCallback;
           orderId?: never;
@@ -33,7 +33,7 @@ export function usePayLaterOneTimePaymentSession({
     createOrder,
     orderId,
     ...callbacks
-}: PayLaterOneTimePaymentSessionProps): BasePaymentSessionReturn {
+}: UsePayLaterOneTimePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance, loadingStatus } = usePayPal();
     const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<OneTimePaymentSession | null>(null);

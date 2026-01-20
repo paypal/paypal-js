@@ -13,7 +13,7 @@ import type {
     BasePaymentSessionReturn,
 } from "../types";
 
-export type PayPalSavePaymentSessionProps = (
+export type UsePayPalSavePaymentSessionProps = (
     | (Omit<SavePaymentSessionOptions, "vaultSetupToken"> & {
           createVaultToken: () => Promise<{ vaultSetupToken: string }>;
           vaultSetupToken?: never;
@@ -51,7 +51,7 @@ export function usePayPalSavePaymentSession({
     createVaultToken,
     vaultSetupToken,
     ...callbacks
-}: PayPalSavePaymentSessionProps): BasePaymentSessionReturn {
+}: UsePayPalSavePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance, loadingStatus } = usePayPal();
     const isMountedRef = useIsMountedRef();
     const sessionRef = useRef<SavePaymentSession | null>(null);
