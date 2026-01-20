@@ -8,7 +8,7 @@ import { toError } from "../utils";
 import type { SubmitOptions, OneTimePaymentFlowResponse } from "../types";
 import type { PayPalCardFieldsProvider } from "../components/PayPalCardFieldsProvider";
 
-export type usePayPalCardFieldsOneTimePaymentSessionResult = {
+export type UsePayPalCardFieldsOneTimePaymentSessionResult = {
     submit: SubmitPayPalCardFieldsOneTimePayment;
     submitResponse: OneTimePaymentFlowResponse | null;
     error: Error | null;
@@ -27,7 +27,7 @@ type SubmitPayPalCardFieldsOneTimePayment = (
  *
  * @returns {usePayPalCardFieldsOneTimePaymentSessionResult}
  */
-export function usePayPalCardFieldsOneTimePaymentSession(): usePayPalCardFieldsOneTimePaymentSessionResult {
+export function usePayPalCardFieldsOneTimePaymentSession(): UsePayPalCardFieldsOneTimePaymentSessionResult {
     const { cardFieldsSession, setCardFieldsSessionType } =
         usePayPalCardFieldsSession();
     const [submitResponse, setSubmitResponse] =

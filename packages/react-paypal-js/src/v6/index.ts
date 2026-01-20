@@ -1,6 +1,11 @@
 import type { SDKWebComponents } from "./types/sdkWebComponents";
 
+// ============================================================================
+// Types
+// ============================================================================
+
 export * from "./types";
+
 export type {
     ButtonProps,
     InternalButtonProps,
@@ -9,36 +14,75 @@ export type {
     PayPalCreditButtonProps,
     PayPalMessagesElement,
 } from "./types/sdkWebComponents";
+
+// ============================================================================
+// Components
+// ============================================================================
+
 export {
     PayPalCardFieldsProvider,
     type CardFieldsSessionType,
 } from "./components/PayPalCardFieldsProvider";
 export { PayLaterOneTimePaymentButton } from "./components/PayLaterOneTimePaymentButton";
+export { PayPalGuestPaymentButton } from "./components/PayPalGuestPaymentButton";
 export { PayPalOneTimePaymentButton } from "./components/PayPalOneTimePaymentButton";
+export { PayPalProvider } from "./components/PayPalProvider";
 export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
-export { PayPalGuestPaymentButton } from "./components/PayPalGuestPaymentButton";
-export { PayPalProvider } from "./components/PayPalProvider";
+
+// ============================================================================
+// Hooks
+// ============================================================================
+
+// Core hooks
+export { usePayPal } from "./hooks/usePayPal";
+export * from "./hooks/useEligibleMethods";
+export { usePayPalMessages } from "./hooks/usePayPalMessages";
+
+// Card fields hooks
 export { usePayPalCardFields } from "./hooks/usePayPalCardFields";
 export {
     usePayPalCardFieldsOneTimePaymentSession,
-    type usePayPalCardFieldsOneTimePaymentSessionResult,
+    type UsePayPalCardFieldsOneTimePaymentSessionResult,
 } from "./hooks/usePayPalCardFieldsOneTimePaymentSession";
 export {
     usePayPalCardFieldsSavePaymentSession,
-    type usePayPalCardFieldsSavePaymentSessionResult,
+    type UsePayPalCardFieldsSavePaymentSessionResult,
 } from "./hooks/usePayPalCardFieldsSavePaymentSession";
-export { usePayPal } from "./hooks/usePayPal";
-export { usePayLaterOneTimePaymentSession } from "./hooks/usePayLaterOneTimePaymentSession";
-export { usePayPalOneTimePaymentSession } from "./hooks/usePayPalOneTimePaymentSession";
-export { usePayPalSavePaymentSession } from "./hooks/usePayPalSavePaymentSession";
-export { useVenmoOneTimePaymentSession } from "./hooks/useVenmoOneTimePaymentSession";
-export { usePayPalGuestPaymentSession } from "./hooks/usePayPalGuestPaymentSession";
-export * from "./hooks/useEligibleMethods";
-export { usePayPalMessages } from "./hooks/usePayPalMessages";
-export { usePayPalCreditOneTimePaymentSession } from "./hooks/usePayPalCreditOneTimePaymentSession";
-export { usePayPalCreditSavePaymentSession } from "./hooks/usePayPalCreditSavePaymentSession";
-export { usePayPalSubscriptionPaymentSession } from "./hooks/usePayPalSubscriptionPaymentSession";
+
+// Payment session hooks
+export {
+    usePayLaterOneTimePaymentSession,
+    type UsePayLaterOneTimePaymentSessionProps,
+} from "./hooks/usePayLaterOneTimePaymentSession";
+export {
+    usePayPalCreditOneTimePaymentSession,
+    type UsePayPalCreditOneTimePaymentSessionProps,
+} from "./hooks/usePayPalCreditOneTimePaymentSession";
+export {
+    usePayPalCreditSavePaymentSession,
+    type UsePayPalCreditSavePaymentSessionProps,
+} from "./hooks/usePayPalCreditSavePaymentSession";
+export {
+    usePayPalGuestPaymentSession,
+    type UsePayPalGuestPaymentSessionProps,
+} from "./hooks/usePayPalGuestPaymentSession";
+export {
+    usePayPalOneTimePaymentSession,
+    type UsePayPalOneTimePaymentSessionProps,
+} from "./hooks/usePayPalOneTimePaymentSession";
+export {
+    usePayPalSavePaymentSession,
+    type UsePayPalSavePaymentSessionProps,
+} from "./hooks/usePayPalSavePaymentSession";
+export {
+    usePayPalSubscriptionPaymentSession,
+    type UsePayPalSubscriptionPaymentSessionProps,
+} from "./hooks/usePayPalSubscriptionPaymentSession";
+export {
+    useVenmoOneTimePaymentSession,
+    type UseVenmoOneTimePaymentSessionProps,
+} from "./hooks/useVenmoOneTimePaymentSession";
 
 // React 19+ JSX SDK Web Components type declaration
 declare global {
