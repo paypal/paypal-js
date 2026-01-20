@@ -25,7 +25,7 @@ type SubmitPayPalCardFieldsOneTimePayment = (
  * This hook must be used within a {@link PayPalCardFieldsProvider} to initialize
  * a one-time payment session.
  *
- * @returns {usePayPalCardFieldsOneTimePaymentSessionResult}
+ * @returns {UsePayPalCardFieldsOneTimePaymentSessionResult}
  */
 export function usePayPalCardFieldsOneTimePaymentSession(): UsePayPalCardFieldsOneTimePaymentSessionResult {
     const { cardFieldsSession, setCardFieldsSessionType } =
