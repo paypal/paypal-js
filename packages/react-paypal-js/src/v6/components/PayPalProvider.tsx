@@ -6,6 +6,7 @@ import {
     initialState,
     instanceReducer,
 } from "../context/PayPalProviderContext";
+import { useIsomorphicLayoutEffect } from "../hooks/useIsomorphicLayoutEffect";
 import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
@@ -114,8 +115,15 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     const [clientTokenValue, setClientTokenValue] = useState<
         string | undefined
     >(undefined);
+    const [isHydrated, setIsHydrated] = useState(false);
     // Ref to hold script options to avoid re-running effect
     const loadCoreScriptOptions = useRef(scriptOptions);
+
+    // Set hydrated state after initial client render to prevent hydration mismatch
+    useIsomorphicLayoutEffect(() => {
+        setIsHydrated(true);
+    }, []);
+
     // Using the error hook here so it can participate in side-effects provided by the hook.
     // The actual error instance is stored in the reducer's state.
     const [, setError] = useError();
@@ -295,12 +303,14 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             eligiblePaymentMethods: state.eligiblePaymentMethods,
             error: state.error,
             loadingStatus: state.loadingStatus,
+            isHydrated,
         }),
         [
             state.sdkInstance,
             state.eligiblePaymentMethods,
             state.error,
             state.loadingStatus,
+            isHydrated,
         ],
     );
 
