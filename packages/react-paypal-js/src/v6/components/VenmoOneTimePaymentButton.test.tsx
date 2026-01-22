@@ -3,20 +3,20 @@ import { render, fireEvent } from "@testing-library/react";
 
 import { VenmoOneTimePaymentButton } from "./VenmoOneTimePaymentButton";
 import { useVenmoOneTimePaymentSession } from "../hooks/useVenmoOneTimePaymentSession";
-import { isServer } from "../utils";
+import { usePayPal } from "../hooks/usePayPal";
 
 jest.mock("../hooks/useVenmoOneTimePaymentSession", () => ({
     useVenmoOneTimePaymentSession: jest.fn(),
 }));
-jest.mock("../utils", () => ({
-    isServer: jest.fn().mockReturnValue(false),
+jest.mock("../hooks/usePayPal", () => ({
+    usePayPal: jest.fn(),
 }));
 
 describe("VenmoOneTimePaymentButton", () => {
     const mockHandleClick = jest.fn();
     const mockUseVenmoOneTimePaymentSession =
         useVenmoOneTimePaymentSession as jest.Mock;
-    const mockIsServer = isServer as jest.Mock;
+    const mockUsePayPal = usePayPal as jest.Mock;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -25,10 +25,12 @@ describe("VenmoOneTimePaymentButton", () => {
             isPending: false,
             handleClick: mockHandleClick,
         });
-        mockIsServer.mockReturnValue(false);
+        mockUsePayPal.mockReturnValue({
+            isHydrated: true,
+        });
     });
 
-    it("should render venmo-button when not on server side", () => {
+    it("should render venmo-button when hydrated", () => {
         const { container } = render(
             <VenmoOneTimePaymentButton
                 onApprove={() => Promise.resolve()}
@@ -39,8 +41,10 @@ describe("VenmoOneTimePaymentButton", () => {
         expect(container.querySelector("venmo-button")).toBeInTheDocument();
     });
 
-    it("should render a div when on server side", () => {
-        mockIsServer.mockReturnValue(true);
+    it("should render a div when not hydrated", () => {
+        mockUsePayPal.mockReturnValue({
+            isHydrated: false,
+        });
         const { container } = render(
             <VenmoOneTimePaymentButton
                 onApprove={() => Promise.resolve()}

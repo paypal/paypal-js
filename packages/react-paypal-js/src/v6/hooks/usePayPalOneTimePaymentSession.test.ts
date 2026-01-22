@@ -45,6 +45,7 @@ describe("usePayPalOneTimePaymentSession", () => {
             loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
             eligiblePaymentMethods: null,
             error: null,
+            isHydrated: true,
         });
     });
 
@@ -59,6 +60,7 @@ describe("usePayPalOneTimePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: UsePayPalOneTimePaymentSessionProps = {
@@ -89,6 +91,7 @@ describe("usePayPalOneTimePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.PENDING,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: UsePayPalOneTimePaymentSessionProps = {
@@ -116,6 +119,7 @@ describe("usePayPalOneTimePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: UsePayPalOneTimePaymentSessionProps = {
@@ -140,6 +144,7 @@ describe("usePayPalOneTimePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             rerender();
@@ -159,6 +164,7 @@ describe("usePayPalOneTimePaymentSession", () => {
                     loadingStatus,
                     eligiblePaymentMethods: null,
                     error: null,
+                    isHydrated: true,
                 });
 
                 const props: UsePayPalOneTimePaymentSessionProps = {
@@ -331,6 +337,7 @@ describe("usePayPalOneTimePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             rerender();
@@ -497,6 +504,7 @@ describe("usePayPalOneTimePaymentSession", () => {
                     loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                     eligiblePaymentMethods: null,
                     error: null,
+                    isHydrated: true,
                 });
             }
         });

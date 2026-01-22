@@ -51,6 +51,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
             loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
             eligiblePaymentMethods: null,
             error: null,
+            isHydrated: true,
         });
     });
 
@@ -65,6 +66,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: PayPalCreditSavePaymentSessionProps = {
@@ -95,6 +97,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.PENDING,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: PayPalCreditSavePaymentSessionProps = {
@@ -121,6 +124,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: PayPalCreditSavePaymentSessionProps = {
@@ -144,6 +148,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             rerender();
@@ -163,6 +168,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                     loadingStatus,
                     eligiblePaymentMethods: null,
                     error: null,
+                    isHydrated: true,
                 });
 
                 const props: PayPalCreditSavePaymentSessionProps = {
@@ -333,6 +339,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             rerender();
@@ -384,6 +391,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: PayPalCreditSavePaymentSessionProps = {
@@ -411,6 +419,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: PayPalCreditSavePaymentSessionProps = {
@@ -438,6 +447,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: PayPalCreditSavePaymentSessionProps = {
@@ -480,6 +490,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: PayPalCreditSavePaymentSessionProps = {
@@ -624,6 +635,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                     loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                     eligiblePaymentMethods: null,
                     error: null,
+                    isHydrated: true,
                 });
             }
         });

@@ -54,6 +54,7 @@ describe("usePayPalMessages", () => {
             loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
             eligiblePaymentMethods: null,
             error: null,
+            isHydrated: true,
         });
     });
 
@@ -68,6 +69,7 @@ describe("usePayPalMessages", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: PayPalMessagesOptions = {
@@ -202,6 +204,7 @@ describe("usePayPalMessages", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             rerender();
@@ -274,6 +277,7 @@ describe("usePayPalMessages", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.PENDING,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: PayPalMessagesOptions = {
@@ -412,6 +416,7 @@ describe("usePayPalMessages", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.PENDING,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: PayPalMessagesOptions = {

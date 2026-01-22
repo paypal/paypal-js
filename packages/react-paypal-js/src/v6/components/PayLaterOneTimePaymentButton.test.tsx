@@ -4,7 +4,6 @@ import { render, fireEvent } from "@testing-library/react";
 import { PayLaterOneTimePaymentButton } from "./PayLaterOneTimePaymentButton";
 import { usePayLaterOneTimePaymentSession } from "../hooks/usePayLaterOneTimePaymentSession";
 import { usePayPal } from "../hooks/usePayPal";
-import { isServer } from "../utils";
 
 jest.mock("../hooks/usePayLaterOneTimePaymentSession", () => ({
     usePayLaterOneTimePaymentSession: jest.fn(),
@@ -12,16 +11,12 @@ jest.mock("../hooks/usePayLaterOneTimePaymentSession", () => ({
 jest.mock("../hooks/usePayPal", () => ({
     usePayPal: jest.fn(),
 }));
-jest.mock("../utils", () => ({
-    isServer: jest.fn().mockReturnValue(false),
-}));
 
 describe("PayLaterOneTimePaymentButton", () => {
     const mockHandleClick = jest.fn();
     const mockUsePayLaterOneTimePaymentSession =
         usePayLaterOneTimePaymentSession as jest.Mock;
     const mockUsePayPal = usePayPal as jest.Mock;
-    const mockIsServer = isServer as jest.Mock;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -32,11 +27,11 @@ describe("PayLaterOneTimePaymentButton", () => {
         });
         mockUsePayPal.mockReturnValue({
             eligiblePaymentMethods: null,
+            isHydrated: true,
         });
-        mockIsServer.mockReturnValue(false);
     });
 
-    it("should render paypal-pay-later-button when not on server side", () => {
+    it("should render paypal-pay-later-button when hydrated", () => {
         const { container } = render(
             <PayLaterOneTimePaymentButton
                 onApprove={() => Promise.resolve()}
@@ -49,8 +44,11 @@ describe("PayLaterOneTimePaymentButton", () => {
         ).toBeInTheDocument();
     });
 
-    it("should render a div when on server side", () => {
-        mockIsServer.mockReturnValue(true);
+    it("should render a div when not hydrated", () => {
+        mockUsePayPal.mockReturnValue({
+            eligiblePaymentMethods: null,
+            isHydrated: false,
+        });
         const { container } = render(
             <PayLaterOneTimePaymentButton
                 onApprove={() => Promise.resolve()}
@@ -165,6 +163,7 @@ describe("PayLaterOneTimePaymentButton", () => {
     describe("auto-population from eligibility context", () => {
         it("should auto-populate countryCode and productCode from eligibility context", () => {
             mockUsePayPal.mockReturnValue({
+                isHydrated: true,
                 eligiblePaymentMethods: {
                     isEligible: jest.fn().mockReturnValue(true),
                     getDetails: jest.fn().mockReturnValue({
@@ -190,6 +189,7 @@ describe("PayLaterOneTimePaymentButton", () => {
 
         it("should handle when eligibility was not fetched", () => {
             mockUsePayPal.mockReturnValue({
+                isHydrated: true,
                 eligiblePaymentMethods: null,
             });
 
@@ -208,6 +208,7 @@ describe("PayLaterOneTimePaymentButton", () => {
 
         it("should handle when PayLater details are not available", () => {
             mockUsePayPal.mockReturnValue({
+                isHydrated: true,
                 eligiblePaymentMethods: {
                     isEligible: jest.fn().mockReturnValue(false),
                     getDetails: jest.fn().mockReturnValue(undefined),

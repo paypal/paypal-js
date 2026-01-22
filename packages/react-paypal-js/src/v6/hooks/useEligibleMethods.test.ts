@@ -174,6 +174,7 @@ describe("useEligibleMethods", () => {
             eligiblePaymentMethods: null,
             loadingStatus: INSTANCE_LOADING_STATE.PENDING,
             error: null,
+            isHydrated: true,
             ...contextValue,
         };
 
@@ -241,6 +242,7 @@ describe("useEligibleMethods", () => {
             const { result } = renderHook(() => useEligibleMethods(), {
                 wrapper: createWrapper({
                     error: null,
+                    isHydrated: true,
                     loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 }),
             });
@@ -294,6 +296,7 @@ describe("useEligibleMethods", () => {
                     eligiblePaymentMethods: mockEligibility,
                     loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                     error: null,
+                    isHydrated: true,
                 }),
             });
 
@@ -310,6 +313,7 @@ describe("useEligibleMethods", () => {
                     eligiblePaymentMethods: null,
                     loadingStatus: INSTANCE_LOADING_STATE.PENDING,
                     error: null,
+                    isHydrated: true,
                 }),
             });
 

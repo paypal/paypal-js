@@ -50,6 +50,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
             loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
             eligiblePaymentMethods: null,
             error: null,
+            isHydrated: true,
         });
     });
 
@@ -64,6 +65,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: UsePayPalSubscriptionPaymentSessionProps = {
@@ -96,6 +98,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.PENDING,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: UsePayPalSubscriptionPaymentSessionProps = {
@@ -127,6 +130,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
                     loadingStatus,
                     eligiblePaymentMethods: null,
                     error: null,
+                    isHydrated: true,
                 });
 
                 const props: UsePayPalSubscriptionPaymentSessionProps = {
@@ -154,6 +158,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const props: UsePayPalSubscriptionPaymentSessionProps = {
@@ -179,6 +184,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             rerender();
@@ -274,6 +280,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             rerender();
@@ -454,6 +461,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
                     loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                     eligiblePaymentMethods: null,
                     error: null,
+                    isHydrated: true,
                 });
             }
         });
