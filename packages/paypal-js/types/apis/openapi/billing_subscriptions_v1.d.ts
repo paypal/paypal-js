@@ -1219,12 +1219,12 @@ export interface components {
              * Format: uri
              * @description The URL where the customer is redirected after the customer approves the payment.
              */
-            return_url: string;
+            return_url?: string;
             /**
              * Format: uri
              * @description The URL where the customer is redirected after the customer cancels the payment.
              */
-            cancel_url: string;
+            cancel_url?: string;
         };
         /**
          * Billing Cycle Override
