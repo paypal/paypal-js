@@ -1,205 +1,97 @@
-/**
- * V6-specific decorator that wraps stories with PayPalProvider
- * This ensures V6 stories are isolated from V5's PayPalScriptProvider
- *
- * @module PayPalProviderDecorator
- * @description Provides reusable decorators for Storybook v6 stories
- */
+import React, { useState, useEffect, type ReactElement } from "react";
 
-import React, { useMemo } from "react";
-import type { DecoratorFn, StoryContext } from "@storybook/react";
+import { PayPalProvider } from "../../../v6";
 
-// TODO: Import actual V6 PayPalProvider once available
-// import { PayPalProvider } from "../../../v6";
+const SAMPLE_INTEGRATION_API =
+    process.env.STORYBOOK_PAYPAL_API_URL || "http://localhost:8080";
 
-/**
- * Configuration options for PayPal Provider decorator
- */
-export interface PayPalProviderDecoratorOptions {
-    /** PayPal client ID for SDK initialization */
-    clientId?: string;
-    /** Environment to use (sandbox or production) */
-    environment?: "sandbox" | "production";
-    /** Container width in pixels */
-    containerWidth?: number;
-    /** Container min height in pixels */
-    containerMinHeight?: number;
-    /** Additional PayPal SDK options */
-    sdkOptions?: Record<string, unknown>;
-}
-
-/**
- * Props for the PayPal Provider wrapper component
- */
-interface PayPalProviderWrapperProps extends PayPalProviderDecoratorOptions {
-    children: React.ReactNode;
-}
-
-/**
- * Mock PayPalProvider for demonstration
- * Replace this with actual V6 PayPalProvider implementation
- *
- * @todo Replace with real PayPalProvider from v6 package
- */
-const MockPayPalProvider = ({
-    children,
-    clientId,
-    environment,
-    sdkOptions,
-}: {
-    clientId: string;
-    environment: string;
-    sdkOptions?: Record<string, unknown>;
-    children: React.ReactNode;
-}) => {
-    const contextValue = useMemo(
-        () => ({
-            clientId,
-            environment,
-            sdkOptions,
-            isReady: true, // Mock ready state
-        }),
-        [clientId, environment, sdkOptions],
+async function fetchClientToken(): Promise<string> {
+    const response = await fetch(
+        `${SAMPLE_INTEGRATION_API}/paypal-api/auth/browser-safe-client-token`,
     );
 
-    // TODO: Implement actual V6 provider logic
+    if (!response.ok) {
+        throw new Error(`Failed to fetch client token: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.accessToken;
+}
+
+function LoadingSpinner() {
     return (
-        <div
-            data-v6-provider="true"
-            data-client-id={clientId}
-            data-env={environment}
-            data-context={JSON.stringify(contextValue)}
-        >
-            {children}
+        <div style={{ padding: "40px", textAlign: "center", color: "#0070ba" }}>
+            <div
+                style={{
+                    display: "inline-block",
+                    width: "32px",
+                    height: "32px",
+                    border: "3px solid rgba(0, 112, 186, 0.2)",
+                    borderTopColor: "#0070ba",
+                    borderRadius: "50%",
+                    animation: "v6-spin 0.8s linear infinite",
+                }}
+            />
+            <p style={{ marginTop: "12px", fontSize: "14px" }}>
+                Loading PayPal SDK...
+            </p>
+            <style>{`@keyframes v6-spin { to { transform: rotate(360deg); } }`}</style>
         </div>
     );
-};
+}
 
-/**
- * Wrapper component that provides consistent styling and layout
- */
-const PayPalProviderWrapper = ({
-    children,
-    clientId = "test",
-    environment = "sandbox",
-    containerWidth = 750,
-    containerMinHeight = 200,
-    sdkOptions,
-}: PayPalProviderWrapperProps) => {
+function ErrorDisplay({ message }: { message: string }) {
     return (
         <div
-            className="storybook-paypal-container"
             style={{
-                maxWidth: `${containerWidth}px`,
-                minHeight: `${containerMinHeight}px`,
                 padding: "20px",
-                margin: "0 auto",
+                backgroundColor: "#fef3cd",
+                border: "1px solid #ffc107",
+                borderRadius: "4px",
+                color: "#856404",
             }}
         >
-            <MockPayPalProvider
-                clientId={clientId}
-                environment={environment}
-                sdkOptions={sdkOptions}
-            >
-                {children}
-            </MockPayPalProvider>
+            <strong>Failed to load PayPal SDK</strong>
+            <p style={{ margin: "8px 0", fontSize: "14px" }}>{message}</p>
+            <p style={{ margin: 0, fontSize: "12px", color: "#666" }}>
+                Ensure the sample integration server is running at{" "}
+                {SAMPLE_INTEGRATION_API}
+            </p>
         </div>
     );
-};
+}
 
-/**
- * Creates a decorator that wraps stories with V6 PayPalProvider
- *
- * @param defaultOptions - Default configuration options
- * @returns Storybook decorator function
- *
- * @example Basic usage
- * ```tsx
- * export default {
- *   title: "V6/Buttons/PayPal",
- *   decorators: [createPayPalProviderDecorator()],
- * } as Meta;
- * ```
- *
- * @example With custom options
- * ```tsx
- * export default {
- *   title: "V6/Buttons/PayPal",
- *   decorators: [
- *     createPayPalProviderDecorator({
- *       environment: "production",
- *       containerWidth: 500,
- *     })
- *   ],
- * } as Meta;
- * ```
- *
- * @example Story-level overrides via args
- * ```tsx
- * export const Sandbox: Story = {
- *   args: {
- *     clientId: "custom-client-id",
- *     environment: "sandbox",
- *   },
- * };
- * ```
- */
-export const createPayPalProviderDecorator = (
-    defaultOptions: Partial<PayPalProviderDecoratorOptions> = {},
-): DecoratorFn => {
-    return (Story, context: StoryContext) => {
-        // Merge default options, story parameters, and story args
-        const options: PayPalProviderDecoratorOptions = {
-            ...defaultOptions,
-            ...context.parameters?.paypalProvider,
-            // Story args take highest priority for runtime control
-            ...(context.args?.clientId && { clientId: context.args.clientId }),
-            ...(context.args?.environment && {
-                environment: context.args.environment,
-            }),
-            ...(context.args?.containerWidth && {
-                containerWidth: context.args.containerWidth,
-            }),
-        };
+function ProviderWrapper({ children }: { children: React.ReactNode }) {
+    const [clientToken, setClientToken] = useState<string>();
+    const [error, setError] = useState<Error>();
 
-        return (
-            <PayPalProviderWrapper {...options}>
-                <Story />
-            </PayPalProviderWrapper>
-        );
-    };
-};
+    useEffect(() => {
+        fetchClientToken().then(setClientToken).catch(setError);
+    }, []);
 
-/**
- * Default V6 decorator with standard sandbox configuration
- * Use this for most PayPal component stories
- *
- * @example
- * ```tsx
- * import { withPayPalProvider } from "../decorators";
- *
- * export default {
- *   title: "V6/Buttons/PayPalButton",
- *   component: PayPalButton,
- *   decorators: [withPayPalProvider],
- * } as Meta<typeof PayPalButton>;
- * ```
- */
-export const withPayPalProvider = createPayPalProviderDecorator();
+    if (error) {
+        return <ErrorDisplay message={error.message} />;
+    }
 
-/**
- * Production environment decorator
- * Use for testing production-specific behavior
- */
-export const withPayPalProviderProduction = createPayPalProviderDecorator({
-    environment: "production",
-});
+    if (!clientToken) {
+        return <LoadingSpinner />;
+    }
 
-/**
- * Compact container decorator for small components
- * Useful for marks, badges, or small UI elements
- */
-export const withPayPalProviderCompact = createPayPalProviderDecorator({
-    containerWidth: 400,
-    containerMinHeight: 100,
-});
+    return (
+        <PayPalProvider
+            clientToken={clientToken}
+            components={["paypal-payments"]}
+            pageType="checkout"
+        >
+            {children}
+        </PayPalProvider>
+    );
+}
+
+export function withPayPalProvider(Story: () => ReactElement): ReactElement {
+    return (
+        <ProviderWrapper>
+            <Story />
+        </ProviderWrapper>
+    );
+}
