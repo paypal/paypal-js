@@ -6,7 +6,7 @@ import { usePayPal } from "./usePayPal";
 import { useProxyProps } from "../utils";
 import { INSTANCE_LOADING_STATE, type SavePaymentSession } from "../types";
 
-import type { PayPalCreditSavePaymentSessionProps } from "./usePayPalCreditSavePaymentSession";
+import type { UsePayPalCreditSavePaymentSessionProps } from "./usePayPalCreditSavePaymentSession";
 
 jest.mock("./usePayPal");
 
@@ -69,7 +69,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 isHydrated: true,
             });
 
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -100,7 +100,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 isHydrated: true,
             });
 
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -127,7 +127,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 isHydrated: true,
             });
 
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -171,7 +171,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                     isHydrated: true,
                 });
 
-                const props: PayPalCreditSavePaymentSessionProps = {
+                const props: UsePayPalCreditSavePaymentSessionProps = {
                     presentationMode: "popup",
                     vaultSetupToken: "test-vault-token",
                     onApprove: jest.fn(),
@@ -190,7 +190,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
             const onCancel = jest.fn();
             const onError = jest.fn();
 
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove,
@@ -232,7 +232,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
             const onCancel = jest.fn();
             const onError = jest.fn();
 
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 createVaultToken: mockCreateVaultToken,
                 onApprove,
@@ -267,7 +267,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
 
     describe("session lifecycle", () => {
         test("should destroy session on unmount", () => {
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -316,7 +316,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
         });
 
         test("should destroy the previous session when the hook re-runs with a new sdkInstance", () => {
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -394,7 +394,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 isHydrated: true,
             });
 
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "redirect",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -422,7 +422,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 isHydrated: true,
             });
 
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "direct-app-switch",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -450,7 +450,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 isHydrated: true,
             });
 
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "redirect",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -465,7 +465,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
         });
 
         test("should NOT check hasReturned when presentationMode is popup", () => {
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -493,7 +493,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 isHydrated: true,
             });
 
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "redirect",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -510,7 +510,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
 
     describe("handleClick", () => {
         test("should provide a click handler that calls session start with presentation mode", async () => {
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -540,7 +540,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
                     Promise.resolve({ vaultSetupToken: "created-vault-token" }),
                 );
 
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 createVaultToken: mockCreateVaultToken,
                 onApprove: jest.fn(),
@@ -568,7 +568,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
         });
 
         test("should do nothing if the click handler is called and there is no session", async () => {
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -604,7 +604,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
             ] as const;
 
             for (const mode of presentationModes) {
-                const props: PayPalCreditSavePaymentSessionProps = {
+                const props: UsePayPalCreditSavePaymentSessionProps = {
                     presentationMode: mode,
                     vaultSetupToken: "test-vault-token",
                     onApprove: jest.fn(),
@@ -641,7 +641,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
         });
 
         test("should pass autoRedirect option when specified", async () => {
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "redirect",
                 vaultSetupToken: "test-vault-token",
                 autoRedirect: { enabled: true },
@@ -664,7 +664,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
         });
 
         test("should pass fullPageOverlay option when specified", async () => {
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 fullPageOverlay: { enabled: true },
@@ -689,7 +689,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
 
     describe("handleCancel", () => {
         test("should provide a cancel handler that cancels the session", () => {
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -709,7 +709,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
         });
 
         test("should not throw error when session is not available", () => {
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -733,7 +733,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
 
     describe("handleDestroy", () => {
         test("should provide a destroy handler that destroys the session", () => {
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -753,7 +753,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
         });
 
         test("should not throw error when session is not available", () => {
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),
@@ -775,7 +775,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
         });
 
         test("should handle manually destroyed session gracefully", async () => {
-            const props: PayPalCreditSavePaymentSessionProps = {
+            const props: UsePayPalCreditSavePaymentSessionProps = {
                 presentationMode: "popup",
                 vaultSetupToken: "test-vault-token",
                 onApprove: jest.fn(),

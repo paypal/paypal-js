@@ -3,12 +3,13 @@ import React, { useEffect } from "react";
 import { usePayLaterOneTimePaymentSession } from "../hooks/usePayLaterOneTimePaymentSession";
 import { usePayPal } from "../hooks/usePayPal";
 
-import type { PayLaterOneTimePaymentSessionProps } from "../hooks/usePayLaterOneTimePaymentSession";
+import type { UsePayLaterOneTimePaymentSessionProps } from "../hooks/usePayLaterOneTimePaymentSession";
 
-type PayLaterOneTimePaymentButtonProps = PayLaterOneTimePaymentSessionProps & {
-    autoRedirect?: never;
-    disabled?: boolean;
-};
+type PayLaterOneTimePaymentButtonProps =
+    UsePayLaterOneTimePaymentSessionProps & {
+        autoRedirect?: never;
+        disabled?: boolean;
+    };
 
 /**
  * `PayLaterOneTimePaymentButton` is a button that provides a PayLater payment flow.
