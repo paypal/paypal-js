@@ -2,7 +2,11 @@ import { renderHook, act } from "@testing-library/react-hooks";
 
 import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import { usePayPalSubscriptionPaymentSession } from "./usePayPalSubscriptionPaymentSession";
-import { usePayPal } from "./usePayPal";
+import {
+    mockPayPalContext,
+    mockPayPalRejected,
+    mockPayPalPending,
+} from "./usePayPalTestUtils";
 import { useProxyProps } from "../utils";
 import {
     INSTANCE_LOADING_STATE,
@@ -17,7 +21,6 @@ jest.mock("../utils", () => ({
     useProxyProps: jest.fn(),
 }));
 
-const mockUsePayPal = usePayPal as jest.MockedFunction<typeof usePayPal>;
 const mockUseProxyProps = useProxyProps as jest.MockedFunction<
     typeof useProxyProps
 >;
@@ -44,14 +47,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
         mockPayPalSession = createMockPayPalSession();
         mockSdkInstance = createMockSdkInstance(mockPayPalSession);
 
-        mockUsePayPal.mockReturnValue({
-            // @ts-expect-error mocking sdk instance
-            sdkInstance: mockSdkInstance,
-            loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
-            eligiblePaymentMethods: null,
-            error: null,
-            isHydrated: true,
-        });
+        mockPayPalContext({ sdkInstance: mockSdkInstance });
     });
 
     afterEach(() => {
@@ -60,13 +56,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
 
     describe("initialization", () => {
         test("should not create session when no SDK instance is available", () => {
-            mockUsePayPal.mockReturnValue({
-                sdkInstance: null,
-                loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
-                eligiblePaymentMethods: null,
-                error: null,
-                isHydrated: true,
-            });
+            mockPayPalRejected();
 
             const props: UsePayPalSubscriptionPaymentSessionProps = {
                 presentationMode: "popup",
@@ -93,13 +83,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
         });
 
         test("should not error if there is no sdkInstance but loading is still pending", () => {
-            mockUsePayPal.mockReturnValue({
-                sdkInstance: null,
-                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
-                eligiblePaymentMethods: null,
-                error: null,
-                isHydrated: true,
-            });
+            mockPayPalPending();
 
             const props: UsePayPalSubscriptionPaymentSessionProps = {
                 presentationMode: "popup",
@@ -125,13 +109,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
         ])(
             "should return isPending as %s when loadingStatus is %s",
             (loadingStatus, expectedIsPending) => {
-                mockUsePayPal.mockReturnValue({
-                    sdkInstance: null,
-                    loadingStatus,
-                    eligiblePaymentMethods: null,
-                    error: null,
-                    isHydrated: true,
-                });
+                mockPayPalContext({ loadingStatus });
 
                 const props: UsePayPalSubscriptionPaymentSessionProps = {
                     presentationMode: "popup",
@@ -153,13 +131,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
             const mockSession = createMockPayPalSession();
             const mockSdkInstanceNew = createMockSdkInstance(mockSession);
 
-            mockUsePayPal.mockReturnValue({
-                sdkInstance: null,
-                loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
-                eligiblePaymentMethods: null,
-                error: null,
-                isHydrated: true,
-            });
+            mockPayPalRejected();
 
             const props: UsePayPalSubscriptionPaymentSessionProps = {
                 presentationMode: "popup",
@@ -178,14 +150,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
                 new Error("no sdk instance available"),
             );
 
-            mockUsePayPal.mockReturnValue({
-                // @ts-expect-error mocking sdk instance
-                sdkInstance: mockSdkInstanceNew,
-                loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
-                eligiblePaymentMethods: null,
-                error: null,
-                isHydrated: true,
-            });
+            mockPayPalContext({ sdkInstance: mockSdkInstanceNew });
 
             rerender();
 
@@ -274,14 +239,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
             const newMockSession = createMockPayPalSession();
             const newMockSdkInstance = createMockSdkInstance(newMockSession);
 
-            mockUsePayPal.mockReturnValue({
-                // @ts-expect-error mocking sdk instance
-                sdkInstance: newMockSdkInstance,
-                loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
-                eligiblePaymentMethods: null,
-                error: null,
-                isHydrated: true,
-            });
+            mockPayPalContext({ sdkInstance: newMockSdkInstance });
 
             rerender();
 
@@ -455,14 +413,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
                 jest.clearAllMocks();
                 mockPayPalSession = createMockPayPalSession();
                 mockSdkInstance = createMockSdkInstance(mockPayPalSession);
-                mockUsePayPal.mockReturnValue({
-                    // @ts-expect-error mocking sdk instance
-                    sdkInstance: mockSdkInstance,
-                    loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
-                    eligiblePaymentMethods: null,
-                    error: null,
-                    isHydrated: true,
-                });
+                mockPayPalContext({ sdkInstance: mockSdkInstance });
             }
         });
 
