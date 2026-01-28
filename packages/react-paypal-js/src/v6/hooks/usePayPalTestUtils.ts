@@ -7,7 +7,7 @@ import type { PayPalState } from "../context/PayPalProviderContext";
  * Gets the mocked usePayPal function.
  * IMPORTANT: The calling test file must have `jest.mock("./usePayPal")` at the top.
  */
-export const getMockUsePayPal = () =>
+export const getMockUsePayPal = (): jest.MockedFunction<typeof usePayPal> =>
     usePayPal as jest.MockedFunction<typeof usePayPal>;
 
 // Default resolved state - most common test scenario
@@ -52,17 +52,17 @@ export function mockPayPalContext(
 }
 
 // Pre-built common scenarios
-export const mockPayPalPending = () =>
+export const mockPayPalPending = (): void =>
     mockPayPalContext({
         loadingStatus: INSTANCE_LOADING_STATE.PENDING,
     });
 
-export const mockPayPalRejected = () =>
+export const mockPayPalRejected = (): void =>
     mockPayPalContext({
         loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
     });
 
-export const mockPayPalNotHydrated = () =>
+export const mockPayPalNotHydrated = (): void =>
     mockPayPalContext({
         isHydrated: false,
     });
