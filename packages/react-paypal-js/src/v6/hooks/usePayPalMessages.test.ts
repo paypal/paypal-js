@@ -2,8 +2,11 @@ import { renderHook, act } from "@testing-library/react-hooks";
 
 import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import { usePayPalMessages } from "./usePayPalMessages";
-import { usePayPal } from "./usePayPal";
-import { INSTANCE_LOADING_STATE } from "../types";
+import {
+    mockPayPalContext,
+    mockPayPalRejected,
+    mockPayPalPending,
+} from "./usePayPalTestUtils";
 
 import type {
     PayPalMessagesSession,
@@ -14,8 +17,6 @@ import type {
 } from "../types";
 
 jest.mock("./usePayPal");
-
-const mockUsePayPal = usePayPal as jest.MockedFunction<typeof usePayPal>;
 
 const createMockPayPalMessagesSession = (): PayPalMessagesSession => ({
     fetchContent: jest.fn().mockResolvedValue({
@@ -48,13 +49,7 @@ describe("usePayPalMessages", () => {
         mockMessagesSession = createMockPayPalMessagesSession();
         mockSdkInstance = createMockSdkInstance(mockMessagesSession);
 
-        mockUsePayPal.mockReturnValue({
-            // @ts-expect-error mocking sdk instance
-            sdkInstance: mockSdkInstance,
-            loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
-            eligiblePaymentMethods: null,
-            error: null,
-        });
+        mockPayPalContext({ sdkInstance: mockSdkInstance });
     });
 
     afterEach(() => {
@@ -63,12 +58,7 @@ describe("usePayPalMessages", () => {
 
     describe("initialization", () => {
         test("should error if there is no sdkInstance when called", () => {
-            mockUsePayPal.mockReturnValue({
-                sdkInstance: null,
-                loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
-                eligiblePaymentMethods: null,
-                error: null,
-            });
+            mockPayPalRejected();
 
             const props: PayPalMessagesOptions = {
                 buyerCountry: "US",
@@ -196,13 +186,7 @@ describe("usePayPalMessages", () => {
             const newMockSession = createMockPayPalMessagesSession();
             const newMockSdkInstance = createMockSdkInstance(newMockSession);
 
-            mockUsePayPal.mockReturnValue({
-                // @ts-expect-error mocking sdk instance
-                sdkInstance: newMockSdkInstance,
-                loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
-                eligiblePaymentMethods: null,
-                error: null,
-            });
+            mockPayPalContext({ sdkInstance: newMockSdkInstance });
 
             rerender();
 
@@ -269,12 +253,7 @@ describe("usePayPalMessages", () => {
         });
 
         test("should set error when session is not available", async () => {
-            mockUsePayPal.mockReturnValue({
-                sdkInstance: null,
-                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
-                eligiblePaymentMethods: null,
-                error: null,
-            });
+            mockPayPalPending();
 
             const props: PayPalMessagesOptions = {
                 buyerCountry: "US",
@@ -407,12 +386,7 @@ describe("usePayPalMessages", () => {
         });
 
         test("should set error when session is not available", () => {
-            mockUsePayPal.mockReturnValue({
-                sdkInstance: null,
-                loadingStatus: INSTANCE_LOADING_STATE.PENDING,
-                eligiblePaymentMethods: null,
-                error: null,
-            });
+            mockPayPalPending();
 
             const props: PayPalMessagesOptions = {
                 buyerCountry: "US",

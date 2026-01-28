@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import { useVenmoOneTimePaymentSession } from "../hooks/useVenmoOneTimePaymentSession";
-import { isServer } from "../utils";
+import { usePayPal } from "../hooks/usePayPal";
 
 import type { ButtonProps } from "../types";
 import type { UseVenmoOneTimePaymentSessionProps } from "../hooks/useVenmoOneTimePaymentSession";
@@ -33,7 +33,7 @@ export const VenmoOneTimePaymentButton = ({
 }: VenmoOneTimePaymentButtonProps): JSX.Element | null => {
     const { error, isPending, handleClick } =
         useVenmoOneTimePaymentSession(hookProps);
-    const isServerSide = isServer();
+    const { isHydrated } = usePayPal();
 
     useEffect(() => {
         if (error) {
@@ -41,9 +41,7 @@ export const VenmoOneTimePaymentButton = ({
         }
     }, [error]);
 
-    return isServerSide ? (
-        <div />
-    ) : (
+    return isHydrated ? (
         <venmo-button
             onClick={handleClick}
             type={type}
@@ -51,5 +49,7 @@ export const VenmoOneTimePaymentButton = ({
                 disabled || isPending || error !== null ? true : undefined
             }
         ></venmo-button>
+    ) : (
+        <div />
     );
 };

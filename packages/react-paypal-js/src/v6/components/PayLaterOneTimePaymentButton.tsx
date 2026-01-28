@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 
 import { usePayLaterOneTimePaymentSession } from "../hooks/usePayLaterOneTimePaymentSession";
 import { usePayPal } from "../hooks/usePayPal";
-import { isServer } from "../utils";
 
 import type { UsePayLaterOneTimePaymentSessionProps } from "../hooks/usePayLaterOneTimePaymentSession";
 
@@ -36,10 +35,9 @@ export const PayLaterOneTimePaymentButton = ({
     disabled = false,
     ...hookProps
 }: PayLaterOneTimePaymentButtonProps): JSX.Element | null => {
-    const { eligiblePaymentMethods } = usePayPal();
+    const { eligiblePaymentMethods, isHydrated } = usePayPal();
     const { error, isPending, handleClick } =
         usePayLaterOneTimePaymentSession(hookProps);
-    const isServerSide = isServer();
 
     const payLaterDetails = eligiblePaymentMethods?.getDetails("paylater");
     const countryCode = payLaterDetails?.countryCode;
@@ -55,14 +53,14 @@ export const PayLaterOneTimePaymentButton = ({
         return null;
     }
 
-    return isServerSide ? (
-        <div />
-    ) : (
+    return isHydrated ? (
         <paypal-pay-later-button
             onClick={handleClick}
             countryCode={countryCode}
             productCode={productCode}
             disabled={disabled || !!error || undefined}
         ></paypal-pay-later-button>
+    ) : (
+        <div />
     );
 };

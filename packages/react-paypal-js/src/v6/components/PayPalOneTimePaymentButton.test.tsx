@@ -3,20 +3,20 @@ import { render, fireEvent } from "@testing-library/react";
 
 import { PayPalOneTimePaymentButton } from "./PayPalOneTimePaymentButton";
 import { usePayPalOneTimePaymentSession } from "../hooks/usePayPalOneTimePaymentSession";
-import { isServer } from "../utils";
+import { usePayPal } from "../hooks/usePayPal";
 
 jest.mock("../hooks/usePayPalOneTimePaymentSession", () => ({
     usePayPalOneTimePaymentSession: jest.fn(),
 }));
-jest.mock("../utils", () => ({
-    isServer: jest.fn().mockReturnValue(false),
+jest.mock("../hooks/usePayPal", () => ({
+    usePayPal: jest.fn(),
 }));
 
 describe("PayPalOneTimePaymentButton", () => {
     const mockHandleClick = jest.fn();
     const mockUsePayPalOneTimePaymentSession =
         usePayPalOneTimePaymentSession as jest.Mock;
-    const mockIsServer = isServer as jest.Mock;
+    const mockUsePayPal = usePayPal as jest.Mock;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -25,10 +25,12 @@ describe("PayPalOneTimePaymentButton", () => {
             isPending: false,
             handleClick: mockHandleClick,
         });
-        mockIsServer.mockReturnValue(false);
+        mockUsePayPal.mockReturnValue({
+            isHydrated: true,
+        });
     });
 
-    it("should render paypal-button when not on server side", () => {
+    it("should render paypal-button when hydrated", () => {
         const { container } = render(
             <PayPalOneTimePaymentButton
                 onApprove={() => Promise.resolve()}
@@ -39,8 +41,10 @@ describe("PayPalOneTimePaymentButton", () => {
         expect(container.querySelector("paypal-button")).toBeInTheDocument();
     });
 
-    it("should return null when on server side", () => {
-        mockIsServer.mockReturnValue(true);
+    it("should render a div when not hydrated", () => {
+        mockUsePayPal.mockReturnValue({
+            isHydrated: false,
+        });
         const { container } = render(
             <PayPalOneTimePaymentButton
                 onApprove={() => Promise.resolve()}
@@ -51,6 +55,7 @@ describe("PayPalOneTimePaymentButton", () => {
         expect(
             container.querySelector("paypal-button"),
         ).not.toBeInTheDocument();
+        expect(container.querySelector("div")).toBeInTheDocument();
     });
 
     it("should call handleClick when button is clicked", () => {

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import { usePayPalGuestPaymentSession } from "../hooks/usePayPalGuestPaymentSession";
-import { isServer } from "../utils";
+import { usePayPal } from "../hooks/usePayPal";
 
 import type { UsePayPalGuestPaymentSessionProps } from "../hooks/usePayPalGuestPaymentSession";
 
@@ -28,7 +28,7 @@ export const PayPalGuestPaymentButton = ({
 }: PayPalGuestPaymentButtonProps): JSX.Element | null => {
     const { error, isPending, handleClick, buttonRef } =
         usePayPalGuestPaymentSession(hookProps);
-    const isServerSide = isServer();
+    const { isHydrated } = usePayPal();
 
     useEffect(() => {
         if (error) {
@@ -36,9 +36,7 @@ export const PayPalGuestPaymentButton = ({
         }
     }, [error]);
 
-    return isServerSide ? (
-        <div />
-    ) : (
+    return isHydrated ? (
         <paypal-basic-card-button
             ref={buttonRef}
             onClick={handleClick}
@@ -46,5 +44,7 @@ export const PayPalGuestPaymentButton = ({
                 disabled || isPending || error !== null ? true : undefined
             }
         ></paypal-basic-card-button>
+    ) : (
+        <div />
     );
 };
