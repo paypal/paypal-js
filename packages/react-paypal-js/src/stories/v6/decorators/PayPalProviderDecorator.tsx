@@ -3,7 +3,8 @@ import React, { useState, useEffect, type ReactElement } from "react";
 import { PayPalProvider } from "../../../v6";
 
 const SAMPLE_INTEGRATION_API =
-    process.env.STORYBOOK_PAYPAL_API_URL || "http://localhost:8080";
+    process.env.STORYBOOK_PAYPAL_API_URL ||
+    "https://v6-web-sdk-sample-integration-server.fly.dev";
 
 async function fetchClientToken(): Promise<string> {
     const response = await fetch(

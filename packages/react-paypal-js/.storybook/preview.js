@@ -3,6 +3,14 @@ export const parameters = {
     options: {
         storySort: {
             order: [
+                "V6",
+                [
+                    "Buttons",
+                    [
+                        "PayPalOneTimePaymentButton",
+                        "PayLaterOneTimePaymentButton",
+                    ],
+                ],
                 "PayPal",
                 [
                     "PayPalButtons",
