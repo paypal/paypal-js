@@ -15,7 +15,7 @@ const SAMPLE_INTEGRATION_API =
 
 async function createOrder(): Promise<{ orderId: string }> {
     const response = await fetch(
-        `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/create-with-sample-data`,
+        `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/create-order-for-one-time-payment`,
         { method: "POST" },
     );
     const data = await response.json();
@@ -64,16 +64,21 @@ export const Disabled: Story = {
     },
 };
 
-export const PopupMode: Story = {
+export const PopupWithOverlay: Story = {
+    name: "Popup with Overlay",
     args: {
         ...Default.args,
         presentationMode: "popup",
     },
 };
 
-export const FullPageOverlay: Story = {
+export const PopupWithoutOverlay: Story = {
+    name: "Popup without Overlay",
     args: {
         ...Default.args,
-        fullPageOverlay: true,
+        presentationMode: "popup",
+        fullPageOverlay: {
+            enabled: false,
+        },
     },
 };

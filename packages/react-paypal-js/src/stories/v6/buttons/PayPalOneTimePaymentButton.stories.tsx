@@ -15,7 +15,7 @@ const SAMPLE_INTEGRATION_API =
 
 async function createOrder(): Promise<{ orderId: string }> {
     const response = await fetch(
-        `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/create-with-sample-data`,
+        `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/create-order-for-one-time-payment`,
         { method: "POST" },
     );
     const data = await response.json();
