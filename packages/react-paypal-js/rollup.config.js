@@ -3,6 +3,7 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 import terser from "@rollup/plugin-terser";
 import cleanup from "rollup-plugin-cleanup";
+import { preserveDirectives } from "rollup-preserve-directives";
 
 import pkg from "./package.json";
 
@@ -101,6 +102,7 @@ export default [
                 outputToFilesystem: true,
             }),
             nodeResolve(),
+            preserveDirectives(),
             cleanup({
                 comments: "none",
             }),
