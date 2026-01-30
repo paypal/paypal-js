@@ -95,13 +95,14 @@ export default [
         ],
     },
 
-    // V6 ESM
+    // V6 ESM with preserveModules for per-file "use client" directives
     {
         input: "src/v6/index.ts",
         plugins: [
             typescript({
                 tsconfig: "./tsconfig.v6.json",
                 outputToFilesystem: true,
+                outDir: "./dist/v6/esm",
             }),
             nodeResolve(),
             preserveDirectives(),
@@ -109,24 +110,17 @@ export default [
                 comments: "none",
             }),
         ],
-        external: ["react"],
+        external: ["react", /^@paypal\/paypal-js/],
         output: [
             {
-                file: `dist/v6/esm/${pkgName}.js`,
+                dir: "dist/v6/esm",
                 format: "esm",
+                preserveModules: true,
+                preserveModulesRoot: "src/v6",
                 globals: {
                     react: "React",
                 },
                 plugins: [getBabelOutputPlugin()],
-                banner,
-            },
-            {
-                file: `dist/v6/esm/${pkgName}.min.js`,
-                format: "esm",
-                globals: {
-                    react: "React",
-                },
-                plugins: [getBabelOutputPlugin(), terser()],
                 banner,
             },
         ],
