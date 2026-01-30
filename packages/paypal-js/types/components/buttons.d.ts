@@ -52,6 +52,7 @@ export type OnApproveData = {
     paymentID?: string | null;
     subscriptionID?: string | null;
     authCode?: string | null;
+    vaultSetupToken?: string;
 };
 
 export type OnApproveActions = {
