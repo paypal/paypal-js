@@ -1,3 +1,5 @@
+"use client";
+
 import { usePayPal } from "../hooks/usePayPal";
 import {
     INSTANCE_LOADING_STATE,
