@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect } from "react";
 
 import { useVenmoOneTimePaymentSession } from "../hooks/useVenmoOneTimePaymentSession";

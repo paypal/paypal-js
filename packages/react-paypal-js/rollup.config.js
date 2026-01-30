@@ -3,7 +3,7 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 import terser from "@rollup/plugin-terser";
 import cleanup from "rollup-plugin-cleanup";
-import { preserveDirectives } from "rollup-preserve-directives";
+import preserveDirectivesModule from "rollup-preserve-directives";
 
 import pkg from "./package.json";
 
@@ -14,6 +14,8 @@ const tsconfigOverride = {
     outDir: "./dist",
     target: "es5",
 };
+const preserveDirectives =
+    preserveDirectivesModule.default || preserveDirectivesModule;
 
 export default [
     // CommonJS
