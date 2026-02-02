@@ -4,7 +4,13 @@ Storybook stories for the V6 PayPal SDK components.
 
 ## Setup
 
-Start the sample integration server at `http://localhost:8080` (or set `STORYBOOK_PAYPAL_API_URL`).
+Run command
+
+```bash
+npm run storybook
+```
+
+at `paypal-js/packages/react-paypal-js`
 
 ## Structure
 
