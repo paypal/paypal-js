@@ -3,20 +3,20 @@ import { render, fireEvent } from "@testing-library/react";
 
 import { PayPalSavePaymentButton } from "./PayPalSavePaymentButton";
 import { usePayPalSavePaymentSession } from "../hooks/usePayPalSavePaymentSession";
-import { isServer } from "../utils";
+import { usePayPal } from "../hooks/usePayPal";
 
 jest.mock("../hooks/usePayPalSavePaymentSession", () => ({
     usePayPalSavePaymentSession: jest.fn(),
 }));
-jest.mock("../utils", () => ({
-    isServer: jest.fn().mockReturnValue(false),
+jest.mock("../hooks/usePayPal", () => ({
+    usePayPal: jest.fn(),
 }));
 
 describe("PayPalSavePaymentButton", () => {
     const mockHandleClick = jest.fn();
     const mockUsePayPalSavePaymentSession =
         usePayPalSavePaymentSession as jest.Mock;
-    const mockIsServer = isServer as jest.Mock;
+    const mockUsePayPal = usePayPal as jest.Mock;
 
     const defaultProps = {
         vaultSetupToken: "test-vault-token",
@@ -31,24 +31,29 @@ describe("PayPalSavePaymentButton", () => {
             isPending: false,
             handleClick: mockHandleClick,
         });
-        mockIsServer.mockReturnValue(false);
+        mockUsePayPal.mockReturnValue({
+            isHydrated: true,
+        });
     });
 
-    it("should render paypal-button when not on server side", () => {
+    it("should render paypal-button when hydrated", () => {
         const { container } = render(
             <PayPalSavePaymentButton {...defaultProps} />,
         );
         expect(container.querySelector("paypal-button")).toBeInTheDocument();
     });
 
-    it("should return div when on server side", () => {
-        mockIsServer.mockReturnValue(true);
+    it("should render a div when not hydrated", () => {
+        mockUsePayPal.mockReturnValue({
+            isHydrated: false,
+        });
         const { container } = render(
             <PayPalSavePaymentButton {...defaultProps} />,
         );
         expect(
             container.querySelector("paypal-button"),
         ).not.toBeInTheDocument();
+        expect(container.querySelector("div")).toBeInTheDocument();
     });
 
     it("should call handleClick when button is clicked", () => {

@@ -955,6 +955,7 @@ function setupTestComponent() {
         sdkInstance: null,
         eligiblePaymentMethods: null,
         error: null,
+        isHydrated: false,
     };
 
     function TestComponent({

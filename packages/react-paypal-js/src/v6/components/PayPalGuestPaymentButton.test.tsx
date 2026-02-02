@@ -3,13 +3,13 @@ import { render, fireEvent } from "@testing-library/react";
 
 import { PayPalGuestPaymentButton } from "./PayPalGuestPaymentButton";
 import { usePayPalGuestPaymentSession } from "../hooks/usePayPalGuestPaymentSession";
-import { isServer } from "../utils";
+import { usePayPal } from "../hooks/usePayPal";
 
 jest.mock("../hooks/usePayPalGuestPaymentSession", () => ({
     usePayPalGuestPaymentSession: jest.fn(),
 }));
-jest.mock("../utils", () => ({
-    isServer: jest.fn().mockReturnValue(false),
+jest.mock("../hooks/usePayPal", () => ({
+    usePayPal: jest.fn(),
 }));
 
 describe("PayPalGuestPaymentButton", () => {
@@ -17,7 +17,7 @@ describe("PayPalGuestPaymentButton", () => {
     const mockButtonRef = { current: null };
     const mockUsePayPalGuestPaymentSession =
         usePayPalGuestPaymentSession as jest.Mock;
-    const mockIsServer = isServer as jest.Mock;
+    const mockUsePayPal = usePayPal as jest.Mock;
 
     const defaultProps = {
         orderId: "test-order-id",
@@ -34,10 +34,12 @@ describe("PayPalGuestPaymentButton", () => {
             handleCancel: jest.fn(),
             handleDestroy: jest.fn(),
         });
-        mockIsServer.mockReturnValue(false);
+        mockUsePayPal.mockReturnValue({
+            isHydrated: true,
+        });
     });
 
-    it("should render paypal-basic-card-button when not on server side", () => {
+    it("should render paypal-basic-card-button when hydrated", () => {
         const { container } = render(
             <PayPalGuestPaymentButton {...defaultProps} />,
         );
@@ -46,14 +48,17 @@ describe("PayPalGuestPaymentButton", () => {
         ).toBeInTheDocument();
     });
 
-    it("should return div when on server side", () => {
-        mockIsServer.mockReturnValue(true);
+    it("should render a div when not hydrated", () => {
+        mockUsePayPal.mockReturnValue({
+            isHydrated: false,
+        });
         const { container } = render(
             <PayPalGuestPaymentButton {...defaultProps} />,
         );
         expect(
             container.querySelector("paypal-basic-card-button"),
         ).not.toBeInTheDocument();
+        expect(container.querySelector("div")).toBeInTheDocument();
     });
 
     it("should call handleClick when button is clicked", () => {

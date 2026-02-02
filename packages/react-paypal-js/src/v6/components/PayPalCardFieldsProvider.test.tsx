@@ -103,6 +103,7 @@ describe("PayPalCardFieldsProvider", () => {
             loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
             eligiblePaymentMethods: null,
             error: null,
+            isHydrated: true,
         });
     });
 
@@ -117,6 +118,7 @@ describe("PayPalCardFieldsProvider", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.PENDING,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const { result } = renderCardFieldsProvider();
@@ -132,6 +134,7 @@ describe("PayPalCardFieldsProvider", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const { result } = renderCardFieldsProvider();
@@ -150,6 +153,7 @@ describe("PayPalCardFieldsProvider", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             const { result, rerender } = renderCardFieldsProvider();
@@ -167,6 +171,7 @@ describe("PayPalCardFieldsProvider", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             rerender();
@@ -285,6 +290,7 @@ describe("PayPalCardFieldsProvider", () => {
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 eligiblePaymentMethods: null,
                 error: null,
+                isHydrated: true,
             });
 
             rerender();

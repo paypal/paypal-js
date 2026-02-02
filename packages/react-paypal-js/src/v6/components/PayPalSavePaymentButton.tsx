@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import { usePayPalSavePaymentSession } from "../hooks/usePayPalSavePaymentSession";
-import { isServer } from "../utils";
+import { usePayPal } from "../hooks/usePayPal";
 
 import type { ButtonProps } from "../types";
 import type { UsePayPalSavePaymentSessionProps } from "../hooks/usePayPalSavePaymentSession";
@@ -38,7 +38,7 @@ export const PayPalSavePaymentButton = ({
 }: PayPalSavePaymentButtonProps): JSX.Element | null => {
     const { error, isPending, handleClick } =
         usePayPalSavePaymentSession(hookProps);
-    const isServerSide = isServer();
+    const { isHydrated } = usePayPal();
 
     useEffect(() => {
         if (error) {
@@ -46,9 +46,7 @@ export const PayPalSavePaymentButton = ({
         }
     }, [error]);
 
-    return isServerSide ? (
-        <div />
-    ) : (
+    return isHydrated ? (
         <paypal-button
             type={type}
             disabled={
@@ -56,5 +54,7 @@ export const PayPalSavePaymentButton = ({
             }
             onClick={handleClick}
         ></paypal-button>
+    ) : (
+        <div />
     );
 };

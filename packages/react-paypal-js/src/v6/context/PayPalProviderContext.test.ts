@@ -52,6 +52,7 @@ function createInitialState(): PayPalState {
         eligiblePaymentMethods: null,
         loadingStatus: INSTANCE_LOADING_STATE.PENDING,
         error: null,
+        isHydrated: true,
     };
 }
 
