@@ -1,10 +1,7 @@
 import React, { useState, useEffect, type ReactElement } from "react";
 
 import { PayPalProvider } from "../../../v6";
-
-const SAMPLE_INTEGRATION_API =
-    process.env.STORYBOOK_PAYPAL_API_URL ||
-    "https://v6-web-sdk-sample-integration-server.fly.dev";
+import { SAMPLE_INTEGRATION_API } from "../shared/api";
 
 async function fetchClientToken(): Promise<string> {
     const response = await fetch(
@@ -81,7 +78,11 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
     return (
         <PayPalProvider
             clientToken={clientToken}
-            components={["paypal-payments"]}
+            components={[
+                "paypal-payments",
+                "venmo-payments",
+                "paypal-guest-payments",
+            ]}
             pageType="checkout"
         >
             {children}

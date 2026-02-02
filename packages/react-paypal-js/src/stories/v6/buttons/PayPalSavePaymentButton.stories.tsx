@@ -1,17 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { PayPalOneTimePaymentButton } from "../../../v6";
+import { PayPalSavePaymentButton } from "../../../v6";
 import {
-    createOrder,
-    oneTimePaymentCallbacks,
+    createVaultToken,
+    savePaymentCallbacks,
     buttonTypeArgType,
     presentationModeArgType,
     disabledArgType,
 } from "../shared/api";
 
-const meta: Meta<typeof PayPalOneTimePaymentButton> = {
-    title: "V6/Buttons/PayPalOneTimePaymentButton",
-    component: PayPalOneTimePaymentButton,
+const meta: Meta<typeof PayPalSavePaymentButton> = {
+    title: "V6/Buttons/PayPalSavePaymentButton",
+    component: PayPalSavePaymentButton,
     argTypes: {
         type: buttonTypeArgType,
         presentationMode: presentationModeArgType,
@@ -21,12 +21,12 @@ const meta: Meta<typeof PayPalOneTimePaymentButton> = {
 
 export default meta;
 
-type Story = StoryObj<typeof PayPalOneTimePaymentButton>;
+type Story = StoryObj<typeof PayPalSavePaymentButton>;
 
 export const Default: Story = {
     args: {
-        createOrder,
+        createVaultToken,
         presentationMode: "auto",
-        ...oneTimePaymentCallbacks,
+        ...savePaymentCallbacks,
     },
 };

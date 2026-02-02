@@ -1,27 +1,27 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import { PayPalOneTimePaymentButton } from "../../../v6";
+import { VenmoOneTimePaymentButton } from "../../../v6";
 import {
     createOrder,
     oneTimePaymentCallbacks,
     buttonTypeArgType,
-    presentationModeArgType,
+    venmoPresentationModeArgType,
     disabledArgType,
 } from "../shared/api";
 
-const meta: Meta<typeof PayPalOneTimePaymentButton> = {
-    title: "V6/Buttons/PayPalOneTimePaymentButton",
-    component: PayPalOneTimePaymentButton,
+const meta: Meta<typeof VenmoOneTimePaymentButton> = {
+    title: "V6/Buttons/VenmoOneTimePaymentButton",
+    component: VenmoOneTimePaymentButton,
     argTypes: {
         type: buttonTypeArgType,
-        presentationMode: presentationModeArgType,
+        presentationMode: venmoPresentationModeArgType,
         disabled: disabledArgType,
     },
 };
 
 export default meta;
 
-type Story = StoryObj<typeof PayPalOneTimePaymentButton>;
+type Story = StoryObj<typeof VenmoOneTimePaymentButton>;
 
 export const Default: Story = {
     args: {
