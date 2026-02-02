@@ -119,7 +119,7 @@ The `PayPalProvider` component is the entry point for the V6 SDK. It handles loa
 | `pageType`                | `string`                    | Yes      | Type of page: `"checkout"`, `"product"`, `"cart"`, etc.      |
 | `locale`                  | `string`                    | No       | Locale for the SDK (e.g., `"en_US"`).                        |
 | `environment`             | `"sandbox" \| "production"` | No       | SDK environment.                                             |
-| `eligibleMethodsResponse` | `object`                    | No       | Pre-fetched eligibility response for SSR optimization.       |
+| `eligibleMethodsResponse` | `object`                    | No       | Server-fetched eligibility response for SDK hydration.       |
 
 ### Available Components
 
