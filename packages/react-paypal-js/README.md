@@ -505,10 +505,12 @@ function CustomGuestButton() {
     });
 
     return (
-        <paypal-basic-card-button
-            ref={buttonRef}
-            onClick={() => handleClick()}
-        />
+        <paypal-basic-card-container>
+            <paypal-basic-card-button
+                ref={buttonRef}
+                onClick={() => handleClick()}
+            />
+        </paypal-basic-card-container>
     );
 }
 ```
