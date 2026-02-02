@@ -495,7 +495,7 @@ function CustomPayLaterButton() {
 ```tsx
 import { usePayPalGuestPaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
-function CustomGuestButton() {
+function CustomPayPalGuestButton() {
     const { handleClick, buttonRef } = usePayPalGuestPaymentSession({
         createOrder: async () => {
             const { orderId } = await createOrder();
@@ -520,7 +520,7 @@ function CustomGuestButton() {
 ```tsx
 import { usePayPalSavePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
-function CustomSaveButton() {
+function CustomPayPalSaveButton() {
     const { handleClick } = usePayPalSavePaymentSession({
         createVaultToken: async () => {
             const { vaultSetupToken } = await createVaultToken();
@@ -539,7 +539,7 @@ function CustomSaveButton() {
 ```tsx
 import { usePayPalSubscriptionPaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
-function CustomSubscriptionButton() {
+function CustomPayPalSubscriptionButton() {
     const { handleClick } = usePayPalSubscriptionPaymentSession({
         createSubscription: async () => {
             const response = await fetch("/api/create-subscription", {
@@ -562,7 +562,7 @@ For PayPal Credit one-time payments.
 ```tsx
 import { usePayPalCreditOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
-function CustomCreditButton() {
+function CustomPayPalCreditButton() {
     const { handleClick } = usePayPalCreditOneTimePaymentSession({
         createOrder: async () => {
             const { orderId } = await createOrder();
@@ -582,7 +582,7 @@ For saving PayPal Credit as a payment method.
 ```tsx
 import { usePayPalCreditSavePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
-function CustomCreditButton() {
+function CustomPayPalCreditSaveButton() {
     const { handleClick } = usePayPalCreditSavePaymentSession({
         createVaultToken: async () => {
             const { vaultSetupToken } = await createVaultSetupToken();
