@@ -579,6 +579,22 @@ function CustomCreditButton() {
 
 For saving PayPal Credit as a payment method.
 
+```tsx
+import { usePayPalCreditSavePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomCreditButton() {
+    const { handleClick } = usePayPalCreditSavePaymentSession({
+        createVaultToken: async () => {
+            const { vaultSetupToken } = await createVaultSetupToken();
+            return { vaultSetupToken };
+        },
+        onApprove: (data) => console.log("Credit approved:", data),
+    });
+
+    return <paypal-credit-button onClick={() => handleClick()} />;
+}
+```
+
 ## Web Components
 
 The V6 SDK uses web components for rendering buttons. These are automatically typed when you import from `@paypal/react-paypal-js/sdk-v6`.
