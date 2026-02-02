@@ -1,7 +1,7 @@
 import React, { useState, useEffect, type ReactElement } from "react";
 
 import { PayPalProvider } from "../../../v6";
-import { SAMPLE_INTEGRATION_API } from "../shared/api";
+import { SAMPLE_INTEGRATION_API } from "../shared/utils";
 
 async function fetchClientToken(): Promise<string> {
     const response = await fetch(

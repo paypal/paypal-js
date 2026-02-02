@@ -6,7 +6,7 @@ import {
     oneTimePaymentCallbacks,
     presentationModeArgType,
     disabledArgType,
-} from "../shared/api";
+} from "../shared/utils";
 
 const meta: Meta<typeof PayLaterOneTimePaymentButton> = {
     title: "V6/Buttons/PayLaterOneTimePaymentButton",

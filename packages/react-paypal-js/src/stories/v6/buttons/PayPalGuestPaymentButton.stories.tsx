@@ -6,7 +6,7 @@ import {
     createOrder,
     oneTimePaymentCallbacks,
     disabledArgType,
-} from "../shared/api";
+} from "../shared/utils";
 
 const GuestPaymentButtonWithContainer = (
     props: React.ComponentProps<typeof PayPalGuestPaymentButton>,

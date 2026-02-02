@@ -7,7 +7,7 @@ import {
     buttonTypeArgType,
     venmoPresentationModeArgType,
     disabledArgType,
-} from "../shared/api";
+} from "../shared/utils";
 
 const meta: Meta<typeof VenmoOneTimePaymentButton> = {
     title: "V6/Buttons/VenmoOneTimePaymentButton",

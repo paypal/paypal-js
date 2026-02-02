@@ -7,7 +7,7 @@ import {
     buttonTypeArgType,
     presentationModeArgType,
     disabledArgType,
-} from "../shared/api";
+} from "../shared/utils";
 
 const meta: Meta<typeof PayPalSavePaymentButton> = {
     title: "V6/Buttons/PayPalSavePaymentButton",

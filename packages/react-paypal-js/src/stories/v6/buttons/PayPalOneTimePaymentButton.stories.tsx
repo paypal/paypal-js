@@ -7,7 +7,7 @@ import {
     buttonTypeArgType,
     presentationModeArgType,
     disabledArgType,
-} from "../shared/api";
+} from "../shared/utils";
 
 const meta: Meta<typeof PayPalOneTimePaymentButton> = {
     title: "V6/Buttons/PayPalOneTimePaymentButton",

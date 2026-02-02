@@ -20,9 +20,7 @@ export const SAMPLE_INTEGRATION_API =
     process.env.STORYBOOK_PAYPAL_API_URL ||
     "https://v6-web-sdk-sample-integration-server.fly.dev";
 
-// =============================================================================
 // One-Time Payment APIs
-// =============================================================================
 
 export async function createOrder(): Promise<{ orderId: string }> {
     const response = await fetch(
@@ -40,9 +38,7 @@ export async function captureOrder(orderId: string): Promise<void> {
     );
 }
 
-// =============================================================================
 // Vault/Save Payment APIs
-// =============================================================================
 
 export async function createVaultToken(): Promise<{ vaultSetupToken: string }> {
     const response = await fetch(
@@ -53,9 +49,7 @@ export async function createVaultToken(): Promise<{ vaultSetupToken: string }> {
     return { vaultSetupToken: data.id };
 }
 
-// =============================================================================
 // Shared Callbacks
-// =============================================================================
 
 export const oneTimePaymentCallbacks = {
     onApprove: async (data: OnApproveDataOneTimePayments) => {
@@ -83,9 +77,7 @@ export const savePaymentCallbacks = {
     },
 };
 
-// =============================================================================
 // Shared ArgTypes
-// =============================================================================
 
 export const BUTTON_TYPES = [
     "pay",
