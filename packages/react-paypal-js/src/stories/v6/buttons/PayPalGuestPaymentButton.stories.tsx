@@ -1,5 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import type { StoryFn } from "@storybook/react";
+import type { DocsContextProps } from "@storybook/addon-docs";
 
 import { PayPalGuestPaymentButton } from "../../../v6";
 import {
@@ -7,6 +9,8 @@ import {
     oneTimePaymentCallbacks,
     disabledArgType,
 } from "../shared/utils";
+import V6DocPageStructure from "../../components/V6DocPageStructure";
+import { getPayPalGuestPaymentButtonCode } from "../shared/code";
 
 const GuestPaymentButtonWithContainer = (
     props: React.ComponentProps<typeof PayPalGuestPaymentButton>,
@@ -19,16 +23,38 @@ const GuestPaymentButtonWithContainer = (
 const meta: Meta<typeof PayPalGuestPaymentButton> = {
     title: "V6/Buttons/PayPalGuestPaymentButton",
     component: GuestPaymentButtonWithContainer,
-    argTypes: {
-        disabled: disabledArgType,
-    },
     parameters: {
+        controls: { expanded: true },
         docs: {
             description: {
-                component:
-                    "Guest checkout button for credit/debit card payments without a PayPal account. " +
-                    "Uses a fixed 'auto' presentation mode.",
+                component: `Guest checkout button for credit/debit card payments without a PayPal account.
+
+This button enables customers to pay with credit or debit cards without creating a PayPal account.
+
+It relies on the \`<PayPalProvider />\` parent component for managing SDK initialization and state.
+For more information, see [PayPal Basic Card Checkout](https://docs.paypal.ai/payments/methods/cards/standalone-payment-button)
+`,
             },
+        },
+    },
+    argTypes: {
+        disabled: disabledArgType,
+        createOrder: {
+            description:
+                "Function that creates an order and returns the order ID.",
+            table: { category: "Events" },
+        },
+        onApprove: {
+            description: "Called when the buyer approves the payment.",
+            table: { category: "Events" },
+        },
+        onCancel: {
+            description: "Called when the buyer cancels the payment.",
+            table: { category: "Events" },
+        },
+        onError: {
+            description: "Called when an error occurs during the payment flow.",
+            table: { category: "Events" },
         },
     },
 };
@@ -41,5 +67,16 @@ export const Default: Story = {
     args: {
         createOrder,
         ...oneTimePaymentCallbacks,
+    },
+};
+
+(Default as StoryFn).parameters = {
+    docs: {
+        container: ({ context }: { context: DocsContextProps }) => (
+            <V6DocPageStructure
+                context={context}
+                code={getPayPalGuestPaymentButtonCode()}
+            />
+        ),
     },
 };
