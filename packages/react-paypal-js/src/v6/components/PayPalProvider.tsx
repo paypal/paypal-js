@@ -265,36 +265,22 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             return;
         }
 
-        let isSubscribed = true;
-
-        const setEligibility = async () => {
-            try {
-                const eligiblePaymentMethods = eligibleMethodsResponse
-                    ? sdkInstance.hydrateEligibleMethods(
-                          eligibleMethodsResponse,
-                      )
-                    : await sdkInstance.findEligibleMethods({});
-
+        try {
+            if (eligibleMethodsResponse) {
+                const eligiblePaymentMethods =
+                    sdkInstance.hydrateEligibleMethods(eligibleMethodsResponse);
                 dispatch({
                     type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
                     value: eligiblePaymentMethods,
                 });
-            } catch (error) {
-                if (isSubscribed) {
-                    setError(error);
-                    dispatch({
-                        type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                        value: toError(error),
-                    });
-                }
             }
-        };
-
-        setEligibility();
-
-        return () => {
-            isSubscribed = false;
-        };
+        } catch (error) {
+            setError(error);
+            dispatch({
+                type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
+                value: toError(error),
+            });
+        }
     }, [state.sdkInstance, eligibleMethodsResponse, setError]);
 
     const contextValue: PayPalState = useMemo(
