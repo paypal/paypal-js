@@ -17,7 +17,6 @@ export interface PayPalState {
     loadingStatus: INSTANCE_LOADING_STATE;
     error: Error | null;
     isHydrated: boolean;
-    setEligibility: (eligibility: EligiblePaymentMethodsOutput) => void;
 }
 
 export type InstanceAction =
@@ -44,7 +43,6 @@ export const initialState: PayPalState = {
     loadingStatus: INSTANCE_LOADING_STATE.PENDING,
     error: null,
     isHydrated: false,
-    setEligibility: () => {},
 };
 
 export function instanceReducer(

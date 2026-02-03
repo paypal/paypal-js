@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 
 import { usePayPal } from "./usePayPal";
+import { usePayPalDispatch } from "./usePayPalDispatch";
 import {
+    INSTANCE_DISPATCH_ACTION,
     INSTANCE_LOADING_STATE,
     type Components,
     type EligiblePaymentMethods,
@@ -140,12 +142,8 @@ export function useFetchEligibleMethods(
     options: UseFetchEligibleMethodsOptions = {},
 ): UseFetchEligibleMethodsResult {
     const { payload } = options;
-    const {
-        sdkInstance,
-        loadingStatus,
-        eligiblePaymentMethods,
-        setEligibility,
-    } = usePayPal();
+    const { sdkInstance, loadingStatus, eligiblePaymentMethods } = usePayPal();
+    const dispatch = usePayPalDispatch();
     const [error, setError] = useError();
     const [isFetching, setIsFetching] = useState(false);
     const fetchedForInstanceRef = useRef<SdkInstance<
@@ -179,7 +177,10 @@ export function useFetchEligibleMethods(
             .findEligibleMethods(payload ?? {})
             .then((result) => {
                 if (isSubscribed) {
-                    setEligibility(result);
+                    dispatch({
+                        type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
+                        value: result,
+                    });
                 }
             })
             .catch((err) => {
@@ -196,13 +197,7 @@ export function useFetchEligibleMethods(
         return () => {
             isSubscribed = false;
         };
-    }, [
-        sdkInstance,
-        eligiblePaymentMethods,
-        payload,
-        setEligibility,
-        setError,
-    ]);
+    }, [sdkInstance, eligiblePaymentMethods, payload, dispatch, setError]);
 
     return {
         eligiblePaymentMethods,

@@ -1,11 +1,4 @@
-import React, {
-    useCallback,
-    useEffect,
-    useMemo,
-    useReducer,
-    useRef,
-    useState,
-} from "react";
+import React, { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
 import {
@@ -13,6 +6,7 @@ import {
     initialState,
     instanceReducer,
 } from "../context/PayPalProviderContext";
+import { PayPalDispatchContext } from "../context/PayPalDispatchContext";
 import { useIsomorphicLayoutEffect } from "../hooks/useIsomorphicLayoutEffect";
 import {
     INSTANCE_LOADING_STATE,
@@ -290,16 +284,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         }
     }, [state.sdkInstance, eligibleMethodsResponse, setError]);
 
-    const setEligibility = useCallback<PayPalState["setEligibility"]>(
-        (eligibility) => {
-            dispatch({
-                type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-                value: eligibility,
-            });
-        },
-        [],
-    );
-
     const contextValue: PayPalState = useMemo(
         () => ({
             sdkInstance: state.sdkInstance,
@@ -307,7 +291,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             error: state.error,
             loadingStatus: state.loadingStatus,
             isHydrated,
-            setEligibility,
         }),
         [
             state.sdkInstance,
@@ -315,13 +298,14 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             state.error,
             state.loadingStatus,
             isHydrated,
-            setEligibility,
         ],
     );
 
     return (
-        <PayPalContext.Provider value={contextValue}>
-            {children}
-        </PayPalContext.Provider>
+        <PayPalDispatchContext.Provider value={dispatch}>
+            <PayPalContext.Provider value={contextValue}>
+                {children}
+            </PayPalContext.Provider>
+        </PayPalDispatchContext.Provider>
     );
 };
