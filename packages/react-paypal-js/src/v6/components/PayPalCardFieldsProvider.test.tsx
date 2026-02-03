@@ -104,6 +104,7 @@ describe("PayPalCardFieldsProvider", () => {
             eligiblePaymentMethods: null,
             error: null,
             isHydrated: true,
+            setEligibility: jest.fn(),
         });
     });
 
@@ -119,6 +120,7 @@ describe("PayPalCardFieldsProvider", () => {
                 eligiblePaymentMethods: null,
                 error: null,
                 isHydrated: true,
+                setEligibility: jest.fn(),
             });
 
             const { result } = renderCardFieldsProvider();
@@ -135,6 +137,7 @@ describe("PayPalCardFieldsProvider", () => {
                 eligiblePaymentMethods: null,
                 error: null,
                 isHydrated: true,
+                setEligibility: jest.fn(),
             });
 
             const { result } = renderCardFieldsProvider();
@@ -154,6 +157,7 @@ describe("PayPalCardFieldsProvider", () => {
                 eligiblePaymentMethods: null,
                 error: null,
                 isHydrated: true,
+                setEligibility: jest.fn(),
             });
 
             const { result, rerender } = renderCardFieldsProvider();
@@ -172,6 +176,7 @@ describe("PayPalCardFieldsProvider", () => {
                 eligiblePaymentMethods: null,
                 error: null,
                 isHydrated: true,
+                setEligibility: jest.fn(),
             });
 
             rerender();
@@ -291,6 +296,7 @@ describe("PayPalCardFieldsProvider", () => {
                 eligiblePaymentMethods: null,
                 error: null,
                 isHydrated: true,
+                setEligibility: jest.fn(),
             });
 
             rerender();

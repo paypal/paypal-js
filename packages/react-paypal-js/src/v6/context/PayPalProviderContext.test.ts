@@ -53,6 +53,7 @@ function createInitialState(): PayPalState {
         loadingStatus: INSTANCE_LOADING_STATE.PENDING,
         error: null,
         isHydrated: true,
+        setEligibility: jest.fn(),
     };
 }
 
