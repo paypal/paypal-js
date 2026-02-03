@@ -1,4 +1,11 @@
-import React, { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useReducer,
+    useRef,
+    useState,
+} from "react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
 import {
@@ -283,6 +290,16 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         }
     }, [state.sdkInstance, eligibleMethodsResponse, setError]);
 
+    const setEligibility = useCallback<PayPalState["setEligibility"]>(
+        (eligibility) => {
+            dispatch({
+                type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
+                value: eligibility,
+            });
+        },
+        [],
+    );
+
     const contextValue: PayPalState = useMemo(
         () => ({
             sdkInstance: state.sdkInstance,
@@ -290,6 +307,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             error: state.error,
             loadingStatus: state.loadingStatus,
             isHydrated,
+            setEligibility,
         }),
         [
             state.sdkInstance,
@@ -297,6 +315,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             state.error,
             state.loadingStatus,
             isHydrated,
+            setEligibility,
         ],
     );
 
