@@ -964,7 +964,6 @@ function setupTestComponent() {
         eligiblePaymentMethods: null,
         error: null,
         isHydrated: false,
-        setEligibility: jest.fn(),
     };
 
     function TestComponent({
