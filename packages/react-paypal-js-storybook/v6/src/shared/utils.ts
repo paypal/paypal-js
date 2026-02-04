@@ -14,10 +14,10 @@ import type {
     OnCancelDataOneTimePayments,
     OnCancelDataSavePayments,
     OnErrorData,
-} from "../../../v6";
+} from "@paypal/react-paypal-js/sdk-v6";
 
 export const SAMPLE_INTEGRATION_API =
-    process.env.STORYBOOK_PAYPAL_API_URL ||
+    import.meta.env.STORYBOOK_PAYPAL_API_URL ||
     "https://v6-web-sdk-sample-integration-server.fly.dev";
 
 // One-Time Payment APIs

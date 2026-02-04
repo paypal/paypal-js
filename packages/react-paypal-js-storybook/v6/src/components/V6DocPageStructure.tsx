@@ -1,43 +1,37 @@
 import React from "react";
 import {
-    DocsContainer,
     Title,
     Subtitle,
     Description,
-    ArgsTable,
-    CURRENT_SELECTION,
+    ArgTypes,
     Source,
     Canvas,
-    Story,
-} from "@storybook/addon-docs";
-
-import type { DocsContextProps } from "@storybook/addon-docs/dist/ts3.9/blocks";
+    Primary,
+} from "@storybook/addon-docs/blocks";
 
 /**
  * Component for V6 documentation pages - shows live button preview and code example
- * Uses Storybook's Canvas and Story components instead of Sandpack
+ * Uses Storybook's Canvas and Primary components for Storybook 10.x
  *
- * @param param custom props and context
+ * @param param custom props
  * @returns an Element with the DocPage structure
  */
 const V6DocPageStructure = ({
-    context,
     code = "",
 }: {
-    context: DocsContextProps;
     code: string;
-}): JSX.Element => (
-    <DocsContainer context={context}>
+}): React.JSX.Element => (
+    <>
         <Title />
         <Subtitle />
         <Description />
         <Canvas>
-            <Story id={context.id} />
+            <Primary />
         </Canvas>
         <h3>Example Code</h3>
         <Source language="tsx" code={code} dark={false} />
-        <ArgsTable story={CURRENT_SELECTION} />
-    </DocsContainer>
+        <ArgTypes />
+    </>
 );
 
 export default V6DocPageStructure;

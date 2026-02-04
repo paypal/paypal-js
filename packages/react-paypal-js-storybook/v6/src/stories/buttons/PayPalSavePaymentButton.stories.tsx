@@ -1,18 +1,16 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import type { StoryFn } from "@storybook/react";
-import type { DocsContextProps } from "@storybook/addon-docs";
 
-import { PayPalSavePaymentButton } from "../../../v6";
+import { PayPalSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 import {
     createVaultToken,
     savePaymentCallbacks,
     buttonTypeArgType,
     presentationModeArgType,
     disabledArgType,
-} from "../shared/utils";
-import V6DocPageStructure from "../../components/V6DocPageStructure";
-import { getPayPalSavePaymentButtonCode } from "../shared/code";
+} from "../../shared/utils";
+import { V6DocPageStructure } from "../../components";
+import { getPayPalSavePaymentButtonCode } from "../../shared/code";
 
 const meta: Meta<typeof PayPalSavePaymentButton> = {
     title: "V6/Buttons/PayPalSavePaymentButton",
@@ -29,6 +27,9 @@ It relies on the \`<PayPalProvider />\` parent component for managing SDK initia
 For more information, see [PayPal Vaulting](https://docs.paypal.ai/payments/save/sdk/paypal/js-sdk-v6-vault)
 `,
             },
+            page: () => (
+                <V6DocPageStructure code={getPayPalSavePaymentButtonCode()} />
+            ),
         },
     },
     argTypes: {
@@ -66,16 +67,5 @@ export const Default: Story = {
         createVaultToken,
         presentationMode: "auto",
         ...savePaymentCallbacks,
-    },
-};
-
-(Default as StoryFn).parameters = {
-    docs: {
-        container: ({ context }: { context: DocsContextProps }) => (
-            <V6DocPageStructure
-                context={context}
-                code={getPayPalSavePaymentButtonCode()}
-            />
-        ),
     },
 };

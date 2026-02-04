@@ -1,0 +1,36 @@
+{
+    "name": "@paypal/react-paypal-js-storybook-v6",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Storybook for PayPal React SDK V6 components",
+    "scripts": {
+        "storybook": "NODE_PATH=./node_modules storybook dev -p 6006",
+        "build-storybook": "NODE_PATH=./node_modules storybook build -o ../../../docs/web-sdk-v6-react-storybook"
+    },
+    "keywords": [
+        "paypal",
+        "react",
+        "storybook",
+        "v6"
+    ],
+    "author": "PayPal",
+    "license": "Apache-2.0",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/paypal/paypal-js.git",
+        "directory": "packages/react-paypal-js-storybook/v6"
+    },
+    "dependencies": {
+        "@paypal/react-paypal-js": "*",
+        "react": "^19.2.4",
+        "react-dom": "^19.2.4"
+    },
+    "devDependencies": {
+        "@storybook/addon-docs": "^10.2.4",
+        "@storybook/react": "^10.2.4",
+        "@storybook/react-vite": "^10.2.4",
+        "storybook": "^10.2.4",
+        "typescript": "^5.9.3",
+        "vite": "^6.4.1"
+    }
+}

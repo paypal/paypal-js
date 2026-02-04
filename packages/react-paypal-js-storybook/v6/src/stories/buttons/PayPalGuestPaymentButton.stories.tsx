@@ -1,37 +1,44 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import type { StoryFn } from "@storybook/react";
-import type { DocsContextProps } from "@storybook/addon-docs";
 
-import { PayPalOneTimePaymentButton } from "../../../v6";
+import { PayPalGuestPaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 import {
     createOrder,
     oneTimePaymentCallbacks,
-    buttonTypeArgType,
-    presentationModeArgType,
     disabledArgType,
-} from "../shared/utils";
-import V6DocPageStructure from "../../components/V6DocPageStructure";
-import { getPayPalOneTimePaymentButtonCode } from "../shared/code";
+} from "../../shared/utils";
+import { V6DocPageStructure } from "../../components";
+import { getPayPalGuestPaymentButtonCode } from "../../shared/code";
 
-const meta: Meta<typeof PayPalOneTimePaymentButton> = {
-    title: "V6/Buttons/PayPalOneTimePaymentButton",
-    component: PayPalOneTimePaymentButton,
+const GuestPaymentButtonWithContainer = (
+    props: React.ComponentProps<typeof PayPalGuestPaymentButton>,
+) => (
+    <paypal-basic-card-container>
+        <PayPalGuestPaymentButton {...props} />
+    </paypal-basic-card-container>
+);
+
+const meta: Meta<typeof PayPalGuestPaymentButton> = {
+    title: "V6/Buttons/PayPalGuestPaymentButton",
+    component: GuestPaymentButtonWithContainer,
     parameters: {
         controls: { expanded: true },
         docs: {
             description: {
-                component: `PayPal one-time payment button for standard checkout flows.
+                component: `Guest checkout button for credit/debit card payments without a PayPal account.
+
+This button enables customers to pay with credit or debit cards without creating a PayPal account.
 
 It relies on the \`<PayPalProvider />\` parent component for managing SDK initialization and state.
-For more information, see [PayPal V6 Web SDK Documentation](https://docs.paypal.ai/payments/methods/paypal/sdk/js/v6/paypal-checkout)
+For more information, see [PayPal Basic Card Checkout](https://docs.paypal.ai/payments/methods/cards/standalone-payment-button)
 `,
             },
+            page: () => (
+                <V6DocPageStructure code={getPayPalGuestPaymentButtonCode()} />
+            ),
         },
     },
     argTypes: {
-        type: buttonTypeArgType,
-        presentationMode: presentationModeArgType,
         disabled: disabledArgType,
         createOrder: {
             description:
@@ -55,23 +62,11 @@ For more information, see [PayPal V6 Web SDK Documentation](https://docs.paypal.
 
 export default meta;
 
-type Story = StoryObj<typeof PayPalOneTimePaymentButton>;
+type Story = StoryObj<typeof PayPalGuestPaymentButton>;
 
 export const Default: Story = {
     args: {
         createOrder,
-        presentationMode: "auto",
         ...oneTimePaymentCallbacks,
-    },
-};
-
-(Default as StoryFn).parameters = {
-    docs: {
-        container: ({ context }: { context: DocsContextProps }) => (
-            <V6DocPageStructure
-                context={context}
-                code={getPayPalOneTimePaymentButtonCode()}
-            />
-        ),
     },
 };

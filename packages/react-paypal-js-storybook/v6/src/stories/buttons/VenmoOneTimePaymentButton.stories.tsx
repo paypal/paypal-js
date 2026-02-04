@@ -1,18 +1,16 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import type { StoryFn } from "@storybook/react";
-import type { DocsContextProps } from "@storybook/addon-docs";
 
-import { VenmoOneTimePaymentButton } from "../../../v6";
+import { VenmoOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 import {
     createOrder,
     oneTimePaymentCallbacks,
     buttonTypeArgType,
     venmoPresentationModeArgType,
     disabledArgType,
-} from "../shared/utils";
-import V6DocPageStructure from "../../components/V6DocPageStructure";
-import { getVenmoOneTimePaymentButtonCode } from "../shared/code";
+} from "../../shared/utils";
+import { V6DocPageStructure } from "../../components";
+import { getVenmoOneTimePaymentButtonCode } from "../../shared/code";
 
 const meta: Meta<typeof VenmoOneTimePaymentButton> = {
     title: "V6/Buttons/VenmoOneTimePaymentButton",
@@ -27,6 +25,9 @@ It relies on the \`<PayPalProvider />\` parent component for managing SDK initia
 For more information, see [Pay with Venmo](https://docs.paypal.ai/payments/methods/venmo/integrate)
 `,
             },
+            page: () => (
+                <V6DocPageStructure code={getVenmoOneTimePaymentButtonCode()} />
+            ),
         },
     },
     argTypes: {
@@ -62,16 +63,5 @@ export const Default: Story = {
         createOrder,
         presentationMode: "auto",
         ...oneTimePaymentCallbacks,
-    },
-};
-
-(Default as StoryFn).parameters = {
-    docs: {
-        container: ({ context }: { context: DocsContextProps }) => (
-            <V6DocPageStructure
-                context={context}
-                code={getVenmoOneTimePaymentButtonCode()}
-            />
-        ),
     },
 };

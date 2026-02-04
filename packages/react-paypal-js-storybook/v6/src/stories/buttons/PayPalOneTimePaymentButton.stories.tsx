@@ -1,36 +1,39 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import type { StoryFn } from "@storybook/react";
-import type { DocsContextProps } from "@storybook/addon-docs";
 
-import { PayLaterOneTimePaymentButton } from "../../../v6";
+import { PayPalOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 import {
     createOrder,
     oneTimePaymentCallbacks,
+    buttonTypeArgType,
     presentationModeArgType,
     disabledArgType,
-} from "../shared/utils";
-import V6DocPageStructure from "../../components/V6DocPageStructure";
-import { getPayLaterOneTimePaymentButtonCode } from "../shared/code";
+} from "../../shared/utils";
+import { V6DocPageStructure } from "../../components";
+import { getPayPalOneTimePaymentButtonCode } from "../../shared/code";
 
-const meta: Meta<typeof PayLaterOneTimePaymentButton> = {
-    title: "V6/Buttons/PayLaterOneTimePaymentButton",
-    component: PayLaterOneTimePaymentButton,
+const meta: Meta<typeof PayPalOneTimePaymentButton> = {
+    title: "V6/Buttons/PayPalOneTimePaymentButton",
+    component: PayPalOneTimePaymentButton,
     parameters: {
         controls: { expanded: true },
         docs: {
             description: {
-                component: `Pay Later button for buy now, pay later checkout flows.
-
-This button enables customers to pay over time using PayPal's Pay Later options, including Pay in 4 and Pay Monthly. It provides flexible payment options at no additional cost to merchants.
+                component: `PayPal one-time payment button for standard checkout flows.
 
 It relies on the \`<PayPalProvider />\` parent component for managing SDK initialization and state.
-For more information, see [PayPal Pay Later](https://docs.paypal.ai/payments/methods/pay-later/overview)
+For more information, see [PayPal V6 Web SDK Documentation](https://docs.paypal.ai/payments/methods/paypal/sdk/js/v6/paypal-checkout)
 `,
             },
+            page: () => (
+                <V6DocPageStructure
+                    code={getPayPalOneTimePaymentButtonCode()}
+                />
+            ),
         },
     },
     argTypes: {
+        type: buttonTypeArgType,
         presentationMode: presentationModeArgType,
         disabled: disabledArgType,
         createOrder: {
@@ -55,23 +58,12 @@ For more information, see [PayPal Pay Later](https://docs.paypal.ai/payments/met
 
 export default meta;
 
-type Story = StoryObj<typeof PayLaterOneTimePaymentButton>;
+type Story = StoryObj<typeof PayPalOneTimePaymentButton>;
 
 export const Default: Story = {
     args: {
         createOrder,
         presentationMode: "auto",
         ...oneTimePaymentCallbacks,
-    },
-};
-
-(Default as StoryFn).parameters = {
-    docs: {
-        container: ({ context }: { context: DocsContextProps }) => (
-            <V6DocPageStructure
-                context={context}
-                code={getPayLaterOneTimePaymentButtonCode()}
-            />
-        ),
     },
 };

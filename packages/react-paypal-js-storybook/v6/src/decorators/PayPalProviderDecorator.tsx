@@ -1,6 +1,7 @@
 import React, { useState, useEffect, type ReactElement } from "react";
+import type { Decorator } from "@storybook/react";
 
-import { PayPalProvider } from "../../../v6";
+import { PayPalProvider } from "@paypal/react-paypal-js/sdk-v6";
 import { SAMPLE_INTEGRATION_API } from "../shared/utils";
 
 async function fetchClientToken(): Promise<string> {
@@ -90,10 +91,10 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
     );
 }
 
-export function withPayPalProvider(Story: () => ReactElement): ReactElement {
+export const withPayPalProvider: Decorator = (Story) => {
     return (
         <ProviderWrapper>
             <Story />
         </ProviderWrapper>
     );
-}
+};
