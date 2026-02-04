@@ -50,6 +50,8 @@ export async function createVaultToken(): Promise<{ vaultSetupToken: string }> {
 }
 
 // Shared Callbacks
+// Note: onError is typed as 'unknown' to avoid intersection conflict between
+// PayPalError and HTMLButtonElement's onError (ReactEventHandler) in the component props
 
 export const oneTimePaymentCallbacks = {
     onApprove: async (data: OnApproveDataOneTimePayments) => {
@@ -60,8 +62,8 @@ export const oneTimePaymentCallbacks = {
     onCancel: (data: OnCancelDataOneTimePayments) => {
         console.log("Payment cancelled:", data);
     },
-    onError: (error: OnErrorData) => {
-        console.error("Payment error:", error);
+    onError: (error: unknown) => {
+        console.error("Payment error:", error as OnErrorData);
     },
 };
 
@@ -72,8 +74,8 @@ export const savePaymentCallbacks = {
     onCancel: (data: OnCancelDataSavePayments) => {
         console.log("Save payment cancelled:", data);
     },
-    onError: (error: OnErrorData) => {
-        console.error("Save payment error:", error);
+    onError: (error: unknown) => {
+        console.error("Save payment error:", error as OnErrorData);
     },
 };
 
@@ -88,24 +90,24 @@ export const BUTTON_TYPES = [
 ] as const;
 
 export const buttonTypeArgType = {
-    control: "select",
+    control: { type: "select" as const },
     options: BUTTON_TYPES,
     description: "Button label type",
 };
 
 export const presentationModeArgType = {
-    control: "select",
+    control: { type: "select" as const },
     options: ["auto", "popup", "modal", "redirect"],
     description: "How the checkout flow is presented",
 };
 
 export const venmoPresentationModeArgType = {
-    control: "select",
+    control: { type: "select" as const },
     options: ["auto", "popup", "modal"],
     description: "Venmo presentation mode (auto, popup, or modal only)",
 };
 
 export const disabledArgType = {
-    control: "boolean",
+    control: { type: "boolean" as const },
     description: "Disable the button",
 };

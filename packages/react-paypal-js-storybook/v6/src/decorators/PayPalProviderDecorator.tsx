@@ -1,4 +1,4 @@
-import React, { useState, useEffect, type ReactElement } from "react";
+import React, { useState, useEffect } from "react";
 import type { Decorator } from "@storybook/react";
 
 import { PayPalProvider } from "@paypal/react-paypal-js/sdk-v6";

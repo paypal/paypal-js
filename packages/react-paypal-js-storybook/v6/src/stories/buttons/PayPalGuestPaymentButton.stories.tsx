@@ -21,6 +21,7 @@ const GuestPaymentButtonWithContainer = (
 const meta: Meta<typeof PayPalGuestPaymentButton> = {
     title: "V6/Buttons/PayPalGuestPaymentButton",
     component: GuestPaymentButtonWithContainer,
+    tags: ["autodocs"],
     parameters: {
         controls: { expanded: true },
         docs: {

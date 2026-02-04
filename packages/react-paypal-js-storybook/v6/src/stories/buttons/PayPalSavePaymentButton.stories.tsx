@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { PayPalSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
@@ -15,6 +14,7 @@ import { getPayPalSavePaymentButtonCode } from "../../shared/code";
 const meta: Meta<typeof PayPalSavePaymentButton> = {
     title: "V6/Buttons/PayPalSavePaymentButton",
     component: PayPalSavePaymentButton,
+    tags: ["autodocs"],
     parameters: {
         controls: { expanded: true },
         docs: {

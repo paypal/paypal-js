@@ -1,4 +1,3 @@
-import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { VenmoOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
@@ -15,6 +14,7 @@ import { getVenmoOneTimePaymentButtonCode } from "../../shared/code";
 const meta: Meta<typeof VenmoOneTimePaymentButton> = {
     title: "V6/Buttons/VenmoOneTimePaymentButton",
     component: VenmoOneTimePaymentButton,
+    tags: ["autodocs"],
     parameters: {
         controls: { expanded: true },
         docs: {
