@@ -1,5 +1,5 @@
 import React from "react";
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook, act } from "@testing-library/react-hooks";
 
 import {
     useEligibleMethods,
@@ -7,7 +7,11 @@ import {
     type FindEligiblePaymentMethodsRequestPayload,
 } from "./useEligibleMethods";
 import { PayPalContext } from "../context/PayPalProviderContext";
-import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
+import { PayPalDispatchContext } from "../context/PayPalDispatchContext";
+import {
+    INSTANCE_DISPATCH_ACTION,
+    INSTANCE_LOADING_STATE,
+} from "../types/PayPalProviderEnums";
 
 import type { FindEligiblePaymentMethodsResponse } from "../types";
 import type { PayPalState } from "../context/PayPalProviderContext";
@@ -168,7 +172,10 @@ describe("fetchEligibleMethods", () => {
 
 describe("useEligibleMethods", () => {
     // Helper to create a wrapper with mocked context
-    function createWrapper(contextValue: Partial<PayPalState>) {
+    function createWrapper(
+        contextValue: Partial<PayPalState>,
+        dispatch: jest.Mock = jest.fn(),
+    ) {
         const fullContext: PayPalState = {
             sdkInstance: null,
             eligiblePaymentMethods: null,
@@ -180,9 +187,13 @@ describe("useEligibleMethods", () => {
 
         return function Wrapper({ children }: { children: React.ReactNode }) {
             return React.createElement(
-                PayPalContext.Provider,
-                { value: fullContext },
-                children,
+                PayPalDispatchContext.Provider,
+                { value: dispatch },
+                React.createElement(
+                    PayPalContext.Provider,
+                    { value: fullContext },
+                    children,
+                ),
             );
         };
     }
@@ -191,6 +202,7 @@ describe("useEligibleMethods", () => {
         test("should throw error when used outside of PayPalProvider", () => {
             const { result } = renderHook(() => useEligibleMethods());
 
+            // usePayPal throws first since it's called before usePayPalDispatch
             expect(result.error).toEqual(
                 new Error("usePayPal must be used within a PayPalProvider"),
             );
@@ -214,19 +226,21 @@ describe("useEligibleMethods", () => {
             );
         });
 
-        test("should return null for eligiblePaymentMethods when context has no eligibility data", () => {
+        test("should return null initially when no eligibility data and no sdkInstance to fetch with", () => {
             const { result } = renderHook(() => useEligibleMethods(), {
                 wrapper: createWrapper({
+                    sdkInstance: null,
                     eligiblePaymentMethods: null,
                     loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 }),
             });
 
+            // Returns null because no sdkInstance means no fetch can happen
             expect(result.current.eligiblePaymentMethods).toBe(null);
         });
 
-        test("should return error from context", () => {
-            const mockError = new Error("Test error");
+        test("should return wrapped context error when SDK fails to load", () => {
+            const mockError = new Error("SDK failed to load");
 
             const { result } = renderHook(() => useEligibleMethods(), {
                 wrapper: createWrapper({
@@ -235,7 +249,11 @@ describe("useEligibleMethods", () => {
                 }),
             });
 
-            expect(result.current.error).toBe(mockError);
+            // Context error is wrapped with a descriptive message and preserves original via cause
+            expect(result.current.error?.message).toBe(
+                "PayPal context error: SDK failed to load",
+            );
+            expect(result.current.error?.cause).toBe(mockError);
         });
 
         test("should return null for error when context has no error", () => {
@@ -252,27 +270,36 @@ describe("useEligibleMethods", () => {
     });
 
     describe("isLoading state", () => {
-        test("should return isLoading=true when loadingStatus is PENDING", () => {
+        test("should return isLoading=false initially when not fetching", () => {
             const { result } = renderHook(() => useEligibleMethods(), {
                 wrapper: createWrapper({
                     loadingStatus: INSTANCE_LOADING_STATE.PENDING,
                 }),
             });
 
-            expect(result.current.isLoading).toBe(true);
-        });
-
-        test("should return isLoading=false when loadingStatus is RESOLVED", () => {
-            const { result } = renderHook(() => useEligibleMethods(), {
-                wrapper: createWrapper({
-                    loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
-                }),
-            });
-
+            // isLoading reflects isFetching state, not loadingStatus
+            // Initially false because no fetch has started yet (no sdkInstance)
             expect(result.current.isLoading).toBe(false);
         });
 
-        test("should return isLoading=false when loadingStatus is REJECTED", () => {
+        test("should return isLoading=false when eligibility already in context", () => {
+            const mockEligibility = {
+                isEligible: jest.fn(),
+                getDetails: jest.fn(),
+            };
+
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                    eligiblePaymentMethods: mockEligibility,
+                }),
+            });
+
+            // No fetch needed, so isLoading is false
+            expect(result.current.isLoading).toBe(false);
+        });
+
+        test("should return isLoading=false when context has error", () => {
             const { result } = renderHook(() => useEligibleMethods(), {
                 wrapper: createWrapper({
                     loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
@@ -285,7 +312,7 @@ describe("useEligibleMethods", () => {
     });
 
     describe("complete return value structure", () => {
-        test("should return correct shape with all fields from context", () => {
+        test("should return correct shape with eligibility from context", () => {
             const mockEligibility = {
                 isEligible: jest.fn(),
                 getDetails: jest.fn(),
@@ -307,9 +334,10 @@ describe("useEligibleMethods", () => {
             });
         });
 
-        test("should return correct shape during loading state", () => {
+        test("should return correct shape when no eligibility and no sdkInstance", () => {
             const { result } = renderHook(() => useEligibleMethods(), {
                 wrapper: createWrapper({
+                    sdkInstance: null,
                     eligiblePaymentMethods: null,
                     loadingStatus: INSTANCE_LOADING_STATE.PENDING,
                     error: null,
@@ -317,29 +345,226 @@ describe("useEligibleMethods", () => {
                 }),
             });
 
+            // isLoading is false because no fetch has started (no sdkInstance)
             expect(result.current).toEqual({
                 eligiblePaymentMethods: null,
-                isLoading: true,
+                isLoading: false,
                 error: null,
             });
         });
 
         test("should return correct shape during error state", () => {
-            const mockError = new Error("SDK failed to load");
-
             const { result } = renderHook(() => useEligibleMethods(), {
                 wrapper: createWrapper({
                     eligiblePaymentMethods: null,
                     loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
-                    error: mockError,
                 }),
             });
 
+            // Error from hook's local state, not context
             expect(result.current).toEqual({
                 eligiblePaymentMethods: null,
                 isLoading: false,
-                error: mockError,
+                error: null,
             });
+        });
+    });
+
+    describe("fetch behavior", () => {
+        const mockEligibilityResult = {
+            isEligible: jest.fn(),
+            getDetails: jest.fn(),
+        };
+
+        function createMockSdkInstance(
+            findEligibleMethodsImpl: () => Promise<unknown> = () =>
+                Promise.resolve(mockEligibilityResult),
+        ) {
+            return {
+                findEligibleMethods: jest.fn(findEligibleMethodsImpl),
+            } as unknown as PayPalState["sdkInstance"];
+        }
+
+        test("should fetch eligibility when sdkInstance is available and no eligibility in context", async () => {
+            const mockDispatch = jest.fn();
+            const mockSdkInstance = createMockSdkInstance();
+
+            renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper(
+                    {
+                        sdkInstance: mockSdkInstance,
+                        eligiblePaymentMethods: null,
+                        loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                    },
+                    mockDispatch,
+                ),
+            });
+
+            // Wait for the effect to run
+            await act(async () => {
+                await Promise.resolve();
+            });
+
+            expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledWith(
+                {},
+            );
+            expect(mockDispatch).toHaveBeenCalledWith({
+                type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
+                value: mockEligibilityResult,
+            });
+        });
+
+        test("should NOT fetch when eligibility is already in context", async () => {
+            const mockDispatch = jest.fn();
+            const mockSdkInstance = createMockSdkInstance();
+
+            renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper(
+                    {
+                        sdkInstance: mockSdkInstance,
+                        eligiblePaymentMethods: mockEligibilityResult,
+                        loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                    },
+                    mockDispatch,
+                ),
+            });
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+
+            expect(mockSdkInstance!.findEligibleMethods).not.toHaveBeenCalled();
+            expect(mockDispatch).not.toHaveBeenCalled();
+        });
+
+        test("should NOT fetch when sdkInstance is null", async () => {
+            const mockDispatch = jest.fn();
+
+            renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper(
+                    {
+                        sdkInstance: null,
+                        eligiblePaymentMethods: null,
+                        loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+                    },
+                    mockDispatch,
+                ),
+            });
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+
+            expect(mockDispatch).not.toHaveBeenCalled();
+        });
+
+        test("should set isLoading=true while fetching and false after", async () => {
+            let resolvePromise: (value: unknown) => void;
+            const pendingPromise = new Promise((resolve) => {
+                resolvePromise = resolve;
+            });
+            const mockSdkInstance = createMockSdkInstance(
+                () => pendingPromise as Promise<unknown>,
+            );
+
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    sdkInstance: mockSdkInstance,
+                    eligiblePaymentMethods: null,
+                    loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                }),
+            });
+
+            // Effect runs synchronously, so isLoading is already true
+            expect(result.current.isLoading).toBe(true);
+
+            // After promise resolves, should be false
+            await act(async () => {
+                resolvePromise!(mockEligibilityResult);
+            });
+            expect(result.current.isLoading).toBe(false);
+        });
+
+        test("should set error when fetch fails", async () => {
+            const fetchError = new Error("Fetch failed");
+            const mockSdkInstance = createMockSdkInstance(() =>
+                Promise.reject(fetchError),
+            );
+
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    sdkInstance: mockSdkInstance,
+                    eligiblePaymentMethods: null,
+                    loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                }),
+            });
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+
+            expect(result.current.error).toBe(fetchError);
+            expect(result.current.isLoading).toBe(false);
+        });
+
+        test("should pass payload to findEligibleMethods", async () => {
+            const mockSdkInstance = createMockSdkInstance();
+            const testPayload = { currency: "USD" };
+
+            renderHook(
+                () => useEligibleMethods({ payload: testPayload as never }),
+                {
+                    wrapper: createWrapper({
+                        sdkInstance: mockSdkInstance,
+                        eligiblePaymentMethods: null,
+                        loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                    }),
+                },
+            );
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+
+            expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledWith(
+                testPayload,
+            );
+        });
+
+        test("should NOT fetch twice for the same sdkInstance", async () => {
+            const mockDispatch = jest.fn();
+            const mockSdkInstance = createMockSdkInstance();
+
+            const { rerender } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper(
+                    {
+                        sdkInstance: mockSdkInstance,
+                        eligiblePaymentMethods: null,
+                        loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                    },
+                    mockDispatch,
+                ),
+            });
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+
+            expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledTimes(
+                1,
+            );
+
+            // Rerender the hook
+            rerender();
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+
+            // Should still only be called once
+            expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledTimes(
+                1,
+            );
         });
     });
 });

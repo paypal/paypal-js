@@ -4,13 +4,13 @@ import { usePayPal } from "./usePayPal";
 import { usePayPalDispatch } from "./usePayPalDispatch";
 import {
     INSTANCE_DISPATCH_ACTION,
-    INSTANCE_LOADING_STATE,
     type Components,
     type EligiblePaymentMethods,
     type EligiblePaymentMethodsOutput,
     type FindEligibleMethodsOptions,
     type FindEligiblePaymentMethodsResponse,
     type SdkInstance,
+    // INSTANCE_LOADING_STATE,
 } from "../types";
 import { useError } from "./useError";
 
@@ -74,6 +74,30 @@ type FindEligiblePaymentMethodsOptions = {
     payload?: FindEligiblePaymentMethodsRequestPayload;
 };
 
+/**
+ * Server-side function to fetch eligible payment methods from the PayPal API.
+ *
+ * Use this in server environments (Next.js server components, Remix loaders, etc.)
+ * to pre-fetch eligibility data before hydrating the client. Pass the response
+ * to {@link PayPalProvider} via the `eligibleMethodsResponse` prop.
+ *
+ * @param options - Configuration for the eligibility request
+ * @param options.clientToken - Bearer token for API authentication
+ * @param options.environment - Target environment ("sandbox" or "production")
+ * @param options.payload - Optional request payload with customer/purchase details
+ * @param options.signal - Optional AbortSignal for request cancellation
+ * @returns Promise resolving to the eligibility API response
+ *
+ * @example
+ * // Next.js server component
+ * const response = await fetchEligibleMethods({
+ *     clientToken: token,
+ *     environment: "sandbox",
+ *     payload: { purchase_units: [{ amount: { currency_code: "USD" } }] }
+ * });
+ *
+ * <PayPalProvider eligibleMethodsResponse={response} ... />
+ */
 export async function fetchEligibleMethods(
     options: FindEligiblePaymentMethodsOptions & { signal?: AbortSignal },
 ): Promise<FindEligiblePaymentMethodsResponse> {
@@ -113,20 +137,6 @@ export async function fetchEligibleMethods(
     }
 }
 
-export function useEligibleMethods(): {
-    eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
-    isLoading: boolean;
-    error: Error | null;
-} {
-    const { loadingStatus, eligiblePaymentMethods, error } = usePayPal();
-
-    return {
-        eligiblePaymentMethods,
-        isLoading: loadingStatus === INSTANCE_LOADING_STATE.PENDING,
-        error,
-    };
-}
-
 export interface UseFetchEligibleMethodsOptions {
     payload?: FindEligibleMethodsOptions;
 }
@@ -134,23 +144,66 @@ export interface UseFetchEligibleMethodsOptions {
 export interface UseFetchEligibleMethodsResult {
     eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
     isLoading: boolean;
-    isFetching: boolean;
     error: Error | null;
 }
 
-export function useFetchEligibleMethods(
+/**
+ * Client-side hook to access eligible payment methods from the PayPal context.
+ *
+ * This hook handles both server-hydrated and client-fetch scenarios:
+ * - If eligibility was pre-fetched server-side, returns it immediately
+ * - If not present, fetches via the SDK and stores in context
+ * - Prevents duplicate API calls across components
+ *
+ * @param options - Configuration for the eligibility request
+ * @param options.payload - Optional request payload with customer/purchase details
+ * @returns Object containing eligibility state
+ * @returns eligiblePaymentMethods - The eligible payment methods
+ * @returns isLoading - True while fetching eligibility
+ * @returns error - Any error that occurred during the fetch
+ *
+ * @example
+ * function Checkout({props}) {
+ *     const { handleClick } = usePayLaterOneTimePaymentSession(props);
+ *     const { eligiblePaymentMethods, isLoading, error } = useEligibleMethods({
+ *         payload: { purchase_units: [{ amount: { currency_code: "USD" } }] }
+ *     });
+ *
+ *     const payLaterDetails = eligiblePaymentMethods?.getDetails?.("paylater");
+ *     const countryCode = payLaterDetails?.countryCode;
+ *     const productCode = payLaterDetails?.productCode;
+ *
+ *     if (isLoading) return <Spinner />;
+ *     if (error) return <Error message={error.message} />;
+ *     return (
+ *       <paypal-pay-later-button
+ *          handleClick={handleClick}
+ *          countryCode={countryCode}
+ *          productCode={productCode}
+ *       />
+ *      );
+ * }
+ */
+export function useEligibleMethods(
     options: UseFetchEligibleMethodsOptions = {},
 ): UseFetchEligibleMethodsResult {
     const { payload } = options;
-    const { sdkInstance, loadingStatus, eligiblePaymentMethods } = usePayPal();
+    const {
+        sdkInstance,
+        eligiblePaymentMethods,
+        error: contextError,
+    } = usePayPal();
     const dispatch = usePayPalDispatch();
-    const [error, setError] = useError();
+    const [eligibilityError, setError] = useError();
     const [isFetching, setIsFetching] = useState(false);
     const fetchedForInstanceRef = useRef<SdkInstance<
         readonly [Components, ...Components[]]
     > | null>(null);
 
-    const isLoading = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
+    // todo
+    // add doc comments
+    // open PR
+    // make PR description
 
     useEffect(() => {
         // Only fetch if:
@@ -199,10 +252,19 @@ export function useFetchEligibleMethods(
         };
     }, [sdkInstance, eligiblePaymentMethods, payload, dispatch, setError]);
 
+    if (contextError) {
+        return {
+            eligiblePaymentMethods,
+            isLoading: isFetching,
+            error: new Error(`PayPal context error: ${contextError.message}`, {
+                cause: contextError,
+            }),
+        };
+    }
+
     return {
         eligiblePaymentMethods,
-        isLoading,
-        isFetching,
-        error,
+        isLoading: isFetching,
+        error: eligibilityError,
     };
 }
