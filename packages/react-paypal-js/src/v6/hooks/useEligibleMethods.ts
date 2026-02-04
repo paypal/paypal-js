@@ -10,7 +10,6 @@ import {
     type FindEligibleMethodsOptions,
     type FindEligiblePaymentMethodsResponse,
     type SdkInstance,
-    // INSTANCE_LOADING_STATE,
 } from "../types";
 import { useError } from "./useError";
 
