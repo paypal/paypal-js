@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.2.1
+
+### Patch Changes
+
+- 053408b: Add skipLibCheck to tsconfig.json to resolve chai type conflicts
+
 ## 9.2.0
 
 ### Minor Changes
