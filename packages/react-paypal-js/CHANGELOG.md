@@ -1,5 +1,60 @@
 # Changelog
 
+## 9.0.0
+
+### Major Changes
+
+- 62bf29b: Updated v6 SDK React error handling
+
+### Minor Changes
+
+- 1bf66b4: Render web components using isHydrated.
+- 62bf29b: Upgrade react-paypal-js Typescript version to v5.3.3 and update build configuration.
+- aa89d81: Updates PayPalProvider with SDK eligibility hydration.
+- 35f2a0b: Adds PayPal Save Payment Button component.
+- 62bf29b: Add V6 instance provider and context hook
+- d663dd3: Refactors SDK Web Component typescript declarations.
+- 99b63b3: Adds PayPal Subscription Payment Session hook.
+- 62bf29b: Adds 2 methods for client side and server side eligibility methods requests.
+- cd1dc60: Adds rollup plugin copy to include type declaration files in the build.
+
+### Patch Changes
+
+- 62bf29b: Add `<PayPalOneTimePaymentButton>`
+- 0c02589: Created usePayPalCardFieldsSavePaymentSession hook
+- 89ff843: Export v6 session hook argument types and rename some types.
+- 2f0f473: Adding isPending to hook and buttons to allow deferred clientToken
+- 62bf29b: Fixes a build warning log by upgrading typescript-eslint packages from v5 to v6.
+- 62bf29b: Enhancing the Paypal and PayLater hooks to handle redirect and direct app switch presentation modes.
+- 62bf29b: Refactor to use names PayPalCardFieldsProvider and PayPalCardFieldsProviderContext
+- da89628: Add PayPalCardFieldsProviderContext Tests
+- 9e81bfc: Revert commit 35b5076e7da9fb252cfa8e33f03fae7be7025980
+- 62bf29b: Add v6 paypal-messages hook and types.
+- 62bf29b: Adds an early resolve to loadCoreSdkScript if a v6 core script already exists.
+- 06ad677: Adds Credit One Time Payment and Credit Save Payment react hooks
+- 62bf29b: Update createOrder call in useVenmoOneTimePaymentSession hook to match usePayLaterOneTimePaymentSession
+- 62bf29b: Adding PayLater UI Component
+- 0212046: Checking clientToken to render the PayPalProvider children while rendering the provider
+- 62bf29b: Refactor paypal provider test utils.
+- 62bf29b: feat: add v5 storybook to github pages
+- 62bf29b: Update presentation mode options types and integration.
+- 62bf29b: - Default `PayPalProvider` `components` to `["paypal-payments"]`.
+    - Update session hooks to check `loadingStatus` before returning an error for no `sdkInstance`.
+    - `PayPalContext` export was removed since merchants won't need to use that directly.
+    - Check only `window` for `isServer` SSR function.
+- 9155ce6: Implement on and update methods on CardFieldsProvider
+- 64d7760: Adding BCDC UI button component
+- 62bf29b: Created CardFieldsProvider and context for creating and providing Card Fields sessions
+- 62bf29b: Adds v6 venmo ui component.
+- f55c494: Update v6 jsx namespace.
+- 47db663: Fix useEligibleMethods type imports.
+- 62bf29b: Fix lint warnings.
+- 62bf29b: Implementing BCDC hook.
+- 62bf29b: Created usePayPalCardFieldsOneTimePaymentSession hook
+- 62bf29b: Remove ssr tests.
+- Updated dependencies [053408b]
+    - @paypal/paypal-js@9.2.1
+
 ## 8.9.2
 
 ### Patch Changes
