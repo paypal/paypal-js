@@ -7,6 +7,10 @@
         "moduleResolution": "bundler",
         "target": "es5",
         "strict": true,
+        // TODO: Remove skipLibCheck once we upgrade react-paypal-js storybook to v10.
+        // Currently there's a chai type conflict due to version mismatch and will cause CI/CD pipeline to fail:
+        // - vitest@1.6.1 -> @vitest/expect@1.6.1
+        // - storybook@10.2.6 -> @vitest/expect@3.2.4 -> @types/chai@5.2.2
         "skipLibCheck": true,
 
         // these are overridden by the Rollup plugin
