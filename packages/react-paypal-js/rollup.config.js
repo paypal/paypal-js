@@ -3,6 +3,7 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 import terser from "@rollup/plugin-terser";
 import cleanup from "rollup-plugin-cleanup";
+import preserveDirectivesModule from "rollup-preserve-directives";
 
 import pkg from "./package.json";
 
@@ -13,6 +14,8 @@ const tsconfigOverride = {
     outDir: "./dist",
     target: "es5",
 };
+const preserveDirectives =
+    preserveDirectivesModule.default || preserveDirectivesModule;
 
 export default [
     // CommonJS
@@ -92,37 +95,32 @@ export default [
         ],
     },
 
-    // V6 ESM
+    // V6 ESM with preserveModules for per-file "use client" directives
     {
         input: "src/v6/index.ts",
         plugins: [
             typescript({
                 tsconfig: "./tsconfig.v6.json",
                 outputToFilesystem: true,
+                outDir: "./dist/v6/esm",
             }),
             nodeResolve(),
+            preserveDirectives(),
             cleanup({
                 comments: "none",
             }),
         ],
-        external: ["react"],
+        external: ["react", /^@paypal\/paypal-js/],
         output: [
             {
-                file: `dist/v6/esm/${pkgName}.js`,
+                dir: "dist/v6/esm",
                 format: "esm",
+                preserveModules: true,
+                preserveModulesRoot: "src/v6",
                 globals: {
                     react: "React",
                 },
                 plugins: [getBabelOutputPlugin()],
-                banner,
-            },
-            {
-                file: `dist/v6/esm/${pkgName}.min.js`,
-                format: "esm",
-                globals: {
-                    react: "React",
-                },
-                plugins: [getBabelOutputPlugin(), terser()],
                 banner,
             },
         ],
