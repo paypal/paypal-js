@@ -1,0 +1,1 @@
+export { withPayPalProvider } from "./PayPalProviderDecorator";
