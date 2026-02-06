@@ -4,9 +4,9 @@ import {
 } from "../types";
 
 type FindEligiblePaymentMethodsOptions = {
-    clientToken?: string;
     environment?: "production" | "sandbox";
     payload?: FindEligiblePaymentMethodsRequestPayload;
+    headers?: HeadersInit;
 };
 
 type PhoneNumber = {
@@ -90,7 +90,7 @@ export type FindEligiblePaymentMethodsRequestPayload = {
 export async function useFetchEligibleMethods(
     options: FindEligiblePaymentMethodsOptions & { signal?: AbortSignal },
 ): Promise<FindEligiblePaymentMethodsResponse> {
-    const { clientToken, payload, signal, environment } = options;
+    const { payload, signal, environment, headers } = options;
     const defaultPayload = payload ?? {};
     const baseUrl =
         environment === "production"
@@ -101,12 +101,7 @@ export async function useFetchEligibleMethods(
             `${baseUrl}/v2/payments/find-eligible-methods`,
             {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${clientToken}`,
-                    Accept: "application/json",
-                    "Accept-Language": "en-US,en;q=0.9",
-                },
+                headers,
                 body: JSON.stringify(defaultPayload),
                 signal,
             },

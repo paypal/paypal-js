@@ -130,9 +130,7 @@ export function useEligibleMethods(
         return {
             eligiblePaymentMethods,
             isLoading: isFetching,
-            error: new Error(`PayPal context error: ${contextError.message}`, {
-                cause: contextError,
-            }),
+            error: new Error(`PayPal context error: ${contextError}`),
         };
     }
 

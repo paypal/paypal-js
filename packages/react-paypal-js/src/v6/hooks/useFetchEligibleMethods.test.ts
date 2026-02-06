@@ -19,6 +19,12 @@ describe("fetchEligibleMethods", () => {
             },
         ],
     };
+    const mockHeaders = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${mockClientToken}`,
+        Accept: "application/json",
+        "Accept-Language": "en-US,en;q=0.9",
+    };
 
     const mockResponse: FindEligiblePaymentMethodsResponse = {
         eligible_methods: {
@@ -48,9 +54,9 @@ describe("fetchEligibleMethods", () => {
         });
 
         const result = await useFetchEligibleMethods({
-            clientToken: mockClientToken,
             payload: mockPayload,
             environment: "sandbox",
+            headers: mockHeaders,
         });
 
         expect(global.fetch).toHaveBeenCalledWith(
@@ -78,9 +84,9 @@ describe("fetchEligibleMethods", () => {
         });
 
         await useFetchEligibleMethods({
-            clientToken: mockClientToken,
             payload: mockPayload,
             environment: "production",
+            headers: mockHeaders,
         });
 
         expect(global.fetch).toHaveBeenCalledWith(
@@ -98,7 +104,6 @@ describe("fetchEligibleMethods", () => {
         });
 
         await useFetchEligibleMethods({
-            clientToken: mockClientToken,
             environment: "sandbox",
         });
 
@@ -118,7 +123,6 @@ describe("fetchEligibleMethods", () => {
 
         await expect(
             useFetchEligibleMethods({
-                clientToken: mockClientToken,
                 environment: "sandbox",
             }),
         ).rejects.toThrow("Eligibility API error: 401");
@@ -131,7 +135,6 @@ describe("fetchEligibleMethods", () => {
 
         await expect(
             useFetchEligibleMethods({
-                clientToken: mockClientToken,
                 environment: "sandbox",
             }),
         ).rejects.toThrow("Failed to fetch eligible methods: Network error");
@@ -145,7 +148,6 @@ describe("fetchEligibleMethods", () => {
         });
 
         await useFetchEligibleMethods({
-            clientToken: mockClientToken,
             environment: "sandbox",
             signal: abortController.signal,
         });

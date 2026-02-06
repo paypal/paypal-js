@@ -90,11 +90,10 @@ describe("useEligibleMethods", () => {
                 }),
             });
 
-            // Context error is wrapped with a descriptive message and preserves original via cause
+            // Context error is wrapped with a descriptive message
             expect(result.current.error?.message).toBe(
-                "PayPal context error: SDK failed to load",
+                "PayPal context error: Error: SDK failed to load",
             );
-            expect(result.current.error?.cause).toBe(mockError);
         });
 
         test("should return null for error when context has no error", () => {
