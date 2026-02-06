@@ -68,7 +68,7 @@ export type FindEligiblePaymentMethodsRequestPayload = {
  *
  * Use this in server environments (Next.js server components, Remix loaders, etc.)
  * to pre-fetch eligibility data before hydrating the client. Pass the response
- * to {@link PayPalProvider} via the `eligibleMethodsResponse` prop.
+ * to the `PayPalProvider` via the `eligibleMethodsResponse` prop.
  *
  * @param options - Configuration for the eligibility request
  * @param options.clientToken - Bearer token for API authentication
