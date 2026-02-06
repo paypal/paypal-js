@@ -74,11 +74,6 @@ export function useEligibleMethods(
         readonly [Components, ...Components[]]
     > | null>(null);
 
-    // todo
-    // add doc comments
-    // open PR
-    // make PR description
-
     useEffect(() => {
         // Only fetch if:
         // 1. sdkInstance is available
