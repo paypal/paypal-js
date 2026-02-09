@@ -129,7 +129,8 @@
             "./jest.setup.ts"
         ],
         "moduleNameMapper": {
-            "@paypal/paypal-js/sdk-v6": "<rootDir>/../../node_modules/@paypal/paypal-js/dist/v6/esm/paypal-js.js"
+            "@paypal/paypal-js/sdk-v6": "<rootDir>/../../node_modules/@paypal/paypal-js/dist/v6/esm/paypal-js.js",
+            "^server-only$": "<rootDir>/jest.setup.ts"
         }
     },
     "bugs": {
