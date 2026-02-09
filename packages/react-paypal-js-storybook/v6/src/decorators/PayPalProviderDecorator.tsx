@@ -1,7 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import type { Decorator } from "@storybook/react";
+import { action } from "storybook/actions";
 
-import { PayPalProvider } from "@paypal/react-paypal-js/sdk-v6";
+import {
+    PayPalProvider,
+    usePayPal,
+    INSTANCE_LOADING_STATE,
+} from "@paypal/react-paypal-js/sdk-v6";
 import { SAMPLE_INTEGRATION_API } from "../shared/utils";
 
 async function fetchClientToken(): Promise<string> {
@@ -60,6 +65,37 @@ function ErrorDisplay({ message }: { message: string }) {
     );
 }
 
+// This is for outputing in actions for logging purpose.
+function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
+    const { loadingStatus } = usePayPal();
+    const hasLoggedInit = useRef(false);
+
+    useEffect(() => {
+        if (
+            loadingStatus === INSTANCE_LOADING_STATE.RESOLVED &&
+            !hasLoggedInit.current
+        ) {
+            hasLoggedInit.current = true;
+            action("SDK")("Library initialized and rendered");
+        }
+    }, [loadingStatus]);
+
+    const handleClick = (e: React.MouseEvent) => {
+        const target = e.target as HTMLElement;
+        if (
+            target.closest("[data-paypal-button]") ||
+            target.closest("paypal-button") ||
+            target.tagName.toLowerCase().includes("paypal")
+        ) {
+            action("button")(
+                "Click event dispatched from the PayPal payment button",
+            );
+        }
+    };
+
+    return <div onClick={handleClick}>{children}</div>;
+}
+
 function ProviderWrapper({ children }: { children: React.ReactNode }) {
     const [clientToken, setClientToken] = useState<string>();
     const [error, setError] = useState<Error>();
@@ -86,7 +122,7 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
             ]}
             pageType="checkout"
         >
-            {children}
+            <SdkStatusMonitor>{children}</SdkStatusMonitor>
         </PayPalProvider>
     );
 }

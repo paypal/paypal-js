@@ -15,6 +15,7 @@ import type {
     OnCancelDataSavePayments,
     OnErrorData,
 } from "@paypal/react-paypal-js/sdk-v6";
+import { action } from "storybook/actions";
 
 export const SAMPLE_INTEGRATION_API =
     import.meta.env.STORYBOOK_PAYPAL_API_URL ||
@@ -31,11 +32,14 @@ export async function createOrder(): Promise<{ orderId: string }> {
     return { orderId: data.id };
 }
 
-export async function captureOrder(orderId: string): Promise<void> {
-    await fetch(
+export async function captureOrder(
+    orderId: string,
+): Promise<Record<string, unknown>> {
+    const response = await fetch(
         `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/${orderId}/capture`,
         { method: "POST" },
     );
+    return response.json();
 }
 
 // Vault/Save Payment APIs
@@ -55,27 +59,30 @@ export async function createVaultToken(): Promise<{ vaultSetupToken: string }> {
 
 export const oneTimePaymentCallbacks = {
     onApprove: async (data: OnApproveDataOneTimePayments) => {
-        console.log("Payment approved:", data);
-        await captureOrder(data.orderId);
-        console.log("Order captured successfully");
+        const orderData = await captureOrder(data.orderId);
+        // Display full order data like v5: id, status, payment_source, purchase_units, payer, etc.
+        action("approve")({
+            ...orderData,
+            orderID: data.orderId,
+        });
     },
     onCancel: (data: OnCancelDataOneTimePayments) => {
-        console.log("Payment cancelled:", data);
+        action("cancel")(data);
     },
     onError: (error: unknown) => {
-        console.error("Payment error:", error as OnErrorData);
+        action("error")(error as OnErrorData);
     },
 };
 
 export const savePaymentCallbacks = {
     onApprove: async (data: { vaultSetupToken: string }) => {
-        console.log("Payment method saved:", data);
+        action("approve")(data);
     },
     onCancel: (data: OnCancelDataSavePayments) => {
-        console.log("Save payment cancelled:", data);
+        action("cancel")(data);
     },
     onError: (error: unknown) => {
-        console.error("Save payment error:", error as OnErrorData);
+        action("error")(error as OnErrorData);
     },
 };
 
