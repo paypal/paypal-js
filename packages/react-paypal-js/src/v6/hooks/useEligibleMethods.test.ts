@@ -11,9 +11,6 @@ import {
 
 import type { PayPalState } from "../context/PayPalProviderContext";
 
-// Mock fetch globally
-global.fetch = jest.fn();
-
 describe("useEligibleMethods", () => {
     // Helper to create a wrapper with mocked context
     function createWrapper(
