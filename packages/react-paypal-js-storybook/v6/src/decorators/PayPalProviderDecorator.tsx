@@ -76,12 +76,8 @@ function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
     }, [loadingStatus]);
 
     const handleClick = (e: React.MouseEvent) => {
-        const target = e.target as HTMLElement;
-        if (
-            target.closest("[data-paypal-button]") ||
-            target.closest("paypal-button") ||
-            target.tagName.toLowerCase().includes("paypal")
-        ) {
+        const tag = (e.target as HTMLElement).tagName.toLowerCase();
+        if (tag.endsWith("-button")) {
             action("button")(
                 "Click event dispatched from the PayPal payment button",
             );
