@@ -254,7 +254,7 @@ describe("useEligibleMethods", () => {
             });
         });
 
-        test("should NOT fetch when eligibility is already in context", async () => {
+        test("should NOT fetch when eligibility is already in context (server hydration)", async () => {
             const mockDispatch = jest.fn();
             const mockSdkInstance = createMockSdkInstance();
 
@@ -371,7 +371,7 @@ describe("useEligibleMethods", () => {
             );
         });
 
-        test("should NOT fetch twice for the same sdkInstance", async () => {
+        test("should NOT fetch twice for the same sdkInstance and payload", async () => {
             const mockDispatch = jest.fn();
             const mockSdkInstance = createMockSdkInstance();
 
@@ -402,6 +402,104 @@ describe("useEligibleMethods", () => {
             });
 
             // Should still only be called once
+            expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledTimes(
+                1,
+            );
+        });
+
+        test("should re-fetch when payload changes", async () => {
+            const mockDispatch = jest.fn();
+            const mockSdkInstance = createMockSdkInstance();
+            let currentPayload = { currency: "USD" };
+
+            const { rerender } = renderHook(
+                () =>
+                    useEligibleMethods({
+                        payload: currentPayload as never,
+                    }),
+                {
+                    wrapper: createWrapper(
+                        {
+                            sdkInstance: mockSdkInstance,
+                            eligiblePaymentMethods: null,
+                            loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                        },
+                        mockDispatch,
+                    ),
+                },
+            );
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+
+            expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledTimes(
+                1,
+            );
+            expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledWith({
+                currency: "USD",
+            });
+
+            // Change the payload
+            currentPayload = { currency: "EUR" };
+            rerender();
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+
+            // Should be called again with new payload
+            expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledTimes(
+                2,
+            );
+            expect(
+                mockSdkInstance!.findEligibleMethods,
+            ).toHaveBeenLastCalledWith({
+                currency: "EUR",
+            });
+        });
+
+        test("should NOT re-fetch when payload object reference changes but content is the same", async () => {
+            const mockDispatch = jest.fn();
+            const mockSdkInstance = createMockSdkInstance();
+
+            // Use a variable to track the payload passed to the hook
+            let currentPayload = { currency: "USD" };
+
+            const { rerender } = renderHook(
+                () =>
+                    useEligibleMethods({
+                        payload: currentPayload as never,
+                    }),
+                {
+                    wrapper: createWrapper(
+                        {
+                            sdkInstance: mockSdkInstance,
+                            eligiblePaymentMethods: null,
+                            loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                        },
+                        mockDispatch,
+                    ),
+                },
+            );
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+
+            expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledTimes(
+                1,
+            );
+
+            // Create new object reference but same content
+            currentPayload = { currency: "USD" };
+            rerender();
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+
+            // Should still only be called once (deep comparison prevents re-fetch)
             expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledTimes(
                 1,
             );

@@ -4,12 +4,11 @@ import { usePayPal } from "./usePayPal";
 import { usePayPalDispatch } from "./usePayPalDispatch";
 import {
     INSTANCE_DISPATCH_ACTION,
-    type Components,
     type EligiblePaymentMethodsOutput,
     type FindEligibleMethodsOptions,
-    type SdkInstance,
 } from "../types";
 import { useError } from "./useError";
+import { useDeepCompareMemoize } from "../utils";
 
 export interface UseFetchEligibleMethodsOptions {
     payload?: FindEligibleMethodsOptions;
@@ -70,33 +69,56 @@ export function useEligibleMethods(
     const dispatch = usePayPalDispatch();
     const [eligibilityError, setError] = useError();
     const [isFetching, setIsFetching] = useState(false);
-    const fetchedForInstanceRef = useRef<SdkInstance<
-        readonly [Components, ...Components[]]
-    > | null>(null);
+
+    // Memoize payload to avoid unnecessary re-fetches when object reference changes
+    const memoizedPayload = useDeepCompareMemoize(payload);
+
+    // Track what we've fetched (instance + payload combo) to prevent duplicate fetches
+    const lastFetchRef = useRef<{
+        instance: typeof sdkInstance;
+        payload: typeof memoizedPayload;
+    } | null>(null);
 
     useEffect(() => {
         // Only fetch if:
         // 1. sdkInstance is available
-        // 2. eligiblePaymentMethods not in context
-        // 3. Haven't already fetched for THIS sdkInstance
+        // 2. Haven't already fetched for THIS sdkInstance with THIS payload
+        // 3. Eligibility not already in context (from server hydration or another fetch)
+        //    UNLESS the payload has changed from what was used to fetch it
         if (!sdkInstance) {
             return;
         }
-        if (eligiblePaymentMethods) {
-            return;
-        }
-        if (fetchedForInstanceRef.current === sdkInstance) {
+
+        const hasFetchedThisConfig =
+            lastFetchRef.current?.instance === sdkInstance &&
+            lastFetchRef.current?.payload === memoizedPayload;
+
+        // Skip if we already fetched with this exact config
+        if (hasFetchedThisConfig) {
             return;
         }
 
-        // Mark that we're fetching for this instance
-        fetchedForInstanceRef.current = sdkInstance;
+        // If eligibility exists and we haven't fetched anything yet (e.g., server hydration),
+        // mark as fetched to avoid unnecessary re-fetch with same payload
+        if (eligiblePaymentMethods && lastFetchRef.current === null) {
+            lastFetchRef.current = {
+                instance: sdkInstance,
+                payload: memoizedPayload,
+            };
+            return;
+        }
+
+        // Mark as fetched before starting
+        lastFetchRef.current = {
+            instance: sdkInstance,
+            payload: memoizedPayload,
+        };
 
         let isSubscribed = true;
         setIsFetching(true);
 
         sdkInstance
-            .findEligibleMethods(payload ?? {})
+            .findEligibleMethods(memoizedPayload ?? {})
             .then((result) => {
                 if (isSubscribed) {
                     dispatch({
@@ -119,7 +141,13 @@ export function useEligibleMethods(
         return () => {
             isSubscribed = false;
         };
-    }, [sdkInstance, eligiblePaymentMethods, payload, dispatch, setError]);
+    }, [
+        sdkInstance,
+        memoizedPayload,
+        eligiblePaymentMethods,
+        dispatch,
+        setError,
+    ]);
 
     if (contextError) {
         return {
