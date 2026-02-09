@@ -95,7 +95,13 @@ export default [
         ],
     },
 
-    // V6 ESM with preserveModules for per-file "use client" directives
+    // V6 ESM build
+    // V6 Build Differences:
+    // - Uses preserveModules (vs single bundle) to maintain per-file "use client" directives
+    // - Externalizes @paypal/paypal-js (vs bundling) to avoid duplicate output files with preserveModules
+    // - Externalizes server-only for RSC server/client boundary enforcement
+    // - No minified output (consumer bundlers handle minification)
+    // - ESM-only (no CJS) as v6 targets modern React/Next.js environments
     {
         input: "src/v6/index.ts",
         plugins: [
@@ -115,9 +121,6 @@ export default [
                 format: "esm",
                 preserveModules: true,
                 preserveModulesRoot: "src/v6",
-                globals: {
-                    react: "React",
-                },
                 plugins: [getBabelOutputPlugin()],
                 banner,
             },
