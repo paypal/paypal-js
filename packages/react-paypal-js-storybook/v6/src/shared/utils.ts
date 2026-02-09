@@ -60,7 +60,6 @@ export async function createVaultToken(): Promise<{ vaultSetupToken: string }> {
 export const oneTimePaymentCallbacks = {
     onApprove: async (data: OnApproveDataOneTimePayments) => {
         const orderData = await captureOrder(data.orderId);
-        // Display full order data like v5: id, status, payment_source, purchase_units, payer, etc.
         action("approve")({
             ...orderData,
             orderID: data.orderId,
