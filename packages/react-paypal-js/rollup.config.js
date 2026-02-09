@@ -102,15 +102,13 @@ export default [
             typescript({
                 tsconfig: "./tsconfig.v6.json",
                 outputToFilesystem: true,
-                outDir: "./dist/v6/esm",
             }),
-            nodeResolve(),
             preserveDirectives(),
             cleanup({
                 comments: "none",
             }),
         ],
-        external: ["react", /^@paypal\/paypal-js/],
+        external: ["react", /^@paypal\/paypal-js/, "server-only"],
         output: [
             {
                 dir: "dist/v6/esm",
