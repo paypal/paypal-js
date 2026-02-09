@@ -8,6 +8,8 @@ on:
             - "packages/paypal-js/types/v6/**/*.d.ts"
             - "packages/react-paypal-js/.storybook/**"
             - "packages/react-paypal-js/src/**/*.stories.*"
+            - "packages/react-paypal-js-storybook/v6/.storybook/**"
+            - "packages/react-paypal-js-storybook/v6/src/**"
             - ".github/workflows/build-and-deploy-docs.yml"
             - "docs/index.html"
             - "docs/readmes/**"
@@ -48,6 +50,11 @@ jobs:
 
             - name: Build v5 react storybook
               run: npm run build-storybook:v5
+
+            - name: Build v6 react storybook
+              run: npm run build-storybook:v6
+              env:
+                  GITHUB_PAGES: "true"
 
             - name: Setup Pages
               uses: actions/configure-pages@v5
