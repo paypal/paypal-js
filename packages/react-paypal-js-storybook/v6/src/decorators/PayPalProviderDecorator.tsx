@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import type { Decorator } from "@storybook/react";
 import { action } from "storybook/actions";
 
@@ -65,17 +65,12 @@ function ErrorDisplay({ message }: { message: string }) {
     );
 }
 
-// This is for outputing in actions for logging purpose.
+// Logs SDK and button events to the Actions panel.
 function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
     const { loadingStatus } = usePayPal();
-    const hasLoggedInit = useRef(false);
 
     useEffect(() => {
-        if (
-            loadingStatus === INSTANCE_LOADING_STATE.RESOLVED &&
-            !hasLoggedInit.current
-        ) {
-            hasLoggedInit.current = true;
+        if (loadingStatus === INSTANCE_LOADING_STATE.RESOLVED) {
             action("SDK")("Library initialized and rendered");
         }
     }, [loadingStatus]);
