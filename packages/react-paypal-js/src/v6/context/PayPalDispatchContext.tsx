@@ -5,7 +5,7 @@ import type { InstanceAction } from "./PayPalProviderContext";
 /**
  * Internal context for dispatching PayPal instance state updates.
  * This is NOT exported to external consumers.
- * Only internal hooks like useFetchEligibleMethods can access this.
+ * Only hooks like useEligibleMethods can access this internally.
  *
  * @internal
  */
