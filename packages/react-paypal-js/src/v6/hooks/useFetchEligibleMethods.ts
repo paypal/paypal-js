@@ -1,12 +1,13 @@
+import "server-only";
 import {
     type EligiblePaymentMethods,
     type FindEligiblePaymentMethodsResponse,
 } from "../types";
 
 type FindEligiblePaymentMethodsOptions = {
-    clientToken?: string;
     environment?: "production" | "sandbox";
     payload?: FindEligiblePaymentMethodsRequestPayload;
+    headers?: HeadersInit;
 };
 
 type PhoneNumber = {
@@ -63,10 +64,34 @@ export type FindEligiblePaymentMethodsRequestPayload = {
     shopper_session_id?: string;
 };
 
+/**
+ * Server-side function to fetch eligible payment methods from the PayPal API.
+ *
+ * Use this in server environments (Next.js server components, Remix loaders, etc.)
+ * to pre-fetch eligibility data before hydrating the client. Pass the response
+ * to the `PayPalProvider` via the `eligibleMethodsResponse` prop.
+ *
+ * @param options - Configuration for the eligibility request
+ * @param options.clientToken - Bearer token for API authentication
+ * @param options.environment - Target environment ("sandbox" or "production")
+ * @param options.payload - Optional request payload with customer/purchase details
+ * @param options.signal - Optional AbortSignal for request cancellation
+ * @returns Promise resolving to the eligibility API response
+ *
+ * @example
+ * // Next.js server component
+ * const response = await fetchEligibleMethods({
+ *     clientToken: token,
+ *     environment: "sandbox",
+ *     payload: { purchase_units: [{ amount: { currency_code: "USD" } }] }
+ * });
+ *
+ * <PayPalProvider eligibleMethodsResponse={response} ... />
+ */
 export async function useFetchEligibleMethods(
     options: FindEligiblePaymentMethodsOptions & { signal?: AbortSignal },
 ): Promise<FindEligiblePaymentMethodsResponse> {
-    const { clientToken, payload, signal, environment } = options;
+    const { payload, signal, environment, headers } = options;
     const defaultPayload = payload ?? {};
     const baseUrl =
         environment === "production"
@@ -77,12 +102,7 @@ export async function useFetchEligibleMethods(
             `${baseUrl}/v2/payments/find-eligible-methods`,
             {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${clientToken}`,
-                    Accept: "application/json",
-                    "Accept-Language": "en-US,en;q=0.9",
-                },
+                headers,
                 body: JSON.stringify(defaultPayload),
                 signal,
             },
