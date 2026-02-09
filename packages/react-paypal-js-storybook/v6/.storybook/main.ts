@@ -17,12 +17,6 @@ const config: StorybookConfig = {
             },
         },
     },
-    viteFinal: async (config) => {
-        if (process.env.GITHUB_PAGES === "true") {
-            config.base = "/paypal-js/web-sdk-v6-react-storybook/";
-        }
-        return config;
-    },
 };
 
 export default config;

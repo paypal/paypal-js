@@ -53,8 +53,6 @@ jobs:
 
             - name: Build v6 react storybook
               run: npm run build-storybook:v6
-              env:
-                  GITHUB_PAGES: "true"
 
             - name: Setup Pages
               uses: actions/configure-pages@v5
