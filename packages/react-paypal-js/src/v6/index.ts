@@ -37,7 +37,6 @@ export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButto
 // Core hooks
 export { usePayPal } from "./hooks/usePayPal";
 export * from "./hooks/useEligibleMethods";
-export * from "./hooks/useFetchEligibleMethods";
 export { usePayPalMessages } from "./hooks/usePayPalMessages";
 
 // Card fields hooks
