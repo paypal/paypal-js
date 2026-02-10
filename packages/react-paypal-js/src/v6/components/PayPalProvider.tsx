@@ -25,26 +25,35 @@ import type {
 import type { PayPalState } from "../context/PayPalProviderContext";
 import type { usePayPal } from "../hooks/usePayPal";
 
-type PayPalProviderProps = Omit<
+type PayPalProviderPropsBase = Omit<
     CreateInstanceOptions<readonly [Components, ...Components[]]>,
-    "components" | "clientToken"
+    "components" | "clientToken" | "clientId"
 > &
     LoadCoreSdkScriptOptions & {
         components?: Components[];
         eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
         children: React.ReactNode;
-        clientToken?: string | Promise<string>;
     };
+
+type PayPalProviderProps =
+    | (PayPalProviderPropsBase & {
+          clientToken: string | Promise<string>;
+          clientId?: never;
+      })
+    | (PayPalProviderPropsBase & {
+          clientId: string | Promise<string>;
+          clientToken?: never;
+      });
 
 /**
  * {@link PayPalProvider} creates the SDK script, component scripts, runs eligibility, then
  * provides these in context to child components via the {@link usePayPal} hook.
  *
- * SDK loading is automatically deferred until clientToken is available.
- * clientToken can be a string, Promise, or undefined.
+ * SDK loading is automatically deferred until clientToken or clientId is available.
+ * Both can be either a string, Promise, or undefined.
  *
  * @example
- * // With string token
+ * // With string clientToken
  * <PayPalProvider
  *   clientToken={token}
  *   components={["paypal-payments", "venmo-payments"]}
@@ -54,7 +63,17 @@ type PayPalProviderProps = Omit<
  * </PayPalProvider>
  *
  * @example
- * // With Promise token (memoize to prevent re-fetching)
+ * // With string clientId
+ * <PayPalProvider
+ *   clientId="YOUR_CLIENT_ID"
+ *   components={["paypal-payments"]}
+ *   pageType="checkout"
+ * >
+ *   <PayPalButton />
+ * </PayPalProvider>
+ *
+ * @example
+ * // With Promise clientToken (memoize to prevent re-fetching)
  * const tokenPromise = useMemo(() => fetchClientToken(), []);
  *
  * <PayPalProvider
@@ -65,7 +84,18 @@ type PayPalProviderProps = Omit<
  * </PayPalProvider>
  *
  * @example
- * // With deferred loading
+ * // With Promise clientId
+ * const clientIdPromise = useMemo(() => fetchClientId(), []);
+ *
+ * <PayPalProvider
+ *   clientId={clientIdPromise}
+ *   pageType="checkout"
+ * >
+ *   <PayPalButton />
+ * </PayPalProvider>
+ *
+ * @example
+ * // With deferred loading (clientToken)
  * const [clientToken, setClientToken] = useState<string>();
  *
  * useEffect(() => {
@@ -74,6 +104,21 @@ type PayPalProviderProps = Omit<
  *
  * <PayPalProvider
  *   clientToken={clientToken}
+ *   pageType="checkout"
+ * >
+ *   <PayPalButton />
+ * </PayPalProvider>
+ *
+ * @example
+ * // With deferred loading (clientId)
+ * const [clientId, setClientId] = useState<string>();
+ *
+ * useEffect(() => {
+ *   fetchClientId().then(setClientId);
+ * }, []);
+ *
+ * <PayPalProvider
+ *   clientId={clientId}
  *   pageType="checkout"
  * >
  *   <PayPalButton />
@@ -99,6 +144,7 @@ type PayPalProviderProps = Omit<
 export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     clientMetadataId,
     clientToken,
+    clientId,
     components = ["paypal-payments"],
     locale,
     pageType,
@@ -116,6 +162,9 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     const [clientTokenValue, setClientTokenValue] = useState<
         string | undefined
     >(undefined);
+    const [clientIdValue, setClientIdValue] = useState<string | undefined>(
+        undefined,
+    );
     const [isHydrated, setIsHydrated] = useState(false);
     // Ref to hold script options to avoid re-running effect
     const loadCoreScriptOptions = useRef(scriptOptions);
@@ -134,34 +183,37 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         let isSubscribed = true;
 
         const loadSdk = async () => {
-            let token: string | undefined;
+            const authCredential = clientToken || clientId;
+            const isClientToken = !!clientToken;
 
-            if (!clientToken) {
-                setClientTokenValue(undefined);
-                return;
-            }
-
-            if (typeof clientToken === "string") {
-                token = clientToken;
-                setClientTokenValue(token);
+            if (typeof authCredential === "string") {
+                if (isClientToken) {
+                    setClientTokenValue(authCredential);
+                } else {
+                    setClientIdValue(authCredential);
+                }
             } else {
                 try {
-                    token = await clientToken;
-                    setClientTokenValue(token);
+                    const resolved = await authCredential;
+                    if (isClientToken) {
+                        setClientTokenValue(resolved);
+                    } else {
+                        setClientIdValue(resolved);
+                    }
                 } catch (error) {
-                    const clientTokenError = new Error(
-                        `Failed to resolve clientToken. Expected a Promise that resolves to a string, but it was rejected with: ${toError(error).message}`,
+                    const authError = new Error(
+                        `Failed to resolve ${isClientToken ? "clientToken" : "clientId"}. Expected a Promise that resolves to a string, but it was rejected with: ${toError(error).message}`,
                     );
-                    setError(clientTokenError);
+                    setError(authError);
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                        value: clientTokenError,
+                        value: authError,
                     });
                     return;
                 }
             }
 
-            if (!isSubscribed || !token) {
+            if (!isSubscribed) {
                 return;
             }
 
@@ -189,7 +241,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         return () => {
             isSubscribed = false;
         };
-    }, [clientToken, setError]);
+    }, [clientToken, clientId, setError]);
 
     // Create SDK Instance
     useEffect(() => {
@@ -197,7 +249,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             return;
         }
 
-        if (!clientTokenValue) {
+        if (!clientTokenValue && !clientIdValue) {
             return;
         }
 
@@ -212,16 +264,22 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         const createSdkInstance = async () => {
             try {
                 // Create SDK instance
-                const instance = await paypalNamespace.createInstance({
+                const baseOptions = {
                     clientMetadataId,
-                    clientToken: clientTokenValue,
                     components: memoizedComponents,
                     locale,
                     pageType,
                     partnerAttributionId,
                     shopperSessionId,
                     testBuyerCountry,
-                });
+                };
+
+                const instanceOptions = clientTokenValue
+                    ? { ...baseOptions, clientToken: clientTokenValue }
+                    : { ...baseOptions, clientId: clientIdValue! };
+
+                const instance =
+                    await paypalNamespace.createInstance(instanceOptions);
 
                 if (!isSubscribed) {
                     return;
@@ -250,6 +308,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     }, [
         clientMetadataId,
         clientTokenValue,
+        clientIdValue,
         locale,
         memoizedComponents,
         pageType,
