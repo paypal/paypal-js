@@ -1,5 +1,5 @@
 ---
-"@paypal/react-paypal-js": patch
+"@paypal/react-paypal-js": minor
 ---
 
 Updating PayPalProvider with clientId enhancements
