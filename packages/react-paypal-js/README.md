@@ -9,7 +9,7 @@
     <a href="https://bundlephobia.com/result?p=@paypal/react-paypal-js"><img src="https://img.shields.io/bundlephobia/minzip/@paypal/react-paypal-js.svg?style=flat-square" alt="bundle size"></a>
     <a href="https://www.npmtrends.com/@paypal/react-paypal-js"><img src="https://img.shields.io/npm/dm/@paypal/react-paypal-js.svg?style=flat-square" alt="npm downloads"></a>
     <a href="https://github.com/paypal/react-paypal-js/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/@paypal/react-paypal-js.svg?style=flat-square" alt="apache license"></a>
-    <a href="https://paypal.github.io/react-paypal-js/"><img src="https://raw.githubusercontent.com/storybooks/brand/master/badge/badge-storybook.svg" alt="storybook"></a>
+    <a href="https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/"><img src="https://raw.githubusercontent.com/storybooks/brand/master/badge/badge-storybook.svg" alt="storybook"></a>
 </div>
 
 ## Why use react-paypal-js?
@@ -26,15 +26,15 @@ React developers think in terms of components and not about loading external scr
 
 **Features**
 
--   Enforce async loading the JS SDK upfront so when it's time to render the buttons to your buyer, they render immediately.
--   Abstract away the complexity around loading the JS SDK with the global [PayPalScriptProvider](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalscriptprovider--default) component.
--   Support dispatching actions to reload the JS SDK and re-render components when global parameters like `currency` change.
--   Easy to use components for all the different Braintree/PayPal product offerings:
-    -   [PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default)
-    -   [PayPalMarks](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalmarks--default)
-    -   [PayPalMessages](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalmessages--default)
-    -   [PayPalHostedFields](https://paypal.github.io/react-paypal-js/?path=/docs/paypal-paypalhostedfields--default)
-    -   [BraintreePayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/braintree-braintreepaypalbuttons--default)
+- Enforce async loading the JS SDK upfront so when it's time to render the buttons to your buyer, they render immediately.
+- Abstract away the complexity around loading the JS SDK with the global [PayPalScriptProvider](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalscriptprovider--default) component.
+- Support dispatching actions to reload the JS SDK and re-render components when global parameters like `currency` change.
+- Easy to use components for all the different Braintree/PayPal product offerings:
+    - [PayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalbuttons--default)
+    - [PayPalMarks](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalmarks--default)
+    - [PayPalMessages](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalmessages--default)
+    - [PayPalHostedFields](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/paypal-paypalhostedfields--default)
+    - [BraintreePayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/braintree-braintreepaypalbuttons--default)
 
 ## Installation
 
@@ -92,8 +92,8 @@ The [JS SDK Configuration guide](https://developer.paypal.com/docs/business/java
 
 Use the optional PayPalScriptProvider `deferLoading` prop to control when the JS SDK script loads.
 
--   This prop is set to false by default since we usually know all the sdk script params upfront and want to load the script right away so components like `<PayPalButtons />` render immediately.
--   This prop can be set to true to prevent loading the JS SDK script when the PayPalScriptProvider renders. Use `deferLoading={true}` initially and then dispatch an action later on in the app's life cycle to load the sdk script.
+- This prop is set to false by default since we usually know all the sdk script params upfront and want to load the script right away so components like `<PayPalButtons />` render immediately.
+- This prop can be set to true to prevent loading the JS SDK script when the PayPalScriptProvider renders. Use `deferLoading={true}` initially and then dispatch an action later on in the app's life cycle to load the sdk script.
 
 ```jsx
 <PayPalScriptProvider deferLoading={true} options={initialOptions}>
@@ -101,7 +101,7 @@ Use the optional PayPalScriptProvider `deferLoading` prop to control when the JS
 </PayPalScriptProvider>
 ```
 
-To learn more, check out the [defer loading example in storybook](https://paypal.github.io/react-paypal-js/?path=/story/example-paypalscriptprovider--default&args=deferLoading:true).
+To learn more, check out the [defer loading example in storybook](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/example-paypalscriptprovider--default&args=deferLoading:true).
 
 #### Tracking loading state
 
@@ -109,10 +109,10 @@ The `<PayPalScriptProvider />` component is designed to be used with the `usePay
 
 The `usePayPalScriptReducer` hook provides an easy way to tap into the loading state of the JS SDK script. This state can be used to show a loading spinner while the script loads or an error message if it fails to load. The following derived attributes are provided for tracking this loading state:
 
--   isInitial - not started (only used when passing `deferLoading={true}`)
--   isPending - loading (default)
--   isResolved - successfully loaded
--   isRejected - failed to load
+- isInitial - not started (only used when passing `deferLoading={true}`)
+- isPending - loading (default)
+- isResolved - successfully loaded
+- isRejected - failed to load
 
 For example, here's how you can use it to show a loading spinner.
 
@@ -127,7 +127,7 @@ return (
 );
 ```
 
-To learn more, check out the [loading spinner example in storybook](https://paypal.github.io/react-paypal-js/?path=/story/example-paypalbuttons--default&args=showSpinner:true).
+To learn more, check out the [loading spinner example in storybook](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/example-paypalbuttons--default&args=showSpinner:true).
 
 #### Reloading when parameters change
 
@@ -160,11 +160,11 @@ return (
 );
 ```
 
-To learn more, check out the [dynamic currency example in storybook](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default).
+To learn more, check out the [dynamic currency example in storybook](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalbuttons--default).
 
 ### PayPalButtons
 
-The `<PayPalButtons />` component is [documented in Storybook](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default).
+The `<PayPalButtons />` component is [documented in Storybook](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalbuttons--default).
 
 Here's an example:
 
@@ -222,7 +222,7 @@ export default function App() {
 }
 ```
 
-To learn more about other available props, see the [PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default) docs.
+To learn more about other available props, see the [PayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalbuttons--default) docs.
 
 ### BraintreePayPalButtons
 
@@ -266,7 +266,7 @@ export default function App() {
 }
 ```
 
-Check out the docs page for the [BraintreePayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/braintree-braintreepaypalbuttons--default) to learn more about the available props.
+Check out the docs page for the [BraintreePayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/braintree-braintreepaypalbuttons--default) to learn more about the available props.
 
 ### PayPal Hosted Fields
 
