@@ -85,7 +85,14 @@ export function useEligibleMethods(
         // 2. Haven't already fetched for THIS sdkInstance with THIS payload
         // 3. Eligibility not already in context (from server hydration or another fetch)
         //    UNLESS the payload has changed from what was used to fetch it
+        console.log("[useEligibleMethods] Effect running", {
+            sdkInstance: !!sdkInstance,
+            lastFetchRef: lastFetchRef.current,
+            eligiblePaymentMethods: !!eligiblePaymentMethods,
+        });
+
         if (!sdkInstance) {
+            console.log("[useEligibleMethods] No sdkInstance, returning");
             return;
         }
 
@@ -95,12 +102,18 @@ export function useEligibleMethods(
 
         // Skip if we already fetched with this exact config
         if (hasFetchedThisConfig) {
+            console.log(
+                "[useEligibleMethods] Already fetched this config, returning",
+            );
             return;
         }
 
         // If eligibility exists and we haven't fetched anything yet (e.g., server hydration),
         // mark as fetched to avoid unnecessary re-fetch with same payload
         if (eligiblePaymentMethods && lastFetchRef.current === null) {
+            console.log(
+                "[useEligibleMethods] Eligibility exists from hydration, marking as fetched",
+            );
             lastFetchRef.current = {
                 instance: sdkInstance,
                 payload: memoizedPayload,
@@ -116,30 +129,59 @@ export function useEligibleMethods(
 
         let isSubscribed = true;
         setIsFetching(true);
+        console.log("[useEligibleMethods] Starting fetch");
 
         sdkInstance
             .findEligibleMethods(memoizedPayload ?? {})
             .then((result) => {
+                console.log("[useEligibleMethods] Fetch completed", {
+                    isSubscribed,
+                    result: !!result,
+                });
                 if (isSubscribed) {
+                    console.log(
+                        "[useEligibleMethods] Dispatching SET_ELIGIBILITY",
+                    );
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
                         value: result,
                     });
+                } else {
+                    console.log(
+                        "[useEligibleMethods] Skipping dispatch - isSubscribed is false",
+                    );
                 }
             })
             .catch((err) => {
+                console.log("[useEligibleMethods] Fetch error", {
+                    isSubscribed,
+                    err,
+                });
                 if (isSubscribed) {
                     setError(err);
                 }
             })
             .finally(() => {
-                if (isSubscribed) {
-                    setIsFetching(false);
-                }
+                console.log("[useEligibleMethods] Finally block", {
+                    isSubscribed,
+                });
+                setIsFetching(false);
+                // if (isSubscribed) {
+                //     setIsFetching(false);
+                // } else {
+                //     console.log(
+                //         "[useEligibleMethods] NOT setting isFetching=false because isSubscribed is false",
+                //     );
+                // }
             });
 
         return () => {
             isSubscribed = false;
+            lastFetchRef.current = null; // Reset fetch tracking on unmount or dependency change
+            console.log(
+                "[useEligibleMethods] Cleanup running, setting isSubscribed=false and lastFetchRef.current=null",
+                lastFetchRef.current,
+            );
         };
     }, [
         sdkInstance,
