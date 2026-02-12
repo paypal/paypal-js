@@ -332,6 +332,7 @@ describe("PayPalProvider", () => {
             expect(childRenderSpy).toHaveBeenCalled();
             expect(getByText!("Test Child Content")).toBeInTheDocument();
             expect(loadCoreSdkScript).not.toHaveBeenCalled();
+            expect(mockCreateInstance).not.toHaveBeenCalled();
             expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
             expect(state.sdkInstance).toBe(null);
 
@@ -341,6 +342,13 @@ describe("PayPalProvider", () => {
 
             await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
             await waitFor(() => expectResolvedState(state));
+
+            expect(mockCreateInstance).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    clientToken: TEST_CLIENT_TOKEN,
+                    components: ["paypal-payments"],
+                }),
+            );
         });
 
         test("should create instance immediately if clientToken is provided on mount", async () => {
@@ -713,13 +721,32 @@ describe("PayPalProvider", () => {
     describe("ClientId Support", () => {
         const TEST_CLIENT_ID = "test-client-id";
 
-        test("should load SDK with clientId instead of clientToken", async () => {
+        test("should call createInstance with clientId instead of clientToken", async () => {
+            const mockCreateInstance = jest
+                .fn()
+                .mockResolvedValue(createMockSdkInstance());
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: mockCreateInstance,
+            });
+
             const { state } = await renderProvider({
                 clientId: TEST_CLIENT_ID,
             });
 
             await waitFor(() => expectResolvedState(state));
-            expect(loadCoreSdkScript).toHaveBeenCalled();
+
+            expect(mockCreateInstance).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    clientId: TEST_CLIENT_ID,
+                    components: ["paypal-payments"],
+                }),
+            );
+            expect(mockCreateInstance).toHaveBeenCalledWith(
+                expect.not.objectContaining({
+                    clientToken: expect.anything(),
+                }),
+            );
         });
 
         test("should handle clientId as Promise", async () => {
