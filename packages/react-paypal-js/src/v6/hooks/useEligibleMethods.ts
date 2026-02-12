@@ -142,25 +142,26 @@ export function useEligibleMethods(
             isSubscribed = false;
             lastFetchRef.current = null; // Reset fetch tracking on unmount or dependency change
         };
-    }, [
-        sdkInstance,
-        memoizedPayload,
-        eligiblePaymentMethods,
-        dispatch,
-        setError,
-    ]);
+    }, [sdkInstance, memoizedPayload, dispatch, setError]);
+
+    // isLoading should be true if:
+    // 1. We're actively fetching, OR
+    // 2. We don't have eligibility data yet and no error occurred
+    // This prevents a flash where isLoading=false before the effect runs
+    const isLoading =
+        isFetching || (!eligiblePaymentMethods && !eligibilityError);
 
     if (contextError) {
         return {
             eligiblePaymentMethods,
-            isLoading: isFetching,
+            isLoading,
             error: new Error(`PayPal context error: ${contextError}`),
         };
     }
 
     return {
         eligiblePaymentMethods,
-        isLoading: isFetching,
+        isLoading,
         error: eligibilityError,
     };
 }
