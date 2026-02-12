@@ -158,16 +158,14 @@ export default function App() {
             components={["paypal-guest-payments"]}
             pageType="checkout"
         >
-            <paypal-basic-card-container>
-                <PayPalGuestPaymentButton
-                    createOrder={createOrder}
-                    onApprove={async (data) => {
-                        await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
-                            method: "POST",
-                        });
-                    }}
-                />
-            </paypal-basic-card-container>
+            <PayPalGuestPaymentButton
+                createOrder={createOrder}
+                onApprove={async (data) => {
+                    await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
+                        method: "POST",
+                    });
+                }}
+            />
         </PayPalProvider>
     );
 }
