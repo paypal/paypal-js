@@ -133,7 +133,9 @@ export function useEligibleMethods(
                 }
             })
             .finally(() => {
-                setIsFetching(false);
+                if (isSubscribed) {
+                    setIsFetching(false);
+                }
             });
 
         return () => {
