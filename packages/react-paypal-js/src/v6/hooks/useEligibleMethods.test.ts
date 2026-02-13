@@ -110,16 +110,17 @@ describe("useEligibleMethods", () => {
     });
 
     describe("isLoading state", () => {
-        test("should return isLoading=false initially when not fetching", () => {
+        test("should return isLoading=true when no eligibility data and no error", () => {
             const { result } = renderHook(() => useEligibleMethods(), {
                 wrapper: createWrapper({
                     loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+                    eligiblePaymentMethods: null,
                 }),
             });
 
-            // isLoading reflects isFetching state, not loadingStatus
-            // Initially false because no fetch has started yet (no sdkInstance)
-            expect(result.current.isLoading).toBe(false);
+            // isLoading is true when we don't have eligibility data yet
+            // This prevents UI flash before effect runs
+            expect(result.current.isLoading).toBe(true);
         });
 
         test("should return isLoading=false when eligibility already in context", () => {
@@ -139,15 +140,23 @@ describe("useEligibleMethods", () => {
             expect(result.current.isLoading).toBe(false);
         });
 
-        test("should return isLoading=false when context has error", () => {
+        test("should return isLoading=true when context has error but no eligibility data", () => {
+            // Context error (SDK load failure) doesn't set eligibilityError,
+            // but we still don't have eligibility data, so isLoading is true
             const { result } = renderHook(() => useEligibleMethods(), {
                 wrapper: createWrapper({
                     loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
                     error: new Error("Failed"),
+                    eligiblePaymentMethods: null,
                 }),
             });
 
-            expect(result.current.isLoading).toBe(false);
+            // isLoading is true because we don't have eligibility data
+            // The context error is returned separately
+            expect(result.current.isLoading).toBe(true);
+            expect(result.current.error?.message).toContain(
+                "PayPal context error",
+            );
         });
     });
 
@@ -185,15 +194,16 @@ describe("useEligibleMethods", () => {
                 }),
             });
 
-            // isLoading is false because no fetch has started (no sdkInstance)
+            // isLoading is true because we don't have eligibility data yet
+            // This prevents UI flash before the effect has a chance to run
             expect(result.current).toEqual({
                 eligiblePaymentMethods: null,
-                isLoading: false,
+                isLoading: true,
                 error: null,
             });
         });
 
-        test("should return correct shape during error state", () => {
+        test("should return correct shape during error state with no eligibility", () => {
             const { result } = renderHook(() => useEligibleMethods(), {
                 wrapper: createWrapper({
                     eligiblePaymentMethods: null,
@@ -201,10 +211,11 @@ describe("useEligibleMethods", () => {
                 }),
             });
 
-            // Error from hook's local state, not context
+            // isLoading is true because we have no eligibility data and no eligibility error
+            // (context error is different from eligibility fetch error)
             expect(result.current).toEqual({
                 eligiblePaymentMethods: null,
-                isLoading: false,
+                isLoading: true,
                 error: null,
             });
         });
@@ -298,7 +309,7 @@ describe("useEligibleMethods", () => {
             expect(mockDispatch).not.toHaveBeenCalled();
         });
 
-        test("should set isLoading=true while fetching and false after", async () => {
+        test("should set isLoading=true while fetching", async () => {
             let resolvePromise: (value: unknown) => void;
             const pendingPromise = new Promise((resolve) => {
                 resolvePromise = resolve;
@@ -315,13 +326,33 @@ describe("useEligibleMethods", () => {
                 }),
             });
 
-            // Effect runs synchronously, so isLoading is already true
+            // isLoading is true because no eligibility data yet
             expect(result.current.isLoading).toBe(true);
 
-            // After promise resolves, should be false
+            // After promise resolves, isLoading is still true because
+            // eligiblePaymentMethods in context hasn't been updated
+            // (dispatch is mocked). In real usage, context would update.
             await act(async () => {
                 resolvePromise!(mockEligibilityResult);
             });
+            // The fetch itself completes but context isn't updated in this test setup
+            // so isLoading remains true. See "isLoading state" tests for cases
+            // where eligibility is in context.
+            expect(result.current.isLoading).toBe(true);
+        });
+
+        test("should return isLoading=false when eligibility data exists", () => {
+            const mockSdkInstance = createMockSdkInstance();
+
+            const { result } = renderHook(() => useEligibleMethods(), {
+                wrapper: createWrapper({
+                    sdkInstance: mockSdkInstance,
+                    eligiblePaymentMethods: mockEligibilityResult,
+                    loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                }),
+            });
+
+            // isLoading is false because eligibility data exists in context
             expect(result.current.isLoading).toBe(false);
         });
 
