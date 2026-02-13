@@ -12,7 +12,7 @@ import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
-import { toError, useCompareMemoize } from "../utils";
+import { toError, useCompareMemoize, useDeepCompareMemoize } from "../utils";
 import { useError } from "../hooks/useError";
 
 import type {
@@ -111,6 +111,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     ...scriptOptions
 }) => {
     const memoizedComponents = useCompareMemoize(components);
+    const memoizedMerchantId = useDeepCompareMemoize(merchantId);
     const [paypalNamespace, setPaypalNamespace] =
         useState<PayPalV6Namespace | null>(null);
     const [state, dispatch] = useReducer(instanceReducer, initialState);
@@ -222,7 +223,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     partnerAttributionId,
                     shopperSessionId,
                     testBuyerCountry,
-                    merchantId,
+                    merchantId: memoizedMerchantId,
                 });
 
                 if (!isSubscribed) {
@@ -254,7 +255,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         clientTokenValue,
         locale,
         memoizedComponents,
-        merchantId,
+        memoizedMerchantId,
         pageType,
         partnerAttributionId,
         paypalNamespace,
