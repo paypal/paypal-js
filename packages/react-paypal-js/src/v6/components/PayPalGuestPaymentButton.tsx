@@ -14,14 +14,17 @@ type PayPalGuestPaymentButtonProps = UsePayPalGuestPaymentSessionProps & {
 /**
  * `PayPalGuestPaymentButton` is a button that provides a guest checkout (BCDC) payment flow.
  *
+ * This component automatically wraps the button with `<paypal-basic-card-container>` which is
+ * required for the guest checkout form to display properly.
+ *
  * `PayPalGuestPaymentButtonProps` combines the arguments for {@link UsePayPalGuestPaymentSessionProps}.
  *
  * @example
  * <PayPalGuestPaymentButton
+ *   createOrder={createOrder}
  *   onApprove={() => {
  *      // ... on approve logic
  *   }}
- *   orderId="your-order-id"
  * />
  */
 export const PayPalGuestPaymentButton = ({
@@ -38,7 +41,7 @@ export const PayPalGuestPaymentButton = ({
         }
     }, [error]);
 
-    return isHydrated ? (
+    const button = isHydrated ? (
         <paypal-basic-card-button
             ref={buttonRef}
             onClick={handleClick}
@@ -49,4 +52,6 @@ export const PayPalGuestPaymentButton = ({
     ) : (
         <div />
     );
+
+    return <paypal-basic-card-container>{button}</paypal-basic-card-container>;
 };

@@ -17,7 +17,7 @@ To use the PayPal hosted fields you need to define at least three fields:
 - The expiration date
 
 You can define the expiration date as a single field similar to the example below, 
-or you are able to define it in [two separate fields](https://paypal.github.io/react-paypal-js//?path=/docs/paypal-paypalhostedfields--expiration-date). One for the month and second for year.
+or you are able to define it in [two separate fields](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/paypal-paypalhostedfields--expiration-date). One for the month and second for year.
 
 Note: Take care when using multiple instances of the PayPal Hosted Fields on the same page.
 The component will fail to render when any of the selectors return more than one element.

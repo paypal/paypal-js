@@ -126,6 +126,42 @@ export default [
             },
         ],
     },
+
+    // V6 Server ESM
+    {
+        input: "src/v6/server.ts",
+        plugins: [
+            typescript({
+                tsconfig: "./tsconfig.v6.json",
+                outputToFilesystem: true,
+            }),
+            nodeResolve(),
+            cleanup({
+                comments: "none",
+            }),
+        ],
+        external: ["react"],
+        output: [
+            {
+                file: "dist/v6/esm/server.js",
+                format: "esm",
+                globals: {
+                    react: "React",
+                },
+                plugins: [getBabelOutputPlugin()],
+                banner,
+            },
+            {
+                file: "dist/v6/esm/server.min.js",
+                format: "esm",
+                globals: {
+                    react: "React",
+                },
+                plugins: [getBabelOutputPlugin(), terser()],
+                banner,
+            },
+        ],
+    },
 ];
 
 function getBannerText() {

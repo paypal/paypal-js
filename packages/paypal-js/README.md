@@ -35,9 +35,9 @@ The [default JS SDK code snippet](https://developer.paypal.com/docs/checkout/sta
 
 The above snippet can be difficult to implement in a non-blocking way, especially in single page web apps. This is where the paypal-js library comes in. It provides the following benefits over the above snippet:
 
--   Async script loading to ensure page rendering isn't blocked.
--   A [Promise API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) to know when script loading is complete.
--   A convenient way to reload the script when query parameters or data attributes change.
+- Async script loading to ensure page rendering isn't blocked.
+- A [Promise API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) to know when script loading is complete.
+- A convenient way to reload the script when query parameters or data attributes change.
 
 ## Installation
 
@@ -53,8 +53,8 @@ Import the `loadScript` function for asynchronously loading the Paypal JS SDK.
 
 ### `loadScript(options)`
 
--   accepts an object for passing query parameters and attributes to the JS SDK.
--   returns a Promise that resolves with `window.paypal` after the JS SDK is finished loading.
+- accepts an object for passing query parameters and attributes to the JS SDK.
+- returns a Promise that resolves with `window.paypal` after the JS SDK is finished loading.
 
 #### Async/Await
 
@@ -221,7 +221,7 @@ loadScript(options, PromisePonyfill).then((paypalObject) => {});
 We also provide a legacy build that includes the [promise-polyfill](https://github.com/taylorhakes/promise-polyfill) library. You can reference it from the CDN here:
 
 ```html
-<script src="https://unpkg.com/@paypal/paypal-js@8.0.0/dist/iife/paypal-js.legacy.min.js"></script>
+<script src="https://unpkg.com/@paypal/paypal-js@9.2.0/dist/iife/paypal-js.legacy.min.js"></script>
 ```
 
 ### Using a CDN
@@ -232,7 +232,7 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
 <!doctype html>
 <html lang="en">
     <head>
-        <script src="https://unpkg.com/@paypal/paypal-js@8.0.0/dist/iife/paypal-js.min.js"></script>
+        <script src="https://unpkg.com/@paypal/paypal-js@9.2.0/dist/iife/paypal-js.min.js"></script>
     </head>
     <body>
         <div id="paypal-buttons"></div>
@@ -249,8 +249,8 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
 
 The `loadCustomScript` function is a generic script loader function that works with any url.
 
--   accepts an object for defining the script url and attributes.
--   returns a promise to indicate if the script was successfully loaded.
+- accepts an object for defining the script url and attributes.
+- returns a promise to indicate if the script was successfully loaded.
 
 #### Async/Await
 
@@ -293,37 +293,114 @@ loadCustomScript({
 
 This package includes TypeScript type definitions for the PayPal JS SDK. This includes types for the `window.paypal` namespace. We support projects using TypeScript versions >= 3.8.
 
+## V6 SDK Support
+
+The PayPal Web SDK V6 introduces a modern, component-based architecture with a `createInstance()` pattern, explicit component loading, and built-in eligibility checking.
+
+### Loading the V6 SDK
+
+Use `loadCoreSdkScript()` to asynchronously load the V6 SDK:
+
+```ts
+import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
+
+const paypal = await loadCoreSdkScript({
+    environment: "sandbox", // "sandbox" | "production"
+    debug: true, // optional
+});
+```
+
+**Options:**
+
+| Option          | Type                          | Description             |
+| --------------- | ----------------------------- | ----------------------- |
+| `environment`   | `"sandbox"` \| `"production"` | Target environment      |
+| `debug`         | `boolean`                     | Enable debug mode       |
+| `dataNamespace` | `string`                      | Custom global namespace |
+
+### Creating an SDK Instance
+
+After loading, create an instance with `createInstance()`:
+
+```ts
+const sdkInstance = await paypal.createInstance({
+    clientToken: "YOUR_CLIENT_TOKEN",
+    components: ["paypal-payments", "venmo-payments"],
+    locale: "en-US",
+    pageType: "checkout",
+});
+```
+
+### V6 Components
+
+These are the components that currently support the TypeScript types offered for the V6 PayPal JS SDK via `paypal-js`.
+
+| Component                          | Description                                         |
+| ---------------------------------- | --------------------------------------------------- |
+| `paypal-payments`                  | PayPal payment sessions (one-time, save, Pay Later) |
+| `paypal-guest-payments`            | Guest checkout with credit/debit cards              |
+| `venmo-payments`                   | Venmo payment integration                           |
+| `card-fields`                      | Customizable card field components                  |
+| `paypal-messages`                  | PayPal messaging component                          |
+| `paypal-subscriptions`             | Subscription payment handling                       |
+| `paypal-legacy-billing-agreements` | Legacy billing support                              |
+
 ### V6 TypeScript Types
 
-In addition to the type definitions above, this package also includes Typescript type definitions for the PayPal JS SDK V6.
-
-#### Importing and Using V6 Types
-
-A basic example showing data-typing for PayPal One Time Payment.
+Import types from the `@paypal/paypal-js/sdk-v6` subpath:
 
 ```ts
 import type {
     PayPalV6Namespace,
+    LoadCoreSdkScriptOptions,
+    Components,
+    CreateInstanceOptions,
+    SdkInstance,
     OnApproveDataOneTimePayments,
     OnShippingAddressChangeData,
 } from "@paypal/paypal-js/sdk-v6";
+```
 
-declare global {
-    interface Window {
-        paypal: PayPalV6Namespace;
+### Complete V6 Example
+
+```ts
+import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
+import type { OnApproveDataOneTimePayments } from "@paypal/paypal-js/sdk-v6";
+
+async function initPayPal() {
+    const paypal = await loadCoreSdkScript({ environment: "sandbox" });
+
+    if (!paypal) {
+        console.error("Failed to load PayPal SDK");
+        return;
+    }
+
+    const sdkInstance = await paypal.createInstance({
+        clientToken: "YOUR_CLIENT_TOKEN",
+        components: ["paypal-payments"],
+    });
+
+    // Check eligibility before rendering
+    const eligibility = await sdkInstance.findEligibleMethods();
+
+    if (eligibility.isEligible("paypal")) {
+        const session = sdkInstance.createPayPalOneTimePaymentSession({
+            onApprove: async (data: OnApproveDataOneTimePayments) => {
+                // Capture payment on your server
+                await fetch("/api/capture", {
+                    method: "POST",
+                    body: JSON.stringify({ orderId: data.orderId }),
+                });
+            },
+        });
+
+        // Start payment when user clicks
+        await session.start({ presentationMode: "popup" }, createOrderOnServer);
     }
 }
 
-const sdkInstance = await window.paypal.createInstance({
-    clientToken: "INSERT_YOUR_CLIENT_TOKEN_HERE",
-    components: ["paypal-payments", "venmo-payments"],
-});
-
-function onApproveCallback(data: OnApproveDataOneTimePayments) {}
-function onShippingAddressChangeCallback(data: OnShippingAddressChangeData) {}
-
-const paypalCheckout = sdkInstance.createPayPalOneTimePaymentSession({
-    onApprove: onApproveCallback,
-    onShippingAddressChange: onShippingAddressChangeCallback,
-});
+async function createOrderOnServer() {
+    const response = await fetch("/api/create-order", { method: "POST" });
+    return response.json(); // { orderId: "..." }
+}
 ```

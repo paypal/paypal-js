@@ -48,6 +48,30 @@ describe("PayPalGuestPaymentButton", () => {
         ).toBeInTheDocument();
     });
 
+    it("should render paypal-basic-card-container wrapper", () => {
+        const { container } = render(
+            <PayPalGuestPaymentButton {...defaultProps} />,
+        );
+        expect(
+            container.querySelector("paypal-basic-card-container"),
+        ).toBeInTheDocument();
+    });
+
+    it("should render paypal-basic-card-button inside paypal-basic-card-container", () => {
+        const { container } = render(
+            <PayPalGuestPaymentButton {...defaultProps} />,
+        );
+        const containerElement = container.querySelector(
+            "paypal-basic-card-container",
+        );
+        const buttonElement = container.querySelector(
+            "paypal-basic-card-button",
+        );
+        expect(containerElement).toBeInTheDocument();
+        expect(buttonElement).toBeInTheDocument();
+        expect(containerElement?.contains(buttonElement)).toBe(true);
+    });
+
     it("should render a div when not hydrated", () => {
         mockUsePayPal.mockReturnValue({
             isHydrated: false,
@@ -59,6 +83,10 @@ describe("PayPalGuestPaymentButton", () => {
             container.querySelector("paypal-basic-card-button"),
         ).not.toBeInTheDocument();
         expect(container.querySelector("div")).toBeInTheDocument();
+        // Container should still be present even when not hydrated
+        expect(
+            container.querySelector("paypal-basic-card-container"),
+        ).toBeInTheDocument();
     });
 
     it("should call handleClick when button is clicked", () => {

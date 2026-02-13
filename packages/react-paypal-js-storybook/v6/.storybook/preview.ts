@@ -3,6 +3,10 @@ import { withPayPalProvider } from "../src/decorators";
 
 const preview: Preview = {
     parameters: {
+        actions: {
+            // Automatically create actions for props matching on* pattern
+            argTypesRegex: "^on[A-Z].*",
+        },
         controls: {
             matchers: {
                 color: /(background|color)$/i,
