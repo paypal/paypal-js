@@ -107,6 +107,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     testBuyerCountry,
     eligibleMethodsResponse,
     children,
+    merchantId,
     ...scriptOptions
 }) => {
     const memoizedComponents = useCompareMemoize(components);
@@ -221,6 +222,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     partnerAttributionId,
                     shopperSessionId,
                     testBuyerCountry,
+                    merchantId,
                 });
 
                 if (!isSubscribed) {
@@ -252,6 +254,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         clientTokenValue,
         locale,
         memoizedComponents,
+        merchantId,
         pageType,
         partnerAttributionId,
         paypalNamespace,
