@@ -46,6 +46,7 @@ describe("PayLaterOneTimePaymentButton", () => {
 
     it("should render a div when not hydrated", () => {
         mockUsePayPal.mockReturnValue({
+            eligiblePaymentMethods: null,
             isHydrated: false,
         });
         const { container } = render(
@@ -162,6 +163,7 @@ describe("PayLaterOneTimePaymentButton", () => {
     describe("auto-population from eligibility context", () => {
         it("should auto-populate countryCode and productCode from eligibility context", () => {
             mockUsePayPal.mockReturnValue({
+                isHydrated: true,
                 eligiblePaymentMethods: {
                     isEligible: jest.fn().mockReturnValue(true),
                     getDetails: jest.fn().mockReturnValue({
@@ -170,7 +172,6 @@ describe("PayLaterOneTimePaymentButton", () => {
                         canBeVaulted: false,
                     }),
                 },
-                isHydrated: true,
             });
 
             const { container } = render(
@@ -188,8 +189,8 @@ describe("PayLaterOneTimePaymentButton", () => {
 
         it("should handle when eligibility was not fetched", () => {
             mockUsePayPal.mockReturnValue({
-                eligiblePaymentMethods: null,
                 isHydrated: true,
+                eligiblePaymentMethods: null,
             });
 
             const { container } = render(
@@ -207,11 +208,11 @@ describe("PayLaterOneTimePaymentButton", () => {
 
         it("should handle when PayLater details are not available", () => {
             mockUsePayPal.mockReturnValue({
+                isHydrated: true,
                 eligiblePaymentMethods: {
                     isEligible: jest.fn().mockReturnValue(false),
                     getDetails: jest.fn().mockReturnValue(undefined),
                 },
-                isHydrated: true,
             });
 
             const { container } = render(
