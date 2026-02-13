@@ -69,6 +69,7 @@ export function useEligibleMethods(
     const dispatch = usePayPalDispatch();
     const [eligibilityError, setError] = useError();
     const [isFetching, setIsFetching] = useState(false);
+    const eligiblePaymentMethodsRef = useRef(eligiblePaymentMethods);
 
     // Memoize payload to avoid unnecessary re-fetches when object reference changes
     const memoizedPayload = useDeepCompareMemoize(payload);
@@ -100,7 +101,10 @@ export function useEligibleMethods(
 
         // If eligibility exists and we haven't fetched anything yet (e.g., server hydration),
         // mark as fetched to avoid unnecessary re-fetch with same payload
-        if (eligiblePaymentMethods && lastFetchRef.current === null) {
+        if (
+            eligiblePaymentMethodsRef.current &&
+            lastFetchRef.current === null
+        ) {
             lastFetchRef.current = {
                 instance: sdkInstance,
                 payload: memoizedPayload,
