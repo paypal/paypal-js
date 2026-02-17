@@ -3,19 +3,17 @@ import { nodeResolve } from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 import terser from "@rollup/plugin-terser";
 import cleanup from "rollup-plugin-cleanup";
-import preserveDirectivesModule from "rollup-preserve-directives";
 
 import pkg from "./package.json";
 
 const pkgName = pkg.name.split("@paypal/")[1];
 const banner = getBannerText();
+const useClientBanner = `"use client";\n${banner}`;
 const tsconfigOverride = {
     exclude: ["node_modules", "**/*.test.ts*"],
     outDir: "./dist",
     target: "es5",
 };
-const preserveDirectives =
-    preserveDirectivesModule.default || preserveDirectivesModule;
 
 export default [
     // CommonJS
@@ -96,11 +94,9 @@ export default [
     },
 
     // V6 ESM build
-    // V6 Build Differences:
-    // - Uses preserveModules (vs single bundle) to maintain per-file "use client" directives
-    // - Externalizes @paypal/paypal-js (vs bundling) to avoid duplicate output files with preserveModules
+    // - Bundle-level "use client" directive for RSC compatibility
+    // - Externalizes @paypal/paypal-js to avoid bundling the core SDK
     // - Externalizes server-only for RSC server/client boundary enforcement
-    // - No minified output (consumer bundlers handle minification)
     // - ESM-only (no CJS) as v6 targets modern React/Next.js environments
     {
         input: "src/v6/index.ts",
@@ -109,7 +105,6 @@ export default [
                 tsconfig: "./tsconfig.v6.json",
                 outputToFilesystem: true,
             }),
-            preserveDirectives(),
             cleanup({
                 comments: "none",
             }),
@@ -117,12 +112,10 @@ export default [
         external: ["react", /^@paypal\/paypal-js/, "server-only"],
         output: [
             {
-                dir: "dist/v6/esm",
+                file: "dist/v6/esm/react-paypal-js.js",
                 format: "esm",
-                preserveModules: true,
-                preserveModulesRoot: "src/v6",
                 plugins: [getBabelOutputPlugin()],
-                banner,
+                banner: useClientBanner,
             },
         ],
     },

@@ -26,7 +26,7 @@
         },
         "./sdk-v6": {
             "types": "./dist/types/v6/index.d.ts",
-            "import": "./dist/v6/esm/index.js"
+            "import": "./dist/v6/esm/react-paypal-js.js"
         },
         "./sdk-v6/server": {
             "types": "./dist/types/v6/server.d.ts",
@@ -114,7 +114,6 @@
         "rimraf": "^3.0.2",
         "rollup": "^4.9.1",
         "rollup-plugin-cleanup": "^3.2.1",
-        "rollup-preserve-directives": "^1.1.3",
         "scheduler": "^0.20.2",
         "semver": "^7.3.5",
         "standard-version": "^9.3.2",
