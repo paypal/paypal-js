@@ -1,7 +1,7 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
-        "outDir": "./dist/v6",
+        "outDir": "./dist/v6/esm",
         "rootDir": "./src/v6"
     },
     "include": ["src/v6/**/*.ts", "src/v6/**/*.tsx"],
