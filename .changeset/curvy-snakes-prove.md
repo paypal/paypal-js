@@ -2,4 +2,4 @@
 "@paypal/react-paypal-js": minor
 ---
 
-Adds use client directives to v6 components and hooks.
+Updates the V6 rollup config to apply bundle-level use client directive to client bundle.
