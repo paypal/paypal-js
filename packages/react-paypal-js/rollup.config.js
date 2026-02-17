@@ -112,10 +112,22 @@ export default [
         external: ["react", /^@paypal\/paypal-js/, "server-only"],
         output: [
             {
-                file: "dist/v6/esm/react-paypal-js.js",
+                file: `dist/v6/esm/${pkgName}.js`,
                 format: "esm",
+                globals: {
+                    react: "React",
+                },
                 plugins: [getBabelOutputPlugin()],
                 banner: useClientBanner,
+            },
+            {
+                file: `dist/v6/esm/${pkgName}.min.js`,
+                format: "esm",
+                globals: {
+                    react: "React",
+                },
+                plugins: [getBabelOutputPlugin(), terser()],
+                banner,
             },
         ],
     },
