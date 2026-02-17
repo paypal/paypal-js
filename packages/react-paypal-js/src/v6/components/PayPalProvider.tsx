@@ -29,7 +29,7 @@ type PayPalProviderProps = Omit<
     CreateInstanceOptions<readonly [Components, ...Components[]]>,
     "components" | "clientToken"
 > &
-    LoadCoreSdkScriptOptions & {
+    Omit<LoadCoreSdkScriptOptions, "dataSdkIntegrationSource"> & {
         components?: Components[];
         eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
         children: React.ReactNode;
@@ -118,7 +118,10 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     >(undefined);
     const [isHydrated, setIsHydrated] = useState(false);
     // Ref to hold script options to avoid re-running effect
-    const loadCoreScriptOptions = useRef(scriptOptions);
+    const loadCoreScriptOptions = useRef({
+        ...scriptOptions,
+        dataSdkIntegrationSource: "react-paypal-js",
+    });
 
     // Set hydrated state after initial client render to prevent hydration mismatch
     useIsomorphicLayoutEffect(() => {
