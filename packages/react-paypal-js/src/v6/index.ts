@@ -29,6 +29,9 @@ export { PayPalOneTimePaymentButton } from "./components/PayPalOneTimePaymentBut
 export { PayPalProvider } from "./components/PayPalProvider";
 export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
+export { PayPalCardNumberField } from "./components/PayPalCardNumberField";
+export { PayPalCardExpiryField } from "./components/PayPalCardExpiryField";
+export { PayPalCardCvvField } from "./components/PayPalCardCvvField";
 
 // ============================================================================
 // Hooks
