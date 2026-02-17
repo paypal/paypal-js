@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect } from "react";
 
 import { usePayPalSavePaymentSession } from "../hooks/usePayPalSavePaymentSession";

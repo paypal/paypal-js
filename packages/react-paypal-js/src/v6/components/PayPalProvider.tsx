@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
