@@ -129,8 +129,9 @@ export const PayPalCardFieldsProvider = ({
         }
 
         // Create Card Fields session based on sessionType
+        let newCardFieldsSession: CardFieldsSession;
         try {
-            const newCardFieldsSession =
+            newCardFieldsSession =
                 cardFieldsSessionType ===
                 CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT
                     ? sdkInstance.createCardFieldsOneTimePaymentSession()
@@ -143,6 +144,7 @@ export const PayPalCardFieldsProvider = ({
 
         // Cleanup: destroy session on unmount or when dependencies change
         return () => {
+            newCardFieldsSession?.destroy();
             setCardFieldsSession(null);
         };
     }, [sdkInstance, loadingStatus, cardFieldsSessionType, handleError]);
@@ -219,8 +221,9 @@ export const PayPalCardFieldsProvider = ({
         () => ({
             cardFieldsSession,
             setCardFieldsSessionType,
+            setError: handleError,
         }),
-        [cardFieldsSession, setCardFieldsSessionType],
+        [cardFieldsSession, setCardFieldsSessionType, handleError],
     );
 
     const statusContextValue: CardFieldsStatusState = useMemo(

@@ -40,6 +40,9 @@ const createMockOneTimePaymentSession =
         update: jest.fn() as jest.MockedFunction<
             CardFieldsOneTimePaymentSession["update"]
         >,
+        destroy: jest.fn() as jest.MockedFunction<
+            CardFieldsOneTimePaymentSession["destroy"]
+        >,
     });
 
 const createMockSavePaymentSession = (): CardFieldsSavePaymentSession => ({
@@ -50,6 +53,9 @@ const createMockSavePaymentSession = (): CardFieldsSavePaymentSession => ({
     >,
     update: jest.fn() as jest.MockedFunction<
         CardFieldsSavePaymentSession["update"]
+    >,
+    destroy: jest.fn() as jest.MockedFunction<
+        CardFieldsSavePaymentSession["destroy"]
     >,
 });
 
@@ -295,6 +301,9 @@ describe("PayPalCardFieldsProvider", () => {
 
             rerender();
             expect(
+                mockCardFieldsOneTimePaymentSession.destroy,
+            ).toHaveBeenCalled();
+            expect(
                 newMockSdkInstance.createCardFieldsOneTimePaymentSession,
             ).toHaveBeenCalled();
             expect(result.current.session.cardFieldsSession).toBe(
@@ -312,6 +321,7 @@ describe("PayPalCardFieldsProvider", () => {
         const expectedSessionContextKeys = [
             "cardFieldsSession",
             "setCardFieldsSessionType",
+            "setError",
         ] as const satisfies (keyof CardFieldsSessionState)[];
         const expectedStatusContextKeys = [
             "error",
