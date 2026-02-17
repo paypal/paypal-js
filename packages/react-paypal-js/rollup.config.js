@@ -103,7 +103,6 @@ export default [
         plugins: [
             typescript({
                 tsconfig: "./tsconfig.v6.json",
-                outputToFilesystem: true,
             }),
             cleanup({
                 comments: "none",
@@ -121,7 +120,7 @@ export default [
                 file: `dist/v6/esm/${pkgName}.min.js`,
                 format: "esm",
                 plugins: [getBabelOutputPlugin(), terser()],
-                banner,
+                banner: useClientBanner,
             },
         ],
     },
@@ -132,7 +131,6 @@ export default [
         plugins: [
             typescript({
                 tsconfig: "./tsconfig.v6.json",
-                outputToFilesystem: true,
             }),
             nodeResolve(),
             cleanup({
