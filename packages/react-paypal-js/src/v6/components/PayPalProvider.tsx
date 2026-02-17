@@ -193,16 +193,20 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             if (typeof authCredential === "string") {
                 if (isClientToken) {
                     setClientTokenValue(authCredential);
+                    setClientIdValue(undefined);
                 } else {
                     setClientIdValue(authCredential);
+                    setClientTokenValue(undefined);
                 }
             } else {
                 try {
                     const resolved = await authCredential;
                     if (isClientToken) {
                         setClientTokenValue(resolved);
+                        setClientIdValue(undefined); // Clear clientId when using clientToken
                     } else {
                         setClientIdValue(resolved);
+                        setClientTokenValue(undefined); // Clear clientToken when using clientId
                     }
                 } catch (error) {
                     const authError = new Error(
