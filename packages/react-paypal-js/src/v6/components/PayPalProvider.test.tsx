@@ -133,11 +133,16 @@ describe("PayPalProvider", () => {
 
     describe("SDK Loading", () => {
         test("should set loadingStatus to 'resolved' when SDK loads successfully", async () => {
-            const { state } = await renderProvider();
+            const dataSdkIntegrationSource = "test-integration-source";
+
+            const { state } = await renderProvider({
+                dataSdkIntegrationSource,
+            });
 
             expect(loadCoreSdkScript).toHaveBeenCalledWith({
                 environment: "sandbox",
                 debug: false,
+                dataSdkIntegrationSource,
             });
 
             await waitFor(() => expectResolvedState(state));

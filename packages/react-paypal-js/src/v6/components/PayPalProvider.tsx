@@ -170,6 +170,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     environment: loadCoreScriptOptions.current.environment,
                     debug: loadCoreScriptOptions.current.debug,
                     dataNamespace: loadCoreScriptOptions.current.dataNamespace,
+                    dataSdkIntegrationSource:
+                        loadCoreScriptOptions.current.dataSdkIntegrationSource,
                 });
 
                 if (paypal) {
