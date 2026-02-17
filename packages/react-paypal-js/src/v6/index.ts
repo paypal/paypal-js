@@ -23,7 +23,10 @@ export {
     PayPalCardFieldsProvider,
     type CardFieldsSessionType,
 } from "./components/PayPalCardFieldsProvider";
-export { PayLaterOneTimePaymentButton } from "./components/PayLaterOneTimePaymentButton";
+export {
+    PayLaterOneTimePaymentButton,
+    type PayLaterOneTimePaymentButtonProps,
+} from "./components/PayLaterOneTimePaymentButton";
 export { PayPalGuestPaymentButton } from "./components/PayPalGuestPaymentButton";
 export { PayPalOneTimePaymentButton } from "./components/PayPalOneTimePaymentButton";
 export { PayPalProvider } from "./components/PayPalProvider";

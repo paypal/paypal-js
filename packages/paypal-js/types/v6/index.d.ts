@@ -223,6 +223,7 @@ export interface BaseInstance {
 
 interface CoreSdkScriptDataAttributes {
     dataNamespace?: string;
+    dataSdkIntegrationSource?: string;
 }
 
 export interface LoadCoreSdkScriptOptions extends CoreSdkScriptDataAttributes {

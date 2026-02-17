@@ -12,7 +12,7 @@ import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
 } from "../types/PayPalProviderEnums";
-import { toError, useCompareMemoize } from "../utils";
+import { toError, useCompareMemoize, useDeepCompareMemoize } from "../utils";
 import { useError } from "../hooks/useError";
 
 import type {
@@ -29,7 +29,7 @@ type PayPalProviderProps = Omit<
     CreateInstanceOptions<readonly [Components, ...Components[]]>,
     "components" | "clientToken"
 > &
-    LoadCoreSdkScriptOptions & {
+    Omit<LoadCoreSdkScriptOptions, "dataSdkIntegrationSource"> & {
         components?: Components[];
         eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
         children: React.ReactNode;
@@ -107,9 +107,11 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     testBuyerCountry,
     eligibleMethodsResponse,
     children,
+    merchantId,
     ...scriptOptions
 }) => {
     const memoizedComponents = useCompareMemoize(components);
+    const memoizedMerchantId = useDeepCompareMemoize(merchantId);
     const [paypalNamespace, setPaypalNamespace] =
         useState<PayPalV6Namespace | null>(null);
     const [state, dispatch] = useReducer(instanceReducer, initialState);
@@ -118,7 +120,10 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     >(undefined);
     const [isHydrated, setIsHydrated] = useState(false);
     // Ref to hold script options to avoid re-running effect
-    const loadCoreScriptOptions = useRef(scriptOptions);
+    const loadCoreScriptOptions = useRef({
+        ...scriptOptions,
+        dataSdkIntegrationSource: "react-paypal-js",
+    });
 
     // Set hydrated state after initial client render to prevent hydration mismatch
     useIsomorphicLayoutEffect(() => {
@@ -170,6 +175,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     environment: loadCoreScriptOptions.current.environment,
                     debug: loadCoreScriptOptions.current.debug,
                     dataNamespace: loadCoreScriptOptions.current.dataNamespace,
+                    dataSdkIntegrationSource:
+                        loadCoreScriptOptions.current.dataSdkIntegrationSource,
                 });
 
                 if (paypal) {
@@ -221,6 +228,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     partnerAttributionId,
                     shopperSessionId,
                     testBuyerCountry,
+                    merchantId: memoizedMerchantId,
                 });
 
                 if (!isSubscribed) {
@@ -252,6 +260,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         clientTokenValue,
         locale,
         memoizedComponents,
+        memoizedMerchantId,
         pageType,
         partnerAttributionId,
         paypalNamespace,
