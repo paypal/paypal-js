@@ -99,7 +99,10 @@ export default [
     // - Externalizes server-only for RSC server/client boundary enforcement
     // - ESM-only (no CJS) as v6 targets modern React/Next.js environments
     {
-        input: "src/v6/index.ts",
+        input: {
+            index: "src/v6/index.ts",
+            server: "src/v6/server.ts",
+        },
         plugins: [
             typescript({
                 tsconfig: "./tsconfig.v6.json",
