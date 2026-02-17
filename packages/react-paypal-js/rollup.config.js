@@ -114,18 +114,12 @@ export default [
             {
                 file: `dist/v6/esm/${pkgName}.js`,
                 format: "esm",
-                globals: {
-                    react: "React",
-                },
                 plugins: [getBabelOutputPlugin()],
                 banner: useClientBanner,
             },
             {
                 file: `dist/v6/esm/${pkgName}.min.js`,
                 format: "esm",
-                globals: {
-                    react: "React",
-                },
                 plugins: [getBabelOutputPlugin(), terser()],
                 banner,
             },
@@ -150,18 +144,12 @@ export default [
             {
                 file: "dist/v6/esm/server.js",
                 format: "esm",
-                globals: {
-                    react: "React",
-                },
                 plugins: [getBabelOutputPlugin()],
                 banner,
             },
             {
                 file: "dist/v6/esm/server.min.js",
                 format: "esm",
-                globals: {
-                    react: "React",
-                },
                 plugins: [getBabelOutputPlugin(), terser()],
                 banner,
             },
