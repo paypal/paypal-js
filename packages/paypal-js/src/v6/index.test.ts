@@ -94,6 +94,43 @@ describe("loadCoreSdkScript()", () => {
         });
     });
 
+    describe("dataSdkIntegrationSource option", () => {
+        test("should support custom data-sdk-integration-source attribute", async () => {
+            const integrationSource = "react-paypal-js";
+
+            const result = await loadCoreSdkScript({
+                dataSdkIntegrationSource: integrationSource,
+            });
+
+            expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
+                "https://www.sandbox.paypal.com/web-sdk/v6/core",
+            );
+            expect(
+                mockedInsertScriptElement.mock.calls[0][0].attributes,
+            ).toEqual({
+                "data-sdk-integration-source": integrationSource,
+            });
+            expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+            expect(result).toBeDefined();
+        });
+
+        test("should error when dataSdkIntegrationSource is an empty string", async () => {
+            expect(async () => {
+                await loadCoreSdkScript({ dataSdkIntegrationSource: "" });
+            }).rejects.toThrowError(
+                'The "dataSdkIntegrationSource" option cannot be an empty string',
+            );
+        });
+
+        test("should error when dataSdkIntegrationSource is only whitespace", async () => {
+            expect(async () => {
+                await loadCoreSdkScript({ dataSdkIntegrationSource: "   " });
+            }).rejects.toThrowError(
+                'The "dataSdkIntegrationSource" option cannot be an empty string',
+            );
+        });
+    });
+
     test("should return PayPal namespace with version property", async () => {
         const result = await loadCoreSdkScript();
         expect(result).toBeDefined();
