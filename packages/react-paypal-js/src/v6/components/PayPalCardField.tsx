@@ -40,8 +40,6 @@ export const PayPalCardField = ({
         let cardField: CardFieldComponent;
         optionsRef.current = options;
         try {
-            // TODO: test this error manually on demo page
-            // cardField = (cardFieldsSession as any).createCardFieldsComponent({ ...optionsRef.current, type: "number2" });
             cardField = cardFieldsSession.createCardFieldsComponent(
                 optionsRef.current,
             );
@@ -56,8 +54,6 @@ export const PayPalCardField = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cardFieldsSession]);
 
-    // TODO: should I use the isHydrated flag
-    // TODO: Test on next to see if this return generates any hydration missmatches. If it does, we might need to conditionally render the container div based on isHydrated
     return (
         <div
             style={containerStyles}
