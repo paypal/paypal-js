@@ -52,6 +52,10 @@ type PayPalProviderProps =
  * SDK loading is automatically deferred until clientToken or clientId is available.
  * Both can be either a string, Promise, or undefined.
  *
+ * ** Important: When passing a Promise, you must ensure referential stability across renders.
+ * An unstable Promise reference (e.g., calling `fetchClientToken()` or `fetchClientId()` inline)
+ * will cause the SDK to re-initialize on every render. Wrap the promise in `useMemo` or store it in state.
+ *
  * @example
  * // With string clientToken
  * <PayPalProvider
@@ -267,6 +271,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     partnerAttributionId,
                     shopperSessionId,
                     testBuyerCountry,
+                    merchantId: memoizedMerchantId,
                 };
 
                 const instanceOptions = isClientToken
