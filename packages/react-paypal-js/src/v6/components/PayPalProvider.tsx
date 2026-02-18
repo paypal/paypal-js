@@ -37,11 +37,11 @@ type PayPalProviderPropsBase = Omit<
 
 type PayPalProviderProps =
     | (PayPalProviderPropsBase & {
-          clientToken: string | Promise<string>;
+          clientToken: string | Promise<string> | undefined;
           clientId?: never;
       })
     | (PayPalProviderPropsBase & {
-          clientId: string | Promise<string>;
+          clientId: string | Promise<string> | undefined;
           clientToken?: never;
       });
 
@@ -161,12 +161,6 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     const [paypalNamespace, setPaypalNamespace] =
         useState<PayPalV6Namespace | null>(null);
     const [state, dispatch] = useReducer(instanceReducer, initialState);
-    const [clientTokenValue, setClientTokenValue] = useState<
-        string | undefined
-    >(undefined);
-    const [clientIdValue, setClientIdValue] = useState<string | undefined>(
-        undefined,
-    );
     const [isHydrated, setIsHydrated] = useState(false);
     // Ref to hold script options to avoid re-running effect
     const loadCoreScriptOptions = useRef({
@@ -188,50 +182,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         let isSubscribed = true;
 
         const loadSdk = async () => {
-            const authCredential = clientToken || clientId;
-            const isClientToken = !!clientToken;
-
-            if (!authCredential) {
-                return;
-            }
-
-            if (typeof authCredential === "string") {
-                if (isClientToken) {
-                    setClientTokenValue(authCredential);
-                    setClientIdValue(undefined);
-                } else {
-                    setClientIdValue(authCredential);
-                    setClientTokenValue(undefined);
-                }
-            } else {
-                try {
-                    const resolved = await authCredential;
-                    if (isClientToken) {
-                        setClientTokenValue(resolved);
-                        setClientIdValue(undefined); // Clear clientId when using clientToken
-                    } else {
-                        setClientIdValue(resolved);
-                        setClientTokenValue(undefined); // Clear clientToken when using clientId
-                    }
-                } catch (error) {
-                    const authError = new Error(
-                        `Failed to resolve ${isClientToken ? "clientToken" : "clientId"}. Expected a Promise that resolves to a string, but it was rejected with: ${toError(error).message}`,
-                    );
-                    setError(authError);
-                    dispatch({
-                        type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                        value: authError,
-                    });
-                    return;
-                }
-            }
-
-            if (!isSubscribed) {
-                return;
-            }
-
             try {
-                const paypal = await loadCoreSdkScript({
+                const sdkNamespace = await loadCoreSdkScript({
                     environment: loadCoreScriptOptions.current.environment,
                     debug: loadCoreScriptOptions.current.debug,
                     dataNamespace: loadCoreScriptOptions.current.dataNamespace,
@@ -239,15 +191,17 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                         loadCoreScriptOptions.current.dataSdkIntegrationSource,
                 });
 
-                if (paypal) {
-                    setPaypalNamespace(paypal);
+                if (sdkNamespace && isSubscribed) {
+                    setPaypalNamespace(sdkNamespace);
                 }
             } catch (error) {
-                setError(error);
-                dispatch({
-                    type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-                    value: toError(error),
-                });
+                if (isSubscribed) {
+                    setError(error);
+                    dispatch({
+                        type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
+                        value: toError(error),
+                    });
+                }
             }
         };
 
@@ -256,7 +210,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         return () => {
             isSubscribed = false;
         };
-    }, [clientToken, clientId, setError]);
+    }, [setError]);
 
     // Create SDK Instance
     useEffect(() => {
@@ -264,11 +218,10 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
             return;
         }
 
-        if (!clientTokenValue && !clientIdValue) {
+        if (!clientToken && !clientId) {
             return;
         }
 
-        // This dispatch is for instance creations after initial mount
         dispatch({
             type: INSTANCE_DISPATCH_ACTION.SET_LOADING_STATUS,
             value: INSTANCE_LOADING_STATE.PENDING,
@@ -278,7 +231,34 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
 
         const createSdkInstance = async () => {
             try {
-                // Create SDK instance
+                const authCredential = clientToken || clientId;
+                const isClientToken = !!clientToken;
+
+                let credentialValue: string | undefined;
+                if (typeof authCredential === "string") {
+                    credentialValue = authCredential;
+                } else if (authCredential) {
+                    try {
+                        credentialValue = await authCredential;
+                    } catch (error) {
+                        const authError = new Error(
+                            `Failed to resolve ${isClientToken ? "clientToken" : "clientId"}. Expected a Promise that resolves to a string, but it was rejected with: ${toError(error).message}`,
+                        );
+                        if (isSubscribed) {
+                            setError(authError);
+                            dispatch({
+                                type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
+                                value: authError,
+                            });
+                        }
+                        return;
+                    }
+                }
+
+                if (!credentialValue || !isSubscribed) {
+                    return;
+                }
+
                 const baseOptions = {
                     clientMetadataId,
                     components: memoizedComponents,
@@ -289,9 +269,9 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     testBuyerCountry,
                 };
 
-                const instanceOptions = clientTokenValue
-                    ? { ...baseOptions, clientToken: clientTokenValue }
-                    : { ...baseOptions, clientId: clientIdValue! };
+                const instanceOptions = isClientToken
+                    ? { ...baseOptions, clientToken: credentialValue }
+                    : { ...baseOptions, clientId: credentialValue };
 
                 const instance =
                     await paypalNamespace.createInstance(instanceOptions);
@@ -322,8 +302,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         };
     }, [
         clientMetadataId,
-        clientTokenValue,
-        clientIdValue,
+        clientToken,
+        clientId,
         locale,
         memoizedComponents,
         memoizedMerchantId,

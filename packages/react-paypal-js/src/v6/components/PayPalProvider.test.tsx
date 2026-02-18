@@ -333,7 +333,7 @@ describe("PayPalProvider", () => {
 
             expect(childRenderSpy).toHaveBeenCalled();
             expect(getByText!("Test Child Content")).toBeInTheDocument();
-            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
             expect(mockCreateInstance).not.toHaveBeenCalled();
             expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
             expect(state.sdkInstance).toBe(null);
@@ -342,7 +342,6 @@ describe("PayPalProvider", () => {
                 resolveToken!(TEST_CLIENT_TOKEN);
             });
 
-            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
             await waitFor(() => expectResolvedState(state));
 
             expect(mockCreateInstance).toHaveBeenCalledWith(
@@ -392,7 +391,7 @@ describe("PayPalProvider", () => {
                     "Failed to resolve clientToken. Expected a Promise that resolves to a string, but it was rejected with: Token fetch failed",
                 );
             });
-            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+            expect(loadCoreSdkScript).toHaveBeenCalled();
         });
 
         test("should resolve Promise and load SDK when clientToken is a Promise", async () => {
@@ -435,13 +434,12 @@ describe("PayPalProvider", () => {
 
             expect(childRenderSpy).toHaveBeenCalled();
             expect(getByText!("Test Child Content")).toBeInTheDocument();
-            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
 
             await act(async () => {
                 resolveToken!(TEST_CLIENT_TOKEN);
             });
 
-            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
             await waitFor(() => expectResolvedState(state));
         });
     });
@@ -826,7 +824,7 @@ describe("PayPalProvider", () => {
                     "Failed to resolve clientId. Expected a Promise that resolves to a string, but it was rejected with: ClientId fetch failed",
                 );
             });
-            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+            expect(loadCoreSdkScript).toHaveBeenCalled();
         });
     });
 
