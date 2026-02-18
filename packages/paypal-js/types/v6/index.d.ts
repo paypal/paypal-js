@@ -92,6 +92,9 @@ export type CreateInstanceOptions<T extends readonly Components[]> =
  * - `"venmo-payments"` - Adds VenmoPaymentsInstance methods
  * - `"card-fields"` - Adds CardFieldsInstance methods
  * - `"paypal-legacy-billing-agreements"` Adds PayPalLegacyBillingInstance methods
+ * - `"paypal-guest-payments"` - Adds PayPalGuestPaymentsInstance methods
+ * - `"paypal-messages"` - Adds PayPalMessagesInstance methods
+ * - `"paypal-subscriptions"` - Adds PayPalSubscriptionsInstance methods
  *
  * @example
  * ```typescript
@@ -220,6 +223,7 @@ export interface BaseInstance {
 
 interface CoreSdkScriptDataAttributes {
     dataNamespace?: string;
+    dataSdkIntegrationSource?: string;
 }
 
 export interface LoadCoreSdkScriptOptions extends CoreSdkScriptDataAttributes {

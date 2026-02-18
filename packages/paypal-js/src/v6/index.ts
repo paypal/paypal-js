@@ -22,7 +22,8 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         return Promise.resolve(window.paypal as unknown as PayPalV6Namespace);
     }
 
-    const { environment, debug, dataNamespace } = options;
+    const { environment, debug, dataNamespace, dataSdkIntegrationSource } =
+        options;
     const attributes: Record<string, string> = {};
 
     const baseURL =
@@ -37,6 +38,10 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
 
     if (dataNamespace) {
         attributes["data-namespace"] = dataNamespace;
+    }
+
+    if (dataSdkIntegrationSource) {
+        attributes["data-sdk-integration-source"] = dataSdkIntegrationSource;
     }
 
     return new Promise<PayPalV6Namespace>((resolve, reject) => {
@@ -71,7 +76,8 @@ function validateArguments(options: unknown) {
     if (typeof options !== "object" || options === null) {
         throw new Error("Expected an options object");
     }
-    const { environment, dataNamespace } = options as LoadCoreSdkScriptOptions;
+    const { environment, dataNamespace, dataSdkIntegrationSource } =
+        options as LoadCoreSdkScriptOptions;
 
     if (
         environment &&
@@ -85,6 +91,15 @@ function validateArguments(options: unknown) {
 
     if (dataNamespace !== undefined && dataNamespace.trim() === "") {
         throw new Error('The "dataNamespace" option cannot be an empty string');
+    }
+
+    if (
+        dataSdkIntegrationSource !== undefined &&
+        dataSdkIntegrationSource.trim() === ""
+    ) {
+        throw new Error(
+            'The "dataSdkIntegrationSource" option cannot be an empty string',
+        );
     }
 }
 

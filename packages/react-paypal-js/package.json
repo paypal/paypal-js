@@ -27,6 +27,10 @@
         "./sdk-v6": {
             "types": "./dist/types/v6/index.d.ts",
             "import": "./dist/v6/esm/react-paypal-js.js"
+        },
+        "./sdk-v6/server": {
+            "types": "./dist/types/v6/server.d.ts",
+            "import": "./dist/v6/esm/server.js"
         }
     },
     "scripts": {
@@ -56,7 +60,7 @@
         "url": "git://github.com/paypal/paypal-js.git",
         "directory": "packages/react-paypal-js"
     },
-    "homepage": "https://paypal.github.io/react-paypal-js/",
+    "homepage": "https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/",
     "dependencies": {
         "@paypal/paypal-js": "^9.2.0",
         "@paypal/sdk-constants": "^1.0.122",

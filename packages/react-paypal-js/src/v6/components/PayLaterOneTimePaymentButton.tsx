@@ -5,7 +5,7 @@ import { usePayPal } from "../hooks/usePayPal";
 
 import type { UsePayLaterOneTimePaymentSessionProps } from "../hooks/usePayLaterOneTimePaymentSession";
 
-type PayLaterOneTimePaymentButtonProps =
+export type PayLaterOneTimePaymentButtonProps =
     UsePayLaterOneTimePaymentSessionProps & {
         autoRedirect?: never;
         disabled?: boolean;

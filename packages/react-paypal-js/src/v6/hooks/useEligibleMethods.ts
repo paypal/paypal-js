@@ -70,6 +70,10 @@ export function useEligibleMethods(
     const [eligibilityError, setError] = useError();
     const [isFetching, setIsFetching] = useState(false);
 
+    // Use ref to access eligiblePaymentMethods in effect without adding to deps
+    const eligiblePaymentMethodsRef = useRef(eligiblePaymentMethods);
+    eligiblePaymentMethodsRef.current = eligiblePaymentMethods;
+
     // Memoize payload to avoid unnecessary re-fetches when object reference changes
     const memoizedPayload = useDeepCompareMemoize(payload);
 
@@ -100,7 +104,10 @@ export function useEligibleMethods(
 
         // If eligibility exists and we haven't fetched anything yet (e.g., server hydration),
         // mark as fetched to avoid unnecessary re-fetch with same payload
-        if (eligiblePaymentMethods && lastFetchRef.current === null) {
+        if (
+            eligiblePaymentMethodsRef.current &&
+            lastFetchRef.current === null
+        ) {
             lastFetchRef.current = {
                 instance: sdkInstance,
                 payload: memoizedPayload,
@@ -140,26 +147,28 @@ export function useEligibleMethods(
 
         return () => {
             isSubscribed = false;
+            lastFetchRef.current = null; // Reset fetch tracking on unmount or dependency change
         };
-    }, [
-        sdkInstance,
-        memoizedPayload,
-        eligiblePaymentMethods,
-        dispatch,
-        setError,
-    ]);
+    }, [sdkInstance, memoizedPayload, dispatch, setError]);
+
+    // isLoading should be true if:
+    // 1. We're actively fetching, OR
+    // 2. We don't have eligibility data yet and no error occurred
+    // This prevents a flash where isLoading=false before the effect runs
+    const isLoading =
+        isFetching || (!eligiblePaymentMethods && !eligibilityError);
 
     if (contextError) {
         return {
             eligiblePaymentMethods,
-            isLoading: isFetching,
+            isLoading,
             error: new Error(`PayPal context error: ${contextError}`),
         };
     }
 
     return {
         eligiblePaymentMethods,
-        isLoading: isFetching,
+        isLoading,
         error: eligibilityError,
     };
 }

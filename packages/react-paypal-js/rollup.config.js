@@ -8,6 +8,7 @@ import pkg from "./package.json";
 
 const pkgName = pkg.name.split("@paypal/")[1];
 const banner = getBannerText();
+const useClientBanner = `"use client";\n${banner}`;
 const tsconfigOverride = {
     exclude: ["node_modules", "**/*.test.ts*"],
     outDir: "./dist",
@@ -92,13 +93,44 @@ export default [
         ],
     },
 
-    // V6 ESM
+    // V6 ESM build
+    // - Bundle-level "use client" directive for RSC compatibility
+    // - Externalizes @paypal/paypal-js to avoid bundling the core SDK
+    // - Externalizes server-only for RSC server/client boundary enforcement
+    // - ESM-only (no CJS) as v6 targets modern React/Next.js environments
     {
         input: "src/v6/index.ts",
         plugins: [
             typescript({
                 tsconfig: "./tsconfig.v6.json",
-                outputToFilesystem: true,
+            }),
+            cleanup({
+                comments: "none",
+            }),
+        ],
+        external: ["react", /^@paypal\/paypal-js/, "server-only"],
+        output: [
+            {
+                file: `dist/v6/esm/${pkgName}.js`,
+                format: "esm",
+                plugins: [getBabelOutputPlugin()],
+                banner: useClientBanner,
+            },
+            {
+                file: `dist/v6/esm/${pkgName}.min.js`,
+                format: "esm",
+                plugins: [getBabelOutputPlugin(), terser()],
+                banner: useClientBanner,
+            },
+        ],
+    },
+
+    // V6 Server ESM
+    {
+        input: "src/v6/server.ts",
+        plugins: [
+            typescript({
+                tsconfig: "./tsconfig.v6.json",
             }),
             nodeResolve(),
             cleanup({
@@ -108,20 +140,14 @@ export default [
         external: ["react"],
         output: [
             {
-                file: `dist/v6/esm/${pkgName}.js`,
+                file: "dist/v6/esm/server.js",
                 format: "esm",
-                globals: {
-                    react: "React",
-                },
                 plugins: [getBabelOutputPlugin()],
                 banner,
             },
             {
-                file: `dist/v6/esm/${pkgName}.min.js`,
+                file: "dist/v6/esm/server.min.js",
                 format: "esm",
-                globals: {
-                    react: "React",
-                },
                 plugins: [getBabelOutputPlugin(), terser()],
                 banner,
             },

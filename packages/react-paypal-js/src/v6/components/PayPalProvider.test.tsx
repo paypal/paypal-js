@@ -149,6 +149,7 @@ describe("PayPalProvider", () => {
             expect(loadCoreSdkScript).toHaveBeenCalledWith({
                 environment: "sandbox",
                 debug: false,
+                dataSdkIntegrationSource: "react-paypal-js",
             });
 
             await waitFor(() => expectResolvedState(state));
@@ -191,6 +192,7 @@ describe("PayPalProvider", () => {
                 expect(loadCoreSdkScript).toHaveBeenCalledWith({
                     environment,
                     debug: false,
+                    dataSdkIntegrationSource: "react-paypal-js",
                 });
 
                 await waitFor(() => {

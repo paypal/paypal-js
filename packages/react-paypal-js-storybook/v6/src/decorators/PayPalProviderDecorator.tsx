@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react";
 import type { Decorator } from "@storybook/react";
+import { action } from "storybook/actions";
 
-import { PayPalProvider } from "@paypal/react-paypal-js/sdk-v6";
+import {
+    PayPalProvider,
+    usePayPal,
+    INSTANCE_LOADING_STATE,
+} from "@paypal/react-paypal-js/sdk-v6";
 import { SAMPLE_INTEGRATION_API } from "../shared/utils";
 
 async function fetchClientToken(): Promise<string> {
@@ -60,6 +65,28 @@ function ErrorDisplay({ message }: { message: string }) {
     );
 }
 
+// Logs SDK and button events to the Actions panel.
+function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
+    const { loadingStatus } = usePayPal();
+
+    useEffect(() => {
+        if (loadingStatus === INSTANCE_LOADING_STATE.RESOLVED) {
+            action("SDK")("Library initialized and rendered");
+        }
+    }, [loadingStatus]);
+
+    const handleClick = (e: React.MouseEvent) => {
+        const tag = (e.target as HTMLElement).tagName.toLowerCase();
+        if (tag.endsWith("-button")) {
+            action("button")(
+                "Click event dispatched from the PayPal payment button",
+            );
+        }
+    };
+
+    return <div onClick={handleClick}>{children}</div>;
+}
+
 function ProviderWrapper({ children }: { children: React.ReactNode }) {
     const [clientToken, setClientToken] = useState<string>();
     const [error, setError] = useState<Error>();
@@ -86,7 +113,7 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
             ]}
             pageType="checkout"
         >
-            {children}
+            <SdkStatusMonitor>{children}</SdkStatusMonitor>
         </PayPalProvider>
     );
 }
