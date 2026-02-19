@@ -39,19 +39,17 @@ export const PayPalGuestPaymentButton = ({
         }
     }, [error]);
 
-    if (!isHydrated) {
-        return <div />;
-    }
-
-    return (
-        <paypal-basic-card-container>
-            <paypal-basic-card-button
-                ref={buttonRef}
-                onClick={handleClick}
-                disabled={
-                    disabled || isPending || error !== null ? true : undefined
-                }
-            ></paypal-basic-card-button>
-        </paypal-basic-card-container>
+    const button = isHydrated ? (
+        <paypal-basic-card-button
+            ref={buttonRef}
+            onClick={handleClick}
+            disabled={
+                disabled || isPending || error !== null ? true : undefined
+            }
+        ></paypal-basic-card-button>
+    ) : (
+        <div />
     );
+
+    return <paypal-basic-card-container>{button}</paypal-basic-card-container>;
 };
