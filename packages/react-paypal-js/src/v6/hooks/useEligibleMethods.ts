@@ -90,6 +90,9 @@ export function useEligibleMethods(
         // 3. Eligibility not already in context (from server hydration or another fetch)
         //    UNLESS the payload has changed from what was used to fetch it
         if (!sdkInstance) {
+            console.log(
+                "[useEligibleMethods] Skipping: sdkInstance not available yet",
+            );
             return;
         }
 
@@ -99,6 +102,9 @@ export function useEligibleMethods(
 
         // Skip if we already fetched with this exact config
         if (hasFetchedThisConfig) {
+            console.log(
+                "[useEligibleMethods] Skipping: already fetched with this config (returning from cache/context)",
+            );
             return;
         }
 
@@ -108,6 +114,9 @@ export function useEligibleMethods(
             eligiblePaymentMethodsRef.current &&
             lastFetchRef.current === null
         ) {
+            console.log(
+                "[useEligibleMethods] Skipping: eligibility already in context (server hydration or previous fetch)",
+            );
             lastFetchRef.current = {
                 instance: sdkInstance,
                 payload: memoizedPayload,
@@ -124,10 +133,17 @@ export function useEligibleMethods(
         let isSubscribed = true;
         setIsFetching(true);
 
+        console.log(
+            "[useEligibleMethods] Starting network call: findEligibleMethods()",
+        );
         sdkInstance
             .findEligibleMethods(memoizedPayload ?? {})
             .then((result) => {
                 if (isSubscribed) {
+                    console.log(
+                        "[useEligibleMethods] Network call succeeded, dispatching SET_ELIGIBILITY to context",
+                        result,
+                    );
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
                         value: result,
@@ -165,6 +181,12 @@ export function useEligibleMethods(
             error: new Error(`PayPal context error: ${contextError}`),
         };
     }
+
+    console.log("[useEligibleMethods] Returning state:", {
+        hasEligibility: !!eligiblePaymentMethods,
+        isLoading,
+        hasError: !!eligibilityError,
+    });
 
     return {
         eligiblePaymentMethods,

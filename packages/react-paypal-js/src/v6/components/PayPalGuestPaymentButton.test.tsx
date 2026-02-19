@@ -83,10 +83,10 @@ describe("PayPalGuestPaymentButton", () => {
             container.querySelector("paypal-basic-card-button"),
         ).not.toBeInTheDocument();
         expect(container.querySelector("div")).toBeInTheDocument();
-        // Container should still be present even when not hydrated
+        // Container should NOT be present when not hydrated to avoid web component errors
         expect(
             container.querySelector("paypal-basic-card-container"),
-        ).toBeInTheDocument();
+        ).not.toBeInTheDocument();
     });
 
     it("should call handleClick when button is clicked", () => {
