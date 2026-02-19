@@ -1,5 +1,5 @@
 ---
-"@paypal/react-paypal-js": patch
+"@paypal/react-paypal-js": minor
 ---
 
-Created Card Field components for each field type
+Created V6 React Card Field components for each field type
