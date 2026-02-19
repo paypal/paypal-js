@@ -174,7 +174,6 @@ type BaseCardFieldsSession = {
           .appendChild(numberField);
      * ```
      */
-
     createCardFieldsComponent: (config: CardFieldOptions) => CardFieldComponent;
     /**
      * Use this method to register event listeners and set callbacks for them.
