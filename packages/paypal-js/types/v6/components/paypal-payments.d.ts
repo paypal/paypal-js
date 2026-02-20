@@ -79,6 +79,7 @@ export type OnCancelDataSavePayments = {
 };
 
 export type PayPalOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
+    commit?: boolean;
     orderId?: string;
     onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;
     onShippingAddressChange?: (
@@ -87,6 +88,7 @@ export type PayPalOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
     onShippingOptionsChange?: (
         data: OnShippingOptionsChangeData,
     ) => Promise<void>;
+    savePayment?: boolean;
 };
 
 export type SavePaymentSessionOptions = Omit<
