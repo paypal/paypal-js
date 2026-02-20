@@ -137,6 +137,7 @@ export function usePayPalOneTimePaymentSession({
         presentationMode,
         setError,
         savePayment,
+        testBuyerCountry,
     ]);
 
     const handleClick = useCallback(async () => {
