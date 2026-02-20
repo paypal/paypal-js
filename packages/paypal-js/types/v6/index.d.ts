@@ -180,7 +180,7 @@ export interface BaseInstance {
      * ```
      */
     findEligibleMethods: (
-        findEligibleMethodsOptions: FindEligibleMethodsOptions,
+        findEligibleMethodsOptions?: FindEligibleMethodsOptions,
     ) => Promise<EligiblePaymentMethodsOutput>;
     /**
      * Updates the locale for the SDK instance.
