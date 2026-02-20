@@ -142,35 +142,11 @@ export function useDeepCompareMemoize<T>(value: T): T {
 
     if (!isInitialized.current) {
         // First render: always set the value
-        console.log(
-            "[useDeepCompareMemoize] First render, setting initial value:",
-            JSON.stringify(value),
-        );
         ref.current = value;
         isInitialized.current = true;
-    } else {
-        const isEqual = deepEqual(value, ref.current);
-        console.log("[useDeepCompareMemoize] Comparing values:");
-        console.log(
-            "[useDeepCompareMemoize]   new value:",
-            JSON.stringify(value),
-        );
-        console.log(
-            "[useDeepCompareMemoize]   ref.current:",
-            JSON.stringify(ref.current),
-        );
-        console.log("[useDeepCompareMemoize]   deepEqual result:", isEqual);
-        if (!isEqual) {
-            // Subsequent renders: only update if different
-            console.log(
-                "[useDeepCompareMemoize] Values are DIFFERENT, updating ref",
-            );
-            ref.current = value;
-        } else {
-            console.log(
-                "[useDeepCompareMemoize] Values are EQUAL, keeping old ref",
-            );
-        }
+    } else if (!deepEqual(value, ref.current)) {
+        // Subsequent renders: only update if different
+        ref.current = value;
     }
 
     return ref.current as T;
