@@ -20,6 +20,7 @@ describe("useEligibleMethods", () => {
         const fullContext: PayPalState = {
             sdkInstance: null,
             eligiblePaymentMethods: null,
+            eligiblePaymentMethodsPayload: null,
             loadingStatus: INSTANCE_LOADING_STATE.PENDING,
             error: null,
             isHydrated: true,
@@ -257,23 +258,28 @@ describe("useEligibleMethods", () => {
             });
 
             expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledWith(
-                {},
+                undefined,
             );
             expect(mockDispatch).toHaveBeenCalledWith({
                 type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-                value: mockEligibilityResult,
+                value: {
+                    eligiblePaymentMethods: mockEligibilityResult,
+                    payload: undefined,
+                },
             });
         });
 
-        test("should NOT fetch when eligibility is already in context (server hydration)", async () => {
+        test("should NOT fetch when eligibility is already in context (server hydration) with matching payload", async () => {
             const mockDispatch = jest.fn();
             const mockSdkInstance = createMockSdkInstance();
 
+            // When eligibility exists with matching payload, should skip fetch
             renderHook(() => useEligibleMethods(), {
                 wrapper: createWrapper(
                     {
                         sdkInstance: mockSdkInstance,
                         eligiblePaymentMethods: mockEligibilityResult,
+                        eligiblePaymentMethodsPayload: undefined, // matches the undefined payload from useEligibleMethods()
                         loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                     },
                     mockDispatch,
@@ -286,6 +292,40 @@ describe("useEligibleMethods", () => {
 
             expect(mockSdkInstance!.findEligibleMethods).not.toHaveBeenCalled();
             expect(mockDispatch).not.toHaveBeenCalled();
+        });
+
+        test("should fetch when eligibility exists but payload is different", async () => {
+            const mockDispatch = jest.fn();
+            const mockSdkInstance = createMockSdkInstance();
+
+            // When eligibility exists but with different payload, should fetch
+            renderHook(
+                () =>
+                    useEligibleMethods({
+                        payload: { currencyCode: "EUR" } as never,
+                    }),
+                {
+                    wrapper: createWrapper(
+                        {
+                            sdkInstance: mockSdkInstance,
+                            eligiblePaymentMethods: mockEligibilityResult,
+                            eligiblePaymentMethodsPayload: {
+                                currencyCode: "USD",
+                            }, // different payload
+                            loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                        },
+                        mockDispatch,
+                    ),
+                },
+            );
+
+            await act(async () => {
+                await Promise.resolve();
+            });
+
+            expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledWith({
+                currencyCode: "EUR",
+            });
         });
 
         test("should NOT fetch when sdkInstance is null", async () => {
@@ -341,18 +381,19 @@ describe("useEligibleMethods", () => {
             expect(result.current.isLoading).toBe(true);
         });
 
-        test("should return isLoading=false when eligibility data exists", () => {
+        test("should return isLoading=false when eligibility data exists with matching payload", () => {
             const mockSdkInstance = createMockSdkInstance();
 
             const { result } = renderHook(() => useEligibleMethods(), {
                 wrapper: createWrapper({
                     sdkInstance: mockSdkInstance,
                     eligiblePaymentMethods: mockEligibilityResult,
+                    eligiblePaymentMethodsPayload: undefined, // matches the undefined payload
                     loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 }),
             });
 
-            // isLoading is false because eligibility data exists in context
+            // isLoading is false because eligibility data exists in context with matching payload
             expect(result.current.isLoading).toBe(false);
         });
 

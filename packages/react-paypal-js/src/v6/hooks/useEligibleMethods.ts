@@ -8,7 +8,7 @@ import {
     type FindEligibleMethodsOptions,
 } from "../types";
 import { useError } from "./useError";
-import { useDeepCompareMemoize } from "../utils";
+import { deepEqual, useDeepCompareMemoize } from "../utils";
 
 export interface UseFetchEligibleMethodsOptions {
     payload?: FindEligibleMethodsOptions;
@@ -64,6 +64,7 @@ export function useEligibleMethods(
     const {
         sdkInstance,
         eligiblePaymentMethods,
+        eligiblePaymentMethodsPayload,
         error: contextError,
     } = usePayPal();
     const dispatch = usePayPalDispatch();
@@ -72,7 +73,11 @@ export function useEligibleMethods(
 
     // Use ref to access eligiblePaymentMethods in effect without adding to deps
     const eligiblePaymentMethodsRef = useRef(eligiblePaymentMethods);
+    const eligiblePaymentMethodsPayloadRef = useRef(
+        eligiblePaymentMethodsPayload,
+    );
     eligiblePaymentMethodsRef.current = eligiblePaymentMethods;
+    eligiblePaymentMethodsPayloadRef.current = eligiblePaymentMethodsPayload;
 
     // Memoize payload to avoid unnecessary re-fetches when object reference changes
     const memoizedPayload = useDeepCompareMemoize(payload);
@@ -103,10 +108,13 @@ export function useEligibleMethods(
         }
 
         // If eligibility exists and we haven't fetched anything yet (e.g., server hydration),
-        // mark as fetched to avoid unnecessary re-fetch with same payload
+        // mark as fetched to avoid unnecessary re-fetch with same payload.
+        // Use deepEqual instead of === because different component instances will have
+        // different memoizedPayload references even if the values are the same.
         if (
             eligiblePaymentMethodsRef.current &&
-            lastFetchRef.current === null
+            lastFetchRef.current === null &&
+            deepEqual(eligiblePaymentMethodsPayloadRef.current, memoizedPayload)
         ) {
             lastFetchRef.current = {
                 instance: sdkInstance,
@@ -125,12 +133,15 @@ export function useEligibleMethods(
         setIsFetching(true);
 
         sdkInstance
-            .findEligibleMethods(memoizedPayload ?? {})
+            .findEligibleMethods(memoizedPayload)
             .then((result) => {
                 if (isSubscribed) {
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-                        value: result,
+                        value: {
+                            eligiblePaymentMethods: result,
+                            payload: memoizedPayload,
+                        },
                     });
                 }
             })
