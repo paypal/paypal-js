@@ -50,6 +50,7 @@ function createInitialState(): PayPalState {
     return {
         sdkInstance: null,
         eligiblePaymentMethods: null,
+        eligiblePaymentMethodsPayload: null,
         loadingStatus: INSTANCE_LOADING_STATE.PENDING,
         error: null,
         isHydrated: true,
@@ -102,12 +103,18 @@ describe("instanceReducer", () => {
             const mockEligibility = createMockEligiblePaymentMethods();
             const action: InstanceAction = {
                 type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-                value: mockEligibility,
+                value: {
+                    eligiblePaymentMethods: mockEligibility,
+                    payload: { currencyCode: "USD" },
+                },
             };
 
             const result = instanceReducer(initialState, action);
 
             expect(result.eligiblePaymentMethods).toBe(mockEligibility);
+            expect(result.eligiblePaymentMethodsPayload).toEqual({
+                currencyCode: "USD",
+            });
             expect(result).not.toBe(initialState);
         });
     });
@@ -198,7 +205,11 @@ describe("instanceReducer", () => {
                 },
                 {
                     type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-                    value: createMockEligiblePaymentMethods(),
+                    value: {
+                        eligiblePaymentMethods:
+                            createMockEligiblePaymentMethods(),
+                        payload: null,
+                    },
                 },
                 {
                     type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
@@ -234,7 +245,11 @@ describe("instanceReducer", () => {
                 "SET_ELIGIBILITY",
                 {
                     type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-                    value: createMockEligiblePaymentMethods(),
+                    value: {
+                        eligiblePaymentMethods:
+                            createMockEligiblePaymentMethods(),
+                        payload: null,
+                    },
                 },
             ],
             [
