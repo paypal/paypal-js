@@ -142,7 +142,7 @@ export type CardFieldComponent = HTMLElement & {
      * @example
      * ```typescript
      * const numberField = cardFieldsInstance.createCardFieldsComponent({
-             type: "number",
+            type: "number",
             placeholder: "Enter a number",
         });
         document
