@@ -8,7 +8,7 @@ import {
     type FindEligibleMethodsOptions,
 } from "../types";
 import { useError } from "./useError";
-import { useDeepCompareMemoize } from "../utils";
+import { deepEqual, useDeepCompareMemoize } from "../utils";
 
 export interface UseFetchEligibleMethodsOptions {
     payload?: FindEligibleMethodsOptions;
@@ -82,17 +82,6 @@ export function useEligibleMethods(
     // Memoize payload to avoid unnecessary re-fetches when object reference changes
     const memoizedPayload = useDeepCompareMemoize(payload);
 
-    // DEBUG: Log payload memoization
-    console.log("[useEligibleMethods] payload input:", JSON.stringify(payload));
-    console.log(
-        "[useEligibleMethods] memoizedPayload:",
-        JSON.stringify(memoizedPayload),
-    );
-    console.log(
-        "[useEligibleMethods] payload === memoizedPayload (reference):",
-        payload === memoizedPayload,
-    );
-
     // Track what we've fetched (instance + payload combo) to prevent duplicate fetches
     const lastFetchRef = useRef<{
         instance: typeof sdkInstance;
@@ -100,38 +89,12 @@ export function useEligibleMethods(
     } | null>(null);
 
     useEffect(() => {
-        console.log("[useEligibleMethods] useEffect triggered");
-        console.log(
-            "[useEligibleMethods] sdkInstance:",
-            sdkInstance ? "exists" : "null",
-        );
-        console.log(
-            "[useEligibleMethods] memoizedPayload in effect:",
-            JSON.stringify(memoizedPayload),
-        );
-        console.log(
-            "[useEligibleMethods] lastFetchRef.current:",
-            lastFetchRef.current
-                ? {
-                      instance: lastFetchRef.current.instance
-                          ? "exists"
-                          : "null",
-                      payload: JSON.stringify(lastFetchRef.current.payload),
-                  }
-                : "null",
-        );
-        console.log(
-            "[useEligibleMethods] eligiblePaymentMethodsRef.current:",
-            eligiblePaymentMethodsRef.current ? "exists" : "null",
-        );
-
         // Only fetch if:
         // 1. sdkInstance is available
         // 2. Haven't already fetched for THIS sdkInstance with THIS payload
         // 3. Eligibility not already in context (from server hydration or another fetch)
         //    UNLESS the payload has changed from what was used to fetch it
         if (!sdkInstance) {
-            console.log("[useEligibleMethods] SKIP: no sdkInstance");
             return;
         }
 
@@ -139,38 +102,20 @@ export function useEligibleMethods(
             lastFetchRef.current?.instance === sdkInstance &&
             lastFetchRef.current?.payload === memoizedPayload;
 
-        console.log(
-            "[useEligibleMethods] hasFetchedThisConfig:",
-            hasFetchedThisConfig,
-        );
-        console.log(
-            "[useEligibleMethods] lastFetchRef.current?.instance === sdkInstance:",
-            lastFetchRef.current?.instance === sdkInstance,
-        );
-        console.log(
-            "[useEligibleMethods] lastFetchRef.current?.payload === memoizedPayload:",
-            lastFetchRef.current?.payload === memoizedPayload,
-        );
-
         // Skip if we already fetched with this exact config
         if (hasFetchedThisConfig) {
-            console.log(
-                "[useEligibleMethods] SKIP: already fetched this config",
-            );
             return;
         }
 
         // If eligibility exists and we haven't fetched anything yet (e.g., server hydration),
-        // mark as fetched to avoid unnecessary re-fetch with same payload
+        // mark as fetched to avoid unnecessary re-fetch with same payload.
+        // Use deepEqual instead of === because different component instances will have
+        // different memoizedPayload references even if the values are the same.
         if (
-            eligiblePaymentMethodsRef.current && // eligibility data exists
-            lastFetchRef.current === null && // but we haven't recorded any fetch yet
-            // what about if the payload has changed reducer payload vs memoized payload
-            eligiblePaymentMethodsPayloadRef.current === memoizedPayload // and the existing eligibility data matches the current payload
+            eligiblePaymentMethodsRef.current &&
+            lastFetchRef.current === null &&
+            deepEqual(eligiblePaymentMethodsPayloadRef.current, memoizedPayload)
         ) {
-            console.log(
-                "[useEligibleMethods] SKIP: server hydration case - marking as fetched without API call",
-            );
             lastFetchRef.current = {
                 instance: sdkInstance,
                 payload: memoizedPayload,
@@ -184,21 +129,12 @@ export function useEligibleMethods(
             payload: memoizedPayload,
         };
 
-        console.log(
-            "[useEligibleMethods] FETCHING: making API call with payload:",
-            JSON.stringify(memoizedPayload),
-        );
-
         let isSubscribed = true;
         setIsFetching(true);
 
         sdkInstance
             .findEligibleMethods(memoizedPayload)
             .then((result) => {
-                console.log(
-                    "[useEligibleMethods] API call SUCCESS, isSubscribed:",
-                    isSubscribed,
-                );
                 if (isSubscribed) {
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
@@ -210,7 +146,6 @@ export function useEligibleMethods(
                 }
             })
             .catch((err) => {
-                console.log("[useEligibleMethods] API call ERROR:", err);
                 if (isSubscribed) {
                     setError(err);
                 }
@@ -222,7 +157,6 @@ export function useEligibleMethods(
             });
 
         return () => {
-            console.log("[useEligibleMethods] CLEANUP: effect cleanup running");
             isSubscribed = false;
             lastFetchRef.current = null; // Reset fetch tracking on unmount or dependency change
         };
