@@ -1,5 +1,20 @@
 # Changelog
 
+## 9.3.0
+
+### Minor Changes
+
+- 3e3f3c2: Adding dataSdkIntegrationSource to the script tag for analytics purpose
+- 63adbb3: Updated V6 card fields types to include session and field destroy methods
+
+### Patch Changes
+
+- d4f4fc5: add 'commit' option to PayPalOneTimePaymentSessionOptions type
+- 61f5e95: Updates the readme with more v6 JS SDK details.
+- 00069d9: Re-adds savePayment property to the PayPalOneTimePaymentSessionOptions type.
+- e6a3ca2: Fixes the SDK instance's findEligibleMethods options typing, marks the argument optional.
+- 053408b: Add skipLibCheck to tsconfig.json to resolve chai type conflicts
+
 ## 9.2.0
 
 ### Minor Changes

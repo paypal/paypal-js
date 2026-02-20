@@ -1,6 +1,6 @@
 {
     "name": "@paypal/paypal-js",
-    "version": "9.2.0",
+    "version": "9.3.0",
     "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
     "main": "index.js",
     "module": "dist/esm/paypal-js.js",
