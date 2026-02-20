@@ -20,8 +20,27 @@ type PayPalCardExpiryFieldProps = Omit<CardFieldOptions, "type"> & {
  *   containerStyles={{ height: "3rem", marginBottom: "1rem" }}
  * />
  */
-export const PayPalCardExpiryField = (
-    options: PayPalCardExpiryFieldProps,
-): JSX.Element | null => {
-    return <PayPalCardField type="expiry" {...options} />;
+export const PayPalCardExpiryField = ({
+    containerStyles,
+    containerClassName,
+    placeholder,
+    label,
+    style,
+    ariaDescription,
+    ariaLabel,
+    ariaInvalidErrorMessage,
+}: PayPalCardExpiryFieldProps): JSX.Element | null => {
+    return (
+        <PayPalCardField
+            type="expiry"
+            containerStyles={containerStyles}
+            containerClassName={containerClassName}
+            placeholder={placeholder}
+            label={label}
+            style={style}
+            ariaDescription={ariaDescription}
+            ariaLabel={ariaLabel}
+            ariaInvalidErrorMessage={ariaInvalidErrorMessage}
+        />
+    );
 };

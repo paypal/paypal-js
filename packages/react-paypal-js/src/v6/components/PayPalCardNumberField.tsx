@@ -20,8 +20,27 @@ type PayPalCardNumberFieldProps = Omit<CardFieldOptions, "type"> & {
  *   containerStyles={{ height: "3rem", marginBottom: "1rem" }}
  * />
  */
-export const PayPalCardNumberField = (
-    options: PayPalCardNumberFieldProps,
-): JSX.Element | null => {
-    return <PayPalCardField type="number" {...options} />;
+export const PayPalCardNumberField = ({
+    containerStyles,
+    containerClassName,
+    placeholder,
+    label,
+    style,
+    ariaDescription,
+    ariaLabel,
+    ariaInvalidErrorMessage,
+}: PayPalCardNumberFieldProps): JSX.Element | null => {
+    return (
+        <PayPalCardField
+            type="number"
+            containerStyles={containerStyles}
+            containerClassName={containerClassName}
+            placeholder={placeholder}
+            label={label}
+            style={style}
+            ariaDescription={ariaDescription}
+            ariaLabel={ariaLabel}
+            ariaInvalidErrorMessage={ariaInvalidErrorMessage}
+        />
+    );
 };

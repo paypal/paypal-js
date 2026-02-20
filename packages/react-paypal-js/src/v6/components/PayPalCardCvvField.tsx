@@ -20,8 +20,27 @@ type PayPalCardCvvFieldProps = Omit<CardFieldOptions, "type"> & {
  *   containerStyles={{ height: "3rem", marginBottom: "1rem" }}
  * />
  */
-export const PayPalCardCvvField = (
-    options: PayPalCardCvvFieldProps,
-): JSX.Element | null => {
-    return <PayPalCardField type="cvv" {...options} />;
+export const PayPalCardCvvField = ({
+    containerStyles,
+    containerClassName,
+    placeholder,
+    label,
+    style,
+    ariaDescription,
+    ariaLabel,
+    ariaInvalidErrorMessage,
+}: PayPalCardCvvFieldProps): JSX.Element | null => {
+    return (
+        <PayPalCardField
+            type="cvv"
+            containerStyles={containerStyles}
+            containerClassName={containerClassName}
+            placeholder={placeholder}
+            label={label}
+            style={style}
+            ariaDescription={ariaDescription}
+            ariaLabel={ariaLabel}
+            ariaInvalidErrorMessage={ariaInvalidErrorMessage}
+        />
+    );
 };
