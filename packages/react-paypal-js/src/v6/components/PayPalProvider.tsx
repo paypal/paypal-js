@@ -332,7 +332,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
                     sdkInstance.hydrateEligibleMethods(eligibleMethodsResponse);
                 dispatch({
                     type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-                    value: eligiblePaymentMethods,
+                    value: { eligiblePaymentMethods, payload: null },
                 });
             }
         } catch (error) {
@@ -348,6 +348,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         () => ({
             sdkInstance: state.sdkInstance,
             eligiblePaymentMethods: state.eligiblePaymentMethods,
+            eligiblePaymentMethodsPayload: state.eligiblePaymentMethodsPayload,
             error: state.error,
             loadingStatus: state.loadingStatus,
             isHydrated,
@@ -355,6 +356,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         [
             state.sdkInstance,
             state.eligiblePaymentMethods,
+            state.eligiblePaymentMethodsPayload,
             state.error,
             state.loadingStatus,
             isHydrated,

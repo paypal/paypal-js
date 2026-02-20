@@ -64,6 +64,7 @@ export function useEligibleMethods(
     const {
         sdkInstance,
         eligiblePaymentMethods,
+        eligiblePaymentMethodsPayload,
         error: contextError,
     } = usePayPal();
     const dispatch = usePayPalDispatch();
@@ -72,7 +73,11 @@ export function useEligibleMethods(
 
     // Use ref to access eligiblePaymentMethods in effect without adding to deps
     const eligiblePaymentMethodsRef = useRef(eligiblePaymentMethods);
+    const eligiblePaymentMethodsPayloadRef = useRef(
+        eligiblePaymentMethodsPayload,
+    );
     eligiblePaymentMethodsRef.current = eligiblePaymentMethods;
+    eligiblePaymentMethodsPayloadRef.current = eligiblePaymentMethodsPayload;
 
     // Memoize payload to avoid unnecessary re-fetches when object reference changes
     const memoizedPayload = useDeepCompareMemoize(payload);
@@ -158,8 +163,10 @@ export function useEligibleMethods(
         // If eligibility exists and we haven't fetched anything yet (e.g., server hydration),
         // mark as fetched to avoid unnecessary re-fetch with same payload
         if (
-            eligiblePaymentMethodsRef.current &&
-            lastFetchRef.current === null
+            eligiblePaymentMethodsRef.current && // eligibility data exists
+            lastFetchRef.current === null && // but we haven't recorded any fetch yet
+            // what about if the payload has changed reducer payload vs memoized payload
+            eligiblePaymentMethodsPayloadRef.current === memoizedPayload // and the existing eligibility data matches the current payload
         ) {
             console.log(
                 "[useEligibleMethods] SKIP: server hydration case - marking as fetched without API call",
@@ -186,7 +193,7 @@ export function useEligibleMethods(
         setIsFetching(true);
 
         sdkInstance
-            .findEligibleMethods(memoizedPayload ?? {})
+            .findEligibleMethods(memoizedPayload)
             .then((result) => {
                 console.log(
                     "[useEligibleMethods] API call SUCCESS, isSubscribed:",
@@ -195,7 +202,10 @@ export function useEligibleMethods(
                 if (isSubscribed) {
                     dispatch({
                         type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-                        value: result,
+                        value: {
+                            eligiblePaymentMethods: result,
+                            payload: memoizedPayload,
+                        },
                     });
                 }
             })
