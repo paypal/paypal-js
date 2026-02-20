@@ -49,6 +49,7 @@ export const PayPalCardField = ({
         }
 
         return () => {
+            cardField?.remove();
             cardField?.destroy();
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps

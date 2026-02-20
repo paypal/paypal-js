@@ -98,6 +98,31 @@ describe("PayPalCardField", () => {
         expect(mockCardFieldElement.destroy).toHaveBeenCalled();
     });
 
+    it("should call field's destroy method if session becomes null", () => {
+        const mockType = "number";
+        const { container, rerender } = render(
+            <PayPalCardField type={mockType} />,
+        );
+
+        expect(mockCreateCardFieldsComponent).toHaveBeenCalledTimes(1);
+        const cardFieldContainer = container.querySelector("div");
+        expect(cardFieldContainer).toBeInTheDocument();
+        expect(cardFieldContainer).toContainElement(mockCardFieldElement);
+        expect(mockCardFieldElement.destroy).toHaveBeenCalledTimes(0);
+
+        // Update session to null to trigger destroy
+        mockUsePayPalCardFieldsSession.mockReturnValueOnce({
+            cardFieldsSession: null,
+            setCardFieldsSessionType: jest.fn(),
+            setError: jest.fn(),
+        });
+        rerender(<PayPalCardField type={mockType} />);
+
+        expect(mockCreateCardFieldsComponent).toHaveBeenCalledTimes(1);
+        expect(mockCardFieldElement.destroy).toHaveBeenCalledTimes(1);
+        expect(cardFieldContainer?.children.length).toBe(0);
+    });
+
     it("should pass latest options to the session on session change", () => {
         const mockType = "number";
         const initialConfig = {
