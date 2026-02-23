@@ -62,7 +62,7 @@
     },
     "homepage": "https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/",
     "dependencies": {
-        "@paypal/paypal-js": "^9.2.0",
+        "@paypal/paypal-js": "^9.3.0",
         "@paypal/sdk-constants": "^1.0.122",
         "server-only": "^0.0.1"
     },
