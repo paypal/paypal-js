@@ -27,6 +27,10 @@ export {
     PayLaterOneTimePaymentButton,
     type PayLaterOneTimePaymentButtonProps,
 } from "./components/PayLaterOneTimePaymentButton";
+export {
+    PayPalCreditOneTimePaymentButton,
+    type PayPalCreditOneTimePaymentButtonProps,
+} from "./components/PayPalCreditOneTimePaymentButton";
 export { PayPalGuestPaymentButton } from "./components/PayPalGuestPaymentButton";
 export { PayPalOneTimePaymentButton } from "./components/PayPalOneTimePaymentButton";
 export { PayPalProvider } from "./components/PayPalProvider";

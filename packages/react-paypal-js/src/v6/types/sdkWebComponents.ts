@@ -32,6 +32,7 @@ export interface PayPalBasicCardButtonProps
 export interface PayPalCreditButtonProps
     extends HTMLAttributes<HTMLButtonElement> {
     countryCode?: string;
+    disabled?: boolean;
 }
 
 export interface PayPalMessagesElement extends HTMLAttributes<HTMLElement> {
