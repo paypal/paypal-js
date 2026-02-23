@@ -114,6 +114,8 @@ export function usePayPalOneTimePaymentSession({
         try {
             const newSession = sdkInstance.createPayPalOneTimePaymentSession({
                 orderId,
+                savePayment,
+                testBuyerCountry,
                 ...proxyCallbacks,
             });
 
