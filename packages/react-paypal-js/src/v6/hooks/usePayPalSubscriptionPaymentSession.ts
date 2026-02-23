@@ -51,6 +51,12 @@ export function usePayPalSubscriptionPaymentSession({
     const sessionRef = useRef<PayPalSubscriptionPaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
+
+    // Track if we encountered a creation error to prevent infinite retry loops
+    const creationErrorRef = useRef(false);
+    // Track SDK instance changes to reset error state
+    const lastSdkInstanceRef = useRef(sdkInstance);
+
     const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
 
     const handleDestroy = useCallback(() => {
@@ -62,8 +68,14 @@ export function usePayPalSubscriptionPaymentSession({
         sessionRef.current?.cancel();
     }, []);
 
-    // Separate error reporting effect to avoid infinite loops with proxyCallbacks
+    // Handle SDK availability
     useEffect(() => {
+        // Reset error tracking when SDK instance changes
+        if (lastSdkInstanceRef.current !== sdkInstance) {
+            creationErrorRef.current = false;
+            lastSdkInstanceRef.current = sdkInstance;
+        }
+
         if (sdkInstance) {
             setError(null);
         } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
@@ -71,19 +83,38 @@ export function usePayPalSubscriptionPaymentSession({
         }
     }, [sdkInstance, setError, loadingStatus]);
 
+    // Create and manage session lifecycle
     useEffect(() => {
         if (!sdkInstance) {
             return;
         }
 
-        const newSession = sdkInstance.createPayPalSubscriptionPaymentSession({
-            ...proxyCallbacks,
-        });
+        if (creationErrorRef.current) {
+            return;
+        }
 
-        sessionRef.current = newSession;
+        try {
+            const newSession =
+                sdkInstance.createPayPalSubscriptionPaymentSession({
+                    ...proxyCallbacks,
+                });
+
+            sessionRef.current = newSession;
+        } catch (err) {
+            creationErrorRef.current = true;
+
+            const detailedError = new Error(
+                "Failed to create PayPal subscription payment session. " +
+                    "This may occur if the required components are not included in the SDK components array. " +
+                    "Please ensure you have added the necessary components when loading the PayPal SDK. " +
+                    `Original error: ${err instanceof Error ? err.message : String(err)}`,
+            );
+            setError(detailedError);
+            return;
+        }
 
         return handleDestroy;
-    }, [sdkInstance, proxyCallbacks, handleDestroy]);
+    }, [sdkInstance, proxyCallbacks, handleDestroy, setError]);
 
     const handleClick = useCallback(async () => {
         if (!isMountedRef.current) {

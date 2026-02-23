@@ -215,6 +215,59 @@ describe("usePayPalSavePaymentSession", () => {
     });
 
     test.each([
+        {
+            description: "Error object",
+            thrownError: new Error("Required components not loaded in SDK"),
+            expectedMessage: "Required components not loaded in SDK",
+        },
+        {
+            description: "non-Error string",
+            thrownError: "String error message",
+            expectedMessage: "String error message",
+        },
+    ])(
+        "should handle $description thrown by createPayPalSavePaymentSession",
+        ({ thrownError, expectedMessage }) => {
+            const mockSdkInstanceWithError = {
+                createPayPalSavePaymentSession: jest
+                    .fn()
+                    .mockImplementation(() => {
+                        throw thrownError;
+                    }),
+            };
+
+            (usePayPal as jest.Mock).mockReturnValue({
+                sdkInstance: mockSdkInstanceWithError,
+                loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+            });
+
+            const {
+                result: {
+                    current: { error },
+                },
+            } = renderHook(() =>
+                usePayPalSavePaymentSession({
+                    presentationMode: "popup",
+                    vaultSetupToken: "test-vault-token",
+                    onApprove: jest.fn(),
+                    onCancel: jest.fn(),
+                    onError: jest.fn(),
+                }),
+            );
+
+            expectCurrentErrorValue(error);
+
+            expect(error?.message).toContain(
+                "Failed to create PayPal save payment session",
+            );
+            expect(error?.message).toContain(
+                "This may occur if the required components are not included in the SDK components array",
+            );
+            expect(error?.message).toContain(expectedMessage);
+        },
+    );
+
+    test.each([
         [INSTANCE_LOADING_STATE.PENDING, true],
         [INSTANCE_LOADING_STATE.RESOLVED, false],
         [INSTANCE_LOADING_STATE.REJECTED, false],

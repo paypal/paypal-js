@@ -39,6 +39,12 @@ export function usePayLaterOneTimePaymentSession({
     const sessionRef = useRef<OneTimePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
+
+    // Track if we encountered a creation error to prevent infinite retry loops
+    const creationErrorRef = useRef(false);
+    // Track SDK instance changes to reset error state
+    const lastSdkInstanceRef = useRef(sdkInstance);
+
     const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
 
     const handleDestroy = useCallback(() => {
@@ -46,8 +52,14 @@ export function usePayLaterOneTimePaymentSession({
         sessionRef.current = null;
     }, []);
 
-    // Separate error reporting effect to avoid infinite loops with proxyCallbacks
+    // Handle SDK availability
     useEffect(() => {
+        // Reset error tracking when SDK instance changes
+        if (lastSdkInstanceRef.current !== sdkInstance) {
+            creationErrorRef.current = false;
+            lastSdkInstanceRef.current = sdkInstance;
+        }
+
         if (sdkInstance) {
             setError(null);
         } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
@@ -55,38 +67,56 @@ export function usePayLaterOneTimePaymentSession({
         }
     }, [sdkInstance, setError, loadingStatus]);
 
+    // Create and manage session lifecycle
     useEffect(() => {
         if (!sdkInstance) {
             return;
         }
 
-        const newSession = sdkInstance.createPayLaterOneTimePaymentSession({
-            orderId,
-            ...proxyCallbacks,
-        });
-        sessionRef.current = newSession;
+        if (creationErrorRef.current) {
+            return;
+        }
 
-        // check for resume flow in redirect-based presentation modes
-        const isRedirectMode =
-            presentationMode === "redirect" ||
-            presentationMode === "direct-app-switch";
+        try {
+            const newSession = sdkInstance.createPayLaterOneTimePaymentSession({
+                orderId,
+                ...proxyCallbacks,
+            });
+            sessionRef.current = newSession;
 
-        if (isRedirectMode) {
-            const handleReturnFromPayPal = async () => {
-                try {
-                    if (!newSession) {
-                        return;
+            // check for resume flow in redirect-based presentation modes
+            const isRedirectMode =
+                presentationMode === "redirect" ||
+                presentationMode === "direct-app-switch";
+
+            if (isRedirectMode) {
+                const handleReturnFromPayPal = async () => {
+                    try {
+                        if (!newSession) {
+                            return;
+                        }
+                        const isResumeFlow = newSession.hasReturned?.();
+                        if (isResumeFlow) {
+                            await newSession.resume?.();
+                        }
+                    } catch (err) {
+                        setError(err as Error);
                     }
-                    const isResumeFlow = newSession.hasReturned?.();
-                    if (isResumeFlow) {
-                        await newSession.resume?.();
-                    }
-                } catch (err) {
-                    setError(err as Error);
-                }
-            };
+                };
 
-            handleReturnFromPayPal();
+                handleReturnFromPayPal();
+            }
+        } catch (err) {
+            creationErrorRef.current = true;
+
+            const detailedError = new Error(
+                "Failed to create PayLater one-time payment session. " +
+                    "This may occur if the required components are not included in the SDK components array. " +
+                    "Please ensure you have added the necessary components when loading the PayPal SDK. " +
+                    `Original error: ${err instanceof Error ? err.message : String(err)}`,
+            );
+            setError(detailedError);
+            return;
         }
 
         return handleDestroy;

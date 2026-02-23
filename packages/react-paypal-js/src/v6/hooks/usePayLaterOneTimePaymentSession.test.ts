@@ -167,6 +167,60 @@ describe("usePayLaterOneTimePaymentSession", () => {
     });
 
     test.each([
+        {
+            description: "Error object",
+            thrownError: new Error("Required components not loaded in SDK"),
+            expectedMessage: "Required components not loaded in SDK",
+        },
+        {
+            description: "non-Error string",
+            thrownError: "String error message",
+            expectedMessage: "String error message",
+        },
+    ])(
+        "should handle $description thrown by createPayLaterOneTimePaymentSession",
+        ({ thrownError, expectedMessage }) => {
+            const mockCreatePayLaterOneTimePaymentSession = jest
+                .fn()
+                .mockImplementation(() => {
+                    throw thrownError;
+                });
+
+            (usePayPal as jest.Mock).mockReturnValue({
+                sdkInstance: {
+                    createPayLaterOneTimePaymentSession:
+                        mockCreatePayLaterOneTimePaymentSession,
+                },
+                loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+            });
+
+            const {
+                result: {
+                    current: { error },
+                },
+            } = renderHook(() =>
+                usePayLaterOneTimePaymentSession({
+                    presentationMode: "popup",
+                    orderId: "test-order-id",
+                    onApprove: jest.fn(),
+                    onCancel: jest.fn(),
+                    onError: jest.fn(),
+                }),
+            );
+
+            expectCurrentErrorValue(error);
+
+            expect(error?.message).toContain(
+                "Failed to create PayLater one-time payment session",
+            );
+            expect(error?.message).toContain(
+                "This may occur if the required components are not included in the SDK components array",
+            );
+            expect(error?.message).toContain(expectedMessage);
+        },
+    );
+
+    test.each([
         [INSTANCE_LOADING_STATE.PENDING, true],
         [INSTANCE_LOADING_STATE.RESOLVED, false],
         [INSTANCE_LOADING_STATE.REJECTED, false],

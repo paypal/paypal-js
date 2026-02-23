@@ -128,6 +128,56 @@ describe("usePayPalCreditSavePaymentSession", () => {
         });
 
         test.each([
+            {
+                description: "Error object",
+                thrownError: new Error("Required components not loaded in SDK"),
+                expectedMessage: "Required components not loaded in SDK",
+            },
+            {
+                description: "non-Error string",
+                thrownError: "String error message",
+                expectedMessage: "String error message",
+            },
+        ])(
+            "should handle $description thrown by createPayPalSavePaymentSession",
+            ({ thrownError, expectedMessage }) => {
+                const mockSdkInstanceWithError = {
+                    createPayPalSavePaymentSession: jest
+                        .fn()
+                        .mockImplementation(() => {
+                            throw thrownError;
+                        }),
+                };
+
+                mockPayPalContext({ sdkInstance: mockSdkInstanceWithError });
+
+                const props: UsePayPalCreditSavePaymentSessionProps = {
+                    presentationMode: "popup",
+                    vaultSetupToken: "test-vault-token",
+                    onApprove: jest.fn(),
+                    onCancel: jest.fn(),
+                    onError: jest.fn(),
+                };
+
+                const {
+                    result: {
+                        current: { error },
+                    },
+                } = renderHook(() => usePayPalCreditSavePaymentSession(props));
+
+                expectCurrentErrorValue(error);
+
+                expect(error?.message).toContain(
+                    "Failed to create PayPal Credit save payment session",
+                );
+                expect(error?.message).toContain(
+                    "This may occur if the required components are not included in the SDK components array",
+                );
+                expect(error?.message).toContain(expectedMessage);
+            },
+        );
+
+        test.each([
             [INSTANCE_LOADING_STATE.PENDING, true],
             [INSTANCE_LOADING_STATE.RESOLVED, false],
             [INSTANCE_LOADING_STATE.REJECTED, false],
