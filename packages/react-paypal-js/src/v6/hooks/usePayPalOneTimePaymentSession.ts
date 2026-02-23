@@ -60,6 +60,8 @@ export function usePayPalOneTimePaymentSession({
     autoRedirect,
     createOrder,
     orderId,
+    savePayment,
+    testBuyerCountry,
     ...callbacks
 }: UsePayPalOneTimePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance, loadingStatus } = usePayPal();
@@ -152,7 +154,16 @@ export function usePayPalOneTimePaymentSession({
             return;
         }
         return handleDestroy;
-    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy, presentationMode]);
+    }, [
+        sdkInstance,
+        orderId,
+        proxyCallbacks,
+        handleDestroy,
+        presentationMode,
+        setError,
+        savePayment,
+        testBuyerCountry,
+    ]);
 
     const handleClick = useCallback(async () => {
         if (!isMountedRef.current) {

@@ -36,6 +36,7 @@ describe("CardFieldsSessionContext", () => {
                     value: {
                         cardFieldsSession: mockSession,
                         setCardFieldsSessionType: mockSetCardFieldsSessionType,
+                        setError: jest.fn(),
                     },
                 },
                 children,
@@ -66,6 +67,7 @@ describe("CardFieldsSessionContext", () => {
                     value: {
                         cardFieldsSession,
                         setCardFieldsSessionType: setSessionType,
+                        setError: jest.fn(),
                     },
                 },
                 children,
@@ -90,6 +92,39 @@ describe("CardFieldsSessionContext", () => {
         expect(setSessionType).toHaveBeenCalledWith("vaulting");
     });
 
+    it("should allow updating error via setter", () => {
+        const mockSetError = jest.fn();
+        function Wrapper({ children }: { children: React.ReactNode }) {
+            const [cardFieldsSession] = useState(null);
+            return React.createElement(
+                CardFieldsSessionContext.Provider,
+                {
+                    value: {
+                        cardFieldsSession,
+                        setCardFieldsSessionType: jest.fn(),
+                        setError: mockSetError,
+                    },
+                },
+                children,
+            );
+        }
+
+        const { result } = renderHook(
+            () => useContext(CardFieldsSessionContext),
+            {
+                wrapper: Wrapper,
+            },
+        );
+
+        const testError = new Error("Test error");
+
+        act(() => {
+            result.current?.setError(testError);
+        });
+
+        expect(mockSetError).toHaveBeenCalledWith(testError);
+    });
+
     it("should handle null cardFieldsSession", () => {
         const mockSetCardFieldsSessionType = jest.fn();
         function Wrapper({ children }: { children: React.ReactNode }) {
@@ -99,6 +134,7 @@ describe("CardFieldsSessionContext", () => {
                     value: {
                         cardFieldsSession: null,
                         setCardFieldsSessionType: mockSetCardFieldsSessionType,
+                        setError: jest.fn(),
                     },
                 },
                 children,

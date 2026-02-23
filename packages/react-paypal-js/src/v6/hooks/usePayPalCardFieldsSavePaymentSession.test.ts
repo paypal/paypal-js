@@ -39,6 +39,7 @@ const createMockCardFieldsSavePaymentSession = (
     on: jest.fn(),
     update: jest.fn(),
     createCardFieldsComponent: jest.fn(),
+    destroy: jest.fn(),
     ...overrides,
 });
 
@@ -56,6 +57,7 @@ describe("usePayPalCardFieldsSavePaymentSession", () => {
         mockUsePayPalCardFieldsSession.mockReturnValue({
             cardFieldsSession: mockCardFieldsSavePaymentSession,
             setCardFieldsSessionType: mockSetCardFieldsSessionType,
+            setError: jest.fn(),
         });
     });
 
@@ -96,6 +98,7 @@ describe("usePayPalCardFieldsSavePaymentSession", () => {
             mockUsePayPalCardFieldsSession.mockReturnValueOnce({
                 cardFieldsSession: null,
                 setCardFieldsSessionType: mockSetCardFieldsSessionType,
+                setError: jest.fn(),
             });
 
             const { result } = renderHook(() =>
@@ -128,6 +131,7 @@ describe("usePayPalCardFieldsSavePaymentSession", () => {
             mockUsePayPalCardFieldsSession.mockReturnValueOnce({
                 cardFieldsSession: newMockCardFieldsSavePaymentSession,
                 setCardFieldsSessionType: mockSetCardFieldsSessionType,
+                setError: jest.fn(),
             });
 
             const { result } = renderHook(() =>
