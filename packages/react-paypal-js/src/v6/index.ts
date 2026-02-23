@@ -31,8 +31,16 @@ export {
     PayPalCreditOneTimePaymentButton,
     type PayPalCreditOneTimePaymentButtonProps,
 } from "./components/PayPalCreditOneTimePaymentButton";
+export {
+    PayPalCreditSavePaymentButton,
+    type PayPalCreditSavePaymentButtonProps,
+} from "./components/PayPalCreditSavePaymentButton";
 export { PayPalGuestPaymentButton } from "./components/PayPalGuestPaymentButton";
 export { PayPalOneTimePaymentButton } from "./components/PayPalOneTimePaymentButton";
+export {
+    PayPalSubscriptionButton,
+    type PayPalSubscriptionButtonProps,
+} from "./components/PayPalSubscriptionButton";
 export { PayPalProvider } from "./components/PayPalProvider";
 export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
