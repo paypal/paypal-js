@@ -86,8 +86,10 @@ export function useVenmoOneTimePaymentSession({
 
         sessionRef.current = newSession;
 
-        return handleDestroy;
-    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy, setError]);
+        return () => {
+            newSession.destroy();
+        };
+    }, [sdkInstance, orderId, proxyCallbacks, setError]);
 
     const handleCancel = useCallback(() => {
         sessionRef.current?.cancel();

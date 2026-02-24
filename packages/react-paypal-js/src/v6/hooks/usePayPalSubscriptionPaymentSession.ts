@@ -102,8 +102,10 @@ export function usePayPalSubscriptionPaymentSession({
 
         sessionRef.current = newSession;
 
-        return handleDestroy;
-    }, [sdkInstance, proxyCallbacks, handleDestroy, setError]);
+        return () => {
+            newSession.destroy();
+        };
+    }, [sdkInstance, proxyCallbacks, setError]);
 
     const handleClick = useCallback(async () => {
         if (!isMountedRef.current) {

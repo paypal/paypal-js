@@ -119,7 +119,7 @@ export function usePayPalGuestPaymentSession({
         sessionRef.current = newSession;
 
         return () => {
-            sessionRef.current?.destroy();
+            newSession.destroy();
         };
     }, [
         sdkInstance,

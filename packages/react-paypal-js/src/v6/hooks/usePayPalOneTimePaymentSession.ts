@@ -146,12 +146,13 @@ export function usePayPalOneTimePaymentSession({
             handleReturnFromPayPal();
         }
 
-        return handleDestroy;
+        return () => {
+            newSession.destroy();
+        };
     }, [
         sdkInstance,
         orderId,
         proxyCallbacks,
-        handleDestroy,
         presentationMode,
         setError,
         savePayment,

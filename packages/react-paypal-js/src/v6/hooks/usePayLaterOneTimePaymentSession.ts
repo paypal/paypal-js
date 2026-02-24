@@ -110,15 +110,10 @@ export function usePayLaterOneTimePaymentSession({
             handleReturnFromPayPal();
         }
 
-        return handleDestroy;
-    }, [
-        sdkInstance,
-        orderId,
-        proxyCallbacks,
-        handleDestroy,
-        presentationMode,
-        setError,
-    ]);
+        return () => {
+            newSession.destroy();
+        };
+    }, [sdkInstance, orderId, proxyCallbacks, presentationMode, setError]);
 
     const handleCancel = useCallback(() => {
         sessionRef.current?.cancel();

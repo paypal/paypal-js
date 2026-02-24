@@ -128,12 +128,13 @@ export function usePayPalCreditSavePaymentSession({
             handleReturnFromPayPal();
         }
 
-        return handleDestroy;
+        return () => {
+            newSession.destroy();
+        };
     }, [
         sdkInstance,
         vaultSetupToken,
         proxyCallbacks,
-        handleDestroy,
         presentationMode,
         setError,
     ]);

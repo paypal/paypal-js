@@ -134,15 +134,10 @@ export function usePayPalCreditOneTimePaymentSession({
             handleReturnFromPayPal();
         }
 
-        return handleDestroy;
-    }, [
-        sdkInstance,
-        orderId,
-        proxyCallbacks,
-        handleDestroy,
-        presentationMode,
-        setError,
-    ]);
+        return () => {
+            newSession.destroy();
+        };
+    }, [sdkInstance, orderId, proxyCallbacks, presentationMode, setError]);
 
     const handleClick = useCallback(async () => {
         if (!isMountedRef.current) {
