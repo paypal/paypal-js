@@ -259,7 +259,7 @@ export function createPaymentSession<T>(
         failedSdkRef.current = sdkInstance;
 
         const detailedError = new Error(
-            "Failed to create PayLater one-time payment session. " +
+            "Failed to create payment session. " +
                 "This may occur if the required components are not included in the SDK components array. " +
                 "Please ensure you have added the necessary components when loading the PayPal SDK.",
         );
