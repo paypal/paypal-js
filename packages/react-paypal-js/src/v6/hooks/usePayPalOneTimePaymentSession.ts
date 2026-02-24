@@ -115,6 +115,7 @@ export function usePayPalOneTimePaymentSession({
             failedSdkRef,
             sdkInstance,
             setError,
+            "paypal-payments",
         );
 
         if (!newSession) {

@@ -203,7 +203,7 @@ describe("usePayPalSubscriptionPaymentSession", () => {
                 expect(error?.message).toContain("Failed to create");
                 expect(error?.message).toContain("session");
                 expect(error?.message).toContain(
-                    "This may occur if the required components are not included in the SDK components array",
+                    "This may occur if the required component",
                 );
                 expect(
                     (error as Error & { cause: typeof thrownError })?.cause,

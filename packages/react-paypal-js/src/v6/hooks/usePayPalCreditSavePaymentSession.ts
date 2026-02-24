@@ -98,6 +98,7 @@ export function usePayPalCreditSavePaymentSession({
             failedSdkRef,
             sdkInstance,
             setError,
+            "paypal-payments",
         );
 
         if (!newSession) {

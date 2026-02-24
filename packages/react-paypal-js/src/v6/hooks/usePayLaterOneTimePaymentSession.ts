@@ -79,6 +79,7 @@ export function usePayLaterOneTimePaymentSession({
             failedSdkRef,
             sdkInstance,
             setError,
+            "paypal-payments",
         );
 
         if (!newSession) {

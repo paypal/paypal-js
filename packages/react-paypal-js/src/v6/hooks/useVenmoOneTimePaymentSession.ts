@@ -78,6 +78,7 @@ export function useVenmoOneTimePaymentSession({
             failedSdkRef,
             sdkInstance,
             setError,
+            "venmo-payments",
         );
 
         if (!newSession) {

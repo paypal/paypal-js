@@ -110,6 +110,7 @@ export function usePayPalGuestPaymentSession({
             failedSdkRef,
             sdkInstance,
             setError,
+            "paypal-guest-payments",
         );
 
         if (!newSession) {

@@ -94,6 +94,7 @@ export function usePayPalSubscriptionPaymentSession({
             failedSdkRef,
             sdkInstance,
             setError,
+            "paypal-subscriptions",
         );
 
         if (!newSession) {

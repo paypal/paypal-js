@@ -2,6 +2,17 @@ import { useRef } from "react";
 
 import type { Components } from "./types";
 
+// Extend the Window interface to include __paypal_sdk__
+declare global {
+    interface Window {
+        __paypal_sdk__?: {
+            v6: {
+                components?: string[];
+            };
+        };
+    }
+}
+
 /**
  * Performs a shallow equality check on two arrays.
  *
@@ -230,6 +241,7 @@ export function deepEqual(
  * @param failedSdkRef - Ref tracking which SDK instance failed
  * @param sdkInstance - Current SDK instance
  * @param setError - Error state setter
+ * @param component - The required component name for this session type
  * @returns The payment session or null if creation fails
  *
  * @example
@@ -237,7 +249,8 @@ export function deepEqual(
  *   () => sdkInstance.createPayPalOneTimePaymentSession({ orderId, ...callbacks }),
  *   failedSdkRef,
  *   sdkInstance,
- *   setError
+ *   setError,
+ *   "paypal-payments"
  * );
  *
  * if (!session) return;
@@ -247,6 +260,7 @@ export function createPaymentSession<T>(
     failedSdkRef: { current: unknown },
     sdkInstance: unknown,
     setError: (error: Error | null) => void,
+    component: string,
 ): T | null {
     // Skip retry if this SDK instance already failed
     if (failedSdkRef.current === sdkInstance) {
@@ -258,14 +272,36 @@ export function createPaymentSession<T>(
     } catch (err) {
         failedSdkRef.current = sdkInstance;
 
-        const detailedError = new Error(
-            "Failed to create payment session. " +
-                "This may occur if the required components are not included in the SDK components array. " +
-                "Please ensure you have added the necessary components when loading the PayPal SDK.",
-        );
-        (detailedError as Error & { cause: unknown }).cause = err;
+        const loadedComponents = window.__paypal_sdk__?.v6?.components;
+
+        const errorMessage = buildErrorMessage(component, loadedComponents);
+        const detailedError = new Error(errorMessage, { cause: err });
 
         setError(detailedError);
         return null;
     }
+}
+
+function buildErrorMessage(
+    component: string,
+    loadedComponents: string[] | undefined,
+): string {
+    const baseMessage = "Failed to create payment session.";
+    const hasLoadedComponents = Array.isArray(loadedComponents);
+    const componentsList = hasLoadedComponents
+        ? loadedComponents.join(", ")
+        : "";
+
+    // Component provided but no loaded components info
+    if (!hasLoadedComponents) {
+        return `${baseMessage} This may occur if the required component "${component}" is not included in the SDK components array.`;
+    }
+
+    // Component is missing from loaded components
+    if (!loadedComponents.includes(component)) {
+        return `${baseMessage} The required component "${component}" is not loaded. Currently loaded components: [${componentsList}]. Please add "${component}" to your SDK components array.`;
+    }
+
+    // Component appears to be loaded but session creation still failed
+    return `${baseMessage} The component "${component}" appears to be loaded but the session failed to create.`;
 }
