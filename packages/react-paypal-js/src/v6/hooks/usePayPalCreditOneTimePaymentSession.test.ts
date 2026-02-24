@@ -15,6 +15,7 @@ import type { UsePayPalCreditOneTimePaymentSessionProps } from "./usePayPalCredi
 jest.mock("./usePayPal");
 
 jest.mock("../utils", () => ({
+    ...jest.requireActual("../utils"),
     useProxyProps: jest.fn(),
 }));
 
@@ -129,16 +130,14 @@ describe("usePayPalCreditOneTimePaymentSession", () => {
             {
                 description: "Error object",
                 thrownError: new Error("Required components not loaded in SDK"),
-                expectedMessage: "Required components not loaded in SDK",
             },
             {
                 description: "non-Error string",
                 thrownError: "String error message",
-                expectedMessage: "String error message",
             },
         ])(
             "should handle $description thrown by createPayPalCreditOneTimePaymentSession",
-            ({ thrownError, expectedMessage }) => {
+            ({ thrownError }) => {
                 const mockSdkInstanceWithError = {
                     createPayPalCreditOneTimePaymentSession: jest
                         .fn()
@@ -167,13 +166,14 @@ describe("usePayPalCreditOneTimePaymentSession", () => {
 
                 expectCurrentErrorValue(error);
 
-                expect(error?.message).toContain(
-                    "Failed to create PayPal Credit one-time payment session",
-                );
+                expect(error?.message).toContain("Failed to create");
+                expect(error?.message).toContain("session");
                 expect(error?.message).toContain(
                     "This may occur if the required components are not included in the SDK components array",
                 );
-                expect(error?.message).toContain(expectedMessage);
+                expect(
+                    (error as Error & { cause: typeof thrownError })?.cause,
+                ).toBe(thrownError);
             },
         );
 

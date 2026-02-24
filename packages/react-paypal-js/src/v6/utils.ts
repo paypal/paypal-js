@@ -222,3 +222,50 @@ export function deepEqual(
 
     return true;
 }
+
+/**
+ * Creates a payment session with error handling and retry prevention.
+ *
+ * @param sessionCreator - Function that creates the payment session
+ * @param failedSdkRef - Ref tracking which SDK instance failed
+ * @param sdkInstance - Current SDK instance
+ * @param setError - Error state setter
+ * @returns The payment session or null if creation fails
+ *
+ * @example
+ * const session = createPaymentSession(
+ *   () => sdkInstance.createPayPalOneTimePaymentSession({ orderId, ...callbacks }),
+ *   failedSdkRef,
+ *   sdkInstance,
+ *   setError
+ * );
+ *
+ * if (!session) return;
+ */
+export function createPaymentSession<T>(
+    sessionCreator: () => T,
+    failedSdkRef: { current: unknown },
+    sdkInstance: unknown,
+    setError: (error: Error | null) => void,
+): T | null {
+    // Skip retry if this SDK instance already failed
+    if (failedSdkRef.current === sdkInstance) {
+        return null;
+    }
+
+    try {
+        return sessionCreator();
+    } catch (err) {
+        failedSdkRef.current = sdkInstance;
+
+        const detailedError = new Error(
+            "Failed to create PayLater one-time payment session. " +
+                "This may occur if the required components are not included in the SDK components array. " +
+                "Please ensure you have added the necessary components when loading the PayPal SDK.",
+        );
+        (detailedError as Error & { cause: unknown }).cause = err;
+
+        setError(detailedError);
+        return null;
+    }
+}

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
 import { useError } from "./useError";
-import { useProxyProps } from "../utils";
+import { useProxyProps, createPaymentSession } from "../utils";
 import { INSTANCE_LOADING_STATE } from "../types";
 
 import type {
@@ -65,10 +65,8 @@ export function usePayPalGuestPaymentSession({
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
 
-    // Track if we encountered a creation error to prevent infinite retry loops
-    const creationErrorRef = useRef(false);
-    // Track SDK instance changes to reset error state
-    const lastSdkInstanceRef = useRef(sdkInstance);
+    // Prevents retrying session creation with a failed SDK instance
+    const failedSdkRef = useRef<unknown>(null);
 
     const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
 
@@ -83,10 +81,9 @@ export function usePayPalGuestPaymentSession({
 
     // Handle SDK availability
     useEffect(() => {
-        // Reset error tracking when SDK instance changes
-        if (lastSdkInstanceRef.current !== sdkInstance) {
-            creationErrorRef.current = false;
-            lastSdkInstanceRef.current = sdkInstance;
+        // Reset failed SDK tracking when SDK instance changes
+        if (failedSdkRef.current !== sdkInstance) {
+            failedSdkRef.current = null;
         }
 
         if (sdkInstance) {
@@ -102,31 +99,24 @@ export function usePayPalGuestPaymentSession({
             return;
         }
 
-        if (creationErrorRef.current) {
-            return;
-        }
-
-        try {
-            const newSession =
+        const newSession = createPaymentSession(
+            () =>
                 sdkInstance.createPayPalGuestOneTimePaymentSession({
                     orderId,
                     ...proxyCallbacks,
                     ...(onShippingAddressChange && { onShippingAddressChange }),
                     ...(onShippingOptionsChange && { onShippingOptionsChange }),
-                });
-            sessionRef.current = newSession;
-        } catch (err) {
-            creationErrorRef.current = true;
+                }),
+            failedSdkRef,
+            sdkInstance,
+            setError,
+        );
 
-            const detailedError = new Error(
-                "Failed to create PayPal guest one-time payment session. " +
-                    "This may occur if the required components are not included in the SDK components array. " +
-                    "Please ensure you have added the necessary components when loading the PayPal SDK. " +
-                    `Original error: ${err instanceof Error ? err.message : String(err)}`,
-            );
-            setError(detailedError);
+        if (!newSession) {
             return;
         }
+
+        sessionRef.current = newSession;
 
         return () => {
             sessionRef.current?.destroy();

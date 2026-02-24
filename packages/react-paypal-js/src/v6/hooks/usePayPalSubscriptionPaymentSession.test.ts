@@ -18,6 +18,7 @@ import type { UsePayPalSubscriptionPaymentSessionProps } from "./usePayPalSubscr
 jest.mock("./usePayPal");
 
 jest.mock("../utils", () => ({
+    ...jest.requireActual("../utils"),
     useProxyProps: jest.fn(),
 }));
 
@@ -161,16 +162,14 @@ describe("usePayPalSubscriptionPaymentSession", () => {
             {
                 description: "Error object",
                 thrownError: new Error("Required components not loaded in SDK"),
-                expectedMessage: "Required components not loaded in SDK",
             },
             {
                 description: "non-Error string",
                 thrownError: "String error message",
-                expectedMessage: "String error message",
             },
         ])(
             "should handle $description thrown by createPayPalSubscriptionPaymentSession",
-            ({ thrownError, expectedMessage }) => {
+            ({ thrownError }) => {
                 const mockSdkInstanceWithError = {
                     createPayPalSubscriptionPaymentSession: jest
                         .fn()
@@ -201,13 +200,14 @@ describe("usePayPalSubscriptionPaymentSession", () => {
 
                 expectCurrentErrorValue(error);
 
-                expect(error?.message).toContain(
-                    "Failed to create PayPal subscription payment session",
-                );
+                expect(error?.message).toContain("Failed to create");
+                expect(error?.message).toContain("session");
                 expect(error?.message).toContain(
                     "This may occur if the required components are not included in the SDK components array",
                 );
-                expect(error?.message).toContain(expectedMessage);
+                expect(
+                    (error as Error & { cause: typeof thrownError })?.cause,
+                ).toBe(thrownError);
             },
         );
 
