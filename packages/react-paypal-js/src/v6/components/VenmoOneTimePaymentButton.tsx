@@ -17,10 +17,6 @@ type VenmoOneTimePaymentButtonProps = UseVenmoOneTimePaymentSessionProps &
  * `VenmoOneTimePaymentButtonProps` combines the arguments for {@link UseVenmoOneTimePaymentSessionProps}
  * and {@link ButtonProps}.
  *
- * Note, `autoRedirect` is not allowed because if given a `presentationMode` of `"redirect"` the button
- * would not be able to provide back `redirectURL` from `start`. Advanced integrations that need
- * `redirectURL` should use the {@link useVenmoOneTimePaymentSession} hook directly.
- *
  * @example
  * <VenmoOneTimePaymentButton
  *   onApprove={() => {
