@@ -41,7 +41,7 @@ export type UsePayPalGuestPaymentSessionProps = (
  * @returns Object with: `buttonRef` (ref for the target button element), `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
  * @example
- * function GuestCheckout() {
+ * function GuestCheckoutButton() {
  *   const { buttonRef, error, isPending, handleClick, handleCancel } =
  *     usePayPalGuestPaymentSession({
  *       createOrder: async () => ({ orderId: 'ORDER-123' }),
