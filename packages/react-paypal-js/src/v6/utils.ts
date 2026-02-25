@@ -2,17 +2,6 @@ import { useRef } from "react";
 
 import type { Components } from "./types";
 
-// Extend the Window interface to include __paypal_sdk__
-declare global {
-    interface Window {
-        __paypal_sdk__?: {
-            v6: {
-                components?: string[];
-            };
-        };
-    }
-}
-
 /**
  * Performs a shallow equality check on two arrays.
  *
@@ -272,7 +261,11 @@ export function createPaymentSession<T>(
     } catch (err) {
         failedSdkRef.current = sdkInstance;
 
-        const loadedComponents = window.__paypal_sdk__?.v6?.components;
+        const loadedComponents = (
+            window as Window & {
+                __paypal_sdk__?: { v6: { components?: string[] } };
+            }
+        ).__paypal_sdk__?.v6?.components;
 
         const errorMessage = buildErrorMessage(component, loadedComponents);
         const detailedError = new Error(errorMessage, { cause: err });
