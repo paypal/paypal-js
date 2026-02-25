@@ -152,7 +152,7 @@ export function useDeepCompareMemoize<T>(value: T): T {
     return ref.current as T;
 }
 
-function deepEqual(
+export function deepEqual(
     obj1: unknown,
     obj2: unknown,
     maxDepth = 10,

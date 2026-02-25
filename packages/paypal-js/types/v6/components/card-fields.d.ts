@@ -135,6 +135,27 @@ export type CardFieldOptions = {
 
 export type StateType = "canceled" | "failed" | "succeeded";
 
+export type CardFieldComponent = HTMLElement & {
+    /**
+     * Use this method to destroy the Card Field component and clean up any associated resources. After calling this method, the Card Field component will no longer be usable.
+     * 
+     * @example
+     * ```typescript
+     * const numberField = cardFieldsInstance.createCardFieldsComponent({
+            type: "number",
+            placeholder: "Enter a number",
+        });
+        document
+            .querySelector("#paypal-card-fields-number-container")
+            .appendChild(numberField);
+            
+        // Later, when you want to clean up:
+        numberField.destroy();
+    * ```
+    */
+    destroy(): void;
+};
+
 type BaseCardFieldsSession = {
     /**
      * Use this method to create and configure individual Card Field components.
@@ -153,7 +174,7 @@ type BaseCardFieldsSession = {
           .appendChild(numberField);
      * ```
      */
-    createCardFieldsComponent: (config: CardFieldOptions) => HTMLElement;
+    createCardFieldsComponent: (config: CardFieldOptions) => CardFieldComponent;
     /**
      * Use this method to register event listeners and set callbacks for them.
      * 
@@ -187,6 +208,15 @@ type BaseCardFieldsSession = {
      * ```
      */
     update: (options: UpdateOptions) => void;
+    /**
+     * Use this method to destroy the Card Fields session instance and clean up any associated resources. After calling this method, the Card Fields session instance will no longer be usable.
+     *
+     * @example
+     * ```typescript
+     * cardFieldsInstance.destroy();
+     * ```
+     */
+    destroy: () => void;
 };
 
 export type OneTimePaymentFlowResponse = {

@@ -10,6 +10,7 @@ export interface CardFieldsSessionState {
     setCardFieldsSessionType: (
         cardFieldsSessionType: CardFieldsSessionType,
     ) => void;
+    setError: (error: Error | null) => void;
 }
 
 export const CardFieldsSessionContext =

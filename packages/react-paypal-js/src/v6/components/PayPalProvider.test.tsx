@@ -52,7 +52,8 @@ async function renderProvider(
 
     const {
         children,
-        clientToken = createInstanceOptions.clientToken,
+        clientToken,
+        clientId,
         components = createInstanceOptions.components,
         debug = false,
         environment = "sandbox",
@@ -62,13 +63,23 @@ async function renderProvider(
     let result: ReturnType<typeof render>;
 
     await act(async () => {
+        const token = clientToken ?? createInstanceOptions.clientToken;
+        const providerProps =
+            clientId !== undefined
+                ? { components, clientId, debug, environment, ...restProps }
+                : {
+                      components,
+                      clientToken: token,
+                      debug,
+                      environment,
+                      ...restProps,
+                  };
+
         result = render(
             <PayPalProvider
-                components={components}
-                clientToken={clientToken}
-                debug={debug}
-                environment={environment}
-                {...restProps}
+                {...(providerProps as React.ComponentProps<
+                    typeof PayPalProvider
+                >)}
             >
                 <TestComponent>{children}</TestComponent>
             </PayPalProvider>,
@@ -138,6 +149,7 @@ describe("PayPalProvider", () => {
             expect(loadCoreSdkScript).toHaveBeenCalledWith({
                 environment: "sandbox",
                 debug: false,
+                dataSdkIntegrationSource: "react-paypal-js",
             });
 
             await waitFor(() => expectResolvedState(state));
@@ -180,6 +192,7 @@ describe("PayPalProvider", () => {
                 expect(loadCoreSdkScript).toHaveBeenCalledWith({
                     environment,
                     debug: false,
+                    dataSdkIntegrationSource: "react-paypal-js",
                 });
 
                 await waitFor(() => {
@@ -295,15 +308,19 @@ describe("PayPalProvider", () => {
                 return <div>Test Child Content</div>;
             };
 
+            let resolveToken: (value: string) => void;
+            const clientTokenPromise = new Promise<string>((resolve) => {
+                resolveToken = resolve;
+            });
+
             const { state, TestComponent } = setupTestComponent();
-            let rerender: ReturnType<typeof render>["rerender"];
             let getByText: ReturnType<typeof render>["getByText"];
 
             await act(async () => {
                 const result = render(
                     <PayPalProvider
                         components={["paypal-payments"]}
-                        clientToken={undefined}
+                        clientToken={clientTokenPromise}
                         environment="sandbox"
                     >
                         <TestComponent>
@@ -311,35 +328,26 @@ describe("PayPalProvider", () => {
                         </TestComponent>
                     </PayPalProvider>,
                 );
-                rerender = result.rerender;
                 getByText = result.getByText;
             });
 
             expect(childRenderSpy).toHaveBeenCalled();
             expect(getByText!("Test Child Content")).toBeInTheDocument();
-            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
+            expect(mockCreateInstance).not.toHaveBeenCalled();
             expect(state.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
             expect(state.sdkInstance).toBe(null);
 
             await act(async () => {
-                rerender!(
-                    <PayPalProvider
-                        components={["paypal-payments"]}
-                        clientToken={TEST_CLIENT_TOKEN}
-                        environment="sandbox"
-                    >
-                        <TestComponent>
-                            <TestChild />
-                        </TestComponent>
-                    </PayPalProvider>,
-                );
+                resolveToken!(TEST_CLIENT_TOKEN);
             });
 
-            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
             await waitFor(() => expectResolvedState(state));
+
             expect(mockCreateInstance).toHaveBeenCalledWith(
                 expect.objectContaining({
                     clientToken: TEST_CLIENT_TOKEN,
+                    components: ["paypal-payments"],
                 }),
             );
         });
@@ -383,7 +391,7 @@ describe("PayPalProvider", () => {
                     "Failed to resolve clientToken. Expected a Promise that resolves to a string, but it was rejected with: Token fetch failed",
                 );
             });
-            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+            expect(loadCoreSdkScript).toHaveBeenCalled();
         });
 
         test("should resolve Promise and load SDK when clientToken is a Promise", async () => {
@@ -426,19 +434,18 @@ describe("PayPalProvider", () => {
 
             expect(childRenderSpy).toHaveBeenCalled();
             expect(getByText!("Test Child Content")).toBeInTheDocument();
-            expect(loadCoreSdkScript).not.toHaveBeenCalled();
+            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
 
             await act(async () => {
                 resolveToken!(TEST_CLIENT_TOKEN);
             });
 
-            await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
             await waitFor(() => expectResolvedState(state));
         });
     });
 
     describe("Eligibility Loading", () => {
-        test("should call findEligibleMethods when no eligibleMethodsResponse is provided", async () => {
+        test("should not call findEligibleMethods when no eligibleMethodsResponse is provided", async () => {
             const mockFindEligibleMethods = jest
                 .fn()
                 .mockResolvedValue(TEST_SDK_ELIGIBILITY_RESULT);
@@ -455,12 +462,10 @@ describe("PayPalProvider", () => {
 
             await waitFor(() => expectResolvedState(state));
 
-            expect(mockFindEligibleMethods).toHaveBeenCalledWith({});
-            await waitFor(() =>
-                expect(state.eligiblePaymentMethods).toEqual(
-                    TEST_SDK_ELIGIBILITY_RESULT,
-                ),
-            );
+            // Provider no longer automatically calls findEligibleMethods
+            // Client-side fetching should be done via useFetchEligibleMethods hook
+            expect(mockFindEligibleMethods).not.toHaveBeenCalled();
+            expect(state.eligiblePaymentMethods).toBeNull();
         });
 
         test("should call hydrateEligibleMethods when eligibleMethodsResponse is provided", async () => {
@@ -497,24 +502,27 @@ describe("PayPalProvider", () => {
             );
         });
 
-        test("should store eligibility result in context state", async () => {
+        test("should store eligibility result in context state when eligibleMethodsResponse is provided", async () => {
             const eligibilityResult = {
                 paypal: { eligible: true, recommended: true },
                 venmo: { eligible: false },
             };
 
+            const mockHydrateEligibleMethods = jest
+                .fn()
+                .mockReturnValue(eligibilityResult);
             const mockInstance = {
                 ...createMockSdkInstance(),
-                findEligibleMethods: jest
-                    .fn()
-                    .mockResolvedValue(eligibilityResult),
+                hydrateEligibleMethods: mockHydrateEligibleMethods,
             };
 
             (loadCoreSdkScript as jest.Mock).mockResolvedValue({
                 createInstance: jest.fn().mockResolvedValue(mockInstance),
             });
 
-            const { state } = await renderProvider();
+            const { state } = await renderProvider({
+                eligibleMethodsResponse: TEST_ELIGIBILITY_HOOK_RESULT,
+            });
 
             await waitFor(() => expectResolvedState(state));
             await waitFor(() =>
@@ -522,13 +530,13 @@ describe("PayPalProvider", () => {
             );
         });
 
-        test("should not run eligibility effect until sdkInstance is available", async () => {
-            const mockFindEligibleMethods = jest
+        test("should not run eligibility hydration effect until sdkInstance is available", async () => {
+            const mockHydrateEligibleMethods = jest
                 .fn()
-                .mockResolvedValue(TEST_SDK_ELIGIBILITY_RESULT);
+                .mockReturnValue(TEST_SDK_ELIGIBILITY_RESULT);
             const mockInstance = {
                 ...createMockSdkInstance(),
-                findEligibleMethods: mockFindEligibleMethods,
+                hydrateEligibleMethods: mockHydrateEligibleMethods,
             };
 
             let resolveCreateInstance: (value: typeof mockInstance) => void;
@@ -552,14 +560,15 @@ describe("PayPalProvider", () => {
                         components={["paypal-payments"]}
                         clientToken={TEST_CLIENT_TOKEN}
                         environment="sandbox"
+                        eligibleMethodsResponse={TEST_ELIGIBILITY_HOOK_RESULT}
                     >
                         <TestComponent />
                     </PayPalProvider>,
                 );
             });
 
-            // findEligibleMethods should not be called yet
-            expect(mockFindEligibleMethods).not.toHaveBeenCalled();
+            // hydrateEligibleMethods should not be called yet
+            expect(mockHydrateEligibleMethods).not.toHaveBeenCalled();
             expect(state.eligiblePaymentMethods).toBe(null);
 
             // Resolve instance creation
@@ -568,7 +577,9 @@ describe("PayPalProvider", () => {
             });
 
             await waitFor(() => {
-                expect(mockFindEligibleMethods).toHaveBeenCalledWith({});
+                expect(mockHydrateEligibleMethods).toHaveBeenCalledWith(
+                    TEST_ELIGIBILITY_HOOK_RESULT,
+                );
             });
         });
 
@@ -643,21 +654,25 @@ describe("PayPalProvider", () => {
             expect(mockHydrateEligibleMethods).toHaveBeenCalledTimes(2);
         });
 
-        test("should handle error when findEligibleMethods fails", async () => {
-            const mockError = new Error("findEligibleMethods failed");
-            const mockFindEligibleMethods = jest
+        test("should handle error when hydrateEligibleMethods fails", async () => {
+            const mockError = new Error("hydrateEligibleMethods failed");
+            const mockHydrateEligibleMethods = jest
                 .fn()
-                .mockRejectedValue(mockError);
+                .mockImplementation(() => {
+                    throw mockError;
+                });
             const mockInstance = {
                 ...createMockSdkInstance(),
-                findEligibleMethods: mockFindEligibleMethods,
+                hydrateEligibleMethods: mockHydrateEligibleMethods,
             };
 
             (loadCoreSdkScript as jest.Mock).mockResolvedValue({
                 createInstance: jest.fn().mockResolvedValue(mockInstance),
             });
 
-            const { state } = await renderProvider();
+            const { state } = await renderProvider({
+                eligibleMethodsResponse: TEST_ELIGIBILITY_HOOK_RESULT,
+            });
 
             await waitFor(() => expectRejectedState(state, mockError));
             expect(state.eligiblePaymentMethods).toBe(null);
@@ -700,6 +715,116 @@ describe("PayPalProvider", () => {
 
             // Should reload with new options and reach resolved state
             await waitFor(() => expectResolvedState(state));
+        });
+    });
+
+    describe("ClientId Support", () => {
+        const TEST_CLIENT_ID = "test-client-id";
+
+        test("should call createInstance with clientId instead of clientToken", async () => {
+            const mockCreateInstance = jest
+                .fn()
+                .mockResolvedValue(createMockSdkInstance());
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: mockCreateInstance,
+            });
+
+            const { state } = await renderProvider({
+                clientId: TEST_CLIENT_ID,
+            });
+
+            await waitFor(() => expectResolvedState(state));
+
+            expect(mockCreateInstance).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    clientId: TEST_CLIENT_ID,
+                    components: ["paypal-payments"],
+                }),
+            );
+            expect(mockCreateInstance).toHaveBeenCalledWith(
+                expect.not.objectContaining({
+                    clientToken: expect.anything(),
+                }),
+            );
+        });
+
+        test("should handle clientId as Promise", async () => {
+            const clientIdPromise = Promise.resolve(TEST_CLIENT_ID);
+
+            const { state } = await renderProvider({
+                clientId: clientIdPromise,
+            });
+
+            await waitFor(() => expectResolvedState(state));
+        });
+
+        test("should reload when clientId changes", async () => {
+            const mockCreateInstance = jest
+                .fn()
+                .mockResolvedValue(createMockSdkInstance());
+
+            (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+                createInstance: mockCreateInstance,
+            });
+
+            const { state, TestComponent } = setupTestComponent();
+            let rerender: ReturnType<typeof render>["rerender"];
+
+            await act(async () => {
+                const result = render(
+                    <PayPalProvider
+                        components={createInstanceOptions.components}
+                        clientId={TEST_CLIENT_ID}
+                        environment="sandbox"
+                    >
+                        <TestComponent />
+                    </PayPalProvider>,
+                );
+                rerender = result.rerender;
+            });
+
+            await waitFor(() => expectResolvedState(state));
+            const initialCallCount = mockCreateInstance.mock.calls.length;
+
+            await act(async () => {
+                rerender!(
+                    <PayPalProvider
+                        components={createInstanceOptions.components}
+                        clientId="new-client-id"
+                        environment="sandbox"
+                    >
+                        <TestComponent />
+                    </PayPalProvider>,
+                );
+            });
+
+            await waitFor(() =>
+                expect(mockCreateInstance.mock.calls.length).toBe(
+                    initialCallCount + 1,
+                ),
+            );
+        });
+
+        test("should handle Promise rejection for clientId", async () => {
+            const idError = new Error("ClientId fetch failed");
+            const idPromise = Promise.reject(idError);
+
+            idPromise.catch(() => {});
+
+            const { state } = await renderProvider({
+                clientId: idPromise,
+            });
+
+            await waitFor(() => {
+                expect(state.loadingStatus).toBe(
+                    INSTANCE_LOADING_STATE.REJECTED,
+                );
+                expect(state.error?.message).toBe(
+                    "Failed to resolve clientId. Expected a Promise that resolves to a string, but it was rejected with: ClientId fetch failed",
+                );
+            });
+            expect(loadCoreSdkScript).toHaveBeenCalled();
         });
     });
 

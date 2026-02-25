@@ -59,6 +59,7 @@ async function main() {
     const paypalPaymentSession = sdkInstance.createPayPalOneTimePaymentSession({
         onApprove: onApproveCallback,
         onCancel: onCancelCallback,
+        commit: true,
     });
 
     const createOrder = () => Promise.resolve({ orderId: "ABC123" });

@@ -1,12 +1,15 @@
+import { OnErrorData } from ".";
+
 import type { HTMLAttributes, Ref } from "react";
 
 export interface InternalButtonProps {
     type?: "buynow" | "checkout" | "donate" | "pay" | "subscribe";
     disabled?: boolean;
+    onError?: (data: OnErrorData) => void;
 }
 
 export interface ButtonProps
-    extends HTMLAttributes<HTMLButtonElement>,
+    extends Omit<HTMLAttributes<HTMLButtonElement>, "onError">,
         InternalButtonProps {}
 
 /**
@@ -29,6 +32,7 @@ export interface PayPalBasicCardButtonProps
 export interface PayPalCreditButtonProps
     extends HTMLAttributes<HTMLButtonElement> {
     countryCode?: string;
+    disabled?: boolean;
 }
 
 export interface PayPalMessagesElement extends HTMLAttributes<HTMLElement> {

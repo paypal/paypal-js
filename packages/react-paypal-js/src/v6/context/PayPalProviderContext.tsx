@@ -9,11 +9,13 @@ import type {
     Components,
     SdkInstance,
     EligiblePaymentMethodsOutput,
+    FindEligibleMethodsOptions,
 } from "../types";
 
 export interface PayPalState {
     sdkInstance: SdkInstance<readonly [Components, ...Components[]]> | null;
     eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
+    eligiblePaymentMethodsPayload?: FindEligibleMethodsOptions | null;
     loadingStatus: INSTANCE_LOADING_STATE;
     error: Error | null;
     isHydrated: boolean;
@@ -30,7 +32,10 @@ export type InstanceAction =
       }
     | {
           type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY;
-          value: EligiblePaymentMethodsOutput;
+          value: {
+              eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
+              payload?: FindEligibleMethodsOptions | null;
+          };
       }
     | { type: INSTANCE_DISPATCH_ACTION.SET_ERROR; value: Error }
     | {
@@ -40,6 +45,7 @@ export type InstanceAction =
 export const initialState: PayPalState = {
     sdkInstance: null,
     eligiblePaymentMethods: null,
+    eligiblePaymentMethodsPayload: null,
     loadingStatus: INSTANCE_LOADING_STATE.PENDING,
     error: null,
     isHydrated: false,
@@ -59,7 +65,11 @@ export function instanceReducer(
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
             };
         case INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY:
-            return { ...state, eligiblePaymentMethods: action.value };
+            return {
+                ...state,
+                eligiblePaymentMethods: action.value.eligiblePaymentMethods,
+                eligiblePaymentMethodsPayload: action.value.payload,
+            };
         case INSTANCE_DISPATCH_ACTION.SET_ERROR:
             return {
                 ...state,
