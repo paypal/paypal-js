@@ -140,16 +140,23 @@ The `components` prop accepts an array of the following values:
 - `"paypal-guest-payments"` - Guest checkout (card payments)
 - `"paypal-subscriptions"` - Subscription payments
 
-### Basic Usage
+### With Promise-based Client ID
 
 ```tsx
-<PayPalProvider
-    clientToken={clientToken}
-    components={["paypal-payments", "venmo-payments"]}
-    pageType="checkout"
->
-    <YourCheckoutComponent />
-</PayPalProvider>
+function App() {
+    // Memoize to prevent re-fetching on each render
+    const clientIdPromise = useMemo(() => fetchClientId(), []);
+
+    return (
+        <PayPalProvider
+            clientToken={clientIdPromise}
+            components={["paypal-payments"]}
+            pageType="checkout"
+        >
+            <CheckoutPage />
+        </PayPalProvider>
+    );
+}
 ```
 
 ### With Promise-based Token
@@ -171,7 +178,7 @@ function App() {
 }
 ```
 
-### Deferred Loading
+### Deferred Loading (works for either Client token or ID)
 
 ```tsx
 function App() {
@@ -443,7 +450,7 @@ function MyComponent() {
 
 ### useEligibleMethods
 
-Returns eligible payment methods and loading state. Use this to conditionally render payment buttons based on eligibility.
+Returns eligible payment methods and loading state. Use this to conditionally render payment buttons based on eligibility. This method also updates the `PayPalProvider` reducer with Eligibility Output from the SDK, enabling built-in eligibility features in the UI Button components.
 
 ```tsx
 import { useEligibleMethods } from "@paypal/react-paypal-js/sdk-v6";
