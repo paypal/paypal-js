@@ -13,6 +13,7 @@ jest.mock("./usePayPal", () => ({
 }));
 
 jest.mock("../utils", () => ({
+    ...jest.requireActual("../utils"),
     useProxyProps: jest.fn(),
 }));
 
@@ -213,6 +214,58 @@ describe("usePayPalSavePaymentSession", () => {
 
         expect(result.current.error).toBeNull();
     });
+
+    test.each([
+        {
+            description: "Error object",
+            thrownError: new Error("Required components not loaded in SDK"),
+        },
+        {
+            description: "non-Error string",
+            thrownError: "String error message",
+        },
+    ])(
+        "should handle $description thrown by createPayPalSavePaymentSession",
+        ({ thrownError }) => {
+            const mockSdkInstanceWithError = {
+                createPayPalSavePaymentSession: jest
+                    .fn()
+                    .mockImplementation(() => {
+                        throw thrownError;
+                    }),
+            };
+
+            (usePayPal as jest.Mock).mockReturnValue({
+                sdkInstance: mockSdkInstanceWithError,
+                loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+            });
+
+            const {
+                result: {
+                    current: { error },
+                },
+            } = renderHook(() =>
+                usePayPalSavePaymentSession({
+                    presentationMode: "popup",
+                    vaultSetupToken: "test-vault-token",
+                    onApprove: jest.fn(),
+                    onCancel: jest.fn(),
+                    onError: jest.fn(),
+                }),
+            );
+
+            expectCurrentErrorValue(error);
+
+            expect(error?.message).toContain("Failed to create");
+            expect(error?.message).toContain("session");
+            expect(error?.message).toContain(
+                "This may occur if the required component",
+            );
+            expect(
+                (error as Error & { cause: typeof thrownError })?.cause,
+            ).toBe(thrownError);
+        },
+    );
 
     test.each([
         [INSTANCE_LOADING_STATE.PENDING, true],

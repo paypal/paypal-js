@@ -222,3 +222,79 @@ export function deepEqual(
 
     return true;
 }
+
+/**
+ * Creates a payment session with error handling and retry prevention.
+ *
+ * @param sessionCreator - Function that creates the payment session
+ * @param failedSdkRef - Ref tracking which SDK instance failed
+ * @param sdkInstance - Current SDK instance
+ * @param setError - Error state setter
+ * @param component - The required component name for this session type
+ * @returns The payment session or null if creation fails
+ *
+ * @example
+ * const session = createPaymentSession(
+ *   () => sdkInstance.createPayPalOneTimePaymentSession({ orderId, ...callbacks }),
+ *   failedSdkRef,
+ *   sdkInstance,
+ *   setError,
+ *   "paypal-payments"
+ * );
+ *
+ * if (!session) return;
+ */
+export function createPaymentSession<T>(
+    sessionCreator: () => T,
+    failedSdkRef: { current: unknown },
+    sdkInstance: unknown,
+    setError: (error: Error | null) => void,
+    component: string,
+): T | null {
+    // Skip retry if this SDK instance already failed
+    if (failedSdkRef.current === sdkInstance) {
+        return null;
+    }
+
+    try {
+        return sessionCreator();
+    } catch (err) {
+        failedSdkRef.current = sdkInstance;
+
+        const loadedComponents = (
+            window as Window & {
+                __paypal_sdk__?: { v6: { components?: string[] } };
+            }
+        ).__paypal_sdk__?.v6?.components;
+
+        const errorMessage = buildErrorMessage(component, loadedComponents);
+        const detailedError = new Error(errorMessage, { cause: err });
+
+        setError(detailedError);
+        return null;
+    }
+}
+
+function buildErrorMessage(
+    component: string,
+    loadedComponents: string[] | undefined,
+): string {
+    const baseMessage = "Failed to create payment session.";
+    const hasLoadedComponents = Array.isArray(loadedComponents);
+    const componentsList = hasLoadedComponents
+        ? loadedComponents.join(", ")
+        : "";
+
+    // Component provided but no loaded components info
+    if (!hasLoadedComponents) {
+        return `${baseMessage} This may occur if the required component "${component}" is not included in the SDK components array.`;
+    }
+
+    // Component is missing from loaded components
+    if (!loadedComponents.includes(component)) {
+        return `${baseMessage} The required component "${component}" is not loaded. Currently loaded components: [${componentsList}]. Please add "${component}" to your SDK components array.`;
+    }
+
+    // Component appears to be loaded but session creation still failed
+    return `${baseMessage} The component "${component}" appears to be loaded but the session failed to create.`;
+}

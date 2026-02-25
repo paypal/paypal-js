@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
 import { useError } from "./useError";
-import { useProxyProps } from "../utils";
+import { useProxyProps, createPaymentSession } from "../utils";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 
 import type {
@@ -57,6 +57,10 @@ export function usePayPalSavePaymentSession({
     const sessionRef = useRef<SavePaymentSession | null>(null);
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
+
+    // Prevents retrying session creation with a failed SDK instance
+    const failedSdkRef = useRef<unknown>(null);
+
     const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
 
     const handleDestroy = useCallback(() => {
@@ -64,8 +68,13 @@ export function usePayPalSavePaymentSession({
         sessionRef.current = null;
     }, []);
 
-    // Separate error reporting effect to avoid infinite loops with proxyCallbacks
+    // Handle SDK availability
     useEffect(() => {
+        // Reset failed SDK tracking when SDK instance changes
+        if (failedSdkRef.current !== sdkInstance) {
+            failedSdkRef.current = null;
+        }
+
         if (sdkInstance) {
             setError(null);
         } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
@@ -73,15 +82,28 @@ export function usePayPalSavePaymentSession({
         }
     }, [sdkInstance, setError, loadingStatus]);
 
+    // Create and manage session lifecycle
     useEffect(() => {
         if (!sdkInstance) {
             return;
         }
 
-        const newSession = sdkInstance.createPayPalSavePaymentSession({
-            vaultSetupToken,
-            ...proxyCallbacks,
-        });
+        const newSession = createPaymentSession(
+            () =>
+                sdkInstance.createPayPalSavePaymentSession({
+                    vaultSetupToken,
+                    ...proxyCallbacks,
+                }),
+            failedSdkRef,
+            sdkInstance,
+            setError,
+            "paypal-payments",
+        );
+
+        if (!newSession) {
+            return;
+        }
+
         sessionRef.current = newSession;
 
         const shouldCheckResume =
@@ -106,12 +128,13 @@ export function usePayPalSavePaymentSession({
             handleReturnFromPayPal();
         }
 
-        return handleDestroy;
+        return () => {
+            newSession.destroy();
+        };
     }, [
         sdkInstance,
         vaultSetupToken,
         proxyCallbacks,
-        handleDestroy,
         presentationMode,
         setError,
     ]);

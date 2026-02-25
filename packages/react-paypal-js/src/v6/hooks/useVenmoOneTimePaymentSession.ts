@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
 import { useError } from "./useError";
-import { useProxyProps } from "../utils";
+import { useProxyProps, createPaymentSession } from "../utils";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 
 import type {
@@ -39,6 +39,9 @@ export function useVenmoOneTimePaymentSession({
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
 
+    // Prevents retrying session creation with a failed SDK instance
+    const failedSdkRef = useRef<unknown>(null);
+
     const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
 
     const handleDestroy = useCallback(() => {
@@ -46,8 +49,13 @@ export function useVenmoOneTimePaymentSession({
         sessionRef.current = null;
     }, []);
 
-    // Separate error reporting effect to avoid infinite loops with proxyCallbacks
+    // Handle SDK availability
     useEffect(() => {
+        // Reset failed SDK tracking when SDK instance changes
+        if (failedSdkRef.current !== sdkInstance) {
+            failedSdkRef.current = null;
+        }
+
         if (sdkInstance) {
             setError(null);
         } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
@@ -55,19 +63,34 @@ export function useVenmoOneTimePaymentSession({
         }
     }, [sdkInstance, setError, loadingStatus]);
 
+    // Create and manage session lifecycle
     useEffect(() => {
         if (!sdkInstance) {
             return;
         }
 
-        const newSession = sdkInstance.createVenmoOneTimePaymentSession({
-            orderId,
-            ...proxyCallbacks,
-        });
+        const newSession = createPaymentSession(
+            () =>
+                sdkInstance.createVenmoOneTimePaymentSession({
+                    orderId,
+                    ...proxyCallbacks,
+                }),
+            failedSdkRef,
+            sdkInstance,
+            setError,
+            "venmo-payments",
+        );
+
+        if (!newSession) {
+            return;
+        }
+
         sessionRef.current = newSession;
 
-        return handleDestroy;
-    }, [sdkInstance, orderId, proxyCallbacks, handleDestroy]);
+        return () => {
+            newSession.destroy();
+        };
+    }, [sdkInstance, orderId, proxyCallbacks, setError]);
 
     const handleCancel = useCallback(() => {
         sessionRef.current?.cancel();

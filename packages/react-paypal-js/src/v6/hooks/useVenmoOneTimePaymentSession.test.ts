@@ -18,6 +18,7 @@ import type { UseVenmoOneTimePaymentSessionProps } from "./useVenmoOneTimePaymen
 jest.mock("./usePayPal");
 
 jest.mock("../utils", () => ({
+    ...jest.requireActual("../utils"),
     useProxyProps: jest.fn(),
 }));
 
@@ -125,6 +126,55 @@ describe("useVenmoOneTimePaymentSession", () => {
 
             expect(result.current.error).toBeNull();
         });
+
+        test.each([
+            {
+                description: "Error object",
+                thrownError: new Error("Required components not loaded in SDK"),
+            },
+            {
+                description: "non-Error string",
+                thrownError: "String error message",
+            },
+        ])(
+            "should handle $description thrown by createVenmoOneTimePaymentSession",
+            ({ thrownError }) => {
+                const mockSdkInstanceWithError = {
+                    createVenmoOneTimePaymentSession: jest
+                        .fn()
+                        .mockImplementation(() => {
+                            throw thrownError;
+                        }),
+                };
+
+                mockPayPalContext({ sdkInstance: mockSdkInstanceWithError });
+
+                const props: UseVenmoOneTimePaymentSessionProps = {
+                    presentationMode: "popup",
+                    orderId: "test-order-id",
+                    onApprove: jest.fn(),
+                    onCancel: jest.fn(),
+                    onError: jest.fn(),
+                };
+
+                const {
+                    result: {
+                        current: { error },
+                    },
+                } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+                expectCurrentErrorValue(error);
+
+                expect(error?.message).toContain("Failed to create");
+                expect(error?.message).toContain("session");
+                expect(error?.message).toContain(
+                    "This may occur if the required component",
+                );
+                expect(
+                    (error as Error & { cause: typeof thrownError })?.cause,
+                ).toBe(thrownError);
+            },
+        );
 
         test.each([
             [INSTANCE_LOADING_STATE.PENDING, true],

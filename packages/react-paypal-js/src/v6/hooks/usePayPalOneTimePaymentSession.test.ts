@@ -16,6 +16,7 @@ import type { UsePayPalOneTimePaymentSessionProps } from "./usePayPalOneTimePaym
 jest.mock("./usePayPal");
 
 jest.mock("../utils", () => ({
+    ...jest.requireActual("../utils"),
     useProxyProps: jest.fn(),
 }));
 
@@ -75,6 +76,55 @@ describe("usePayPalOneTimePaymentSession", () => {
                 mockSdkInstance.createPayPalOneTimePaymentSession,
             ).not.toHaveBeenCalled();
         });
+
+        test.each([
+            {
+                description: "Error object",
+                thrownError: new Error("Required components not loaded in SDK"),
+            },
+            {
+                description: "non-Error string",
+                thrownError: "String error message",
+            },
+        ])(
+            "should handle $description thrown by createPayPalOneTimePaymentSession",
+            ({ thrownError }) => {
+                const mockSdkInstanceWithError = {
+                    createPayPalOneTimePaymentSession: jest
+                        .fn()
+                        .mockImplementation(() => {
+                            throw thrownError;
+                        }),
+                };
+
+                mockPayPalContext({ sdkInstance: mockSdkInstanceWithError });
+
+                const props: UsePayPalOneTimePaymentSessionProps = {
+                    presentationMode: "popup",
+                    orderId: "test-order-id",
+                    onApprove: jest.fn(),
+                    onCancel: jest.fn(),
+                    onError: jest.fn(),
+                };
+
+                const {
+                    result: {
+                        current: { error },
+                    },
+                } = renderHook(() => usePayPalOneTimePaymentSession(props));
+
+                expectCurrentErrorValue(error);
+
+                expect(error?.message).toContain("Failed to create");
+                expect(error?.message).toContain("session");
+                expect(error?.message).toContain(
+                    "This may occur if the required component",
+                );
+                expect(
+                    (error as Error & { cause: typeof thrownError })?.cause,
+                ).toBe(thrownError);
+            },
+        );
 
         test("should not error if there is no sdkInstance but loading is still pending", () => {
             mockPayPalPending();

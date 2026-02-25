@@ -15,6 +15,7 @@ import type { UsePayPalCreditSavePaymentSessionProps } from "./usePayPalCreditSa
 jest.mock("./usePayPal");
 
 jest.mock("../utils", () => ({
+    ...jest.requireActual("../utils"),
     useProxyProps: jest.fn(),
 }));
 
@@ -22,7 +23,7 @@ const mockUseProxyProps = useProxyProps as jest.MockedFunction<
     typeof useProxyProps
 >;
 
-const createMockSavePaymentSession = (): SavePaymentSession => ({
+const createMockPayPalCreditSavePaymentSession = (): SavePaymentSession => ({
     start: jest.fn().mockResolvedValue(undefined),
     cancel: jest.fn(),
     destroy: jest.fn(),
@@ -31,7 +32,7 @@ const createMockSavePaymentSession = (): SavePaymentSession => ({
 });
 
 const createMockSdkInstance = (
-    savePaymentSession = createMockSavePaymentSession(),
+    savePaymentSession = createMockPayPalCreditSavePaymentSession(),
 ) => ({
     createPayPalSavePaymentSession: jest
         .fn()
@@ -45,7 +46,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
     beforeEach(() => {
         mockUseProxyProps.mockImplementation((callbacks) => callbacks);
 
-        mockSavePaymentSession = createMockSavePaymentSession();
+        mockSavePaymentSession = createMockPayPalCreditSavePaymentSession();
         mockSdkInstance = createMockSdkInstance(mockSavePaymentSession);
 
         mockPayPalContext({ sdkInstance: mockSdkInstance });
@@ -100,7 +101,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
         });
 
         test("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
-            const mockSession = createMockSavePaymentSession();
+            const mockSession = createMockPayPalCreditSavePaymentSession();
             const mockSdkInstanceNew = createMockSdkInstance(mockSession);
 
             mockPayPalRejected();
@@ -126,6 +127,55 @@ describe("usePayPalCreditSavePaymentSession", () => {
 
             expect(result.current.error).toBeNull();
         });
+
+        test.each([
+            {
+                description: "Error object",
+                thrownError: new Error("Required components not loaded in SDK"),
+            },
+            {
+                description: "non-Error string",
+                thrownError: "String error message",
+            },
+        ])(
+            "should handle $description thrown by createPayPalCreditSavePaymentSession",
+            ({ thrownError }) => {
+                const mockSdkInstanceWithError = {
+                    createPayPalSavePaymentSession: jest
+                        .fn()
+                        .mockImplementation(() => {
+                            throw thrownError;
+                        }),
+                };
+
+                mockPayPalContext({ sdkInstance: mockSdkInstanceWithError });
+
+                const props: UsePayPalCreditSavePaymentSessionProps = {
+                    presentationMode: "popup",
+                    vaultSetupToken: "test-vault-token",
+                    onApprove: jest.fn(),
+                    onCancel: jest.fn(),
+                    onError: jest.fn(),
+                };
+
+                const {
+                    result: {
+                        current: { error },
+                    },
+                } = renderHook(() => usePayPalCreditSavePaymentSession(props));
+
+                expectCurrentErrorValue(error);
+
+                expect(error?.message).toContain("Failed to create");
+                expect(error?.message).toContain("session");
+                expect(error?.message).toContain(
+                    "This may occur if the required component",
+                );
+                expect(
+                    (error as Error & { cause: typeof thrownError })?.cause,
+                ).toBe(thrownError);
+            },
+        );
 
         test.each([
             [INSTANCE_LOADING_STATE.PENDING, true],
@@ -295,7 +345,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
 
             jest.clearAllMocks();
 
-            const newMockSession = createMockSavePaymentSession();
+            const newMockSession = createMockPayPalCreditSavePaymentSession();
             const newMockSdkInstance = createMockSdkInstance(newMockSession);
 
             mockPayPalContext({ sdkInstance: newMockSdkInstance });
@@ -339,7 +389,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
 
     describe("resume flow", () => {
         test("should check hasReturned and call resume when presentationMode is redirect", async () => {
-            const mockSession = createMockSavePaymentSession();
+            const mockSession = createMockPayPalCreditSavePaymentSession();
             (mockSession.hasReturned as jest.Mock).mockReturnValue(true);
             const mockSdk = createMockSdkInstance(mockSession);
 
@@ -360,7 +410,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
         });
 
         test("should check hasReturned and call resume when presentationMode is direct-app-switch", async () => {
-            const mockSession = createMockSavePaymentSession();
+            const mockSession = createMockPayPalCreditSavePaymentSession();
             (mockSession.hasReturned as jest.Mock).mockReturnValue(true);
             const mockSdk = createMockSdkInstance(mockSession);
 
@@ -381,7 +431,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
         });
 
         test("should not call resume if hasReturned returns false", async () => {
-            const mockSession = createMockSavePaymentSession();
+            const mockSession = createMockPayPalCreditSavePaymentSession();
             (mockSession.hasReturned as jest.Mock).mockReturnValue(false);
             const mockSdk = createMockSdkInstance(mockSession);
 
@@ -415,7 +465,7 @@ describe("usePayPalCreditSavePaymentSession", () => {
         });
 
         test("should handle errors during resume flow", async () => {
-            const mockSession = createMockSavePaymentSession();
+            const mockSession = createMockPayPalCreditSavePaymentSession();
             const resumeError = new Error("resume failed");
             (mockSession.hasReturned as jest.Mock).mockReturnValue(true);
             (mockSession.resume as jest.Mock).mockRejectedValue(resumeError);
@@ -557,7 +607,8 @@ describe("usePayPalCreditSavePaymentSession", () => {
                 });
 
                 jest.clearAllMocks();
-                mockSavePaymentSession = createMockSavePaymentSession();
+                mockSavePaymentSession =
+                    createMockPayPalCreditSavePaymentSession();
                 mockSdkInstance = createMockSdkInstance(mockSavePaymentSession);
                 mockPayPalContext({ sdkInstance: mockSdkInstance });
             }
