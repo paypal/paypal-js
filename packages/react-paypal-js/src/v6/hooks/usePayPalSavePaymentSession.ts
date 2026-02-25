@@ -36,14 +36,12 @@ export type UsePayPalSavePaymentSessionProps = (
  *
  * @example
  * function PayPalVault() {
- *   const { error, isPending, handleClick, handleCancel, handleDestroy } = usePayPalSavePaymentSession({
+ *   const { error, isPending, handleClick, handleCancel } = usePayPalSavePaymentSession({
  *     presentationMode: 'popup',
  *     createVaultToken: async () => ({ vaultSetupToken: 'VAULT-TOKEN-123' }),
  *     onApprove: (data) => console.log('Vaulted:', data),
  *     onCancel: () => console.log('Cancelled'),
  *   });
- *
- *   useEffect(() => { return () => handleDestroy(); }, [handleDestroy]);
  *
  *   if (isPending) return null;
  *   if (error) return <div>Error: {error.message}</div>;

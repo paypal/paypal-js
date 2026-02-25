@@ -35,7 +35,7 @@ export type UsePayPalCreditSavePaymentSessionProps = (
  *
  * @example
  * function CreditVault() {
- *   const { error, isPending, handleClick, handleCancel, handleDestroy } = usePayPalCreditSavePaymentSession({
+ *   const { error, isPending, handleClick, handleCancel } = usePayPalCreditSavePaymentSession({
  *     presentationMode: 'redirect',
  *     createVaultToken: async () => ({ vaultSetupToken: 'VAULT-TOKEN-123' }),
  *     onApprove: (data) => console.log('Vaulted:', data),
@@ -43,8 +43,6 @@ export type UsePayPalCreditSavePaymentSessionProps = (
  *   });
  *   const { eligiblePaymentMethods } = usePayPal();
  *   const creditDetails = eligiblePaymentMethods?.getDetails?.("paypal_credit");
- *
- *   useEffect(() => { return () => handleDestroy(); }, [handleDestroy]);
  *
  *   if (isPending) return null;
  *   if (error) return <div>Error: {error.message}</div>;

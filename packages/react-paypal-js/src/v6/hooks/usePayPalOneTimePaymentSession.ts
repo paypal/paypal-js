@@ -35,13 +35,11 @@ export type UsePayPalOneTimePaymentSessionProps = (
  *
  * @example
  * function PayPalCheckout() {
- *   const { isPending, error, handleClick, handleCancel, handleDestroy } = usePayPalOneTimePaymentSession({
+ *   const { isPending, error, handleClick, handleCancel } = usePayPalOneTimePaymentSession({
  *     orderId: "ORDER-123",
  *     presentationMode: "auto",
  *     onApprove: (data) => console.log("Approved:", data),
  *   });
- *
- *   useEffect(() => { return () => handleDestroy(); }, [handleDestroy]);
  *
  *   if (isPending) return null;
  *   if (error) return <div>Error: {error.message}</div>;

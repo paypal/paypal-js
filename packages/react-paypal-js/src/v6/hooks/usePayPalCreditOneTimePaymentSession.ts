@@ -35,7 +35,7 @@ export type UsePayPalCreditOneTimePaymentSessionProps = (
  *
  * @example
  * function CreditCheckout() {
- *   const { error, isPending, handleClick, handleCancel, handleDestroy } = usePayPalCreditOneTimePaymentSession({
+ *   const { error, isPending, handleClick, handleCancel } = usePayPalCreditOneTimePaymentSession({
  *     presentationMode: 'popup',
  *     createOrder: async () => ({ orderId: 'ORDER-123' }),
  *     onApprove: (data) => console.log('Approved:', data),
@@ -43,8 +43,6 @@ export type UsePayPalCreditOneTimePaymentSessionProps = (
  *   });
  *   const { eligiblePaymentMethods } = usePayPal();
  *   const creditDetails = eligiblePaymentMethods?.getDetails?.("paypal_credit");
- *
- *   useEffect(() => { return () => handleDestroy(); }, [handleDestroy]);
  *
  *   if (isPending) return null;
  *   if (error) return <div>Error: {error.message}</div>;

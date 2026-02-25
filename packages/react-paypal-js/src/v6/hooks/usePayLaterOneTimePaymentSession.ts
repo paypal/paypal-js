@@ -37,7 +37,7 @@ export type UsePayLaterOneTimePaymentSessionProps = (
  *
  * @example
  * function PayLaterCheckout() {
- *   const { error, isPending, handleClick, handleCancel, handleDestroy } = usePayLaterOneTimePaymentSession({
+ *   const { error, isPending, handleClick, handleCancel } = usePayLaterOneTimePaymentSession({
  *     presentationMode: 'popup',
  *     createOrder: async () => ({ orderId: 'ORDER-123' }),
  *     onApprove: (data) => console.log('Approved:', data),
@@ -45,8 +45,6 @@ export type UsePayLaterOneTimePaymentSessionProps = (
  *   });
  *   const { eligiblePaymentMethods } = usePayPal();
  *   const payLaterDetails = eligiblePaymentMethods?.getDetails?.("paylater");
- *
- *   useEffect(() => { return () => handleDestroy(); }, [handleDestroy]);
  *
  *   if (isPending) return null;
  *   if (error) return <div>Error: {error.message}</div>;

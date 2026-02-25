@@ -33,15 +33,13 @@ export type UsePayPalSubscriptionPaymentSessionProps =
  *
  * @example
  * function SubscriptionCheckout() {
- *   const { error, isPending, handleClick, handleCancel, handleDestroy } = usePayPalSubscriptionPaymentSession({
+ *   const { error, isPending, handleClick, handleCancel } = usePayPalSubscriptionPaymentSession({
  *     presentationMode: 'popup',
  *     createSubscription: async () => ({ subscriptionId: 'SUB-123' }),
  *     onApprove: (data) => console.log('Subscription approved:', data),
  *     onCancel: () => console.log('Subscription cancelled'),
  *     onError: (err) => console.error('Subscription error:', err),
  *   });
- *
- *   useEffect(() => { return () => handleDestroy(); }, [handleDestroy]);
  *
  *   if (isPending) return null;
  *   if (error) return <div>Error: {error.message}</div>;

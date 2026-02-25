@@ -42,14 +42,12 @@ export type UsePayPalGuestPaymentSessionProps = (
  *
  * @example
  * function GuestCheckout() {
- *   const { buttonRef, error, isPending, handleClick, handleCancel, handleDestroy } =
+ *   const { buttonRef, error, isPending, handleClick, handleCancel } =
  *     usePayPalGuestPaymentSession({
  *       createOrder: async () => ({ orderId: 'ORDER-123' }),
  *       onApprove: (data) => console.log('Approved:', data),
  *       onCancel: () => console.log('Cancelled'),
  *     });
- *
- *   useEffect(() => { return () => handleDestroy(); }, [handleDestroy]);
  *
  *   if (isPending) return null;
  *   if (error) return <div>Error: {error.message}</div>;

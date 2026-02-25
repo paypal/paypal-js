@@ -36,14 +36,12 @@ export type UseVenmoOneTimePaymentSessionProps = (
  *
  * @example
  * function VenmoCheckout() {
- *   const { error, isPending, handleClick, handleCancel, handleDestroy } = useVenmoOneTimePaymentSession({
+ *   const { error, isPending, handleClick, handleCancel } = useVenmoOneTimePaymentSession({
  *     presentationMode: 'auto',
  *     createOrder: async () => ({ orderId: 'ORDER-123' }),
  *     onApprove: (data) => console.log('Approved:', data),
  *     onCancel: () => console.log('Cancelled'),
  *   });
- *
- *   useEffect(() => { return () => handleDestroy(); }, [handleDestroy]);
  *
  *   if (isPending) return null;
  *   if (error) return <div>Error: {error.message}</div>;

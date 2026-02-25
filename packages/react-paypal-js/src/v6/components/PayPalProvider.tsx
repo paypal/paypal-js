@@ -138,7 +138,7 @@ type PayPalProviderProps =
  *     return <div>Loading PayPal SDK...</div>;
  *   }
  *
- *   return <PayPalButton orderId="ORDER-123" />;
+ *   return <PayPalOneTimePaymentButton orderId="ORDER-123" />;
  * }
  *
  * <PayPalProvider clientToken={token} pageType="checkout">
