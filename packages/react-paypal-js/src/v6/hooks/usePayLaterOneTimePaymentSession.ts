@@ -36,7 +36,7 @@ export type UsePayLaterOneTimePaymentSessionProps = (
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
  * @example
- * function PayLaterCheckout() {
+ * function PayLaterCheckoutButton() {
  *   const { error, isPending, handleClick, handleCancel } = usePayLaterOneTimePaymentSession({
  *     presentationMode: 'popup',
  *     createOrder: async () => ({ orderId: 'ORDER-123' }),

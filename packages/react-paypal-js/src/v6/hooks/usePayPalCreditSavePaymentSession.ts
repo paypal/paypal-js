@@ -34,7 +34,7 @@ export type UsePayPalCreditSavePaymentSessionProps = (
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
  * @example
- * function CreditVault() {
+ * function SaveCreditButton() {
  *   const { error, isPending, handleClick, handleCancel } = usePayPalCreditSavePaymentSession({
  *     presentationMode: 'redirect',
  *     createVaultToken: async () => ({ vaultSetupToken: 'VAULT-TOKEN-123' }),

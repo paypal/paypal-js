@@ -35,7 +35,7 @@ export type UsePayPalSavePaymentSessionProps = (
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
  * @example
- * function PayPalVault() {
+ * function SavePayPalButton() {
  *   const { error, isPending, handleClick, handleCancel } = usePayPalSavePaymentSession({
  *     presentationMode: 'popup',
  *     createVaultToken: async () => ({ vaultSetupToken: 'VAULT-TOKEN-123' }),
