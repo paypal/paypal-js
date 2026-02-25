@@ -112,14 +112,24 @@ The `PayPalProvider` component is the entry point for the V6 SDK. It handles loa
 
 ### Props
 
-| Prop                      | Type                        | Required | Description                                                  |
-| ------------------------- | --------------------------- | -------- | ------------------------------------------------------------ |
-| `clientToken`             | `string \| Promise<string>` | Yes      | Client token from your server. Can be a string or a Promise. |
-| `components`              | `Components[]`              | No       | SDK components to load. Defaults to `["paypal-payments"]`.   |
-| `pageType`                | `string`                    | Yes      | Type of page: `"checkout"`, `"product"`, `"cart"`, etc.      |
-| `locale`                  | `string`                    | No       | Locale for the SDK (e.g., `"en_US"`).                        |
-| `environment`             | `"sandbox" \| "production"` | No       | SDK environment.                                             |
-| `eligibleMethodsResponse` | `object`                    | No       | Server-fetched eligibility response for SDK hydration.       |
+| Prop                      | Type                                 | Required | Description                                                                                                  |
+| ------------------------- | ------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------ |
+| `clientToken`             | `string \| Promise<string>`          | \*       | Client token from your server. Mutually exclusive with `clientId`.                                           |
+| `clientId`                | `string \| Promise<string>`          | \*       | Client ID from your PayPal app. Mutually exclusive with `clientToken`.                                       |
+| `components`              | `Components[]`                       | No       | SDK components to load. Defaults to `["paypal-payments"]`.                                                   |
+| `pageType`                | `string`                             | No       | Type of page: `"checkout"`, `"product-details"`, `"cart"`, `"product-listing"`, etc.                         |
+| `locale`                  | `string`                             | No       | Locale for the SDK (e.g., `"en_US"`).                                                                        |
+| `environment`             | `"sandbox" \| "production"`          | No       | SDK environment.                                                                                             |
+| `merchantId`              | `string \| string[]`                 | No       | PayPal merchant ID(s).                                                                                       |
+| `clientMetadataId`        | `string`                             | No       | Client metadata ID for tracking.                                                                             |
+| `partnerAttributionId`    | `string`                             | No       | Partner attribution ID (BN code).                                                                            |
+| `shopperSessionId`        | `string`                             | No       | Shopper session ID for tracking.                                                                             |
+| `testBuyerCountry`        | `string`                             | No       | Test buyer country code (sandbox only).                                                                      |
+| `debug`                   | `boolean`                            | No       | Enable debug mode.                                                                                           |
+| `dataNamespace`           | `string`                             | No       | Custom namespace for the SDK script data attribute.                                                          |
+| `eligibleMethodsResponse` | `FindEligiblePaymentMethodsResponse` | No       | Server-fetched eligibility response for SDK hydration (see [Server-Side Rendering](#server-side-rendering)). |
+
+> \* Either `clientToken` or `clientId` is required, but not both. They are mutually exclusive.
 
 ### Available Components
 
@@ -331,6 +341,69 @@ import { PayPalSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 />;
 ```
 
+### PayPalSubscriptionButton
+
+Renders a PayPal button for subscription payments. Requires `"paypal-subscriptions"` in the provider's `components` array.
+
+```tsx
+import { PayPalSubscriptionButton } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalProvider
+    clientToken={token}
+    components={["paypal-subscriptions"]}
+    pageType="checkout"
+>
+    <PayPalSubscriptionButton
+        createSubscription={async () => {
+            const response = await fetch("/api/create-subscription", {
+                method: "POST",
+            });
+            const { subscriptionId } = await response.json();
+            return { subscriptionId };
+        }}
+        onApprove={(data) => console.log("Subscription approved:", data)}
+    />
+</PayPalProvider>;
+```
+
+### PayPalCreditOneTimePaymentButton
+
+Renders a PayPal Credit button for one-time payments. The `countryCode` is automatically populated from eligibility data.
+
+```tsx
+import { PayPalCreditOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalCreditOneTimePaymentButton
+    createOrder={async () => {
+        const response = await fetch("/api/create-order", { method: "POST" });
+        const { orderId } = await response.json();
+        return { orderId };
+    }}
+    onApprove={({ orderId }) =>
+        console.log("Credit payment approved:", orderId)
+    }
+/>;
+```
+
+### PayPalCreditSavePaymentButton
+
+Renders a PayPal Credit button for saving a credit payment method (vaulting).
+
+```tsx
+import { PayPalCreditSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalCreditSavePaymentButton
+    createVaultToken={async () => {
+        const response = await fetch("/api/create-vault-token", {
+            method: "POST",
+        });
+        const { vaultSetupToken } = await response.json();
+        return { vaultSetupToken };
+    }}
+    onApprove={(data) => console.log("Credit saved:", data)}
+/>;
+```
+
 ## Payment Flow
 
 1. User clicks a payment button
@@ -415,6 +488,8 @@ function PayLaterMessage() {
 ### Payment Session Hooks
 
 For advanced use cases where you need full control over the payment flow, use the session hooks directly with web components.
+
+> **Note:** One-time payment session hooks (e.g., `usePayPalOneTimePaymentSession`) accept either a static `orderId` or a `createOrder` callback — they are mutually exclusive. Use `orderId` when you've already created the order, or `createOrder` to defer order creation until the buyer clicks. The same pattern applies to save payment hooks with `vaultSetupToken` vs `createVaultToken`.
 
 | Hook                                   | Payment Type        |
 | -------------------------------------- | ------------------- |
@@ -601,14 +676,15 @@ The V6 SDK uses web components for rendering buttons. These are automatically ty
 
 ### Available Web Components
 
-| Component                    | Description                |
-| ---------------------------- | -------------------------- |
-| `<paypal-button>`            | PayPal payment button      |
-| `<venmo-button>`             | Venmo payment button       |
-| `<paypal-pay-later-button>`  | Pay Later button           |
-| `<paypal-basic-card-button>` | Guest checkout button      |
-| `<paypal-credit-button>`     | PayPal Credit button       |
-| `<paypal-message>`           | PayPal messaging component |
+| Component                       | Description                |
+| ------------------------------- | -------------------------- |
+| `<paypal-button>`               | PayPal payment button      |
+| `<venmo-button>`                | Venmo payment button       |
+| `<paypal-pay-later-button>`     | Pay Later button           |
+| `<paypal-basic-card-container>` | Guest checkout container   |
+| `<paypal-basic-card-button>`    | Guest checkout button      |
+| `<paypal-credit-button>`        | PayPal Credit button       |
+| `<paypal-message>`              | PayPal messaging component |
 
 ### Button Types
 
@@ -622,6 +698,41 @@ The `type` prop controls the button label:
 
 ```tsx
 <paypal-button type="checkout" onClick={handleClick} />
+```
+
+## Server-Side Rendering
+
+The `useFetchEligibleMethods` function is available from the server export path for pre-fetching eligibility data on the server. Pass the response to `PayPalProvider` via the `eligibleMethodsResponse` prop to avoid a client-side eligibility fetch.
+
+```tsx
+// app/checkout/page.tsx (Next.js server component)
+import { useFetchEligibleMethods } from "@paypal/react-paypal-js/sdk-v6/server";
+import { PayPalProvider } from "@paypal/react-paypal-js/sdk-v6";
+
+export default async function CheckoutPage() {
+    const eligibleMethodsResponse = await useFetchEligibleMethods({
+        environment: "sandbox",
+        headers: {
+            Authorization: `Bearer ${clientToken}`,
+            "Content-Type": "application/json",
+        },
+        payload: {
+            purchase_units: [
+                { amount: { currency_code: "USD", value: "100.00" } },
+            ],
+        },
+    });
+
+    return (
+        <PayPalProvider
+            clientToken={clientToken}
+            pageType="checkout"
+            eligibleMethodsResponse={eligibleMethodsResponse}
+        >
+            <CheckoutForm />
+        </PayPalProvider>
+    );
+}
 ```
 
 ## Migration from v8.x (Legacy SDK)
@@ -687,8 +798,28 @@ This package includes full TypeScript definitions. Import types from the same pa
 
 ```tsx
 import type {
+    // Web component props
     ButtonProps,
+    PayLaterButtonProps,
+    PayPalBasicCardButtonProps,
+    PayPalCreditButtonProps,
+
+    // Session hook props
     UsePayPalOneTimePaymentSessionProps,
+    UseVenmoOneTimePaymentSessionProps,
+    UsePayLaterOneTimePaymentSessionProps,
+    UsePayPalGuestPaymentSessionProps,
+    UsePayPalSubscriptionPaymentSessionProps,
+    UsePayPalSavePaymentSessionProps,
+    UsePayPalCreditOneTimePaymentSessionProps,
+    UsePayPalCreditSavePaymentSessionProps,
+
+    // Button component props
+    PayPalSubscriptionButtonProps,
+    PayPalCreditOneTimePaymentButtonProps,
+    PayPalCreditSavePaymentButtonProps,
+
+    // Enums
     INSTANCE_LOADING_STATE,
 } from "@paypal/react-paypal-js/sdk-v6";
 ```
