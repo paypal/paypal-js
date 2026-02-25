@@ -32,7 +32,7 @@ export type UsePayPalSubscriptionPaymentSessionProps =
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
  * @example
- * function SubscriptionCheckout() {
+ * function SubscriptionCheckoutButton() {
  *   const { error, isPending, handleClick, handleCancel } = usePayPalSubscriptionPaymentSession({
  *     presentationMode: 'popup',
  *     createSubscription: async () => ({ subscriptionId: 'SUB-123' }),
