@@ -31,19 +31,32 @@ export type UsePayPalCreditSavePaymentSessionProps = (
  * This hook creates and manages a PayPal Credit save payment session for vaulting payment methods.
  * It handles session lifecycle, resume flows for redirect-based flows, and provides methods to start, cancel, and destroy the session.
  *
- * @example
- * const { error, handleClick, handleCancel, handleDestroy } = usePayPalCreditSavePaymentSession({
- *   presentationMode: 'redirect',
- *   createVaultToken: async () => ({ vaultSetupToken: 'VAULT-TOKEN-123' }),
- *   onApprove: (data) => console.log('Vaulted:', data),
- *   onCancel: () => console.log('Cancelled'),
- * });
- * const { eligiblePaymentMethods } = usePayPal();
- * const countryCode = eligiblePaymentMethods.eligible_methods.paypal_credit.country_code;
+ * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
- * return (
- *   <paypal-credit-button countryCode={countryCode} onClick={handleClick}></paypal-credit-button>
- * )
+ * @example
+ * function CreditVault() {
+ *   const { error, isPending, handleClick, handleCancel, handleDestroy } = usePayPalCreditSavePaymentSession({
+ *     presentationMode: 'redirect',
+ *     createVaultToken: async () => ({ vaultSetupToken: 'VAULT-TOKEN-123' }),
+ *     onApprove: (data) => console.log('Vaulted:', data),
+ *     onCancel: () => console.log('Cancelled'),
+ *   });
+ *   const { eligiblePaymentMethods } = usePayPal();
+ *   const creditDetails = eligiblePaymentMethods?.getDetails?.("paypal_credit");
+ *
+ *   useEffect(() => { return () => handleDestroy(); }, [handleDestroy]);
+ *
+ *   if (isPending) return null;
+ *   if (error) return <div>Error: {error.message}</div>;
+ *
+ *   return (
+ *     <paypal-credit-button
+ *       countryCode={creditDetails?.countryCode}
+ *       onClick={handleClick}
+ *       onCancel={handleCancel}
+ *     />
+ *   );
+ * }
  */
 export function usePayPalCreditSavePaymentSession({
     presentationMode,

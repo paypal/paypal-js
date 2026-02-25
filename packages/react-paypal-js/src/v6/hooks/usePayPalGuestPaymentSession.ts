@@ -38,17 +38,30 @@ export type UsePayPalGuestPaymentSessionProps = (
  * `usePayPalGuestPaymentSession` is used to interface with a guest checkout session. Guest checkout
  * sessions require a `<paypal-basic-card-button>` to target for displaying the guest checkout form.
  *
+ * @returns Object with: `buttonRef` (ref for the target button element), `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
+ *
  * @example
- * const { buttonRef, error, handleClick } = usePayPalGuestPaymentSession({ ...arguments });
+ * function GuestCheckout() {
+ *   const { buttonRef, error, isPending, handleClick, handleCancel, handleDestroy } =
+ *     usePayPalGuestPaymentSession({
+ *       createOrder: async () => ({ orderId: 'ORDER-123' }),
+ *       onApprove: (data) => console.log('Approved:', data),
+ *       onCancel: () => console.log('Cancelled'),
+ *     });
  *
- * return (
- *   <paypal-basic-card-button
- *     onClick={handleClick}
- *     ref={buttonRef}
- *     {...otherProps}>
- *   </paypal-basic-card-button>
- * )
+ *   useEffect(() => { return () => handleDestroy(); }, [handleDestroy]);
  *
+ *   if (isPending) return null;
+ *   if (error) return <div>Error: {error.message}</div>;
+ *
+ *   return (
+ *     <paypal-basic-card-button
+ *       onClick={handleClick}
+ *       onCancel={handleCancel}
+ *       ref={buttonRef}
+ *     />
+ *   );
+ * }
  */
 export function usePayPalGuestPaymentSession({
     fullPageOverlay,

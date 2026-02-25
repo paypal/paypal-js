@@ -26,6 +26,41 @@ export type UsePayLaterOneTimePaymentSessionProps = (
 ) &
     PayPalPresentationModeOptions;
 
+/**
+ * Hook for managing Pay Later one-time payment sessions.
+ *
+ * This hook creates and manages a Pay Later payment session. It handles session lifecycle, resume flows
+ * for redirect-based presentation modes (`"redirect"` and `"direct-app-switch"`), and provides methods
+ * to start, cancel, and destroy the session.
+ *
+ * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
+ *
+ * @example
+ * function PayLaterCheckout() {
+ *   const { error, isPending, handleClick, handleCancel, handleDestroy } = usePayLaterOneTimePaymentSession({
+ *     presentationMode: 'popup',
+ *     createOrder: async () => ({ orderId: 'ORDER-123' }),
+ *     onApprove: (data) => console.log('Approved:', data),
+ *     onCancel: () => console.log('Cancelled'),
+ *   });
+ *   const { eligiblePaymentMethods } = usePayPal();
+ *   const payLaterDetails = eligiblePaymentMethods?.getDetails?.("paylater");
+ *
+ *   useEffect(() => { return () => handleDestroy(); }, [handleDestroy]);
+ *
+ *   if (isPending) return null;
+ *   if (error) return <div>Error: {error.message}</div>;
+ *
+ *   return (
+ *     <paypal-pay-later-button
+ *       countryCode={payLaterDetails?.countryCode}
+ *       productCode={payLaterDetails?.productCode}
+ *       onClick={handleClick}
+ *       onCancel={handleCancel}
+ *     />
+ *   );
+ * }
+ */
 export function usePayLaterOneTimePaymentSession({
     presentationMode,
     fullPageOverlay,

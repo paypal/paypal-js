@@ -32,11 +32,19 @@ type PayPalMessagesReturn = {
  * @returns {PayPalMessagesReturn} An object containing error state, isReady status, and handlers for creating learn more modals and fetching content
  *
  * @example
- * const { error, isReady, handleCreateLearnMore, handleFetchContent } = usePayPalMessages({
- *   buyerCountry: 'US',
- *   currencyCode: 'USD',
- *   shopperSessionId: 'session-123'
- * });
+ * function PayPalMessaging() {
+ *   const { error, isReady, handleCreateLearnMore, handleFetchContent } = usePayPalMessages({
+ *     buyerCountry: 'US',
+ *     currencyCode: 'USD',
+ *     shopperSessionId: 'session-123',
+ *   });
+ *
+ *   if (error) return <div>Error: {error.message}</div>;
+ *   if (!isReady) return null;
+ *
+ *   const content = handleFetchContent({ amount: '100.00' });
+ *   const learnMore = handleCreateLearnMore();
+ * }
  */
 export function usePayPalMessages({
     buyerCountry,

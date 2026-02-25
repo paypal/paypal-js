@@ -72,7 +72,7 @@ export type FindEligiblePaymentMethodsRequestPayload = {
  * to the `PayPalProvider` via the `eligibleMethodsResponse` prop.
  *
  * @param options - Configuration for the eligibility request
- * @param options.clientToken - Bearer token for API authentication
+ * @param options.headers - HTTP headers for the request, including the `Authorization` bearer token
  * @param options.environment - Target environment ("sandbox" or "production")
  * @param options.payload - Optional request payload with customer/purchase details
  * @param options.signal - Optional AbortSignal for request cancellation
@@ -80,10 +80,13 @@ export type FindEligiblePaymentMethodsRequestPayload = {
  *
  * @example
  * // Next.js server component
- * const response = await fetchEligibleMethods({
- *     clientToken: token,
+ * const response = await useFetchEligibleMethods({
+ *     headers: {
+ *         "Content-Type": "application/json",
+ *         Authorization: `Bearer ${clientToken}`,
+ *     },
  *     environment: "sandbox",
- *     payload: { purchase_units: [{ amount: { currency_code: "USD" } }] }
+ *     payload: { purchase_units: [{ amount: { currency_code: "USD" } }] },
  * });
  *
  * <PayPalProvider eligibleMethodsResponse={response} ... />

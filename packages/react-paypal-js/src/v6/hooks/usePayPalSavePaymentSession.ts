@@ -32,17 +32,26 @@ export type UsePayPalSavePaymentSessionProps = (
  * It supports multiple presentation modes and handles session lifecycle, resume flows for redirect-based
  * flows, and provides methods to start, cancel, and destroy the session.
  *
- * @example
- * const { error, handleClick, handleCancel, handleDestroy } = usePayPalSavePaymentSession({
- *   presentationMode: 'popup',
- *   createVaultToken: async () => ({ vaultSetupToken: 'VAULT-TOKEN-123' }),
- *   onApprove: (data) => console.log('Vaulted:', data),
- *   onCancel: () => console.log('Cancelled'),
- * });
+ * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
- * return (
- *   <paypal-button onClick={handleClick}></paypal-button>
- * )
+ * @example
+ * function PayPalVault() {
+ *   const { error, isPending, handleClick, handleCancel, handleDestroy } = usePayPalSavePaymentSession({
+ *     presentationMode: 'popup',
+ *     createVaultToken: async () => ({ vaultSetupToken: 'VAULT-TOKEN-123' }),
+ *     onApprove: (data) => console.log('Vaulted:', data),
+ *     onCancel: () => console.log('Cancelled'),
+ *   });
+ *
+ *   useEffect(() => { return () => handleDestroy(); }, [handleDestroy]);
+ *
+ *   if (isPending) return null;
+ *   if (error) return <div>Error: {error.message}</div>;
+ *
+ *   return (
+ *     <paypal-button onClick={handleClick} onCancel={handleCancel} />
+ *   );
+ * }
  */
 export function usePayPalSavePaymentSession({
     presentationMode,
