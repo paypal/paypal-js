@@ -4,6 +4,7 @@
         "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
         "jsx": "react",
+        "lib": ["ES2022", "DOM"],
         "module": "esnext",
         "moduleResolution": "bundler",
         "target": "esnext",

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
 import { useError } from "./useError";
-import { useProxyProps } from "../utils";
+import { useProxyProps, createPaymentSession } from "../utils";
 import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
 import {
     OneTimePaymentSession,
@@ -65,6 +65,9 @@ export function usePayPalOneTimePaymentSession({
     const proxyCallbacks = useProxyProps(callbacks);
     const [error, setError] = useError();
 
+    // Prevents retrying session creation with a failed SDK instance
+    const failedSdkRef = useRef<unknown>(null);
+
     const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
 
     const handleDestroy = useCallback(() => {
@@ -76,8 +79,13 @@ export function usePayPalOneTimePaymentSession({
         sessionRef.current?.cancel();
     }, []);
 
-    // Separate error reporting effect to avoid infinite loops with proxyCallbacks
+    // Handle SDK availability
     useEffect(() => {
+        // Reset failed SDK tracking when SDK instance changes
+        if (failedSdkRef.current !== sdkInstance) {
+            failedSdkRef.current = null;
+        }
+
         if (sdkInstance) {
             setError(null);
         } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
@@ -85,18 +93,29 @@ export function usePayPalOneTimePaymentSession({
         }
     }, [sdkInstance, setError, loadingStatus]);
 
+    // Create and manage session lifecycle
     useEffect(() => {
         if (!sdkInstance) {
             return;
         }
 
-        // Create session (can be created without orderId for resume detection)
-        const newSession = sdkInstance.createPayPalOneTimePaymentSession({
-            orderId,
-            savePayment,
-            testBuyerCountry,
-            ...proxyCallbacks,
-        });
+        const newSession = createPaymentSession(
+            () =>
+                sdkInstance.createPayPalOneTimePaymentSession({
+                    orderId,
+                    savePayment,
+                    testBuyerCountry,
+                    ...proxyCallbacks,
+                }),
+            failedSdkRef,
+            sdkInstance,
+            setError,
+            "paypal-payments",
+        );
+
+        if (!newSession) {
+            return;
+        }
 
         sessionRef.current = newSession;
 
@@ -123,12 +142,13 @@ export function usePayPalOneTimePaymentSession({
             handleReturnFromPayPal();
         }
 
-        return handleDestroy;
+        return () => {
+            newSession.destroy();
+        };
     }, [
         sdkInstance,
         orderId,
         proxyCallbacks,
-        handleDestroy,
         presentationMode,
         setError,
         savePayment,
