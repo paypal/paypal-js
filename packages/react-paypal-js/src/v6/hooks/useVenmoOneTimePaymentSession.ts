@@ -26,6 +26,31 @@ export type UseVenmoOneTimePaymentSessionProps = (
 ) &
     VenmoPresentationModeOptions;
 
+/**
+ * Hook for managing Venmo one-time payment sessions.
+ *
+ * This hook creates and manages a Venmo payment session. It handles session lifecycle
+ * and provides methods to start, cancel, and destroy the session.
+ *
+ * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
+ *
+ * @example
+ * function VenmoCheckout() {
+ *   const { error, isPending, handleClick, handleCancel } = useVenmoOneTimePaymentSession({
+ *     presentationMode: 'auto',
+ *     createOrder: async () => ({ orderId: 'ORDER-123' }),
+ *     onApprove: (data) => console.log('Approved:', data),
+ *     onCancel: () => console.log('Cancelled'),
+ *   });
+ *
+ *   if (isPending) return null;
+ *   if (error) return <div>Error: {error.message}</div>;
+ *
+ *   return (
+ *     <venmo-button onClick={handleClick} onCancel={handleCancel} />
+ *   );
+ * }
+ */
 export function useVenmoOneTimePaymentSession({
     presentationMode,
     fullPageOverlay,

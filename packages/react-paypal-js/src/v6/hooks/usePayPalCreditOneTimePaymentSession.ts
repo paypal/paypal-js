@@ -31,20 +31,30 @@ export type UsePayPalCreditOneTimePaymentSessionProps = (
  * This hook creates and manages a PayPal Credit payment session. It handles session lifecycle, resume flows
  * for redirect-based flows, and provides methods to start, cancel, and destroy the session.
  *
+ * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
  * @example
- * const { error, handleClick, handleCancel, handleDestroy } = usePayPalCreditOneTimePaymentSession({
- *   presentationMode: 'popup',
- *   createOrder: async () => ({ orderId: 'ORDER-123' }),
- *   onApprove: (data) => console.log('Approved:', data),
- *   onCancel: () => console.log('Cancelled'),
- * });
- * const { eligiblePaymentMethods } = usePayPal();
- * const countryCode = eligiblePaymentMethods.eligible_methods.paypal_credit.country_code;
+ * function CreditCheckoutButton() {
+ *   const { error, isPending, handleClick, handleCancel } = usePayPalCreditOneTimePaymentSession({
+ *     presentationMode: 'popup',
+ *     createOrder: async () => ({ orderId: 'ORDER-123' }),
+ *     onApprove: (data) => console.log('Approved:', data),
+ *     onCancel: () => console.log('Cancelled'),
+ *   });
+ *   const { eligiblePaymentMethods } = usePayPal();
+ *   const creditDetails = eligiblePaymentMethods?.getDetails?.("paypal_credit");
  *
- * return (
- *   <paypal-credit-button countryCode={countryCode} onClick={handleClick}></paypal-credit-button>
- * )
+ *   if (isPending) return null;
+ *   if (error) return <div>Error: {error.message}</div>;
+ *
+ *   return (
+ *     <paypal-credit-button
+ *       countryCode={creditDetails?.countryCode}
+ *       onClick={handleClick}
+ *       onCancel={handleCancel}
+ *     />
+ *   );
+ * }
  */
 export function usePayPalCreditOneTimePaymentSession({
     presentationMode,

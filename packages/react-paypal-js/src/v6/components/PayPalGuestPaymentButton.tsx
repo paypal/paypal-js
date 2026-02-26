@@ -12,10 +12,11 @@ type PayPalGuestPaymentButtonProps = UsePayPalGuestPaymentSessionProps & {
 /**
  * `PayPalGuestPaymentButton` is a button that provides a guest checkout (BCDC) payment flow.
  *
+ * `PayPalGuestPaymentButtonProps` combines the arguments for {@link UsePayPalGuestPaymentSessionProps}
+ * with a `disabled` prop.
+ *
  * This component automatically wraps the button with `<paypal-basic-card-container>` which is
  * required for the guest checkout form to display properly.
- *
- * `PayPalGuestPaymentButtonProps` combines the arguments for {@link UsePayPalGuestPaymentSessionProps}.
  *
  * @example
  * <PayPalGuestPaymentButton

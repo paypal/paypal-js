@@ -29,16 +29,25 @@ export type UsePayPalSubscriptionPaymentSessionProps =
  * @param props.createSubscription - Function that returns a promise resolving to an object with subscriptionId
  * @param props.presentationMode - How the subscription experience is presented: 'popup', 'modal', 'auto', or 'payment-handler'
  * @param props.fullPageOverlay - Whether to show a full-page overlay during the subscription flow
- * @returns Object with: `error` (any session error), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
+ * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
  * @example
- * const { error, handleClick, handleCancel, handleDestroy } = usePayPalSubscriptionPaymentSession({
- *   presentationMode: 'popup',
- *   createSubscription: async () => ({ subscriptionId: 'SUB-123' }),
- *   onApprove: (data) => console.log('Subscription approved:', data),
- *   onCancel: () => console.log('Subscription cancelled'),
- *   onError: (err) => console.error('Subscription error:', err),
- * });
+ * function SubscriptionCheckoutButton() {
+ *   const { error, isPending, handleClick, handleCancel } = usePayPalSubscriptionPaymentSession({
+ *     presentationMode: 'popup',
+ *     createSubscription: async () => ({ subscriptionId: 'SUB-123' }),
+ *     onApprove: (data) => console.log('Subscription approved:', data),
+ *     onCancel: () => console.log('Subscription cancelled'),
+ *     onError: (err) => console.error('Subscription error:', err),
+ *   });
+ *
+ *   if (isPending) return null;
+ *   if (error) return <div>Error: {error.message}</div>;
+ *
+ *   return (
+ *     <paypal-button onClick={handleClick} onCancel={handleCancel} />
+ *   );
+ * }
  */
 export function usePayPalSubscriptionPaymentSession({
     presentationMode,

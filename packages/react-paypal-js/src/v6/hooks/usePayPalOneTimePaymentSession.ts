@@ -31,27 +31,22 @@ export type UsePayPalOneTimePaymentSessionProps = (
  * initialized. This is useful when using deferred clientToken loading - buttons should wait
  * to render until `isPending` is false.
  *
- * @example
- * // Basic usage with orderId
- * const { isPending, error, handleClick } = usePayPalOneTimePaymentSession({
- *   orderId: "ORDER-123",
- *   presentationMode: "auto",
- *   onApprove: (data) => console.log("Approved:", data)
- * });
- *
- * if (isPending) return null; // Wait for SDK to initialize
+ * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
  * @example
- * // Using loadingStatus directly from usePayPal for custom loading UI
- * function MyCheckout() {
- *   const { loadingStatus } = usePayPal();
- *   const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
+ * function PayPalCheckoutButton() {
+ *   const { isPending, error, handleClick, handleCancel } = usePayPalOneTimePaymentSession({
+ *     orderId: "ORDER-123",
+ *     presentationMode: "auto",
+ *     onApprove: (data) => console.log("Approved:", data),
+ *   });
  *
- *   if (isPending) {
- *     return <div>Loading PayPal SDK...</div>;
- *   }
+ *   if (isPending) return null;
+ *   if (error) return <div>Error: {error.message}</div>;
  *
- *   return <PayPalButton orderId="ORDER-123" />;
+ *   return (
+ *     <paypal-button onClick={handleClick} onCancel={handleCancel} />
+ *   );
  * }
  */
 export function usePayPalOneTimePaymentSession({
