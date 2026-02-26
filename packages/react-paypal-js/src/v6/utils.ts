@@ -261,44 +261,12 @@ export function createPaymentSession<T>(
     } catch (err) {
         failedSdkRef.current = sdkInstance;
 
-        const loadedComponents = (
-            window as Window & {
-                __paypal_sdk__?: { v6: { components?: unknown[] } };
-            }
-        ).__paypal_sdk__?.v6?.components;
-
-        const errorMessage = buildErrorMessage(component, loadedComponents);
-        const detailedError = new Error(errorMessage, { cause: err });
+        const detailedError = new Error(
+            `Failed to create payment session. This may occur if the required component "${component}" is not included in the SDK components array.`,
+            { cause: err },
+        );
 
         setError(detailedError);
         return null;
     }
-}
-
-function buildErrorMessage(
-    component: string,
-    loadedComponents: unknown[] | undefined,
-): string {
-    const baseMessage = "Failed to create payment session.";
-
-    if (!Array.isArray(loadedComponents) || loadedComponents.length === 0) {
-        return `${baseMessage} This may occur if the required component "${component}" is not included in the SDK components array.`;
-    }
-
-    // Extract component names from objects
-    const componentNames = loadedComponents.map((comp) => {
-        if (typeof comp === "string") return comp;
-        if (typeof comp === "object" && comp !== null) {
-            const obj = comp as Record<string, unknown>;
-            const name = obj.componentName ?? obj.name ?? obj.id ?? obj.type;
-            return typeof name === "string" ? name : "[Unknown Component]";
-        }
-        return String(comp);
-    });
-
-    if (!componentNames.includes(component)) {
-        return `${baseMessage} The required component "${component}" is not loaded. Currently loaded components: [${componentNames.join(", ")}]. Please add "${component}" to your SDK components array.`;
-    }
-
-    return `${baseMessage} The component "${component}" appears to be loaded but the session failed to create.`;
 }

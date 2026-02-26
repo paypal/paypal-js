@@ -9,15 +9,10 @@ describe("createPaymentSession", () => {
         mockSetError = jest.fn();
         failedSdkRef = { current: null };
         mockSdkInstance = { id: "test-sdk-instance" };
-
-        // Clear any existing __paypal_sdk__ from previous tests
-        delete (window as Window & { __paypal_sdk__?: unknown }).__paypal_sdk__;
     });
 
     afterEach(() => {
         jest.clearAllMocks();
-        // Cleanup __paypal_sdk__ after each test
-        delete (window as Window & { __paypal_sdk__?: unknown }).__paypal_sdk__;
     });
 
     describe("successful session creation", () => {
@@ -41,12 +36,8 @@ describe("createPaymentSession", () => {
     });
 
     describe("error handling with component parameter", () => {
-        test("should show generic error when no components are available", () => {
+        test("should handle session creation failure with proper error message and error preservation", () => {
             const originalError = new Error("Component missing");
-
-            delete (window as Window & { __paypal_sdk__?: unknown })
-                .__paypal_sdk__;
-
             const sessionCreator = jest.fn().mockImplementation(() => {
                 throw originalError;
             });
@@ -60,151 +51,15 @@ describe("createPaymentSession", () => {
             );
 
             expect(result).toBeNull();
+            expect(mockSetError).toHaveBeenCalledTimes(1);
+
             const thrownError = mockSetError.mock.calls[0][0];
+            expect(thrownError).toBeInstanceOf(Error);
             expect(thrownError.message).toBe(
                 'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
             );
             expect(thrownError.cause).toBe(originalError);
-        });
-
-        test("should show generic error when components array is empty", () => {
-            (window as Window & { __paypal_sdk__?: unknown }).__paypal_sdk__ = {
-                v6: { components: [] },
-            };
-
-            const sessionCreator = jest.fn().mockImplementation(() => {
-                throw new Error("Component missing");
-            });
-
-            createPaymentSession(
-                sessionCreator,
-                failedSdkRef,
-                mockSdkInstance,
-                mockSetError,
-                "paypal-payments",
-            );
-
-            const thrownError = mockSetError.mock.calls[0][0];
-            expect(thrownError.message).toBe(
-                'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
-            );
-        });
-
-        test("should show missing component error with component list", () => {
-            (window as Window & { __paypal_sdk__?: unknown }).__paypal_sdk__ = {
-                v6: {
-                    components: ["venmo-payments", "paypal-subscriptions"],
-                },
-            };
-
-            const sessionCreator = jest.fn().mockImplementation(() => {
-                throw new Error("Component not loaded");
-            });
-
-            createPaymentSession(
-                sessionCreator,
-                failedSdkRef,
-                mockSdkInstance,
-                mockSetError,
-                "paypal-payments",
-            );
-
-            const thrownError = mockSetError.mock.calls[0][0];
-            expect(thrownError.message).toBe(
-                'Failed to create payment session. The required component "paypal-payments" is not loaded. Currently loaded components: [venmo-payments, paypal-subscriptions]. Please add "paypal-payments" to your SDK components array.',
-            );
-        });
-
-        test("should show different error when component is loaded but fails", () => {
-            (window as Window & { __paypal_sdk__?: unknown }).__paypal_sdk__ = {
-                v6: {
-                    components: ["paypal-payments", "venmo-payments"],
-                },
-            };
-
-            const sessionCreator = jest.fn().mockImplementation(() => {
-                throw new Error("Other error");
-            });
-
-            createPaymentSession(
-                sessionCreator,
-                failedSdkRef,
-                mockSdkInstance,
-                mockSetError,
-                "paypal-payments",
-            );
-
-            const thrownError = mockSetError.mock.calls[0][0];
-            expect(thrownError.message).toBe(
-                'Failed to create payment session. The component "paypal-payments" appears to be loaded but the session failed to create.',
-            );
-        });
-
-        test("should extract component names from various object properties and formats", () => {
-            (window as Window & { __paypal_sdk__?: unknown }).__paypal_sdk__ = {
-                v6: {
-                    components: [
-                        "string-component",
-                        { componentName: "object-component" },
-                        { name: "fallback-name" },
-                        { id: "fallback-id" },
-                        { type: "fallback-type" },
-                        { someOtherProperty: "value" },
-                        123,
-                    ],
-                },
-            };
-
-            const sessionCreator = jest.fn().mockImplementation(() => {
-                throw new Error("Component not loaded");
-            });
-
-            createPaymentSession(
-                sessionCreator,
-                failedSdkRef,
-                mockSdkInstance,
-                mockSetError,
-                "paypal-payments",
-            );
-
-            const thrownError = mockSetError.mock.calls[0][0];
-            expect(thrownError.message).toContain("string-component");
-            expect(thrownError.message).toContain("object-component");
-            expect(thrownError.message).toContain("fallback-name");
-            expect(thrownError.message).toContain("fallback-id");
-            expect(thrownError.message).toContain("fallback-type");
-            expect(thrownError.message).toContain("[Unknown Component]");
-            expect(thrownError.message).toContain("123");
-        });
-
-        test("should prioritize componentName property over other properties", () => {
-            (window as Window & { __paypal_sdk__?: unknown }).__paypal_sdk__ = {
-                v6: {
-                    components: [
-                        {
-                            componentName: "correct-name",
-                            name: "wrong-name",
-                            id: "wrong-id",
-                        },
-                    ],
-                },
-            };
-
-            const sessionCreator = jest.fn().mockImplementation(() => {
-                throw new Error("Component not loaded");
-            });
-
-            createPaymentSession(
-                sessionCreator,
-                failedSdkRef,
-                mockSdkInstance,
-                mockSetError,
-                "paypal-payments",
-            );
-
-            const thrownError = mockSetError.mock.calls[0][0];
-            expect(thrownError.message).toContain("correct-name");
-            expect(thrownError.message).not.toContain("wrong-name");
+            expect(failedSdkRef.current).toBe(mockSdkInstance);
         });
     });
 
