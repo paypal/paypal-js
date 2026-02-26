@@ -95,7 +95,7 @@ function CheckoutPage() {
                 const { orderId } = await response.json();
                 return { orderId };
             }}
-            onApprove={async ({ orderId }) => {
+            onApprove={async ({ orderId }: OnApproveDataOneTimePayments) => {
                 await fetch(`/api/capture-order/${orderId}`, {
                     method: "POST",
                 });
@@ -251,7 +251,7 @@ import { PayPalOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
     onCancel={(data: OnCancelDataOneTimePayments) =>
         console.log("Payment cancelled")
     }
-    onError={(data: OnErrorData) => console.error("Payment error:", err)}
+    onError={(data: OnErrorData) => console.error("Payment error:", data)}
     onComplete={(data: OnCompleteData) => console.log("Payment Flow Completed")}
 />;
 ```
@@ -290,6 +290,15 @@ import { VenmoOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
         onApprove={(data: OnApproveDataOneTimePayments) =>
             console.log("Venmo payment approved!", data)
         }
+        onCancel={(data: OnCancelDataOneTimePayments) =>
+            console.log("Venmo payment cancelled", data)
+        }
+        onError={(data: OnErrorData) =>
+            console.error("Venmo payment error:", data)
+        }
+        onComplete={(data: OnCompleteData) =>
+            console.log("Venmo payment flow completed", data)
+        }
     />
 </PayPalProvider>;
 ```
@@ -308,6 +317,13 @@ import { PayLaterOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
     }}
     onApprove={(data: OnApproveDataOneTimePayments) =>
         console.log("Pay Later approved!", data)
+    }
+    onCancel={(data: OnCancelDataOneTimePayments) =>
+        console.log("Pay Later cancelled", data)
+    }
+    onError={(data: OnErrorData) => console.error("Pay Later error:", data)}
+    onComplete={(data: OnCompleteData) =>
+        console.log("Pay Later flow completed", data)
     }
 />;
 ```
@@ -332,6 +348,15 @@ import { PayPalGuestPaymentButton } from "@paypal/react-paypal-js/sdk-v6";
         onApprove={(data: OnApproveDataOneTimePayments) =>
             console.log("Guest payment approved!", data)
         }
+        onCancel={(data: OnCancelDataOneTimePayments) =>
+            console.log("Guest payment cancelled", data)
+        }
+        onError={(data: OnErrorData) =>
+            console.error("Guest payment error:", data)
+        }
+        onComplete={(data: OnCompleteData) =>
+            console.log("Guest payment flow completed", data)
+        }
     />
 </PayPalProvider>;
 ```
@@ -354,6 +379,13 @@ import { PayPalSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
     onApprove={({ vaultSetupToken }: OnApproveDataSavePayments) => {
         console.log("Payment method saved:", vaultSetupToken);
     }}
+    onCancel={(data: OnCancelDataSavePayments) =>
+        console.log("Save payment cancelled", data)
+    }
+    onError={(data: OnErrorData) => console.error("Save payment error:", data)}
+    onComplete={(data: OnCompleteData) =>
+        console.log("Save payment flow completed", data)
+    }
 />;
 ```
 
@@ -380,6 +412,15 @@ import { PayPalSubscriptionButton } from "@paypal/react-paypal-js/sdk-v6";
         onApprove={(data: OnApproveDataOneTimePayments) =>
             console.log("Subscription approved:", data)
         }
+        onCancel={(data: OnCancelDataOneTimePayments) =>
+            console.log("Subscription cancelled", data)
+        }
+        onError={(data: OnErrorData) =>
+            console.error("Subscription error:", data)
+        }
+        onComplete={(data: OnCompleteData) =>
+            console.log("Subscription flow completed", data)
+        }
     />
 </PayPalProvider>;
 ```
@@ -399,6 +440,15 @@ import { PayPalCreditOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6
     }}
     onApprove={({ orderId }: OnApproveDataOneTimePayments) =>
         console.log("Credit payment approved:", orderId)
+    }
+    onCancel={(data: OnCancelDataOneTimePayments) =>
+        console.log("Credit payment cancelled", data)
+    }
+    onError={(data: OnErrorData) =>
+        console.error("Credit payment error:", data)
+    }
+    onComplete={(data: OnCompleteData) =>
+        console.log("Credit payment flow completed", data)
     }
 />;
 ```
@@ -420,6 +470,13 @@ import { PayPalCreditSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
     }}
     onApprove={(data: OnApproveDataSavePayments) =>
         console.log("Credit saved:", data)
+    }
+    onCancel={(data: OnCancelDataSavePayments) =>
+        console.log("Credit save cancelled", data)
+    }
+    onError={(data: OnErrorData) => console.error("Credit save error:", data)}
+    onComplete={(data: OnCompleteData) =>
+        console.log("Credit save flow completed", data)
     }
 />;
 ```
@@ -566,6 +623,11 @@ function CustomVenmoButton() {
         },
         onApprove: (data: OnApproveDataOneTimePayments) =>
             console.log("Approved:", data),
+        onCancel: (data: OnCancelDataOneTimePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
     });
 
     return <venmo-button onClick={() => handleClick()} />;
@@ -585,6 +647,11 @@ function CustomPayLaterButton() {
         },
         onApprove: (data: OnApproveDataOneTimePayments) =>
             console.log("Approved:", data),
+        onCancel: (data: OnCancelDataOneTimePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
     });
 
     return <paypal-pay-later-button onClick={() => handleClick()} />;
@@ -604,6 +671,11 @@ function CustomPayPalGuestButton() {
         },
         onApprove: (data: OnApproveDataOneTimePayments) =>
             console.log("Approved:", data),
+        onCancel: (data: OnCancelDataOneTimePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
     });
 
     return (
@@ -631,6 +703,11 @@ function CustomPayPalSaveButton() {
         presentationMode: "popup",
         onApprove: (data: OnApproveDataSavePayments) =>
             console.log("Saved:", data),
+        onCancel: (data: OnCancelDataSavePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
     });
 
     return <paypal-button onClick={() => handleClick()} type="pay" />;
@@ -653,6 +730,11 @@ function CustomPayPalSubscriptionButton() {
         },
         onApprove: (data: OnApproveDataOneTimePayments) =>
             console.log("Subscription approved:", data),
+        onCancel: (data: OnCancelDataOneTimePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
     });
 
     return <paypal-button onClick={() => handleClick()} type="subscribe" />;
@@ -674,6 +756,11 @@ function CustomPayPalCreditButton() {
         },
         onApprove: (data: OnApproveDataOneTimePayments) =>
             console.log("Credit approved:", data),
+        onCancel: (data: OnCancelDataOneTimePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
     });
 
     return <paypal-credit-button onClick={() => handleClick()} />;
@@ -695,6 +782,11 @@ function CustomPayPalCreditSaveButton() {
         },
         onApprove: (data: OnApproveDataSavePayments) =>
             console.log("Credit approved:", data),
+        onCancel: (data: OnCancelDataSavePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
     });
 
     return <paypal-credit-button onClick={() => handleClick()} />;
