@@ -6,9 +6,9 @@ import type { PayPalProvider } from "../components/PayPalProvider";
 import type { PayPalState } from "../context/PayPalProviderContext";
 
 /**
- * Returns {@link PayPalContext} provided by a parent {@link PayPalProvider}.
+ * Returns {@link PayPalState} provided by a parent {@link PayPalProvider}.
  *
- * @returns {PayPalContext}
+ * @returns {PayPalState}
  */
 export function usePayPal(): PayPalState {
     const context = useContext(PayPalContext);

@@ -50,7 +50,7 @@ export interface UseFetchEligibleMethodsResult {
  *     if (error) return <Error message={error.message} />;
  *     return (
  *       <paypal-pay-later-button
- *          handleClick={handleClick}
+ *          onClick={handleClick}
  *          countryCode={countryCode}
  *          productCode={productCode}
  *       />

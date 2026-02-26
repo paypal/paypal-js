@@ -63,7 +63,7 @@ type PayPalProviderProps =
  *   components={["paypal-payments", "venmo-payments"]}
  *   pageType="checkout"
  * >
- *   <PayPalButton />
+ *   <PayPalOneTimePaymentButton />
  * </PayPalProvider>
  *
  * @example
@@ -73,7 +73,7 @@ type PayPalProviderProps =
  *   components={["paypal-payments"]}
  *   pageType="checkout"
  * >
- *   <PayPalButton />
+ *   <PayPalOneTimePaymentButton />
  * </PayPalProvider>
  *
  * @example
@@ -84,7 +84,7 @@ type PayPalProviderProps =
  *   clientToken={tokenPromise}
  *   pageType="checkout"
  * >
- *   <PayPalButton />
+ *   <PayPalOneTimePaymentButton />
  * </PayPalProvider>
  *
  * @example
@@ -95,7 +95,7 @@ type PayPalProviderProps =
  *   clientId={clientIdPromise}
  *   pageType="checkout"
  * >
- *   <PayPalButton />
+ *   <PayPalOneTimePaymentButton />
  * </PayPalProvider>
  *
  * @example
@@ -110,7 +110,7 @@ type PayPalProviderProps =
  *   clientToken={clientToken}
  *   pageType="checkout"
  * >
- *   <PayPalButton />
+ *   <PayPalOneTimePaymentButton />
  * </PayPalProvider>
  *
  * @example
@@ -125,7 +125,7 @@ type PayPalProviderProps =
  *   clientId={clientId}
  *   pageType="checkout"
  * >
- *   <PayPalButton />
+ *   <PayPalOneTimePaymentButton />
  * </PayPalProvider>
  *
  * @example
@@ -138,7 +138,7 @@ type PayPalProviderProps =
  *     return <div>Loading PayPal SDK...</div>;
  *   }
  *
- *   return <PayPalButton orderId="ORDER-123" />;
+ *   return <PayPalOneTimePaymentButton orderId="ORDER-123" />;
  * }
  *
  * <PayPalProvider clientToken={token} pageType="checkout">

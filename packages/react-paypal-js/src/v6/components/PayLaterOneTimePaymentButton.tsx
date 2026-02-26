@@ -14,6 +14,9 @@ export type PayLaterOneTimePaymentButtonProps =
 /**
  * `PayLaterOneTimePaymentButton` is a button that provides a PayLater payment flow.
  *
+ * `PayLaterOneTimePaymentButtonProps` combines the arguments for {@link UsePayLaterOneTimePaymentSessionProps}
+ * with a `disabled` prop.
+ *
  * The `countryCode` and `productCode` are automatically populated from the eligibility API response
  * (available via `usePayPal().eligiblePaymentMethods`). The button requires eligibility to be configured
  * in the parent `PayPalProvider`.
