@@ -42,7 +42,7 @@ export type UsePayPalCreditSavePaymentSessionProps = (
  *     onCancel: () => console.log('Cancelled'),
  *   });
  *   const { eligiblePaymentMethods } = usePayPal();
- *   const creditDetails = eligiblePaymentMethods?.getDetails?.("paypal_credit");
+ *   const creditDetails = eligiblePaymentMethods?.getDetails?.("credit");
  *
  *   if (isPending) return null;
  *   if (error) return <div>Error: {error.message}</div>;

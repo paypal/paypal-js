@@ -149,7 +149,7 @@ function App() {
 
     return (
         <PayPalProvider
-            clientToken={clientIdPromise}
+            clientId={clientIdPromise}
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -450,7 +450,7 @@ function MyComponent() {
 
 ### useEligibleMethods
 
-Returns eligible payment methods and loading state. Use this to conditionally render payment buttons based on eligibility. This method also updates the `PayPalProvider` reducer with Eligibility Output from the SDK, enabling built-in eligibility features in the UI Button components.
+Returns eligible payment methods and loading state. Use this to conditionally render payment buttons based on eligibility. This hook also updates the `PayPalProvider` reducer with Eligibility Output from the SDK, enabling built-in eligibility features in the UI Button components.
 
 ```tsx
 import { useEligibleMethods } from "@paypal/react-paypal-js/sdk-v6";
@@ -746,13 +746,13 @@ export default async function CheckoutPage() {
 
 The v9.0.0 release introduces the V6 SDK with a new API. Here are the key differences:
 
-| v8.x (Legacy)                   | v9.0.0 (V6 SDK)                       |
-| ------------------------------- | ------------------------------------- |
-| `PayPalScriptProvider`          | `PayPalProvider`                      |
-| `PayPalButtons`                 | `PayPalOneTimePaymentButton` or hooks |
-| `options={{ clientId }}`        | `clientToken={token}`                 |
-| `createOrder` returns `orderId` | `createOrder` returns `{ orderId }`   |
-| `@paypal/react-paypal-js`       | `@paypal/react-paypal-js/sdk-v6`      |
+| v8.x (Legacy)                   | v9.0.0 (V6 SDK)                                      |
+| ------------------------------- | ---------------------------------------------------- |
+| `PayPalScriptProvider`          | `PayPalProvider`                                     |
+| `PayPalButtons`                 | `PayPalOneTimePaymentButton` or hooks                |
+| `options={{ clientId }}`        | `clientId={clientId}` or `clientToken={clientToken}` |
+| `createOrder` returns `orderId` | `createOrder` returns `{ orderId }`                  |
+| `@paypal/react-paypal-js`       | `@paypal/react-paypal-js/sdk-v6`                     |
 
 ### Before (v8.x)
 
