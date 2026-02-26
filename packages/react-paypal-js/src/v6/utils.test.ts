@@ -9,15 +9,10 @@ describe("createPaymentSession", () => {
         mockSetError = jest.fn();
         failedSdkRef = { current: null };
         mockSdkInstance = { id: "test-sdk-instance" };
-
-        // Clear any existing __paypal_sdk__ from previous tests
-        delete (window as Window & { __paypal_sdk__?: unknown }).__paypal_sdk__;
     });
 
     afterEach(() => {
         jest.clearAllMocks();
-        // Cleanup __paypal_sdk__ after each test
-        delete (window as Window & { __paypal_sdk__?: unknown }).__paypal_sdk__;
     });
 
     describe("successful session creation", () => {
@@ -41,16 +36,10 @@ describe("createPaymentSession", () => {
     });
 
     describe("error handling with component parameter", () => {
-        test("should show specific component missing error when component is not loaded", () => {
-            // Mock window with loaded components that don't include the required one
-            (window as Window & { __paypal_sdk__?: unknown }).__paypal_sdk__ = {
-                v6: {
-                    components: ["venmo-payments", "paypal-subscriptions"],
-                },
-            };
-
+        test("should handle session creation failure with proper error message and error preservation", () => {
+            const originalError = new Error("Component missing");
             const sessionCreator = jest.fn().mockImplementation(() => {
-                throw new Error("Component not loaded");
+                throw originalError;
             });
 
             const result = createPaymentSession(
@@ -62,73 +51,15 @@ describe("createPaymentSession", () => {
             );
 
             expect(result).toBeNull();
+            expect(mockSetError).toHaveBeenCalledTimes(1);
 
             const thrownError = mockSetError.mock.calls[0][0];
-            expect(thrownError.message).toContain(
-                "Failed to create payment session",
+            expect(thrownError).toBeInstanceOf(Error);
+            expect(thrownError.message).toBe(
+                'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
             );
-            expect(thrownError.message).toContain(
-                'The required component "paypal-payments" is not loaded',
-            );
-            expect(thrownError.message).toContain(
-                "Currently loaded components: [venmo-payments, paypal-subscriptions]",
-            );
-            expect(thrownError.message).toContain(
-                'Please add "paypal-payments" to your SDK components array',
-            );
-        });
-
-        test("should show component appears loaded error when component is in loaded list", () => {
-            // Mock window with loaded components including the required one
-            (window as Window & { __paypal_sdk__?: unknown }).__paypal_sdk__ = {
-                v6: {
-                    components: ["paypal-payments", "venmo-payments"],
-                },
-            };
-
-            const sessionCreator = jest.fn().mockImplementation(() => {
-                throw new Error("Other error");
-            });
-
-            const result = createPaymentSession(
-                sessionCreator,
-                failedSdkRef,
-                mockSdkInstance,
-                mockSetError,
-                "paypal-payments",
-            );
-
-            expect(result).toBeNull();
-
-            const thrownError = mockSetError.mock.calls[0][0];
-            expect(thrownError.message).toContain(
-                'The component "paypal-payments" appears to be loaded but the session failed to create',
-            );
-        });
-
-        test("should show generic component error when component is provided but no loaded components info", () => {
-            // Ensure no __paypal_sdk__
-            delete (window as Window & { __paypal_sdk__?: unknown })
-                .__paypal_sdk__;
-
-            const sessionCreator = jest.fn().mockImplementation(() => {
-                throw new Error("Component missing");
-            });
-
-            const result = createPaymentSession(
-                sessionCreator,
-                failedSdkRef,
-                mockSdkInstance,
-                mockSetError,
-                "paypal-payments",
-            );
-
-            expect(result).toBeNull();
-
-            const thrownError = mockSetError.mock.calls[0][0];
-            expect(thrownError.message).toContain(
-                'This may occur if the required component "paypal-payments" is not included in the SDK components array',
-            );
+            expect(thrownError.cause).toBe(originalError);
+            expect(failedSdkRef.current).toBe(mockSdkInstance);
         });
     });
 
