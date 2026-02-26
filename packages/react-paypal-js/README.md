@@ -244,28 +244,31 @@ import { PayPalOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
         const { orderId } = await response.json();
         return { orderId };
     }}
-    onApprove={async ({ orderId }) => {
+    onApprove={async ({ orderId }: OnApproveDataOneTimePayments) => {
         await fetch(`/api/capture/${orderId}`, { method: "POST" });
         console.log("Payment approved!");
     }}
-    onCancel={() => console.log("Payment cancelled")}
-    onError={(err) => console.error("Payment error:", err)}
+    onCancel={(data: OnCancelDataOneTimePayments) =>
+        console.log("Payment cancelled")
+    }
+    onError={(data: OnErrorData) => console.error("Payment error:", err)}
+    onComplete={(data: OnCompleteData) => console.log("Payment Flow Completed")}
 />;
 ```
 
 **Props:**
 
-| Prop               | Type                                                         | Description                                         |
-| ------------------ | ------------------------------------------------------------ | --------------------------------------------------- |
-| `orderId`          | `string`                                                     | Static order ID (alternative to `createOrder`)      |
-| `createOrder`      | `() => Promise<{ orderId: string }>`                         | Async function to create an order                   |
-| `presentationMode` | `"auto" \| "popup" \| "modal" \| "redirect"`                 | How to present the payment flow (default: `"auto"`) |
-| `onApprove`        | `(data) => void`                                             | Called when payment is approved                     |
-| `onCancel`         | `() => void`                                                 | Called when buyer cancels                           |
-| `onError`          | `(error) => void`                                            | Called on error                                     |
-| `onComplete`       | `(data) => void`                                             | Called when payment flow completes                  |
-| `type`             | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"` | Button label type                                   |
-| `disabled`         | `boolean`                                                    | Disable the button                                  |
+| Prop               | Type                                                         | Description                                            |
+| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------ |
+| `orderId`          | `string`                                                     | Static order ID (alternative to `createOrder`)         |
+| `createOrder`      | `() => Promise<{ orderId: string }>`                         | Async function to create an order                      |
+| `presentationMode` | `"auto" \| "popup" \| "modal" \| "redirect"`                 | How to present the payment session (default: `"auto"`) |
+| `onApprove`        | `(data) => void`                                             | Called when payment is approved                        |
+| `onCancel`         | `() => void`                                                 | Called when buyer cancels                              |
+| `onError`          | `(error) => void`                                            | Called on error                                        |
+| `onComplete`       | `(data) => void`                                             | Called when payment session completes                  |
+| `type`             | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"` | Button label type                                      |
+| `disabled`         | `boolean`                                                    | Disable the button                                     |
 
 ### VenmoOneTimePaymentButton
 
@@ -284,7 +287,9 @@ import { VenmoOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
             const { orderId } = await createOrder();
             return { orderId };
         }}
-        onApprove={() => console.log("Venmo payment approved!")}
+        onApprove={(data: OnApproveDataOneTimePayments) =>
+            console.log("Venmo payment approved!", data)
+        }
     />
 </PayPalProvider>;
 ```
@@ -301,7 +306,9 @@ import { PayLaterOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
         const { orderId } = await createOrder();
         return { orderId };
     }}
-    onApprove={() => console.log("Pay Later approved!")}
+    onApprove={(data: OnApproveDataOneTimePayments) =>
+        console.log("Pay Later approved!", data)
+    }
 />;
 ```
 
@@ -322,7 +329,9 @@ import { PayPalGuestPaymentButton } from "@paypal/react-paypal-js/sdk-v6";
             const { orderId } = await createOrder();
             return { orderId };
         }}
-        onApprove={() => console.log("Guest payment approved!")}
+        onApprove={(data: OnApproveDataOneTimePayments) =>
+            console.log("Guest payment approved!", data)
+        }
     />
 </PayPalProvider>;
 ```
@@ -342,7 +351,7 @@ import { PayPalSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
         const { vaultSetupToken } = await response.json();
         return { vaultSetupToken };
     }}
-    onApprove={({ vaultSetupToken }) => {
+    onApprove={({ vaultSetupToken }: OnApproveDataSavePayments) => {
         console.log("Payment method saved:", vaultSetupToken);
     }}
 />;
@@ -368,7 +377,9 @@ import { PayPalSubscriptionButton } from "@paypal/react-paypal-js/sdk-v6";
             const { subscriptionId } = await response.json();
             return { subscriptionId };
         }}
-        onApprove={(data) => console.log("Subscription approved:", data)}
+        onApprove={(data: OnApproveDataOneTimePayments) =>
+            console.log("Subscription approved:", data)
+        }
     />
 </PayPalProvider>;
 ```
@@ -386,7 +397,7 @@ import { PayPalCreditOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6
         const { orderId } = await response.json();
         return { orderId };
     }}
-    onApprove={({ orderId }) =>
+    onApprove={({ orderId }: OnApproveDataOneTimePayments) =>
         console.log("Credit payment approved:", orderId)
     }
 />;
@@ -407,7 +418,9 @@ import { PayPalCreditSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
         const { vaultSetupToken } = await response.json();
         return { vaultSetupToken };
     }}
-    onApprove={(data) => console.log("Credit saved:", data)}
+    onApprove={(data: OnApproveDataSavePayments) =>
+        console.log("Credit saved:", data)
+    }
 />;
 ```
 
@@ -521,9 +534,13 @@ function CustomPayPalButton() {
             return { orderId };
         },
         presentationMode: "auto",
-        onApprove: (data) => console.log("Approved:", data),
-        onCancel: () => console.log("Cancelled"),
-        onError: (err) => console.error(err),
+        onApprove: (data: OnApproveDataOneTimePayments) =>
+            console.log("Approved:", data),
+        onCancel: (data: OnCancelDataOneTimePayments) =>
+            console.log("Cancelled"),
+        onError: (data: OnErrorData) => console.error(data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
     });
 
     return (
@@ -547,7 +564,8 @@ function CustomVenmoButton() {
             const { orderId } = await createOrder();
             return { orderId };
         },
-        onApprove: (data) => console.log("Approved:", data),
+        onApprove: (data: OnApproveDataOneTimePayments) =>
+            console.log("Approved:", data),
     });
 
     return <venmo-button onClick={() => handleClick()} />;
@@ -565,7 +583,8 @@ function CustomPayLaterButton() {
             const { orderId } = await createOrder();
             return { orderId };
         },
-        onApprove: (data) => console.log("Approved:", data),
+        onApprove: (data: OnApproveDataOneTimePayments) =>
+            console.log("Approved:", data),
     });
 
     return <paypal-pay-later-button onClick={() => handleClick()} />;
@@ -583,7 +602,8 @@ function CustomPayPalGuestButton() {
             const { orderId } = await createOrder();
             return { orderId };
         },
-        onApprove: (data) => console.log("Approved:", data),
+        onApprove: (data: OnApproveDataOneTimePayments) =>
+            console.log("Approved:", data),
     });
 
     return (
@@ -609,7 +629,8 @@ function CustomPayPalSaveButton() {
             return { vaultSetupToken };
         },
         presentationMode: "popup",
-        onApprove: (data) => console.log("Saved:", data),
+        onApprove: (data: OnApproveDataSavePayments) =>
+            console.log("Saved:", data),
     });
 
     return <paypal-button onClick={() => handleClick()} type="pay" />;
@@ -630,7 +651,8 @@ function CustomPayPalSubscriptionButton() {
             const { subscriptionId } = await response.json();
             return { subscriptionId };
         },
-        onApprove: (data) => console.log("Subscription approved:", data),
+        onApprove: (data: OnApproveDataOneTimePayments) =>
+            console.log("Subscription approved:", data),
     });
 
     return <paypal-button onClick={() => handleClick()} type="subscribe" />;
@@ -650,7 +672,8 @@ function CustomPayPalCreditButton() {
             const { orderId } = await createOrder();
             return { orderId };
         },
-        onApprove: (data) => console.log("Credit approved:", data),
+        onApprove: (data: OnApproveDataOneTimePayments) =>
+            console.log("Credit approved:", data),
     });
 
     return <paypal-credit-button onClick={() => handleClick()} />;
@@ -670,7 +693,8 @@ function CustomPayPalCreditSaveButton() {
             const { vaultSetupToken } = await createVaultSetupToken();
             return { vaultSetupToken };
         },
-        onApprove: (data) => console.log("Credit approved:", data),
+        onApprove: (data: OnApproveDataSavePayments) =>
+            console.log("Credit approved:", data),
     });
 
     return <paypal-credit-button onClick={() => handleClick()} />;
