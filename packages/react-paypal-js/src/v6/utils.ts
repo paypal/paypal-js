@@ -263,7 +263,7 @@ export function createPaymentSession<T>(
 
         const loadedComponents = (
             window as Window & {
-                __paypal_sdk__?: { v6: { components?: string[] } };
+                __paypal_sdk__?: { v6: { components?: unknown[] } };
             }
         ).__paypal_sdk__?.v6?.components;
 
@@ -277,24 +277,28 @@ export function createPaymentSession<T>(
 
 function buildErrorMessage(
     component: string,
-    loadedComponents: string[] | undefined,
+    loadedComponents: unknown[] | undefined,
 ): string {
     const baseMessage = "Failed to create payment session.";
-    const hasLoadedComponents = Array.isArray(loadedComponents);
-    const componentsList = hasLoadedComponents
-        ? loadedComponents.join(", ")
-        : "";
 
-    // Component provided but no loaded components info
-    if (!hasLoadedComponents) {
+    if (!Array.isArray(loadedComponents) || loadedComponents.length === 0) {
         return `${baseMessage} This may occur if the required component "${component}" is not included in the SDK components array.`;
     }
 
-    // Component is missing from loaded components
-    if (!loadedComponents.includes(component)) {
-        return `${baseMessage} The required component "${component}" is not loaded. Currently loaded components: [${componentsList}]. Please add "${component}" to your SDK components array.`;
+    // Extract component names from objects
+    const componentNames = loadedComponents.map((comp) => {
+        if (typeof comp === "string") return comp;
+        if (typeof comp === "object" && comp !== null) {
+            const obj = comp as Record<string, unknown>;
+            const name = obj.componentName ?? obj.name ?? obj.id ?? obj.type;
+            return typeof name === "string" ? name : "[Unknown Component]";
+        }
+        return String(comp);
+    });
+
+    if (!componentNames.includes(component)) {
+        return `${baseMessage} The required component "${component}" is not loaded. Currently loaded components: [${componentNames.join(", ")}]. Please add "${component}" to your SDK components array.`;
     }
 
-    // Component appears to be loaded but session creation still failed
     return `${baseMessage} The component "${component}" appears to be loaded but the session failed to create.`;
 }
