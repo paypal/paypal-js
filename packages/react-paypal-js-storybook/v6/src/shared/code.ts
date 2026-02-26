@@ -109,7 +109,11 @@ export default function App() {
 `;
 
 export const getPayLaterOneTimePaymentButtonCode = (): string => `
-import { PayPalProvider, PayLaterOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+import {
+    PayPalProvider,
+    PayLaterOneTimePaymentButton,
+    useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
 
 async function createOrder() {
     const response = await fetch("/api/paypal/create-order", {
@@ -119,6 +123,27 @@ async function createOrder() {
     return { orderId: data.id };
 }
 
+function Checkout() {
+    useEligibleMethods({
+        payload: {
+            currencyCode: "USD",
+            paymentFlow: "ONE_TIME_PAYMENT",
+        },
+    });
+
+    return (
+        <PayLaterOneTimePaymentButton
+            createOrder={createOrder}
+            onApprove={async (data) => {
+                await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
+                    method: "POST",
+                });
+            }}
+            presentationMode="auto"
+        />
+    );
+}
+
 export default function App() {
     return (
         <PayPalProvider
@@ -126,15 +151,7 @@ export default function App() {
             components={["paypal-payments"]}
             pageType="checkout"
         >
-            <PayLaterOneTimePaymentButton
-                createOrder={createOrder}
-                onApprove={async (data) => {
-                    await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
-                        method: "POST",
-                    });
-                }}
-                presentationMode="auto"
-            />
+            <Checkout />
         </PayPalProvider>
     );
 }

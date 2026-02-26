@@ -25,7 +25,7 @@ const V6DocPageStructure = ({
         <Title />
         <Subtitle />
         <Description />
-        <Canvas>
+        <Canvas sourceState="none">
             <Primary />
         </Canvas>
         <h3>Example Code</h3>
