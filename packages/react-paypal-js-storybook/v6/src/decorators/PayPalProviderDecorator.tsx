@@ -5,6 +5,7 @@ import { action } from "storybook/actions";
 import {
     PayPalProvider,
     usePayPal,
+    useEligibleMethods,
     INSTANCE_LOADING_STATE,
 } from "@paypal/react-paypal-js/sdk-v6";
 import { SAMPLE_INTEGRATION_API } from "../shared/utils";
@@ -68,6 +69,13 @@ function ErrorDisplay({ message }: { message: string }) {
 // Logs SDK and button events to the Actions panel.
 function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
     const { loadingStatus } = usePayPal();
+
+    useEligibleMethods({
+        payload: {
+            currencyCode: "USD",
+            paymentFlow: "ONE_TIME_PAYMENT",
+        },
+    });
 
     useEffect(() => {
         if (loadingStatus === INSTANCE_LOADING_STATE.RESOLVED) {
