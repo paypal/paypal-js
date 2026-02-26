@@ -35,7 +35,7 @@ Integrating PayPal into React applications requires careful handling of SDK scri
 - **Modern Hooks API** - Fine-grained control over payment sessions with `usePayPalOneTimePaymentSession`, `useVenmoOneTimePaymentSession`, and more
 - **Built-in Eligibility** - Automatically check which payment methods are available with `useEligibleMethods()`
 - **Web Component Buttons** - Use PayPal's optimized `<paypal-button>`, `<venmo-button>`, and `<paypal-pay-later-button>` web components
-- **Flexible Loading** - Support for string tokens, Promise-based tokens, and deferred loading patterns
+- **Flexible Loading** - Support for string token/id, Promise-based token/id, and deferred loading patterns
 - **TypeScript Support** - Complete type definitions for all components and hooks
 - **SSR Compatible** - Built-in hydration handling for server-side rendered applications
 
