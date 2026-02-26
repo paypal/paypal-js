@@ -261,40 +261,12 @@ export function createPaymentSession<T>(
     } catch (err) {
         failedSdkRef.current = sdkInstance;
 
-        const loadedComponents = (
-            window as Window & {
-                __paypal_sdk__?: { v6: { components?: string[] } };
-            }
-        ).__paypal_sdk__?.v6?.components;
-
-        const errorMessage = buildErrorMessage(component, loadedComponents);
-        const detailedError = new Error(errorMessage, { cause: err });
+        const detailedError = new Error(
+            `Failed to create payment session. This may occur if the required component "${component}" is not included in the SDK components array.`,
+            { cause: err },
+        );
 
         setError(detailedError);
         return null;
     }
-}
-
-function buildErrorMessage(
-    component: string,
-    loadedComponents: string[] | undefined,
-): string {
-    const baseMessage = "Failed to create payment session.";
-    const hasLoadedComponents = Array.isArray(loadedComponents);
-    const componentsList = hasLoadedComponents
-        ? loadedComponents.join(", ")
-        : "";
-
-    // Component provided but no loaded components info
-    if (!hasLoadedComponents) {
-        return `${baseMessage} This may occur if the required component "${component}" is not included in the SDK components array.`;
-    }
-
-    // Component is missing from loaded components
-    if (!loadedComponents.includes(component)) {
-        return `${baseMessage} The required component "${component}" is not loaded. Currently loaded components: [${componentsList}]. Please add "${component}" to your SDK components array.`;
-    }
-
-    // Component appears to be loaded but session creation still failed
-    return `${baseMessage} The component "${component}" appears to be loaded but the session failed to create.`;
 }
