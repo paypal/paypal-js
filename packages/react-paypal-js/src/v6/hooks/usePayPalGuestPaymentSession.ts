@@ -53,11 +53,13 @@ export type UsePayPalGuestPaymentSessionProps = (
  *   if (error) return <div>Error: {error.message}</div>;
  *
  *   return (
- *     <paypal-basic-card-button
- *       onClick={handleClick}
- *       onCancel={handleCancel}
- *       ref={buttonRef}
- *     />
+ *     <paypal-basic-card-container>
+ *       <paypal-basic-card-button
+ *         onClick={handleClick}
+ *         onCancel={handleCancel}
+ *         ref={buttonRef}
+ *       />
+ *     </paypal-basic-card-container>
  *   );
  * }
  */

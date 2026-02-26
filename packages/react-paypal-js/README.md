@@ -1,6 +1,6 @@
 # react-paypal-js
 
-> React components for the [PayPal JS SDK](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/)
+> React components for the [PayPal JS SDK V6](https://docs.paypal.ai/payments/methods/paypal/sdk/js/v6/paypal-checkout)
 
 <div class="badges">
     <a href="https://github.com/paypal/react-paypal-js/actions?query=workflow%3Avalidate"><img src="https://img.shields.io/github/actions/workflow/status/paypal/react-paypal-js/validate.yml?branch=main&logo=github&style=flat-square" alt="build status"></a>
@@ -12,498 +12,945 @@
     <a href="https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/"><img src="https://raw.githubusercontent.com/storybooks/brand/master/badge/badge-storybook.svg" alt="storybook"></a>
 </div>
 
+---
+
+> **Using react-paypal-js version 8.x or earlier?**
+>
+> This documentation covers the V6 SDK integration introduced in v9.0.0. For the legacy integration using `PayPalScriptProvider`, `PayPalButtons`, `PayPalHostedFields`, and `BraintreePayPalButtons`, see [README-v8.md](./README-v8.md).
+
+---
+
 ## Why use react-paypal-js?
 
 ### The Problem
 
-Developers integrating with PayPal are expected to add the JS SDK `<script>` to a website and then render components like the PayPal Buttons after the script loads. This architecture works great for simple websites but can be challenging when building single page apps.
-
-React developers think in terms of components and not about loading external scripts from an index.html file. It's easy to end up with a React PayPal integration that's sub-optimal and hurts the buyer's user experience. For example, abstracting away all the implementation details of the PayPal Buttons into a single React component is an anti-pattern because it tightly couples script loading with rendering. It's also problematic when you need to render multiple different PayPal components that share the same global script parameters.
+Integrating PayPal into React applications requires careful handling of SDK script loading, payment session management, and UI rendering. Building a robust integration from scratch can lead to issues with timing, state management, and buyer experience.
 
 ### The Solution
 
-`react-paypal-js` provides a solution to developers to abstract away complexities around loading the JS SDK. It enforces best practices by default so buyers get the best possible user experience.
+`react-paypal-js` provides a modern, hooks-based solution that abstracts away the complexities of the PayPal V6 SDK. It enforces best practices by default to ensure buyers get the best possible user experience.
 
 **Features**
 
-- Enforce async loading the JS SDK upfront so when it's time to render the buttons to your buyer, they render immediately.
-- Abstract away the complexity around loading the JS SDK with the global [PayPalScriptProvider](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalscriptprovider--default) component.
-- Support dispatching actions to reload the JS SDK and re-render components when global parameters like `currency` change.
-- Easy to use components for all the different Braintree/PayPal product offerings:
-    - [PayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalbuttons--default)
-    - [PayPalMarks](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalmarks--default)
-    - [PayPalMessages](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalmessages--default)
-    - [PayPalHostedFields](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/paypal-paypalhostedfields--default)
-    - [BraintreePayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/braintree-braintreepaypalbuttons--default)
+- **Modern Hooks API** - Fine-grained control over payment sessions with `usePayPalOneTimePaymentSession`, `useVenmoOneTimePaymentSession`, and more
+- **Built-in Eligibility** - Automatically check which payment methods are available with `useEligibleMethods()`
+- **Web Component Buttons** - Use PayPal's optimized `<paypal-button>`, `<venmo-button>`, and `<paypal-pay-later-button>` web components
+- **Flexible Loading** - Support for string token/id, Promise-based token/id, and deferred loading patterns
+- **TypeScript Support** - Complete type definitions for all components and hooks
+- **SSR Compatible** - Built-in hydration handling for server-side rendered applications
+
+## Supported Payment Methods
+
+- **PayPal** - Standard PayPal checkout
+- **Venmo** - Venmo payments
+- **Pay Later** - PayPal's buy now, pay later option
+- **PayPal Basic Card** - Guest card payments without a PayPal account
+- **PayPal Subscriptions** - Recurring billing subscriptions
+- **PayPal Save** - Vault payment methods without purchase
+- **PayPal Credit** - PayPal Credit one-time and save payments
+
+## Resources
+
+- [PayPal V6 SDK Documentation](https://docs.paypal.ai/payments/methods/paypal/sdk/js/v6/paypal-checkout)
+- [React Sample Integration](https://github.com/paypal-examples/v6-web-sdk-sample-integration/tree/main/client/prebuiltPages/react/oneTimePayment) - Full working example with Node.js backend
+- [Live Demo](https://v6-web-sdk-sample-integration-server.fly.dev/client/prebuiltPages/react/oneTimePayment/dist/index.html) - Try the sample integration in sandbox mode
+- [PayPal Server SDK](https://www.npmjs.com/package/@paypal/paypal-server-sdk) - For backend integration
+- [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/)
+- [PayPal Sandbox Test Accounts](https://developer.paypal.com/dashboard/accounts)
+- [PayPal Sandbox Card Testing](https://developer.paypal.com/tools/sandbox/card-testing/)
 
 ## Installation
-
-To get started, install react-paypal-js with npm.
 
 ```sh
 npm install @paypal/react-paypal-js
 ```
 
-## Usage
+## Quick Start
 
-This PayPal React library consists of two main parts:
+```tsx
+import {
+    PayPalProvider,
+    PayPalOneTimePaymentButton,
+} from "@paypal/react-paypal-js/sdk-v6";
 
-1. Context Provider - this `<PayPalScriptProvider />` component manages loading the JS SDK script. Add it to the root of your React app. It uses the [Context API](https://reactjs.org/docs/context.html) for managing state and communicating to child components. It also supports reloading the script when parameters change.
-2. SDK Components - components like `<PayPalButtons />` are used to render the UI for PayPal products served by the JS SDK.
-
-```jsx
-// App.js
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-
-export default function App() {
+function App() {
     return (
-        <PayPalScriptProvider options={{ clientId: "test" }}>
-            <PayPalButtons style={{ layout: "horizontal" }} />
-        </PayPalScriptProvider>
+        <PayPalProvider
+            clientToken="your-client-token"
+            components={["paypal-payments"]}
+            pageType="checkout"
+        >
+            <CheckoutPage />
+        </PayPalProvider>
+    );
+}
+
+function CheckoutPage() {
+    return (
+        <PayPalOneTimePaymentButton
+            createOrder={async () => {
+                const response = await fetch("/api/create-order", {
+                    method: "POST",
+                });
+                const { orderId } = await response.json();
+                return { orderId };
+            }}
+            onApprove={async ({ orderId }: OnApproveDataOneTimePayments) => {
+                await fetch(`/api/capture-order/${orderId}`, {
+                    method: "POST",
+                });
+                console.log("Payment captured!");
+            }}
+        />
     );
 }
 ```
 
-### PayPalScriptProvider
+## PayPalProvider
 
-#### Options
+The `PayPalProvider` component is the entry point for the V6 SDK. It handles loading the PayPal SDK, creating an instance, and running eligibility checks.
 
-Use the PayPalScriptProvider `options` prop to configure the JS SDK. It accepts an object for passing query parameters and data attributes to the JS SDK script. Use camelCase for the object keys (clientId, dataClientToken, dataNamespace, etc...).
+### Props
 
-```jsx
-const initialOptions = {
-    clientId: "test",
-    currency: "USD",
-    intent: "capture",
-};
+| Prop                      | Type                                 | Required | Description                                                                                                  |
+| ------------------------- | ------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------ |
+| `clientToken`             | `string \| Promise<string>`          | \*       | Client token from your server. Mutually exclusive with `clientId`.                                           |
+| `clientId`                | `string \| Promise<string>`          | \*       | Client ID from your PayPal app. Mutually exclusive with `clientToken`.                                       |
+| `components`              | `Components[]`                       | No       | SDK components to load. Defaults to `["paypal-payments"]`.                                                   |
+| `pageType`                | `string`                             | No       | Type of page: `"checkout"`, `"product-details"`, `"cart"`, `"product-listing"`, etc.                         |
+| `locale`                  | `string`                             | No       | Locale for the SDK (e.g., `"en_US"`).                                                                        |
+| `environment`             | `"sandbox" \| "production"`          | No       | SDK environment.                                                                                             |
+| `merchantId`              | `string \| string[]`                 | No       | PayPal merchant ID(s).                                                                                       |
+| `clientMetadataId`        | `string`                             | No       | Client metadata ID for tracking.                                                                             |
+| `partnerAttributionId`    | `string`                             | No       | Partner attribution ID (BN code).                                                                            |
+| `shopperSessionId`        | `string`                             | No       | Shopper session ID for tracking.                                                                             |
+| `testBuyerCountry`        | `string`                             | No       | Test buyer country code (sandbox only).                                                                      |
+| `debug`                   | `boolean`                            | No       | Enable debug mode.                                                                                           |
+| `dataNamespace`           | `string`                             | No       | Custom namespace for the SDK script data attribute.                                                          |
+| `eligibleMethodsResponse` | `FindEligiblePaymentMethodsResponse` | No       | Server-fetched eligibility response for SDK hydration (see [Server-Side Rendering](#server-side-rendering)). |
 
-export default function App() {
+> \* Either `clientToken` or `clientId` is required, but not both. They are mutually exclusive.
+
+### Available Components
+
+The `components` prop accepts an array of the following values:
+
+- `"paypal-payments"` - PayPal and Pay Later buttons
+- `"venmo-payments"` - Venmo button
+- `"paypal-guest-payments"` - Guest checkout (card payments)
+- `"paypal-subscriptions"` - Subscription payments
+
+### With Promise-based Client ID
+
+```tsx
+function App() {
+    // Memoize to prevent re-fetching on each render
+    const clientIdPromise = useMemo(() => fetchClientId(), []);
+
     return (
-        <PayPalScriptProvider options={initialOptions}>
-            <PayPalButtons />
-        </PayPalScriptProvider>
+        <PayPalProvider
+            clientId={clientIdPromise}
+            components={["paypal-payments"]}
+            pageType="checkout"
+        >
+            <CheckoutPage />
+        </PayPalProvider>
     );
 }
 ```
 
-The [JS SDK Configuration guide](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-configuration/) contains the full list of query parameters and data attributes that can be used with the JS SDK.
+### With Promise-based Token
 
-#### deferLoading
+```tsx
+function App() {
+    // Memoize to prevent re-fetching on each render
+    const tokenPromise = useMemo(() => fetchClientToken(), []);
 
-Use the optional PayPalScriptProvider `deferLoading` prop to control when the JS SDK script loads.
-
-- This prop is set to false by default since we usually know all the sdk script params upfront and want to load the script right away so components like `<PayPalButtons />` render immediately.
-- This prop can be set to true to prevent loading the JS SDK script when the PayPalScriptProvider renders. Use `deferLoading={true}` initially and then dispatch an action later on in the app's life cycle to load the sdk script.
-
-```jsx
-<PayPalScriptProvider deferLoading={true} options={initialOptions}>
-    <PayPalButtons />
-</PayPalScriptProvider>
+    return (
+        <PayPalProvider
+            clientToken={tokenPromise}
+            components={["paypal-payments"]}
+            pageType="checkout"
+        >
+            <CheckoutPage />
+        </PayPalProvider>
+    );
+}
 ```
 
-To learn more, check out the [defer loading example in storybook](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/example-paypalscriptprovider--default&args=deferLoading:true).
+### Deferred Loading (works for either Client token or ID)
 
-#### Tracking loading state
+```tsx
+function App() {
+    const [clientToken, setClientToken] = useState<string>();
 
-The `<PayPalScriptProvider />` component is designed to be used with the `usePayPalScriptReducer` hook for managing global state. This `usePayPalScriptReducer` hook has the same API as [React's useReducer hook](https://reactjs.org/docs/hooks-reference.html#usereducer).
+    useEffect(() => {
+        fetchClientToken().then(setClientToken);
+    }, []);
 
-The `usePayPalScriptReducer` hook provides an easy way to tap into the loading state of the JS SDK script. This state can be used to show a loading spinner while the script loads or an error message if it fails to load. The following derived attributes are provided for tracking this loading state:
-
-- isInitial - not started (only used when passing `deferLoading={true}`)
-- isPending - loading (default)
-- isResolved - successfully loaded
-- isRejected - failed to load
-
-For example, here's how you can use it to show a loading spinner.
-
-```jsx
-const [{ isPending }] = usePayPalScriptReducer();
-
-return (
-    <>
-        {isPending ? <div className="spinner" /> : null}
-        <PayPalButtons />
-    </>
-);
+    return (
+        <PayPalProvider
+            clientToken={clientToken}
+            components={["paypal-payments"]}
+            pageType="checkout"
+        >
+            <CheckoutPage />
+        </PayPalProvider>
+    );
+}
 ```
 
-To learn more, check out the [loading spinner example in storybook](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/example-paypalbuttons--default&args=showSpinner:true).
+### Tracking Loading State
 
-#### Reloading when parameters change
+Use the `usePayPal` hook to access the SDK loading status:
 
-The `usePayPalScriptReducer` hook can be used to reload the JS SDK script when parameters like currency change. It provides the action `resetOptions` for reloading with new parameters. For example, here's how you can use it to change currency.
+```tsx
+import {
+    usePayPal,
+    INSTANCE_LOADING_STATE,
+} from "@paypal/react-paypal-js/sdk-v6";
 
-```jsx
-// get the state for the sdk script and the dispatch method
-const [{ options }, dispatch] = usePayPalScriptReducer();
-const [currency, setCurrency] = useState(options.currency);
+function CheckoutPage() {
+    const { loadingStatus, error } = usePayPal();
 
-function onCurrencyChange({ target: { value } }) {
-    setCurrency(value);
-    dispatch({
-        type: "resetOptions",
-        value: {
-            ...options,
-            currency: value,
+    if (loadingStatus === INSTANCE_LOADING_STATE.PENDING) {
+        return <div className="spinner">Loading PayPal...</div>;
+    }
+
+    if (loadingStatus === INSTANCE_LOADING_STATE.REJECTED) {
+        return (
+            <div className="error">
+                Failed to load PayPal SDK: {error?.message}
+            </div>
+        );
+    }
+
+    return <PayPalOneTimePaymentButton orderId="ORDER-123" />;
+}
+```
+
+## Button Components
+
+### PayPalOneTimePaymentButton
+
+Renders a PayPal button for one-time payments.
+
+```tsx
+import { PayPalOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalOneTimePaymentButton
+    createOrder={async () => {
+        const response = await fetch("/api/create-order", { method: "POST" });
+        const { orderId } = await response.json();
+        return { orderId };
+    }}
+    onApprove={async ({ orderId }: OnApproveDataOneTimePayments) => {
+        await fetch(`/api/capture/${orderId}`, { method: "POST" });
+        console.log("Payment approved!");
+    }}
+    onCancel={(data: OnCancelDataOneTimePayments) =>
+        console.log("Payment cancelled")
+    }
+    onError={(data: OnErrorData) => console.error("Payment error:", data)}
+    onComplete={(data: OnCompleteData) => console.log("Payment Flow Completed")}
+/>;
+```
+
+**Props:**
+
+| Prop               | Type                                                         | Description                                            |
+| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------ |
+| `orderId`          | `string`                                                     | Static order ID (alternative to `createOrder`)         |
+| `createOrder`      | `() => Promise<{ orderId: string }>`                         | Async function to create an order                      |
+| `presentationMode` | `"auto" \| "popup" \| "modal" \| "redirect"`                 | How to present the payment session (default: `"auto"`) |
+| `onApprove`        | `(data) => void`                                             | Called when payment is approved                        |
+| `onCancel`         | `() => void`                                                 | Called when buyer cancels                              |
+| `onError`          | `(error) => void`                                            | Called on error                                        |
+| `onComplete`       | `(data) => void`                                             | Called when payment session completes                  |
+| `type`             | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"` | Button label type                                      |
+| `disabled`         | `boolean`                                                    | Disable the button                                     |
+
+### VenmoOneTimePaymentButton
+
+Renders a Venmo button for one-time payments. Requires `"venmo-payments"` in the provider's `components` array.
+
+```tsx
+import { VenmoOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalProvider
+    clientToken={token}
+    components={["paypal-payments", "venmo-payments"]}
+    pageType="checkout"
+>
+    <VenmoOneTimePaymentButton
+        createOrder={async () => {
+            const { orderId } = await createOrder();
+            return { orderId };
+        }}
+        onApprove={(data: OnApproveDataOneTimePayments) =>
+            console.log("Venmo payment approved!", data)
+        }
+        onCancel={(data: OnCancelDataOneTimePayments) =>
+            console.log("Venmo payment cancelled", data)
+        }
+        onError={(data: OnErrorData) =>
+            console.error("Venmo payment error:", data)
+        }
+        onComplete={(data: OnCompleteData) =>
+            console.log("Venmo payment flow completed", data)
+        }
+    />
+</PayPalProvider>;
+```
+
+### PayLaterOneTimePaymentButton
+
+Renders a Pay Later button for financing options. Country code and product code are automatically populated from eligibility data.
+
+```tsx
+import { PayLaterOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayLaterOneTimePaymentButton
+    createOrder={async () => {
+        const { orderId } = await createOrder();
+        return { orderId };
+    }}
+    onApprove={(data: OnApproveDataOneTimePayments) =>
+        console.log("Pay Later approved!", data)
+    }
+    onCancel={(data: OnCancelDataOneTimePayments) =>
+        console.log("Pay Later cancelled", data)
+    }
+    onError={(data: OnErrorData) => console.error("Pay Later error:", data)}
+    onComplete={(data: OnCompleteData) =>
+        console.log("Pay Later flow completed", data)
+    }
+/>;
+```
+
+### PayPalGuestPaymentButton
+
+Renders a guest checkout button for card payments without a PayPal account (Branded Card/Debit Card checkout). Requires `"paypal-guest-payments"` in the provider's `components` array.
+
+```tsx
+import { PayPalGuestPaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalProvider
+    clientToken={token}
+    components={["paypal-payments", "paypal-guest-payments"]}
+    pageType="checkout"
+>
+    <PayPalGuestPaymentButton
+        createOrder={async () => {
+            const { orderId } = await createOrder();
+            return { orderId };
+        }}
+        onApprove={(data: OnApproveDataOneTimePayments) =>
+            console.log("Guest payment approved!", data)
+        }
+        onCancel={(data: OnCancelDataOneTimePayments) =>
+            console.log("Guest payment cancelled", data)
+        }
+        onError={(data: OnErrorData) =>
+            console.error("Guest payment error:", data)
+        }
+        onComplete={(data: OnCompleteData) =>
+            console.log("Guest payment flow completed", data)
+        }
+    />
+</PayPalProvider>;
+```
+
+### PayPalSavePaymentButton
+
+Renders a button for vaulting a payment method without making a purchase.
+
+```tsx
+import { PayPalSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalSavePaymentButton
+    createVaultToken={async () => {
+        const response = await fetch("/api/create-vault-token", {
+            method: "POST",
+        });
+        const { vaultSetupToken } = await response.json();
+        return { vaultSetupToken };
+    }}
+    onApprove={({ vaultSetupToken }: OnApproveDataSavePayments) => {
+        console.log("Payment method saved:", vaultSetupToken);
+    }}
+    onCancel={(data: OnCancelDataSavePayments) =>
+        console.log("Save payment cancelled", data)
+    }
+    onError={(data: OnErrorData) => console.error("Save payment error:", data)}
+    onComplete={(data: OnCompleteData) =>
+        console.log("Save payment flow completed", data)
+    }
+/>;
+```
+
+### PayPalSubscriptionButton
+
+Renders a PayPal button for subscription payments. Requires `"paypal-subscriptions"` in the provider's `components` array.
+
+```tsx
+import { PayPalSubscriptionButton } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalProvider
+    clientToken={token}
+    components={["paypal-subscriptions"]}
+    pageType="checkout"
+>
+    <PayPalSubscriptionButton
+        createSubscription={async () => {
+            const response = await fetch("/api/create-subscription", {
+                method: "POST",
+            });
+            const { subscriptionId } = await response.json();
+            return { subscriptionId };
+        }}
+        onApprove={(data: OnApproveDataOneTimePayments) =>
+            console.log("Subscription approved:", data)
+        }
+        onCancel={(data: OnCancelDataOneTimePayments) =>
+            console.log("Subscription cancelled", data)
+        }
+        onError={(data: OnErrorData) =>
+            console.error("Subscription error:", data)
+        }
+        onComplete={(data: OnCompleteData) =>
+            console.log("Subscription flow completed", data)
+        }
+    />
+</PayPalProvider>;
+```
+
+### PayPalCreditOneTimePaymentButton
+
+Renders a PayPal Credit button for one-time payments. The `countryCode` is automatically populated from eligibility data.
+
+```tsx
+import { PayPalCreditOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalCreditOneTimePaymentButton
+    createOrder={async () => {
+        const response = await fetch("/api/create-order", { method: "POST" });
+        const { orderId } = await response.json();
+        return { orderId };
+    }}
+    onApprove={({ orderId }: OnApproveDataOneTimePayments) =>
+        console.log("Credit payment approved:", orderId)
+    }
+    onCancel={(data: OnCancelDataOneTimePayments) =>
+        console.log("Credit payment cancelled", data)
+    }
+    onError={(data: OnErrorData) =>
+        console.error("Credit payment error:", data)
+    }
+    onComplete={(data: OnCompleteData) =>
+        console.log("Credit payment flow completed", data)
+    }
+/>;
+```
+
+### PayPalCreditSavePaymentButton
+
+Renders a PayPal Credit button for saving a credit payment method (vaulting).
+
+```tsx
+import { PayPalCreditSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalCreditSavePaymentButton
+    createVaultToken={async () => {
+        const response = await fetch("/api/create-vault-token", {
+            method: "POST",
+        });
+        const { vaultSetupToken } = await response.json();
+        return { vaultSetupToken };
+    }}
+    onApprove={(data: OnApproveDataSavePayments) =>
+        console.log("Credit saved:", data)
+    }
+    onCancel={(data: OnCancelDataSavePayments) =>
+        console.log("Credit save cancelled", data)
+    }
+    onError={(data: OnErrorData) => console.error("Credit save error:", data)}
+    onComplete={(data: OnCompleteData) =>
+        console.log("Credit save flow completed", data)
+    }
+/>;
+```
+
+## Payment Flow
+
+1. User clicks a payment button
+2. `handleClick()` starts the payment session
+3. `createOrder` callback creates an order via your backend API
+4. PayPal opens the checkout experience (popup/modal/redirect)
+5. On approval, `onApprove` callback captures the order via the backend
+6. Success/error handling displays the result to the user
+
+## Hooks API
+
+### usePayPal
+
+Returns the PayPal context including the SDK instance and loading status.
+
+```tsx
+import {
+    usePayPal,
+    INSTANCE_LOADING_STATE,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+function MyComponent() {
+    const {
+        sdkInstance, // The PayPal SDK instance
+        eligiblePaymentMethods, // Eligible payment methods
+        loadingStatus, // PENDING | RESOLVED | REJECTED
+        error, // Any initialization error
+        isHydrated, // SSR hydration status
+    } = usePayPal();
+
+    const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
+    const isReady = loadingStatus === INSTANCE_LOADING_STATE.RESOLVED;
+
+    // ...
+}
+```
+
+### useEligibleMethods
+
+Returns eligible payment methods and loading state. Use this to conditionally render payment buttons based on eligibility. This hook also updates the `PayPalProvider` reducer with Eligibility Output from the SDK, enabling built-in eligibility features in the UI Button components.
+
+```tsx
+import { useEligibleMethods } from "@paypal/react-paypal-js/sdk-v6";
+
+function PaymentOptions() {
+    const { eligiblePaymentMethods, isLoading, error } = useEligibleMethods();
+
+    if (isLoading) return <div>Checking eligibility...</div>;
+
+    const isPayPalEligible = eligiblePaymentMethods?.isEligible("paypal");
+    const isVenmoEligible = eligiblePaymentMethods?.isEligible("venmo");
+    const isPayLaterEligible = eligiblePaymentMethods?.isEligible("paylater");
+
+    return (
+        <div>
+            {isPayPalEligible && <PayPalOneTimePaymentButton {...props} />}
+            {isVenmoEligible && <VenmoOneTimePaymentButton {...props} />}
+            {isPayLaterEligible && <PayLaterOneTimePaymentButton {...props} />}
+        </div>
+    );
+}
+```
+
+### usePayPalMessages
+
+Hook for integrating PayPal messaging (Pay Later promotions).
+
+```tsx
+import { usePayPalMessages } from "@paypal/react-paypal-js/sdk-v6";
+
+function PayLaterMessage() {
+    const { error, isReady, handleFetchContent, handleCreateLearnMore } =
+        usePayPalMessages({
+            buyerCountry: "US",
+            currencyCode: "USD",
+        });
+
+    // Use to display financing messages
+}
+```
+
+### Payment Session Hooks
+
+For advanced use cases where you need full control over the payment flow, use the session hooks directly with web components.
+
+> **Note:** One-time payment session hooks (e.g., `usePayPalOneTimePaymentSession`) accept either a static `orderId` or a `createOrder` callback — they are mutually exclusive. Use `orderId` when you've already created the order, or `createOrder` to defer order creation until the buyer clicks. The same pattern applies to save payment hooks with `vaultSetupToken` vs `createVaultToken`.
+
+| Hook                                   | Payment Type        |
+| -------------------------------------- | ------------------- |
+| `usePayPalOneTimePaymentSession`       | PayPal              |
+| `useVenmoOneTimePaymentSession`        | Venmo               |
+| `usePayLaterOneTimePaymentSession`     | Pay Later           |
+| `usePayPalGuestPaymentSession`         | Basic Card          |
+| `usePayPalSubscriptionPaymentSession`  | Subscriptions       |
+| `usePayPalSavePaymentSession`          | Save Payment Method |
+| `usePayPalCreditOneTimePaymentSession` | Credit (One-time)   |
+| `usePayPalCreditSavePaymentSession`    | Credit (Save)       |
+
+#### usePayPalOneTimePaymentSession
+
+```tsx
+import { usePayPalOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomPayPalButton() {
+    const { isPending, error, handleClick } = usePayPalOneTimePaymentSession({
+        createOrder: async () => {
+            const { orderId } = await createOrder();
+            return { orderId };
+        },
+        presentationMode: "auto",
+        onApprove: (data: OnApproveDataOneTimePayments) =>
+            console.log("Approved:", data),
+        onCancel: (data: OnCancelDataOneTimePayments) =>
+            console.log("Cancelled"),
+        onError: (data: OnErrorData) => console.error(data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
+    });
+
+    return (
+        <paypal-button
+            onClick={() => handleClick()}
+            type="pay"
+            disabled={isPending || error !== null}
+        />
+    );
+}
+```
+
+#### useVenmoOneTimePaymentSession
+
+```tsx
+import { useVenmoOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomVenmoButton() {
+    const { handleClick } = useVenmoOneTimePaymentSession({
+        createOrder: async () => {
+            const { orderId } = await createOrder();
+            return { orderId };
+        },
+        onApprove: (data: OnApproveDataOneTimePayments) =>
+            console.log("Approved:", data),
+        onCancel: (data: OnCancelDataOneTimePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
+    });
+
+    return <venmo-button onClick={() => handleClick()} />;
+}
+```
+
+#### usePayLaterOneTimePaymentSession
+
+```tsx
+import { usePayLaterOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomPayLaterButton() {
+    const { handleClick } = usePayLaterOneTimePaymentSession({
+        createOrder: async () => {
+            const { orderId } = await createOrder();
+            return { orderId };
+        },
+        onApprove: (data: OnApproveDataOneTimePayments) =>
+            console.log("Approved:", data),
+        onCancel: (data: OnCancelDataOneTimePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
+    });
+
+    return <paypal-pay-later-button onClick={() => handleClick()} />;
+}
+```
+
+#### usePayPalGuestPaymentSession
+
+```tsx
+import { usePayPalGuestPaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomPayPalGuestButton() {
+    const { handleClick, buttonRef } = usePayPalGuestPaymentSession({
+        createOrder: async () => {
+            const { orderId } = await createOrder();
+            return { orderId };
+        },
+        onApprove: (data: OnApproveDataOneTimePayments) =>
+            console.log("Approved:", data),
+        onCancel: (data: OnCancelDataOneTimePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
+    });
+
+    return (
+        <paypal-basic-card-container>
+            <paypal-basic-card-button
+                ref={buttonRef}
+                onClick={() => handleClick()}
+            />
+        </paypal-basic-card-container>
+    );
+}
+```
+
+#### usePayPalSavePaymentSession
+
+```tsx
+import { usePayPalSavePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomPayPalSaveButton() {
+    const { handleClick } = usePayPalSavePaymentSession({
+        createVaultToken: async () => {
+            const { vaultSetupToken } = await createVaultToken();
+            return { vaultSetupToken };
+        },
+        presentationMode: "popup",
+        onApprove: (data: OnApproveDataSavePayments) =>
+            console.log("Saved:", data),
+        onCancel: (data: OnCancelDataSavePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
+    });
+
+    return <paypal-button onClick={() => handleClick()} type="pay" />;
+}
+```
+
+#### usePayPalSubscriptionPaymentSession
+
+```tsx
+import { usePayPalSubscriptionPaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomPayPalSubscriptionButton() {
+    const { handleClick } = usePayPalSubscriptionPaymentSession({
+        createSubscription: async () => {
+            const response = await fetch("/api/create-subscription", {
+                method: "POST",
+            });
+            const { subscriptionId } = await response.json();
+            return { subscriptionId };
+        },
+        onApprove: (data: OnApproveDataOneTimePayments) =>
+            console.log("Subscription approved:", data),
+        onCancel: (data: OnCancelDataOneTimePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
+    });
+
+    return <paypal-button onClick={() => handleClick()} type="subscribe" />;
+}
+```
+
+#### usePayPalCreditOneTimePaymentSession
+
+For PayPal Credit one-time payments.
+
+```tsx
+import { usePayPalCreditOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomPayPalCreditButton() {
+    const { handleClick } = usePayPalCreditOneTimePaymentSession({
+        createOrder: async () => {
+            const { orderId } = await createOrder();
+            return { orderId };
+        },
+        onApprove: (data: OnApproveDataOneTimePayments) =>
+            console.log("Credit approved:", data),
+        onCancel: (data: OnCancelDataOneTimePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
+    });
+
+    return <paypal-credit-button onClick={() => handleClick()} />;
+}
+```
+
+#### usePayPalCreditSavePaymentSession
+
+For saving PayPal Credit as a payment method.
+
+```tsx
+import { usePayPalCreditSavePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomPayPalCreditSaveButton() {
+    const { handleClick } = usePayPalCreditSavePaymentSession({
+        createVaultToken: async () => {
+            const { vaultSetupToken } = await createVaultSetupToken();
+            return { vaultSetupToken };
+        },
+        onApprove: (data: OnApproveDataSavePayments) =>
+            console.log("Credit approved:", data),
+        onCancel: (data: OnCancelDataSavePayments) =>
+            console.log("Cancelled", data),
+        onError: (data: OnErrorData) => console.error("Error:", data),
+        onComplete: (data: OnCompleteData) =>
+            console.log("Payment session complete", data),
+    });
+
+    return <paypal-credit-button onClick={() => handleClick()} />;
+}
+```
+
+## Web Components
+
+The V6 SDK uses web components for rendering buttons. These are automatically typed when you import from `@paypal/react-paypal-js/sdk-v6`.
+
+### Available Web Components
+
+| Component                       | Description                |
+| ------------------------------- | -------------------------- |
+| `<paypal-button>`               | PayPal payment button      |
+| `<venmo-button>`                | Venmo payment button       |
+| `<paypal-pay-later-button>`     | Pay Later button           |
+| `<paypal-basic-card-container>` | Guest checkout container   |
+| `<paypal-basic-card-button>`    | Guest checkout button      |
+| `<paypal-credit-button>`        | PayPal Credit button       |
+| `<paypal-message>`              | PayPal messaging component |
+
+### Button Types
+
+The `type` prop controls the button label:
+
+- `"pay"` - "Pay with PayPal" (default)
+- `"checkout"` - "Checkout with PayPal"
+- `"buynow"` - "Buy Now"
+- `"donate"` - "Donate"
+- `"subscribe"` - "Subscribe"
+
+```tsx
+<paypal-button type="checkout" onClick={handleClick} />
+```
+
+## Server-Side Rendering
+
+The `useFetchEligibleMethods` function is available from the server export path for pre-fetching eligibility data on the server. Pass the response to `PayPalProvider` via the `eligibleMethodsResponse` prop to avoid a client-side eligibility fetch.
+
+```tsx
+// app/checkout/page.tsx (Next.js server component)
+import { useFetchEligibleMethods } from "@paypal/react-paypal-js/sdk-v6/server";
+import { PayPalProvider } from "@paypal/react-paypal-js/sdk-v6";
+
+export default async function CheckoutPage() {
+    const eligibleMethodsResponse = await useFetchEligibleMethods({
+        environment: "sandbox",
+        headers: {
+            Authorization: `Bearer ${clientToken}`,
+            "Content-Type": "application/json",
+        },
+        payload: {
+            purchase_units: [
+                { amount: { currency_code: "USD", value: "100.00" } },
+            ],
         },
     });
-}
 
-return (
-    <>
-        <select value={currency} onChange={onCurrencyChange}>
-            <option value="USD">United States dollar</option>
-            <option value="EUR">Euro</option>
-        </select>
-        <PayPalButtons />
-    </>
-);
+    return (
+        <PayPalProvider
+            clientToken={clientToken}
+            pageType="checkout"
+            eligibleMethodsResponse={eligibleMethodsResponse}
+        >
+            <CheckoutForm />
+        </PayPalProvider>
+    );
+}
 ```
 
-To learn more, check out the [dynamic currency example in storybook](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalbuttons--default).
+## Migration from v8.x (Legacy SDK)
 
-### PayPalButtons
+The v9.0.0 release introduces the V6 SDK with a new API. Here are the key differences:
 
-The `<PayPalButtons />` component is [documented in Storybook](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalbuttons--default).
+| v8.x (Legacy)                   | v9.0.0 (V6 SDK)                                      |
+| ------------------------------- | ---------------------------------------------------- |
+| `PayPalScriptProvider`          | `PayPalProvider`                                     |
+| `PayPalButtons`                 | `PayPalOneTimePaymentButton` or hooks                |
+| `options={{ clientId }}`        | `clientId={clientId}` or `clientToken={clientToken}` |
+| `createOrder` returns `orderId` | `createOrder` returns `{ orderId }`                  |
+| `@paypal/react-paypal-js`       | `@paypal/react-paypal-js/sdk-v6`                     |
 
-Here's an example:
+### Before (v8.x)
 
-```jsx
-// App.js
+```tsx
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
-export default function App() {
-    function createOrder() {
-        return fetch("/my-server/create-paypal-order", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            // use the "body" param to optionally pass additional order information
-            // like product ids and quantities
-            body: JSON.stringify({
-                cart: [
-                    {
-                        id: "YOUR_PRODUCT_ID",
-                        quantity: "YOUR_PRODUCT_QUANTITY",
-                    },
-                ],
-            }),
-        })
-            .then((response) => response.json())
-            .then((order) => order.id);
-    }
-    function onApprove(data) {
-          return fetch("/my-server/capture-paypal-order", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              orderID: data.orderID
-            })
-          })
-          .then((response) => response.json())
-          .then((orderData) => {
-                const name = orderData.payer.name.given_name;
-                alert(`Transaction completed by ${name}`);
-          });
-
-        }
-    }
-    return (
-        <PayPalScriptProvider options={{ clientId: "test" }}>
-            <PayPalButtons
-                createOrder={createOrder}
-                onApprove={onApprove}
-            />
-        </PayPalScriptProvider>
-    );
-}
-```
-
-To learn more about other available props, see the [PayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/example-paypalbuttons--default) docs.
-
-### BraintreePayPalButtons
-
-The Braintree SDK can be used with the PayPal JS SDK to render the PayPal Buttons. Read more about this integration in the [Braintree PayPal client-side integration docs](https://developer.paypal.com/braintree/docs/guides/paypal/client-side/javascript/v3). The `<BraintreePayPalButtons />` component is designed for Braintree merchants who want to render the PayPal button.
-
-```jsx
-// App.js
-import {
-    PayPalScriptProvider,
-    BraintreePayPalButtons,
-} from "@paypal/react-paypal-js";
-
-export default function App() {
-    return (
-        <PayPalScriptProvider
-            options={{
-                clientId: "test",
-                dataClientToken:
-                    "<the data-client-token value generated by your server-side code>",
-            }}
-        >
-            <BraintreePayPalButtons
-                createOrder={(data, actions) => {
-                    return actions.braintree.createPayment({
-                        flow: "checkout",
-                        amount: "10.0",
-                        currency: "USD",
-                        intent: "capture",
-                    });
-                }}
-                onApprove={(data, actions) => {
-                    return actions.braintree
-                        .tokenizePayment(data)
-                        .then((payload) => {
-                            // call server-side endpoint to finish the sale
-                        });
-                }}
-            />
-        </PayPalScriptProvider>
-    );
-}
-```
-
-Check out the docs page for the [BraintreePayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/docs/braintree-braintreepaypalbuttons--default) to learn more about the available props.
-
-### PayPal Hosted Fields
-
-The JS SDK hosted-fields component provides payment form functionality that you can customize. Read more about this integration in the [PayPal Advanced Card Payments documentation](https://developer.paypal.com/docs/business/checkout/advanced-card-payments/).
-
-There are 3 parts to the hosted-fields integration:
-
-1. The `<PayPalHostedFieldsProvider />` provider component wraps the form field elements and accepts props like `createOrder()`.
-2. The `<PayPalHostedField>` component is used for the credit card number, expiration, and cvv elements. These are customizable using props and must be children of the `<PayPalHostedFieldsProvider />` component.
-3. The `usePayPalHostedFields` hook exposes the `submit()` function for submitting the payment with your own custom button.
-
-```jsx
-import {
-    PayPalScriptProvider,
-    PayPalHostedFieldsProvider,
-    PayPalHostedField,
-    usePayPalHostedFields,
-} from "@paypal/react-paypal-js";
-
-const SubmitPayment = () => {
-    // Here declare the variable containing the hostedField instance
-    const hostedFields = usePayPalHostedFields();
-
-    const submitHandler = () => {
-        if (typeof hostedFields.submit !== "function") return; // validate that `submit()` exists before using it
-        hostedFields
-            .submit({
-                // The full name as shown in the card and billing address
-                cardholderName: "John Wick",
-            })
-            .then((order) => {
-                fetch(
-                    "/your-server-side-integration-endpoint/capture-payment-info",
-                )
-                    .then((response) => response.json())
-                    .then((data) => {
-                        // Inside the data you can find all the information related to the payment
-                    })
-                    .catch((err) => {
-                        // Handle any error
-                    });
+<PayPalScriptProvider options={{ clientId: "test" }}>
+    <PayPalButtons
+        createOrder={() => {
+            return fetch("/api/orders", { method: "POST" })
+                .then((res) => res.json())
+                .then((order) => order.id);
+        }}
+        onApprove={(data) => {
+            return fetch(`/api/orders/${data.orderID}/capture`, {
+                method: "POST",
             });
-    };
-
-    return <button onClick={submitHandler}>Pay</button>;
-};
-
-export default function App() {
-    return (
-        <PayPalScriptProvider
-            options={{
-                clientId: "your-client-id",
-                dataClientToken: "your-data-client-token",
-            }}
-        >
-            <PayPalHostedFieldsProvider
-                createOrder={() => {
-                    // Here define the call to create and order
-                    return fetch(
-                        "/your-server-side-integration-endpoint/orders",
-                    )
-                        .then((response) => response.json())
-                        .then((order) => order.id)
-                        .catch((err) => {
-                            // Handle any error
-                        });
-                }}
-            >
-                <PayPalHostedField
-                    id="card-number"
-                    hostedFieldType="number"
-                    options={{ selector: "#card-number" }}
-                />
-                <PayPalHostedField
-                    id="cvv"
-                    hostedFieldType="cvv"
-                    options={{ selector: "#cvv" }}
-                />
-                <PayPalHostedField
-                    id="expiration-date"
-                    hostedFieldType="expirationDate"
-                    options={{
-                        selector: "#expiration-date",
-                        placeholder: "MM/YY",
-                    }}
-                />
-                <SubmitPayment />
-            </PayPalHostedFieldsProvider>
-        </PayPalScriptProvider>
-    );
-}
+        }}
+    />
+</PayPalScriptProvider>;
 ```
 
-### PayPal Card Fields
+### After (v9.0.0)
 
-The JS SDK card-fields component provides payment form functionality that you can customize. Read more about this integration in the [PayPal Advanced Card Payments documentation](https://developer.paypal.com/docs/business/checkout/advanced-card-payments/).
-
-#### Using Card Fields Form (recommended)
-
-There are 3 parts to the this card-fields integration:
-
-1. The `<PayPalCardFieldsProvider />` provider component wraps the form field elements and accepts props like `createOrder()`.
-2. The `<PayPalCardFieldsForm />` component renders a form with all 4 fields included out of the box. This is an alternative for merchants who don't want to render each field individually in their react app.
-3. The `usePayPalCardFields` hook exposes the `cardFieldsForm` instance that includes methods suchs as the `cardFieldsForm.submit()` function for submitting the payment with your own custom button. It also exposes the references to each of the individual components for more granular control, eg: `fields.CVVField.focus()` to programatically manipulate the element in the DOM.
-
-```jsx
+```tsx
 import {
-    PayPalScriptProvider,
-    PayPalCardFieldsProvider,
-    PayPalCardFieldsForm
-    usePayPalCardFields,
-} from "@paypal/react-paypal-js";
+    PayPalProvider,
+    PayPalOneTimePaymentButton,
+} from "@paypal/react-paypal-js/sdk-v6";
 
-const SubmitPayment = () => {
-    const { cardFields, fields } = usePayPalCardFields();
-
-    function submitHandler() {
-        if (typeof cardFields.submit !== "function") return; // validate that `submit()` exists before using it
-
-        cardFields
-            .submit()
-            .then(() => {
-                // submit successful
-            })
-            .catch(() => {
-                // submission error
-            });
-    }
-    return <button onClick={submitHandler}>Pay</button>;
-};
-
-export default function App() {
-    function createOrder() {
-        // merchant code
-    }
-    function onApprove() {
-        // merchant code
-    }
-    function onError() {
-        // merchant code
-    }
-    return (
-        <PayPalScriptProvider
-            options={{
-                clientId: "your-client-id",
-                components: "card-fields",
-            }}
-        >
-            <PayPalCardFieldsProvider
-                createOrder={createOrder}
-                onApprove={onApprove}
-                onError={onError}
-            >
-                <PayPalCardFieldsForm />
-                <SubmitPayment />
-            </PayPalCardFieldsProvider>
-        </PayPalScriptProvider>
-    );
-}
+<PayPalProvider clientToken={token} pageType="checkout">
+    <PayPalOneTimePaymentButton
+        createOrder={async () => {
+            const res = await fetch("/api/orders", { method: "POST" });
+            const order = await res.json();
+            return { orderId: order.id };
+        }}
+        onApprove={async ({ orderId }) => {
+            await fetch(`/api/orders/${orderId}/capture`, { method: "POST" });
+        }}
+    />
+</PayPalProvider>;
 ```
 
-#### Using Card Fields Individually
+For the legacy API documentation, see [README-v8.md](./README-v8.md).
 
-There are 3 parts to the this card-fields integration:
+## TypeScript
 
-1. The `<PayPalCardFieldsProvider />` provider component wraps the form field elements and accepts props like `createOrder()`.
-2. The individual CardFields:
-    - `<PayPalNumberField>` component used for the credit card number element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
-    - `<PayPalCVVField>` component used for the credit card cvv element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
-    - `<PayPalExpiryField>` component used for the credit card expiry element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
-    - `<PayPalNameField>` component used for the credit cardholder's name element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
-3. The `usePayPalCardFields` hook exposes the `cardFieldsForm` instance that includes methods suchs as the `cardFieldsForm.submit()` function for submitting the payment with your own custom button. It also exposes the references to each of the individual components for more granular control, eg: `fields.CVVField.focus()` to programatically manipulate the element in the DOM.
+This package includes full TypeScript definitions. Import types from the same path:
 
-```jsx
-import {
-    PayPalScriptProvider,
-    PayPalCardFieldsProvider,
-    PayPalNameField,
-    PayPalNumberField,
-    PayPalExpiryField,
-    PayPalCVVField,
-    usePayPalCardFields,
-} from "@paypal/react-paypal-js";
+```tsx
+import type {
+    // Web component props
+    ButtonProps,
+    PayLaterButtonProps,
+    PayPalBasicCardButtonProps,
+    PayPalCreditButtonProps,
 
-const SubmitPayment = () => {
-    const { cardFields, fields } = usePayPalCardFields();
+    // Session hook props
+    UsePayPalOneTimePaymentSessionProps,
+    UseVenmoOneTimePaymentSessionProps,
+    UsePayLaterOneTimePaymentSessionProps,
+    UsePayPalGuestPaymentSessionProps,
+    UsePayPalSubscriptionPaymentSessionProps,
+    UsePayPalSavePaymentSessionProps,
+    UsePayPalCreditOneTimePaymentSessionProps,
+    UsePayPalCreditSavePaymentSessionProps,
 
-    function submitHandler() {
-        if (typeof cardFields.submit !== "function") return; // validate that `submit()` exists before using it
+    // Button component props
+    PayPalSubscriptionButtonProps,
+    PayPalCreditOneTimePaymentButtonProps,
+    PayPalCreditSavePaymentButtonProps,
 
-        cardFields
-            .submit()
-            .then(() => {
-                // submit successful
-            })
-            .catch(() => {
-                // submission error
-            });
-    }
-    return <button onClick={submitHandler}>Pay</button>;
-};
-
-// Example using individual card fields
-export default function App() {
-    function createOrder() {
-        // merchant code
-    }
-    function onApprove() {
-        // merchant code
-    }
-    function onError() {
-        // merchant code
-    }
-    return (
-        <PayPalScriptProvider
-            options={{
-                clientId: "your-client-id",
-                components: "card-fields",
-            }}
-        >
-            <PayPalCardFieldsProvider
-                createOrder={createOrder}
-                onApprove={onApprove}
-                onError={onError}
-            >
-                <PayPalNameField />
-                <PayPalNumberField />
-                <PayPalExpiryField />
-                <PayPalCVVField />
-
-                <SubmitPayment />
-            </PayPalCardFieldsProvider>
-        </PayPalScriptProvider>
-    );
-}
+    // Enums
+    INSTANCE_LOADING_STATE,
+} from "@paypal/react-paypal-js/sdk-v6";
 ```
 
-### Browser Support
+### Web Component Types
 
-This library supports all popular browsers, including IE 11. It provides the same browser support as the JS SDK. Here's the [full list of supported browsers](https://developer.paypal.com/docs/business/checkout/reference/browser-support/#supported-browsers-by-platform).
+The package automatically extends JSX types to include PayPal web components. No additional configuration is needed for React 17, 18, or 19.
+
+## Browser Support
+
+This library supports all modern browsers. See the [PayPal browser support documentation](https://developer.paypal.com/docs/business/checkout/reference/browser-support/) for the full list.
