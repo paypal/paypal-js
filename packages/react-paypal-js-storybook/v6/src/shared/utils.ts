@@ -21,6 +21,9 @@ export const SAMPLE_INTEGRATION_API =
     import.meta.env.STORYBOOK_PAYPAL_API_URL ||
     "https://v6-web-sdk-sample-integration-server.fly.dev";
 
+export const PAYPAL_CLIENT_ID =
+    import.meta.env.STORYBOOK_PAYPAL_SANDBOX_CLIENT_ID || "";
+
 // One-Time Payment APIs
 
 export async function createOrder(): Promise<{ orderId: string }> {
