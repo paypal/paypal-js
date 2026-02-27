@@ -324,7 +324,7 @@ After loading, create an instance with `createInstance()`:
 
 ```ts
 const sdkInstance = await paypal.createInstance({
-    clientToken: "YOUR_CLIENT_TOKEN",
+    clientId: "YOUR_CLIENT_ID",
     components: ["paypal-payments", "venmo-payments"],
     locale: "en-US",
     pageType: "checkout",
@@ -376,7 +376,7 @@ async function initPayPal() {
     }
 
     const sdkInstance = await paypal.createInstance({
-        clientToken: "YOUR_CLIENT_TOKEN",
+        clientId: "YOUR_CLIENT_ID",
         components: ["paypal-payments"],
     });
 
