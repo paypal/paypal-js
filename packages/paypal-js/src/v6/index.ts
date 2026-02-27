@@ -10,6 +10,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     validateArguments(options);
     const isServerEnv = isServer();
 
+    // Early resolve in SSR environments where DOM APIs are unavailable
     if (isServerEnv) {
         return Promise.resolve(null);
     }
@@ -17,9 +18,56 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     const currentScript = document.querySelector<HTMLScriptElement>(
         'script[src*="/web-sdk/v6/core"]',
     );
+    const windowNamespace = options.dataNamespace ?? "paypal";
 
-    if (window.paypal?.version.startsWith("6") && currentScript) {
-        return Promise.resolve(window.paypal as unknown as PayPalV6Namespace);
+    // Script already loaded and namespace is available — return immediately
+    if (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (window as Record<string, any>)[windowNamespace]?.version?.startsWith(
+            "6",
+        ) &&
+        currentScript
+    ) {
+        return Promise.resolve(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (window as Record<string, any>)[
+                windowNamespace
+            ] as unknown as PayPalV6Namespace,
+        );
+    }
+
+    // Script tag exists but hasn't finished loading yet (e.g., React StrictMode double-invoke)
+    if (currentScript) {
+        return new Promise<PayPalV6Namespace>((resolve, reject) => {
+            const namespace = options.dataNamespace ?? "paypal";
+            currentScript.addEventListener(
+                "load",
+                () => {
+                    const paypalSDK = (
+                        window as unknown as Record<string, unknown>
+                    )[namespace] as PayPalV6Namespace | undefined;
+                    if (paypalSDK) {
+                        resolve(paypalSDK);
+                    } else {
+                        reject(
+                            `The window.${namespace} global variable is not available`,
+                        );
+                    }
+                },
+                { once: true },
+            );
+            currentScript.addEventListener(
+                "error",
+                () => {
+                    reject(
+                        new Error(
+                            `The script "${currentScript.src}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
+                        ),
+                    );
+                },
+                { once: true },
+            );
+        });
     }
 
     const { environment, debug, dataNamespace, dataSdkIntegrationSource } =
@@ -44,6 +92,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         attributes["data-sdk-integration-source"] = dataSdkIntegrationSource;
     }
 
+    // No existing script found — insert a new one and wait for it to load
     return new Promise<PayPalV6Namespace>((resolve, reject) => {
         insertScriptElement({
             url: url.toString(),
