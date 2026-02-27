@@ -28,7 +28,7 @@ async function onApprove(data) {
 export default function App() {
     return (
         <PayPalProvider
-            clientToken="YOUR_CLIENT_TOKEN"
+            clientId="YOUR_CLIENT_ID"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -60,7 +60,7 @@ async function createOrder() {
 export default function App() {
     return (
         <PayPalProvider
-            clientToken="YOUR_CLIENT_TOKEN"
+            clientId="YOUR_CLIENT_ID"
             components={["venmo-payments"]}
             pageType="checkout"
         >
@@ -92,7 +92,7 @@ async function createVaultToken() {
 export default function App() {
     return (
         <PayPalProvider
-            clientToken="YOUR_CLIENT_TOKEN"
+            clientId="YOUR_CLIENT_ID"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -147,7 +147,7 @@ function Checkout() {
 export default function App() {
     return (
         <PayPalProvider
-            clientToken="YOUR_CLIENT_TOKEN"
+            clientId="YOUR_CLIENT_ID"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -171,7 +171,7 @@ async function createOrder() {
 export default function App() {
     return (
         <PayPalProvider
-            clientToken="YOUR_CLIENT_TOKEN"
+            clientId="YOUR_CLIENT_ID"
             components={["paypal-guest-payments"]}
             pageType="checkout"
         >
