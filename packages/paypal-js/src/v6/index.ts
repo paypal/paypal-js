@@ -59,7 +59,13 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
             currentScript.addEventListener(
                 "error",
                 () => {
-                    reject(new Error(`The PayPal SDK script failed to load.`));
+                    reject(
+                        new Error(
+                            `The script "${currentScript.src}" failed to load.
+                        Check the HTTP status code and response body in DevTools to
+                        learn more.`,
+                        ),
+                    );
                 },
                 { once: true },
             );
