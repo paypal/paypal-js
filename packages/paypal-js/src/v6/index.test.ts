@@ -268,7 +268,7 @@ describe("loadCoreSdkScript()", () => {
             script.dispatchEvent(new Event("error"));
 
             await expect(promise).rejects.toThrow(
-                "The PayPal SDK script failed to load.",
+                `The script "https://www.sandbox.paypal.com/web-sdk/v6/core" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
             );
             expect(mockedInsertScriptElement).not.toHaveBeenCalled();
         });

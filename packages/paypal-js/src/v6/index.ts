@@ -61,9 +61,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
                 () => {
                     reject(
                         new Error(
-                            `The script "${currentScript.src}" failed to load.
-                        Check the HTTP status code and response body in DevTools to
-                        learn more.`,
+                            `The script "${currentScript.src}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
                         ),
                     );
                 },
