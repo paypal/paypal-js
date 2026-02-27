@@ -75,7 +75,7 @@ import {
 function App() {
     return (
         <PayPalProvider
-            clientToken="your-client-token"
+            clientId="your-client-id"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -158,7 +158,7 @@ function App() {
 }
 ```
 
-### With Promise-based Token
+Alternative: With Promise-based Token
 
 ```tsx
 function App() {
@@ -177,19 +177,19 @@ function App() {
 }
 ```
 
-### Deferred Loading (works for either Client token or ID)
+### Deferred Loading
 
 ```tsx
 function App() {
-    const [clientToken, setClientToken] = useState<string>();
+    const [clientId, setClientId] = useState<string>();
 
     useEffect(() => {
-        fetchClientToken().then(setClientToken);
+        fetchClientId().then(setClientId);
     }, []);
 
     return (
         <PayPalProvider
-            clientToken={clientToken}
+            clientId={clientId}
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -277,7 +277,7 @@ Renders a Venmo button for one-time payments. Requires `"venmo-payments"` in the
 import { VenmoOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalProvider
-    clientToken={token}
+    clientId={clientId}
     components={["paypal-payments", "venmo-payments"]}
     pageType="checkout"
 >
@@ -335,7 +335,7 @@ Renders a guest checkout button for card payments without a PayPal account (Bran
 import { PayPalGuestPaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalProvider
-    clientToken={token}
+    clientId={clientId}
     components={["paypal-payments", "paypal-guest-payments"]}
     pageType="checkout"
 >
@@ -396,7 +396,7 @@ Renders a PayPal button for subscription payments. Requires `"paypal-subscriptio
 import { PayPalSubscriptionButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalProvider
-    clientToken={token}
+    clientId={clientId}
     components={["paypal-subscriptions"]}
     pageType="checkout"
 >
@@ -847,7 +847,7 @@ export default async function CheckoutPage() {
 
     return (
         <PayPalProvider
-            clientToken={clientToken}
+            clientId={clientId}
             pageType="checkout"
             eligibleMethodsResponse={eligibleMethodsResponse}
         >
@@ -898,7 +898,7 @@ import {
     PayPalOneTimePaymentButton,
 } from "@paypal/react-paypal-js/sdk-v6";
 
-<PayPalProvider clientToken={token} pageType="checkout">
+<PayPalProvider clientId={clientId} pageType="checkout">
     <PayPalOneTimePaymentButton
         createOrder={async () => {
             const res = await fetch("/api/orders", { method: "POST" });
