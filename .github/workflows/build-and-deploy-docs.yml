@@ -53,6 +53,8 @@ jobs:
 
             - name: Build v6 react storybook
               run: npm run build-storybook:v6
+              env:
+                  STORYBOOK_PAYPAL_SANDBOX_CLIENT_ID: ${{ secrets.STORYBOOK_PAYPAL_SANDBOX_CLIENT_ID }}
 
             - name: Setup Pages
               uses: actions/configure-pages@v5
