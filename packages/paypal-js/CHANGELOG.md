@@ -1,5 +1,12 @@
 # Changelog
 
+## 9.3.1
+
+### Patch Changes
+
+- 7f66db7: chore(deps): update dependencies, remove unused dependencies, and delete unused files
+- 6ec08d2: Update paypal-js V6 section to prefer Client ID to Client Token for SDK instance creation.
+
 ## 9.3.0
 
 ### Minor Changes

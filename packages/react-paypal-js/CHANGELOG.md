@@ -1,5 +1,16 @@
 # Changelog
 
+## 9.0.1
+
+### Patch Changes
+
+- 7f66db7: chore(deps): update dependencies, remove unused dependencies, and delete unused files
+- 6ec08d2: Fix react-paypal-js readme to prefer Client ID for SDK instance creation.
+- f717d37: Fixes an issue with the v6 server esm build that prevented useFetchEligibleMethods from being used.
+- Updated dependencies [7f66db7]
+- Updated dependencies [6ec08d2]
+    - @paypal/paypal-js@9.3.1
+
 ## 9.0.0
 
 ### Major Changes
