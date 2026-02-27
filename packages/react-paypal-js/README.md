@@ -158,7 +158,7 @@ function App() {
 }
 ```
 
-### With Promise-based Token
+Alternative: With Promise-based Token
 
 ```tsx
 function App() {
