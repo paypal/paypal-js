@@ -1,6 +1,6 @@
 {
     "name": "@paypal/react-paypal-js",
-    "version": "9.0.0",
+    "version": "9.0.1",
     "description": "React components for the PayPal JS SDK",
     "keywords": [
         "react",
@@ -62,7 +62,7 @@
     },
     "homepage": "https://paypal.github.io/paypal-js/web-sdk-v6-react-storybook/",
     "dependencies": {
-        "@paypal/paypal-js": "^9.3.0",
+        "@paypal/paypal-js": "^9.3.1",
         "@paypal/sdk-constants": "^1.0.122",
         "server-only": "^0.0.1"
     },
