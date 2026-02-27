@@ -18,10 +18,22 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     const currentScript = document.querySelector<HTMLScriptElement>(
         'script[src*="/web-sdk/v6/core"]',
     );
+    const windowNamespace = options.dataNamespace ?? "paypal";
 
     // Script already loaded and namespace is available — return immediately
-    if (window.paypal?.version?.startsWith("6") && currentScript) {
-        return Promise.resolve(window.paypal as unknown as PayPalV6Namespace);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (
+        (window as Record<string, any>)[windowNamespace]?.version?.startsWith(
+            "6",
+        ) &&
+        currentScript
+    ) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return Promise.resolve(
+            (window as Record<string, any>)[
+                windowNamespace
+            ] as unknown as PayPalV6Namespace,
+        );
     }
 
     // Script tag exists but hasn't finished loading yet (e.g., React StrictMode double-invoke)
