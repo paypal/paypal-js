@@ -21,15 +21,15 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     const windowNamespace = options.dataNamespace ?? "paypal";
 
     // Script already loaded and namespace is available — return immediately
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as Record<string, any>)[windowNamespace]?.version?.startsWith(
             "6",
         ) &&
         currentScript
     ) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return Promise.resolve(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (window as Record<string, any>)[
                 windowNamespace
             ] as unknown as PayPalV6Namespace,
