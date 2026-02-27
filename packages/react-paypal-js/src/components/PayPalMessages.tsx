@@ -10,8 +10,7 @@ import type {
     PayPalMessagesComponent,
 } from "@paypal/paypal-js";
 
-export interface PayPalMessagesComponentProps
-    extends PayPalMessagesComponentOptions {
+export interface PayPalMessagesComponentProps extends PayPalMessagesComponentOptions {
     forceReRender?: unknown[];
     className?: string;
 }

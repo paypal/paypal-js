@@ -9,7 +9,8 @@ export interface InternalButtonProps {
 }
 
 export interface ButtonProps
-    extends Omit<HTMLAttributes<HTMLButtonElement>, "onError">,
+    extends
+        Omit<HTMLAttributes<HTMLButtonElement>, "onError">,
         InternalButtonProps {}
 
 /**
@@ -22,15 +23,13 @@ export interface PayLaterButtonProps extends HTMLAttributes<HTMLButtonElement> {
     disabled?: boolean;
 }
 
-export interface PayPalBasicCardButtonProps
-    extends HTMLAttributes<HTMLButtonElement> {
+export interface PayPalBasicCardButtonProps extends HTMLAttributes<HTMLButtonElement> {
     buyerCountry?: string;
     disabled?: boolean;
     ref?: Ref<HTMLElement>;
 }
 
-export interface PayPalCreditButtonProps
-    extends HTMLAttributes<HTMLButtonElement> {
+export interface PayPalCreditButtonProps extends HTMLAttributes<HTMLButtonElement> {
     countryCode?: string;
     disabled?: boolean;
 }

@@ -22,11 +22,10 @@ export type OnApproveBraintreeActions = OnApproveActions &
 
 export type OnApproveBraintreeData = BraintreePayPalCheckoutTokenizationOptions;
 
-export interface BraintreePayPalButtonsComponentProps
-    extends Omit<
-        PayPalButtonsComponentProps,
-        "createOrder" | "onApprove" | "createBillingAgreement"
-    > {
+export interface BraintreePayPalButtonsComponentProps extends Omit<
+    PayPalButtonsComponentProps,
+    "createOrder" | "onApprove" | "createBillingAgreement"
+> {
     /**
      * The createOrder actions include the Braintree SDK paypalCheckoutInstance as `actions.braintree`.
      * [createOrder docs](https://developer.paypal.com/sdk/js-sdk/reference/#createorder).

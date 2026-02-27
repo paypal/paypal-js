@@ -56,8 +56,6 @@
         "directory": "packages/paypal-js"
     },
     "devDependencies": {
-        "@commitlint/cli": "18.4.3",
-        "@commitlint/config-conventional": "18.4.3",
         "@paypal/paypal-rest-api-specifications": "^1.0.0",
         "@playwright/test": "^1.56.1",
         "@rollup/plugin-commonjs": "^28.0.0",
