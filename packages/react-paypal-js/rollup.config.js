@@ -137,7 +137,7 @@ export default [
                 comments: "none",
             }),
         ],
-        external: ["react"],
+        external: ["react", "server-only"],
         output: [
             {
                 file: "dist/v6/esm/server.js",
