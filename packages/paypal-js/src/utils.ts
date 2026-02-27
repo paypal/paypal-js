@@ -1,7 +1,8 @@
 import type { PayPalScriptOptions } from "../types/script-options";
 
 interface PayPalScriptOptionsWithStringIndex
-    extends PayPalScriptOptions,
+    extends
+        PayPalScriptOptions,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         Record<string, any> {}
 

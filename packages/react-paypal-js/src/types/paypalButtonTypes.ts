@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import type { PayPalButtonsComponentOptions } from "@paypal/paypal-js";
 
-export interface PayPalButtonsComponentProps
-    extends PayPalButtonsComponentOptions {
+export interface PayPalButtonsComponentProps extends PayPalButtonsComponentOptions {
     /**
      * Used to re-render the component.
      * Changes to this prop will destroy the existing Buttons and render them again using the current props.

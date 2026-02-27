@@ -40,8 +40,10 @@ export interface ScriptContextState {
     dispatch?: Dispatch<ScriptReducerAction>;
 }
 
-export interface ScriptContextDerivedState
-    extends Pick<ScriptContextState, "options"> {
+export interface ScriptContextDerivedState extends Pick<
+    ScriptContextState,
+    "options"
+> {
     isInitial: boolean;
     isPending: boolean;
     isRejected: boolean;

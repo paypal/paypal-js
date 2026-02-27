@@ -8,16 +8,16 @@ Below is a list of available packages to install.
 
 Each package has its own documentation in it's respective README.
 
--   [@paypal/paypal-js](./packages/paypal-js/README.md): PayPal's Vanilla JS loader
--   [@paypal/react-paypal-js](./packages/react-paypal-js/README.md): PayPal's React loader
+- [@paypal/paypal-js](./packages/paypal-js/README.md): PayPal's Vanilla JS loader
+- [@paypal/react-paypal-js](./packages/react-paypal-js/README.md): PayPal's React loader
 
 ### Contributing
 
 #### Tools used
 
--   [changesets](https://github.com/changesets/changesets) for tracking version changes
--   [npm workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces/) for monorepo package management
--   [prettier](https://prettier.io) for code formatting
+- [changesets](https://github.com/changesets/changesets) for tracking version changes
+- [npm workspaces](https://docs.npmjs.com/cli/v7/using-npm/workspaces/) for monorepo package management
+- [prettier](https://prettier.io) for code formatting
 
 #### Steps to make a change
 

@@ -138,14 +138,12 @@ export interface PayPalCardFieldsComponentBasics {
     style?: Record<string, PayPalCardFieldsStyleOptions>;
 }
 
-export interface PayPalCardFieldsComponentCreateOrder
-    extends PayPalCardFieldsComponentBasics {
+export interface PayPalCardFieldsComponentCreateOrder extends PayPalCardFieldsComponentBasics {
     createOrder: () => Promise<string>;
     createVaultSetupToken?: never;
 }
 
-export interface PayPalCardFieldsComponentCreateVaultSetupToken
-    extends PayPalCardFieldsComponentBasics {
+export interface PayPalCardFieldsComponentCreateVaultSetupToken extends PayPalCardFieldsComponentBasics {
     createOrder?: never;
     createVaultSetupToken: () => Promise<string>;
 }
