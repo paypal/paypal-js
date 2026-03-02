@@ -33,6 +33,14 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         url.searchParams.append("debug", "true");
     }
 
+    // TODO: fix this query selector to actually work
+    console.log(
+        `script[src="${url.toString()}"]`,
+        document.querySelector<HTMLScriptElement>(
+            `script[src="${url.toString()}"]`,
+        ),
+    );
+
     const scriptElement =
         document.querySelector<HTMLScriptElement>(
             `script[src="${url.toString()}"]`,

@@ -59,7 +59,22 @@ describe("loadCoreSdkScript()", () => {
         expect(window.paypal).toBeDefined();
     });
 
-    test("should error when the script fails to load", async () => {
+    test("should avoid inserting two script elements when called twice", async () => {
+        const result1 = await loadCoreSdkScript();
+        const result2 = await loadCoreSdkScript();
+        // should only insert the script once
+        // the existing loaded window.paypal reference is returned on the second call
+        expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
+        const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
+        expect(scriptElement.src).toBe(
+            "https://www.sandbox.paypal.com/web-sdk/v6/core",
+        );
+        expect(result1).toBeDefined();
+        expect(result2).toBeDefined();
+        expect(window.paypal).toBeDefined();
+    });
+
+    test("should reject when the script fails to load", async () => {
         vi.spyOn(document.head, "appendChild").mockImplementationOnce(
             (node) => {
                 process.nextTick(() => node.dispatchEvent(new Event("error")));
