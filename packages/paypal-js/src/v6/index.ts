@@ -6,6 +6,14 @@ import type {
 
 const version = "__VERSION__";
 
+const SCRIPT_LOADING_STATE = {
+    PENDING: "pending",
+    RESOLVED: "resolved",
+    REJECTED: "rejected",
+} as const;
+
+const DATA_ATTRIBUTE_LOADING_STATE = "data-loading-state";
+
 function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     validateArguments(options);
 
@@ -16,9 +24,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     const { environment, debug, dataNamespace, dataSdkIntegrationSource } =
         options;
     const namespace = dataNamespace ?? "paypal";
-    const paypalWindowReference = getPayPalWindowNamespace(
-        dataNamespace ?? "paypal",
-    );
+    const paypalWindowReference = getPayPalWindowNamespace(namespace);
     if (paypalWindowReference?.version.startsWith("6")) {
         return Promise.resolve(paypalWindowReference);
     }
@@ -33,23 +39,22 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         url.searchParams.append("debug", "true");
     }
 
-    // TODO: fix this query selector to actually work
     console.log(
-        `script[src="${url.toString()}"]`,
-        document.querySelector<HTMLScriptElement>(
-            `script[src="${url.toString()}"]`,
-        ),
+        "existing script",
+        `script[src*="${url.pathname}"][${DATA_ATTRIBUTE_LOADING_STATE}="${SCRIPT_LOADING_STATE.PENDING}"]`,
     );
+    console.log("innerHTML", document.head.innerHTML);
 
     const scriptElement =
         document.querySelector<HTMLScriptElement>(
-            `script[src="${url.toString()}"]`,
+            `script[src*="${url.pathname}"][${DATA_ATTRIBUTE_LOADING_STATE}="${SCRIPT_LOADING_STATE.PENDING}"]`,
         ) ??
         createScriptElement({
             url: url.toString(),
             attributes: {
                 "data-namespace": dataNamespace,
                 "data-sdk-integration-source": dataSdkIntegrationSource,
+                [DATA_ATTRIBUTE_LOADING_STATE]: SCRIPT_LOADING_STATE.PENDING,
             },
         });
 
@@ -58,10 +63,19 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
             const paypalWindowReference = getPayPalWindowNamespace(namespace);
 
             if (!paypalWindowReference) {
+                scriptElement.setAttribute(
+                    DATA_ATTRIBUTE_LOADING_STATE,
+                    SCRIPT_LOADING_STATE.REJECTED,
+                );
+
                 return reject(
                     `The window.${namespace} global variable is not available`,
                 );
             }
+            scriptElement.setAttribute(
+                DATA_ATTRIBUTE_LOADING_STATE,
+                SCRIPT_LOADING_STATE.RESOLVED,
+            );
             return resolve(paypalWindowReference);
         });
 
@@ -70,6 +84,10 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
                 `The script "${url.toString()}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
             );
 
+            scriptElement.setAttribute(
+                DATA_ATTRIBUTE_LOADING_STATE,
+                SCRIPT_LOADING_STATE.REJECTED,
+            );
             return reject(defaultError);
         });
     });

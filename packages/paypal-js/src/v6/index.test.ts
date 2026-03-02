@@ -33,6 +33,9 @@ describe("loadCoreSdkScript()", () => {
         expect(scriptElement.src).toBe(
             "https://www.sandbox.paypal.com/web-sdk/v6/core",
         );
+        expect(scriptElement.getAttribute("data-loading-state")).toBe(
+            "resolved",
+        );
         expect(result).toBeDefined();
         expect(window.paypal).toBeDefined();
     });
@@ -44,6 +47,9 @@ describe("loadCoreSdkScript()", () => {
         expect(scriptElement.src).toBe(
             "https://www.paypal.com/web-sdk/v6/core",
         );
+        expect(scriptElement.getAttribute("data-loading-state")).toBe(
+            "resolved",
+        );
         expect(result).toBeDefined();
         expect(window.paypal).toBeDefined();
     });
@@ -54,6 +60,9 @@ describe("loadCoreSdkScript()", () => {
         const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
         expect(scriptElement.src).toBe(
             "https://www.sandbox.paypal.com/web-sdk/v6/core?debug=true",
+        );
+        expect(scriptElement.getAttribute("data-loading-state")).toBe(
+            "resolved",
         );
         expect(result).toBeDefined();
         expect(window.paypal).toBeDefined();
@@ -69,8 +78,35 @@ describe("loadCoreSdkScript()", () => {
         expect(scriptElement.src).toBe(
             "https://www.sandbox.paypal.com/web-sdk/v6/core",
         );
+        expect(scriptElement.getAttribute("data-loading-state")).toBe(
+            "resolved",
+        );
         expect(result1).toBeDefined();
         expect(result2).toBeDefined();
+        expect(window.paypal).toBeDefined();
+    });
+
+    test("should return reference to existing script when loading state is pending", async () => {
+        document.head.innerHTML = `<script src="https://www.sandbox.paypal.com/web-sdk/v6/core" data-loading-state="pending"></script>`;
+        const loadCoreSdkScriptReference = loadCoreSdkScript();
+
+        process.nextTick(() => {
+            vi.stubGlobal("paypal", { version: "6" });
+            document
+                .querySelector('script[src*="/web-sdk/v6/core"]')!
+                .dispatchEvent(new Event("load"));
+        });
+
+        const result = await loadCoreSdkScriptReference;
+
+        // should NOT insert the script since it already exists in the DOM in pending state
+        expect(scriptAppendChildSpy).toHaveBeenCalledTimes(0);
+        expect(
+            document
+                .querySelector('script[src*="/web-sdk/v6/core"]')!
+                .getAttribute("data-loading-state"),
+        ).toBe("resolved");
+        expect(result).toBeDefined();
         expect(window.paypal).toBeDefined();
     });
 
