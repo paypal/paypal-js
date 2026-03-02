@@ -68,7 +68,7 @@ describe("loadCoreSdkScript()", () => {
         expect(window.paypal).toBeDefined();
     });
 
-    test("should avoid inserting two script elements when called twice", async () => {
+    test("should avoid inserting two script elements when called twice sequentially", async () => {
         const result1 = await loadCoreSdkScript();
         const result2 = await loadCoreSdkScript();
         // should only insert the script once
@@ -83,6 +83,27 @@ describe("loadCoreSdkScript()", () => {
         );
         expect(result1).toBeDefined();
         expect(result2).toBeDefined();
+        expect(result1).toBe(result2);
+        expect(window.paypal).toBeDefined();
+    });
+
+    test("should avoid inserting two script elements when called twice in parallel", async () => {
+        const [result1, result2] = await Promise.all([
+            loadCoreSdkScript(),
+            loadCoreSdkScript(),
+        ]);
+        // should only insert the script once
+        expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
+        const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
+        expect(scriptElement.src).toBe(
+            "https://www.sandbox.paypal.com/web-sdk/v6/core",
+        );
+        expect(scriptElement.getAttribute("data-loading-state")).toBe(
+            "resolved",
+        );
+        expect(result1).toBeDefined();
+        expect(result2).toBeDefined();
+        expect(result1).toBe(result2);
         expect(window.paypal).toBeDefined();
     });
 

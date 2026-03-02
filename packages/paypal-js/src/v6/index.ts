@@ -53,37 +53,46 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         });
 
     return new Promise<PayPalV6Namespace>((resolve, reject) => {
-        scriptElement.addEventListener("load", () => {
-            const paypalWindowReference = getPayPalWindowNamespace(namespace);
+        scriptElement.addEventListener(
+            "load",
+            () => {
+                const paypalWindowReference =
+                    getPayPalWindowNamespace(namespace);
 
-            if (!paypalWindowReference) {
+                if (!paypalWindowReference) {
+                    scriptElement.setAttribute(
+                        DATA_ATTRIBUTE_LOADING_STATE,
+                        SCRIPT_LOADING_STATE.REJECTED,
+                    );
+
+                    return reject(
+                        `The window.${namespace} global variable is not available`,
+                    );
+                }
+                scriptElement.setAttribute(
+                    DATA_ATTRIBUTE_LOADING_STATE,
+                    SCRIPT_LOADING_STATE.RESOLVED,
+                );
+                return resolve(paypalWindowReference);
+            },
+            { once: true },
+        );
+
+        scriptElement.addEventListener(
+            "error",
+            () => {
+                const defaultError = new Error(
+                    `The script "${url.toString()}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
+                );
+
                 scriptElement.setAttribute(
                     DATA_ATTRIBUTE_LOADING_STATE,
                     SCRIPT_LOADING_STATE.REJECTED,
                 );
-
-                return reject(
-                    `The window.${namespace} global variable is not available`,
-                );
-            }
-            scriptElement.setAttribute(
-                DATA_ATTRIBUTE_LOADING_STATE,
-                SCRIPT_LOADING_STATE.RESOLVED,
-            );
-            return resolve(paypalWindowReference);
-        });
-
-        scriptElement.addEventListener("error", () => {
-            const defaultError = new Error(
-                `The script "${url.toString()}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
-            );
-
-            scriptElement.setAttribute(
-                DATA_ATTRIBUTE_LOADING_STATE,
-                SCRIPT_LOADING_STATE.REJECTED,
-            );
-            return reject(defaultError);
-        });
+                return reject(defaultError);
+            },
+            { once: true },
+        );
     });
 }
 function validateArguments(options: unknown) {
