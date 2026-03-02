@@ -1,5 +1,17 @@
 # Changelog
 
+## 9.4.0
+
+### Minor Changes
+
+- 8663d7f: feat(v6): add support for deterministic script loading
+
+### Patch Changes
+
+- 9b31cad: Updates v6 subscriptions onApprove data type to correctly expect payerId and subscriptionId.
+- 7f66db7: chore(deps): update dependencies, remove unused dependencies, and delete unused files
+- 6ec08d2: Update paypal-js V6 section to prefer Client ID to Client Token for SDK instance creation.
+
 ## 9.3.0
 
 ### Minor Changes
