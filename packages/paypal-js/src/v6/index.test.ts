@@ -1,80 +1,186 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { loadCoreSdkScript } from "./index";
-import { insertScriptElement, type ScriptElement } from "../utils";
-
-vi.mock("../utils", async () => {
-    const actual = await vi.importActual<typeof import("../utils")>("../utils");
-    return {
-        ...actual,
-        // default mock for insertScriptElement
-        insertScriptElement: vi
-            .fn()
-            .mockImplementation(({ onSuccess }: ScriptElement) => {
-                vi.stubGlobal("paypal", { version: "6" });
-                process.nextTick(() => onSuccess());
-            }),
-    };
-});
-
-const mockedInsertScriptElement = vi.mocked(insertScriptElement);
 
 describe("loadCoreSdkScript()", () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let scriptAppendChildSpy: any;
+
     beforeEach(() => {
         document.head.innerHTML = "";
         vi.clearAllMocks();
+        vi.unstubAllGlobals();
+
+        scriptAppendChildSpy = vi
+            .spyOn(document.head, "appendChild")
+            .mockImplementation((node) => {
+                if (node instanceof HTMLScriptElement) {
+                    const namespace =
+                        node.getAttribute("data-namespace") ?? "paypal";
+                    vi.stubGlobal(namespace, { version: "6" });
+                    process.nextTick(() =>
+                        node.dispatchEvent(new Event("load")),
+                    );
+                }
+                return node;
+            });
     });
 
     test("should default to using the sandbox environment", async () => {
-        await loadCoreSdkScript();
-        expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
+        const result = await loadCoreSdkScript();
+        expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
+        const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
+        expect(scriptElement.src).toBe(
             "https://www.sandbox.paypal.com/web-sdk/v6/core",
         );
-        expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+        expect(scriptElement.getAttribute("data-loading-state")).toBe(
+            "resolved",
+        );
+        expect(result).toBeDefined();
+        expect(window.paypal).toBeDefined();
     });
 
     test("should support options for using production environment", async () => {
-        await loadCoreSdkScript({ environment: "production" });
-        expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
+        const result = await loadCoreSdkScript({ environment: "production" });
+        expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
+        const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
+        expect(scriptElement.src).toBe(
             "https://www.paypal.com/web-sdk/v6/core",
         );
-        expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+        expect(scriptElement.getAttribute("data-loading-state")).toBe(
+            "resolved",
+        );
+        expect(result).toBeDefined();
+        expect(window.paypal).toBeDefined();
     });
 
     test("should support enabling debugging", async () => {
-        await loadCoreSdkScript({ debug: true });
-        expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
+        const result = await loadCoreSdkScript({ debug: true });
+        expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
+        const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
+        expect(scriptElement.src).toBe(
             "https://www.sandbox.paypal.com/web-sdk/v6/core?debug=true",
         );
-        expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+        expect(scriptElement.getAttribute("data-loading-state")).toBe(
+            "resolved",
+        );
+        expect(result).toBeDefined();
+        expect(window.paypal).toBeDefined();
+    });
+
+    test("should avoid inserting two script elements when called twice sequentially", async () => {
+        const result1 = await loadCoreSdkScript();
+        const result2 = await loadCoreSdkScript();
+        // should only insert the script once
+        // the existing loaded window.paypal reference is returned on the second call
+        expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
+        const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
+        expect(scriptElement.src).toBe(
+            "https://www.sandbox.paypal.com/web-sdk/v6/core",
+        );
+        expect(scriptElement.getAttribute("data-loading-state")).toBe(
+            "resolved",
+        );
+        expect(result1).toBeDefined();
+        expect(result2).toBeDefined();
+        expect(result1).toBe(result2);
+        expect(window.paypal).toBeDefined();
+    });
+
+    test("should avoid inserting two script elements when called twice in parallel", async () => {
+        const [result1, result2] = await Promise.all([
+            loadCoreSdkScript(),
+            loadCoreSdkScript(),
+        ]);
+        // should only insert the script once
+        expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
+        const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
+        expect(scriptElement.src).toBe(
+            "https://www.sandbox.paypal.com/web-sdk/v6/core",
+        );
+        expect(scriptElement.getAttribute("data-loading-state")).toBe(
+            "resolved",
+        );
+        expect(result1).toBeDefined();
+        expect(result2).toBeDefined();
+        expect(result1).toBe(result2);
+        expect(window.paypal).toBeDefined();
+    });
+
+    test("should return reference to existing script when loading state is pending", async () => {
+        document.head.innerHTML = `<script src="https://www.sandbox.paypal.com/web-sdk/v6/core" data-loading-state="pending"></script>`;
+        const loadCoreSdkScriptReference = loadCoreSdkScript();
+
+        process.nextTick(() => {
+            vi.stubGlobal("paypal", { version: "6" });
+            document
+                .querySelector('script[src*="/web-sdk/v6/core"]')!
+                .dispatchEvent(new Event("load"));
+        });
+
+        const result = await loadCoreSdkScriptReference;
+
+        // should NOT insert the script since it already exists in the DOM in pending state
+        expect(scriptAppendChildSpy).toHaveBeenCalledTimes(0);
+        expect(
+            document
+                .querySelector('script[src*="/web-sdk/v6/core"]')!
+                .getAttribute("data-loading-state"),
+        ).toBe("resolved");
+        expect(result).toBeDefined();
+        expect(window.paypal).toBeDefined();
+    });
+
+    test("should reject when the script fails to load", async () => {
+        vi.spyOn(document.head, "appendChild").mockImplementationOnce(
+            (node) => {
+                process.nextTick(() => node.dispatchEvent(new Event("error")));
+                return node;
+            },
+        );
+
+        expect(async () => {
+            await loadCoreSdkScript();
+        }).rejects.toThrowError(
+            'The script "https://www.sandbox.paypal.com/web-sdk/v6/core" failed to load. Check the HTTP status code and response body in DevTools to learn more.',
+        );
+    });
+
+    test("should error due to unvalid input", async () => {
+        expect(async () => {
+            // @ts-expect-error invalid arguments
+            await loadCoreSdkScript(123);
+        }).rejects.toThrowError("Expected an options object");
+
+        expect(async () => {
+            // @ts-expect-error invalid arguments
+            await loadCoreSdkScript({ environment: "bad_value" });
+        }).rejects.toThrowError(
+            'The "environment" option must be either "production" or "sandbox"',
+        );
     });
 
     describe("dataNamespace option", () => {
         test("should support custom data-namespace attribute", async () => {
             const customNamespace = "myCustomNamespace";
 
-            // Update mock to set the custom namespace instead of window.paypal
-            mockedInsertScriptElement.mockImplementationOnce(
-                ({ onSuccess }: ScriptElement) => {
-                    vi.stubGlobal(customNamespace, { version: "6" });
-                    process.nextTick(() => onSuccess());
-                },
-            );
-
             const result = await loadCoreSdkScript({
                 dataNamespace: customNamespace,
             });
 
-            expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
+            expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
+            const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
+            expect(scriptElement.src).toBe(
                 "https://www.sandbox.paypal.com/web-sdk/v6/core",
             );
-            expect(
-                mockedInsertScriptElement.mock.calls[0][0].attributes,
-            ).toEqual({
-                "data-namespace": customNamespace,
-            });
-            expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+
+            expect(scriptElement.getAttribute("data-namespace")).toBe(
+                customNamespace,
+            );
+
             expect(result).toBeDefined();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            expect(window[customNamespace as any]).toBeDefined();
         });
 
         test("should error when dataNamespace is an empty string", async () => {
@@ -102,16 +208,18 @@ describe("loadCoreSdkScript()", () => {
                 dataSdkIntegrationSource: integrationSource,
             });
 
-            expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
+            expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
+            const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
+            expect(scriptElement.src).toBe(
                 "https://www.sandbox.paypal.com/web-sdk/v6/core",
             );
+
             expect(
-                mockedInsertScriptElement.mock.calls[0][0].attributes,
-            ).toEqual({
-                "data-sdk-integration-source": integrationSource,
-            });
-            expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+                scriptElement.getAttribute("data-sdk-integration-source"),
+            ).toBe(integrationSource);
+
             expect(result).toBeDefined();
+            expect(window.paypal).toBeDefined();
         });
 
         test("should error when dataSdkIntegrationSource is an empty string", async () => {
@@ -129,27 +237,5 @@ describe("loadCoreSdkScript()", () => {
                 'The "dataSdkIntegrationSource" option cannot be an empty string',
             );
         });
-    });
-
-    test("should return PayPal namespace with version property", async () => {
-        const result = await loadCoreSdkScript();
-        expect(result).toBeDefined();
-        expect(result?.version).toBeDefined();
-        expect(result?.version).toBe("6");
-        expect(typeof result?.version).toBe("string");
-    });
-
-    test("should error due to unvalid input", async () => {
-        expect(async () => {
-            // @ts-expect-error invalid arguments
-            await loadCoreSdkScript(123);
-        }).rejects.toThrowError("Expected an options object");
-
-        expect(async () => {
-            // @ts-expect-error invalid arguments
-            await loadCoreSdkScript({ environment: "bad_value" });
-        }).rejects.toThrowError(
-            'The "environment" option must be either "production" or "sandbox"',
-        );
     });
 });
