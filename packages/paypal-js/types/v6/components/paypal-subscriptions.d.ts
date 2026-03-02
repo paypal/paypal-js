@@ -8,12 +8,19 @@ import {
     PresentationModeOptionsForPopup,
     PresentationModeOptionsForPaymentHandler,
     BasePaymentSessionOptions,
-    OnApproveDataOneTimePayments,
     BasePaymentSession,
 } from "./base-component";
 
-export type PayPalSubscriptionSessionOptions = BasePaymentSessionOptions & {
-    onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;
+export type OnApproveDataSubscriptionsPayments = {
+    subscriptionId: string;
+    payerId?: string;
+};
+
+export type PayPalSubscriptionSessionOptions = Omit<
+    BasePaymentSessionOptions,
+    "onApprove"
+> & {
+    onApprove?: (data: OnApproveDataSubscriptionsPayments) => Promise<void>;
     onShippingAddressChange?: (
         data: OnShippingAddressChangeData,
     ) => Promise<void>;
