@@ -221,9 +221,10 @@ export interface BaseInstance {
     ) => EligiblePaymentMethodsOutput;
 }
 
-interface CoreSdkScriptDataAttributes {
+export interface CoreSdkScriptDataAttributes {
     dataNamespace?: string;
     dataSdkIntegrationSource?: string;
+    nonce?: string;
 }
 
 export interface LoadCoreSdkScriptOptions extends CoreSdkScriptDataAttributes {

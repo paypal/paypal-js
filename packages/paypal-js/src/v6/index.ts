@@ -1,4 +1,4 @@
-import { insertScriptElement, isServer } from "../utils";
+import { isServer } from "../utils";
 import type {
     PayPalV6Namespace,
     LoadCoreSdkScriptOptions,
@@ -8,23 +8,20 @@ const version = "__VERSION__";
 
 function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
     validateArguments(options);
-    const isServerEnv = isServer();
 
-    if (isServerEnv) {
+    if (isServer()) {
         return Promise.resolve(null);
-    }
-
-    const currentScript = document.querySelector<HTMLScriptElement>(
-        'script[src*="/web-sdk/v6/core"]',
-    );
-
-    if (window.paypal?.version.startsWith("6") && currentScript) {
-        return Promise.resolve(window.paypal as unknown as PayPalV6Namespace);
     }
 
     const { environment, debug, dataNamespace, dataSdkIntegrationSource } =
         options;
-    const attributes: Record<string, string> = {};
+    const namespace = dataNamespace ?? "paypal";
+    const paypalWindowReference = getPayPalWindowNamespace(
+        dataNamespace ?? "paypal",
+    );
+    if (paypalWindowReference?.version.startsWith("6")) {
+        return Promise.resolve(paypalWindowReference);
+    }
 
     const baseURL =
         environment === "production"
@@ -36,42 +33,39 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         url.searchParams.append("debug", "true");
     }
 
-    if (dataNamespace) {
-        attributes["data-namespace"] = dataNamespace;
-    }
-
-    if (dataSdkIntegrationSource) {
-        attributes["data-sdk-integration-source"] = dataSdkIntegrationSource;
-    }
+    const scriptElement =
+        document.querySelector<HTMLScriptElement>(
+            `script[src="${url.toString()}"]`,
+        ) ??
+        createScriptElement({
+            url: url.toString(),
+            attributes: {
+                "data-namespace": dataNamespace,
+                "data-sdk-integration-source": dataSdkIntegrationSource,
+            },
+        });
 
     return new Promise<PayPalV6Namespace>((resolve, reject) => {
-        insertScriptElement({
-            url: url.toString(),
-            attributes,
-            onSuccess: () => {
-                const namespace = dataNamespace ?? "paypal";
-                const paypalSDK = (
-                    window as unknown as Record<string, unknown>
-                )[namespace] as PayPalV6Namespace | undefined;
+        scriptElement.addEventListener("load", () => {
+            const paypalWindowReference = getPayPalWindowNamespace(namespace);
 
-                if (!paypalSDK) {
-                    return reject(
-                        `The window.${namespace} global variable is not available`,
-                    );
-                }
-                return resolve(paypalSDK);
-            },
-            onError: () => {
-                const defaultError = new Error(
-                    `The script "${url}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
+            if (!paypalWindowReference) {
+                return reject(
+                    `The window.${namespace} global variable is not available`,
                 );
+            }
+            return resolve(paypalWindowReference);
+        });
 
-                return reject(defaultError);
-            },
+        scriptElement.addEventListener("error", () => {
+            const defaultError = new Error(
+                `The script "${url.toString()}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
+            );
+
+            return reject(defaultError);
         });
     });
 }
-
 function validateArguments(options: unknown) {
     if (typeof options !== "object" || options === null) {
         throw new Error("Expected an options object");
@@ -101,6 +95,33 @@ function validateArguments(options: unknown) {
             'The "dataSdkIntegrationSource" option cannot be an empty string',
         );
     }
+}
+
+function getPayPalWindowNamespace(
+    namespace: string,
+): PayPalV6Namespace | undefined {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (window as any)[namespace];
+}
+
+function createScriptElement({
+    url,
+    attributes,
+}: {
+    url: string;
+    attributes: Record<string, string | undefined>;
+}) {
+    const newScript = document.createElement("script");
+    newScript.src = url;
+
+    for (const [key, value] of Object.entries(attributes)) {
+        if (value !== undefined) {
+            newScript.setAttribute(key, value);
+        }
+    }
+
+    document.head.appendChild(newScript);
+    return newScript;
 }
 
 export { loadCoreSdkScript, version };
