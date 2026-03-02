@@ -29,7 +29,10 @@ export const PAYPAL_CLIENT_ID =
 export async function createOrder(): Promise<{ orderId: string }> {
     const response = await fetch(
         `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/create-order-for-one-time-payment`,
-        { method: "POST" },
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+        },
     );
     const data = await response.json();
     return { orderId: data.id };
@@ -40,7 +43,10 @@ export async function captureOrder(
 ): Promise<Record<string, unknown>> {
     const response = await fetch(
         `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/${orderId}/capture`,
-        { method: "POST" },
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+        },
     );
     return response.json();
 }
@@ -50,7 +56,10 @@ export async function captureOrder(
 export async function createVaultToken(): Promise<{ vaultSetupToken: string }> {
     const response = await fetch(
         `${SAMPLE_INTEGRATION_API}/paypal-api/vault/create-setup-token-for-paypal-save-payment`,
-        { method: "POST" },
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+        },
     );
     const data = await response.json();
     return { vaultSetupToken: data.id };
