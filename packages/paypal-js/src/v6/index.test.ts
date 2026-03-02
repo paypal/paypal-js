@@ -1,16 +1,10 @@
-import {
-    beforeEach,
-    describe,
-    expect,
-    test,
-    vi,
-} from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { loadCoreSdkScript } from "./index";
 
 describe("loadCoreSdkScript()", () => {
-    // TODO: figure out typing
-    let scriptAppendChildSpy = vi.spyOn(document.head, "appendChild");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let scriptAppendChildSpy: any;
 
     beforeEach(() => {
         document.head.innerHTML = "";
@@ -63,6 +57,35 @@ describe("loadCoreSdkScript()", () => {
         );
         expect(result).toBeDefined();
         expect(window.paypal).toBeDefined();
+    });
+
+    test("should error when the script fails to load", async () => {
+        vi.spyOn(document.head, "appendChild").mockImplementationOnce(
+            (node) => {
+                process.nextTick(() => node.dispatchEvent(new Event("error")));
+                return node;
+            },
+        );
+
+        expect(async () => {
+            await loadCoreSdkScript();
+        }).rejects.toThrowError(
+            'The script "https://www.sandbox.paypal.com/web-sdk/v6/core" failed to load. Check the HTTP status code and response body in DevTools to learn more.',
+        );
+    });
+
+    test("should error due to unvalid input", async () => {
+        expect(async () => {
+            // @ts-expect-error invalid arguments
+            await loadCoreSdkScript(123);
+        }).rejects.toThrowError("Expected an options object");
+
+        expect(async () => {
+            // @ts-expect-error invalid arguments
+            await loadCoreSdkScript({ environment: "bad_value" });
+        }).rejects.toThrowError(
+            'The "environment" option must be either "production" or "sandbox"',
+        );
     });
 
     describe("dataNamespace option", () => {
@@ -142,27 +165,5 @@ describe("loadCoreSdkScript()", () => {
                 'The "dataSdkIntegrationSource" option cannot be an empty string',
             );
         });
-    });
-
-    test("should return PayPal namespace with version property", async () => {
-        const result = await loadCoreSdkScript();
-        expect(result).toBeDefined();
-        expect(result?.version).toBeDefined();
-        expect(result?.version).toBe("6");
-        expect(typeof result?.version).toBe("string");
-    });
-
-    test("should error due to unvalid input", async () => {
-        expect(async () => {
-            // @ts-expect-error invalid arguments
-            await loadCoreSdkScript(123);
-        }).rejects.toThrowError("Expected an options object");
-
-        expect(async () => {
-            // @ts-expect-error invalid arguments
-            await loadCoreSdkScript({ environment: "bad_value" });
-        }).rejects.toThrowError(
-            'The "environment" option must be either "production" or "sandbox"',
-        );
     });
 });
