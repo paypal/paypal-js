@@ -84,6 +84,7 @@ import { PayPalProvider, PayPalSavePaymentButton } from "@paypal/react-paypal-js
 async function createVaultToken() {
     const response = await fetch("/api/paypal/create-vault-token", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
     return { vaultSetupToken: data.id };
@@ -118,6 +119,7 @@ import {
 async function createOrder() {
     const response = await fetch("/api/paypal/create-order", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
     return { orderId: data.id };
@@ -163,6 +165,7 @@ import { PayPalProvider, PayPalGuestPaymentButton } from "@paypal/react-paypal-j
 async function createOrder() {
     const response = await fetch("/api/paypal/create-order", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
     });
     const data = await response.json();
     return { orderId: data.id };
