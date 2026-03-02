@@ -39,12 +39,6 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
         url.searchParams.append("debug", "true");
     }
 
-    console.log(
-        "existing script",
-        `script[src*="${url.pathname}"][${DATA_ATTRIBUTE_LOADING_STATE}="${SCRIPT_LOADING_STATE.PENDING}"]`,
-    );
-    console.log("innerHTML", document.head.innerHTML);
-
     const scriptElement =
         document.querySelector<HTMLScriptElement>(
             `script[src*="${url.pathname}"][${DATA_ATTRIBUTE_LOADING_STATE}="${SCRIPT_LOADING_STATE.PENDING}"]`,
