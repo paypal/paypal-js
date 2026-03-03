@@ -29,7 +29,10 @@ export type PayPalSubscriptionSessionOptions = Omit<
     ) => Promise<void>;
 };
 
-export type PayPalSubscriptionPaymentSession = BasePaymentSession & {
+export type PayPalSubscriptionPaymentSession = Omit<
+    BasePaymentSession,
+    "start"
+> & {
     start: (
         presentationModeOptions: PayPalSubscriptionPresentationModeOptions,
         subscriptionsOptionsPromise?: Promise<{ subscriptionId: string }>,
