@@ -11,7 +11,7 @@ import {
     BasePaymentSession,
 } from "./base-component";
 
-export type OnApproveDataSubscriptionsPayments = {
+export type OnApproveDataSubscriptions = {
     subscriptionId: string;
     payerId?: string;
 };
@@ -20,7 +20,7 @@ export type PayPalSubscriptionSessionOptions = Omit<
     BasePaymentSessionOptions,
     "onApprove"
 > & {
-    onApprove?: (data: OnApproveDataSubscriptionsPayments) => Promise<void>;
+    onApprove?: (data: OnApproveDataSubscriptions) => Promise<void>;
     onShippingAddressChange?: (
         data: OnShippingAddressChangeData,
     ) => Promise<void>;
@@ -29,7 +29,10 @@ export type PayPalSubscriptionSessionOptions = Omit<
     ) => Promise<void>;
 };
 
-export type PayPalSubscriptionPaymentSession = BasePaymentSession & {
+export type PayPalSubscriptionPaymentSession = Omit<
+    BasePaymentSession,
+    "start"
+> & {
     start: (
         presentationModeOptions: PayPalSubscriptionPresentationModeOptions,
         subscriptionsOptionsPromise?: Promise<{ subscriptionId: string }>,
