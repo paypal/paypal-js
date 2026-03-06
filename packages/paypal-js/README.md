@@ -3,20 +3,14 @@
 > Loading wrapper and TypeScript types for the [PayPal JS SDK](https://developer.paypal.com/sdk/js/reference/)
 
 [![build status][build-badge]][build]
-[![code coverage][coverage-badge]][coverage]
 [![npm version][version-badge]][package]
-[![bundle size][minzip-badge]][bundlephobia]
 [![npm downloads][downloads-badge]][npmtrends]
 [![apache license][license-badge]][license]
 
 [build-badge]: https://img.shields.io/github/actions/workflow/status/paypal/paypal-js/main.yml?branch=main&logo=github&style=flat-square
 [build]: https://github.com/paypal/paypal-js/actions/workflows/main.yml
-[coverage-badge]: https://img.shields.io/codecov/c/github/paypal/paypal-js.svg?style=flat-square
-[coverage]: https://codecov.io/github/paypal/paypal-js/
 [version-badge]: https://img.shields.io/npm/v/@paypal/paypal-js.svg?style=flat-square
 [package]: https://www.npmjs.com/package/@paypal/paypal-js
-[minzip-badge]: https://img.shields.io/bundlephobia/minzip/@paypal/paypal-js.svg?style=flat-square
-[bundlephobia]: https://bundlephobia.com/result?p=@paypal/paypal-js
 [downloads-badge]: https://img.shields.io/npm/dm/@paypal/paypal-js.svg?style=flat-square
 [npmtrends]: https://www.npmtrends.com/@paypal/paypal-js
 [license-badge]: https://img.shields.io/npm/l/@paypal/paypal-js.svg?style=flat-square
@@ -221,7 +215,7 @@ loadScript(options, PromisePonyfill).then((paypalObject) => {});
 We also provide a legacy build that includes the [promise-polyfill](https://github.com/taylorhakes/promise-polyfill) library. You can reference it from the CDN here:
 
 ```html
-<script src="https://unpkg.com/@paypal/paypal-js@9.2.0/dist/iife/paypal-js.legacy.min.js"></script>
+<script src="https://unpkg.com/@paypal/paypal-js@9.4.0/dist/iife/paypal-js.legacy.min.js"></script>
 ```
 
 ### Using a CDN
@@ -232,7 +226,7 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
 <!doctype html>
 <html lang="en">
     <head>
-        <script src="https://unpkg.com/@paypal/paypal-js@9.2.0/dist/iife/paypal-js.min.js"></script>
+        <script src="https://unpkg.com/@paypal/paypal-js@9.4.0/dist/iife/paypal-js.min.js"></script>
     </head>
     <body>
         <div id="paypal-buttons"></div>
