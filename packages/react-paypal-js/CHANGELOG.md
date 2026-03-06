@@ -1,5 +1,14 @@
 # Changelog
 
+## 9.0.2
+
+### Patch Changes
+
+- 1b44c19: remove unused files and minor doc updates
+- Updated dependencies [10258ca]
+- Updated dependencies [1b44c19]
+    - @paypal/paypal-js@9.4.1
+
 ## 9.0.1
 
 ### Patch Changes

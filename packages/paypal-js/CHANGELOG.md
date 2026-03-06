@@ -1,5 +1,12 @@
 # Changelog
 
+## 9.4.1
+
+### Patch Changes
+
+- 10258ca: chore(types): rename v6 subscription onApprove type
+- 1b44c19: remove unused files and minor doc updates
+
 ## 9.4.0
 
 ### Minor Changes
