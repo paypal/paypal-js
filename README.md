@@ -6,7 +6,7 @@ This is a collection of libraries intended to help developers more easily integr
 
 Below is a list of available packages to install.
 
-Each package has its own documentation in it's respective README.
+Each package has its own documentation in its respective README.
 
 - [@paypal/paypal-js](./packages/paypal-js/README.md): PayPal's Vanilla JS loader and TypeScript types
 - [@paypal/react-paypal-js](./packages/react-paypal-js/README.md): PayPal's React library
