@@ -1,13 +1,9 @@
+/* eslint-disable tsdoc/syntax */
 /**
- * Google Pay Payment Types
- *
- * @remarks
- * This module contains types for integrating Google Pay as a payment method
- * through the PayPal SDK. Google Pay configuration and payment flows are
- * managed through the GooglePayPaymentsInstance interface.
- *
  * @module
+ * @internal
  */
+/* eslint-enable tsdoc/syntax */
 
 /**
  * Configuration for Google Pay payment request
@@ -97,7 +93,7 @@ export type GooglePayConfigFromFindEligibleMethods = {
  *
  * @internal
  */
-export type GooglePayPaymentContact = {
+type GooglePayPaymentContact = {
     name: string;
     postalCode: string;
     countryCode: string;
