@@ -2,4 +2,4 @@
 "@paypal/react-paypal-js": patch
 ---
 
-Updated React README to contain React Card Fields documentation
+Updated React README.md file to contain V6 React Card Fields documentation.
