@@ -3,9 +3,11 @@ import {
     PayLaterProductCodes,
     PayPalCreditCountryCodes,
 } from "./paypal-payments";
+import type { GooglePayConfigFromFindEligibleMethods } from "./googlepay-payments";
 
 export type EligiblePaymentMethods =
     | "basic_cards"
+    | "google_pay"
     | "paypal_pay_later"
     | "paypal_credit"
     | "paypal"
@@ -23,7 +25,13 @@ export type FindEligibleMethodsOptions = {
     paymentFlow?: PaymentFlow;
 };
 
-export type FundingSource = "credit" | "paylater" | "paypal" | "venmo" | "card";
+export type FundingSource =
+    | "card"
+    | "credit"
+    | "googlepay"
+    | "paylater"
+    | "paypal"
+    | "venmo";
 
 type BaseEligiblePaymentMethodDetails = {
     canBeVaulted: boolean;
@@ -38,12 +46,19 @@ type PayLaterEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
     productCode: PayLaterProductCodes;
 };
 
+type GooglePayEligiblePaymentMethodDetails = {
+    canBeVaulted?: boolean;
+    config: GooglePayConfigFromFindEligibleMethods;
+};
+
 export type FindEligibleMethodsGetDetails<T extends FundingSource> =
     T extends "credit"
         ? CreditEligiblePaymentMethodDetails
-        : T extends "paylater"
-          ? PayLaterEligiblePaymentMethodDetails
-          : BaseEligiblePaymentMethodDetails;
+        : T extends "googlepay"
+          ? GooglePayEligiblePaymentMethodDetails
+          : T extends "paylater"
+            ? PayLaterEligiblePaymentMethodDetails
+            : BaseEligiblePaymentMethodDetails;
 
 type EligiblePaymentMethodDetails = {
     can_be_vaulted?: boolean;
@@ -110,6 +125,16 @@ export type FindEligiblePaymentMethodsResponse = {
  *   // set up button
  *   const paypalCreditButton = document.querySelector("#paypal-credit-button");
  *   paypalCreditButton.countryCode = countryCode;
+ *   // ...
+ * }
+ *
+ * if (paymentMethods.isEligible("googlepay")) {
+ *   const googlePayDetails = paymentMethods.getDetails("googlepay");
+ *   const { config } = googlePayDetails;
+ *
+ *   const googlePaySession = sdkInstance.createGooglePayOneTimePaymentSession();
+ *   const googlePayConfig = googlePaySession.formatConfigForPaymentRequest(config);
+ *   // Use googlePayConfig with Google's PaymentsClient
  *   // ...
  * }
  * ```

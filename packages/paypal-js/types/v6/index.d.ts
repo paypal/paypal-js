@@ -2,6 +2,7 @@ import { PayPalPaymentsInstance } from "./components/paypal-payments";
 import { PayPalGuestPaymentsInstance } from "./components/paypal-guest-payments";
 import { PayPalLegacyBillingInstance } from "./components/paypal-legacy-billing-agreements";
 import { VenmoPaymentsInstance } from "./components/venmo-payments";
+import { GooglePayPaymentsInstance } from "./components/googlepay-payments";
 import {
     EligiblePaymentMethodsOutput,
     FindEligibleMethodsOptions,
@@ -39,13 +40,14 @@ export interface PayPalV6Namespace {
 }
 
 export type Components =
-    | "paypal-payments"
+    | "card-fields"
+    | "googlepay-payments"
     | "paypal-guest-payments"
-    | "paypal-messages"
-    | "paypal-subscriptions"
-    | "venmo-payments"
     | "paypal-legacy-billing-agreements"
-    | "card-fields";
+    | "paypal-messages"
+    | "paypal-payments"
+    | "paypal-subscriptions"
+    | "venmo-payments";
 
 export type PageTypes =
     | "cart"
@@ -88,13 +90,14 @@ export type CreateInstanceOptions<T extends readonly Components[]> =
  * - `updateLocale()` - Base method that updates the locale for the SDK instance. The locale should be specified using a BCP-47 code.
  *
  * **Conditionally includes methods based on components:**
- * - `"paypal-payments"` - Adds PayPalPaymentsInstance methods
- * - `"venmo-payments"` - Adds VenmoPaymentsInstance methods
  * - `"card-fields"` - Adds CardFieldsInstance methods
- * - `"paypal-legacy-billing-agreements"` Adds PayPalLegacyBillingInstance methods
+ * - `"googlepay-payments"` - Adds GooglePayPaymentsInstance methods
  * - `"paypal-guest-payments"` - Adds PayPalGuestPaymentsInstance methods
+ * - `"paypal-legacy-billing-agreements"` - Adds PayPalLegacyBillingInstance methods
  * - `"paypal-messages"` - Adds PayPalMessagesInstance methods
+ * - `"paypal-payments"` - Adds PayPalPaymentsInstance methods
  * - `"paypal-subscriptions"` - Adds PayPalSubscriptionsInstance methods
+ * - `"venmo-payments"` - Adds VenmoPaymentsInstance methods
  *
  * @example
  * ```typescript
@@ -141,19 +144,22 @@ export type CreateInstanceOptions<T extends readonly Components[]> =
  * ```
  */
 export type SdkInstance<T extends readonly Components[]> = BaseInstance &
-    ("paypal-payments" extends T[number] ? PayPalPaymentsInstance : unknown) &
+    ("card-fields" extends T[number] ? CardFieldsInstance : unknown) &
+    ("googlepay-payments" extends T[number]
+        ? GooglePayPaymentsInstance
+        : unknown) &
     ("paypal-guest-payments" extends T[number]
         ? PayPalGuestPaymentsInstance
         : unknown) &
-    ("paypal-messages" extends T[number] ? PayPalMessagesInstance : unknown) &
-    ("venmo-payments" extends T[number] ? VenmoPaymentsInstance : unknown) &
     ("paypal-legacy-billing-agreements" extends T[number]
         ? PayPalLegacyBillingInstance
         : unknown) &
-    ("card-fields" extends T[number] ? CardFieldsInstance : unknown) &
+    ("paypal-messages" extends T[number] ? PayPalMessagesInstance : unknown) &
+    ("paypal-payments" extends T[number] ? PayPalPaymentsInstance : unknown) &
     ("paypal-subscriptions" extends T[number]
         ? PayPalSubscriptionsInstance
-        : unknown);
+        : unknown) &
+    ("venmo-payments" extends T[number] ? VenmoPaymentsInstance : unknown);
 
 /**
  * @internal
@@ -236,14 +242,15 @@ export function loadCoreSdkScript(
 ): Promise<PayPalV6Namespace | null>;
 
 // Components
-export * from "./components/paypal-payments";
+export * from "./components/card-fields";
+export * from "./components/googlepay-payments";
 export * from "./components/paypal-guest-payments";
 export * from "./components/paypal-legacy-billing-agreements";
+export * from "./components/paypal-messages";
+export * from "./components/paypal-payments";
+export * from "./components/paypal-subscriptions";
 export * from "./components/venmo-payments";
 export * from "./components/find-eligible-methods";
-export * from "./components/card-fields";
-export * from "./components/paypal-messages";
-export * from "./components/paypal-subscriptions";
 
 // export a subset of types from base-component
 export {
