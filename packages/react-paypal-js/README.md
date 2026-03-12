@@ -44,6 +44,7 @@ Integrating PayPal into React applications requires careful handling of SDK scri
 - **Venmo** - Venmo payments
 - **Pay Later** - PayPal's buy now, pay later option
 - **PayPal Basic Card** - Guest card payments without a PayPal account
+- **PayPal Advanced Card** - Card payments with enhanced features and customization options
 - **PayPal Subscriptions** - Recurring billing subscriptions
 - **PayPal Save** - Vault payment methods without purchase
 - **PayPal Credit** - PayPal Credit one-time and save payments
@@ -138,6 +139,7 @@ The `components` prop accepts an array of the following values:
 - `"venmo-payments"` - Venmo button
 - `"paypal-guest-payments"` - Guest checkout (card payments)
 - `"paypal-subscriptions"` - Subscription payments
+- `"card-fields"` - Card Fields (advanced card payment UI)
 
 ### With Promise-based Client ID
 
@@ -489,6 +491,121 @@ import { PayPalCreditSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 5. On approval, `onApprove` callback captures the order via the backend
 6. Success/error handling displays the result to the user
 
+## Card Fields Components
+
+Card Fields components provide customizable card input fields for collecting payment details directly on your page.
+
+Requires `"card-fields"` in the provider's `components` array.
+
+### PayPalCardFieldsProvider
+
+Wraps card field components and manages the Card Fields session.
+
+```tsx
+import {
+    PayPalProvider,
+    PayPalCardFieldsProvider,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+function App() {
+    return (
+        <PayPalProvider
+            clientToken="your-client-token"
+            components={["card-fields"]}
+            pageType="checkout"
+        >
+            <CheckoutForm />
+        </PayPalProvider>
+    );
+}
+
+function CheckoutForm() {
+    return (
+        <PayPalCardFieldsProvider>
+            <CardPaymentForm />
+        </PayPalCardFieldsProvider>
+    );
+}
+```
+
+**Props:**
+
+| Prop                  | Type              | Required | Description                                                                       |
+| --------------------- | ----------------- | -------- | --------------------------------------------------------------------------------- |
+| `amount`              | `OrderAmount`     | No       | Amount for the card transaction (e.g., `{ value: "10.00", currencyCode: "USD" }`) |
+| `isCobrandedEligible` | `boolean`         | No       | Enable co-branded card eligibility                                                |
+| `blur`                | `(event) => void` | No       | Callback when a field loses focus                                                 |
+| `change`              | `(event) => void` | No       | Callback when field value changes                                                 |
+| `focus`               | `(event) => void` | No       | Callback when field receives focus                                                |
+| `empty`               | `(event) => void` | No       | Callback when field becomes empty                                                 |
+| `notempty`            | `(event) => void` | No       | Callback when field becomes non-empty                                             |
+| `validitychange`      | `(event) => void` | No       | Callback when field validity changes                                              |
+| `cardtypechange`      | `(event) => void` | No       | Callback when detected card type changes                                          |
+| `inputsubmit`         | `(event) => void` | No       | Callback when submit key is pressed in field                                      |
+
+### PayPalCardNumberField
+
+Renders a card number input field. Must be used within a [PayPalCardFieldsProvider](#paypalcardfieldsprovider) component.
+
+```tsx
+import { PayPalCardNumberField } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalCardNumberField
+    placeholder="Card number"
+    containerStyles={{ height: "3rem", marginBottom: "1rem" }}
+/>;
+```
+
+### PayPalCardExpiryField
+
+Renders a card expiry input field. Must be used within a [PayPalCardFieldsProvider](#paypalcardfieldsprovider) component.
+
+```tsx
+import { PayPalCardExpiryField } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalCardExpiryField
+    placeholder="MM/YY"
+    containerStyles={{ height: "3rem", marginBottom: "1rem" }}
+/>;
+```
+
+### PayPalCardCvvField
+
+Renders a CVV input field. Must be used within a [PayPalCardFieldsProvider](#paypalcardfieldsprovider) component.
+
+```tsx
+import { PayPalCardCvvField } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalCardCvvField
+    placeholder="CVV"
+    containerStyles={{ height: "3rem", marginBottom: "1rem" }}
+/>;
+```
+
+### Field Component Props
+
+All field components ([`PayPalCardNumberField`](#paypalcardnumberfield), [`PayPalCardExpiryField`](#paypalcardexpiryfield), [`PayPalCardCvvField`](#paypalcardcvvfield)) accept the same set of props. They combine container styling properties with CardField-specific configuration options.
+
+| Prop                      | Type                  | Required | Description                                    |
+| ------------------------- | --------------------- | -------- | ---------------------------------------------- |
+| `placeholder`             | `string`              | No       | Placeholder text for the input field           |
+| `label`                   | `string`              | No       | Label text for the field                       |
+| `style`                   | `MerchantStyleObject` | No       | CSS style object for the field                 |
+| `ariaLabel`               | `string`              | No       | ARIA label for accessibility                   |
+| `ariaDescription`         | `string`              | No       | ARIA description for accessibility             |
+| `ariaInvalidErrorMessage` | `string`              | No       | ARIA error message when field is invalid       |
+| `containerStyles`         | `React.CSSProperties` | No       | CSS styles for the field container wrapper     |
+| `containerClassName`      | `string`              | No       | CSS class name for the field container wrapper |
+
+## Payment Flow: Card Fields
+
+1. User enters card number, expiry, and CVV in the card fields
+2. User clicks your submit button
+3. `createOrder` creates an order via your backend API
+4. `submit(orderId)` processes the card payment with the order ID
+5. `submitResponse` object gets updated with the payment result
+6. Handle submit response based on payment result
+
 ## Hooks API
 
 ### usePayPal
@@ -558,6 +675,27 @@ function PayLaterMessage() {
         });
 
     // Use to display financing messages
+}
+```
+
+### usePayPalCardFields
+
+Returns the Card Fields instance initialization errors. Must be used within a [PayPalCardFieldsProvider](#paypalcardfieldsprovider) component.
+
+```tsx
+import { usePayPalCardFields } from "@paypal/react-paypal-js/sdk-v6";
+
+function CardFields() {
+    const { error } = usePayPalCardFields();
+
+    useEffect(() => {
+        if (error) {
+            // Handle error logic
+            console.error("Error initializing PayPal Card Fields: ", error);
+        }
+    }, [error]);
+
+    return <CardPaymentForm />;
 }
 ```
 
@@ -789,6 +927,130 @@ function CustomPayPalCreditSaveButton() {
     });
 
     return <paypal-credit-button onClick={() => handleClick()} />;
+}
+```
+
+### Card Fields Session Hooks
+
+Use these hooks to handle the Card Fields payment flows. The hooks must be used within a [`PayPalCardFieldsProvider`](#paypalcardfieldsprovider) component.
+
+| Hook                                       | Payment Type |
+| ------------------------------------------ | ------------ |
+| `usePayPalCardFieldsOneTimePaymentSession` | One-time     |
+| `usePayPalCardFieldsSavePaymentSession`    | Save/Vault   |
+
+#### usePayPalCardFieldsOneTimePaymentSession
+
+Hook for managing one-time payment Card Fields sessions.
+
+```tsx
+import { usePayPalCardFieldsOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CardPaymentForm() {
+    const { submit, submitResponse, error } =
+        usePayPalCardFieldsOneTimePaymentSession();
+
+    useEffect(() => {
+        if (error) {
+            // Handle submit error logic
+            console.error("Error submitting PayPal Card Fields payment", error);
+        }
+    }, [error]);
+
+    useEffect(() => {
+        if (!submitResponse) {
+            return;
+        }
+
+        const { orderId, message } = submitResponse.data;
+
+        switch (submitResponse.state) {
+            case "succeeded":
+                // Handle submit success logic
+                console.log(`One time payment succeeded: orderId: ${orderId}`);
+                break;
+            case "failed":
+                // Handle submit failed response logic
+                console.error(
+                    `One time payment failed: orderId: ${orderId}, message: ${message}`,
+                );
+                break;
+        }
+    }, [submitResponse]);
+
+    const handleSubmit = async () => {
+        const orderId = await createOrder();
+        await submit(orderId);
+    };
+
+    return (
+        <div>
+            <PayPalCardNumberField />
+            <PayPalCardExpiryField />
+            <PayPalCardCvvField />
+            <button onClick={handleSubmit}>Pay</button>
+        </div>
+    );
+}
+```
+
+#### usePayPalCardFieldsSavePaymentSession
+
+Hook for managing save payment Card Fields sessions.
+
+```tsx
+import { usePayPalCardFieldsSavePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CardPaymentForm() {
+    const { submit, submitResponse, error } =
+        usePayPalCardFieldsSavePaymentSession();
+
+    useEffect(() => {
+        if (error) {
+            // Handle submit error logic
+            console.error(
+                "Error submitting PayPal Card Fields payment method",
+                error,
+            );
+        }
+    }, [error]);
+
+    useEffect(() => {
+        if (!submitResponse) {
+            return;
+        }
+
+        const { vaultSetupToken, message } = submitResponse.data;
+
+        switch (submitResponse.state) {
+            case "succeeded":
+                // Handle submit success logic
+                console.log(
+                    `Save payment method succeeded: vaultSetupToken: ${vaultSetupToken}`,
+                );
+                break;
+            case "failed":
+                // Handle submit failed response logic
+                console.error(
+                    `Save payment method failed: vaultSetupToken: ${vaultSetupToken}, message: ${message}`,
+                );
+                break;
+        }
+    }, [submitResponse]);
+
+    const handleSubmit = async () => {
+        const { vaultSetupToken } = await createCardVaultToken();
+        await submit(vaultSetupToken);
+    };
+
+    return (
+        <div>
+            <PayPalCardNumberField />
+            <PayPalCardExpiryField />
+            <PayPalCardCvvField />
+            <button onClick={handleSubmit}>Save Payment Method</button>
+        </div>
+    );
 }
 ```
 
