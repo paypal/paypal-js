@@ -588,9 +588,9 @@ All field components ([`PayPalCardNumberField`](#paypalcardnumberfield), [`PayPa
 
 | Prop                      | Type                  | Required | Description                                    |
 | ------------------------- | --------------------- | -------- | ---------------------------------------------- |
-| `placeholder`             | `string`              | No       | Placeholder text for the input field           |
+| `placeholder`             | `string`              | No       | Placeholder text for the field                 |
 | `label`                   | `string`              | No       | Label text for the field                       |
-| `style`                   | `MerchantStyleObject` | No       | CSS style object for the field                 |
+| `style`                   | `MerchantStyleObject` | No       | Style object for the field                     |
 | `ariaLabel`               | `string`              | No       | ARIA label for accessibility                   |
 | `ariaDescription`         | `string`              | No       | ARIA description for accessibility             |
 | `ariaInvalidErrorMessage` | `string`              | No       | ARIA error message when field is invalid       |
