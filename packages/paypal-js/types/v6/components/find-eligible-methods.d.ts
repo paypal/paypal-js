@@ -23,7 +23,13 @@ export type FindEligibleMethodsOptions = {
     paymentFlow?: PaymentFlow;
 };
 
-export type FundingSource = "credit" | "paylater" | "paypal" | "venmo" | "card";
+export type FundingSource =
+    | "credit"
+    | "paylater"
+    | "paypal"
+    | "venmo"
+    | "card"
+    | "advanced_cards";
 
 type BaseEligiblePaymentMethodDetails = {
     canBeVaulted: boolean;
@@ -38,12 +44,27 @@ type PayLaterEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
     productCode: PayLaterProductCodes;
 };
 
+type CardFieldsEligiblePaymentMethodDetails = {
+    supportsInstallments: boolean;
+    cobrandedEnabled: boolean;
+    vendors: CardFieldsEligibleVendorDetails[];
+};
+
+type CardFieldsEligibleVendorDetails = {
+    network: string;
+    eligible: boolean;
+    can_be_vaulted: boolean;
+    branded: boolean;
+};
+
 export type FindEligibleMethodsGetDetails<T extends FundingSource> =
     T extends "credit"
         ? CreditEligiblePaymentMethodDetails
         : T extends "paylater"
           ? PayLaterEligiblePaymentMethodDetails
-          : BaseEligiblePaymentMethodDetails;
+          : T extends "advanced_cards"
+            ? CardFieldsEligiblePaymentMethodDetails
+            : BaseEligiblePaymentMethodDetails;
 
 type EligiblePaymentMethodDetails = {
     can_be_vaulted?: boolean;
