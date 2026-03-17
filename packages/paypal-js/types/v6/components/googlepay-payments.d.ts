@@ -1,7 +1,6 @@
 /* eslint-disable tsdoc/syntax */
 /**
  * @module
- * @internal
  */
 /* eslint-enable tsdoc/syntax */
 
@@ -90,10 +89,8 @@ export type GooglePayConfigFromFindEligibleMethods = {
 
 /**
  * Contact information in Google Pay payment data
- *
- * @internal
  */
-type GooglePayPaymentContact = {
+export type GooglePayPaymentContact = {
     name: string;
     postalCode: string;
     countryCode: string;
@@ -217,7 +214,7 @@ export type GooglePayApprovePaymentResponse = {
  * These are the parameters passed to session.confirmOrder().
  * The clientId is managed internally by the SDK.
  */
-type GooglePayConfirmOrderOptions = {
+export type GooglePayConfirmOrderOptions = {
     orderId: string;
     paymentMethodData: GooglePayPaymentMethodData;
     shippingAddress?: GooglePayPaymentContact;
@@ -314,22 +311,6 @@ export interface GooglePayOneTimePaymentSession {
      * @internal
      */
     initiatePayerAction(): void;
-
-    /**
-     * Cancels the current session
-     *
-     * @remarks
-     * Cleans up session resources and listeners.
-     */
-    cancel(): void;
-
-    /**
-     * Destroys the session
-     *
-     * @remarks
-     * Performs complete cleanup and makes the session unusable.
-     */
-    destroy(): void;
 }
 
 /**

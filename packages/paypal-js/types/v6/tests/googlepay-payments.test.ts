@@ -1,6 +1,8 @@
 import { loadCoreSdkScript } from "../../../src/v6";
 import type {
     GooglePayApprovePaymentResponse,
+    GooglePayConfirmOrderOptions,
+    GooglePayPaymentContact,
     GooglePayPaymentsInstance,
     GooglePayOneTimePaymentSession,
     PayPalV6Namespace,
@@ -74,24 +76,37 @@ async function main() {
         },
     };
 
+    // Type test: Verify exported option and contact types
+    const shippingAddress: GooglePayPaymentContact = {
+        name: "John Doe",
+        postalCode: "12345",
+        countryCode: "US",
+        phoneNumber: "555-1234",
+        address1: "123 Main St",
+        address2: "",
+        address3: "",
+        locality: "Anytown",
+        administrativeArea: "CA",
+        sortingCode: "",
+    };
+
+    const confirmOptions: GooglePayConfirmOrderOptions = {
+        orderId: "ORDER-123",
+        paymentMethodData: mockPaymentData,
+        email: "buyer@example.com",
+        shippingAddress,
+    };
+
     // Confirm order with PayPal
     let approveResponse: GooglePayApprovePaymentResponse;
 
     try {
-        approveResponse = await googlePaySession.confirmOrder({
-            orderId: "ORDER-123",
-            paymentMethodData: mockPaymentData,
-            email: "buyer@example.com",
-        });
+        approveResponse = await googlePaySession.confirmOrder(confirmOptions);
 
         console.log("Order approved:", approveResponse.id);
     } catch (error) {
         console.error("Order confirmation failed:", error);
     }
-
-    // Test session cleanup
-    googlePaySession.cancel();
-    googlePaySession.destroy();
 
     // Type test: Verify GooglePayPaymentsInstance has the correct method
     const instance: GooglePayPaymentsInstance = sdkInstance;
