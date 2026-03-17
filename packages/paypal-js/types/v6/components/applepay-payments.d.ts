@@ -133,11 +133,11 @@ export type ApplePayOneTimePaymentSession = {
      *
      * @example
      * ```typescript
-     * applePaySession.onvalidatemerchant = async (event) => {
-     *   const payload = await paypalApplePaySession.validateMerchant({
+     * appleSdkSession.onvalidatemerchant = async (event) => {
+     *   const payload = await applePaySession.validateMerchant({
      *     validationUrl: event.validationURL,
      *   });
-     *   applePaySession.completeMerchantValidation(payload.merchantSession);
+     *   appleSdkSession.completeMerchantValidation(payload.merchantSession);
      * };
      * ```
      */
@@ -153,8 +153,8 @@ export type ApplePayOneTimePaymentSession = {
      *
      * @example
      * ```typescript
-     * applePaySession.onpaymentauthorized = async (event) => {
-     *   await paypalApplePaySession.confirmOrder({
+     * appleSdkSession.onpaymentauthorized = async (event) => {
+     *   await applePaySession.confirmOrder({
      *     orderId: createdOrder.orderId,
      *     token: event.payment.token,
      *     billingContact: event.payment.billingContact,
