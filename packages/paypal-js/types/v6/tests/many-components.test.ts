@@ -28,6 +28,7 @@ async function main() {
             "paypal-payments",
             "paypal-guest-payments",
             "venmo-payments",
+            "applepay-payments",
         ],
     });
 
@@ -48,4 +49,6 @@ async function main() {
             return Promise.resolve();
         },
     });
+
+    sdkInstance.createApplePayOneTimePaymentSession();
 }
