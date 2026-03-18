@@ -57,13 +57,8 @@ async function main() {
     console.log(formattedConfig.merchantCapabilities);
     console.log(formattedConfig.supportedNetworks);
 
-    // Validate merchant (displayName and domainName are optional)
+    // Validate merchant
     const merchantSession = await applePayPaymentSession.validateMerchant({
-        validationUrl: "https://example.com/validate",
-    });
-
-    // Can also provide optional fields
-    await applePayPaymentSession.validateMerchant({
         validationUrl: "https://example.com/validate",
         displayName: "Test Merchant",
         domainName: "example.com",

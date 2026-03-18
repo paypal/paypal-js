@@ -60,8 +60,8 @@ export type ApplePayMerchantSession = {
  */
 export type ValidateMerchantOptions = {
     validationUrl: string;
-    displayName?: string;
-    domainName?: string;
+    displayName: string;
+    domainName: string;
 };
 
 /**
@@ -128,7 +128,7 @@ export type ApplePayOneTimePaymentSession = {
     /**
      * Validates the merchant with Apple Pay.
      *
-     * @param options - Validation options containing the validation URL
+     * @param options - Validation options containing the validation URL, display name, and domain name
      * @returns Promise resolving to the Apple Pay merchant session
      *
      * @example
@@ -136,6 +136,8 @@ export type ApplePayOneTimePaymentSession = {
      * appleSdkSession.onvalidatemerchant = async (event) => {
      *   const payload = await applePaySession.validateMerchant({
      *     validationUrl: event.validationURL,
+     *     displayName: "My Store",
+     *     domainName: "example.com",
      *   });
      *   appleSdkSession.completeMerchantValidation(payload.merchantSession);
      * };
@@ -232,6 +234,8 @@ export interface ApplePayPaymentsInstance {
      *   appleSdkSession.onvalidatemerchant = async (event) => {
      *     const payload = await applePaySession.validateMerchant({
      *       validationUrl: event.validationURL,
+     *       displayName: "My Store",
+     *       domainName: "example.com",
      *     });
      *     appleSdkSession.completeMerchantValidation(payload.merchantSession);
      *   };
