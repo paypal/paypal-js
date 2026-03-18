@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
 import { SDK_SETTINGS } from "../constants";
+import { PayPalButtonsErrorBoundary } from "./PayPalButtonsErrorBoundary";
 
 import type { FunctionComponent } from "react";
 import type { PayPalButtonsComponent, OnInitActions } from "@paypal/paypal-js";
@@ -10,10 +11,9 @@ import type { PayPalButtonsComponentProps } from "../types";
 import { useProxyProps } from "../hooks/useProxyProps";
 
 /**
-This `<PayPalButtons />` component supports rendering [buttons](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#buttons) for PayPal, Venmo, and alternative payment methods.
-It relies on the `<PayPalScriptProvider />` parent component for managing state related to loading the JS SDK script.
-*/
-export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
+The inner component that renders the PayPal buttons. This component is wrapped in an error boundary to catch and handle any errors that may occur during rendering or interaction with the PayPal buttons.
+ */
+const PayPalButtonsInner: FunctionComponent<PayPalButtonsComponentProps> = ({
     className = "",
     disabled = false,
     children,
@@ -159,6 +159,22 @@ export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = ({
                 children
             )}
         </>
+    );
+};
+
+PayPalButtonsInner.displayName = "PayPalButtons";
+
+/**
+This `<PayPalButtons />` component supports rendering [buttons](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#buttons) for PayPal, Venmo, and alternative payment methods.
+It relies on the `<PayPalScriptProvider />` parent component for managing state related to loading the JS SDK script.
+*/
+export const PayPalButtons: FunctionComponent<PayPalButtonsComponentProps> = (
+    props: PayPalButtonsComponentProps,
+) => {
+    return (
+        <PayPalButtonsErrorBoundary onError={props.onError}>
+            <PayPalButtonsInner {...props} />
+        </PayPalButtonsErrorBoundary>
     );
 };
 
