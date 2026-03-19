@@ -3,7 +3,7 @@ import { Component } from "react";
 import type { ErrorInfo, ReactNode } from "react";
 import type { PayPalButtonOnError } from "@paypal/paypal-js";
 
-/* **
+/**
  * This component serves as an error boundary for the PayPalButtons component.
  * It catches any errors that occur during the rendering of the PayPalButtons
  * and provides an onError callback.
@@ -41,6 +41,13 @@ export class PayPalButtonsErrorBoundary extends Component<
                 stack: error.stack,
                 componentStack: errorInfo.componentStack,
             });
+        } else {
+            // if no onError callback is provided, log the error to the console
+            console.error(
+                "Error in PayPalButtons component:",
+                error,
+                errorInfo,
+            );
         }
     }
 
