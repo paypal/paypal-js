@@ -95,6 +95,23 @@ export type ConfirmOrderOptions = {
 };
 
 /**
+ * Response from confirming an Apple Pay order.
+ */
+export type ConfirmOrderResponse = {
+    approveApplePayPayment: {
+        id: string;
+        status: string;
+        payment_source: {
+            apple_pay: {
+                name: string;
+                card: unknown;
+            };
+        };
+        links?: unknown[];
+    };
+};
+
+/**
  * Apple Pay payment request configuration returned from eligible methods.
  */
 export type ApplePayConfig = {
@@ -160,21 +177,27 @@ export type ApplePayOneTimePaymentSession = {
      * Confirms the order with PayPal after Apple Pay authorization.
      *
      * @param options - Confirmation options including order ID, token, and contact information
-     * @returns Promise that resolves when the order is confirmed
+     * @returns Promise resolving to the confirmed order response
      *
      * @example
      * ```typescript
      * appleSdkSession.onpaymentauthorized = async (event) => {
+     *   const order = await createOrder();
      *   await applePaySession.confirmOrder({
-     *     orderId: createdOrder.orderId,
+     *     orderId: order.orderId,
      *     token: event.payment.token,
      *     billingContact: event.payment.billingContact,
      *     shippingContact: event.payment.shippingContact,
      *   });
+     *   appleSdkSession.completePayment({
+     *     status: ApplePaySession.STATUS_SUCCESS,
+     *   });
      * };
      * ```
      */
-    confirmOrder: (options: ConfirmOrderOptions) => Promise<void>;
+    confirmOrder: (
+        options: ConfirmOrderOptions,
+    ) => Promise<ConfirmOrderResponse>;
 };
 
 /**
