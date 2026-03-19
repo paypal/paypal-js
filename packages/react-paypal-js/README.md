@@ -222,6 +222,25 @@ export default function App() {
 }
 ```
 
+#### Error Handling
+
+The `<PayPalButtons />` component is wrapped in an internal error boundary to prevent unhandled errors from crashing the host application. When an error occurs during rendering or interaction with the PayPal buttons, the error boundary will:
+
+-   Log the error to the console via `console.error`
+-   Call the `onError` callback (if provided) with the error details including `message`, `name`, `stack`, and `componentStack`
+-   Render `null` in place of the buttons to prevent a broken UI
+
+```jsx
+<PayPalButtons
+    createOrder={createOrder}
+    onApprove={onApprove}
+    onError={(err) => {
+        // handle the error, e.g. show a fallback UI or notify the user
+        console.error("PayPalButtons error:", err);
+    }}
+/>
+```
+
 To learn more about other available props, see the [PayPalButtons](https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default) docs.
 
 ### BraintreePayPalButtons
