@@ -1,4 +1,24 @@
 /**
+ * Supported networks for Apple Pay transactions.
+ */
+export type ApplePaySupportedNetwork =
+    | "amex"
+    | "cartesBancaires"
+    | "discover"
+    | "jcb"
+    | "maestro"
+    | "masterCard"
+    | "visa";
+
+/**
+ * Merchant capabilities for Apple Pay transactions.
+ */
+export type ApplePayMerchantCapability =
+    | "supports3DS"
+    | "supportsCredit"
+    | "supportsDebit";
+
+/**
  * Apple Pay contact information provided during payment authorization.
  */
 export type ApplePayContact = {
@@ -78,9 +98,10 @@ export type ConfirmOrderOptions = {
  * Apple Pay payment request configuration returned from eligible methods.
  */
 export type ApplePayConfig = {
-    merchantCapabilities: string[];
-    supportedNetworks: string[];
+    merchantCapabilities: ApplePayMerchantCapability[];
+    supportedNetworks: ApplePaySupportedNetwork[];
     merchantCountry?: string;
+    isEligible?: boolean;
     tokenNotificationURL: string;
 };
 
@@ -121,8 +142,8 @@ export type ApplePayOneTimePaymentSession = {
      * ```
      */
     formatConfigForPaymentRequest: (config: ApplePayConfig) => {
-        merchantCapabilities: string[];
-        supportedNetworks: string[];
+        merchantCapabilities: ApplePayMerchantCapability[];
+        supportedNetworks: ApplePaySupportedNetwork[];
     };
 
     /**
