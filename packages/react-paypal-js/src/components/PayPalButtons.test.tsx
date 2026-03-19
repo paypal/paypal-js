@@ -284,7 +284,7 @@ describe("<PayPalButtons />", () => {
         ).toBeFalsy();
     });
 
-    test("should throw an error when no components are passed to the PayPalScriptProvider", async () => {
+    test("should catch the error when no components are passed to the PayPalScriptProvider", async () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
@@ -304,7 +304,7 @@ describe("<PayPalButtons />", () => {
         spyConsoleError.mockRestore();
     });
 
-    test("should throw an error when the 'buttons' component is missing from the components list passed to the PayPalScriptProvider", async () => {
+    test("should catch the error when the 'buttons' component is missing from the components list passed to the PayPalScriptProvider", async () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
@@ -329,7 +329,7 @@ describe("<PayPalButtons />", () => {
         spyConsoleError.mockRestore();
     });
 
-    test("should catch and throw unexpected zoid render errors", async () => {
+    test("should catch the unexpected zoid render errors", async () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
@@ -364,7 +364,7 @@ describe("<PayPalButtons />", () => {
         spyConsoleError.mockRestore();
     });
 
-    test("should throw an error during initialization when style prop is invalid", async () => {
+    test("should catch the thrown error during initialization when style prop is invalid", async () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
