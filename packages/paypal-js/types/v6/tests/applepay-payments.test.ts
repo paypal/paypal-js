@@ -45,12 +45,6 @@ async function main() {
     const applePayPaymentSession =
         sdkInstance.createApplePayOneTimePaymentSession();
 
-    // Get config
-    const config = await applePayPaymentSession.config();
-    console.log(config.merchantCapabilities);
-    console.log(config.supportedNetworks);
-    console.log(config.tokenNotificationURL);
-
     // Format config for payment request
     const formattedConfig =
         applePayPaymentSession.formatConfigForPaymentRequest(applePayConfig);

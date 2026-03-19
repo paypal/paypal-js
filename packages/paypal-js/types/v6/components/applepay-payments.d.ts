@@ -110,18 +110,6 @@ export type ApplePayConfig = {
  */
 export type ApplePayOneTimePaymentSession = {
     /**
-     * Retrieves the Apple Pay configuration.
-     *
-     * @returns Promise resolving to the Apple Pay configuration
-     *
-     * @example
-     * ```typescript
-     * const config = await applePaySession.config();
-     * ```
-     */
-    config: () => Promise<ApplePayConfig>;
-
-    /**
      * Formats the Apple Pay configuration for use in an Apple Pay payment request.
      *
      * @param config - The Apple Pay configuration from eligible payment methods
@@ -236,45 +224,48 @@ export interface ApplePayPaymentsInstance {
      * if (paymentMethods.isEligible("applepay")) {
      *   const applePayConfig = paymentMethods.getDetails("applepay").config;
      *
-     *   // Create Apple Pay payment request using the helper method
-     *   const paymentRequest = {
-     *     ...applePaySession.formatConfigForPaymentRequest(applePayConfig),
-     *     countryCode: "US",
-     *     currencyCode: "USD",
-     *     total: {
-     *       label: "Demo Store",
-     *       amount: "100.00",
-     *       type: "final",
-     *     },
+     *   // Handle Apple Pay button click
+     *   applePayButton.onclick = async () => {
+     *     // Create Apple Pay payment request using the helper method
+     *     const paymentRequest = {
+     *       ...applePaySession.formatConfigForPaymentRequest(applePayConfig),
+     *       countryCode: "US",
+     *       currencyCode: "USD",
+     *       total: {
+     *         label: "Demo Store",
+     *         amount: "100.00",
+     *         type: "final",
+     *       },
+     *     };
+     *
+     *     // Start Apple's native ApplePaySession
+     *     const appleSdkSession = new ApplePaySession(4, paymentRequest);
+     *
+     *     // Use Apple's native event handlers with PayPal SDK bridge methods
+     *     appleSdkSession.onvalidatemerchant = async (event) => {
+     *       const payload = await applePaySession.validateMerchant({
+     *         validationUrl: event.validationURL,
+     *         displayName: "My Store",
+     *         domainName: "example.com",
+     *       });
+     *       appleSdkSession.completeMerchantValidation(payload.merchantSession);
+     *     };
+     *
+     *     appleSdkSession.onpaymentauthorized = async (event) => {
+     *       const order = await createOrder();
+     *       await applePaySession.confirmOrder({
+     *         orderId: order.orderId,
+     *         token: event.payment.token,
+     *         billingContact: event.payment.billingContact,
+     *         shippingContact: event.payment.shippingContact,
+     *       });
+     *       appleSdkSession.completePayment({
+     *         status: ApplePaySession.STATUS_SUCCESS,
+     *       });
+     *     };
+     *
+     *     appleSdkSession.begin();
      *   };
-     *
-     *   // Start Apple's native ApplePaySession
-     *   const appleSdkSession = new ApplePaySession(4, paymentRequest);
-     *
-     *   // Use Apple's native event handlers with PayPal SDK bridge methods
-     *   appleSdkSession.onvalidatemerchant = async (event) => {
-     *     const payload = await applePaySession.validateMerchant({
-     *       validationUrl: event.validationURL,
-     *       displayName: "My Store",
-     *       domainName: "example.com",
-     *     });
-     *     appleSdkSession.completeMerchantValidation(payload.merchantSession);
-     *   };
-     *
-     *   appleSdkSession.onpaymentauthorized = async (event) => {
-     *     const order = await createOrder();
-     *     await applePaySession.confirmOrder({
-     *       orderId: order.orderId,
-     *       token: event.payment.token,
-     *       billingContact: event.payment.billingContact,
-     *       shippingContact: event.payment.shippingContact,
-     *     });
-     *     appleSdkSession.completePayment({
-     *       status: ApplePaySession.STATUS_SUCCESS,
-     *     });
-     *   };
-     *
-     *   appleSdkSession.begin();
      * }
      * ```
      */
