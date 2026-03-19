@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
 import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
 import { SDK_SETTINGS } from "../constants";
-import { useProxyProps } from "../hooks/useProxyProps";
 import { PayPalButtonsErrorBoundary } from "./PayPalButtonsErrorBoundary";
 
 import type { FunctionComponent } from "react";

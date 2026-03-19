@@ -32,6 +32,7 @@ export class PayPalButtonsErrorBoundary extends Component<
     }
 
     componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+        console.error("Error in PayPalButtons component:", error, errorInfo);
         // if onError callback is provided, call it with the error details
         // don't rethrow the error, as we want to prevent the entire app from crashing
         if (typeof this.props.onError === "function") {
@@ -41,13 +42,6 @@ export class PayPalButtonsErrorBoundary extends Component<
                 stack: error.stack,
                 componentStack: errorInfo.componentStack,
             });
-        } else {
-            // if no onError callback is provided, log the error to the console
-            console.error(
-                "Error in PayPalButtons component:",
-                error,
-                errorInfo,
-            );
         }
     }
 
