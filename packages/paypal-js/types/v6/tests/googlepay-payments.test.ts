@@ -1,6 +1,5 @@
 import { loadCoreSdkScript } from "../../../src/v6";
 import type {
-    GooglePayApprovePaymentResponse,
     GooglePayConfig,
     GooglePayConfigFromFindEligibleMethods,
     GooglePayConfirmOrderOptions,
@@ -11,13 +10,6 @@ import type {
     PayPalV6Namespace,
 } from "../index";
 
-/**
- * Type test for GooglePay payments integration
- *
- * @remarks
- * This test verifies TypeScript compilation and type inference.
- * The function is never executed — it's used for type-checking only.
- */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function main() {
     let paypal: PayPalV6Namespace | null;
@@ -52,36 +44,33 @@ async function main() {
         return;
     }
 
+    // Verify getDetails returns GooglePayConfigFromFindEligibleMethods with camelCase fields
     const googlePayDetails = paymentMethods.getDetails("googlepay");
-    const { config } = googlePayDetails;
+    const config: GooglePayConfigFromFindEligibleMethods =
+        googlePayDetails.config;
 
-    // Verify config fields are camelCase (matching runtime after SDK's camelizeObjectKeys)
-    const _configType: GooglePayConfigFromFindEligibleMethods = config;
-    const _eligible: boolean = config.eligible;
-    const _merchantCountry: string = config.merchantCountry;
-    const _apiVersion: number = config.apiVersion;
-    const _apiVersionMinor: number = config.apiVersionMinor;
-    const _merchantId: string = config.merchantInfo.merchantId;
-    const _merchantOrigin: string = config.merchantInfo.merchantOrigin;
-    const _supportedNetworks =
-        config.allowedPaymentMethods[0].parameters.supportedNetworks;
-    const _gateway: string =
-        config.allowedPaymentMethods[0].tokenizationSpecification.parameters
-            .gateway;
-    const _gatewayMerchantId: string =
-        config.allowedPaymentMethods[0].tokenizationSpecification.parameters
-            .gatewayMerchantId;
+    // Verify camelCase config field access
+    config.eligible;
+    config.merchantCountry;
+    config.apiVersion;
+    config.apiVersionMinor;
+    config.merchantInfo.merchantId;
+    config.merchantInfo.merchantOrigin;
+    config.allowedPaymentMethods[0].parameters.supportedNetworks;
+    config.allowedPaymentMethods[0].tokenizationSpecification.parameters
+        .gateway;
+    config.allowedPaymentMethods[0].tokenizationSpecification.parameters
+        .gatewayMerchantId;
 
+    // Create session and format config
     const googlePaySession: GooglePayOneTimePaymentSession =
         sdkInstance.createGooglePayOneTimePaymentSession();
 
+    // Verify output has renamed fields (supportedNetworks → allowedCardNetworks, merchantCountry → countryCode)
     const googlePayConfig: GooglePayConfig =
         googlePaySession.formatConfigForPaymentRequest(config);
-
-    // Verify output has the renamed fields (supportedNetworks → allowedCardNetworks, merchantCountry → countryCode)
-    const _countryCode: string = googlePayConfig.countryCode;
-    const _allowedCardNetworks =
-        googlePayConfig.allowedPaymentMethods[0].parameters.allowedCardNetworks;
+    googlePayConfig.countryCode;
+    googlePayConfig.allowedPaymentMethods[0].parameters.allowedCardNetworks;
 
     // Mock Google Pay response (simulating Google's onPaymentAuthorized callback)
     const mockPaymentData: GooglePayPaymentMethodData = {
@@ -101,7 +90,6 @@ async function main() {
         },
     };
 
-    // Type test: Verify exported option and contact types
     const shippingAddress: GooglePayPaymentContact = {
         name: "John Doe",
         postalCode: "12345",
@@ -122,46 +110,19 @@ async function main() {
         shippingAddress,
     };
 
-    // Confirm order with PayPal
-    const approveResponse: GooglePayApprovePaymentResponse =
-        await googlePaySession.confirmOrder(confirmOptions);
-
-    // Verify response structure
-    const _orderId: string = approveResponse.id;
-    const _status: string = approveResponse.status;
-    const _cardBrand: string =
-        approveResponse.payment_source.google_pay.card.brand;
-    const _lastDigits: string =
-        approveResponse.payment_source.google_pay.card.last_digits;
+    // Confirm order and verify response structure
+    const approveResponse = await googlePaySession.confirmOrder(confirmOptions);
+    approveResponse.id;
+    approveResponse.status;
+    approveResponse.payment_source.google_pay.card.brand;
+    approveResponse.payment_source.google_pay.card.last_digits;
 
     // Check if 3DS is required
     if (approveResponse.status === "PAYER_ACTION_REQUIRED") {
         googlePaySession.initiatePayerAction();
     }
 
-    // Type test: Verify GooglePayPaymentsInstance has the correct method
+    // Verify GooglePayPaymentsInstance narrowing from SdkInstance
     const instance: GooglePayPaymentsInstance = sdkInstance;
-    const session = instance.createGooglePayOneTimePaymentSession();
-
-    console.log(
-        _configType,
-        _eligible,
-        _merchantCountry,
-        _apiVersion,
-        _apiVersionMinor,
-        _merchantId,
-        _merchantOrigin,
-        _supportedNetworks,
-        _gateway,
-        _gatewayMerchantId,
-        _countryCode,
-        _allowedCardNetworks,
-        _orderId,
-        _status,
-        _cardBrand,
-        _lastDigits,
-        googlePayConfig,
-        session,
-        instance,
-    );
+    instance.createGooglePayOneTimePaymentSession();
 }

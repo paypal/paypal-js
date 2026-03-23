@@ -53,6 +53,5 @@ async function main() {
 
     sdkInstance.createApplePayOneTimePaymentSession();
 
-    const googlePaySession = sdkInstance.createGooglePayOneTimePaymentSession();
-    console.log(googlePaySession);
+    sdkInstance.createGooglePayOneTimePaymentSession();
 }
