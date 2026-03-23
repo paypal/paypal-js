@@ -2,6 +2,7 @@ import { PayPalPaymentsInstance } from "./components/paypal-payments";
 import { PayPalGuestPaymentsInstance } from "./components/paypal-guest-payments";
 import { PayPalLegacyBillingInstance } from "./components/paypal-legacy-billing-agreements";
 import { VenmoPaymentsInstance } from "./components/venmo-payments";
+import { ApplePayPaymentsInstance } from "./components/applepay-payments";
 import {
     EligiblePaymentMethodsOutput,
     FindEligibleMethodsOptions,
@@ -45,7 +46,8 @@ export type Components =
     | "paypal-subscriptions"
     | "venmo-payments"
     | "paypal-legacy-billing-agreements"
-    | "card-fields";
+    | "card-fields"
+    | "applepay-payments";
 
 export type PageTypes =
     | "cart"
@@ -90,6 +92,7 @@ export type CreateInstanceOptions<T extends readonly Components[]> =
  * **Conditionally includes methods based on components:**
  * - `"paypal-payments"` - Adds PayPalPaymentsInstance methods
  * - `"venmo-payments"` - Adds VenmoPaymentsInstance methods
+ * - `"applepay-payments"` - Adds ApplePayPaymentsInstance methods
  * - `"card-fields"` - Adds CardFieldsInstance methods
  * - `"paypal-legacy-billing-agreements"` Adds PayPalLegacyBillingInstance methods
  * - `"paypal-guest-payments"` - Adds PayPalGuestPaymentsInstance methods
@@ -153,6 +156,9 @@ export type SdkInstance<T extends readonly Components[]> = BaseInstance &
     ("card-fields" extends T[number] ? CardFieldsInstance : unknown) &
     ("paypal-subscriptions" extends T[number]
         ? PayPalSubscriptionsInstance
+        : unknown) &
+    ("applepay-payments" extends T[number]
+        ? ApplePayPaymentsInstance
         : unknown);
 
 /**
@@ -240,6 +246,7 @@ export * from "./components/paypal-payments";
 export * from "./components/paypal-guest-payments";
 export * from "./components/paypal-legacy-billing-agreements";
 export * from "./components/venmo-payments";
+export * from "./components/applepay-payments";
 export * from "./components/find-eligible-methods";
 export * from "./components/card-fields";
 export * from "./components/paypal-messages";

@@ -3,13 +3,15 @@ import {
     PayLaterProductCodes,
     PayPalCreditCountryCodes,
 } from "./paypal-payments";
+import { ApplePayConfig } from "./applepay-payments";
 
 export type EligiblePaymentMethods =
     | "basic_cards"
     | "paypal_pay_later"
     | "paypal_credit"
     | "paypal"
-    | "venmo";
+    | "venmo"
+    | "apple_pay";
 
 export type PaymentFlow =
     | "ONE_TIME_PAYMENT"
@@ -23,7 +25,13 @@ export type FindEligibleMethodsOptions = {
     paymentFlow?: PaymentFlow;
 };
 
-export type FundingSource = "credit" | "paylater" | "paypal" | "venmo" | "card";
+export type FundingSource =
+    | "credit"
+    | "paylater"
+    | "paypal"
+    | "venmo"
+    | "card"
+    | "applepay";
 
 type BaseEligiblePaymentMethodDetails = {
     canBeVaulted: boolean;
@@ -38,12 +46,18 @@ type PayLaterEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
     productCode: PayLaterProductCodes;
 };
 
+type ApplePayEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
+    config: ApplePayConfig;
+};
+
 export type FindEligibleMethodsGetDetails<T extends FundingSource> =
     T extends "credit"
         ? CreditEligiblePaymentMethodDetails
         : T extends "paylater"
           ? PayLaterEligiblePaymentMethodDetails
-          : BaseEligiblePaymentMethodDetails;
+          : T extends "applepay"
+            ? ApplePayEligiblePaymentMethodDetails
+            : BaseEligiblePaymentMethodDetails;
 
 type EligiblePaymentMethodDetails = {
     can_be_vaulted?: boolean;
