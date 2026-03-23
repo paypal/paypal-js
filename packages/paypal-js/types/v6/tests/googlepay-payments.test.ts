@@ -1,8 +1,11 @@
 import { loadCoreSdkScript } from "../../../src/v6";
 import type {
     GooglePayApprovePaymentResponse,
+    GooglePayConfig,
+    GooglePayConfigFromFindEligibleMethods,
     GooglePayConfirmOrderOptions,
     GooglePayPaymentContact,
+    GooglePayPaymentMethodData,
     GooglePayPaymentsInstance,
     GooglePayOneTimePaymentSession,
     PayPalV6Namespace,
@@ -52,14 +55,36 @@ async function main() {
     const googlePayDetails = paymentMethods.getDetails("googlepay");
     const { config } = googlePayDetails;
 
+    // Verify config fields are camelCase (matching runtime after SDK's camelizeObjectKeys)
+    const _configType: GooglePayConfigFromFindEligibleMethods = config;
+    const _eligible: boolean = config.eligible;
+    const _merchantCountry: string = config.merchantCountry;
+    const _apiVersion: number = config.apiVersion;
+    const _apiVersionMinor: number = config.apiVersionMinor;
+    const _merchantId: string = config.merchantInfo.merchantId;
+    const _merchantOrigin: string = config.merchantInfo.merchantOrigin;
+    const _supportedNetworks =
+        config.allowedPaymentMethods[0].parameters.supportedNetworks;
+    const _gateway: string =
+        config.allowedPaymentMethods[0].tokenizationSpecification.parameters
+            .gateway;
+    const _gatewayMerchantId: string =
+        config.allowedPaymentMethods[0].tokenizationSpecification.parameters
+            .gatewayMerchantId;
+
     const googlePaySession: GooglePayOneTimePaymentSession =
         sdkInstance.createGooglePayOneTimePaymentSession();
 
-    const googlePayConfig =
+    const googlePayConfig: GooglePayConfig =
         googlePaySession.formatConfigForPaymentRequest(config);
 
-    // Mock Google Pay response
-    const mockPaymentData = {
+    // Verify output has the renamed fields (supportedNetworks → allowedCardNetworks, merchantCountry → countryCode)
+    const _countryCode: string = googlePayConfig.countryCode;
+    const _allowedCardNetworks =
+        googlePayConfig.allowedPaymentMethods[0].parameters.allowedCardNetworks;
+
+    // Mock Google Pay response (simulating Google's onPaymentAuthorized callback)
+    const mockPaymentData: GooglePayPaymentMethodData = {
         description: null,
         tokenizationData: {
             type: "PAYMENT_GATEWAY",
@@ -98,21 +123,45 @@ async function main() {
     };
 
     // Confirm order with PayPal
-    let approveResponse: GooglePayApprovePaymentResponse;
+    const approveResponse: GooglePayApprovePaymentResponse =
+        await googlePaySession.confirmOrder(confirmOptions);
 
-    try {
-        approveResponse = await googlePaySession.confirmOrder(confirmOptions);
+    // Verify response structure
+    const _orderId: string = approveResponse.id;
+    const _status: string = approveResponse.status;
+    const _cardBrand: string =
+        approveResponse.payment_source.google_pay.card.brand;
+    const _lastDigits: string =
+        approveResponse.payment_source.google_pay.card.last_digits;
 
-        console.log("Order approved:", approveResponse.id);
-    } catch (error) {
-        console.error("Order confirmation failed:", error);
+    // Check if 3DS is required
+    if (approveResponse.status === "PAYER_ACTION_REQUIRED") {
+        googlePaySession.initiatePayerAction();
     }
 
     // Type test: Verify GooglePayPaymentsInstance has the correct method
     const instance: GooglePayPaymentsInstance = sdkInstance;
     const session = instance.createGooglePayOneTimePaymentSession();
 
-    console.log("GooglePay types validated successfully");
-    console.log("Config:", googlePayConfig);
-    console.log("Session:", session);
+    console.log(
+        _configType,
+        _eligible,
+        _merchantCountry,
+        _apiVersion,
+        _apiVersionMinor,
+        _merchantId,
+        _merchantOrigin,
+        _supportedNetworks,
+        _gateway,
+        _gatewayMerchantId,
+        _countryCode,
+        _allowedCardNetworks,
+        _orderId,
+        _status,
+        _cardBrand,
+        _lastDigits,
+        googlePayConfig,
+        session,
+        instance,
+    );
 }

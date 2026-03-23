@@ -28,6 +28,7 @@ async function main() {
             "paypal-payments",
             "paypal-guest-payments",
             "venmo-payments",
+            "googlepay-payments",
         ],
     });
 
@@ -48,4 +49,7 @@ async function main() {
             return Promise.resolve();
         },
     });
+
+    const googlePaySession = sdkInstance.createGooglePayOneTimePaymentSession();
+    console.log(googlePaySession);
 }

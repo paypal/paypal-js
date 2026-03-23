@@ -46,44 +46,46 @@ export type GooglePayConfig = {
 };
 
 /**
- * Google Pay configuration from the eligibility API response
+ * Google Pay configuration from the eligibility response
  *
  * @remarks
- * This is the raw configuration returned from findEligibleMethods(),
- * in snake_case format. It must be transformed via formatConfigForPaymentRequest()
- * before passing to Google's PaymentsClient.
+ * This is the configuration returned from `getDetails("googlepay").config`
+ * after the SDK's internal camelization. It must be transformed via
+ * `formatConfigForPaymentRequest()` before passing to Google's PaymentsClient,
+ * as that step performs additional field renames (e.g. `supportedNetworks`
+ * becomes `allowedCardNetworks`, `merchantCountry` becomes `countryCode`).
  */
 export type GooglePayConfigFromFindEligibleMethods = {
     eligible: boolean;
-    merchant_country: string;
-    api_version: number;
-    api_version_minor: number;
-    allowed_payment_methods: ReadonlyArray<{
+    merchantCountry: string;
+    apiVersion: number;
+    apiVersionMinor: number;
+    allowedPaymentMethods: ReadonlyArray<{
         type: string;
         parameters: {
-            allowed_auth_methods: ReadonlyArray<"CRYPTOGRAM_3DS" | "PAN_ONLY">;
-            supported_networks: ReadonlyArray<
+            allowedAuthMethods: ReadonlyArray<"CRYPTOGRAM_3DS" | "PAN_ONLY">;
+            supportedNetworks: ReadonlyArray<
                 "AMEX" | "DISCOVER" | "INTERAC" | "JCB" | "MASTERCARD" | "VISA"
             >;
-            billing_address_required: boolean;
-            assurance_details_required: boolean;
-            billing_address_parameters: {
+            billingAddressRequired: boolean;
+            assuranceDetailsRequired: boolean;
+            billingAddressParameters: {
                 format?: "MIN" | "FULL";
-                phone_number_required?: boolean;
+                phoneNumberRequired?: boolean;
             };
         };
-        tokenization_specification: {
+        tokenizationSpecification: {
             type: string;
             parameters: {
                 gateway: string;
-                gateway_merchant_id: string;
+                gatewayMerchantId: string;
             };
         };
     }>;
-    merchant_info: {
-        merchant_origin: string;
-        merchant_id: string;
-        auth_jwt?: string;
+    merchantInfo: {
+        merchantOrigin: string;
+        merchantId: string;
+        authJwt?: string;
     };
 };
 
@@ -233,14 +235,17 @@ export type GooglePayConfirmOrderOptions = {
  */
 export interface GooglePayOneTimePaymentSession {
     /**
-     * Transforms Google Pay configuration from eligibility response format
+     * Transforms Google Pay eligibility config into the format required by Google's PaymentsClient
      *
      * @remarks
-     * Converts snake_case fields to camelCase and adds required fields for
-     * Google's PaymentsClient. This transformation must be applied before
-     * passing configuration to Google Pay's isReadyToPay() or loadPaymentData().
+     * Performs field renames required by Google's API:
+     * - `supportedNetworks` becomes `allowedCardNetworks`
+     * - `merchantCountry` becomes `countryCode`
+     * - Removes `authJwt` in sandbox environments
      *
-     * @param googlePayConfigFromFindEligibleMethods - Configuration from findEligibleMethods() response
+     * This must be called before passing config to `isReadyToPay()` or `loadPaymentData()`.
+     *
+     * @param googlePayConfigFromFindEligibleMethods - Configuration from `getDetails("googlepay").config`
      * @returns Formatted configuration ready for Google Pay SDK
      *
      * @example
