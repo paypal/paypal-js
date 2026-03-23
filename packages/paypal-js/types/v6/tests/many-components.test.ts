@@ -29,6 +29,7 @@ async function main() {
             "paypal-guest-payments",
             "venmo-payments",
             "googlepay-payments",
+            "applepay-payments",
         ],
     });
 
@@ -52,4 +53,6 @@ async function main() {
 
     const googlePaySession = sdkInstance.createGooglePayOneTimePaymentSession();
     console.log(googlePaySession);
+
+    sdkInstance.createApplePayOneTimePaymentSession();
 }

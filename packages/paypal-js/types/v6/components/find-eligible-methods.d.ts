@@ -4,14 +4,16 @@ import {
     PayPalCreditCountryCodes,
 } from "./paypal-payments";
 import type { GooglePayConfigFromFindEligibleMethods } from "./googlepay-payments";
+import { ApplePayConfig } from "./applepay-payments";
 
 export type EligiblePaymentMethods =
     | "basic_cards"
-    | "google_pay"
     | "paypal_pay_later"
     | "paypal_credit"
     | "paypal"
-    | "venmo";
+    | "venmo"
+    | "apple_pay"
+    | "google_pay";
 
 export type PaymentFlow =
     | "ONE_TIME_PAYMENT"
@@ -26,12 +28,13 @@ export type FindEligibleMethodsOptions = {
 };
 
 export type FundingSource =
-    | "card"
     | "credit"
-    | "googlepay"
     | "paylater"
     | "paypal"
-    | "venmo";
+    | "venmo"
+    | "card"
+    | "applepay"
+    | "googlepay";
 
 type BaseEligiblePaymentMethodDetails = {
     canBeVaulted: boolean;
@@ -51,14 +54,20 @@ type GooglePayEligiblePaymentMethodDetails = {
     config: GooglePayConfigFromFindEligibleMethods;
 };
 
+type ApplePayEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
+    config: ApplePayConfig;
+};
+
 export type FindEligibleMethodsGetDetails<T extends FundingSource> =
     T extends "credit"
         ? CreditEligiblePaymentMethodDetails
-        : T extends "googlepay"
-          ? GooglePayEligiblePaymentMethodDetails
-          : T extends "paylater"
-            ? PayLaterEligiblePaymentMethodDetails
-            : BaseEligiblePaymentMethodDetails;
+        : T extends "paylater"
+          ? PayLaterEligiblePaymentMethodDetails
+          : T extends "applepay"
+            ? ApplePayEligiblePaymentMethodDetails
+            : T extends "googlepay"
+              ? GooglePayEligiblePaymentMethodDetails
+              : BaseEligiblePaymentMethodDetails;
 
 type EligiblePaymentMethodDetails = {
     can_be_vaulted?: boolean;
