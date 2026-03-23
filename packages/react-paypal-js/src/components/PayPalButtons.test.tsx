@@ -211,7 +211,6 @@ describe("<PayPalButtons />", () => {
             expect(window.paypal?.Buttons).toHaveBeenCalledTimes(3),
         );
     });
-    window.paypal?.Buttons as jest.Mock;
     test("should not re-render Buttons from side-effect in props.createOrder function", async () => {
         function ButtonWrapper({ initialOrderID }: { initialOrderID: string }) {
             const [orderID, setOrderID] = useState(initialOrderID);
