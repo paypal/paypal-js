@@ -3,8 +3,8 @@ import {
     PayLaterProductCodes,
     PayPalCreditCountryCodes,
 } from "./paypal-payments";
-import type { GooglePayConfigFromFindEligibleMethods } from "./googlepay-payments";
 import { ApplePayConfig } from "./applepay-payments";
+import type { GooglePayConfigFromFindEligibleMethods } from "./googlepay-payments";
 
 export type EligiblePaymentMethods =
     | "basic_cards"
@@ -49,13 +49,13 @@ type PayLaterEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
     productCode: PayLaterProductCodes;
 };
 
+type ApplePayEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
+    config: ApplePayConfig;
+};
+
 type GooglePayEligiblePaymentMethodDetails = {
     canBeVaulted?: boolean;
     config: GooglePayConfigFromFindEligibleMethods;
-};
-
-type ApplePayEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
-    config: ApplePayConfig;
 };
 
 export type FindEligibleMethodsGetDetails<T extends FundingSource> =
