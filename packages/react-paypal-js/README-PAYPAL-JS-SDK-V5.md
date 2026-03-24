@@ -1,4 +1,4 @@
-# react-paypal-js (Legacy Documentation)
+# react-paypal-js (PayPal JS SDK V5 Documentation)
 
 > **Note:** This documentation is for react-paypal-js with the old PayPal JS SDK V5. For the latest V6 SDK integration see the [main README](./README.md).
 
