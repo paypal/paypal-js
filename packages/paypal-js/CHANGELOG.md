@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.5.0
+
+### Minor Changes
+
+- a5d2818: Adding Apple Pay payment component types to v6 SDK
+
 ## 9.4.1
 
 ### Patch Changes
