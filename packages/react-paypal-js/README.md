@@ -15,7 +15,7 @@
 
 > **Are you still using the old PayPal JS SDK V5 SDK?**
 >
-> This documentation teaches how to use the latest PayPal JS SDK with react. For the legacy integration using PayPal JS SDK V5 with `PayPalScriptProvider`, `PayPalButtons`, `PayPalHostedFields`, and `BraintreePayPalButtons`, see [README-LEGACY.md](./README-LEGACY.md).
+> This documentation teaches how to use the latest PayPal JS SDK with react. For the integration using PayPal JS SDK V5 with `PayPalScriptProvider`, `PayPalButtons`, `PayPalHostedFields`, and `BraintreePayPalButtons`, see [README-PAYPAL-JS-SDK-V5.md](./README-PAYPAL-JS-SDK-V5.md).
 
 ---
 
