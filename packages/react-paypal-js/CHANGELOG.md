@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.1.1
+
+### Patch Changes
+
+- b9a263a: fix link to the live demo in readme
+
 ## 9.1.0
 
 ### Minor Changes
