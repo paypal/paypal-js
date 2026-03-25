@@ -1,5 +1,17 @@
 # Changelog
 
+## 9.1.0
+
+### Minor Changes
+
+- fd0fd4c: Add internal error boundary to PayPalButtons component
+
+### Patch Changes
+
+- ee754a1: clarify PayPal SDK versions in readme files
+- Updated dependencies [a5d2818]
+    - @paypal/paypal-js@9.5.0
+
 ## 9.0.2
 
 ### Patch Changes
