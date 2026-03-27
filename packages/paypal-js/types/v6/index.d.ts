@@ -3,6 +3,7 @@ import { PayPalGuestPaymentsInstance } from "./components/paypal-guest-payments"
 import { PayPalLegacyBillingInstance } from "./components/paypal-legacy-billing-agreements";
 import { VenmoPaymentsInstance } from "./components/venmo-payments";
 import { ApplePayPaymentsInstance } from "./components/applepay-payments";
+import { GooglePayPaymentsInstance } from "./components/googlepay-payments";
 import {
     EligiblePaymentMethodsOutput,
     FindEligibleMethodsOptions,
@@ -47,7 +48,8 @@ export type Components =
     | "venmo-payments"
     | "paypal-legacy-billing-agreements"
     | "card-fields"
-    | "applepay-payments";
+    | "applepay-payments"
+    | "googlepay-payments";
 
 export type PageTypes =
     | "cart"
@@ -92,12 +94,13 @@ export type CreateInstanceOptions<T extends readonly Components[]> =
  * **Conditionally includes methods based on components:**
  * - `"paypal-payments"` - Adds PayPalPaymentsInstance methods
  * - `"venmo-payments"` - Adds VenmoPaymentsInstance methods
- * - `"applepay-payments"` - Adds ApplePayPaymentsInstance methods
  * - `"card-fields"` - Adds CardFieldsInstance methods
- * - `"paypal-legacy-billing-agreements"` Adds PayPalLegacyBillingInstance methods
+ * - `"paypal-legacy-billing-agreements"` - Adds PayPalLegacyBillingInstance methods
  * - `"paypal-guest-payments"` - Adds PayPalGuestPaymentsInstance methods
  * - `"paypal-messages"` - Adds PayPalMessagesInstance methods
  * - `"paypal-subscriptions"` - Adds PayPalSubscriptionsInstance methods
+ * - `"applepay-payments"` - Adds ApplePayPaymentsInstance methods
+ * - `"googlepay-payments"` - Adds GooglePayPaymentsInstance methods
  *
  * @example
  * ```typescript
@@ -159,6 +162,9 @@ export type SdkInstance<T extends readonly Components[]> = BaseInstance &
         : unknown) &
     ("applepay-payments" extends T[number]
         ? ApplePayPaymentsInstance
+        : unknown) &
+    ("googlepay-payments" extends T[number]
+        ? GooglePayPaymentsInstance
         : unknown);
 
 /**
@@ -246,11 +252,12 @@ export * from "./components/paypal-payments";
 export * from "./components/paypal-guest-payments";
 export * from "./components/paypal-legacy-billing-agreements";
 export * from "./components/venmo-payments";
-export * from "./components/applepay-payments";
 export * from "./components/find-eligible-methods";
 export * from "./components/card-fields";
 export * from "./components/paypal-messages";
 export * from "./components/paypal-subscriptions";
+export * from "./components/applepay-payments";
+export * from "./components/googlepay-payments";
 
 // export a subset of types from base-component
 export {
