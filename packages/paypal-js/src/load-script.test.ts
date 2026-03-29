@@ -23,14 +23,37 @@ vi.mock("./utils", async () => {
 
 const mockedInsertScriptElement = vi.mocked(insertScriptElement);
 
+function mockSuccessfulScriptInsertion(): void {
+    mockedInsertScriptElement.mockImplementation(
+        ({ onSuccess, attributes = {} }: ScriptElement) => {
+            const namespace = attributes["data-namespace"] || "paypal";
+
+            vi.stubGlobal(namespace, { version: "5" });
+            process.nextTick(() => onSuccess());
+        },
+    );
+}
+
+function resetUnloadSuppressionState(): void {
+    if (window.__paypalOriginalAddEventListener) {
+        window.addEventListener = window.__paypalOriginalAddEventListener;
+    }
+
+    delete window.__paypalOriginalAddEventListener;
+    delete window.__paypalActiveUnloadSuppressions;
+}
+
 describe("loadScript()", () => {
     beforeEach(() => {
         document.head.innerHTML = "";
+        mockSuccessfulScriptInsertion();
+        resetUnloadSuppressionState();
     });
 
     afterEach(() => {
         vi.clearAllMocks();
         vi.unstubAllGlobals();
+        resetUnloadSuppressionState();
     });
 
     test("should insert <script> and resolve the promise", async () => {
@@ -143,16 +166,144 @@ describe("loadScript()", () => {
             "Expected PromisePonyfill to be a function.",
         );
     });
+
+    test("should suppress unload listeners only while the PayPal SDK is loading", async () => {
+        const originalAddEventListener = window.addEventListener;
+        const blockedUnloadListener = vi.fn();
+        const allowedUnloadListener = vi.fn();
+
+        const loadScriptPromise = loadScript({ clientId: "test" });
+
+        expect(window.addEventListener).not.toBe(originalAddEventListener);
+
+        window.addEventListener("unload", blockedUnloadListener);
+
+        await loadScriptPromise;
+
+        expect(window.addEventListener).toBe(originalAddEventListener);
+        expect(blockedUnloadListener).not.toHaveBeenCalled();
+
+        window.addEventListener("unload", allowedUnloadListener);
+        window.dispatchEvent(new Event("unload"));
+
+        expect(allowedUnloadListener).toHaveBeenCalledTimes(1);
+
+        window.removeEventListener("unload", allowedUnloadListener);
+    });
+
+    test("should restore unload listener registration after a failed SDK load", async () => {
+        expect.assertions(3);
+
+        const originalAddEventListener = window.addEventListener;
+        const unloadListenerSpy = vi.fn();
+
+        mockedInsertScriptElement.mockImplementation(({ onError }) => {
+            process.nextTick(() => onError && onError("failed to load"));
+        });
+
+        await expect(loadScript({ clientId: "test" })).rejects.toThrow(
+            'The script "https://www.paypal.com/sdk/js?client-id=test" failed to load. Check the HTTP status code and response body in DevTools to learn more.',
+        );
+
+        expect(window.addEventListener).toBe(originalAddEventListener);
+
+        window.addEventListener("unload", unloadListenerSpy);
+        window.dispatchEvent(new Event("unload"));
+
+        expect(unloadListenerSpy).toHaveBeenCalledTimes(1);
+
+        window.removeEventListener("unload", unloadListenerSpy);
+    });
+
+    test("should keep unload suppression active until concurrent SDK loads finish", async () => {
+        const originalAddEventListener = window.addEventListener;
+        const pendingSuccessCallbacks: Array<() => void> = [];
+        const firstBlockedUnloadListener = vi.fn();
+        const secondBlockedUnloadListener = vi.fn();
+        const allowedUnloadListener = vi.fn();
+
+        mockedInsertScriptElement.mockImplementation(
+            ({ onSuccess, attributes = {} }) => {
+                const namespace = attributes["data-namespace"] || "paypal";
+
+                vi.stubGlobal(namespace, { version: "5" });
+                pendingSuccessCallbacks.push(onSuccess);
+            },
+        );
+
+        const firstLoadPromise = loadScript({
+            clientId: "test",
+            dataNamespace: "paypal1",
+        });
+        const secondLoadPromise = loadScript({
+            clientId: "test",
+            dataNamespace: "paypal2",
+        });
+
+        expect(window.__paypalActiveUnloadSuppressions).toBe(2);
+
+        window.addEventListener("unload", firstBlockedUnloadListener);
+
+        pendingSuccessCallbacks[0]();
+        await firstLoadPromise;
+
+        expect(window.__paypalActiveUnloadSuppressions).toBe(1);
+        expect(window.addEventListener).not.toBe(originalAddEventListener);
+
+        window.addEventListener("unload", secondBlockedUnloadListener);
+
+        pendingSuccessCallbacks[1]();
+        await secondLoadPromise;
+
+        expect(window.addEventListener).toBe(originalAddEventListener);
+        expect(window.__paypalActiveUnloadSuppressions).toBeUndefined();
+        expect(firstBlockedUnloadListener).not.toHaveBeenCalled();
+        expect(secondBlockedUnloadListener).not.toHaveBeenCalled();
+
+        window.addEventListener("unload", allowedUnloadListener);
+        window.dispatchEvent(new Event("unload"));
+
+        expect(allowedUnloadListener).toHaveBeenCalledTimes(1);
+
+        window.removeEventListener("unload", allowedUnloadListener);
+    });
+
+    test("should restore unload listener registration after a synchronous insertion failure", async () => {
+        expect.assertions(3);
+
+        const originalAddEventListener = window.addEventListener;
+        const unloadListenerSpy = vi.fn();
+
+        mockedInsertScriptElement.mockImplementation(() => {
+            throw new Error("sync insert failure");
+        });
+
+        await expect(loadScript({ clientId: "test" })).rejects.toThrow(
+            "sync insert failure",
+        );
+
+        expect(window.addEventListener).toBe(originalAddEventListener);
+
+        window.addEventListener("unload", unloadListenerSpy);
+        window.dispatchEvent(new Event("unload"));
+
+        expect(unloadListenerSpy).toHaveBeenCalledTimes(1);
+
+        window.removeEventListener("unload", unloadListenerSpy);
+    });
 });
 
 describe("loadCustomScript()", () => {
     beforeEach(() => {
         document.head.innerHTML = "";
+        mockSuccessfulScriptInsertion();
+        resetUnloadSuppressionState();
     });
 
     afterEach(() => {
         vi.clearAllMocks();
         vi.unstubAllGlobals();
+        resetUnloadSuppressionState();
     });
 
     test("should insert <script> and resolve the promise", async () => {
@@ -228,5 +379,26 @@ describe("loadCustomScript()", () => {
             PromisePonyfill,
         );
         expect(PromisePonyfill).toHaveBeenCalledTimes(1);
+    });
+
+    test("should not suppress unload listeners for custom scripts", async () => {
+        const originalAddEventListener = window.addEventListener;
+        const unloadListenerSpy = vi.fn();
+
+        const loadCustomScriptPromise = loadCustomScript({
+            url: "https://www.example.com/index.js",
+        });
+
+        expect(window.addEventListener).toBe(originalAddEventListener);
+
+        window.addEventListener("unload", unloadListenerSpy);
+
+        await loadCustomScriptPromise;
+
+        window.dispatchEvent(new Event("unload"));
+
+        expect(unloadListenerSpy).toHaveBeenCalledTimes(1);
+
+        window.removeEventListener("unload", unloadListenerSpy);
     });
 });

@@ -336,3 +336,29 @@ describe("processSdkBaseUrl()", () => {
         expect(sdkBaseUrl).toEqual(productionUrl);
     });
 });
+
+describe("insertScriptElement() side effects", () => {
+    beforeEach(() => {
+        document.head.innerHTML = "";
+    });
+
+    test("does not modify unload event registration", () => {
+        const originalAddEventListener = window.addEventListener;
+        const unloadListenerSpy = vi.fn();
+
+        insertScriptElement({
+            url: "https://www.paypal.com/sdk/js?client-id=test",
+            onError: vi.fn(),
+            onSuccess: vi.fn(),
+        });
+
+        expect(window.addEventListener).toBe(originalAddEventListener);
+
+        window.addEventListener("unload", unloadListenerSpy);
+        window.dispatchEvent(new Event("unload"));
+
+        expect(unloadListenerSpy).toHaveBeenCalledTimes(1);
+
+        window.removeEventListener("unload", unloadListenerSpy);
+    });
+});

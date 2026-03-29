@@ -31,7 +31,7 @@ export function loadScript(
         return PromisePonyfill.resolve(existingWindowNamespace);
     }
 
-    return loadCustomScript(
+    return loadPayPalScript(
         {
             url,
             attributes: attributes,
@@ -93,6 +93,101 @@ export function loadCustomScript(
             },
         });
     });
+}
+
+function loadPayPalScript(
+    options: {
+        url: string;
+        attributes?: Record<string, string>;
+    },
+    PromisePonyfill: PromiseConstructor = Promise,
+): Promise<void> {
+    return new PromisePonyfill((resolve, reject) => {
+        if (typeof document === "undefined") return resolve();
+
+        const releaseUnloadSuppression = acquireUnloadListenerSuppression();
+
+        try {
+            insertScriptElement({
+                ...options,
+                onSuccess: () => {
+                    releaseUnloadSuppression();
+                    resolve();
+                },
+                onError: () => {
+                    releaseUnloadSuppression();
+                    reject(
+                        new Error(
+                            `The script "${options.url}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
+                        ),
+                    );
+                },
+            });
+        } catch (error) {
+            releaseUnloadSuppression();
+            reject(error);
+        }
+    });
+}
+
+function acquireUnloadListenerSuppression(): () => void {
+    if (typeof window === "undefined") {
+        return () => undefined;
+    }
+
+    if (!window.__paypalOriginalAddEventListener) {
+        window.__paypalOriginalAddEventListener = window.addEventListener;
+
+        window.addEventListener = function (
+            type: string,
+            listener: EventListenerOrEventListenerObject,
+            options?: boolean | AddEventListenerOptions,
+        ): void {
+            if (type === "unload") {
+                return;
+            }
+
+            const originalAddEventListener =
+                window.__paypalOriginalAddEventListener;
+
+            if (!originalAddEventListener) {
+                return;
+            }
+
+            originalAddEventListener.call(this, type, listener, options);
+        };
+    }
+
+    window.__paypalActiveUnloadSuppressions =
+        (window.__paypalActiveUnloadSuppressions ?? 0) + 1;
+
+    let released = false;
+
+    return () => {
+        if (released || typeof window === "undefined") {
+            return;
+        }
+
+        released = true;
+
+        const remainingSuppressions =
+            (window.__paypalActiveUnloadSuppressions ?? 1) - 1;
+
+        if (remainingSuppressions > 0) {
+            window.__paypalActiveUnloadSuppressions = remainingSuppressions;
+            return;
+        }
+
+        const originalAddEventListener =
+            window.__paypalOriginalAddEventListener;
+
+        if (originalAddEventListener) {
+            window.addEventListener = originalAddEventListener;
+        }
+
+        delete window.__paypalOriginalAddEventListener;
+        delete window.__paypalActiveUnloadSuppressions;
+    };
 }
 
 function getPayPalWindowNamespace(namespace: string): PayPalNamespace {
