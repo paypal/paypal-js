@@ -136,6 +136,20 @@ export function toError(error: unknown): Error {
     return new Error(String(error));
 }
 
+/**
+ * Custom hook that memoizes a value based on deep equality comparison.
+ * Returns a stable reference when the value hasn't changed, even if the
+ * object or array reference is new.
+ *
+ * This allows developers to pass inline objects or arrays without causing
+ * unnecessary re-renders or effect re-runs when the values are the same.
+ *
+ * @param value - The value to memoize
+ * @returns A stable reference to the value
+ *
+ * @example
+ * const memoizedAmount = useDeepCompareMemoize({ value: "10.00", currencyCode: "USD" });
+ */
 export function useDeepCompareMemoize<T>(value: T): T {
     const ref = useRef<{ value: T }>();
 
@@ -146,6 +160,23 @@ export function useDeepCompareMemoize<T>(value: T): T {
     return ref.current.value;
 }
 
+/**
+ * Performs a recursive deep equality check on two values.
+ *
+ * Handles primitives, null/undefined, arrays, and plain objects. Recursion is
+ * bounded by `maxDepth` (default: 10) to prevent stack overflow on deeply nested
+ * structures — comparison returns `false` if the limit is exceeded.
+ *
+ * @param obj1 - First value to compare
+ * @param obj2 - Second value to compare
+ * @param maxDepth - Maximum recursion depth (default: 10)
+ * @param currentDepth - Current recursion depth, used internally
+ * @returns `true` if both values are deeply equal, `false` otherwise
+ *
+ * @example
+ * deepEqual({ amount: "10.00", currency: "USD" }, { amount: "10.00", currency: "USD" }); // true
+ * deepEqual({ amount: "10.00" }, { amount: "20.00" }); // false
+ */
 export function deepEqual(
     obj1: unknown,
     obj2: unknown,
