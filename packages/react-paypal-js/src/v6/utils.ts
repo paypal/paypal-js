@@ -137,19 +137,13 @@ export function toError(error: unknown): Error {
 }
 
 export function useDeepCompareMemoize<T>(value: T): T {
-    const ref = useRef<T>();
-    const isInitialized = useRef(false);
+    const ref = useRef<{ value: T }>();
 
-    if (!isInitialized.current) {
-        // First render: always set the value
-        ref.current = value;
-        isInitialized.current = true;
-    } else if (!deepEqual(value, ref.current)) {
-        // Subsequent renders: only update if different
-        ref.current = value;
+    if (!ref.current || !deepEqual(value, ref.current.value)) {
+        ref.current = { value };
     }
 
-    return ref.current as T;
+    return ref.current.value;
 }
 
 export function deepEqual(
@@ -180,6 +174,12 @@ export function deepEqual(
 
     // Different types are not equal
     if (typeof obj1 !== typeof obj2) {
+        return false;
+    }
+
+    // Non-object primitives (number, string, boolean, function, symbol, bigint) that
+    // aren't strictly equal (caught above) are never equal
+    if (typeof obj1 !== "object") {
         return false;
     }
 
