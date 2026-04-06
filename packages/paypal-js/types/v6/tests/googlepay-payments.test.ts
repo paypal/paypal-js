@@ -125,4 +125,56 @@ async function main() {
     // Verify GooglePayPaymentsInstance narrowing from SdkInstance
     const instance: GooglePayPaymentsInstance = sdkInstance;
     instance.createGooglePayOneTimePaymentSession();
+
+    // Verify getDetails config can be passed directly to formatConfigForPaymentRequest
+    const mockConfig: GooglePayConfigFromFindEligibleMethods = {
+        eligible: true,
+        merchantCountry: "US",
+        apiVersion: 2,
+        apiVersionMinor: 0,
+        allowedPaymentMethods: [
+            {
+                type: "CARD",
+                parameters: {
+                    allowedAuthMethods: ["PAN_ONLY", "CRYPTOGRAM_3DS"],
+                    supportedNetworks: [
+                        "VISA",
+                        "MASTERCARD",
+                        "AMEX",
+                        "DISCOVER",
+                    ],
+                    billingAddressRequired: true,
+                    assuranceDetailsRequired: true,
+                    billingAddressParameters: {
+                        format: "FULL",
+                    },
+                },
+                tokenizationSpecification: {
+                    type: "PAYMENT_GATEWAY",
+                    parameters: {
+                        gateway: "paypalsb",
+                        gatewayMerchantId: "mockGatewayMerchantId",
+                    },
+                },
+            },
+        ],
+        merchantInfo: {
+            merchantOrigin: "https://example.com",
+            merchantId: "mockMerchantId",
+        },
+    };
+
+    // This is the merchant's primary flow: getDetails → formatConfigForPaymentRequest
+    const formattedConfig: GooglePayConfig =
+        googlePaySession.formatConfigForPaymentRequest(mockConfig);
+
+    // Verify output matches Google Pay API requirements
+    formattedConfig.countryCode;
+    formattedConfig.apiVersion;
+    formattedConfig.apiVersionMinor;
+    formattedConfig.merchantInfo.merchantId;
+    formattedConfig.allowedPaymentMethods[0].parameters.allowedAuthMethods;
+    formattedConfig.allowedPaymentMethods[0].parameters.allowedCardNetworks;
+    formattedConfig.allowedPaymentMethods[0].tokenizationSpecification
+        .parameters.gateway;
 }
