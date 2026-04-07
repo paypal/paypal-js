@@ -43,6 +43,14 @@ async function main() {
         return;
     }
 
+    const details = paymentMethods.getDetails("advanced_cards");
+    details.supportsInstallments;
+    details.cobrandedEnabled;
+    details.vendors[0].network;
+    details.vendors[0].eligible;
+    details.vendors[0].canBeVaulted;
+    details.vendors[0].branded;
+
     const paypalCardFieldsOneTimePaymentSession =
         sdkInstance.createCardFieldsOneTimePaymentSession();
     paypalCardFieldsOneTimePaymentSession.createCardFieldsComponent({
