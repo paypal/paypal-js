@@ -1,6 +1,6 @@
 # react-paypal-js
 
-> React components for the [PayPal JS SDK V6](https://docs.paypal.ai/payments/methods/paypal/sdk/js/v6/paypal-checkout)
+> React components for the [PayPal JS SDK](https://docs.paypal.ai/developer/how-to/sdk/js/v6/configuration)
 
 <div class="badges">
     <a href="https://github.com/paypal/paypal-js/actions/workflows/main.yml"><img src="https://img.shields.io/github/actions/workflow/status/paypal/paypal-js/main.yml?branch=main&logo=github&style=flat-square" alt="build status"></a>
@@ -13,9 +13,9 @@
 
 ---
 
-> **Using react-paypal-js version 8.x or earlier?**
+> **Are you still using the old PayPal JS SDK V5 SDK?**
 >
-> This documentation covers the V6 SDK integration introduced in v9.0.0. For the legacy integration using `PayPalScriptProvider`, `PayPalButtons`, `PayPalHostedFields`, and `BraintreePayPalButtons`, see [README-v8.md](./README-v8.md).
+> This documentation teaches how to use the latest PayPal JS SDK with react. For the integration using PayPal JS SDK V5 with `PayPalScriptProvider`, `PayPalButtons`, `PayPalHostedFields`, and `BraintreePayPalButtons`, see [README-PAYPAL-JS-SDK-V5.md](./README-PAYPAL-JS-SDK-V5.md).
 
 ---
 
@@ -53,7 +53,7 @@ Integrating PayPal into React applications requires careful handling of SDK scri
 
 - [PayPal V6 SDK Documentation](https://docs.paypal.ai/payments/methods/paypal/sdk/js/v6/paypal-checkout)
 - [React Sample Integration](https://github.com/paypal-examples/v6-web-sdk-sample-integration/tree/main/client/prebuiltPages/react) - Full working example with Node.js backend
-- [Live Demo](https://v6-web-sdk-sample-integration-server.fly.dev/client/prebuiltPages/react/oneTimePayment/dist/index.html) - Try the sample integration in sandbox mode
+- [Live Demo](https://v6-web-sdk-sample-integration-server.fly.dev/client/prebuiltPages/react/dist/) - Try the sample integration in sandbox mode
 - [PayPal Server SDK](https://www.npmjs.com/package/@paypal/paypal-server-sdk) - For backend integration
 - [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/)
 - [PayPal Sandbox Test Accounts](https://developer.paypal.com/dashboard/accounts)
@@ -160,7 +160,7 @@ function App() {
 }
 ```
 
-Alternative: With Promise-based Token
+Alternative: With Promise-based Client Token
 
 ```tsx
 function App() {

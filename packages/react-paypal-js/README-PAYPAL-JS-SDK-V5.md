@@ -1,20 +1,10 @@
-# react-paypal-js (Legacy v8.x Documentation)
+# react-paypal-js (PayPal JS SDK V5 Documentation)
 
-> **Note:** This documentation is for react-paypal-js versions 8.x and earlier, which use the legacy PayPal JS SDK. For the latest V6 SDK integration (v9.0.0+), see the [main README](./README.md).
+> **Note:** This documentation is for react-paypal-js with the old PayPal JS SDK V5. For the latest V6 SDK integration see the [main README](./README.md).
 
 ---
 
 > React components for the [PayPal JS SDK](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/)
-
-<div class="badges">
-    <a href="https://github.com/paypal/react-paypal-js/actions?query=workflow%3Avalidate"><img src="https://img.shields.io/github/actions/workflow/status/paypal/react-paypal-js/validate.yml?branch=main&logo=github&style=flat-square" alt="build status"></a>
-    <a href="https://codecov.io/github/paypal/react-paypal-js/"><img src="https://img.shields.io/codecov/c/github/paypal/react-paypal-js.svg?style=flat-square" alt="coverage"></a>
-    <a href="https://www.npmjs.com/package/@paypal/react-paypal-js"><img src="https://img.shields.io/npm/v/@paypal/react-paypal-js.svg?style=flat-square" alt="npm version"></a>
-    <a href="https://bundlephobia.com/result?p=@paypal/react-paypal-js"><img src="https://img.shields.io/bundlephobia/minzip/@paypal/react-paypal-js.svg?style=flat-square" alt="bundle size"></a>
-    <a href="https://www.npmtrends.com/@paypal/react-paypal-js"><img src="https://img.shields.io/npm/dm/@paypal/react-paypal-js.svg?style=flat-square" alt="npm downloads"></a>
-    <a href="https://github.com/paypal/react-paypal-js/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/@paypal/react-paypal-js.svg?style=flat-square" alt="apache license"></a>
-    <a href="https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook"><img src="https://raw.githubusercontent.com/storybooks/brand/master/badge/badge-storybook.svg" alt="storybook"></a>
-</div>
 
 ## Why use react-paypal-js?
 
@@ -227,6 +217,25 @@ export default function App() {
 ```
 
 To learn more about other available props, see the [PayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/example-paypalbuttons--default) docs.
+
+#### Error Handling
+
+The `<PayPalButtons />` component is wrapped in an internal error boundary to prevent unhandled errors from crashing the host application. When an error occurs during rendering or interaction with the PayPal buttons, the error boundary will:
+
+- Log the error to the console via `console.error`
+- Call the `onError` callback (if provided) with the error details including `message`, `name`, `stack`, and `componentStack`
+- Render `null` in place of the buttons to prevent a broken UI
+
+```jsx
+<PayPalButtons
+    createOrder={createOrder}
+    onApprove={onApprove}
+    onError={(err) => {
+        // handle the error, e.g. show a fallback UI or notify the user
+        console.error("PayPalButtons error:", err);
+    }}
+/>
+```
 
 ### BraintreePayPalButtons
 

@@ -190,3 +190,176 @@ export default function App() {
     );
 }
 `;
+
+export const getPayPalSubscriptionButtonCode = (): string => `
+import { PayPalProvider, PayPalSubscriptionButton } from "@paypal/react-paypal-js/sdk-v6";
+
+async function createSubscription() {
+    const response = await fetch("/api/paypal/create-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json();
+    return { subscriptionId: data.id };
+}
+
+export default function App() {
+    return (
+        <PayPalProvider
+            clientId="YOUR_CLIENT_ID"
+            components={["paypal-subscriptions"]}
+            pageType="checkout"
+        >
+            <PayPalSubscriptionButton
+                createSubscription={createSubscription}
+                onApprove={async (data) => {
+                    console.log("Subscription approved:", data.subscriptionId);
+                }}
+                onCancel={(data) => console.log("Cancelled:", data)}
+                onError={(error) => console.error("Error:", error)}
+                presentationMode="auto"
+                type="subscribe"
+            />
+        </PayPalProvider>
+    );
+}
+`;
+
+export const getPayPalCreditSavePaymentButtonCode = (): string => `
+import {
+    PayPalProvider,
+    PayPalCreditSavePaymentButton,
+    useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+async function createVaultToken() {
+    const response = await fetch("/api/paypal/create-vault-token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json();
+    return { vaultSetupToken: data.id };
+}
+
+function Checkout() {
+    useEligibleMethods({
+        payload: {
+            currencyCode: "USD",
+            paymentFlow: "VAULT_WITHOUT_PAYMENT",
+        },
+    });
+
+    return (
+        <PayPalCreditSavePaymentButton
+            createVaultToken={createVaultToken}
+            onApprove={async (data) => {
+                console.log("Payment method saved:", data.vaultSetupToken);
+            }}
+            presentationMode="auto"
+        />
+    );
+}
+
+export default function App() {
+    return (
+        <PayPalProvider
+            clientId="YOUR_CLIENT_ID"
+            components={["paypal-payments"]}
+            pageType="checkout"
+        >
+            <Checkout />
+        </PayPalProvider>
+    );
+}
+`;
+
+export const getCardFieldsOneTimePaymentCode = (): string => `
+import {
+    PayPalProvider,
+    PayPalCardFieldsProvider,
+    PayPalCardNumberField,
+    PayPalCardExpiryField,
+    PayPalCardCvvField,
+    usePayPalCardFields,
+    usePayPalCardFieldsOneTimePaymentSession,
+} from "@paypal/react-paypal-js/sdk-v6";
+import { useEffect } from "react";
+
+async function createOrder() {
+    const response = await fetch("/api/paypal/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json();
+    return { orderId: data.id };
+}
+
+async function captureOrder(orderId: string) {
+    const response = await fetch(\`/api/paypal/capture/\${orderId}\`, {
+        method: "POST",
+    });
+    return response.json();
+}
+
+function CardFieldsForm() {
+    const { error: cardFieldsError } = usePayPalCardFields();
+    const { error: submitError, submit, submitResponse } =
+        usePayPalCardFieldsOneTimePaymentSession();
+
+    useEffect(() => {
+        if (!submitResponse) return;
+
+        const { orderId, message } = submitResponse.data;
+
+        switch (submitResponse.state) {
+            case "succeeded":
+                captureOrder(orderId).then((result) => {
+                    console.log("Payment captured:", result);
+                });
+                break;
+            case "failed":
+                console.error("Payment failed:", message);
+                break;
+        }
+    }, [submitResponse]);
+
+    const handleSubmit = async () => {
+        const { orderId } = await createOrder();
+        await submit(orderId);
+    };
+
+    return (
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <PayPalCardNumberField
+                containerStyles={{ height: "3rem" }}
+                placeholder="Enter card number"
+            />
+            <PayPalCardExpiryField
+                containerStyles={{ height: "3rem" }}
+                placeholder="MM/YY"
+            />
+            <PayPalCardCvvField
+                containerStyles={{ height: "3rem" }}
+                placeholder="Enter CVV"
+            />
+            {!cardFieldsError && (
+                <button onClick={handleSubmit}>Pay</button>
+            )}
+        </div>
+    );
+}
+
+export default function App() {
+    return (
+        <PayPalProvider
+            clientId="YOUR_CLIENT_ID"
+            components={["card-fields"]}
+            pageType="checkout"
+        >
+            <PayPalCardFieldsProvider>
+                <CardFieldsForm />
+            </PayPalCardFieldsProvider>
+        </PayPalProvider>
+    );
+}
+`;

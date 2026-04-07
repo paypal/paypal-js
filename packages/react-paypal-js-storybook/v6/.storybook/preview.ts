@@ -1,5 +1,5 @@
 import type { Preview } from "@storybook/react";
-import { withPayPalProvider } from "../src/decorators";
+import { withPayPalProvider, withPaymentResult } from "../src/decorators";
 
 const preview: Preview = {
     parameters: {
@@ -25,13 +25,17 @@ const preview: Preview = {
                             "VenmoOneTimePaymentButton",
                             "PayPalSavePaymentButton",
                             "PayPalGuestPaymentButton",
+                            "PayPalSubscriptionButton",
+                            "PayPalCreditSavePaymentButton",
                         ],
+                        "Card Fields",
+                        ["CardFieldsOneTimePayment"],
                     ],
                 ],
             },
         },
     },
-    decorators: [withPayPalProvider],
+    decorators: [withPaymentResult, withPayPalProvider],
 };
 
 export default preview;

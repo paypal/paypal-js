@@ -7,7 +7,6 @@ import {
     act,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { ErrorBoundary } from "react-error-boundary";
 import { mock } from "jest-mock-extended";
 import { loadScript } from "@paypal/paypal-js";
 
@@ -15,7 +14,6 @@ import { PayPalButtons } from "./PayPalButtons";
 import { PayPalScriptProvider } from "./PayPalScriptProvider";
 import { FUNDING } from "../index";
 
-import type { ReactNode } from "react";
 import type {
     PayPalButtonsComponent,
     PayPalButtonsComponentOptions,
@@ -25,13 +23,6 @@ import type {
 jest.mock("@paypal/paypal-js", () => ({
     loadScript: jest.fn(),
 }));
-
-const onError = jest.fn();
-const wrapper = ({ children }: { children: ReactNode }) => (
-    <ErrorBoundary fallback={<div>Error</div>} onError={onError}>
-        {children}
-    </ErrorBoundary>
-);
 
 const mockPaypalButtonsComponent = mock<PayPalButtonsComponent>();
 mockPaypalButtonsComponent.close.mockResolvedValue();
@@ -220,7 +211,6 @@ describe("<PayPalButtons />", () => {
             expect(window.paypal?.Buttons).toHaveBeenCalledTimes(3),
         );
     });
-    window.paypal?.Buttons as jest.Mock;
     test("should not re-render Buttons from side-effect in props.createOrder function", async () => {
         function ButtonWrapper({ initialOrderID }: { initialOrderID: string }) {
             const [orderID, setOrderID] = useState(initialOrderID);
@@ -293,30 +283,31 @@ describe("<PayPalButtons />", () => {
         ).toBeFalsy();
     });
 
-    test("should throw an error when no components are passed to the PayPalScriptProvider", async () => {
+    test("should catch the error when no components are passed to the PayPalScriptProvider", async () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
+        const onErrorCallback = jest.fn();
         // reset the paypal namespace to trigger the error
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         window.paypal = {} as any;
 
         render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
-                <PayPalButtons />
+                <PayPalButtons onError={onErrorCallback} />
             </PayPalScriptProvider>,
-            { wrapper },
         );
 
-        await waitFor(() => expect(onError).toHaveBeenCalled());
-        expect(onError.mock.calls[0][0].message).toMatchSnapshot();
+        await waitFor(() => expect(onErrorCallback).toHaveBeenCalled());
+        expect(onErrorCallback.mock.calls[0][0].message).toMatchSnapshot();
         spyConsoleError.mockRestore();
     });
 
-    test("should throw an error when the 'buttons' component is missing from the components list passed to the PayPalScriptProvider", async () => {
+    test("should catch the error when the 'buttons' component is missing from the components list passed to the PayPalScriptProvider", async () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
+        const onErrorCallback = jest.fn();
         // reset the paypal namespace to trigger the error
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         window.paypal = {} as any;
@@ -328,20 +319,20 @@ describe("<PayPalButtons />", () => {
                     components: "marks,messages",
                 }}
             >
-                <PayPalButtons />
+                <PayPalButtons onError={onErrorCallback} />
             </PayPalScriptProvider>,
-            { wrapper },
         );
 
-        await waitFor(() => expect(onError).toHaveBeenCalled());
-        expect(onError.mock.calls[0][0].message).toMatchSnapshot();
+        await waitFor(() => expect(onErrorCallback).toHaveBeenCalled());
+        expect(onErrorCallback.mock.calls[0][0].message).toMatchSnapshot();
         spyConsoleError.mockRestore();
     });
 
-    test("should catch and throw unexpected zoid render errors", async () => {
+    test("should catch the unexpected zoid render errors", async () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
+        const onErrorCallback = jest.fn();
         window.paypal = {
             // @ts-expect-error mocking partial ButtonComponent
             Buttons() {
@@ -363,20 +354,20 @@ describe("<PayPalButtons />", () => {
 
         render(
             <PayPalScriptProvider options={{ clientId: "test" }}>
-                <PayPalButtons />
+                <PayPalButtons onError={onErrorCallback} />
             </PayPalScriptProvider>,
-            { wrapper },
         );
 
-        await waitFor(() => expect(onError).toHaveBeenCalled());
-        expect(onError.mock.calls[0][0].message).toMatchSnapshot();
+        await waitFor(() => expect(onErrorCallback).toHaveBeenCalled());
+        expect(onErrorCallback.mock.calls[0][0].message).toMatchSnapshot();
         spyConsoleError.mockRestore();
     });
 
-    test("should throw an error during initialization when style prop is invalid", async () => {
+    test("should catch the thrown error during initialization when style prop is invalid", async () => {
         const spyConsoleError = jest
             .spyOn(console, "error")
             .mockImplementation();
+        const onErrorCallback = jest.fn();
         window.paypal = {
             Buttons(options?: PayPalButtonsComponentOptions | undefined) {
                 if (
@@ -400,15 +391,15 @@ describe("<PayPalButtons />", () => {
                 }}
             >
                 <PayPalButtons
+                    onError={onErrorCallback}
                     style={{ color: "gold" }}
                     fundingSource={FUNDING.VENMO}
                 />
             </PayPalScriptProvider>,
-            { wrapper },
         );
 
-        await waitFor(() => expect(onError).toBeCalled());
-        expect(onError.mock.calls[0][0]).toEqual(
+        await waitFor(() => expect(onErrorCallback).toBeCalled());
+        expect(onErrorCallback.mock.calls[0][0]).toEqual(
             expect.objectContaining({
                 message:
                     "Failed to render <PayPalButtons /> component. Failed to initialize:  Error: Unexpected style.color for venmo button: gold, expected blue, silver, black, white",
@@ -519,5 +510,52 @@ describe("<PayPalButtons />", () => {
         expect(await screen.findByText("Count: 2")).toBeInTheDocument();
         await userEvent.click(payButton);
         expect(onClickFn).toHaveBeenCalledWith(2);
+    });
+
+    test("should call onError prop when an error occurs and render null", async () => {
+        const spyConsoleError = jest
+            .spyOn(console, "error")
+            .mockImplementation();
+        const onErrorCallback = jest.fn();
+        // reset the paypal namespace to trigger the error
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        window.paypal = {} as any;
+
+        const { container } = render(
+            <PayPalScriptProvider options={{ clientId: "test" }}>
+                <PayPalButtons onError={onErrorCallback} />
+            </PayPalScriptProvider>,
+        );
+
+        await waitFor(() => expect(onErrorCallback).toHaveBeenCalled());
+        expect(onErrorCallback.mock.calls[0][0]).toEqual(
+            expect.objectContaining({
+                message: expect.any(String),
+                name: expect.any(String),
+            }),
+        );
+        // internal error boundary should render null, not crash the app
+        expect(container.innerHTML).toBe("");
+        spyConsoleError.mockRestore();
+    });
+
+    test("should catch errors and render null even without onError prop", async () => {
+        const spyConsoleError = jest
+            .spyOn(console, "error")
+            .mockImplementation();
+        // reset the paypal namespace to trigger the error
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        window.paypal = {} as any;
+
+        const { container } = render(
+            <PayPalScriptProvider options={{ clientId: "test" }}>
+                <PayPalButtons />
+            </PayPalScriptProvider>,
+        );
+
+        await waitFor(() => {
+            expect(container.innerHTML).toBe("");
+        });
+        spyConsoleError.mockRestore();
     });
 });

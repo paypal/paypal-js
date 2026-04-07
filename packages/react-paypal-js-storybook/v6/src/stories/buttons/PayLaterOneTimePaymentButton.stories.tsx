@@ -1,6 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import type { Decorator } from "@storybook/react";
 
-import { PayLaterOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+import {
+    PayLaterOneTimePaymentButton,
+    useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
 import {
     createOrder,
     oneTimePaymentCallbacks,
@@ -10,10 +14,36 @@ import {
 import { V6DocPageStructure } from "../../components";
 import { getPayLaterOneTimePaymentButtonCode } from "../../shared/code";
 
+/**
+ * Wrapper that calls useEligibleMethods with the ONE_TIME_PAYMENT flow,
+ * which is required for Pay Later eligibility (countryCode and productCode).
+ */
+function PayLaterEligibilityWrapper({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
+    useEligibleMethods({
+        payload: {
+            currencyCode: "USD",
+            paymentFlow: "ONE_TIME_PAYMENT",
+        },
+    });
+
+    return <>{children}</>;
+}
+
+const withPayLaterEligibility: Decorator = (Story) => (
+    <PayLaterEligibilityWrapper>
+        <Story />
+    </PayLaterEligibilityWrapper>
+);
+
 const meta: Meta<typeof PayLaterOneTimePaymentButton> = {
     title: "V6/Buttons/PayLaterOneTimePaymentButton",
     component: PayLaterOneTimePaymentButton,
     tags: ["autodocs"],
+    decorators: [withPayLaterEligibility],
     parameters: {
         controls: { expanded: true },
         docs: {

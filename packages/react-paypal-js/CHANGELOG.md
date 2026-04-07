@@ -1,5 +1,28 @@
 # Changelog
 
+## 9.1.0
+
+### Minor Changes
+
+- fd0fd4c: Add internal error boundary to PayPalButtons component
+
+### Patch Changes
+
+- ee754a1: clarify PayPal SDK versions in readme files
+- Updated dependencies [a5d2818]
+    - @paypal/paypal-js@9.5.0
+
+## 9.0.2
+
+### Patch Changes
+
+- 68a8bfe: Updated React README.md file to contain V6 React Card Fields documentation.
+- 18fe4c2: Fixes broken README links to storybook examples.
+- 1b44c19: remove unused files and minor doc updates
+- Updated dependencies [10258ca]
+- Updated dependencies [1b44c19]
+    - @paypal/paypal-js@9.4.1
+
 ## 9.0.1
 
 ### Patch Changes
