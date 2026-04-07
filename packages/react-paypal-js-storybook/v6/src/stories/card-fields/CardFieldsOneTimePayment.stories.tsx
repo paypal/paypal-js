@@ -31,16 +31,31 @@ function CardFieldsForm() {
         switch (submitResponse.state) {
             case "succeeded":
                 action("submit")(`Payment succeeded: orderId: ${orderId}`);
-                captureOrder(orderId).then((result) => {
-                    action("approve")({
-                        ...result,
-                        orderID: orderId,
+                dispatchPaymentResult(
+                    "success",
+                    "Payment authorized, capturing...",
+                );
+                captureOrder(orderId)
+                    .then((result) => {
+                        action("approve")({
+                            ...result,
+                            orderID: orderId,
+                        });
+                        dispatchPaymentResult(
+                            "success",
+                            `Card payment captured successfully. Order ID: ${orderId}`,
+                        );
+                    })
+                    .catch((error) => {
+                        action("error")({
+                            source: "capture",
+                            error,
+                        });
+                        dispatchPaymentResult(
+                            "error",
+                            `Capture failed: ${error.message || "Unknown error"}`,
+                        );
                     });
-                    dispatchPaymentResult(
-                        "success",
-                        `Card payment captured successfully. Order ID: ${orderId}`,
-                    );
-                });
                 break;
             case "failed":
                 action("error")(`Payment failed: ${message}`);
@@ -58,6 +73,10 @@ function CardFieldsForm() {
                 source: "cardFields",
                 error: cardFieldsError,
             });
+            dispatchPaymentResult(
+                "error",
+                `Card field error: ${cardFieldsError.message || "Unknown error"}`,
+            );
         }
         if (submitError) {
             action("error")({
