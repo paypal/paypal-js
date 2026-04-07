@@ -11,7 +11,8 @@ export type EligiblePaymentMethods =
     | "paypal_credit"
     | "paypal"
     | "venmo"
-    | "apple_pay";
+    | "apple_pay"
+    | "advanced_cards";
 
 export type PaymentFlow =
     | "ONE_TIME_PAYMENT"
@@ -53,10 +54,20 @@ type CardFieldsEligiblePaymentMethodDetails = {
     vendors: CardFieldsEligibleVendorDetails[];
 };
 
+type CardFieldsCardNetwork =
+    | "AMEX"
+    | "CUP"
+    | "DINERS"
+    | "DISCOVER"
+    | "JCB"
+    | "MAESTRO"
+    | "MASTERCARD"
+    | "VISA";
+
 type CardFieldsEligibleVendorDetails = {
-    network: string;
+    network: CardFieldsCardNetwork;
     eligible: boolean;
-    can_be_vaulted: boolean;
+    canBeVaulted: boolean;
     branded: boolean;
 };
 
