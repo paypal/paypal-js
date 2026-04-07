@@ -5,7 +5,6 @@ import { action } from "storybook/actions";
 import {
     PayPalProvider,
     usePayPal,
-    useEligibleMethods,
     INSTANCE_LOADING_STATE,
 } from "@paypal/react-paypal-js/sdk-v6";
 import { PAYPAL_CLIENT_ID } from "../shared/utils";
@@ -13,13 +12,6 @@ import { PAYPAL_CLIENT_ID } from "../shared/utils";
 // Logs SDK and button events to the Actions panel.
 function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
     const { loadingStatus } = usePayPal();
-
-    useEligibleMethods({
-        payload: {
-            currencyCode: "USD",
-            paymentFlow: "ONE_TIME_PAYMENT",
-        },
-    });
 
     useEffect(() => {
         if (loadingStatus === INSTANCE_LOADING_STATE.RESOLVED) {
@@ -47,6 +39,8 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
                 "paypal-payments",
                 "venmo-payments",
                 "paypal-guest-payments",
+                "paypal-subscriptions",
+                "card-fields",
             ]}
             pageType="checkout"
         >

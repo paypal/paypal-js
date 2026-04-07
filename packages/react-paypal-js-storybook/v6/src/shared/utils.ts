@@ -11,11 +11,13 @@
 
 import type {
     OnApproveDataOneTimePayments,
+    OnApproveDataSubscriptions,
     OnCancelDataOneTimePayments,
     OnCancelDataSavePayments,
     OnErrorData,
 } from "@paypal/react-paypal-js/sdk-v6";
 import { action } from "storybook/actions";
+import { dispatchPaymentResult } from "./PaymentResult";
 
 export const SAMPLE_INTEGRATION_API =
     import.meta.env.STORYBOOK_PAYPAL_API_URL ||
@@ -65,6 +67,22 @@ export async function createVaultToken(): Promise<{ vaultSetupToken: string }> {
     return { vaultSetupToken: data.id };
 }
 
+// Subscription APIs
+
+export async function createSubscription(): Promise<{
+    subscriptionId: string;
+}> {
+    const response = await fetch(
+        `${SAMPLE_INTEGRATION_API}/paypal-api/billing/create-subscription`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+        },
+    );
+    const data = await response.json();
+    return { subscriptionId: data.id };
+}
+
 // Shared Callbacks
 // Note: onError is typed as 'unknown' to avoid intersection conflict between
 // PayPalError and HTMLButtonElement's onError (ReactEventHandler) in the component props
@@ -76,24 +94,72 @@ export const oneTimePaymentCallbacks = {
             ...orderData,
             orderID: data.orderId,
         });
+        dispatchPaymentResult(
+            "success",
+            `Payment captured successfully. Order ID: ${data.orderId}`,
+        );
     },
     onCancel: (data: OnCancelDataOneTimePayments) => {
         action("cancel")(data);
+        dispatchPaymentResult("cancel", "Payment was cancelled by the buyer.");
     },
     onError: (error: unknown) => {
         action("error")(error as OnErrorData);
+        dispatchPaymentResult(
+            "error",
+            `Payment error: ${(error as OnErrorData)?.message || "Unknown error"}`,
+        );
     },
 };
 
 export const savePaymentCallbacks = {
     onApprove: async (data: { vaultSetupToken: string }) => {
         action("approve")(data);
+        dispatchPaymentResult(
+            "success",
+            `Payment method saved successfully. Token: ${data.vaultSetupToken}`,
+        );
     },
     onCancel: (data: OnCancelDataSavePayments) => {
         action("cancel")(data);
+        dispatchPaymentResult(
+            "cancel",
+            "Save payment was cancelled by the buyer.",
+        );
     },
     onError: (error: unknown) => {
         action("error")(error as OnErrorData);
+        dispatchPaymentResult(
+            "error",
+            `Save payment error: ${(error as OnErrorData)?.message || "Unknown error"}`,
+        );
+    },
+};
+
+export const subscriptionCallbacks = {
+    onApprove: async (data: OnApproveDataSubscriptions) => {
+        action("approve")({
+            subscriptionId: data.subscriptionId,
+            payerId: data.payerId,
+        });
+        dispatchPaymentResult(
+            "success",
+            `Subscription approved. ID: ${data.subscriptionId}`,
+        );
+    },
+    onCancel: (data: OnCancelDataOneTimePayments) => {
+        action("cancel")(data);
+        dispatchPaymentResult(
+            "cancel",
+            "Subscription was cancelled by the buyer.",
+        );
+    },
+    onError: (error: unknown) => {
+        action("error")(error as OnErrorData);
+        dispatchPaymentResult(
+            "error",
+            `Subscription error: ${(error as OnErrorData)?.message || "Unknown error"}`,
+        );
     },
 };
 
