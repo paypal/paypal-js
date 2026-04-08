@@ -1,8 +1,7 @@
 import type { PayPalScriptOptions } from "../types/script-options";
 
 interface PayPalScriptOptionsWithStringIndex
-    extends
-        PayPalScriptOptions,
+    extends PayPalScriptOptions,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         Record<string, any> {}
 
@@ -63,18 +62,23 @@ export function insertScriptElement({
     document.head.insertBefore(newScript, document.head.firstElementChild);
 }
 
-export function processOptions({
-    sdkBaseUrl: customSdkBaseUrl,
-    environment,
-    ...options
-}: PayPalScriptOptions): {
+export function processOptions(options: PayPalScriptOptions): {
     url: string;
     attributes: StringMap;
 } {
+    // Use hasOwnProperty to avoid picking up prototype-polluted values.
+    const customSdkBaseUrl = Object.prototype.hasOwnProperty.call(
+        options,
+        "sdkBaseUrl",
+    )
+        ? options.sdkBaseUrl
+        : undefined;
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { environment, sdkBaseUrl: _, ...rest } = options;
     const sdkBaseUrl = customSdkBaseUrl || processSdkBaseUrl(environment);
 
-    const optionsWithStringIndex =
-        options as PayPalScriptOptionsWithStringIndex;
+    const optionsWithStringIndex = rest as PayPalScriptOptionsWithStringIndex;
 
     const { queryParams, attributes } = Object.keys(optionsWithStringIndex)
         .filter((key) => {
