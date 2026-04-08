@@ -164,10 +164,20 @@ export function useEligibleMethods(
 
     // isLoading should be true if:
     // 1. We're actively fetching, OR
-    // 2. We don't have eligibility data yet and no error occurred
-    // This prevents a flash where isLoading=false before the effect runs
+    // 2. We don't have eligibility data yet and no error occurred, OR
+    // 3. Eligibility data exists but was fetched with a different payload
+    //    (e.g., navigating from VAULT_WITHOUT_PAYMENT to ONE_TIME_PAYMENT)
+    // This prevents a flash of stale buttons before the new fetch completes
+    const isStaleData =
+        !!eligiblePaymentMethods &&
+        !deepEqual(
+            eligiblePaymentMethodsPayload ?? undefined,
+            memoizedPayload ?? undefined,
+        );
     const isLoading =
-        isFetching || (!eligiblePaymentMethods && !eligibilityError);
+        isFetching ||
+        (!eligiblePaymentMethods && !eligibilityError) ||
+        isStaleData;
 
     if (contextError) {
         return {
