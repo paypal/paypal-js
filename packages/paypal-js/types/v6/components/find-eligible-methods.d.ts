@@ -13,6 +13,7 @@ export type EligiblePaymentMethods =
     | "paypal"
     | "venmo"
     | "apple_pay"
+    | "advanced_cards"
     | "google_pay";
 
 export type PaymentFlow =
@@ -33,6 +34,7 @@ export type FundingSource =
     | "paypal"
     | "venmo"
     | "card"
+    | "advanced_cards"
     | "applepay"
     | "googlepay";
 
@@ -47,6 +49,29 @@ type CreditEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
 type PayLaterEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
     countryCode: PayLaterCountryCodes;
     productCode: PayLaterProductCodes;
+};
+
+type CardFieldsEligiblePaymentMethodDetails = {
+    supportsInstallments: boolean;
+    cobrandedEnabled: boolean;
+    vendors: CardFieldsEligibleVendorDetails[];
+};
+
+type CardFieldsCardNetwork =
+    | "AMEX"
+    | "CUP"
+    | "DINERS"
+    | "DISCOVER"
+    | "JCB"
+    | "MAESTRO"
+    | "MASTERCARD"
+    | "VISA";
+
+type CardFieldsEligibleVendorDetails = {
+    network: CardFieldsCardNetwork;
+    eligible: boolean;
+    canBeVaulted: boolean;
+    branded: boolean;
 };
 
 type ApplePayEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
@@ -65,9 +90,11 @@ export type FindEligibleMethodsGetDetails<T extends FundingSource> =
           ? PayLaterEligiblePaymentMethodDetails
           : T extends "applepay"
             ? ApplePayEligiblePaymentMethodDetails
-            : T extends "googlepay"
-              ? GooglePayEligiblePaymentMethodDetails
-              : BaseEligiblePaymentMethodDetails;
+            : T extends "advanced_cards"
+              ? CardFieldsEligiblePaymentMethodDetails
+              : T extends "googlepay"
+                ? GooglePayEligiblePaymentMethodDetails
+                : BaseEligiblePaymentMethodDetails;
 
 type EligiblePaymentMethodDetails = {
     can_be_vaulted?: boolean;
