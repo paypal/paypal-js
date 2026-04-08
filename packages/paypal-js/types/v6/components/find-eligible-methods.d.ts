@@ -4,6 +4,7 @@ import {
     PayPalCreditCountryCodes,
 } from "./paypal-payments";
 import { ApplePayConfig } from "./applepay-payments";
+import type { GooglePayConfigFromFindEligibleMethods } from "./googlepay-payments";
 
 export type EligiblePaymentMethods =
     | "basic_cards"
@@ -12,7 +13,8 @@ export type EligiblePaymentMethods =
     | "paypal"
     | "venmo"
     | "apple_pay"
-    | "advanced_cards";
+    | "advanced_cards"
+    | "google_pay";
 
 export type PaymentFlow =
     | "ONE_TIME_PAYMENT"
@@ -33,7 +35,8 @@ export type FundingSource =
     | "venmo"
     | "card"
     | "advanced_cards"
-    | "applepay";
+    | "applepay"
+    | "googlepay";
 
 type BaseEligiblePaymentMethodDetails = {
     canBeVaulted: boolean;
@@ -75,6 +78,11 @@ type ApplePayEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
     config: ApplePayConfig;
 };
 
+type GooglePayEligiblePaymentMethodDetails = {
+    canBeVaulted?: boolean;
+    config: GooglePayConfigFromFindEligibleMethods;
+};
+
 export type FindEligibleMethodsGetDetails<T extends FundingSource> =
     T extends "credit"
         ? CreditEligiblePaymentMethodDetails
@@ -84,7 +92,9 @@ export type FindEligibleMethodsGetDetails<T extends FundingSource> =
             ? ApplePayEligiblePaymentMethodDetails
             : T extends "advanced_cards"
               ? CardFieldsEligiblePaymentMethodDetails
-              : BaseEligiblePaymentMethodDetails;
+              : T extends "googlepay"
+                ? GooglePayEligiblePaymentMethodDetails
+                : BaseEligiblePaymentMethodDetails;
 
 type EligiblePaymentMethodDetails = {
     can_be_vaulted?: boolean;
@@ -151,6 +161,16 @@ export type FindEligiblePaymentMethodsResponse = {
  *   // set up button
  *   const paypalCreditButton = document.querySelector("#paypal-credit-button");
  *   paypalCreditButton.countryCode = countryCode;
+ *   // ...
+ * }
+ *
+ * if (paymentMethods.isEligible("googlepay")) {
+ *   const googlePayDetails = paymentMethods.getDetails("googlepay");
+ *   const { config } = googlePayDetails;
+ *
+ *   const googlePaySession = sdkInstance.createGooglePayOneTimePaymentSession();
+ *   const googlePayConfig = googlePaySession.formatConfigForPaymentRequest(config);
+ *   // Use googlePayConfig with Google's PaymentsClient
  *   // ...
  * }
  * ```
