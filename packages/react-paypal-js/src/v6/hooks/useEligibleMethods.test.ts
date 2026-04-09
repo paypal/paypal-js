@@ -381,6 +381,35 @@ describe("useEligibleMethods", () => {
             expect(result.current.isLoading).toBe(true);
         });
 
+        test("should return isLoading=true when eligibility data exists but payload differs (stale data)", () => {
+            const mockSdkInstance = createMockSdkInstance();
+
+            const { result } = renderHook(
+                () =>
+                    useEligibleMethods({
+                        payload: {
+                            currencyCode: "USD",
+                            paymentFlow: "ONE_TIME_PAYMENT",
+                        } as never,
+                    }),
+                {
+                    wrapper: createWrapper({
+                        sdkInstance: mockSdkInstance,
+                        eligiblePaymentMethods: mockEligibilityResult,
+                        eligiblePaymentMethodsPayload: {
+                            currencyCode: "USD",
+                            paymentFlow: "VAULT_WITHOUT_PAYMENT",
+                        }, // different paymentFlow
+                        loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                    }),
+                },
+            );
+
+            // isLoading should be true because the existing data was fetched
+            // with a different payload — it's stale and a re-fetch is needed
+            expect(result.current.isLoading).toBe(true);
+        });
+
         test("should return isLoading=false when eligibility data exists with matching payload", () => {
             const mockSdkInstance = createMockSdkInstance();
 
