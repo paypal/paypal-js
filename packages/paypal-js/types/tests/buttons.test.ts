@@ -76,6 +76,21 @@ async function main() {
         },
     });
 
+    // createSubscription with application_context (return_url and cancel_url are optional)
+    paypal.Buttons({
+        style: { label: "subscribe" },
+        createSubscription: (data, actions) => {
+            return actions.subscription.create({
+                plan_id: "P-3RX123456M3469222L5IFM4I",
+                quantity: "1",
+                application_context: {
+                    brand_name: "My Brand",
+                    shipping_preference: "NO_SHIPPING",
+                },
+            });
+        },
+    });
+
     // validation with onInit and onClick
     // https://developer.paypal.com/docs/checkout/standard/customize/validate-user-input/
     paypal.Buttons({
