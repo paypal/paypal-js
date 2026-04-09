@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.1.2
+
+### Patch Changes
+
+- 88bd1b3: Fix useEligibleMethods hook returning isLoading=false with stale eligibility data when payload changes (e.g., navigating between different payment flows)
+
 ## 9.1.1
 
 ### Patch Changes
