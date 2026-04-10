@@ -17,8 +17,7 @@ import type { useBraintreePayPal } from "../../hooks/useBraintreePayPal";
 
 interface BraintreePayPalProviderProps {
     namespace: BraintreeV6Namespace;
-    braintreeClientToken: string;
-    children: React.ReactNode;
+    braintreeClientToken: string | undefined;
 }
 
 /**
@@ -86,6 +85,20 @@ export const BraintreePayPalProvider: React.FC<
         });
 
         const initialize = async () => {
+            if (!braintreeClientToken) {
+                const clientTokenError = new Error(
+                    "Braintree client token is required to initialize the PayPal Checkout instance.",
+                );
+                if (isSubscribed) {
+                    setError(clientTokenError);
+                    dispatch({
+                        type: BRAINTREE_DISPATCH_ACTION.SET_ERROR,
+                        value: clientTokenError,
+                    });
+                }
+                return;
+            }
+
             try {
                 const clientInstance = await namespace.client.create({
                     authorization: braintreeClientToken,
