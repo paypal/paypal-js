@@ -8,6 +8,7 @@ export interface BraintreePayPalState {
     braintreePayPalCheckoutInstance: BraintreePayPalCheckoutInstance | null;
     loadingStatus: INSTANCE_LOADING_STATE;
     error: Error | null;
+    isHydrated: boolean;
 }
 
 export enum BRAINTREE_DISPATCH_ACTION {
@@ -33,6 +34,7 @@ export const braintreeInitialState: BraintreePayPalState = {
     braintreePayPalCheckoutInstance: null,
     loadingStatus: INSTANCE_LOADING_STATE.PENDING,
     error: null,
+    isHydrated: false,
 };
 
 export function braintreeReducer(

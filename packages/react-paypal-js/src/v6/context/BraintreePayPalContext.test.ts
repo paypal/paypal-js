@@ -28,6 +28,7 @@ function createInitialState(): BraintreePayPalState {
         braintreePayPalCheckoutInstance: null,
         loadingStatus: INSTANCE_LOADING_STATE.PENDING,
         error: null,
+        isHydrated: false,
     };
 }
 
@@ -101,6 +102,7 @@ describe("braintreeReducer", () => {
                 braintreePayPalCheckoutInstance: createMockCheckoutInstance(),
                 error: new Error("previous error"),
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+                isHydrated: false,
             };
 
             const action: BraintreeAction = {
@@ -112,6 +114,7 @@ describe("braintreeReducer", () => {
             expect(result.braintreePayPalCheckoutInstance).toBe(null);
             expect(result.error).toBe(null);
             expect(result.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
+            expect(result.isHydrated).toBe(false);
             expect(result).not.toBe(stateWithData);
         });
     });
@@ -161,6 +164,7 @@ describe("braintreeReducer", () => {
                 braintreePayPalCheckoutInstance: mockInstance,
                 loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
                 error: null,
+                isHydrated: false,
             };
 
             const action: BraintreeAction = {

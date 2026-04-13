@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 
 import {
     BraintreePayPalContext,
@@ -9,6 +9,7 @@ import {
 import { INSTANCE_LOADING_STATE } from "../../types/PayPalProviderEnums";
 import { toError } from "../../utils";
 import { useError } from "../../hooks/useError";
+import { useIsomorphicLayoutEffect } from "../../hooks/useIsomorphicLayoutEffect";
 import { validateBraintreeNamespace } from "../../types/braintree";
 
 import type { BraintreeV6Namespace } from "../../types";
@@ -60,7 +61,13 @@ export const BraintreePayPalProvider: React.FC<
         braintreeReducer,
         braintreeInitialState,
     );
+    const [isHydrated, setIsHydrated] = useState(false);
     const [, setError] = useError();
+
+    // Set hydrated state after initial client render to prevent hydration mismatch
+    useIsomorphicLayoutEffect(() => {
+        setIsHydrated(true);
+    }, []);
 
     useEffect(() => {
         if (!validateBraintreeNamespace(namespace)) {
@@ -151,11 +158,13 @@ export const BraintreePayPalProvider: React.FC<
                 state.braintreePayPalCheckoutInstance,
             loadingStatus: state.loadingStatus,
             error: state.error,
+            isHydrated,
         }),
         [
             state.braintreePayPalCheckoutInstance,
             state.loadingStatus,
             state.error,
+            isHydrated,
         ],
     );
 
