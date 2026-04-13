@@ -15,12 +15,35 @@ const TEST_CLIENT_TOKEN = "test-braintree-client-token";
 function createMockBraintreeNamespace() {
     const mockPayPalCheckoutInstance = {
         loadPayPalSDK: jest.fn().mockResolvedValue(undefined),
-        tokenizePayment: jest
+        tokenizePayment: jest.fn().mockResolvedValue({
+            nonce: "test-nonce",
+            type: "PayPalAccount",
+            details: {
+                email: "test@example.com",
+                payerId: "payer-id",
+                firstName: "Test",
+                lastName: "User",
+            },
+        }),
+        createOneTimePaymentSession: jest
             .fn()
-            .mockResolvedValue({ nonce: "test-nonce", details: {} }),
-        createOneTimePaymentSession: jest.fn(),
-        createBillingAgreementSession: jest.fn(),
-        createCheckoutWithVaultSession: jest.fn(),
+            .mockReturnValue({ start: jest.fn() }),
+        createBillingAgreementSession: jest
+            .fn()
+            .mockReturnValue({ start: jest.fn() }),
+        createCheckoutWithVaultSession: jest
+            .fn()
+            .mockReturnValue({ start: jest.fn() }),
+        createPayLaterSession: jest.fn().mockReturnValue({ start: jest.fn() }),
+        createPayment: jest.fn().mockResolvedValue("order-id"),
+        findEligibleMethods: jest.fn().mockResolvedValue({
+            paypal: true,
+            paylater: false,
+            credit: false,
+            getDetails: jest.fn().mockReturnValue(null),
+        }),
+        getClientId: jest.fn().mockResolvedValue("client-id"),
+        updatePayment: jest.fn().mockResolvedValue(undefined),
         teardown: jest.fn().mockResolvedValue(undefined),
     };
 
