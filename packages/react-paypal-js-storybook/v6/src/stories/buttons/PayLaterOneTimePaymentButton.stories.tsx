@@ -12,7 +12,10 @@ import {
     disabledArgType,
 } from "../../shared/utils";
 import { V6DocPageStructure } from "../../components";
-import { getPayLaterOneTimePaymentButtonCode } from "../../shared/code";
+import {
+    getPayLaterOneTimePaymentButtonCode,
+    getPayLaterOneTimePaymentButtonEagerCode,
+} from "../../shared/code";
 
 /**
  * Wrapper that calls useEligibleMethods with the ONE_TIME_PAYMENT flow,
@@ -59,6 +62,13 @@ For more information, see [PayPal Pay Later](https://docs.paypal.ai/payments/met
             page: () => (
                 <V6DocPageStructure
                     code={getPayLaterOneTimePaymentButtonCode()}
+                    codeTitle="Option 1: Lazy Order Creation (Recommended)"
+                    additionalExamples={[
+                        {
+                            title: "Option 2: Eager Order Creation",
+                            code: getPayLaterOneTimePaymentButtonEagerCode(),
+                        },
+                    ]}
                 />
             ),
         },
@@ -68,7 +78,12 @@ For more information, see [PayPal Pay Later](https://docs.paypal.ai/payments/met
         disabled: disabledArgType,
         createOrder: {
             description:
-                "Function that creates an order and returns the order ID.",
+                "Function that lazily creates an order on button click and returns `{ orderId }`. Mutually exclusive with `orderId`. (Recommended)",
+            table: { category: "Events" },
+        },
+        orderId: {
+            description:
+                "Pre-created order ID string. Use when the order is created before rendering. Mutually exclusive with `createOrder`.",
             table: { category: "Events" },
         },
         onApprove: {

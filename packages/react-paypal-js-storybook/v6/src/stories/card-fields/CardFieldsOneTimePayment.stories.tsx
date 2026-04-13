@@ -13,7 +13,10 @@ import { action } from "storybook/actions";
 import { createOrder, captureOrder } from "../../shared/utils";
 import { dispatchPaymentResult } from "../../shared/PaymentResult";
 import { V6DocPageStructure } from "../../components";
-import { getCardFieldsOneTimePaymentCode } from "../../shared/code";
+import {
+    getCardFieldsOneTimePaymentCode,
+    getCardFieldsSavePaymentCode,
+} from "../../shared/code";
 
 function CardFieldsForm() {
     const { error: cardFieldsError } = usePayPalCardFields();
@@ -151,7 +154,16 @@ It relies on the \`<PayPalProvider />\` parent component for managing SDK initia
 `,
             },
             page: () => (
-                <V6DocPageStructure code={getCardFieldsOneTimePaymentCode()} />
+                <V6DocPageStructure
+                    code={getCardFieldsOneTimePaymentCode()}
+                    codeTitle="Option 1: One-Time Payment (Recommended)"
+                    additionalExamples={[
+                        {
+                            title: "Option 2: Save Payment Method (Vaulting)",
+                            code: getCardFieldsSavePaymentCode(),
+                        },
+                    ]}
+                />
             ),
         },
     },

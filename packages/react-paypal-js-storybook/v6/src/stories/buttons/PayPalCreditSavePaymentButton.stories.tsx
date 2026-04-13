@@ -12,7 +12,10 @@ import {
     disabledArgType,
 } from "../../shared/utils";
 import { V6DocPageStructure } from "../../components";
-import { getPayPalCreditSavePaymentButtonCode } from "../../shared/code";
+import {
+    getPayPalCreditSavePaymentButtonCode,
+    getPayPalCreditSavePaymentButtonEagerCode,
+} from "../../shared/code";
 
 /**
  * Wrapper that calls useEligibleMethods with the VAULT_WITHOUT_PAYMENT flow,
@@ -58,6 +61,13 @@ It relies on the \`<PayPalProvider />\` parent component for managing SDK initia
             page: () => (
                 <V6DocPageStructure
                     code={getPayPalCreditSavePaymentButtonCode()}
+                    codeTitle="Option 1: Lazy Vault Token Creation (Recommended)"
+                    additionalExamples={[
+                        {
+                            title: "Option 2: Eager Vault Token Creation",
+                            code: getPayPalCreditSavePaymentButtonEagerCode(),
+                        },
+                    ]}
                 />
             ),
         },
@@ -67,7 +77,12 @@ It relies on the \`<PayPalProvider />\` parent component for managing SDK initia
         disabled: disabledArgType,
         createVaultToken: {
             description:
-                "Function that creates a vault setup token and returns the token ID.",
+                "Function that lazily creates a vault setup token on button click and returns `{ vaultSetupToken }`. Mutually exclusive with `vaultSetupToken`. (Recommended)",
+            table: { category: "Events" },
+        },
+        vaultSetupToken: {
+            description:
+                "Pre-created vault setup token string. Use when the token is created before rendering. Mutually exclusive with `createVaultToken`.",
             table: { category: "Events" },
         },
         onApprove: {
