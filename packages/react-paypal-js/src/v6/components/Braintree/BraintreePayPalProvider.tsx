@@ -20,6 +20,7 @@ import type { BraintreePayPalState } from "../../context/BraintreePayPalContext"
 interface BraintreePayPalProviderProps {
     namespace: BraintreeV6Namespace;
     braintreeClientToken: string | undefined;
+    children: React.ReactNode;
 }
 
 /**
