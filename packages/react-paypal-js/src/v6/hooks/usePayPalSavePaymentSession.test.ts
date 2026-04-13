@@ -4,7 +4,7 @@ import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import { usePayPal } from "./usePayPal";
 import { usePayPalSavePaymentSession } from "./usePayPalSavePaymentSession";
 import { useProxyProps } from "../utils";
-import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
+import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
 
 import type { SavePaymentSession } from "../types";
 

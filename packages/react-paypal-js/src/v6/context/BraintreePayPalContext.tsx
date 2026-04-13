@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
+import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
 
 import type { BraintreePayPalCheckoutInstance } from "../types";
 

@@ -4,7 +4,7 @@ import { instanceReducer } from "./PayPalProviderContext";
 import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
-} from "../types/PayPalProviderEnums";
+} from "../types/ProviderEnums";
 
 import type { PayPalState, InstanceAction } from "./PayPalProviderContext";
 import type {

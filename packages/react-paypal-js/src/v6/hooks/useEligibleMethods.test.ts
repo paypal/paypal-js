@@ -9,7 +9,7 @@ import { PayPalDispatchContext } from "../context/PayPalDispatchContext";
 import {
     INSTANCE_DISPATCH_ACTION,
     INSTANCE_LOADING_STATE,
-} from "../types/PayPalProviderEnums";
+} from "../types/ProviderEnums";
 
 import type { PayPalState } from "../context/PayPalProviderContext";
 

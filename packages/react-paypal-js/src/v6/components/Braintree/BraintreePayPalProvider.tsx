@@ -6,7 +6,7 @@ import {
     braintreeReducer,
     BRAINTREE_DISPATCH_ACTION,
 } from "../../context/BraintreePayPalContext";
-import { INSTANCE_LOADING_STATE } from "../../types/PayPalProviderEnums";
+import { INSTANCE_LOADING_STATE } from "../../types/ProviderEnums";
 import { toError } from "../../utils";
 import { useError } from "../../hooks/useError";
 import { useIsomorphicLayoutEffect } from "../../hooks/useIsomorphicLayoutEffect";

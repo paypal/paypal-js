@@ -11,7 +11,7 @@ import { useIsomorphicLayoutEffect } from "../hooks/useIsomorphicLayoutEffect";
 import {
     INSTANCE_LOADING_STATE,
     INSTANCE_DISPATCH_ACTION,
-} from "../types/PayPalProviderEnums";
+} from "../types/ProviderEnums";
 import { toError, useCompareMemoize, useDeepCompareMemoize } from "../utils";
 import { useError } from "../hooks/useError";
 

@@ -2,7 +2,7 @@ import {
     braintreeReducer,
     BRAINTREE_DISPATCH_ACTION,
 } from "./BraintreePayPalContext";
-import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
+import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
 
 import type {
     BraintreePayPalState,

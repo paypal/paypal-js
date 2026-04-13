@@ -5,7 +5,7 @@ import { act, render, waitFor } from "@testing-library/react";
 import { expectCurrentErrorValue } from "../../hooks/useErrorTestUtil";
 import { BraintreePayPalProvider } from "./BraintreePayPalProvider";
 import { useBraintreePayPal } from "../../hooks/useBraintreePayPal";
-import { INSTANCE_LOADING_STATE } from "../../types/PayPalProviderEnums";
+import { INSTANCE_LOADING_STATE } from "../../types/ProviderEnums";
 
 import type { BraintreeV6Namespace } from "../../types";
 import type { BraintreePayPalState } from "../../context/BraintreePayPalContext";
