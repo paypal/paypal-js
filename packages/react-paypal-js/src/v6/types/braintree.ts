@@ -34,22 +34,10 @@ export interface BraintreeV6Namespace {
 export function validateBraintreeNamespace(
     namespace: unknown,
 ): namespace is BraintreeV6Namespace {
-    const ns = namespace as Record<string, unknown>;
+    const ns = namespace as BraintreeV6Namespace | null | undefined;
 
-    if (ns === null || typeof ns !== "object") {
-        return false;
-    }
-
-    if (typeof (ns.client as Record<string, unknown>)?.create !== "function") {
-        return false;
-    }
-
-    if (
-        typeof (ns.paypalCheckoutV6 as Record<string, unknown>)?.create !==
-        "function"
-    ) {
-        return false;
-    }
-
-    return true;
+    return (
+        typeof ns?.client?.create === "function" &&
+        typeof ns?.paypalCheckoutV6?.create === "function"
+    );
 }
