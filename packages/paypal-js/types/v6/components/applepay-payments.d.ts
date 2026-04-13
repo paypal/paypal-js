@@ -80,8 +80,8 @@ export type ApplePayMerchantSession = {
  */
 export type ValidateMerchantOptions = {
     validationUrl: string;
-    displayName: string;
-    domainName: string;
+    displayName?: string;
+    domainName?: string;
 };
 
 /**
@@ -293,4 +293,42 @@ export interface ApplePayPaymentsInstance {
      * ```
      */
     createApplePayOneTimePaymentSession: () => ApplePayOneTimePaymentSession;
+}
+
+/**
+ * Native Apple Pay session API (Safari-only).
+ * TypeScript's DOM lib does not include this since it's not cross-browser.
+ * @see https://developer.apple.com/documentation/apple_pay_on_the_web/applepaysession
+ */
+declare class ApplePaySession {
+    static STATUS_SUCCESS: number;
+    static STATUS_FAILURE: number;
+    static canMakePayments(): boolean;
+
+    constructor(version: number, paymentRequest: unknown);
+
+    onvalidatemerchant: ((event: { validationURL: string }) => void) | null;
+    onpaymentmethodselected: (() => void) | null;
+    onpaymentauthorized:
+        | ((event: {
+              payment: {
+                  token: ApplePayPaymentToken;
+                  billingContact: ApplePayContact;
+                  shippingContact?: ApplePayContact;
+              };
+          }) => void)
+        | null;
+    oncancel: (() => void) | null;
+
+    completeMerchantValidation(merchantSession: unknown): void;
+    completePaymentMethodSelection(update: unknown): void;
+    completePayment(result: { status: number }): void;
+    begin(): void;
+    abort(): void;
+}
+
+declare global {
+    interface Window {
+        ApplePaySession?: typeof ApplePaySession;
+    }
 }
