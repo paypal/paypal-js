@@ -25,7 +25,7 @@ interface BraintreePayPalProviderProps {
 /**
  * {@link BraintreePayPalProvider} validates the Braintree namespace, creates a Braintree client
  * and PayPal Checkout V6 instance, loads the PayPal SDK, then provides the checkout instance
- * in context to child components via the {@link useBraintreePayPal} hook.
+ * in context to child components via the useBraintreePayPal hook.
  *
  * The merchant is responsible for loading the Braintree client and paypal-checkout-v6 scripts
  * before rendering this provider.

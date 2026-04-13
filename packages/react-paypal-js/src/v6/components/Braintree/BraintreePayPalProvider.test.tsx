@@ -100,7 +100,7 @@ async function renderProvider(
     const { namespace: defaultNamespace } = createMockBraintreeNamespace();
     const namespace = namespaceProp ?? defaultNamespace;
 
-    let result: ReturnType<typeof render>;
+    let result!: ReturnType<typeof render>;
 
     await act(async () => {
         result = render(
@@ -113,7 +113,7 @@ async function renderProvider(
         );
     });
 
-    return { ...result!, state, namespace };
+    return { ...result, state, namespace };
 }
 
 describe("BraintreePayPalProvider", () => {
@@ -240,6 +240,19 @@ describe("BraintreePayPalProvider", () => {
     });
 
     describe("Error Handling", () => {
+        test("should reject when braintreeClientToken is undefined", async () => {
+            const { state } = await renderProvider({
+                braintreeClientToken: undefined,
+            });
+
+            await waitFor(() => {
+                expectRejectedState(state);
+                expect(state.error?.message).toContain(
+                    "Braintree client token is required",
+                );
+            });
+        });
+
         test("should handle client.create failure", async () => {
             const clientError = new Error("Client creation failed");
             const { namespace: mockNamespace } = createMockBraintreeNamespace();
@@ -328,6 +341,16 @@ describe("BraintreePayPalProvider", () => {
                 },
                 { timeout: 500 },
             );
+        });
+    });
+
+    describe("Hydration", () => {
+        test("should set isHydrated to true after initial render", async () => {
+            const { state } = await renderProvider();
+
+            await waitFor(() => {
+                expect(state.isHydrated).toBe(true);
+            });
         });
     });
 
