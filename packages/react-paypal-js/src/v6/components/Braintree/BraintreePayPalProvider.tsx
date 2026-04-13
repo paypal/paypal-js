@@ -16,7 +16,6 @@ import { validateBraintreeNamespace } from "../../types/braintree";
 
 import type { BraintreeV6Namespace } from "../../types";
 import type { BraintreePayPalState } from "../../context/BraintreePayPalContext";
-import type { useBraintreePayPal } from "../../hooks/useBraintreePayPal";
 
 interface BraintreePayPalProviderProps {
     namespace: BraintreeV6Namespace;
