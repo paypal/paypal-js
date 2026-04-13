@@ -4,9 +4,11 @@ import {
     BraintreePayPalContext,
     braintreeInitialState,
     braintreeReducer,
-    BRAINTREE_DISPATCH_ACTION,
 } from "../../context/BraintreePayPalContext";
-import { INSTANCE_LOADING_STATE } from "../../types/ProviderEnums";
+import {
+    BRAINTREE_DISPATCH_ACTION,
+    INSTANCE_LOADING_STATE,
+} from "../../types/ProviderEnums";
 import { toError } from "../../utils";
 import { useError } from "../../hooks/useError";
 import { useIsomorphicLayoutEffect } from "../../hooks/useIsomorphicLayoutEffect";

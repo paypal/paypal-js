@@ -1,6 +1,9 @@
 import { createContext } from "react";
 
-import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
+import {
+    BRAINTREE_DISPATCH_ACTION,
+    INSTANCE_LOADING_STATE,
+} from "../types/ProviderEnums";
 
 import type { BraintreePayPalCheckoutInstance } from "../types";
 
@@ -9,13 +12,6 @@ export interface BraintreePayPalState {
     loadingStatus: INSTANCE_LOADING_STATE;
     error: Error | null;
     isHydrated: boolean;
-}
-
-export enum BRAINTREE_DISPATCH_ACTION {
-    SET_LOADING_STATUS = "setLoadingStatus",
-    SET_INSTANCE = "setInstance",
-    SET_ERROR = "setError",
-    RESET_STATE = "resetState",
 }
 
 export type BraintreeAction =
