@@ -114,11 +114,12 @@ async function renderProvider(
     props: Partial<React.ComponentProps<typeof BraintreePayPalProvider>> = {},
 ) {
     const { state, TestComponent } = setupTestComponent();
-    const {
-        namespace: namespaceProp,
-        braintreeClientToken = TEST_CLIENT_TOKEN,
-        children,
-    } = props;
+    const { namespace: namespaceProp, braintreeClientToken, children } = props;
+
+    const resolvedClientToken =
+        "braintreeClientToken" in props
+            ? braintreeClientToken
+            : TEST_CLIENT_TOKEN;
 
     const { namespace: defaultNamespace } = createMockBraintreeNamespace();
     const namespace = namespaceProp ?? defaultNamespace;
@@ -129,7 +130,7 @@ async function renderProvider(
         result = render(
             <BraintreePayPalProvider
                 namespace={namespace}
-                braintreeClientToken={braintreeClientToken}
+                braintreeClientToken={resolvedClientToken}
             >
                 <TestComponent>{children}</TestComponent>
             </BraintreePayPalProvider>,
