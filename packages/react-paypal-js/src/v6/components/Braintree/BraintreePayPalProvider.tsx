@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useRef, useState } from "react";
 
 import {
     BraintreePayPalContext,
@@ -14,7 +14,10 @@ import { useError } from "../../hooks/useError";
 import { useIsomorphicLayoutEffect } from "../../hooks/useIsomorphicLayoutEffect";
 import { validateBraintreeNamespace } from "../../types/braintree";
 
-import type { BraintreeV6Namespace } from "../../types";
+import type {
+    BraintreeV6Namespace,
+    BraintreePayPalCheckoutInstance,
+} from "../../types";
 import type { BraintreePayPalState } from "../../context/BraintreePayPalContext";
 
 interface BraintreePayPalProviderProps {
@@ -65,6 +68,8 @@ export const BraintreePayPalProvider: React.FC<
     );
     const [isHydrated, setIsHydrated] = useState(false);
     const [, setError] = useError();
+    const braintreePayPalCheckoutRef =
+        useRef<BraintreePayPalCheckoutInstance | null>(null);
 
     // Set hydrated state after initial client render to prevent hydration mismatch
     useIsomorphicLayoutEffect(() => {
@@ -132,6 +137,7 @@ export const BraintreePayPalProvider: React.FC<
                     return;
                 }
 
+                braintreePayPalCheckoutRef.current = paypalCheckoutInstance;
                 dispatch({
                     type: BRAINTREE_DISPATCH_ACTION.SET_INSTANCE,
                     value: paypalCheckoutInstance,
@@ -151,6 +157,8 @@ export const BraintreePayPalProvider: React.FC<
 
         return () => {
             isSubscribed = false;
+            braintreePayPalCheckoutRef.current?.teardown();
+            braintreePayPalCheckoutRef.current = null;
         };
     }, [namespace, braintreeClientToken, setError]);
 

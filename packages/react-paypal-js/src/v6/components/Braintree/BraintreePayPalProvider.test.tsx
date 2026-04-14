@@ -368,6 +368,77 @@ describe("BraintreePayPalProvider", () => {
         });
     });
 
+    describe("Teardown", () => {
+        test("should call teardown on the checkout instance when the provider unmounts", async () => {
+            const { namespace: mockNamespace, mockPayPalCheckoutInstance } =
+                createMockBraintreeNamespace();
+
+            const { state, TestComponent } = setupTestComponent();
+
+            let unmount: () => void;
+            await act(async () => {
+                const result = render(
+                    <BraintreePayPalProvider
+                        namespace={mockNamespace}
+                        braintreeClientToken={TEST_CLIENT_TOKEN}
+                    >
+                        <TestComponent />
+                    </BraintreePayPalProvider>,
+                );
+                unmount = result.unmount;
+            });
+
+            await waitFor(() => expectResolvedState(state));
+
+            await act(async () => {
+                unmount!();
+            });
+
+            expect(mockPayPalCheckoutInstance.teardown).toHaveBeenCalledTimes(
+                1,
+            );
+        });
+
+        test("should call teardown on the old instance when props change triggers re-initialization", async () => {
+            const { namespace: mockNamespace, mockPayPalCheckoutInstance } =
+                createMockBraintreeNamespace();
+
+            const { state, TestComponent } = setupTestComponent();
+            let rerender: ReturnType<typeof render>["rerender"];
+
+            await act(async () => {
+                const result = render(
+                    <BraintreePayPalProvider
+                        namespace={mockNamespace}
+                        braintreeClientToken={TEST_CLIENT_TOKEN}
+                    >
+                        <TestComponent />
+                    </BraintreePayPalProvider>,
+                );
+                rerender = result.rerender;
+            });
+
+            await waitFor(() => expectResolvedState(state));
+
+            expect(mockPayPalCheckoutInstance.teardown).not.toHaveBeenCalled();
+
+            await act(async () => {
+                rerender!(
+                    <BraintreePayPalProvider
+                        namespace={mockNamespace}
+                        braintreeClientToken="new-client-token"
+                    >
+                        <TestComponent />
+                    </BraintreePayPalProvider>,
+                );
+            });
+
+            expect(mockPayPalCheckoutInstance.teardown).toHaveBeenCalledTimes(
+                1,
+            );
+        });
+    });
+
     describe("Hydration", () => {
         test("should set isHydrated to true after initial render", async () => {
             const { state } = await renderProvider();
