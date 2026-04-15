@@ -15,21 +15,23 @@ import type {
     BasePaymentSessionReturn,
 } from "../types";
 
+export type ApplePayLineItem = {
+    label: string;
+    amount: string;
+    type?: "final" | "pending";
+};
+
 export type ApplePayPaymentRequest = {
     countryCode: string;
     currencyCode: string;
-    total: {
-        label: string;
-        amount: string;
-        type: "final" | "pending";
-    };
-    supportedNetworks?: string[];
-    merchantCapabilities?: string[];
+    total: ApplePayLineItem;
     requiredBillingContactFields?: string[];
     requiredShippingContactFields?: string[];
     shippingMethods?: unknown[];
-    lineItems?: unknown[];
+    lineItems?: ApplePayLineItem[];
     applicationData?: string;
+    /** Allows additional ApplePayPaymentRequest fields not explicitly typed above. */
+    [key: string]: unknown;
 };
 
 export type UseApplePayOneTimePaymentSessionProps = {
