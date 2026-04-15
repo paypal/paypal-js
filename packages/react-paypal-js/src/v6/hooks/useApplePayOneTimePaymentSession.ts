@@ -72,6 +72,12 @@ export type UseApplePayOneTimePaymentSessionProps = {
      * Optional callback invoked when an error occurs.
      */
     onError?: (error: Error) => void;
+    /**
+     * Apple Pay JS API version passed to the ApplePaySession constructor.
+     * Must be at least 4 (required by completePaymentMethodSelection update object form).
+     * Higher versions unlock newer payment request features but require newer devices.
+     */
+    applePaySessionVersion: number;
 };
 
 /**
@@ -132,6 +138,7 @@ export function useApplePayOneTimePaymentSession({
     displayName,
     domainName,
     createOrder,
+    applePaySessionVersion,
     ...callbacks
 }: UseApplePayOneTimePaymentSessionProps): BasePaymentSessionReturn {
     const { sdkInstance, loadingStatus } = usePayPal();
@@ -249,7 +256,7 @@ export function useApplePayOneTimePaymentSession({
 
             // Create Apple's native payment session
             const applePaySession = new ApplePaySessionConstructor(
-                4,
+                applePaySessionVersion,
                 fullPaymentRequest,
             );
             activeApplePaySessionRef.current = applePaySession;
@@ -339,6 +346,7 @@ export function useApplePayOneTimePaymentSession({
         displayName,
         domainName,
         createOrder,
+        applePaySessionVersion,
         proxyCallbacks,
         setError,
     ]);

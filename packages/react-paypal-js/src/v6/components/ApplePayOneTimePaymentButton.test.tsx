@@ -43,6 +43,7 @@ describe("ApplePayOneTimePaymentButton", () => {
                 type: "final",
             },
         },
+        applePaySessionVersion: 4,
         createOrder: jest.fn().mockResolvedValue({ orderId: "ORDER-123" }),
         onApprove: jest.fn(),
     };

@@ -305,6 +305,7 @@ declare class ApplePaySession {
     static STATUS_SUCCESS: number;
     static STATUS_FAILURE: number;
     static canMakePayments(): boolean;
+    static supportsVersion(version: number): boolean;
     constructor(version: number, paymentRequest: unknown);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

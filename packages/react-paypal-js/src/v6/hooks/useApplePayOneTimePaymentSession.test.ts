@@ -144,6 +144,7 @@ describe("useApplePayOneTimePaymentSession", () => {
                     type: "final",
                 },
             },
+            applePaySessionVersion: 4,
             createOrder: jest.fn().mockResolvedValue({ orderId: "ORDER-123" }),
             onApprove: jest.fn(),
             onCancel: jest.fn(),
@@ -260,7 +261,7 @@ describe("useApplePayOneTimePaymentSession", () => {
     });
 
     describe("handleClick - payment flow", () => {
-        test("should start Apple Pay session when handleClick is called", async () => {
+        test("should pass applePaySessionVersion to native ApplePaySession constructor", async () => {
             const { result } = renderHook(() =>
                 useApplePayOneTimePaymentSession(defaultProps),
             );
@@ -272,6 +273,22 @@ describe("useApplePayOneTimePaymentSession", () => {
             expect(
                 mockApplePaySession.formatConfigForPaymentRequest,
             ).toHaveBeenCalledWith(mockApplePayConfig);
+            expect(capturedApplePaySession!.version).toBe(4);
+        });
+
+        test("should pass custom applePaySessionVersion to native ApplePaySession constructor", async () => {
+            const { result } = renderHook(() =>
+                useApplePayOneTimePaymentSession({
+                    ...defaultProps,
+                    applePaySessionVersion: 14,
+                }),
+            );
+
+            await act(async () => {
+                await result.current.handleClick();
+            });
+
+            expect(capturedApplePaySession!.version).toBe(14);
         });
 
         test("should handle payment authorization, confirm order, and call onApprove", async () => {
