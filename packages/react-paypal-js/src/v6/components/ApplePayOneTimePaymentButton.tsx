@@ -53,8 +53,9 @@ export const ApplePayOneTimePaymentButton = ({
     // so we attach the click handler directly on the element.
     useEffect(() => {
         const el = buttonRef.current;
-        if (!el) return;
-
+        if (!el) {
+            return;
+        }
         const onClick = () => {
             handleClickRef.current().catch(() => {
                 // Errors are captured by the hook's setError
