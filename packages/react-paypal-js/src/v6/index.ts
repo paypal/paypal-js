@@ -55,7 +55,7 @@ export { PayPalCardCvvField } from "./components/PayPalCardCvvField";
 
 // Core hooks
 export { usePayPal } from "./hooks/usePayPal";
-export { useBraintreePayPal } from "./hooks/useBraintreePayPal";
+export { useBraintreePayPal } from "./hooks/Braintree/useBraintreePayPal";
 export * from "./hooks/useEligibleMethods";
 export { usePayPalMessages } from "./hooks/usePayPalMessages";
 

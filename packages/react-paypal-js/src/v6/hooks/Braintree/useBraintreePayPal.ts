@@ -1,9 +1,9 @@
 import { useContext } from "react";
 
-import { BraintreePayPalContext } from "../context/BraintreePayPalContext";
+import { BraintreePayPalContext } from "../../context/BraintreePayPalContext";
 
-import type { BraintreePayPalState } from "../context/BraintreePayPalContext";
-import type { BraintreePayPalProvider } from "../components/Braintree/BraintreePayPalProvider";
+import type { BraintreePayPalState } from "../../context/BraintreePayPalContext";
+import type { BraintreePayPalProvider } from "../../components/Braintree/BraintreePayPalProvider";
 
 /**
  * Returns {@link BraintreePayPalState} provided by a parent {@link BraintreePayPalProvider}.
