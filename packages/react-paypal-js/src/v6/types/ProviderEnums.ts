@@ -11,3 +11,10 @@ export enum INSTANCE_DISPATCH_ACTION {
     SET_ERROR = "setError",
     RESET_STATE = "resetState",
 }
+
+export enum BRAINTREE_DISPATCH_ACTION {
+    SET_LOADING_STATUS = "setLoadingStatus",
+    SET_INSTANCE = "setInstance",
+    SET_ERROR = "setError",
+    RESET_STATE = "resetState",
+}

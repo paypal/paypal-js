@@ -660,6 +660,23 @@ function PaymentOptions() {
 }
 ```
 
+#### Stale Eligibility Data Prevention
+
+When navigating between different payment flows (e.g., from a save payment page with `paymentFlow: "VAULT_WITHOUT_PAYMENT"` to a checkout page with `paymentFlow: "ONE_TIME_PAYMENT"`), `isLoading` will return `true` while the new eligibility data is being fetched. This prevents stale buttons from flashing before the updated eligibility response arrives.
+
+If your app uses a single `PayPalProvider` across multiple routes with different `paymentFlow` values, always check `isLoading` before rendering eligibility-dependent buttons:
+
+```tsx
+const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
+    payload: { currencyCode: "USD", paymentFlow: "ONE_TIME_PAYMENT" },
+});
+
+// Guard eligibility-dependent buttons with isLoading to avoid rendering
+// buttons based on stale data from a previous payment flow
+const isPayLaterEligible =
+    !isLoading && eligiblePaymentMethods?.isEligible("paylater");
+```
+
 ### usePayPalMessages
 
 Hook for integrating PayPal messaging (Pay Later promotions).

@@ -7,7 +7,10 @@ import {
     disabledArgType,
 } from "../../shared/utils";
 import { V6DocPageStructure } from "../../components";
-import { getPayPalGuestPaymentButtonCode } from "../../shared/code";
+import {
+    getPayPalGuestPaymentButtonCode,
+    getPayPalGuestPaymentButtonEagerCode,
+} from "../../shared/code";
 
 const meta: Meta<typeof PayPalGuestPaymentButton> = {
     title: "V6/Buttons/PayPalGuestPaymentButton",
@@ -28,7 +31,16 @@ For more information, see [PayPal Basic Card Checkout](https://docs.paypal.ai/pa
 `,
             },
             page: () => (
-                <V6DocPageStructure code={getPayPalGuestPaymentButtonCode()} />
+                <V6DocPageStructure
+                    code={getPayPalGuestPaymentButtonCode()}
+                    codeTitle="Option 1: Lazy Order Creation (Recommended)"
+                    additionalExamples={[
+                        {
+                            title: "Option 2: Eager Order Creation",
+                            code: getPayPalGuestPaymentButtonEagerCode(),
+                        },
+                    ]}
+                />
             ),
         },
     },
@@ -36,7 +48,12 @@ For more information, see [PayPal Basic Card Checkout](https://docs.paypal.ai/pa
         disabled: disabledArgType,
         createOrder: {
             description:
-                "Function that creates an order and returns the order ID.",
+                "Function that lazily creates an order on button click and returns `{ orderId }`. Mutually exclusive with `orderId`. (Recommended)",
+            table: { category: "Events" },
+        },
+        orderId: {
+            description:
+                "Pre-created order ID string. Use when the order is created before rendering. Mutually exclusive with `createOrder`.",
             table: { category: "Events" },
         },
         onApprove: {

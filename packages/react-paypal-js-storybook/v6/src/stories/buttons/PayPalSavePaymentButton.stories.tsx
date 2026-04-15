@@ -9,7 +9,10 @@ import {
     disabledArgType,
 } from "../../shared/utils";
 import { V6DocPageStructure } from "../../components";
-import { getPayPalSavePaymentButtonCode } from "../../shared/code";
+import {
+    getPayPalSavePaymentButtonCode,
+    getPayPalSavePaymentButtonEagerCode,
+} from "../../shared/code";
 
 const meta: Meta<typeof PayPalSavePaymentButton> = {
     title: "V6/Buttons/PayPalSavePaymentButton",
@@ -28,7 +31,16 @@ For more information, see [PayPal Vaulting](https://docs.paypal.ai/payments/save
 `,
             },
             page: () => (
-                <V6DocPageStructure code={getPayPalSavePaymentButtonCode()} />
+                <V6DocPageStructure
+                    code={getPayPalSavePaymentButtonCode()}
+                    codeTitle="Option 1: Lazy Vault Token Creation (Recommended)"
+                    additionalExamples={[
+                        {
+                            title: "Option 2: Eager Vault Token Creation",
+                            code: getPayPalSavePaymentButtonEagerCode(),
+                        },
+                    ]}
+                />
             ),
         },
     },
@@ -38,7 +50,12 @@ For more information, see [PayPal Vaulting](https://docs.paypal.ai/payments/save
         disabled: disabledArgType,
         createVaultToken: {
             description:
-                "Function that creates a vault setup token and returns the token ID.",
+                "Function that lazily creates a vault setup token on button click and returns `{ vaultSetupToken }`. Mutually exclusive with `vaultSetupToken`. (Recommended)",
+            table: { category: "Events" },
+        },
+        vaultSetupToken: {
+            description:
+                "Pre-created vault setup token string. Use when the token is created before rendering. Mutually exclusive with `createVaultToken`.",
             table: { category: "Events" },
         },
         onApprove: {
