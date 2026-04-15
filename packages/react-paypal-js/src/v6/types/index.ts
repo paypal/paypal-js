@@ -1,4 +1,5 @@
-export * from "./PayPalProviderEnums";
+export * from "./ProviderEnums";
+export * from "./braintree";
 
 export type * from "@paypal/paypal-js/sdk-v6";
 export type * from "./sdkWebComponents";

@@ -6,7 +6,7 @@ import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 import { expectCurrentErrorValue } from "../hooks/useErrorTestUtil";
 import { PayPalProvider } from "./PayPalProvider";
 import { usePayPal } from "../hooks/usePayPal";
-import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
+import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
 
 import type { CreateInstanceOptions, PayPalV6Namespace } from "../types";
 import type { PayPalState } from "../context/PayPalProviderContext";

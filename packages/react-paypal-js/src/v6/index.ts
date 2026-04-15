@@ -42,6 +42,7 @@ export {
     type PayPalSubscriptionButtonProps,
 } from "./components/PayPalSubscriptionButton";
 export { PayPalProvider } from "./components/PayPalProvider";
+export { BraintreePayPalProvider } from "./components/Braintree/BraintreePayPalProvider";
 export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
 export { PayPalCardNumberField } from "./components/PayPalCardNumberField";
@@ -54,6 +55,7 @@ export { PayPalCardCvvField } from "./components/PayPalCardCvvField";
 
 // Core hooks
 export { usePayPal } from "./hooks/usePayPal";
+export { useBraintreePayPal } from "./hooks/useBraintreePayPal";
 export * from "./hooks/useEligibleMethods";
 export { usePayPalMessages } from "./hooks/usePayPalMessages";
 
