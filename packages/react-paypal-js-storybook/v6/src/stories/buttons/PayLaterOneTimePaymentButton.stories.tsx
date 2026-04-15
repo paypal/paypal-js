@@ -20,18 +20,34 @@ import {
 /**
  * Wrapper that calls useEligibleMethods with the ONE_TIME_PAYMENT flow,
  * which is required for Pay Later eligibility (countryCode and productCode).
+ * Only renders children if Pay Later is eligible.
  */
 function PayLaterEligibilityWrapper({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    useEligibleMethods({
+    const {
+        eligiblePaymentMethods,
+        isLoading: isEligibilityLoading,
+        error: eligibilityError,
+    } = useEligibleMethods({
         payload: {
             currencyCode: "USD",
             paymentFlow: "ONE_TIME_PAYMENT",
         },
     });
+
+    const isPayLaterEligible =
+        !isEligibilityLoading && eligiblePaymentMethods?.isEligible("paylater");
+
+    if (isEligibilityLoading) return <div>Checking eligibility...</div>;
+    if (eligibilityError)
+        return (
+            <div>Failed to check eligibility: {eligibilityError.message}</div>
+        );
+    if (!isPayLaterEligible)
+        return <div>Pay Later is not eligible for this configuration.</div>;
 
     return <>{children}</>;
 }

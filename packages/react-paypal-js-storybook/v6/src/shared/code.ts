@@ -271,6 +271,7 @@ export default function App() {
 export const getPayLaterOneTimePaymentButtonCode = (): string => `
 // Option 1: Lazy order creation (Recommended)
 // The order is created only when the buyer clicks the button.
+// Pay Later requires an eligibility check before rendering.
 import {
     PayPalProvider,
     PayLaterOneTimePaymentButton,
@@ -287,12 +288,23 @@ async function createOrder() {
 }
 
 function Checkout() {
-    useEligibleMethods({
+    const {
+        eligiblePaymentMethods,
+        isLoading: isEligibilityLoading,
+        error: eligibilityError,
+    } = useEligibleMethods({
         payload: {
             currencyCode: "USD",
             paymentFlow: "ONE_TIME_PAYMENT",
         },
     });
+
+    const isPayLaterEligible =
+        !isEligibilityLoading && eligiblePaymentMethods?.isEligible("paylater");
+
+    if (isEligibilityLoading) return <div>Checking eligibility...</div>;
+    if (eligibilityError) return <div>Failed to check eligibility.</div>;
+    if (!isPayLaterEligible) return null;
 
     return (
         <PayLaterOneTimePaymentButton
@@ -323,6 +335,7 @@ export default function App() {
 export const getPayLaterOneTimePaymentButtonEagerCode = (): string => `
 // Option 2: Eager order creation
 // The order is created on page load and passed directly as a prop.
+// Pay Later requires an eligibility check before rendering.
 import { useEffect, useState } from "react";
 import {
     PayPalProvider,
@@ -333,12 +346,18 @@ import {
 function Checkout() {
     const [orderId, setOrderId] = useState<string | null>(null);
 
-    useEligibleMethods({
+    const {
+        eligiblePaymentMethods,
+        isLoading: isEligibilityLoading,
+    } = useEligibleMethods({
         payload: {
             currencyCode: "USD",
             paymentFlow: "ONE_TIME_PAYMENT",
         },
     });
+
+    const isPayLaterEligible =
+        !isEligibilityLoading && eligiblePaymentMethods?.isEligible("paylater");
 
     useEffect(() => {
         fetch("/api/paypal/create-order", {
@@ -349,7 +368,8 @@ function Checkout() {
             .then((data) => setOrderId(data.id));
     }, []);
 
-    if (!orderId) return <div>Loading...</div>;
+    if (isEligibilityLoading || !orderId) return <div>Loading...</div>;
+    if (!isPayLaterEligible) return null;
 
     return (
         <PayLaterOneTimePaymentButton
@@ -499,6 +519,7 @@ export default function App() {
 export const getPayPalCreditSavePaymentButtonCode = (): string => `
 // Option 1: Lazy vault token creation (Recommended)
 // The vault setup token is created only when the buyer clicks the button.
+// PayPal Credit requires an eligibility check before rendering.
 import {
     PayPalProvider,
     PayPalCreditSavePaymentButton,
@@ -515,12 +536,23 @@ async function createVaultToken() {
 }
 
 function Checkout() {
-    useEligibleMethods({
+    const {
+        eligiblePaymentMethods,
+        isLoading: isEligibilityLoading,
+        error: eligibilityError,
+    } = useEligibleMethods({
         payload: {
             currencyCode: "USD",
             paymentFlow: "VAULT_WITHOUT_PAYMENT",
         },
     });
+
+    const isCreditEligible =
+        !isEligibilityLoading && eligiblePaymentMethods?.isEligible("credit");
+
+    if (isEligibilityLoading) return <div>Checking eligibility...</div>;
+    if (eligibilityError) return <div>Failed to check eligibility.</div>;
+    if (!isCreditEligible) return null;
 
     return (
         <PayPalCreditSavePaymentButton
@@ -549,6 +581,7 @@ export default function App() {
 export const getPayPalCreditSavePaymentButtonEagerCode = (): string => `
 // Option 2: Eager vault token creation
 // The vault setup token is created on page load and passed directly as a prop.
+// PayPal Credit requires an eligibility check before rendering.
 import { useEffect, useState } from "react";
 import {
     PayPalProvider,
@@ -559,12 +592,18 @@ import {
 function Checkout() {
     const [vaultSetupToken, setVaultSetupToken] = useState<string | null>(null);
 
-    useEligibleMethods({
+    const {
+        eligiblePaymentMethods,
+        isLoading: isEligibilityLoading,
+    } = useEligibleMethods({
         payload: {
             currencyCode: "USD",
             paymentFlow: "VAULT_WITHOUT_PAYMENT",
         },
     });
+
+    const isCreditEligible =
+        !isEligibilityLoading && eligiblePaymentMethods?.isEligible("credit");
 
     useEffect(() => {
         fetch("/api/paypal/create-vault-token", {
@@ -575,7 +614,8 @@ function Checkout() {
             .then((data) => setVaultSetupToken(data.id));
     }, []);
 
-    if (!vaultSetupToken) return <div>Loading...</div>;
+    if (isEligibilityLoading || !vaultSetupToken) return <div>Loading...</div>;
+    if (!isCreditEligible) return null;
 
     return (
         <PayPalCreditSavePaymentButton
@@ -606,6 +646,7 @@ export default function App() {
 export const getCardFieldsOneTimePaymentCode = (): string => `
 // Option 1: One-Time Payment (Recommended for standard checkout)
 // Create an order, then submit the card details to capture payment.
+// Card Fields require an eligibility check with isEligible("advanced_cards").
 import {
     PayPalProvider,
     PayPalCardFieldsProvider,
@@ -614,6 +655,7 @@ import {
     PayPalCardCvvField,
     usePayPalCardFields,
     usePayPalCardFieldsOneTimePaymentSession,
+    useEligibleMethods,
 } from "@paypal/react-paypal-js/sdk-v6";
 import { useEffect } from "react";
 
@@ -633,7 +675,7 @@ async function captureOrder(orderId: string) {
     return response.json();
 }
 
-function CardFieldsForm() {
+function CardFields() {
     const { error: cardFieldsError } = usePayPalCardFields();
     const { error: submitError, submit, submitResponse } =
         usePayPalCardFieldsOneTimePaymentSession();
@@ -654,6 +696,12 @@ function CardFieldsForm() {
                 break;
         }
     }, [submitResponse]);
+
+    useEffect(() => {
+        if (submitError) {
+            console.error("Card submission error:", submitError.message);
+        }
+    }, [submitError]);
 
     const handleSubmit = async () => {
         const { orderId } = await createOrder();
@@ -681,6 +729,33 @@ function CardFieldsForm() {
     );
 }
 
+function Checkout() {
+    const {
+        eligiblePaymentMethods,
+        isLoading: isEligibilityLoading,
+        error: eligibilityError,
+    } = useEligibleMethods({
+        payload: {
+            currencyCode: "USD",
+            paymentFlow: "ONE_TIME_PAYMENT",
+        },
+    });
+
+    const isCardFieldsEligible =
+        !isEligibilityLoading &&
+        eligiblePaymentMethods?.isEligible("advanced_cards");
+
+    if (isEligibilityLoading) return <div>Checking eligibility...</div>;
+    if (eligibilityError) return <div>Failed to check eligibility.</div>;
+    if (!isCardFieldsEligible) return null;
+
+    return (
+        <PayPalCardFieldsProvider>
+            <CardFields />
+        </PayPalCardFieldsProvider>
+    );
+}
+
 export default function App() {
     return (
         <PayPalProvider
@@ -688,9 +763,7 @@ export default function App() {
             components={["card-fields"]}
             pageType="checkout"
         >
-            <PayPalCardFieldsProvider>
-                <CardFieldsForm />
-            </PayPalCardFieldsProvider>
+            <Checkout />
         </PayPalProvider>
     );
 }
@@ -699,6 +772,7 @@ export default function App() {
 export const getCardFieldsSavePaymentCode = (): string => `
 // Option 2: Save Payment Method (for vaulting cards without immediate payment)
 // Create a vault setup token, then submit the card details to save the payment method.
+// Card Fields require an eligibility check with isEligible("advanced_cards").
 import {
     PayPalProvider,
     PayPalCardFieldsProvider,
@@ -707,6 +781,7 @@ import {
     PayPalCardCvvField,
     usePayPalCardFields,
     usePayPalCardFieldsSavePaymentSession,
+    useEligibleMethods,
 } from "@paypal/react-paypal-js/sdk-v6";
 import { useEffect } from "react";
 
@@ -719,7 +794,7 @@ async function createVaultSetupToken() {
     return data.id;
 }
 
-function CardFieldsForm() {
+function CardFields() {
     const { error: cardFieldsError } = usePayPalCardFields();
     const { error: submitError, submit, submitResponse } =
         usePayPalCardFieldsSavePaymentSession();
@@ -738,6 +813,12 @@ function CardFieldsForm() {
                 break;
         }
     }, [submitResponse]);
+
+    useEffect(() => {
+        if (submitError) {
+            console.error("Card submission error:", submitError.message);
+        }
+    }, [submitError]);
 
     const handleSubmit = async () => {
         const vaultSetupToken = await createVaultSetupToken();
@@ -765,6 +846,33 @@ function CardFieldsForm() {
     );
 }
 
+function Checkout() {
+    const {
+        eligiblePaymentMethods,
+        isLoading: isEligibilityLoading,
+        error: eligibilityError,
+    } = useEligibleMethods({
+        payload: {
+            currencyCode: "USD",
+            paymentFlow: "VAULT_WITHOUT_PAYMENT",
+        },
+    });
+
+    const isCardFieldsEligible =
+        !isEligibilityLoading &&
+        eligiblePaymentMethods?.isEligible("advanced_cards");
+
+    if (isEligibilityLoading) return <div>Checking eligibility...</div>;
+    if (eligibilityError) return <div>Failed to check eligibility.</div>;
+    if (!isCardFieldsEligible) return null;
+
+    return (
+        <PayPalCardFieldsProvider>
+            <CardFields />
+        </PayPalCardFieldsProvider>
+    );
+}
+
 export default function App() {
     return (
         <PayPalProvider
@@ -772,9 +880,7 @@ export default function App() {
             components={["card-fields"]}
             pageType="checkout"
         >
-            <PayPalCardFieldsProvider>
-                <CardFieldsForm />
-            </PayPalCardFieldsProvider>
+            <Checkout />
         </PayPalProvider>
     );
 }

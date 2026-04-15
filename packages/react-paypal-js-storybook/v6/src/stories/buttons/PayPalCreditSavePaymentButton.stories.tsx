@@ -20,18 +20,34 @@ import {
 /**
  * Wrapper that calls useEligibleMethods with the VAULT_WITHOUT_PAYMENT flow,
  * which is required for PayPal Credit eligibility.
+ * Only renders children if PayPal Credit is eligible.
  */
 function CreditSaveEligibilityWrapper({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    useEligibleMethods({
+    const {
+        eligiblePaymentMethods,
+        isLoading: isEligibilityLoading,
+        error: eligibilityError,
+    } = useEligibleMethods({
         payload: {
             currencyCode: "USD",
             paymentFlow: "VAULT_WITHOUT_PAYMENT",
         },
     });
+
+    const isCreditEligible =
+        !isEligibilityLoading && eligiblePaymentMethods?.isEligible("credit");
+
+    if (isEligibilityLoading) return <div>Checking eligibility...</div>;
+    if (eligibilityError)
+        return (
+            <div>Failed to check eligibility: {eligibilityError.message}</div>
+        );
+    if (!isCreditEligible)
+        return <div>PayPal Credit is not eligible for this configuration.</div>;
 
     return <>{children}</>;
 }

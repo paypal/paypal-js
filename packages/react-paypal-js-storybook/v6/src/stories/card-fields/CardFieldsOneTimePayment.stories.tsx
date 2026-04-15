@@ -8,6 +8,7 @@ import {
     PayPalCardCvvField,
     usePayPalCardFields,
     usePayPalCardFieldsOneTimePaymentSession,
+    useEligibleMethods,
 } from "@paypal/react-paypal-js/sdk-v6";
 import { action } from "storybook/actions";
 import { createOrder, captureOrder } from "../../shared/utils";
@@ -18,7 +19,7 @@ import {
     getCardFieldsSavePaymentCode,
 } from "../../shared/code";
 
-function CardFieldsForm() {
+function CardFields() {
     const { error: cardFieldsError } = usePayPalCardFields();
     const {
         error: submitError,
@@ -81,6 +82,9 @@ function CardFieldsForm() {
                 `Card field error: ${cardFieldsError.message || "Unknown error"}`,
             );
         }
+    }, [cardFieldsError]);
+
+    useEffect(() => {
         if (submitError) {
             action("error")({
                 source: "submit",
@@ -91,7 +95,7 @@ function CardFieldsForm() {
                 `Card submission error: ${submitError.message || "Unknown error"}`,
             );
         }
-    }, [cardFieldsError, submitError]);
+    }, [submitError]);
 
     const handleSubmit = async () => {
         const { orderId } = await createOrder();
@@ -129,9 +133,32 @@ function CardFieldsForm() {
 }
 
 function CardFieldsStory() {
+    const {
+        eligiblePaymentMethods,
+        isLoading: isEligibilityLoading,
+        error: eligibilityError,
+    } = useEligibleMethods({
+        payload: {
+            currencyCode: "USD",
+            paymentFlow: "ONE_TIME_PAYMENT",
+        },
+    });
+
+    const isCardFieldsEligible =
+        !isEligibilityLoading &&
+        eligiblePaymentMethods?.isEligible("advanced_cards");
+
+    if (isEligibilityLoading) return <div>Checking eligibility...</div>;
+    if (eligibilityError)
+        return (
+            <div>Failed to check eligibility: {eligibilityError.message}</div>
+        );
+    if (!isCardFieldsEligible)
+        return <div>Card Fields are not eligible for this configuration.</div>;
+
     return (
         <PayPalCardFieldsProvider>
-            <CardFieldsForm />
+            <CardFields />
         </PayPalCardFieldsProvider>
     );
 }
