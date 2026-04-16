@@ -62,8 +62,8 @@ export interface BraintreePlanMetadata {
 // ---- Callback data types ----
 
 export interface BraintreeApprovalData {
-    payerID?: string;
-    orderID?: string;
+    payerId?: string;
+    orderId?: string;
     billingToken?: string;
 }
 
