@@ -80,8 +80,8 @@ export type ApplePayMerchantSession = {
  */
 export type ValidateMerchantOptions = {
     validationUrl: string;
-    displayName: string;
-    domainName: string;
+    displayName?: string;
+    domainName?: string;
 };
 
 /**
@@ -149,6 +149,8 @@ export type ApplePayOneTimePaymentSession = {
     formatConfigForPaymentRequest: (config: ApplePayConfig) => {
         merchantCapabilities: ApplePayMerchantCapability[];
         supportedNetworks: ApplePaySupportedNetwork[];
+        merchantCountry?: string;
+        tokenNotificationURL: string;
     };
 
     /**
@@ -293,4 +295,35 @@ export interface ApplePayPaymentsInstance {
      * ```
      */
     createApplePayOneTimePaymentSession: () => ApplePayOneTimePaymentSession;
+}
+
+/**
+ * Native Apple Pay session API (Safari-only).
+ * @see https://developer.apple.com/documentation/apple_pay_on_the_web/applepaysession
+ */
+declare class ApplePaySession {
+    static STATUS_SUCCESS: number;
+    static STATUS_FAILURE: number;
+    static canMakePayments(): boolean;
+    static supportsVersion(version: number): boolean;
+    constructor(version: number, paymentRequest: unknown);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onvalidatemerchant: ((event: any) => void) | null;
+    onpaymentmethodselected: (() => void) | null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onpaymentauthorized: ((event: any) => void) | null;
+    oncancel: (() => void) | null;
+
+    completeMerchantValidation(merchantSession: unknown): void;
+    completePaymentMethodSelection(update: unknown): void;
+    completePayment(result: { status: number }): void;
+    begin(): void;
+    abort(): void;
+}
+
+declare global {
+    interface Window {
+        ApplePaySession?: typeof ApplePaySession;
+    }
 }
