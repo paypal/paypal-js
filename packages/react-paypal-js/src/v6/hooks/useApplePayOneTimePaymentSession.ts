@@ -250,8 +250,8 @@ export function useApplePayOneTimePaymentSession({
                 paypalSession.formatConfigForPaymentRequest(applePayConfig);
 
             const fullPaymentRequest = {
-                ...formattedConfig,
                 ...paymentRequest,
+                ...formattedConfig,
             };
 
             // Create Apple's native payment session
