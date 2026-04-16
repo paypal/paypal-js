@@ -6,6 +6,19 @@ import { usePayPal } from "../hooks/usePayPal";
 import type { UseApplePayOneTimePaymentSessionProps } from "../hooks/useApplePayOneTimePaymentSession";
 import type { ApplePayButtonElementProps } from "../types/sdkWebComponents";
 
+/**
+ * Safari's native `<apple-pay-button>` relies on `-webkit-appearance: -apple-pay-button`
+ * to render its visual appearance. When the element is inserted dynamically by
+ * JavaScript (as React does), Safari may not apply the native appearance
+ * automatically, leaving the button invisible. Applying these styles explicitly
+ * ensures the button renders reliably across Safari versions without requiring
+ * consumers to add CSS in their own HTML.
+ */
+const applePayButtonStyles: React.CSSProperties = {
+    WebkitAppearance:
+        "-apple-pay-button" as React.CSSProperties["WebkitAppearance"],
+};
+
 export type ApplePayOneTimePaymentButtonProps =
     UseApplePayOneTimePaymentSessionProps & ApplePayButtonElementProps;
 
@@ -91,6 +104,7 @@ export const ApplePayOneTimePaymentButton = ({
                 type={type}
                 locale={locale}
                 disabled={isDisabled || undefined}
+                style={applePayButtonStyles}
             />
         </div>
     );
