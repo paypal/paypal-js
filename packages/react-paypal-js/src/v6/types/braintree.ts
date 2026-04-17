@@ -349,6 +349,7 @@ export interface BraintreeV6Namespace {
             client: BraintreeClientInstance;
         }) => Promise<BraintreePayPalCheckoutInstance>;
     };
+    [key: string]: unknown;
 }
 
 export function validateBraintreeNamespace(
