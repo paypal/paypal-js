@@ -395,6 +395,10 @@ describe("useBraintreePayPalOneTimePaymentSession", () => {
         });
 
         test("should not recreate session when inline object options have the same values", () => {
+            mockUseProxyProps.mockImplementation(
+                jest.requireActual("../../utils").useProxyProps,
+            );
+
             const { rerender } = renderHook(
                 ({ lineItems }) =>
                     useBraintreePayPalOneTimePaymentSession({
@@ -468,6 +472,10 @@ describe("useBraintreePayPalOneTimePaymentSession", () => {
         });
 
         test("should retry session creation when a new checkout instance replaces a failed one", () => {
+            mockUseProxyProps.mockImplementation(
+                jest.requireActual("../../utils").useProxyProps,
+            );
+
             const mockCheckoutInstanceWithError = {
                 createOneTimePaymentSession: jest
                     .fn()
