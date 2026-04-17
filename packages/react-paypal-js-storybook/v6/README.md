@@ -83,7 +83,17 @@ v6/
 
 ## Environment Variables
 
-- `STORYBOOK_PAYPAL_API_URL` - Override the sample integration server URL (defaults to `https://v6-web-sdk-sample-integration-server.fly.dev`)
+Create a `.env` file in this directory (`packages/react-paypal-js-storybook/v6/.env`):
+
+```bash
+# Required: PayPal sandbox client ID from https://developer.paypal.com/dashboard/applications/sandbox
+STORYBOOK_PAYPAL_SANDBOX_CLIENT_ID=your_sandbox_client_id_here
+```
+
+| Variable                             | Required | Description                                                                                                                                                                          |
+| ------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `STORYBOOK_PAYPAL_SANDBOX_CLIENT_ID` | Yes      | PayPal sandbox client ID. Without this, buttons will not render. Create an app at [developer.paypal.com](https://developer.paypal.com/dashboard/applications/sandbox) to obtain one. |
+| `STORYBOOK_PAYPAL_API_URL`           | No       | Override the sample integration server URL (defaults to `https://v6-web-sdk-sample-integration-server.fly.dev`)                                                                      |
 
 ## Technology Stack
 

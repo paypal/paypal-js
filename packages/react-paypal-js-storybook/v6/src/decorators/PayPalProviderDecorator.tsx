@@ -32,6 +32,35 @@ function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
 }
 
 function ProviderWrapper({ children }: { children: React.ReactNode }) {
+    if (!PAYPAL_CLIENT_ID) {
+        return (
+            <div
+                style={{
+                    padding: "1rem",
+                    border: "1px solid #e53e3e",
+                    borderRadius: "4px",
+                    backgroundColor: "#fff5f5",
+                    color: "#c53030",
+                }}
+            >
+                <strong>Missing environment variable</strong>
+                <p style={{ margin: "0.5rem 0 0" }}>
+                    <code>STORYBOOK_PAYPAL_SANDBOX_CLIENT_ID</code> is not set.
+                    Copy <code>.env.example</code> to <code>.env</code> and add
+                    your sandbox client ID from{" "}
+                    <a
+                        href="https://developer.paypal.com/dashboard/applications/sandbox"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        developer.paypal.com
+                    </a>
+                    .
+                </p>
+            </div>
+        );
+    }
+
     return (
         <PayPalProvider
             clientId={PAYPAL_CLIENT_ID}
