@@ -78,3 +78,89 @@ export default function App() {
 		</PayPalScriptProvider>
 	);
 }`;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Android Resilience — copy-paste example for the AndroidResilience story
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getAndroidResilienceCode = (): string =>
+    `/**
+ * PayPalSubscriptionButtons — Android Resilience Pattern
+ *
+ * Drop-in for <PayPalButtons createSubscription={...}> that transparently:
+ *   1. Forces full-page redirect on Android (bypasses the buggy postMessage bridge)
+ *   2. Polls your backend via a VisibilityChange listener when the user returns
+ *      from a blank/stuck popup (the "ghost popup" bug)
+ *   3. Activates a watchdog timer that closes a stuck popup and fires one final
+ *      backend poll after a configurable timeout
+ *   4. Stores a recovery key in sessionStorage so page refreshes don't strand users
+ *
+ * Requirements:
+ *   - returnUrl must be registered in your PayPal Developer Dashboard
+ *   - /api/subscription/status must be your OWN backend endpoint reading
+ *     from a webhook-synced DB — never proxy PayPal directly from the frontend
+ */
+import {
+    PayPalScriptProvider,
+    PayPalSubscriptionButtons,
+} from "@paypal/react-paypal-js";
+
+// ── Backend polling function ─────────────────────────────────────────────────
+// This calls YOUR server, which reads from a DB synced by PayPal webhooks.
+// Shape: { status: "ACTIVE" | "APPROVAL_PENDING" | ..., subscriptionId: string }
+async function pollSubscriptionStatus() {
+    const res = await fetch("/api/subscription/status", {
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+    });
+    if (!res.ok) throw new Error("Failed to fetch subscription status");
+    return res.json();
+}
+
+// ── Component ────────────────────────────────────────────────────────────────
+export default function SubscriptionPage() {
+    function handleApproved(subscriptionId) {
+        // subscriptionId is definitive — sourced from either the SDK onApprove
+        // (desktop) or a confirmed backend webhook (Android).
+        console.log("Subscription active:", subscriptionId);
+        window.location.href = "/subscription/success?id=" + subscriptionId;
+    }
+
+    function handleError(err) {
+        console.error("Subscription error:", err);
+        // Show an appropriate UI — watchdog timeout, SDK error, etc.
+    }
+
+    return (
+        <PayPalScriptProvider
+            options={{
+                clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+                components: "buttons",
+                intent: "subscription",
+                vault: true,
+            }}
+        >
+            <PayPalSubscriptionButtons
+                // ── Required ──────────────────────────────────────────────
+                planId="P-XXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                returnUrl="https://example.com/subscription/return"
+                cancelUrl="https://example.com/subscription/cancel"
+                onSubscriptionApproved={handleApproved}
+                pollSubscriptionStatus={pollSubscriptionStatus}
+
+                // ── Optional ──────────────────────────────────────────────
+                onSubscriptionError={handleError}
+
+                // Watchdog timeout before onSubscriptionError fires (ms)
+                watchdogTimeoutMs={45000}
+
+                // How often the watchdog polls your backend (ms)
+                watchdogPollIntervalMs={5000}
+
+                // Standard PayPalButtons style props still work
+                style={{ layout: "vertical", color: "gold" }}
+            />
+        </PayPalScriptProvider>
+    );
+}`;
+

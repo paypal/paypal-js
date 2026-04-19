@@ -1,8 +1,12 @@
 export * from "./types";
+export { isAndroidMobile, isAndroidWebView, isPostMessageUnreliable, supportsPageVisibility, isBrowser } from "./utils/mobileDetection";
 export * from "./context/scriptProviderContext";
 export * from "./hooks/scriptProviderHooks";
+export { useSubscriptionWatchdog } from "./hooks/useSubscriptionWatchdog";
+export type { UseSubscriptionWatchdogOptions, UseSubscriptionWatchdogReturn, SubscriptionStatusResponse } from "./hooks/useSubscriptionWatchdog";
 export { usePayPalHostedFields } from "./hooks/payPalHostedFieldsHooks";
 export * from "./components/PayPalButtons";
+export * from "./components/PayPalSubscriptionButtons";
 export * from "./components/braintree/BraintreePayPalButtons";
 export * from "./components/PayPalMarks";
 export * from "./components/PayPalMessages";
