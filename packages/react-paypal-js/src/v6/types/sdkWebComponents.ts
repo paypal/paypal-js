@@ -9,8 +9,7 @@ export interface InternalButtonProps {
 }
 
 export interface ButtonProps
-    extends
-        Omit<HTMLAttributes<HTMLButtonElement>, "onError">,
+    extends Omit<HTMLAttributes<HTMLButtonElement>, "onError">,
         InternalButtonProps {}
 
 /**
@@ -23,13 +22,15 @@ export interface PayLaterButtonProps extends HTMLAttributes<HTMLButtonElement> {
     disabled?: boolean;
 }
 
-export interface PayPalBasicCardButtonProps extends HTMLAttributes<HTMLButtonElement> {
+export interface PayPalBasicCardButtonProps
+    extends HTMLAttributes<HTMLButtonElement> {
     buyerCountry?: string;
     disabled?: boolean;
     ref?: Ref<HTMLElement>;
 }
 
-export interface PayPalCreditButtonProps extends HTMLAttributes<HTMLButtonElement> {
+export interface PayPalCreditButtonProps
+    extends HTMLAttributes<HTMLButtonElement> {
     countryCode?: string;
     disabled?: boolean;
 }
@@ -75,6 +76,14 @@ export interface PayPalMessagesElement extends HTMLAttributes<HTMLElement> {
 
     setContent?: (content: Record<string, unknown>) => void;
 }
+export interface ApplePayButtonElementProps
+    extends HTMLAttributes<HTMLElement> {
+    buttonstyle?: string;
+    type?: string;
+    locale?: string;
+    disabled?: boolean;
+    ref?: Ref<HTMLElement>;
+}
 
 export type SDKWebComponents = {
     "paypal-button": ButtonProps;
@@ -84,4 +93,5 @@ export type SDKWebComponents = {
     "paypal-basic-card-button": PayPalBasicCardButtonProps;
     "paypal-basic-card-container": HTMLAttributes<HTMLElement>;
     "paypal-message": PayPalMessagesElement;
+    "apple-pay-button": ApplePayButtonElementProps;
 };

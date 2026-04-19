@@ -1,13 +1,15 @@
 import React from "react";
 import { renderHook, act } from "@testing-library/react-hooks";
 
+import "./useErrorTestUtil";
+
 import { useEligibleMethods } from "./useEligibleMethods";
 import { PayPalContext } from "../context/PayPalProviderContext";
 import { PayPalDispatchContext } from "../context/PayPalDispatchContext";
 import {
     INSTANCE_DISPATCH_ACTION,
     INSTANCE_LOADING_STATE,
-} from "../types/PayPalProviderEnums";
+} from "../types/ProviderEnums";
 
 import type { PayPalState } from "../context/PayPalProviderContext";
 
