@@ -82,6 +82,7 @@
         "@storybook/addon-essentials": "^6.4.9",
         "@storybook/addon-links": "^6.4.9",
         "@storybook/react": "^6.4.9",
+        "@testing-library/dom": "^10.4.1",
         "@testing-library/jest-dom": "^6.6.3",
         "@testing-library/react": "^12.1.3",
         "@testing-library/react-hooks": "^7.0.2",
