@@ -32,11 +32,11 @@ export interface UseBraintreePayPalOneTimePaymentSessionReturn {
  *
  * @example
  * function BraintreePayPalButton() {
+ *   const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
  *   const { isPending, error, handleClick } = useBraintreePayPalOneTimePaymentSession({
  *     amount: "10.00",
  *     currency: "USD",
  *     onApprove: async (data) => {
- *       const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
  *       const payload = await braintreePayPalCheckoutInstance.tokenizePayment({
  *         payerID: data.payerID,
  *         orderID: data.orderID,
