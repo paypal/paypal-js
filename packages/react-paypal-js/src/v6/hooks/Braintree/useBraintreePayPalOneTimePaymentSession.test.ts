@@ -285,8 +285,8 @@ describe("useBraintreePayPalOneTimePaymentSession", () => {
                     .calls[0][0];
 
             const mockApprovalData = {
-                payerID: "PAYER123",
-                orderID: "ORDER456",
+                payerId: "PAYER123",
+                orderId: "ORDER456",
             };
             createSessionCall.onApprove(mockApprovalData);
             createSessionCall.onCancel();
