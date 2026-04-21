@@ -62,8 +62,8 @@ export interface BraintreePlanMetadata {
 // ---- Callback data types ----
 
 export interface BraintreeApprovalData {
-    payerID?: string;
-    orderID?: string;
+    payerId?: string;
+    orderId?: string;
     billingToken?: string;
 }
 
@@ -349,6 +349,7 @@ export interface BraintreeV6Namespace {
             client: BraintreeClientInstance;
         }) => Promise<BraintreePayPalCheckoutInstance>;
     };
+    [key: string]: unknown;
 }
 
 export function validateBraintreeNamespace(

@@ -59,7 +59,12 @@ export { PayPalCardCvvField } from "./components/PayPalCardCvvField";
 
 // Core hooks
 export { usePayPal } from "./hooks/usePayPal";
-export { useBraintreePayPal } from "./hooks/useBraintreePayPal";
+export { useBraintreePayPal } from "./hooks/Braintree/useBraintreePayPal";
+export {
+    useBraintreePayPalOneTimePaymentSession,
+    type UseBraintreePayPalOneTimePaymentSessionProps,
+    type UseBraintreePayPalOneTimePaymentSessionReturn,
+} from "./hooks/Braintree/useBraintreePayPalOneTimePaymentSession";
 export * from "./hooks/useEligibleMethods";
 export { usePayPalMessages } from "./hooks/usePayPalMessages";
 
