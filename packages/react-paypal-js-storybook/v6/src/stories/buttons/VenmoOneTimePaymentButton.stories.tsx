@@ -9,7 +9,10 @@ import {
     disabledArgType,
 } from "../../shared/utils";
 import { V6DocPageStructure } from "../../components";
-import { getVenmoOneTimePaymentButtonCode } from "../../shared/code";
+import {
+    getVenmoOneTimePaymentButtonCode,
+    getVenmoOneTimePaymentButtonEagerCode,
+} from "../../shared/code";
 
 const meta: Meta<typeof VenmoOneTimePaymentButton> = {
     title: "V6/Buttons/VenmoOneTimePaymentButton",
@@ -26,7 +29,16 @@ For more information, see [Pay with Venmo](https://docs.paypal.ai/payments/metho
 `,
             },
             page: () => (
-                <V6DocPageStructure code={getVenmoOneTimePaymentButtonCode()} />
+                <V6DocPageStructure
+                    code={getVenmoOneTimePaymentButtonCode()}
+                    codeTitle="Option 1: Lazy Order Creation (Recommended)"
+                    additionalExamples={[
+                        {
+                            title: "Option 2: Eager Order Creation",
+                            code: getVenmoOneTimePaymentButtonEagerCode(),
+                        },
+                    ]}
+                />
             ),
         },
     },
@@ -36,7 +48,12 @@ For more information, see [Pay with Venmo](https://docs.paypal.ai/payments/metho
         disabled: disabledArgType,
         createOrder: {
             description:
-                "Function that creates an order and returns the order ID.",
+                "Function that lazily creates an order on button click and returns `{ orderId }`. Mutually exclusive with `orderId`. (Recommended)",
+            table: { category: "Events" },
+        },
+        orderId: {
+            description:
+                "Pre-created order ID string. Use when the order is created before rendering. Mutually exclusive with `createOrder`.",
             table: { category: "Events" },
         },
         onApprove: {

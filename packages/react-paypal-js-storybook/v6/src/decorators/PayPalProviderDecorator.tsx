@@ -5,7 +5,6 @@ import { action } from "storybook/actions";
 import {
     PayPalProvider,
     usePayPal,
-    useEligibleMethods,
     INSTANCE_LOADING_STATE,
 } from "@paypal/react-paypal-js/sdk-v6";
 import { PAYPAL_CLIENT_ID } from "../shared/utils";
@@ -13,13 +12,6 @@ import { PAYPAL_CLIENT_ID } from "../shared/utils";
 // Logs SDK and button events to the Actions panel.
 function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
     const { loadingStatus } = usePayPal();
-
-    useEligibleMethods({
-        payload: {
-            currencyCode: "USD",
-            paymentFlow: "ONE_TIME_PAYMENT",
-        },
-    });
 
     useEffect(() => {
         if (loadingStatus === INSTANCE_LOADING_STATE.RESOLVED) {
@@ -40,6 +32,35 @@ function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
 }
 
 function ProviderWrapper({ children }: { children: React.ReactNode }) {
+    if (!PAYPAL_CLIENT_ID) {
+        return (
+            <div
+                style={{
+                    padding: "1rem",
+                    border: "1px solid #e53e3e",
+                    borderRadius: "4px",
+                    backgroundColor: "#fff5f5",
+                    color: "#c53030",
+                }}
+            >
+                <strong>Missing environment variable</strong>
+                <p style={{ margin: "0.5rem 0 0" }}>
+                    <code>STORYBOOK_PAYPAL_SANDBOX_CLIENT_ID</code> is not set.
+                    Copy <code>.env.example</code> to <code>.env</code> and add
+                    your sandbox client ID from{" "}
+                    <a
+                        href="https://developer.paypal.com/dashboard/applications/sandbox"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        developer.paypal.com
+                    </a>
+                    .
+                </p>
+            </div>
+        );
+    }
+
     return (
         <PayPalProvider
             clientId={PAYPAL_CLIENT_ID}
@@ -47,6 +68,8 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
                 "paypal-payments",
                 "venmo-payments",
                 "paypal-guest-payments",
+                "paypal-subscriptions",
+                "card-fields",
             ]}
             pageType="checkout"
         >

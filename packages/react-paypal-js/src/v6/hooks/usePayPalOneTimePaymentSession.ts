@@ -4,7 +4,7 @@ import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
 import { useError } from "./useError";
 import { useProxyProps, createPaymentSession } from "../utils";
-import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
+import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
 import {
     OneTimePaymentSession,
     PayPalPresentationModeOptions,

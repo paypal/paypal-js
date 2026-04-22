@@ -63,6 +63,18 @@ describe("processOptions()", () => {
         );
     });
 
+    test("ignores prototype-polluted sdkBaseUrl", () => {
+        // Simulate prototype pollution
+        (Object.prototype as Record<string, unknown>)["sdkBaseUrl"] =
+            "https://evil.com/malicious.js";
+        try {
+            const { url } = processOptions({ clientId: "test" });
+            expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
+        } finally {
+            delete (Object.prototype as Record<string, unknown>)["sdkBaseUrl"];
+        }
+    });
+
     test("default values when only client-id is passed in", () => {
         const { url, attributes } = processOptions({ clientId: "test" });
 
