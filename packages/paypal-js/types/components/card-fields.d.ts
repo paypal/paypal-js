@@ -41,6 +41,7 @@ export interface PayPalCardFieldsStyleOptions {
 
 export type CardFieldsOnApproveData = {
     orderID: string;
+    liabilityShift?: string;
 };
 
 export interface PayPalCardFieldsInputEvents {
