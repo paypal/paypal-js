@@ -258,6 +258,7 @@ export type PayPalButtonStyle = {
     borderRadius?: number;
     color?: "gold" | "blue" | "silver" | "white" | "black";
     disableMaxWidth?: boolean;
+    disableMaxHeight?: boolean;
     height?: number;
     label?:
         | "paypal"
