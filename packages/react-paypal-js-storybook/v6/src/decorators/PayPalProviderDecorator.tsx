@@ -70,6 +70,7 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
                 "paypal-guest-payments",
                 "paypal-subscriptions",
                 "card-fields",
+                "applepay-payments",
             ]}
             pageType="checkout"
         >

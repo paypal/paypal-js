@@ -885,3 +885,108 @@ export default function App() {
     );
 }
 `;
+
+// ─── ApplePayOneTimePaymentButton ──────────────────────────────────────────
+
+export const getApplePayOneTimePaymentButtonCode = (): string => `
+// Apple Pay one-time payment integration.
+// Requires: Safari browser, HTTPS, and Apple Pay configured on the device.
+// The Apple Pay JS SDK must be loaded separately via a script tag:
+//   <script crossorigin src="https://applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js"></script>
+import {
+    PayPalProvider,
+    ApplePayOneTimePaymentButton,
+    useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+async function createOrder() {
+    const response = await fetch("/api/paypal/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            items: [{ id: "item-1", quantity: 1 }],
+        }),
+    });
+    const data = await response.json();
+    return { orderId: data.id };
+}
+
+async function onApprove(data) {
+    // confirmOrder is handled internally by the hook.
+    // Capture the order using the ID from the confirmation response.
+    const orderId = data.approveApplePayPayment.id;
+    const response = await fetch(\\\`/api/paypal/capture/\\\${orderId}\\\`, {
+        method: "POST",
+    });
+    const result = await response.json();
+    console.log("Apple Pay payment captured:", result);
+}
+
+function ApplePayCheckout() {
+    // Step 1: Check if Apple Pay is supported by the browser/device.
+    // canMakePayments() throws on non-HTTPS, so wrap in try-catch.
+    let canUseApplePay = false;
+    try {
+        canUseApplePay =
+            typeof window !== "undefined" &&
+            !!window.ApplePaySession?.canMakePayments();
+    } catch {
+        // Not available (e.g., non-HTTPS environment)
+    }
+
+    // Step 2: Fetch eligibility.
+    // Note: hooks must be called unconditionally (React rules of hooks).
+    // To avoid the eligibility API call on unsupported browsers, split the
+    // check and the button into separate components in your app.
+    const { eligiblePaymentMethods, isLoading, error } = useEligibleMethods({
+        payload: { currencyCode: "USD" },
+    });
+
+    if (!canUseApplePay) return <div>Apple Pay is not available in this browser.</div>;
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
+
+    // Step 3: Check merchant eligibility and get config.
+    const isEligible = eligiblePaymentMethods?.isEligible("applepay");
+    if (!isEligible) return <div>Apple Pay is not eligible.</div>;
+
+    const applePayConfig = eligiblePaymentMethods?.getDetails("applepay")?.config;
+    if (!applePayConfig) return null;
+
+    return (
+        <ApplePayOneTimePaymentButton
+            applePayConfig={applePayConfig}
+            paymentRequest={{
+                countryCode: "US",
+                currencyCode: "USD",
+                requiredBillingContactFields: ["name", "phone", "email", "postalAddress"],
+                requiredShippingContactFields: [],
+                total: {
+                    label: "Demo (Card is not charged)",
+                    amount: "20.00",
+                    type: "final",
+                },
+            }}
+            createOrder={createOrder}
+            onApprove={onApprove}
+            onCancel={() => console.log("Apple Pay cancelled")}
+            onError={(error) => console.error("Apple Pay error:", error)}
+            applePaySessionVersion={4}
+            buttonstyle="black"
+            type="buy"
+        />
+    );
+}
+
+export default function App() {
+    return (
+        <PayPalProvider
+            clientId="YOUR_CLIENT_ID"
+            components={["applepay-payments"]}
+            pageType="checkout"
+        >
+            <ApplePayCheckout />
+        </PayPalProvider>
+    );
+}
+`;
