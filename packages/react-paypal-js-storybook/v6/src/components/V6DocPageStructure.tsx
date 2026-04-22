@@ -18,8 +18,12 @@ import {
  */
 const V6DocPageStructure = ({
     code = "",
+    codeTitle,
+    additionalExamples = [],
 }: {
     code: string;
+    codeTitle?: string;
+    additionalExamples?: Array<{ title: string; code: string }>;
 }): React.JSX.Element => (
     <>
         <Title />
@@ -29,7 +33,14 @@ const V6DocPageStructure = ({
             <Primary />
         </Canvas>
         <h3>Example Code</h3>
+        {codeTitle && <h4>{codeTitle}</h4>}
         <Source language="tsx" code={code} dark={false} />
+        {additionalExamples.map(({ title, code }) => (
+            <React.Fragment key={title}>
+                <h4>{title}</h4>
+                <Source language="tsx" code={code} dark={false} />
+            </React.Fragment>
+        ))}
         <ArgTypes />
     </>
 );

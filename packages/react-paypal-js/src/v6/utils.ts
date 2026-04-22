@@ -209,7 +209,7 @@ export function deepEqual(
     }
 
     // Non-object primitives (number, string, boolean, function, symbol, bigint) that
-// Same typeof (verified above) but not ===, so unequal primitives 
+    // Same typeof (verified above) but not ===, so unequal primitives
     if (typeof obj1 !== "object") {
         return false;
     }

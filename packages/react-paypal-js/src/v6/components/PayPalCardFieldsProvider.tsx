@@ -13,7 +13,7 @@ import {
     CardFieldsSessionContext,
     CardFieldsStatusContext,
 } from "../context/PayPalCardFieldsProviderContext";
-import { INSTANCE_LOADING_STATE } from "../types/PayPalProviderEnums";
+import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
 import { useError } from "../hooks/useError";
 
 import type {

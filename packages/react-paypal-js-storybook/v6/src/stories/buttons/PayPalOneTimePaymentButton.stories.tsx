@@ -9,7 +9,10 @@ import {
     disabledArgType,
 } from "../../shared/utils";
 import { V6DocPageStructure } from "../../components";
-import { getPayPalOneTimePaymentButtonCode } from "../../shared/code";
+import {
+    getPayPalOneTimePaymentButtonCode,
+    getPayPalOneTimePaymentButtonEagerCode,
+} from "../../shared/code";
 
 const meta: Meta<typeof PayPalOneTimePaymentButton> = {
     title: "V6/Buttons/PayPalOneTimePaymentButton",
@@ -28,6 +31,13 @@ For more information, see [PayPal V6 Web SDK Documentation](https://docs.paypal.
             page: () => (
                 <V6DocPageStructure
                     code={getPayPalOneTimePaymentButtonCode()}
+                    codeTitle="Option 1: Lazy Order Creation (Recommended)"
+                    additionalExamples={[
+                        {
+                            title: "Option 2: Eager Order Creation",
+                            code: getPayPalOneTimePaymentButtonEagerCode(),
+                        },
+                    ]}
                 />
             ),
         },
@@ -38,7 +48,12 @@ For more information, see [PayPal V6 Web SDK Documentation](https://docs.paypal.
         disabled: disabledArgType,
         createOrder: {
             description:
-                "Function that creates an order and returns the order ID.",
+                "Function that lazily creates an order on button click and returns `{ orderId }`. Mutually exclusive with `orderId`. (Recommended)",
+            table: { category: "Events" },
+        },
+        orderId: {
+            description:
+                "Pre-created order ID string. Use when the order is created before rendering. Mutually exclusive with `createOrder`.",
             table: { category: "Events" },
         },
         onApprove: {

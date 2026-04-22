@@ -1,5 +1,16 @@
 # Changelog
 
+## 9.6.0
+
+### Minor Changes
+
+- 6dee5e0: Add Google Pay component types to v6 SDK
+- bec655c: Added eligibility API typings for Card Fields and created card fields test file for its types
+
+### Patch Changes
+
+- 3524480: Prevent prototype polluction security risk for sdkBaseUrl destructuring of the prototype change by adding Object.prototype.hasOwnProperty.call()
+
 ## 9.5.0
 
 ### Minor Changes
