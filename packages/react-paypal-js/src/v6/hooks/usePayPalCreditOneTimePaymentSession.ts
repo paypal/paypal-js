@@ -113,7 +113,7 @@ export function usePayPalCreditOneTimePaymentSession({
             failedSdkRef,
             sdkInstance,
             setError,
-            "paypal-payments",
+            'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
         );
 
         if (!newSession) {

@@ -196,7 +196,7 @@ export function useApplePayOneTimePaymentSession({
             failedSdkRef,
             sdkInstance,
             setError,
-            "applepay-payments",
+            'Failed to create payment session. This may occur if the required component "applepay-payments" is not included in the SDK components array.',
         );
 
         if (!newSession) {
