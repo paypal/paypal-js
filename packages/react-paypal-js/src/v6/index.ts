@@ -121,6 +121,7 @@ export {
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
+        // eslint-disable-next-line @typescript-eslint/no-empty-object-type
         interface IntrinsicElements extends SDKWebComponents {}
     }
 }
@@ -129,6 +130,7 @@ declare global {
 declare module "react" {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace JSX {
+        // eslint-disable-next-line @typescript-eslint/no-empty-object-type
         interface IntrinsicElements extends SDKWebComponents {}
     }
 }

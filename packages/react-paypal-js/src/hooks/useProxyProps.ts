@@ -22,7 +22,7 @@ export function useProxyProps<T extends Record<PropertyKey, unknown>>(
                  * */
                 if (typeof target[prop] === "function") {
                     return (...args: unknown[]) =>
-                        // eslint-disable-next-line @typescript-eslint/ban-types
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
                         (target[prop] as Function)(...args);
                 }
 
