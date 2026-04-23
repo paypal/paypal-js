@@ -261,7 +261,7 @@ export function deepEqual(
  * @param failedSdkRef - Ref tracking which SDK instance failed
  * @param sdkInstance - Current SDK instance
  * @param setError - Error state setter
- * @param component - The required component name for this session type
+ * @param errorMessage - The error message to surface when session creation fails
  * @returns The payment session or null if creation fails
  *
  * @example
@@ -270,7 +270,7 @@ export function deepEqual(
  *   failedSdkRef,
  *   sdkInstance,
  *   setError,
- *   "paypal-payments"
+ *   'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.'
  * );
  *
  * if (!session) return;
@@ -280,7 +280,7 @@ export function createPaymentSession<T>(
     failedSdkRef: { current: unknown },
     sdkInstance: unknown,
     setError: (error: Error | null) => void,
-    component: string,
+    errorMessage: string,
 ): T | null {
     // Skip retry if this SDK instance already failed
     if (failedSdkRef.current === sdkInstance) {
@@ -292,10 +292,7 @@ export function createPaymentSession<T>(
     } catch (err) {
         failedSdkRef.current = sdkInstance;
 
-        const detailedError = new Error(
-            `Failed to create payment session. This may occur if the required component "${component}" is not included in the SDK components array.`,
-            { cause: err },
-        );
+        const detailedError = new Error(errorMessage, { cause: err });
 
         setError(detailedError);
         return null;
