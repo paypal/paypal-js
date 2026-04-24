@@ -8,15 +8,15 @@ import type { PayPalState } from "../context/PayPalProviderContext";
  * IMPORTANT: The calling test file must have `jest.mock("./usePayPal")` at the top.
  */
 export const getMockUsePayPal = (): jest.MockedFunction<typeof usePayPal> =>
-    usePayPal as jest.MockedFunction<typeof usePayPal>;
+  usePayPal as jest.MockedFunction<typeof usePayPal>;
 
 // Default resolved state - most common test scenario
 const defaultPayPalState: PayPalState = {
-    sdkInstance: null,
-    loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
-    eligiblePaymentMethods: null,
-    error: null,
-    isHydrated: true,
+  sdkInstance: null,
+  loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+  eligiblePaymentMethods: null,
+  error: null,
+  isHydrated: true,
 };
 
 /**
@@ -24,8 +24,8 @@ const defaultPayPalState: PayPalState = {
  * This accommodates mock SDK instances that don't implement the full SdkInstance interface.
  */
 type MockPayPalContextOverrides = Omit<Partial<PayPalState>, "sdkInstance"> & {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    sdkInstance?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sdkInstance?: any;
 };
 
 /**
@@ -33,12 +33,12 @@ type MockPayPalContextOverrides = Omit<Partial<PayPalState>, "sdkInstance"> & {
  * Only specify the properties you want to override.
  */
 export function createMockPayPalContext(
-    overrides: MockPayPalContextOverrides = {},
+  overrides: MockPayPalContextOverrides = {},
 ): PayPalState {
-    return {
-        ...defaultPayPalState,
-        ...overrides,
-    } as PayPalState;
+  return {
+    ...defaultPayPalState,
+    ...overrides,
+  } as PayPalState;
 }
 
 /**
@@ -46,23 +46,23 @@ export function createMockPayPalContext(
  * IMPORTANT: The calling test file must have `jest.mock("./usePayPal")` at the top.
  */
 export function mockPayPalContext(
-    overrides: MockPayPalContextOverrides = {},
+  overrides: MockPayPalContextOverrides = {},
 ): void {
-    getMockUsePayPal().mockReturnValue(createMockPayPalContext(overrides));
+  getMockUsePayPal().mockReturnValue(createMockPayPalContext(overrides));
 }
 
 // Pre-built common scenarios
 export const mockPayPalPending = (): void =>
-    mockPayPalContext({
-        loadingStatus: INSTANCE_LOADING_STATE.PENDING,
-    });
+  mockPayPalContext({
+    loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+  });
 
 export const mockPayPalRejected = (): void =>
-    mockPayPalContext({
-        loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
-    });
+  mockPayPalContext({
+    loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
+  });
 
 export const mockPayPalNotHydrated = (): void =>
-    mockPayPalContext({
-        isHydrated: false,
-    });
+  mockPayPalContext({
+    isHydrated: false,
+  });

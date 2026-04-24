@@ -24,22 +24,22 @@ Each package has its own documentation in its respective README.
 
 1. Install dependencies:
 
-    ```
-    npm install
-    ```
+   ```
+   npm install
+   ```
 
 2. Make proposed changes
 3. Run tests
 
-    ```
-    npm test
-    ```
+   ```
+   npm test
+   ```
 
 4. Add a changeset for versioning
 
-    ```
-    npm run changeset:add
-    ```
+   ```
+   npm run changeset:add
+   ```
 
 5. Open a new PR
 

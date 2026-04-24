@@ -5,45 +5,45 @@ import { PayPalCardNumberField } from "./PayPalCardNumberField";
 import { PayPalCardField } from "./PayPalCardField";
 
 jest.mock("./PayPalCardField", () => ({
-    PayPalCardField: jest.fn(() => <div data-testid="mock-card-field" />),
+  PayPalCardField: jest.fn(() => <div data-testid="mock-card-field" />),
 }));
 
 const mockPayPalCardField = PayPalCardField as jest.MockedFunction<
-    typeof PayPalCardField
+  typeof PayPalCardField
 >;
 
 const fieldType = "number";
 
 describe("PayPalCardNumberField", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-    it("Should pass type='number' to PayPalCardField", () => {
-        render(<PayPalCardNumberField />);
-        expect(mockPayPalCardField.mock.calls[0][0]).toEqual(
-            expect.objectContaining({ type: fieldType }),
-        );
-    });
+  it("Should pass type='number' to PayPalCardField", () => {
+    render(<PayPalCardNumberField />);
+    expect(mockPayPalCardField.mock.calls[0][0]).toEqual(
+      expect.objectContaining({ type: fieldType }),
+    );
+  });
 
-    it("should render PayPalCardField with the correct props", () => {
-        const testProps = {
-            placeholder: "Enter card number",
-            containerClassName: "test-container",
-            style: {
-                input: {
-                    background: "lightgray",
-                },
-            },
-        };
+  it("should render PayPalCardField with the correct props", () => {
+    const testProps = {
+      placeholder: "Enter card number",
+      containerClassName: "test-container",
+      style: {
+        input: {
+          background: "lightgray",
+        },
+      },
+    };
 
-        render(<PayPalCardNumberField {...testProps} />);
+    render(<PayPalCardNumberField {...testProps} />);
 
-        expect(mockPayPalCardField.mock.calls[0][0]).toEqual(
-            expect.objectContaining({
-                type: fieldType,
-                ...testProps,
-            }),
-        );
-    });
+    expect(mockPayPalCardField.mock.calls[0][0]).toEqual(
+      expect.objectContaining({
+        type: fieldType,
+        ...testProps,
+      }),
+    );
+  });
 });

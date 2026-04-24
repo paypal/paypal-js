@@ -6,184 +6,180 @@ import { useVenmoOneTimePaymentSession } from "../hooks/useVenmoOneTimePaymentSe
 import { usePayPal } from "../hooks/usePayPal";
 
 jest.mock("../hooks/useVenmoOneTimePaymentSession", () => ({
-    useVenmoOneTimePaymentSession: jest.fn(),
+  useVenmoOneTimePaymentSession: jest.fn(),
 }));
 jest.mock("../hooks/usePayPal", () => ({
-    usePayPal: jest.fn(),
+  usePayPal: jest.fn(),
 }));
 
 describe("VenmoOneTimePaymentButton", () => {
-    const mockHandleClick = jest.fn();
-    const mockUseVenmoOneTimePaymentSession =
-        useVenmoOneTimePaymentSession as jest.Mock;
-    const mockUsePayPal = usePayPal as jest.Mock;
+  const mockHandleClick = jest.fn();
+  const mockUseVenmoOneTimePaymentSession =
+    useVenmoOneTimePaymentSession as jest.Mock;
+  const mockUsePayPal = usePayPal as jest.Mock;
 
-    beforeEach(() => {
-        jest.clearAllMocks();
-        mockUseVenmoOneTimePaymentSession.mockReturnValue({
-            error: null,
-            isPending: false,
-            handleClick: mockHandleClick,
-        });
-        mockUsePayPal.mockReturnValue({
-            isHydrated: true,
-        });
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockUseVenmoOneTimePaymentSession.mockReturnValue({
+      error: null,
+      isPending: false,
+      handleClick: mockHandleClick,
     });
-
-    it("should render venmo-button when hydrated", () => {
-        const { container } = render(
-            <VenmoOneTimePaymentButton
-                onApprove={() => Promise.resolve()}
-                orderId="123"
-                presentationMode="auto"
-            />,
-        );
-        expect(container.querySelector("venmo-button")).toBeInTheDocument();
+    mockUsePayPal.mockReturnValue({
+      isHydrated: true,
     });
+  });
 
-    it("should render a div when not hydrated", () => {
-        mockUsePayPal.mockReturnValue({
-            isHydrated: false,
-        });
-        const { container } = render(
-            <VenmoOneTimePaymentButton
-                onApprove={() => Promise.resolve()}
-                orderId="123"
-                presentationMode="auto"
-            />,
-        );
-        expect(container.querySelector("venmo-button")).not.toBeInTheDocument();
-        expect(container.querySelector("div")).toBeInTheDocument();
+  it("should render venmo-button when hydrated", () => {
+    const { container } = render(
+      <VenmoOneTimePaymentButton
+        onApprove={() => Promise.resolve()}
+        orderId="123"
+        presentationMode="auto"
+      />,
+    );
+    expect(container.querySelector("venmo-button")).toBeInTheDocument();
+  });
+
+  it("should render a div when not hydrated", () => {
+    mockUsePayPal.mockReturnValue({
+      isHydrated: false,
     });
+    const { container } = render(
+      <VenmoOneTimePaymentButton
+        onApprove={() => Promise.resolve()}
+        orderId="123"
+        presentationMode="auto"
+      />,
+    );
+    expect(container.querySelector("venmo-button")).not.toBeInTheDocument();
+    expect(container.querySelector("div")).toBeInTheDocument();
+  });
 
-    it("should call handleClick when button is clicked", () => {
-        const { container } = render(
-            <VenmoOneTimePaymentButton
-                onApprove={() => Promise.resolve()}
-                orderId="123"
-                presentationMode="auto"
-            />,
-        );
-        const button = container.querySelector("venmo-button");
+  it("should call handleClick when button is clicked", () => {
+    const { container } = render(
+      <VenmoOneTimePaymentButton
+        onApprove={() => Promise.resolve()}
+        orderId="123"
+        presentationMode="auto"
+      />,
+    );
+    const button = container.querySelector("venmo-button");
 
-        // @ts-expect-error button should be defined at this point, test will error if not
-        fireEvent.click(button);
+    // @ts-expect-error button should be defined at this point, test will error if not
+    fireEvent.click(button);
 
-        expect(mockHandleClick).toHaveBeenCalledTimes(1);
+    expect(mockHandleClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("should disable the button when disabled=true is given as a prop", () => {
+    const { container } = render(
+      <VenmoOneTimePaymentButton
+        onApprove={() => Promise.resolve()}
+        orderId="123"
+        presentationMode="auto"
+        disabled={true}
+      />,
+    );
+    const button = container.querySelector("venmo-button");
+    expect(button).toHaveAttribute("disabled");
+  });
+
+  it("should disable button when error is present", () => {
+    jest.spyOn(console, "error").mockImplementation();
+    mockUseVenmoOneTimePaymentSession.mockReturnValue({
+      error: new Error("Test error"),
+      isPending: false,
+      handleClick: mockHandleClick,
     });
+    const { container } = render(
+      <VenmoOneTimePaymentButton
+        onApprove={() => Promise.resolve()}
+        orderId="123"
+        presentationMode="auto"
+      />,
+    );
+    const button = container.querySelector("venmo-button");
+    expect(button).toHaveAttribute("disabled");
+  });
 
-    it("should disable the button when disabled=true is given as a prop", () => {
-        const { container } = render(
-            <VenmoOneTimePaymentButton
-                onApprove={() => Promise.resolve()}
-                orderId="123"
-                presentationMode="auto"
-                disabled={true}
-            />,
-        );
-        const button = container.querySelector("venmo-button");
-        expect(button).toHaveAttribute("disabled");
+  it("should not disable button when error is null", () => {
+    mockUseVenmoOneTimePaymentSession.mockReturnValue({
+      error: null,
+      isPending: false,
+      handleClick: mockHandleClick,
     });
+    const { container } = render(
+      <VenmoOneTimePaymentButton
+        onApprove={() => Promise.resolve()}
+        orderId="123"
+        presentationMode="auto"
+      />,
+    );
+    const button = container.querySelector("venmo-button");
+    expect(button).not.toHaveAttribute("disabled");
+  });
 
-    it("should disable button when error is present", () => {
-        jest.spyOn(console, "error").mockImplementation();
-        mockUseVenmoOneTimePaymentSession.mockReturnValue({
-            error: new Error("Test error"),
-            isPending: false,
-            handleClick: mockHandleClick,
-        });
-        const { container } = render(
-            <VenmoOneTimePaymentButton
-                onApprove={() => Promise.resolve()}
-                orderId="123"
-                presentationMode="auto"
-            />,
-        );
-        const button = container.querySelector("venmo-button");
-        expect(button).toHaveAttribute("disabled");
+  it("should disable button when isPending is true", () => {
+    mockUseVenmoOneTimePaymentSession.mockReturnValue({
+      error: null,
+      isPending: true,
+      handleClick: mockHandleClick,
     });
+    const { container } = render(
+      <VenmoOneTimePaymentButton
+        onApprove={() => Promise.resolve()}
+        orderId="123"
+        presentationMode="auto"
+      />,
+    );
+    const button = container.querySelector("venmo-button");
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveAttribute("disabled");
+  });
 
-    it("should not disable button when error is null", () => {
-        mockUseVenmoOneTimePaymentSession.mockReturnValue({
-            error: null,
-            isPending: false,
-            handleClick: mockHandleClick,
-        });
-        const { container } = render(
-            <VenmoOneTimePaymentButton
-                onApprove={() => Promise.resolve()}
-                orderId="123"
-                presentationMode="auto"
-            />,
-        );
-        const button = container.querySelector("venmo-button");
-        expect(button).not.toHaveAttribute("disabled");
-    });
+  it("should pass type prop to venmo-button", () => {
+    const { container } = render(
+      <VenmoOneTimePaymentButton
+        onApprove={() => Promise.resolve()}
+        orderId="123"
+        presentationMode="auto"
+        type="subscribe"
+      />,
+    );
+    const button = container.querySelector("venmo-button");
+    expect(button).toHaveAttribute("type", "subscribe");
+  });
 
-    it("should disable button when isPending is true", () => {
-        mockUseVenmoOneTimePaymentSession.mockReturnValue({
-            error: null,
-            isPending: true,
-            handleClick: mockHandleClick,
-        });
-        const { container } = render(
-            <VenmoOneTimePaymentButton
-                onApprove={() => Promise.resolve()}
-                orderId="123"
-                presentationMode="auto"
-            />,
-        );
-        const button = container.querySelector("venmo-button");
-        expect(button).toBeInTheDocument();
-        expect(button).toHaveAttribute("disabled");
-    });
+  it("should pass hook props to useVenmoOneTimePaymentSession", () => {
+    const hookProps = {
+      clientToken: "test-token",
+      amount: "10.00",
+      currency: "USD",
+      onApprove: () => Promise.resolve(),
+      orderId: "123",
+      presentationMode: "auto" as const,
+    };
+    render(<VenmoOneTimePaymentButton {...hookProps} />);
+    expect(mockUseVenmoOneTimePaymentSession).toHaveBeenCalledWith(hookProps);
+  });
 
-    it("should pass type prop to venmo-button", () => {
-        const { container } = render(
-            <VenmoOneTimePaymentButton
-                onApprove={() => Promise.resolve()}
-                orderId="123"
-                presentationMode="auto"
-                type="subscribe"
-            />,
-        );
-        const button = container.querySelector("venmo-button");
-        expect(button).toHaveAttribute("type", "subscribe");
+  it("should log error to console when an error from the hook is present", () => {
+    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
+    const testError = new Error("Test error");
+    mockUseVenmoOneTimePaymentSession.mockReturnValue({
+      error: testError,
+      isPending: false,
+      handleClick: mockHandleClick,
     });
-
-    it("should pass hook props to useVenmoOneTimePaymentSession", () => {
-        const hookProps = {
-            clientToken: "test-token",
-            amount: "10.00",
-            currency: "USD",
-            onApprove: () => Promise.resolve(),
-            orderId: "123",
-            presentationMode: "auto" as const,
-        };
-        render(<VenmoOneTimePaymentButton {...hookProps} />);
-        expect(mockUseVenmoOneTimePaymentSession).toHaveBeenCalledWith(
-            hookProps,
-        );
-    });
-
-    it("should log error to console when an error from the hook is present", () => {
-        const consoleErrorSpy = jest
-            .spyOn(console, "error")
-            .mockImplementation();
-        const testError = new Error("Test error");
-        mockUseVenmoOneTimePaymentSession.mockReturnValue({
-            error: testError,
-            isPending: false,
-            handleClick: mockHandleClick,
-        });
-        render(
-            <VenmoOneTimePaymentButton
-                onApprove={() => Promise.resolve()}
-                orderId="123"
-                presentationMode="auto"
-            />,
-        );
-        expect(consoleErrorSpy).toHaveBeenCalledWith(testError);
-        consoleErrorSpy.mockRestore();
-    });
+    render(
+      <VenmoOneTimePaymentButton
+        onApprove={() => Promise.resolve()}
+        orderId="123"
+        presentationMode="auto"
+      />,
+    );
+    expect(consoleErrorSpy).toHaveBeenCalledWith(testError);
+    consoleErrorSpy.mockRestore();
+  });
 });

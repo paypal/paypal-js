@@ -7,10 +7,10 @@ import type { ButtonProps } from "../types";
 import type { UsePayPalSubscriptionPaymentSessionProps } from "../hooks/usePayPalSubscriptionPaymentSession";
 
 export type PayPalSubscriptionButtonProps =
-    UsePayPalSubscriptionPaymentSessionProps &
-        ButtonProps & {
-            autoRedirect?: never;
-        };
+  UsePayPalSubscriptionPaymentSessionProps &
+    ButtonProps & {
+      autoRedirect?: never;
+    };
 
 /**
  * `PayPalSubscriptionButton` is a button that provides a PayPal subscription payment flow.
@@ -32,29 +32,27 @@ export type PayPalSubscriptionButtonProps =
  * />
  */
 export const PayPalSubscriptionButton = ({
-    type = "subscribe",
-    disabled = false,
-    ...hookProps
+  type = "subscribe",
+  disabled = false,
+  ...hookProps
 }: PayPalSubscriptionButtonProps): JSX.Element | null => {
-    const { error, isPending, handleClick } =
-        usePayPalSubscriptionPaymentSession(hookProps);
-    const { isHydrated } = usePayPal();
+  const { error, isPending, handleClick } =
+    usePayPalSubscriptionPaymentSession(hookProps);
+  const { isHydrated } = usePayPal();
 
-    useEffect(() => {
-        if (error) {
-            console.error(error);
-        }
-    }, [error]);
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+    }
+  }, [error]);
 
-    return isHydrated ? (
-        <paypal-button
-            onClick={handleClick}
-            type={type}
-            disabled={
-                disabled || isPending || error !== null ? true : undefined
-            }
-        ></paypal-button>
-    ) : (
-        <div />
-    );
+  return isHydrated ? (
+    <paypal-button
+      onClick={handleClick}
+      type={type}
+      disabled={disabled || isPending || error !== null ? true : undefined}
+    ></paypal-button>
+  ) : (
+    <div />
+  );
 };

@@ -11,20 +11,20 @@ type TypeSetError = (error: unknown) => void;
  * @param {Boolean} noConsoleErrors - set to `true` to prevent `setError` calls from logging to `console.error`.
  */
 export function useError(
-    noConsoleErrors = false,
+  noConsoleErrors = false,
 ): [Error | null, TypeSetError] {
-    const [error, setErrorInternal] = useState<Error | null>(null);
+  const [error, setErrorInternal] = useState<Error | null>(null);
 
-    const setError = useCallback(
-        (newError) => {
-            setErrorInternal(newError);
+  const setError = useCallback(
+    (newError) => {
+      setErrorInternal(newError);
 
-            if (!noConsoleErrors && newError) {
-                console.error(newError);
-            }
-        },
-        [noConsoleErrors],
-    );
+      if (!noConsoleErrors && newError) {
+        console.error(newError);
+      }
+    },
+    [noConsoleErrors],
+  );
 
-    return [error, setError];
+  return [error, setError];
 }

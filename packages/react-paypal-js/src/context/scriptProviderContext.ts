@@ -6,9 +6,9 @@ import { DISPATCH_ACTION, SCRIPT_LOADING_STATE } from "../types";
 
 import type { BraintreePayPalCheckout } from "../types/braintree/paypalCheckout";
 import type {
-    ScriptContextState,
-    ReactPayPalScriptOptions,
-    ScriptReducerAction,
+  ScriptContextState,
+  ReactPayPalScriptOptions,
+  ScriptReducerAction,
 } from "../types";
 
 /**
@@ -17,11 +17,11 @@ import type {
  * @returns the {@code string} containing the random library name
  */
 export function getScriptID(options: ReactPayPalScriptOptions): string {
-    // exclude the data-react-paypal-script-id value from the options hash
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { [SCRIPT_ID]: _scriptId, ...paypalScriptOptions } = options;
+  // exclude the data-react-paypal-script-id value from the options hash
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { [SCRIPT_ID]: _scriptId, ...paypalScriptOptions } = options;
 
-    return `react-paypal-js-${hashStr(JSON.stringify(paypalScriptOptions))}`;
+  return `react-paypal-js-${hashStr(JSON.stringify(paypalScriptOptions))}`;
 }
 
 /**
@@ -30,13 +30,13 @@ export function getScriptID(options: ReactPayPalScriptOptions): string {
  * @param reactPayPalScriptID the script identifier
  */
 export function destroySDKScript(reactPayPalScriptID?: string): void {
-    const scriptNode = self.document.querySelector<HTMLScriptElement>(
-        `script[${SCRIPT_ID}="${reactPayPalScriptID}"]`,
-    );
+  const scriptNode = self.document.querySelector<HTMLScriptElement>(
+    `script[${SCRIPT_ID}="${reactPayPalScriptID}"]`,
+  );
 
-    if (scriptNode?.parentNode) {
-        scriptNode.parentNode.removeChild(scriptNode);
-    }
+  if (scriptNode?.parentNode) {
+    scriptNode.parentNode.removeChild(scriptNode);
+  }
 }
 
 /**
@@ -47,47 +47,47 @@ export function destroySDKScript(reactPayPalScriptID?: string): void {
  * @returns a the same state if the action wasn't found, or a new state otherwise
  */
 export function scriptReducer(
-    state: ScriptContextState,
-    action: ScriptReducerAction,
+  state: ScriptContextState,
+  action: ScriptReducerAction,
 ): ScriptContextState {
-    switch (action.type) {
-        case DISPATCH_ACTION.LOADING_STATUS:
-            if (typeof action.value === "object") {
-                return {
-                    ...state,
-                    loadingStatus: action.value.state as SCRIPT_LOADING_STATE,
-                    loadingStatusErrorMessage: action.value.message,
-                };
-            }
+  switch (action.type) {
+    case DISPATCH_ACTION.LOADING_STATUS:
+      if (typeof action.value === "object") {
+        return {
+          ...state,
+          loadingStatus: action.value.state as SCRIPT_LOADING_STATE,
+          loadingStatusErrorMessage: action.value.message,
+        };
+      }
 
-            return {
-                ...state,
-                loadingStatus: action.value as SCRIPT_LOADING_STATE,
-            };
-        case DISPATCH_ACTION.RESET_OPTIONS:
-            // destroy existing script to make sure only one script loads at a time
-            destroySDKScript(state.options[SCRIPT_ID]);
+      return {
+        ...state,
+        loadingStatus: action.value as SCRIPT_LOADING_STATE,
+      };
+    case DISPATCH_ACTION.RESET_OPTIONS:
+      // destroy existing script to make sure only one script loads at a time
+      destroySDKScript(state.options[SCRIPT_ID]);
 
-            return {
-                ...state,
-                loadingStatus: SCRIPT_LOADING_STATE.PENDING,
-                options: {
-                    [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
-                        SDK_SETTINGS.DATA_LIBRARY_VALUE,
-                    ...action.value,
-                    [SCRIPT_ID]: `${getScriptID(action.value)}`,
-                },
-            };
-        case DISPATCH_ACTION.SET_BRAINTREE_INSTANCE:
-            return {
-                ...state,
-                braintreePayPalCheckoutInstance:
-                    action.value as BraintreePayPalCheckout,
-            };
-        default: {
-            return state;
-        }
+      return {
+        ...state,
+        loadingStatus: SCRIPT_LOADING_STATE.PENDING,
+        options: {
+          [SDK_SETTINGS.DATA_SDK_INTEGRATION_SOURCE]:
+            SDK_SETTINGS.DATA_LIBRARY_VALUE,
+          ...action.value,
+          [SCRIPT_ID]: `${getScriptID(action.value)}`,
+        },
+      };
+    case DISPATCH_ACTION.SET_BRAINTREE_INSTANCE:
+      return {
+        ...state,
+        braintreePayPalCheckoutInstance:
+          action.value as BraintreePayPalCheckout,
+      };
+    default: {
+      return state;
     }
+  }
 }
 
 // Create the React context to use in the script provider component

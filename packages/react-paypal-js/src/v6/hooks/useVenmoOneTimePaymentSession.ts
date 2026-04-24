@@ -7,24 +7,24 @@ import { useProxyProps, createPaymentSession } from "../utils";
 import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
 
 import type {
-    VenmoOneTimePaymentSession,
-    VenmoPresentationModeOptions,
-    VenmoOneTimePaymentSessionOptions,
-    VenmoOneTimePaymentSessionPromise,
-    BasePaymentSessionReturn,
+  VenmoOneTimePaymentSession,
+  VenmoPresentationModeOptions,
+  VenmoOneTimePaymentSessionOptions,
+  VenmoOneTimePaymentSessionPromise,
+  BasePaymentSessionReturn,
 } from "../types";
 
 export type UseVenmoOneTimePaymentSessionProps = (
-    | (Omit<VenmoOneTimePaymentSessionOptions, "orderId"> & {
-          createOrder: () => VenmoOneTimePaymentSessionPromise;
-          orderId?: never;
-      })
-    | (VenmoOneTimePaymentSessionOptions & {
-          createOrder?: never;
-          orderId: string;
-      })
+  | (Omit<VenmoOneTimePaymentSessionOptions, "orderId"> & {
+      createOrder: () => VenmoOneTimePaymentSessionPromise;
+      orderId?: never;
+    })
+  | (VenmoOneTimePaymentSessionOptions & {
+      createOrder?: never;
+      orderId: string;
+    })
 ) &
-    VenmoPresentationModeOptions;
+  VenmoPresentationModeOptions;
 
 /**
  * Hook for managing Venmo one-time payment sessions.
@@ -52,104 +52,98 @@ export type UseVenmoOneTimePaymentSessionProps = (
  * }
  */
 export function useVenmoOneTimePaymentSession({
-    presentationMode,
-    fullPageOverlay,
-    createOrder,
-    orderId,
-    ...callbacks
+  presentationMode,
+  fullPageOverlay,
+  createOrder,
+  orderId,
+  ...callbacks
 }: UseVenmoOneTimePaymentSessionProps): BasePaymentSessionReturn {
-    const { sdkInstance, loadingStatus } = usePayPal();
-    const isMountedRef = useIsMountedRef();
-    const sessionRef = useRef<VenmoOneTimePaymentSession | null>(null);
-    const proxyCallbacks = useProxyProps(callbacks);
-    const [error, setError] = useError();
+  const { sdkInstance, loadingStatus } = usePayPal();
+  const isMountedRef = useIsMountedRef();
+  const sessionRef = useRef<VenmoOneTimePaymentSession | null>(null);
+  const proxyCallbacks = useProxyProps(callbacks);
+  const [error, setError] = useError();
 
-    // Prevents retrying session creation with a failed SDK instance
-    const failedSdkRef = useRef<unknown>(null);
+  // Prevents retrying session creation with a failed SDK instance
+  const failedSdkRef = useRef<unknown>(null);
 
-    const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
+  const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
 
-    const handleDestroy = useCallback(() => {
-        sessionRef.current?.destroy();
-        sessionRef.current = null;
-    }, []);
+  const handleDestroy = useCallback(() => {
+    sessionRef.current?.destroy();
+    sessionRef.current = null;
+  }, []);
 
-    // Handle SDK availability
-    useEffect(() => {
-        // Reset failed SDK tracking when SDK instance changes
-        if (failedSdkRef.current !== sdkInstance) {
-            failedSdkRef.current = null;
-        }
+  // Handle SDK availability
+  useEffect(() => {
+    // Reset failed SDK tracking when SDK instance changes
+    if (failedSdkRef.current !== sdkInstance) {
+      failedSdkRef.current = null;
+    }
 
-        if (sdkInstance) {
-            setError(null);
-        } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
-            setError(new Error("no sdk instance available"));
-        }
-    }, [sdkInstance, setError, loadingStatus]);
+    if (sdkInstance) {
+      setError(null);
+    } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
+      setError(new Error("no sdk instance available"));
+    }
+  }, [sdkInstance, setError, loadingStatus]);
 
-    // Create and manage session lifecycle
-    useEffect(() => {
-        if (!sdkInstance) {
-            return;
-        }
+  // Create and manage session lifecycle
+  useEffect(() => {
+    if (!sdkInstance) {
+      return;
+    }
 
-        const newSession = createPaymentSession(
-            () =>
-                sdkInstance.createVenmoOneTimePaymentSession({
-                    orderId,
-                    ...proxyCallbacks,
-                }),
-            failedSdkRef,
-            sdkInstance,
-            setError,
-            "venmo-payments",
-        );
+    const newSession = createPaymentSession(
+      () =>
+        sdkInstance.createVenmoOneTimePaymentSession({
+          orderId,
+          ...proxyCallbacks,
+        }),
+      failedSdkRef,
+      sdkInstance,
+      setError,
+      "venmo-payments",
+    );
 
-        if (!newSession) {
-            return;
-        }
+    if (!newSession) {
+      return;
+    }
 
-        sessionRef.current = newSession;
+    sessionRef.current = newSession;
 
-        return () => {
-            newSession.destroy();
-        };
-    }, [sdkInstance, orderId, proxyCallbacks, setError]);
-
-    const handleCancel = useCallback(() => {
-        sessionRef.current?.cancel();
-    }, []);
-
-    const handleClick = useCallback(async () => {
-        if (!isMountedRef.current) {
-            return;
-        }
-
-        if (!sessionRef.current) {
-            setError(new Error("Venmo session not available"));
-            return;
-        }
-
-        const startOptions = {
-            presentationMode,
-            fullPageOverlay,
-        } as VenmoPresentationModeOptions;
-
-        await sessionRef.current.start(startOptions, createOrder?.());
-    }, [
-        isMountedRef,
-        presentationMode,
-        fullPageOverlay,
-        createOrder,
-        setError,
-    ]);
-
-    return {
-        error,
-        isPending,
-        handleCancel,
-        handleClick,
-        handleDestroy,
+    return () => {
+      newSession.destroy();
     };
+  }, [sdkInstance, orderId, proxyCallbacks, setError]);
+
+  const handleCancel = useCallback(() => {
+    sessionRef.current?.cancel();
+  }, []);
+
+  const handleClick = useCallback(async () => {
+    if (!isMountedRef.current) {
+      return;
+    }
+
+    if (!sessionRef.current) {
+      setError(new Error("Venmo session not available"));
+      return;
+    }
+
+    const startOptions = {
+      presentationMode,
+      fullPageOverlay,
+    } as VenmoPresentationModeOptions;
+
+    await sessionRef.current.start(startOptions, createOrder?.());
+  }, [isMountedRef, presentationMode, fullPageOverlay, createOrder, setError]);
+
+  return {
+    error,
+    isPending,
+    handleCancel,
+    handleClick,
+    handleDestroy,
+  };
 }

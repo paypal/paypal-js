@@ -4,7 +4,7 @@ import { PayPalCardFieldsIndividualFieldOptions } from "../../types";
 import { PayPalCardField } from "./PayPalCardField";
 
 export const PayPalExpiryField: React.FC<
-    PayPalCardFieldsIndividualFieldOptions
+  PayPalCardFieldsIndividualFieldOptions
 > = (options) => {
-    return <PayPalCardField fieldName="ExpiryField" {...options} />;
+  return <PayPalCardField fieldName="ExpiryField" {...options} />;
 };

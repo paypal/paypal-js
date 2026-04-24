@@ -8,8 +8,8 @@ import { DISPATCH_ACTION } from "../../types";
 
 import type { FC } from "react";
 import type {
-    BraintreePayPalButtonsComponentProps,
-    PayPalButtonsComponentProps,
+  BraintreePayPalButtonsComponentProps,
+  PayPalButtonsComponentProps,
 } from "../../types";
 
 /**
@@ -22,71 +22,69 @@ Note: You are able to make your integration using the client token or using the 
 - To use the tokenization key integration set the key `dataUserIdToken` in the `PayPayScriptProvider` component's options.
 */
 export const BraintreePayPalButtons: FC<
-    BraintreePayPalButtonsComponentProps
+  BraintreePayPalButtonsComponentProps
 > = ({
-    className = "",
-    disabled = false,
-    children,
-    forceReRender = [],
-    braintreeNamespace,
-    merchantAccountId,
-    ...buttonProps
+  className = "",
+  disabled = false,
+  children,
+  forceReRender = [],
+  braintreeNamespace,
+  merchantAccountId,
+  ...buttonProps
 }: BraintreePayPalButtonsComponentProps) => {
-    const [, setErrorState] = useState(null);
-    const [providerContext, dispatch] = useScriptProviderContext();
+  const [, setErrorState] = useState(null);
+  const [providerContext, dispatch] = useScriptProviderContext();
 
-    useEffect(() => {
-        getBraintreeNamespace(braintreeNamespace)
-            .then((braintree) => {
-                const clientTokenizationKey: string =
-                    providerContext.options[SDK_SETTINGS.DATA_USER_ID_TOKEN];
-                const clientToken: string =
-                    providerContext.options[SDK_SETTINGS.DATA_CLIENT_TOKEN];
+  useEffect(() => {
+    getBraintreeNamespace(braintreeNamespace)
+      .then((braintree) => {
+        const clientTokenizationKey: string =
+          providerContext.options[SDK_SETTINGS.DATA_USER_ID_TOKEN];
+        const clientToken: string =
+          providerContext.options[SDK_SETTINGS.DATA_CLIENT_TOKEN];
 
-                return braintree.client
-                    .create({
-                        authorization: clientTokenizationKey || clientToken,
-                    })
-                    .then((clientInstance) => {
-                        const merchantProp = merchantAccountId
-                            ? { merchantAccountId }
-                            : {};
+        return braintree.client
+          .create({
+            authorization: clientTokenizationKey || clientToken,
+          })
+          .then((clientInstance) => {
+            const merchantProp = merchantAccountId ? { merchantAccountId } : {};
 
-                        return braintree.paypalCheckout.create({
-                            ...merchantProp,
-                            client: clientInstance,
-                        });
-                    })
-                    .then((paypalCheckoutInstance) => {
-                        dispatch({
-                            type: DISPATCH_ACTION.SET_BRAINTREE_INSTANCE,
-                            value: paypalCheckoutInstance,
-                        });
-                    });
-            })
-            .catch((err) => {
-                setErrorState(() => {
-                    throw new Error(`${LOAD_SCRIPT_ERROR} ${err}`);
-                });
+            return braintree.paypalCheckout.create({
+              ...merchantProp,
+              client: clientInstance,
             });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [providerContext.options]);
+          })
+          .then((paypalCheckoutInstance) => {
+            dispatch({
+              type: DISPATCH_ACTION.SET_BRAINTREE_INSTANCE,
+              value: paypalCheckoutInstance,
+            });
+          });
+      })
+      .catch((err) => {
+        setErrorState(() => {
+          throw new Error(`${LOAD_SCRIPT_ERROR} ${err}`);
+        });
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [providerContext.options]);
 
-    return (
-        <>
-            {providerContext.braintreePayPalCheckoutInstance && (
-                <PayPalButtons
-                    className={className}
-                    disabled={disabled}
-                    forceReRender={forceReRender}
-                    {...(decorateActions(
-                        buttonProps,
-                        providerContext.braintreePayPalCheckoutInstance,
-                    ) as PayPalButtonsComponentProps)}
-                >
-                    {children}
-                </PayPalButtons>
-            )}
-        </>
-    );
+  return (
+    <>
+      {providerContext.braintreePayPalCheckoutInstance && (
+        <PayPalButtons
+          className={className}
+          disabled={disabled}
+          forceReRender={forceReRender}
+          {...(decorateActions(
+            buttonProps,
+            providerContext.braintreePayPalCheckoutInstance,
+          ) as PayPalButtonsComponentProps)}
+        >
+          {children}
+        </PayPalButtons>
+      )}
+    </>
+  );
 };

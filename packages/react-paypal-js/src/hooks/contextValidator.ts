@@ -1,7 +1,7 @@
 import {
-    SDK_SETTINGS,
-    EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE,
-    SCRIPT_PROVIDER_REDUCER_ERROR,
+  SDK_SETTINGS,
+  EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE,
+  SCRIPT_PROVIDER_REDUCER_ERROR,
 } from "../constants";
 
 import type { ScriptContextState } from "../types";
@@ -13,16 +13,16 @@ import type { ScriptContextState } from "../types";
  * @returns strict context avoiding null values in the type
  */
 export function validateReducer(
-    scriptContext: ScriptContextState | null,
+  scriptContext: ScriptContextState | null,
 ): ScriptContextState {
-    if (
-        typeof scriptContext?.dispatch === "function" &&
-        scriptContext.dispatch.length !== 0
-    ) {
-        return scriptContext;
-    }
+  if (
+    typeof scriptContext?.dispatch === "function" &&
+    scriptContext.dispatch.length !== 0
+  ) {
+    return scriptContext;
+  }
 
-    throw new Error(SCRIPT_PROVIDER_REDUCER_ERROR);
+  throw new Error(SCRIPT_PROVIDER_REDUCER_ERROR);
 }
 
 /**
@@ -36,14 +36,14 @@ export function validateReducer(
  * @returns strict context if one of the keys are defined
  */
 export const validateBraintreeAuthorizationData = (
-    scriptContext: ScriptContextState | null,
+  scriptContext: ScriptContextState | null,
 ): ScriptContextState => {
-    if (
-        !scriptContext?.options?.[SDK_SETTINGS.DATA_CLIENT_TOKEN] &&
-        !scriptContext?.options?.[SDK_SETTINGS.DATA_USER_ID_TOKEN]
-    ) {
-        throw new Error(EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE);
-    }
+  if (
+    !scriptContext?.options?.[SDK_SETTINGS.DATA_CLIENT_TOKEN] &&
+    !scriptContext?.options?.[SDK_SETTINGS.DATA_USER_ID_TOKEN]
+  ) {
+    throw new Error(EMPTY_BRAINTREE_AUTHORIZATION_ERROR_MESSAGE);
+  }
 
-    return scriptContext as ScriptContextState;
+  return scriptContext as ScriptContextState;
 };

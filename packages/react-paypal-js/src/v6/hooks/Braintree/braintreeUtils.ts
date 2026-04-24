@@ -8,27 +8,27 @@
  * @returns The payment session or null if creation fails
  */
 export function createBraintreePaymentSession<T>(
-    sessionCreator: () => T,
-    failedInstanceRef: { current: unknown },
-    checkoutInstance: unknown,
-    setError: (error: Error | null) => void,
+  sessionCreator: () => T,
+  failedInstanceRef: { current: unknown },
+  checkoutInstance: unknown,
+  setError: (error: Error | null) => void,
 ): T | null {
-    // Skip retry if this checkout instance already failed
-    if (failedInstanceRef.current === checkoutInstance) {
-        return null;
-    }
+  // Skip retry if this checkout instance already failed
+  if (failedInstanceRef.current === checkoutInstance) {
+    return null;
+  }
 
-    try {
-        return sessionCreator();
-    } catch (err) {
-        failedInstanceRef.current = checkoutInstance;
+  try {
+    return sessionCreator();
+  } catch (err) {
+    failedInstanceRef.current = checkoutInstance;
 
-        const detailedError = new Error(
-            "Failed to create Braintree payment session. Ensure the BraintreePayPalProvider is properly initialized with a valid client token and namespace.",
-            { cause: err },
-        );
+    const detailedError = new Error(
+      "Failed to create Braintree payment session. Ensure the BraintreePayPalProvider is properly initialized with a valid client token and namespace.",
+      { cause: err },
+    );
 
-        setError(detailedError);
-        return null;
-    }
+    setError(detailedError);
+    return null;
+  }
 }

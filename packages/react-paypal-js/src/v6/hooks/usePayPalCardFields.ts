@@ -1,14 +1,14 @@
 import { useContext } from "react";
 
 import {
-    CardFieldsSessionContext,
-    CardFieldsStatusContext,
+  CardFieldsSessionContext,
+  CardFieldsStatusContext,
 } from "../context/PayPalCardFieldsProviderContext";
 
 import type { PayPalCardFieldsProvider } from "../components/PayPalCardFieldsProvider";
 import type {
-    CardFieldsSessionState,
-    CardFieldsStatusState,
+  CardFieldsSessionState,
+  CardFieldsStatusState,
 } from "../context/PayPalCardFieldsProviderContext";
 
 /**
@@ -17,15 +17,15 @@ import type {
  * @returns {CardFieldsStatusState}
  */
 export function usePayPalCardFields(): CardFieldsStatusState {
-    const context = useContext(CardFieldsStatusContext);
+  const context = useContext(CardFieldsStatusContext);
 
-    if (context === null) {
-        throw new Error(
-            "usePayPalCardFields must be used within a PayPalCardFieldsProvider",
-        );
-    }
+  if (context === null) {
+    throw new Error(
+      "usePayPalCardFields must be used within a PayPalCardFieldsProvider",
+    );
+  }
 
-    return context;
+  return context;
 }
 
 /**
@@ -34,13 +34,13 @@ export function usePayPalCardFields(): CardFieldsStatusState {
  * @returns {CardFieldsSessionState}
  */
 export function usePayPalCardFieldsSession(): CardFieldsSessionState {
-    const context = useContext(CardFieldsSessionContext);
+  const context = useContext(CardFieldsSessionContext);
 
-    if (context === null) {
-        throw new Error(
-            "usePayPalCardFieldsSession must be used within a PayPalCardFieldsProvider",
-        );
-    }
+  if (context === null) {
+    throw new Error(
+      "usePayPalCardFieldsSession must be used within a PayPalCardFieldsProvider",
+    );
+  }
 
-    return context;
+  return context;
 }

@@ -24,11 +24,11 @@ React developers think in terms of components and not about loading external scr
 - Abstract away the complexity around loading the JS SDK with the global [PayPalScriptProvider](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/example-paypalscriptprovider--default) component.
 - Support dispatching actions to reload the JS SDK and re-render components when global parameters like `currency` change.
 - Easy to use components for all the different Braintree/PayPal product offerings:
-    - [PayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/example-paypalbuttons--default)
-    - [PayPalMarks](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/example-paypalmarks--default)
-    - [PayPalMessages](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/example-paypalmessages--default)
-    - [PayPalHostedFields](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/paypal-paypalhostedfields--default)
-    - [BraintreePayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/braintree-braintreepaypalbuttons--default)
+  - [PayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/example-paypalbuttons--default)
+  - [PayPalMarks](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/example-paypalmarks--default)
+  - [PayPalMessages](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/example-paypalmessages--default)
+  - [PayPalHostedFields](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/paypal-paypalhostedfields--default)
+  - [BraintreePayPalButtons](https://paypal.github.io/paypal-js/web-sdk-v5-react-storybook/?path=/story/braintree-braintreepaypalbuttons--default)
 
 ## Installation
 
@@ -50,11 +50,11 @@ This PayPal React library consists of two main parts:
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 export default function App() {
-    return (
-        <PayPalScriptProvider options={{ clientId: "test" }}>
-            <PayPalButtons style={{ layout: "horizontal" }} />
-        </PayPalScriptProvider>
-    );
+  return (
+    <PayPalScriptProvider options={{ clientId: "test" }}>
+      <PayPalButtons style={{ layout: "horizontal" }} />
+    </PayPalScriptProvider>
+  );
 }
 ```
 
@@ -66,17 +66,17 @@ Use the PayPalScriptProvider `options` prop to configure the JS SDK. It accepts 
 
 ```jsx
 const initialOptions = {
-    clientId: "test",
-    currency: "USD",
-    intent: "capture",
+  clientId: "test",
+  currency: "USD",
+  intent: "capture",
 };
 
 export default function App() {
-    return (
-        <PayPalScriptProvider options={initialOptions}>
-            <PayPalButtons />
-        </PayPalScriptProvider>
-    );
+  return (
+    <PayPalScriptProvider options={initialOptions}>
+      <PayPalButtons />
+    </PayPalScriptProvider>
+  );
 }
 ```
 
@@ -91,7 +91,7 @@ Use the optional PayPalScriptProvider `deferLoading` prop to control when the JS
 
 ```jsx
 <PayPalScriptProvider deferLoading={true} options={initialOptions}>
-    <PayPalButtons />
+  <PayPalButtons />
 </PayPalScriptProvider>
 ```
 
@@ -114,10 +114,10 @@ For example, here's how you can use it to show a loading spinner.
 const [{ isPending }] = usePayPalScriptReducer();
 
 return (
-    <>
-        {isPending ? <div className="spinner" /> : null}
-        <PayPalButtons />
-    </>
+  <>
+    {isPending ? <div className="spinner" /> : null}
+    <PayPalButtons />
+  </>
 );
 ```
 
@@ -133,24 +133,24 @@ const [{ options }, dispatch] = usePayPalScriptReducer();
 const [currency, setCurrency] = useState(options.currency);
 
 function onCurrencyChange({ target: { value } }) {
-    setCurrency(value);
-    dispatch({
-        type: "resetOptions",
-        value: {
-            ...options,
-            currency: value,
-        },
-    });
+  setCurrency(value);
+  dispatch({
+    type: "resetOptions",
+    value: {
+      ...options,
+      currency: value,
+    },
+  });
 }
 
 return (
-    <>
-        <select value={currency} onChange={onCurrencyChange}>
-            <option value="USD">United States dollar</option>
-            <option value="EUR">Euro</option>
-        </select>
-        <PayPalButtons />
-    </>
+  <>
+    <select value={currency} onChange={onCurrencyChange}>
+      <option value="USD">United States dollar</option>
+      <option value="EUR">Euro</option>
+    </select>
+    <PayPalButtons />
+  </>
 );
 ```
 
@@ -228,12 +228,12 @@ The `<PayPalButtons />` component is wrapped in an internal error boundary to pr
 
 ```jsx
 <PayPalButtons
-    createOrder={createOrder}
-    onApprove={onApprove}
-    onError={(err) => {
-        // handle the error, e.g. show a fallback UI or notify the user
-        console.error("PayPalButtons error:", err);
-    }}
+  createOrder={createOrder}
+  onApprove={onApprove}
+  onError={(err) => {
+    // handle the error, e.g. show a fallback UI or notify the user
+    console.error("PayPalButtons error:", err);
+  }}
 />
 ```
 
@@ -244,38 +244,36 @@ The Braintree SDK can be used with the PayPal JS SDK to render the PayPal Button
 ```jsx
 // App.js
 import {
-    PayPalScriptProvider,
-    BraintreePayPalButtons,
+  PayPalScriptProvider,
+  BraintreePayPalButtons,
 } from "@paypal/react-paypal-js";
 
 export default function App() {
-    return (
-        <PayPalScriptProvider
-            options={{
-                clientId: "test",
-                dataClientToken:
-                    "<the data-client-token value generated by your server-side code>",
-            }}
-        >
-            <BraintreePayPalButtons
-                createOrder={(data, actions) => {
-                    return actions.braintree.createPayment({
-                        flow: "checkout",
-                        amount: "10.0",
-                        currency: "USD",
-                        intent: "capture",
-                    });
-                }}
-                onApprove={(data, actions) => {
-                    return actions.braintree
-                        .tokenizePayment(data)
-                        .then((payload) => {
-                            // call server-side endpoint to finish the sale
-                        });
-                }}
-            />
-        </PayPalScriptProvider>
-    );
+  return (
+    <PayPalScriptProvider
+      options={{
+        clientId: "test",
+        dataClientToken:
+          "<the data-client-token value generated by your server-side code>",
+      }}
+    >
+      <BraintreePayPalButtons
+        createOrder={(data, actions) => {
+          return actions.braintree.createPayment({
+            flow: "checkout",
+            amount: "10.0",
+            currency: "USD",
+            intent: "capture",
+          });
+        }}
+        onApprove={(data, actions) => {
+          return actions.braintree.tokenizePayment(data).then((payload) => {
+            // call server-side endpoint to finish the sale
+          });
+        }}
+      />
+    </PayPalScriptProvider>
+  );
 }
 ```
 
@@ -293,83 +291,79 @@ There are 3 parts to the hosted-fields integration:
 
 ```jsx
 import {
-    PayPalScriptProvider,
-    PayPalHostedFieldsProvider,
-    PayPalHostedField,
-    usePayPalHostedFields,
+  PayPalScriptProvider,
+  PayPalHostedFieldsProvider,
+  PayPalHostedField,
+  usePayPalHostedFields,
 } from "@paypal/react-paypal-js";
 
 const SubmitPayment = () => {
-    // Here declare the variable containing the hostedField instance
-    const hostedFields = usePayPalHostedFields();
+  // Here declare the variable containing the hostedField instance
+  const hostedFields = usePayPalHostedFields();
 
-    const submitHandler = () => {
-        if (typeof hostedFields.submit !== "function") return; // validate that `submit()` exists before using it
-        hostedFields
-            .submit({
-                // The full name as shown in the card and billing address
-                cardholderName: "John Wick",
-            })
-            .then((order) => {
-                fetch(
-                    "/your-server-side-integration-endpoint/capture-payment-info",
-                )
-                    .then((response) => response.json())
-                    .then((data) => {
-                        // Inside the data you can find all the information related to the payment
-                    })
-                    .catch((err) => {
-                        // Handle any error
-                    });
-            });
-    };
+  const submitHandler = () => {
+    if (typeof hostedFields.submit !== "function") return; // validate that `submit()` exists before using it
+    hostedFields
+      .submit({
+        // The full name as shown in the card and billing address
+        cardholderName: "John Wick",
+      })
+      .then((order) => {
+        fetch("/your-server-side-integration-endpoint/capture-payment-info")
+          .then((response) => response.json())
+          .then((data) => {
+            // Inside the data you can find all the information related to the payment
+          })
+          .catch((err) => {
+            // Handle any error
+          });
+      });
+  };
 
-    return <button onClick={submitHandler}>Pay</button>;
+  return <button onClick={submitHandler}>Pay</button>;
 };
 
 export default function App() {
-    return (
-        <PayPalScriptProvider
-            options={{
-                clientId: "your-client-id",
-                dataClientToken: "your-data-client-token",
-            }}
-        >
-            <PayPalHostedFieldsProvider
-                createOrder={() => {
-                    // Here define the call to create and order
-                    return fetch(
-                        "/your-server-side-integration-endpoint/orders",
-                    )
-                        .then((response) => response.json())
-                        .then((order) => order.id)
-                        .catch((err) => {
-                            // Handle any error
-                        });
-                }}
-            >
-                <PayPalHostedField
-                    id="card-number"
-                    hostedFieldType="number"
-                    options={{ selector: "#card-number" }}
-                />
-                <PayPalHostedField
-                    id="cvv"
-                    hostedFieldType="cvv"
-                    options={{ selector: "#cvv" }}
-                />
-                <PayPalHostedField
-                    id="expiration-date"
-                    hostedFieldType="expirationDate"
-                    options={{
-                        selector: "#expiration-date",
-                        placeholder: "MM/YY",
-                    }}
-                />
-                <SubmitPayment />
-            </PayPalHostedFieldsProvider>
-        </PayPalScriptProvider>
-    );
+  return (
+    <PayPalScriptProvider
+      options={{
+        clientId: "your-client-id",
+        dataClientToken: "your-data-client-token",
+      }}
+    >
+      <PayPalHostedFieldsProvider
+        createOrder={() => {
+          // Here define the call to create and order
+          return fetch("/your-server-side-integration-endpoint/orders")
+            .then((response) => response.json())
+            .then((order) => order.id)
+            .catch((err) => {
+              // Handle any error
+            });
+        }}
+      >
+        <PayPalHostedField
+          id="card-number"
+          hostedFieldType="number"
+          options={{ selector: "#card-number" }}
+        />
+        <PayPalHostedField
+          id="cvv"
+          hostedFieldType="cvv"
+          options={{ selector: "#cvv" }}
+        />
+        <PayPalHostedField
+          id="expiration-date"
+          hostedFieldType="expirationDate"
+          options={{
+            selector: "#expiration-date",
+            placeholder: "MM/YY",
+          }}
+        />
+        <SubmitPayment />
+      </PayPalHostedFieldsProvider>
+    </PayPalScriptProvider>
+  );
 }
 ```
 
@@ -447,73 +441,73 @@ There are 3 parts to the this card-fields integration:
 
 1. The `<PayPalCardFieldsProvider />` provider component wraps the form field elements and accepts props like `createOrder()`.
 2. The individual CardFields:
-    - `<PayPalNumberField>` component used for the credit card number element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
-    - `<PayPalCVVField>` component used for the credit card cvv element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
-    - `<PayPalExpiryField>` component used for the credit card expiry element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
-    - `<PayPalNameField>` component used for the credit cardholder's name element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
+   - `<PayPalNumberField>` component used for the credit card number element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
+   - `<PayPalCVVField>` component used for the credit card cvv element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
+   - `<PayPalExpiryField>` component used for the credit card expiry element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
+   - `<PayPalNameField>` component used for the credit cardholder's name element. It is customizable using props and must be a child of the `<PayPalCardFieldsProvider />` component.
 3. The `usePayPalCardFields` hook exposes the `cardFieldsForm` instance that includes methods suchs as the `cardFieldsForm.submit()` function for submitting the payment with your own custom button. It also exposes the references to each of the individual components for more granular control, eg: `fields.CVVField.focus()` to programatically manipulate the element in the DOM.
 
 ```jsx
 import {
-    PayPalScriptProvider,
-    PayPalCardFieldsProvider,
-    PayPalNameField,
-    PayPalNumberField,
-    PayPalExpiryField,
-    PayPalCVVField,
-    usePayPalCardFields,
+  PayPalScriptProvider,
+  PayPalCardFieldsProvider,
+  PayPalNameField,
+  PayPalNumberField,
+  PayPalExpiryField,
+  PayPalCVVField,
+  usePayPalCardFields,
 } from "@paypal/react-paypal-js";
 
 const SubmitPayment = () => {
-    const { cardFields, fields } = usePayPalCardFields();
+  const { cardFields, fields } = usePayPalCardFields();
 
-    function submitHandler() {
-        if (typeof cardFields.submit !== "function") return; // validate that `submit()` exists before using it
+  function submitHandler() {
+    if (typeof cardFields.submit !== "function") return; // validate that `submit()` exists before using it
 
-        cardFields
-            .submit()
-            .then(() => {
-                // submit successful
-            })
-            .catch(() => {
-                // submission error
-            });
-    }
-    return <button onClick={submitHandler}>Pay</button>;
+    cardFields
+      .submit()
+      .then(() => {
+        // submit successful
+      })
+      .catch(() => {
+        // submission error
+      });
+  }
+  return <button onClick={submitHandler}>Pay</button>;
 };
 
 // Example using individual card fields
 export default function App() {
-    function createOrder() {
-        // merchant code
-    }
-    function onApprove() {
-        // merchant code
-    }
-    function onError() {
-        // merchant code
-    }
-    return (
-        <PayPalScriptProvider
-            options={{
-                clientId: "your-client-id",
-                components: "card-fields",
-            }}
-        >
-            <PayPalCardFieldsProvider
-                createOrder={createOrder}
-                onApprove={onApprove}
-                onError={onError}
-            >
-                <PayPalNameField />
-                <PayPalNumberField />
-                <PayPalExpiryField />
-                <PayPalCVVField />
+  function createOrder() {
+    // merchant code
+  }
+  function onApprove() {
+    // merchant code
+  }
+  function onError() {
+    // merchant code
+  }
+  return (
+    <PayPalScriptProvider
+      options={{
+        clientId: "your-client-id",
+        components: "card-fields",
+      }}
+    >
+      <PayPalCardFieldsProvider
+        createOrder={createOrder}
+        onApprove={onApprove}
+        onError={onError}
+      >
+        <PayPalNameField />
+        <PayPalNumberField />
+        <PayPalExpiryField />
+        <PayPalCVVField />
 
-                <SubmitPayment />
-            </PayPalCardFieldsProvider>
-        </PayPalScriptProvider>
-    );
+        <SubmitPayment />
+      </PayPalCardFieldsProvider>
+    </PayPalScriptProvider>
+  );
 }
 ```
 

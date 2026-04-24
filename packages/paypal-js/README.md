@@ -23,7 +23,7 @@ The [default JS SDK code snippet](https://developer.paypal.com/docs/checkout/sta
 ```html
 <script src="https://www.paypal.com/sdk/js?client-id=test"></script>
 <script>
-    paypal.Buttons().render("body");
+  paypal.Buttons().render("body");
 </script>
 ```
 
@@ -58,17 +58,17 @@ import { loadScript } from "@paypal/paypal-js";
 let paypal;
 
 try {
-    paypal = await loadScript({ clientId: "test" });
+  paypal = await loadScript({ clientId: "test" });
 } catch (error) {
-    console.error("failed to load the PayPal JS SDK script", error);
+  console.error("failed to load the PayPal JS SDK script", error);
 }
 
 if (paypal) {
-    try {
-        await paypal.Buttons().render("#your-container-element");
-    } catch (error) {
-        console.error("failed to render the PayPal Buttons", error);
-    }
+  try {
+    await paypal.Buttons().render("#your-container-element");
+  } catch (error) {
+    console.error("failed to render the PayPal Buttons", error);
+  }
 }
 ```
 
@@ -78,17 +78,17 @@ if (paypal) {
 import { loadScript } from "@paypal/paypal-js";
 
 loadScript({ clientId: "test" })
-    .then((paypal) => {
-        paypal
-            .Buttons()
-            .render("#your-container-element")
-            .catch((error) => {
-                console.error("failed to render the PayPal Buttons", error);
-            });
-    })
-    .catch((error) => {
-        console.error("failed to load the PayPal JS SDK script", error);
-    });
+  .then((paypal) => {
+    paypal
+      .Buttons()
+      .render("#your-container-element")
+      .catch((error) => {
+        console.error("failed to render the PayPal Buttons", error);
+      });
+  })
+  .catch((error) => {
+    console.error("failed to load the PayPal JS SDK script", error);
+  });
 ```
 
 ### Passing Arguments
@@ -113,8 +113,8 @@ By default, the JS SDK only loads the buttons component. The `components` query 
 
 ```js
 loadScript({
-    clientId: "YOUR_CLIENT_ID",
-    components: ["buttons", "marks", "messages"],
+  clientId: "YOUR_CLIENT_ID",
+  components: ["buttons", "marks", "messages"],
 });
 ```
 
@@ -132,8 +132,8 @@ All options prefixed with `data` are considered attributes. The following exampl
 
 ```js
 loadScript({
-    clientId: "YOUR_CLIENT_ID",
-    dataPageType: "checkout",
+  clientId: "YOUR_CLIENT_ID",
+  dataPageType: "checkout",
 });
 ```
 
@@ -141,8 +141,8 @@ Which will load the following `<script>` asynchronously:
 
 ```html
 <script
-    data-page-type="checkout"
-    src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"
+  data-page-type="checkout"
+  src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID"
 ></script>
 ```
 
@@ -156,8 +156,8 @@ The `merchantId` option accepts an array to simplify the implementation for Mult
 
 ```js
 loadScript({
-    clientId: "YOUR_CLIENT_ID",
-    merchantId: ["123", "456", "789"],
+  clientId: "YOUR_CLIENT_ID",
+  merchantId: ["123", "456", "789"],
 });
 ```
 
@@ -165,8 +165,8 @@ Which will load the following `<script>` and use `merchant-id=*` to properly con
 
 ```html
 <script
-    data-merchant-id="123,456,789"
-    src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&merchant-id=*"
+  data-merchant-id="123,456,789"
+  src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&merchant-id=*"
 ></script>
 ```
 
@@ -174,8 +174,8 @@ Which will load the following `<script>` and use `merchant-id=*` to properly con
 
 ```js
 loadScript({
-    clientId: "YOUR_CLIENT_ID",
-    merchantId: ["123"],
+  clientId: "YOUR_CLIENT_ID",
+  merchantId: ["123"],
 });
 ```
 
@@ -191,8 +191,8 @@ For local development, the `sdkBaseUrl` option can be used to set the base url o
 
 ```js
 loadScript({
-    clientId: "YOUR_CLIENT_ID",
-    sdkBaseUrl: "http://localhost.paypal.com:8000/sdk/js",
+  clientId: "YOUR_CLIENT_ID",
+  sdkBaseUrl: "http://localhost.paypal.com:8000/sdk/js",
 });
 ```
 
@@ -225,17 +225,17 @@ The paypal-js script is also available on the [unpkg CDN](https://unpkg.com/). T
 ```html
 <!doctype html>
 <html lang="en">
-    <head>
-        <script src="https://unpkg.com/@paypal/paypal-js@9.4.0/dist/iife/paypal-js.min.js"></script>
-    </head>
-    <body>
-        <div id="paypal-buttons"></div>
-        <script>
-            window.paypalLoadScript({ clientId: "test" }).then((paypal) => {
-                paypal.Buttons().render("#paypal-buttons");
-            });
-        </script>
-    </body>
+  <head>
+    <script src="https://unpkg.com/@paypal/paypal-js@9.4.0/dist/iife/paypal-js.min.js"></script>
+  </head>
+  <body>
+    <div id="paypal-buttons"></div>
+    <script>
+      window.paypalLoadScript({ clientId: "test" }).then((paypal) => {
+        paypal.Buttons().render("#paypal-buttons");
+      });
+    </script>
+  </body>
 </html>
 ```
 
@@ -252,17 +252,17 @@ The `loadCustomScript` function is a generic script loader function that works w
 import { loadCustomScript } from "@paypal/paypal-js";
 
 try {
-    await loadCustomScript({
-        url: "https://www.example.com/index.js",
-        attributes: {
-            id: "custom-id-value",
-            "data-foo": "custom-data-attribute",
-        },
-    });
+  await loadCustomScript({
+    url: "https://www.example.com/index.js",
+    attributes: {
+      id: "custom-id-value",
+      "data-foo": "custom-data-attribute",
+    },
+  });
 
-    console.log("successfully loaded the custom script");
+  console.log("successfully loaded the custom script");
 } catch (error) {
-    console.error("failed to load the custom script", error);
+  console.error("failed to load the custom script", error);
 }
 ```
 
@@ -272,15 +272,15 @@ try {
 import { loadCustomScript } from "@paypal/paypal-js";
 
 loadCustomScript({
-    url: "https://www.example.com/index.js",
-    attributes: { id: "custom-id-value", "data-foo": "custom-data-attribute" },
+  url: "https://www.example.com/index.js",
+  attributes: { id: "custom-id-value", "data-foo": "custom-data-attribute" },
 })
-    .then(() => {
-        console.log("successfully loaded the custom script");
-    })
-    .catch((err) => {
-        console.error("failed to load the custom script", err);
-    });
+  .then(() => {
+    console.log("successfully loaded the custom script");
+  })
+  .catch((err) => {
+    console.error("failed to load the custom script", err);
+  });
 ```
 
 ## TypeScript Support
@@ -299,8 +299,8 @@ Use `loadCoreSdkScript()` to asynchronously load the V6 SDK:
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
 const paypal = await loadCoreSdkScript({
-    environment: "sandbox", // "sandbox" | "production"
-    debug: true, // optional
+  environment: "sandbox", // "sandbox" | "production"
+  debug: true, // optional
 });
 ```
 
@@ -318,10 +318,10 @@ After loading, create an instance with `createInstance()`:
 
 ```ts
 const sdkInstance = await paypal.createInstance({
-    clientId: "YOUR_CLIENT_ID",
-    components: ["paypal-payments", "venmo-payments"],
-    locale: "en-US",
-    pageType: "checkout",
+  clientId: "YOUR_CLIENT_ID",
+  components: ["paypal-payments", "venmo-payments"],
+  locale: "en-US",
+  pageType: "checkout",
 });
 ```
 
@@ -345,13 +345,13 @@ Import types from the `@paypal/paypal-js/sdk-v6` subpath:
 
 ```ts
 import type {
-    PayPalV6Namespace,
-    LoadCoreSdkScriptOptions,
-    Components,
-    CreateInstanceOptions,
-    SdkInstance,
-    OnApproveDataOneTimePayments,
-    OnShippingAddressChangeData,
+  PayPalV6Namespace,
+  LoadCoreSdkScriptOptions,
+  Components,
+  CreateInstanceOptions,
+  SdkInstance,
+  OnApproveDataOneTimePayments,
+  OnShippingAddressChangeData,
 } from "@paypal/paypal-js/sdk-v6";
 ```
 
@@ -362,39 +362,39 @@ import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 import type { OnApproveDataOneTimePayments } from "@paypal/paypal-js/sdk-v6";
 
 async function initPayPal() {
-    const paypal = await loadCoreSdkScript({ environment: "sandbox" });
+  const paypal = await loadCoreSdkScript({ environment: "sandbox" });
 
-    if (!paypal) {
-        console.error("Failed to load PayPal SDK");
-        return;
-    }
+  if (!paypal) {
+    console.error("Failed to load PayPal SDK");
+    return;
+  }
 
-    const sdkInstance = await paypal.createInstance({
-        clientId: "YOUR_CLIENT_ID",
-        components: ["paypal-payments"],
+  const sdkInstance = await paypal.createInstance({
+    clientId: "YOUR_CLIENT_ID",
+    components: ["paypal-payments"],
+  });
+
+  // Check eligibility before rendering
+  const eligibility = await sdkInstance.findEligibleMethods();
+
+  if (eligibility.isEligible("paypal")) {
+    const session = sdkInstance.createPayPalOneTimePaymentSession({
+      onApprove: async (data: OnApproveDataOneTimePayments) => {
+        // Capture payment on your server
+        await fetch("/api/capture", {
+          method: "POST",
+          body: JSON.stringify({ orderId: data.orderId }),
+        });
+      },
     });
 
-    // Check eligibility before rendering
-    const eligibility = await sdkInstance.findEligibleMethods();
-
-    if (eligibility.isEligible("paypal")) {
-        const session = sdkInstance.createPayPalOneTimePaymentSession({
-            onApprove: async (data: OnApproveDataOneTimePayments) => {
-                // Capture payment on your server
-                await fetch("/api/capture", {
-                    method: "POST",
-                    body: JSON.stringify({ orderId: data.orderId }),
-                });
-            },
-        });
-
-        // Start payment when user clicks
-        await session.start({ presentationMode: "popup" }, createOrderOnServer);
-    }
+    // Start payment when user clicks
+    await session.start({ presentationMode: "popup" }, createOrderOnServer);
+  }
 }
 
 async function createOrderOnServer() {
-    const response = await fetch("/api/create-order", { method: "POST" });
-    return response.json(); // { orderId: "..." }
+  const response = await fetch("/api/create-order", { method: "POST" });
+  return response.json(); // { orderId: "..." }
 }
 ```

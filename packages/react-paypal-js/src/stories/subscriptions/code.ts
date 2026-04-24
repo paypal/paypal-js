@@ -39,7 +39,7 @@ const CAPTURE_OPTIONS = `createOrder={function (data, actions) {
 		}}`;
 
 export const getDefaultCode = (type: string): string =>
-    `import { useEffect } from "react";
+  `import { useEffect } from "react";
 import {
 	PayPalScriptProvider,
 	PayPalButtons,

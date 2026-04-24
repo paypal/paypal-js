@@ -1,42 +1,42 @@
 name: build
 on:
-    push:
-        branches:
-            - main
-    pull_request: {}
+  push:
+    branches:
+      - main
+  pull_request: {}
 jobs:
-    main:
-        runs-on: ubuntu-latest
-        steps:
-            - name: ⬇️ Checkout repo
-              uses: actions/checkout@v4
-              with:
-                  ref: ${{github.event.pull_request.head.sha}}
-                  fetch-depth: 0
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v4
+        with:
+          ref: ${{github.event.pull_request.head.sha}}
+          fetch-depth: 0
 
-            - name: 🤝 Set Node version from .nvmrc
-              run: echo NVMRC=`cat .nvmrc` >> $GITHUB_ENV
+      - name: 🤝 Set Node version from .nvmrc
+        run: echo NVMRC=`cat .nvmrc` >> $GITHUB_ENV
 
-            - name: ⎔ Setup node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ env.NVMRC }}
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NVMRC }}
 
-            - name: 📥 Download deps
-              uses: bahmutov/npm-install@v1
+      - name: 📥 Download deps
+        uses: bahmutov/npm-install@v1
 
-            - name: 🧾 Check for changeset
-              # blocks PRs without changesets
-              run: npx changeset status --since=origin/main
+      - name: 🧾 Check for changeset
+        # blocks PRs without changesets
+        run: npx changeset status --since=origin/main
 
-            - name: 🚧 Run build script
-              run: npm run build
+      - name: 🚧 Run build script
+        run: npm run build
 
-            - name: 📐 Run format script
-              run: npm run format
+      - name: 📐 Run format script
+        run: npm run format
 
-            - name: 📖 Run lint script
-              run: npm run lint
+      - name: 📖 Run lint script
+        run: npm run lint
 
-            - name: 🧪 Run test script
-              run: npm run test
+      - name: 🧪 Run test script
+        run: npm run test

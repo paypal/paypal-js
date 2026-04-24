@@ -1,13 +1,13 @@
 import {
-    generateFundingSource,
-    CREATE_ORDER_URL,
-    CAPTURE_ORDER_URL,
+  generateFundingSource,
+  CREATE_ORDER_URL,
+  CAPTURE_ORDER_URL,
 } from "../utils";
 
 import type { Args } from "@storybook/addons/dist/ts3.9/types";
 
 export const getDefaultCode = (args: Args): string =>
-    `
+  `
 import {
     PayPalScriptProvider,
     PayPalButtons,
@@ -88,7 +88,7 @@ export default function App() {
 }`;
 
 export const getDonateCode = (args: Args): string =>
-    `
+  `
 import {
     PayPalScriptProvider,
     PayPalButtons,
@@ -149,8 +149,8 @@ const ButtonWrapper = ({ showSpinner }) => {
             <PayPalButtons
                 fundingSource="paypal"
                 style={${JSON.stringify({
-                    ...(args.style as Record<string, unknown>),
-                    label: "donate",
+                  ...(args.style as Record<string, unknown>),
+                  label: "donate",
                 })}}
                 disabled={${args.disabled}}
                 forceReRender={[style]}

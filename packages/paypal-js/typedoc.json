@@ -1,13 +1,13 @@
 {
-    "entryPoints": ["./types/v6/**/*.d.ts"],
-    "out": "../../docs/web-sdk-v6-reference",
-    "plugin": ["typedoc-material-theme"],
-    "readme": "../../docs/readmes/web-sdk-v6-reference.md",
-    "themeColor": "#1a202c",
-    "tsconfig": "./tsconfig.json",
-    "customCss": "../../docs/styles/combined-styles.css",
-    "hideGenerator": true,
-    "customFooterHtml": "<p>© 2025 PayPal, Inc. All rights reserved.</p>",
-    "visibilityFilters": {},
-    "excludeInternal": true
+  "entryPoints": ["./types/v6/**/*.d.ts"],
+  "out": "../../docs/web-sdk-v6-reference",
+  "plugin": ["typedoc-material-theme"],
+  "readme": "../../docs/readmes/web-sdk-v6-reference.md",
+  "themeColor": "#1a202c",
+  "tsconfig": "./tsconfig.json",
+  "customCss": "../../docs/styles/combined-styles.css",
+  "hideGenerator": true,
+  "customFooterHtml": "<p>© 2025 PayPal, Inc. All rights reserved.</p>",
+  "visibilityFilters": {},
+  "excludeInternal": true
 }

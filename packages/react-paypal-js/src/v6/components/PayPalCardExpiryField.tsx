@@ -6,8 +6,8 @@ import type { CardFieldOptions } from "../types";
 import type { PayPalCardFieldsProvider } from "./PayPalCardFieldsProvider";
 
 type PayPalCardExpiryFieldProps = Omit<CardFieldOptions, "type"> & {
-    containerStyles?: React.CSSProperties;
-    containerClassName?: string;
+  containerStyles?: React.CSSProperties;
+  containerClassName?: string;
 };
 
 /**
@@ -21,26 +21,26 @@ type PayPalCardExpiryFieldProps = Omit<CardFieldOptions, "type"> & {
  * />
  */
 export const PayPalCardExpiryField = ({
-    containerStyles,
-    containerClassName,
-    placeholder,
-    label,
-    style,
-    ariaDescription,
-    ariaLabel,
-    ariaInvalidErrorMessage,
+  containerStyles,
+  containerClassName,
+  placeholder,
+  label,
+  style,
+  ariaDescription,
+  ariaLabel,
+  ariaInvalidErrorMessage,
 }: PayPalCardExpiryFieldProps): JSX.Element | null => {
-    return (
-        <PayPalCardField
-            type="expiry"
-            containerStyles={containerStyles}
-            containerClassName={containerClassName}
-            placeholder={placeholder}
-            label={label}
-            style={style}
-            ariaDescription={ariaDescription}
-            ariaLabel={ariaLabel}
-            ariaInvalidErrorMessage={ariaInvalidErrorMessage}
-        />
-    );
+  return (
+    <PayPalCardField
+      type="expiry"
+      containerStyles={containerStyles}
+      containerClassName={containerClassName}
+      placeholder={placeholder}
+      label={label}
+      style={style}
+      ariaDescription={ariaDescription}
+      ariaLabel={ariaLabel}
+      ariaInvalidErrorMessage={ariaInvalidErrorMessage}
+    />
+  );
 };

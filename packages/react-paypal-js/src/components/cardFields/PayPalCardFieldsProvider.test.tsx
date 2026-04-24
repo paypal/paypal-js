@@ -12,19 +12,19 @@ import { PayPalCVVField } from "./PayPalCVVField";
 import { PayPalExpiryField } from "./PayPalExpiryField";
 
 import type {
-    PayPalCardFieldsComponent,
-    PayPalCardFieldsComponentOptions,
+  PayPalCardFieldsComponent,
+  PayPalCardFieldsComponentOptions,
 } from "@paypal/paypal-js";
 import type { ReactNode } from "react";
 
 const MOCK_ELEMENT_ID = "mock-element";
 
 jest.mock("@paypal/paypal-js", () => ({
-    loadScript: jest.fn(),
+  loadScript: jest.fn(),
 }));
 
 function getMockElementsRendered() {
-    return document.querySelectorAll(`div[id^=${MOCK_ELEMENT_ID}]`);
+  return document.querySelectorAll(`div[id^=${MOCK_ELEMENT_ID}]`);
 }
 
 const mockCreateOrder = mock<() => Promise<string>>();
@@ -33,450 +33,432 @@ const mockOnError = mock<() => void>();
 const onError = jest.fn();
 
 const wrapper = ({ children }: { children: ReactNode }) => (
-    <ErrorBoundary fallback={<div>Error</div>} onError={onError}>
-        {children}
-    </ErrorBoundary>
+  <ErrorBoundary fallback={<div>Error</div>} onError={onError}>
+    {children}
+  </ErrorBoundary>
 );
 
 const isEligible = jest.fn();
 
 const happyMethods = {
-    render: jest.fn((element: string | HTMLElement) => {
-        // Simulate adding element
-        if (typeof element !== "string") {
-            const child = document.createElement("div");
-            child.setAttribute("id", MOCK_ELEMENT_ID);
-            element.append(child);
-        }
-        return Promise.resolve();
-    }),
-    close: jest.fn(() => Promise.resolve()),
+  render: jest.fn((element: string | HTMLElement) => {
+    // Simulate adding element
+    if (typeof element !== "string") {
+      const child = document.createElement("div");
+      child.setAttribute("id", MOCK_ELEMENT_ID);
+      element.append(child);
+    }
+    return Promise.resolve();
+  }),
+  close: jest.fn(() => Promise.resolve()),
 };
 const unHappyMethods = {
-    render: jest.fn((element: string | HTMLElement) => {
-        // Simulate adding element
-        if (typeof element !== "string") {
-            element.append(document.createElement("div"));
-        }
-        return Promise.reject("Unknown error");
-    }),
-    close: jest.fn(() => Promise.reject("Unknown error")),
+  render: jest.fn((element: string | HTMLElement) => {
+    // Simulate adding element
+    if (typeof element !== "string") {
+      element.append(document.createElement("div"));
+    }
+    return Promise.reject("Unknown error");
+  }),
+  close: jest.fn(() => Promise.reject("Unknown error")),
 };
 
 describe("PayPalCardFieldsProvider", () => {
-    beforeEach(() => {
-        document.body.innerHTML = "";
+  beforeEach(() => {
+    document.body.innerHTML = "";
 
-        window.paypal = {
-            CardFields: jest.fn(
-                () =>
-                    ({
-                        isEligible: isEligible.mockReturnValue(true),
-                        NumberField: jest.fn().mockReturnValue(happyMethods),
-                        NameField: jest.fn().mockReturnValue(happyMethods),
-                        CVVField: jest.fn().mockReturnValue(happyMethods),
-                        ExpiryField: jest.fn().mockReturnValue(happyMethods),
-                    }) as unknown as PayPalCardFieldsComponent,
-            ),
-            version: "",
-        };
+    window.paypal = {
+      CardFields: jest.fn(
+        () =>
+          ({
+            isEligible: isEligible.mockReturnValue(true),
+            NumberField: jest.fn().mockReturnValue(happyMethods),
+            NameField: jest.fn().mockReturnValue(happyMethods),
+            CVVField: jest.fn().mockReturnValue(happyMethods),
+            ExpiryField: jest.fn().mockReturnValue(happyMethods),
+          }) as unknown as PayPalCardFieldsComponent,
+      ),
+      version: "",
+    };
 
-        (loadScript as jest.Mock).mockResolvedValue(window.paypal);
+    (loadScript as jest.Mock).mockResolvedValue(window.paypal);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test("should throw an Error using the component without the PayPalScriptProvider", async () => {
+    const spyConsoleError = jest.spyOn(console, "error").mockImplementation();
+
+    render(
+      <PayPalCardFieldsProvider
+        onApprove={mockOnApprove}
+        createOrder={mockCreateOrder}
+        onError={mockOnError}
+      >
+        <></>
+      </PayPalCardFieldsProvider>,
+      { wrapper },
+    );
+
+    await waitFor(() => expect(onError).toHaveBeenCalled());
+    expect(onError.mock.calls[0][0].message).toEqual(
+      "usePayPalScriptReducer must be used within a PayPalScriptProvider",
+    );
+    spyConsoleError.mockRestore();
+  });
+
+  test("should throw an Error using the component with duplicate fields", async () => {
+    const spyConsoleError = jest.spyOn(console, "error").mockImplementation();
+
+    render(
+      <PayPalScriptProvider
+        options={{
+          clientId: "test-client",
+          currency: "USD",
+          intent: "authorize",
+          components: "card-fields",
+          dataClientToken: "test-data-client-token",
+        }}
+      >
+        <PayPalCardFieldsProvider
+          onApprove={mockOnApprove}
+          createOrder={mockCreateOrder}
+          onError={mockOnError}
+        >
+          <PayPalNumberField />
+          <PayPalNumberField />
+          <PayPalCVVField />
+          <PayPalExpiryField />
+        </PayPalCardFieldsProvider>
+      </PayPalScriptProvider>,
+      { wrapper },
+    );
+
+    await waitFor(() => expect(onError).toHaveBeenCalled());
+    expect(onError.mock.calls[0][0].message).toEqual(
+      CARD_FIELDS_DUPLICATE_CHILDREN_ERROR,
+    );
+
+    spyConsoleError.mockRestore();
+  });
+
+  test("should return immediately when script provider is rejected", async () => {
+    const spyConsoleError = jest.spyOn(console, "error").mockImplementation();
+    (loadScript as jest.Mock).mockRejectedValue(new Error("Unknown error"));
+
+    render(
+      <PayPalScriptProvider
+        options={{
+          clientId: "test-client",
+          currency: "USD",
+          intent: "authorize",
+          components: "card-fields",
+          dataClientToken: "test-data-client-token",
+        }}
+      >
+        <PayPalCardFieldsProvider
+          onApprove={mockOnApprove}
+          createOrder={mockCreateOrder}
+          onError={mockOnError}
+        >
+          <PayPalNumberField />
+          <PayPalCVVField />
+          <PayPalExpiryField />
+        </PayPalCardFieldsProvider>
+      </PayPalScriptProvider>,
+    );
+    await waitFor(() => {
+      expect(loadScript).toBeCalled();
     });
+    expect(getMockElementsRendered().length).toEqual(0);
+    expect(onError).toBeCalledTimes(0);
 
-    afterEach(() => {
-        jest.clearAllMocks();
+    spyConsoleError.mockRestore();
+  });
+
+  test("should not render CardFields components when unilegible", async () => {
+    window.paypal = {
+      CardFields: jest.fn(
+        () =>
+          ({
+            isEligible: jest.fn().mockReturnValue(false),
+          }) as unknown as PayPalCardFieldsComponent,
+      ),
+      version: "",
+    };
+
+    render(
+      <PayPalScriptProvider
+        options={{
+          clientId: "test-client",
+          currency: "USD",
+          intent: "authorize",
+          components: "card-fields",
+          dataClientToken: "test-data-client-token",
+        }}
+      >
+        <PayPalCardFieldsProvider
+          onApprove={mockOnApprove}
+          createOrder={mockCreateOrder}
+          onError={mockOnError}
+        >
+          <PayPalNumberField />
+          <PayPalCVVField />
+          <PayPalExpiryField />
+        </PayPalCardFieldsProvider>
+      </PayPalScriptProvider>,
+    );
+    await waitFor(() => {
+      expect(getMockElementsRendered().length).toEqual(0);
     });
+  });
 
-    test("should throw an Error using the component without the PayPalScriptProvider", async () => {
-        const spyConsoleError = jest
-            .spyOn(console, "error")
-            .mockImplementation();
+  test("should catch and throw unexpected zoid render errors", async () => {
+    const spyConsoleError = jest.spyOn(console, "error").mockImplementation();
+    window.paypal = {
+      CardFields: jest.fn(
+        () =>
+          ({
+            isEligible: jest.fn().mockReturnValue(true),
+            NumberField: jest.fn(() => unHappyMethods),
+          }) as unknown as PayPalCardFieldsComponent,
+      ),
+      version: "",
+    };
 
-        render(
+    render(
+      <PayPalScriptProvider
+        options={{
+          clientId: "test-client",
+          currency: "USD",
+          intent: "authorize",
+          dataClientToken: "test-data-client-token",
+        }}
+      >
+        <PayPalCardFieldsProvider
+          onApprove={mockOnApprove}
+          createOrder={mockCreateOrder}
+          onError={mockOnError}
+        >
+          <PayPalNumberField />
+        </PayPalCardFieldsProvider>
+      </PayPalScriptProvider>,
+      { wrapper },
+    );
+
+    await waitFor(() => expect(onError).toHaveBeenCalled());
+    expect(onError.mock.calls[0][0].message).toEqual(
+      "Failed to render <PayPalNumberField /> component. Unknown error",
+    );
+    spyConsoleError.mockRestore();
+  });
+
+  test("should throw an error when the 'card-fields' component is missing from the components list passed to the PayPalScriptProvider", async () => {
+    const spyConsoleError = jest.spyOn(console, "error").mockImplementation();
+
+    window.paypal = { CardFields: undefined } as PayPalNamespace;
+
+    render(
+      <PayPalScriptProvider
+        options={{
+          clientId: "test",
+          components: "buttons,messages",
+        }}
+      >
+        <PayPalCardFieldsProvider
+          onApprove={mockOnApprove}
+          createOrder={mockCreateOrder}
+          onError={mockOnError}
+        >
+          <PayPalNumberField />
+          <PayPalCVVField />
+          <PayPalExpiryField />
+        </PayPalCardFieldsProvider>
+      </PayPalScriptProvider>,
+      { wrapper },
+    );
+
+    await waitFor(() => expect(onError).toHaveBeenCalled());
+    expect(onError.mock.calls[0][0].message).toMatchSnapshot();
+    spyConsoleError.mockRestore();
+  });
+
+  test("should render card fields", async () => {
+    render(
+      <PayPalScriptProvider
+        options={{
+          clientId: "test-client",
+          currency: "USD",
+          intent: "authorize",
+          dataClientToken: "test-data-client-token",
+          components: "card-fields",
+        }}
+      >
+        <PayPalCardFieldsProvider
+          onApprove={mockOnApprove}
+          createOrder={mockCreateOrder}
+          onError={mockOnError}
+        >
+          <PayPalNumberField />
+          <PayPalCVVField />
+          <PayPalExpiryField />
+        </PayPalCardFieldsProvider>
+      </PayPalScriptProvider>,
+    );
+
+    await waitFor(() => {
+      expect(getMockElementsRendered().length).toEqual(3);
+    });
+  });
+
+  test("should safely ignore error on render process when paypal buttons container is no longer in the DOM ", async () => {
+    const spyConsoleError = jest.spyOn(console, "error").mockImplementation();
+    const mockRender = jest.fn().mockRejectedValue(new Error("Unknown error"));
+    window.paypal = {
+      CardFields: jest.fn(
+        () =>
+          ({
+            isEligible: jest.fn().mockReturnValue(true),
+            NumberField: jest.fn(() => ({
+              render: mockRender,
+              close: happyMethods.close,
+            })),
+            CVVField: jest.fn(() => ({
+              render: mockRender,
+              close: happyMethods.close,
+            })),
+            ExpiryField: jest.fn(() => ({
+              render: mockRender,
+              close: happyMethods.close,
+            })),
+          }) as unknown as PayPalCardFieldsComponent,
+      ),
+      version: "",
+    };
+
+    render(
+      <PayPalScriptProvider
+        options={{
+          clientId: "test-client",
+          currency: "USD",
+          intent: "authorize",
+          dataClientToken: "test-data-client-token",
+          components: "card-fields",
+        }}
+      >
+        <PayPalCardFieldsProvider
+          onApprove={mockOnApprove}
+          createOrder={mockCreateOrder}
+          onError={mockOnError}
+        >
+          <PayPalNumberField />
+          <PayPalCVVField />
+          <PayPalExpiryField />
+        </PayPalCardFieldsProvider>
+      </PayPalScriptProvider>,
+    );
+
+    await waitFor(() => expect(mockRender).toHaveBeenCalledTimes(3));
+    expect(onError).toBeCalledTimes(0);
+    expect(getMockElementsRendered().length).toEqual(0);
+
+    spyConsoleError.mockRestore();
+  });
+
+  test("should not create a stale closure when passing callbacks", async () => {
+    window.paypal = {
+      CardFields: jest.fn(
+        (options?: PayPalCardFieldsComponentOptions) =>
+          ({
+            isEligible: jest.fn().mockReturnValue(true),
+            NumberField: jest.fn().mockReturnValue({
+              render: jest.fn((element: string | HTMLElement) => {
+                // Simulate adding element
+                if (typeof element !== "string") {
+                  const child = document.createElement("div");
+                  child.setAttribute("id", MOCK_ELEMENT_ID);
+                  child.setAttribute("data-testid", MOCK_ELEMENT_ID);
+                  if (options?.inputEvents?.onFocus) {
+                    child.addEventListener(
+                      "focus",
+                      options.inputEvents.onFocus as unknown as EventListener,
+                    );
+                  }
+                  element.append(child);
+                }
+                return Promise.resolve();
+              }),
+              close: jest.fn(() => Promise.resolve()),
+            }),
+          }) as unknown as PayPalCardFieldsComponent,
+      ),
+      version: "",
+    };
+
+    const onFocusFn = jest.fn();
+
+    const Wrapper = () => {
+      const [count, setCount] = useState(0);
+
+      function onFocus() {
+        onFocusFn(count);
+      }
+
+      return (
+        <div>
+          <button
+            data-testid="count-button"
+            onClick={() => setCount(count + 1)}
+          >
+            Count: {count}
+          </button>
+          <PayPalScriptProvider
+            options={{
+              clientId: "test-client",
+              currency: "USD",
+              intent: "authorize",
+              dataClientToken: "test-data-client-token",
+              components: "card-fields",
+            }}
+          >
             <PayPalCardFieldsProvider
-                onApprove={mockOnApprove}
-                createOrder={mockCreateOrder}
-                onError={mockOnError}
+              onApprove={mockOnApprove}
+              createOrder={mockCreateOrder}
+              onError={mockOnError}
+              inputEvents={{
+                onFocus,
+              }}
             >
-                <></>
-            </PayPalCardFieldsProvider>,
-            { wrapper },
-        );
+              <PayPalNumberField />
+            </PayPalCardFieldsProvider>
+          </PayPalScriptProvider>
+        </div>
+      );
+    };
 
-        await waitFor(() => expect(onError).toHaveBeenCalled());
-        expect(onError.mock.calls[0][0].message).toEqual(
-            "usePayPalScriptReducer must be used within a PayPalScriptProvider",
-        );
-        spyConsoleError.mockRestore();
+    render(<Wrapper />);
+
+    await waitFor(() => {
+      expect(getMockElementsRendered().length).toEqual(1);
     });
 
-    test("should throw an Error using the component with duplicate fields", async () => {
-        const spyConsoleError = jest
-            .spyOn(console, "error")
-            .mockImplementation();
+    const countButton = screen.getByTestId("count-button");
+    const numberField = screen.getByTestId(MOCK_ELEMENT_ID);
 
-        render(
-            <PayPalScriptProvider
-                options={{
-                    clientId: "test-client",
-                    currency: "USD",
-                    intent: "authorize",
-                    components: "card-fields",
-                    dataClientToken: "test-data-client-token",
-                }}
-            >
-                <PayPalCardFieldsProvider
-                    onApprove={mockOnApprove}
-                    createOrder={mockCreateOrder}
-                    onError={mockOnError}
-                >
-                    <PayPalNumberField />
-                    <PayPalNumberField />
-                    <PayPalCVVField />
-                    <PayPalExpiryField />
-                </PayPalCardFieldsProvider>
-            </PayPalScriptProvider>,
-            { wrapper },
-        );
+    expect(screen.getByText("Count: 0")).toBeInTheDocument();
+    fireEvent.focus(numberField);
+    expect(onFocusFn).toHaveBeenCalledWith(0);
 
-        await waitFor(() => expect(onError).toHaveBeenCalled());
-        expect(onError.mock.calls[0][0].message).toEqual(
-            CARD_FIELDS_DUPLICATE_CHILDREN_ERROR,
-        );
+    fireEvent.click(countButton);
+    expect(await screen.findByText("Count: 1")).toBeInTheDocument();
+    fireEvent.focus(numberField);
+    expect(onFocusFn).toHaveBeenCalledWith(1);
 
-        spyConsoleError.mockRestore();
-    });
-
-    test("should return immediately when script provider is rejected", async () => {
-        const spyConsoleError = jest
-            .spyOn(console, "error")
-            .mockImplementation();
-        (loadScript as jest.Mock).mockRejectedValue(new Error("Unknown error"));
-
-        render(
-            <PayPalScriptProvider
-                options={{
-                    clientId: "test-client",
-                    currency: "USD",
-                    intent: "authorize",
-                    components: "card-fields",
-                    dataClientToken: "test-data-client-token",
-                }}
-            >
-                <PayPalCardFieldsProvider
-                    onApprove={mockOnApprove}
-                    createOrder={mockCreateOrder}
-                    onError={mockOnError}
-                >
-                    <PayPalNumberField />
-                    <PayPalCVVField />
-                    <PayPalExpiryField />
-                </PayPalCardFieldsProvider>
-            </PayPalScriptProvider>,
-        );
-        await waitFor(() => {
-            expect(loadScript).toBeCalled();
-        });
-        expect(getMockElementsRendered().length).toEqual(0);
-        expect(onError).toBeCalledTimes(0);
-
-        spyConsoleError.mockRestore();
-    });
-
-    test("should not render CardFields components when unilegible", async () => {
-        window.paypal = {
-            CardFields: jest.fn(
-                () =>
-                    ({
-                        isEligible: jest.fn().mockReturnValue(false),
-                    }) as unknown as PayPalCardFieldsComponent,
-            ),
-            version: "",
-        };
-
-        render(
-            <PayPalScriptProvider
-                options={{
-                    clientId: "test-client",
-                    currency: "USD",
-                    intent: "authorize",
-                    components: "card-fields",
-                    dataClientToken: "test-data-client-token",
-                }}
-            >
-                <PayPalCardFieldsProvider
-                    onApprove={mockOnApprove}
-                    createOrder={mockCreateOrder}
-                    onError={mockOnError}
-                >
-                    <PayPalNumberField />
-                    <PayPalCVVField />
-                    <PayPalExpiryField />
-                </PayPalCardFieldsProvider>
-            </PayPalScriptProvider>,
-        );
-        await waitFor(() => {
-            expect(getMockElementsRendered().length).toEqual(0);
-        });
-    });
-
-    test("should catch and throw unexpected zoid render errors", async () => {
-        const spyConsoleError = jest
-            .spyOn(console, "error")
-            .mockImplementation();
-        window.paypal = {
-            CardFields: jest.fn(
-                () =>
-                    ({
-                        isEligible: jest.fn().mockReturnValue(true),
-                        NumberField: jest.fn(() => unHappyMethods),
-                    }) as unknown as PayPalCardFieldsComponent,
-            ),
-            version: "",
-        };
-
-        render(
-            <PayPalScriptProvider
-                options={{
-                    clientId: "test-client",
-                    currency: "USD",
-                    intent: "authorize",
-                    dataClientToken: "test-data-client-token",
-                }}
-            >
-                <PayPalCardFieldsProvider
-                    onApprove={mockOnApprove}
-                    createOrder={mockCreateOrder}
-                    onError={mockOnError}
-                >
-                    <PayPalNumberField />
-                </PayPalCardFieldsProvider>
-            </PayPalScriptProvider>,
-            { wrapper },
-        );
-
-        await waitFor(() => expect(onError).toHaveBeenCalled());
-        expect(onError.mock.calls[0][0].message).toEqual(
-            "Failed to render <PayPalNumberField /> component. Unknown error",
-        );
-        spyConsoleError.mockRestore();
-    });
-
-    test("should throw an error when the 'card-fields' component is missing from the components list passed to the PayPalScriptProvider", async () => {
-        const spyConsoleError = jest
-            .spyOn(console, "error")
-            .mockImplementation();
-
-        window.paypal = { CardFields: undefined } as PayPalNamespace;
-
-        render(
-            <PayPalScriptProvider
-                options={{
-                    clientId: "test",
-                    components: "buttons,messages",
-                }}
-            >
-                <PayPalCardFieldsProvider
-                    onApprove={mockOnApprove}
-                    createOrder={mockCreateOrder}
-                    onError={mockOnError}
-                >
-                    <PayPalNumberField />
-                    <PayPalCVVField />
-                    <PayPalExpiryField />
-                </PayPalCardFieldsProvider>
-            </PayPalScriptProvider>,
-            { wrapper },
-        );
-
-        await waitFor(() => expect(onError).toHaveBeenCalled());
-        expect(onError.mock.calls[0][0].message).toMatchSnapshot();
-        spyConsoleError.mockRestore();
-    });
-
-    test("should render card fields", async () => {
-        render(
-            <PayPalScriptProvider
-                options={{
-                    clientId: "test-client",
-                    currency: "USD",
-                    intent: "authorize",
-                    dataClientToken: "test-data-client-token",
-                    components: "card-fields",
-                }}
-            >
-                <PayPalCardFieldsProvider
-                    onApprove={mockOnApprove}
-                    createOrder={mockCreateOrder}
-                    onError={mockOnError}
-                >
-                    <PayPalNumberField />
-                    <PayPalCVVField />
-                    <PayPalExpiryField />
-                </PayPalCardFieldsProvider>
-            </PayPalScriptProvider>,
-        );
-
-        await waitFor(() => {
-            expect(getMockElementsRendered().length).toEqual(3);
-        });
-    });
-
-    test("should safely ignore error on render process when paypal buttons container is no longer in the DOM ", async () => {
-        const spyConsoleError = jest
-            .spyOn(console, "error")
-            .mockImplementation();
-        const mockRender = jest
-            .fn()
-            .mockRejectedValue(new Error("Unknown error"));
-        window.paypal = {
-            CardFields: jest.fn(
-                () =>
-                    ({
-                        isEligible: jest.fn().mockReturnValue(true),
-                        NumberField: jest.fn(() => ({
-                            render: mockRender,
-                            close: happyMethods.close,
-                        })),
-                        CVVField: jest.fn(() => ({
-                            render: mockRender,
-                            close: happyMethods.close,
-                        })),
-                        ExpiryField: jest.fn(() => ({
-                            render: mockRender,
-                            close: happyMethods.close,
-                        })),
-                    }) as unknown as PayPalCardFieldsComponent,
-            ),
-            version: "",
-        };
-
-        render(
-            <PayPalScriptProvider
-                options={{
-                    clientId: "test-client",
-                    currency: "USD",
-                    intent: "authorize",
-                    dataClientToken: "test-data-client-token",
-                    components: "card-fields",
-                }}
-            >
-                <PayPalCardFieldsProvider
-                    onApprove={mockOnApprove}
-                    createOrder={mockCreateOrder}
-                    onError={mockOnError}
-                >
-                    <PayPalNumberField />
-                    <PayPalCVVField />
-                    <PayPalExpiryField />
-                </PayPalCardFieldsProvider>
-            </PayPalScriptProvider>,
-        );
-
-        await waitFor(() => expect(mockRender).toHaveBeenCalledTimes(3));
-        expect(onError).toBeCalledTimes(0);
-        expect(getMockElementsRendered().length).toEqual(0);
-
-        spyConsoleError.mockRestore();
-    });
-
-    test("should not create a stale closure when passing callbacks", async () => {
-        window.paypal = {
-            CardFields: jest.fn(
-                (options?: PayPalCardFieldsComponentOptions) =>
-                    ({
-                        isEligible: jest.fn().mockReturnValue(true),
-                        NumberField: jest.fn().mockReturnValue({
-                            render: jest.fn((element: string | HTMLElement) => {
-                                // Simulate adding element
-                                if (typeof element !== "string") {
-                                    const child = document.createElement("div");
-                                    child.setAttribute("id", MOCK_ELEMENT_ID);
-                                    child.setAttribute(
-                                        "data-testid",
-                                        MOCK_ELEMENT_ID,
-                                    );
-                                    if (options?.inputEvents?.onFocus) {
-                                        child.addEventListener(
-                                            "focus",
-                                            options.inputEvents
-                                                .onFocus as unknown as EventListener,
-                                        );
-                                    }
-                                    element.append(child);
-                                }
-                                return Promise.resolve();
-                            }),
-                            close: jest.fn(() => Promise.resolve()),
-                        }),
-                    }) as unknown as PayPalCardFieldsComponent,
-            ),
-            version: "",
-        };
-
-        const onFocusFn = jest.fn();
-
-        const Wrapper = () => {
-            const [count, setCount] = useState(0);
-
-            function onFocus() {
-                onFocusFn(count);
-            }
-
-            return (
-                <div>
-                    <button
-                        data-testid="count-button"
-                        onClick={() => setCount(count + 1)}
-                    >
-                        Count: {count}
-                    </button>
-                    <PayPalScriptProvider
-                        options={{
-                            clientId: "test-client",
-                            currency: "USD",
-                            intent: "authorize",
-                            dataClientToken: "test-data-client-token",
-                            components: "card-fields",
-                        }}
-                    >
-                        <PayPalCardFieldsProvider
-                            onApprove={mockOnApprove}
-                            createOrder={mockCreateOrder}
-                            onError={mockOnError}
-                            inputEvents={{
-                                onFocus,
-                            }}
-                        >
-                            <PayPalNumberField />
-                        </PayPalCardFieldsProvider>
-                    </PayPalScriptProvider>
-                </div>
-            );
-        };
-
-        render(<Wrapper />);
-
-        await waitFor(() => {
-            expect(getMockElementsRendered().length).toEqual(1);
-        });
-
-        const countButton = screen.getByTestId("count-button");
-        const numberField = screen.getByTestId(MOCK_ELEMENT_ID);
-
-        expect(screen.getByText("Count: 0")).toBeInTheDocument();
-        fireEvent.focus(numberField);
-        expect(onFocusFn).toHaveBeenCalledWith(0);
-
-        fireEvent.click(countButton);
-        expect(await screen.findByText("Count: 1")).toBeInTheDocument();
-        fireEvent.focus(numberField);
-        expect(onFocusFn).toHaveBeenCalledWith(1);
-
-        fireEvent.click(countButton);
-        expect(await screen.findByText("Count: 2")).toBeInTheDocument();
-        fireEvent.focus(numberField);
-        expect(onFocusFn).toHaveBeenCalledWith(2);
-    });
+    fireEvent.click(countButton);
+    expect(await screen.findByText("Count: 2")).toBeInTheDocument();
+    fireEvent.focus(numberField);
+    expect(onFocusFn).toHaveBeenCalledWith(2);
+  });
 });

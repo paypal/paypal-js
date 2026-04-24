@@ -6,8 +6,8 @@ import type { CardFieldOptions } from "../types";
 import type { PayPalCardFieldsProvider } from "./PayPalCardFieldsProvider";
 
 type PayPalCardNumberFieldProps = Omit<CardFieldOptions, "type"> & {
-    containerStyles?: React.CSSProperties;
-    containerClassName?: string;
+  containerStyles?: React.CSSProperties;
+  containerClassName?: string;
 };
 
 /**
@@ -21,26 +21,26 @@ type PayPalCardNumberFieldProps = Omit<CardFieldOptions, "type"> & {
  * />
  */
 export const PayPalCardNumberField = ({
-    containerStyles,
-    containerClassName,
-    placeholder,
-    label,
-    style,
-    ariaDescription,
-    ariaLabel,
-    ariaInvalidErrorMessage,
+  containerStyles,
+  containerClassName,
+  placeholder,
+  label,
+  style,
+  ariaDescription,
+  ariaLabel,
+  ariaInvalidErrorMessage,
 }: PayPalCardNumberFieldProps): JSX.Element | null => {
-    return (
-        <PayPalCardField
-            type="number"
-            containerStyles={containerStyles}
-            containerClassName={containerClassName}
-            placeholder={placeholder}
-            label={label}
-            style={style}
-            ariaDescription={ariaDescription}
-            ariaLabel={ariaLabel}
-            ariaInvalidErrorMessage={ariaInvalidErrorMessage}
-        />
-    );
+  return (
+    <PayPalCardField
+      type="number"
+      containerStyles={containerStyles}
+      containerClassName={containerClassName}
+      placeholder={placeholder}
+      label={label}
+      style={style}
+      ariaDescription={ariaDescription}
+      ariaLabel={ariaLabel}
+      ariaInvalidErrorMessage={ariaInvalidErrorMessage}
+    />
+  );
 };
