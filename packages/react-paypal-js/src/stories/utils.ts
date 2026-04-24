@@ -63,7 +63,7 @@ export async function approveSale(
 }
 
 export function generateRandomString(): string {
-  return `uid_${Math.random().toString(36).substring(7)}`;
+  return window.crypto.randomUUID();
 }
 
 export function reactElementToString(source: ReactNode, ctx?: unknown): string {
