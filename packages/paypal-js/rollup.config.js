@@ -8,116 +8,116 @@ import pkg from "./package.json";
 const pkgName = pkg.name.split("@paypal/")[1];
 const banner = getBannerText();
 const outputConfigForBrowserBundle = {
-    format: "iife",
-    name: "paypalLoadScript",
-    banner,
-    // declare global variables for loadScript() and loadCustomScript()
-    footer:
-        "window.paypalLoadCustomScript = paypalLoadScript.loadCustomScript;" +
-        "\nwindow.paypalLoadScript = paypalLoadScript.loadScript;",
+  format: "iife",
+  name: "paypalLoadScript",
+  banner,
+  // declare global variables for loadScript() and loadCustomScript()
+  footer:
+    "window.paypalLoadCustomScript = paypalLoadScript.loadCustomScript;" +
+    "\nwindow.paypalLoadScript = paypalLoadScript.loadScript;",
 };
 const tsconfigOverride = {
-    exclude: ["node_modules", "**/*.test.ts"],
+  exclude: ["node_modules", "**/*.test.ts"],
 };
 
 export default [
-    {
-        input: "src/index.ts",
-        plugins: [
-            typescript({ ...tsconfigOverride }),
-            replace({
-                __VERSION__: pkg.version,
-                preventAssignment: true,
-            }),
-        ],
-        output: [
-            {
-                file: `dist/esm/${pkgName}.js`,
-                format: "esm",
-                banner,
-            },
-            {
-                file: `dist/esm/${pkgName}.min.js`,
-                format: "esm",
-                banner,
-                plugins: [terser()],
-            },
-            {
-                file: `dist/cjs/${pkgName}.js`,
-                format: "cjs",
-                banner,
-            },
-            {
-                file: `dist/cjs/${pkgName}.min.js`,
-                format: "cjs",
-                banner,
-                plugins: [terser()],
-            },
-            {
-                file: `dist/iife/${pkgName}.js`,
-                ...outputConfigForBrowserBundle,
-            },
-            {
-                file: `dist/iife/${pkgName}.min.js`,
-                ...outputConfigForBrowserBundle,
-                plugins: [terser()],
-            },
-        ],
-    },
-    {
-        input: "src/legacy/index.ts",
-        plugins: [
-            typescript({ ...tsconfigOverride }),
-            nodeResolve({
-                browser: true,
-            }),
-            commonjs(),
-            replace({
-                __VERSION__: pkg.version,
-                preventAssignment: true,
-            }),
-        ],
-        output: [
-            {
-                file: `dist/iife/${pkgName}.legacy.js`,
-                ...outputConfigForBrowserBundle,
-            },
-            {
-                file: `dist/iife/${pkgName}.legacy.min.js`,
-                ...outputConfigForBrowserBundle,
-                plugins: [terser()],
-            },
-        ],
-    },
-    {
-        input: "src/v6/index.ts",
-        plugins: [
-            typescript({
-                ...tsconfigOverride,
-            }),
-            replace({
-                __VERSION__: pkg.version,
-                preventAssignment: true,
-            }),
-        ],
-        output: [
-            {
-                file: `dist/v6/esm/${pkgName}.js`,
-                format: "esm",
-                banner,
-            },
-            {
-                file: `dist/v6/esm/${pkgName}.min.js`,
-                format: "esm",
-                banner,
-                plugins: [terser()],
-            },
-        ],
-    },
+  {
+    input: "src/index.ts",
+    plugins: [
+      typescript({ ...tsconfigOverride }),
+      replace({
+        __VERSION__: pkg.version,
+        preventAssignment: true,
+      }),
+    ],
+    output: [
+      {
+        file: `dist/esm/${pkgName}.js`,
+        format: "esm",
+        banner,
+      },
+      {
+        file: `dist/esm/${pkgName}.min.js`,
+        format: "esm",
+        banner,
+        plugins: [terser()],
+      },
+      {
+        file: `dist/cjs/${pkgName}.js`,
+        format: "cjs",
+        banner,
+      },
+      {
+        file: `dist/cjs/${pkgName}.min.js`,
+        format: "cjs",
+        banner,
+        plugins: [terser()],
+      },
+      {
+        file: `dist/iife/${pkgName}.js`,
+        ...outputConfigForBrowserBundle,
+      },
+      {
+        file: `dist/iife/${pkgName}.min.js`,
+        ...outputConfigForBrowserBundle,
+        plugins: [terser()],
+      },
+    ],
+  },
+  {
+    input: "src/legacy/index.ts",
+    plugins: [
+      typescript({ ...tsconfigOverride }),
+      nodeResolve({
+        browser: true,
+      }),
+      commonjs(),
+      replace({
+        __VERSION__: pkg.version,
+        preventAssignment: true,
+      }),
+    ],
+    output: [
+      {
+        file: `dist/iife/${pkgName}.legacy.js`,
+        ...outputConfigForBrowserBundle,
+      },
+      {
+        file: `dist/iife/${pkgName}.legacy.min.js`,
+        ...outputConfigForBrowserBundle,
+        plugins: [terser()],
+      },
+    ],
+  },
+  {
+    input: "src/v6/index.ts",
+    plugins: [
+      typescript({
+        ...tsconfigOverride,
+      }),
+      replace({
+        __VERSION__: pkg.version,
+        preventAssignment: true,
+      }),
+    ],
+    output: [
+      {
+        file: `dist/v6/esm/${pkgName}.js`,
+        format: "esm",
+        banner,
+      },
+      {
+        file: `dist/v6/esm/${pkgName}.min.js`,
+        format: "esm",
+        banner,
+        plugins: [terser()],
+      },
+    ],
+  },
 ];
 
 function getBannerText() {
-    return `
+  return `
 /*!
  * ${pkgName} v${pkg.version} (${new Date().toISOString()})
  * Copyright 2020-present, PayPal, Inc. All rights reserved.

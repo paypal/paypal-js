@@ -9,14 +9,14 @@ import type { SubmitOptions, OneTimePaymentFlowResponse } from "../types";
 import type { PayPalCardFieldsProvider } from "../components/PayPalCardFieldsProvider";
 
 export type UsePayPalCardFieldsOneTimePaymentSessionResult = {
-    submit: SubmitPayPalCardFieldsOneTimePayment;
-    submitResponse: OneTimePaymentFlowResponse | null;
-    error: Error | null;
+  submit: SubmitPayPalCardFieldsOneTimePayment;
+  submitResponse: OneTimePaymentFlowResponse | null;
+  error: Error | null;
 };
 
 type SubmitPayPalCardFieldsOneTimePayment = (
-    orderId: Promise<string> | string,
-    options?: SubmitOptions,
+  orderId: Promise<string> | string,
+  options?: SubmitOptions,
 ) => Promise<void>;
 
 /**
@@ -28,42 +28,40 @@ type SubmitPayPalCardFieldsOneTimePayment = (
  * @returns {UsePayPalCardFieldsOneTimePaymentSessionResult}
  */
 export function usePayPalCardFieldsOneTimePaymentSession(): UsePayPalCardFieldsOneTimePaymentSessionResult {
-    const { cardFieldsSession, setCardFieldsSessionType } =
-        usePayPalCardFieldsSession();
-    const [submitResponse, setSubmitResponse] =
-        useState<OneTimePaymentFlowResponse | null>(null);
-    const [error, setError] = useError();
+  const { cardFieldsSession, setCardFieldsSessionType } =
+    usePayPalCardFieldsSession();
+  const [submitResponse, setSubmitResponse] =
+    useState<OneTimePaymentFlowResponse | null>(null);
+  const [error, setError] = useError();
 
-    useEffect(() => {
-        setCardFieldsSessionType(CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT);
-    }, [setCardFieldsSessionType]);
+  useEffect(() => {
+    setCardFieldsSessionType(CARD_FIELDS_SESSION_TYPES.ONE_TIME_PAYMENT);
+  }, [setCardFieldsSessionType]);
 
-    const submit: SubmitPayPalCardFieldsOneTimePayment = useCallback(
-        async (orderId, options) => {
-            if (!cardFieldsSession) {
-                setError(
-                    toError("Submit error: CardFields session not available"),
-                );
-                setSubmitResponse(null);
-                return;
-            }
+  const submit: SubmitPayPalCardFieldsOneTimePayment = useCallback(
+    async (orderId, options) => {
+      if (!cardFieldsSession) {
+        setError(toError("Submit error: CardFields session not available"));
+        setSubmitResponse(null);
+        return;
+      }
 
-            try {
-                const id = await orderId;
-                const submitResult = (await cardFieldsSession.submit(
-                    id,
-                    options,
-                )) as OneTimePaymentFlowResponse;
+      try {
+        const id = await orderId;
+        const submitResult = (await cardFieldsSession.submit(
+          id,
+          options,
+        )) as OneTimePaymentFlowResponse;
 
-                setSubmitResponse(submitResult);
-                setError(null);
-            } catch (error) {
-                setError(toError(error));
-                setSubmitResponse(null);
-            }
-        },
-        [cardFieldsSession, setError],
-    );
+        setSubmitResponse(submitResult);
+        setError(null);
+      } catch (error) {
+        setError(toError(error));
+        setSubmitResponse(null);
+      }
+    },
+    [cardFieldsSession, setError],
+  );
 
-    return { submit, submitResponse, error };
+  return { submit, submitResponse, error };
 }

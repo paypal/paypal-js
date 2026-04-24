@@ -7,9 +7,9 @@ import type { ButtonProps } from "../types";
 import type { UsePayPalOneTimePaymentSessionProps } from "../hooks/usePayPalOneTimePaymentSession";
 
 type PayPalOneTimePaymentButtonProps = UsePayPalOneTimePaymentSessionProps &
-    ButtonProps & {
-        autoRedirect?: never;
-    };
+  ButtonProps & {
+    autoRedirect?: never;
+  };
 
 /**
  * `PayPalOneTimePaymentButton` is a button that provides a standard PayPal payment flow.
@@ -31,29 +31,27 @@ type PayPalOneTimePaymentButtonProps = UsePayPalOneTimePaymentSessionProps &
  * />
  */
 export const PayPalOneTimePaymentButton = ({
-    type = "pay",
-    disabled = false,
-    ...hookProps
+  type = "pay",
+  disabled = false,
+  ...hookProps
 }: PayPalOneTimePaymentButtonProps): JSX.Element | null => {
-    const { error, isPending, handleClick } =
-        usePayPalOneTimePaymentSession(hookProps);
-    const { isHydrated } = usePayPal();
+  const { error, isPending, handleClick } =
+    usePayPalOneTimePaymentSession(hookProps);
+  const { isHydrated } = usePayPal();
 
-    useEffect(() => {
-        if (error) {
-            console.error(error);
-        }
-    }, [error]);
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+    }
+  }, [error]);
 
-    return isHydrated ? (
-        <paypal-button
-            onClick={handleClick}
-            type={type}
-            disabled={
-                disabled || isPending || error !== null ? true : undefined
-            }
-        ></paypal-button>
-    ) : (
-        <div />
-    );
+  return isHydrated ? (
+    <paypal-button
+      onClick={handleClick}
+      type={type}
+      disabled={disabled || isPending || error !== null ? true : undefined}
+    ></paypal-button>
+  ) : (
+    <div />
+  );
 };

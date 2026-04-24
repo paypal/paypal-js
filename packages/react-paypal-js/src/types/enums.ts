@@ -4,10 +4,10 @@
  * @enum {string}
  */
 export enum SCRIPT_LOADING_STATE {
-    INITIAL = "initial",
-    PENDING = "pending",
-    REJECTED = "rejected",
-    RESOLVED = "resolved",
+  INITIAL = "initial",
+  PENDING = "pending",
+  REJECTED = "rejected",
+  RESOLVED = "resolved",
 }
 
 /**
@@ -16,9 +16,9 @@ export enum SCRIPT_LOADING_STATE {
  * @enum {string}
  */
 export enum DISPATCH_ACTION {
-    LOADING_STATUS = "setLoadingStatus",
-    RESET_OPTIONS = "resetOptions",
-    SET_BRAINTREE_INSTANCE = "braintreeInstance",
+  LOADING_STATUS = "setLoadingStatus",
+  RESET_OPTIONS = "resetOptions",
+  SET_BRAINTREE_INSTANCE = "braintreeInstance",
 }
 
 /**
@@ -27,10 +27,10 @@ export enum DISPATCH_ACTION {
  * @enum {string}
  */
 export enum PAYPAL_HOSTED_FIELDS_TYPES {
-    NUMBER = "number",
-    CVV = "cvv",
-    EXPIRATION_DATE = "expirationDate",
-    EXPIRATION_MONTH = "expirationMonth",
-    EXPIRATION_YEAR = "expirationYear",
-    POSTAL_CODE = "postalCode",
+  NUMBER = "number",
+  CVV = "cvv",
+  EXPIRATION_DATE = "expirationDate",
+  EXPIRATION_MONTH = "expirationMonth",
+  EXPIRATION_YEAR = "expirationYear",
+  POSTAL_CODE = "postalCode",
 }

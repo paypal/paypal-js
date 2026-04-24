@@ -35,28 +35,28 @@ import type { Components } from "./types";
  * shallowEqualArray(null, null);
  */
 function shallowEqualArray<T>(
-    arr1: readonly T[] | null | undefined,
-    arr2: readonly T[] | null | undefined,
+  arr1: readonly T[] | null | undefined,
+  arr2: readonly T[] | null | undefined,
 ): boolean {
-    if (!arr1 && !arr2) {
-        return true;
-    }
-
-    if (!arr1 || !arr2) {
-        return false;
-    }
-
-    if (arr1.length !== arr2.length) {
-        return false;
-    }
-
-    for (let i = 0; i < arr1.length; i++) {
-        if (arr1[i] !== arr2[i]) {
-            return false;
-        }
-    }
-
+  if (!arr1 && !arr2) {
     return true;
+  }
+
+  if (!arr1 || !arr2) {
+    return false;
+  }
+
+  if (arr1.length !== arr2.length) {
+    return false;
+  }
+
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -73,45 +73,45 @@ function shallowEqualArray<T>(
  * const memoizedComponents = useCompareMemoize(["paypal-payments", "venmo-payments"]);
  */
 export function useCompareMemoize<
-    T extends readonly Components[] | null | undefined,
+  T extends readonly Components[] | null | undefined,
 >(value: T): T {
-    const ref = useRef<T>(value);
+  const ref = useRef<T>(value);
 
-    if (!shallowEqualArray(ref.current, value)) {
-        ref.current = value;
-    }
+  if (!shallowEqualArray(ref.current, value)) {
+    ref.current = value;
+  }
 
-    return ref.current;
+  return ref.current;
 }
 
 export function useProxyProps<T extends Record<PropertyKey, unknown>>(
-    props: T,
+  props: T,
 ): T {
-    const proxyRef = useRef(
-        new Proxy<T>({} as T, {
-            get(target: T, prop: PropertyKey, receiver) {
-                /**
-                 *
-                 * If target[prop] is a function, return a function that accesses
-                 * this function off the target object. We can mutate the target with
-                 * new copies of this function without having to re-render the
-                 * SDK components to pass new callbacks.
-                 *
-                 * */
-                if (typeof target[prop] === "function") {
-                    return (...args: unknown[]) =>
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-                        (target[prop] as Function)(...args);
-                }
+  const proxyRef = useRef(
+    new Proxy<T>({} as T, {
+      get(target: T, prop: PropertyKey, receiver) {
+        /**
+         *
+         * If target[prop] is a function, return a function that accesses
+         * this function off the target object. We can mutate the target with
+         * new copies of this function without having to re-render the
+         * SDK components to pass new callbacks.
+         *
+         * */
+        if (typeof target[prop] === "function") {
+          return (...args: unknown[]) =>
+            // eslint-disable-next-line @typescript-eslint/ban-types
+            (target[prop] as Function)(...args);
+        }
 
-                return Reflect.get(target, prop, receiver);
-            },
-        }),
-    );
+        return Reflect.get(target, prop, receiver);
+      },
+    }),
+  );
 
-    proxyRef.current = Object.assign(proxyRef.current, props);
+  proxyRef.current = Object.assign(proxyRef.current, props);
 
-    return proxyRef.current;
+  return proxyRef.current;
 }
 
 /**
@@ -129,11 +129,11 @@ export function useProxyProps<T extends Record<PropertyKey, unknown>>(
  * toError(myError);
  */
 export function toError(error: unknown): Error {
-    if (error instanceof Error) {
-        return error;
-    }
+  if (error instanceof Error) {
+    return error;
+  }
 
-    return new Error(String(error));
+  return new Error(String(error));
 }
 
 /**
@@ -151,13 +151,13 @@ export function toError(error: unknown): Error {
  * const memoizedAmount = useDeepCompareMemoize({ value: "10.00", currencyCode: "USD" });
  */
 export function useDeepCompareMemoize<T>(value: T): T {
-    const ref = useRef<{ value: T }>();
+  const ref = useRef<{ value: T }>();
 
-    if (!ref.current || !deepEqual(value, ref.current.value)) {
-        ref.current = { value };
-    }
+  if (!ref.current || !deepEqual(value, ref.current.value)) {
+    ref.current = { value };
+  }
 
-    return ref.current.value;
+  return ref.current.value;
 }
 
 /**
@@ -178,80 +178,78 @@ export function useDeepCompareMemoize<T>(value: T): T {
  * deepEqual({ amount: "10.00" }, { amount: "20.00" }); // false
  */
 export function deepEqual(
-    obj1: unknown,
-    obj2: unknown,
-    maxDepth = 10,
-    currentDepth = 0,
+  obj1: unknown,
+  obj2: unknown,
+  maxDepth = 10,
+  currentDepth = 0,
 ): boolean {
-    // Prevent infinite recursion by limiting depth
-    if (currentDepth > maxDepth) {
-        return false;
-    }
+  // Prevent infinite recursion by limiting depth
+  if (currentDepth > maxDepth) {
+    return false;
+  }
 
-    // Handle primitives and same reference
-    if (obj1 === obj2) {
-        return true;
-    }
-
-    // Handle null/undefined
-    if (
-        obj1 === null ||
-        obj1 === undefined ||
-        obj2 === null ||
-        obj2 === undefined
-    ) {
-        return false;
-    }
-
-    // Different types are not equal
-    if (typeof obj1 !== typeof obj2) {
-        return false;
-    }
-
-    // Non-object primitives (number, string, boolean, function, symbol, bigint) that
-    // Same typeof (verified above) but not ===, so unequal primitives
-    if (typeof obj1 !== "object") {
-        return false;
-    }
-
-    // Handle Arrays
-    if (Array.isArray(obj1) && Array.isArray(obj2)) {
-        if (obj1.length !== obj2.length) {
-            return false;
-        }
-        for (let i = 0; i < obj1.length; i++) {
-            if (!deepEqual(obj1[i], obj2[i], maxDepth, currentDepth + 1)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    // One is array, the other is not
-    if (Array.isArray(obj1) || Array.isArray(obj2)) {
-        return false;
-    }
-
-    // At this point, we know both are non-null objects
-    const record1 = obj1 as Record<string, unknown>;
-    const record2 = obj2 as Record<string, unknown>;
-
-    const keys1 = Object.keys(record1);
-    const keys2 = Object.keys(record2);
-
-    if (keys1.length !== keys2.length) {
-        return false;
-    }
-
-    for (const key of keys1) {
-        if (
-            !deepEqual(record1[key], record2[key], maxDepth, currentDepth + 1)
-        ) {
-            return false;
-        }
-    }
-
+  // Handle primitives and same reference
+  if (obj1 === obj2) {
     return true;
+  }
+
+  // Handle null/undefined
+  if (
+    obj1 === null ||
+    obj1 === undefined ||
+    obj2 === null ||
+    obj2 === undefined
+  ) {
+    return false;
+  }
+
+  // Different types are not equal
+  if (typeof obj1 !== typeof obj2) {
+    return false;
+  }
+
+  // Non-object primitives (number, string, boolean, function, symbol, bigint) that
+  // Same typeof (verified above) but not ===, so unequal primitives
+  if (typeof obj1 !== "object") {
+    return false;
+  }
+
+  // Handle Arrays
+  if (Array.isArray(obj1) && Array.isArray(obj2)) {
+    if (obj1.length !== obj2.length) {
+      return false;
+    }
+    for (let i = 0; i < obj1.length; i++) {
+      if (!deepEqual(obj1[i], obj2[i], maxDepth, currentDepth + 1)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // One is array, the other is not
+  if (Array.isArray(obj1) || Array.isArray(obj2)) {
+    return false;
+  }
+
+  // At this point, we know both are non-null objects
+  const record1 = obj1 as Record<string, unknown>;
+  const record2 = obj2 as Record<string, unknown>;
+
+  const keys1 = Object.keys(record1);
+  const keys2 = Object.keys(record2);
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  for (const key of keys1) {
+    if (!deepEqual(record1[key], record2[key], maxDepth, currentDepth + 1)) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 /**
@@ -276,25 +274,28 @@ export function deepEqual(
  * if (!session) return;
  */
 export function createPaymentSession<T>(
-    sessionCreator: () => T,
-    failedSdkRef: { current: unknown },
-    sdkInstance: unknown,
-    setError: (error: Error | null) => void,
-    errorMessage: string,
+  sessionCreator: () => T,
+  failedSdkRef: { current: unknown },
+  sdkInstance: unknown,
+  setError: (error: Error | null) => void,
+  component: string,
 ): T | null {
-    // Skip retry if this SDK instance already failed
-    if (failedSdkRef.current === sdkInstance) {
-        return null;
-    }
+  // Skip retry if this SDK instance already failed
+  if (failedSdkRef.current === sdkInstance) {
+    return null;
+  }
 
-    try {
-        return sessionCreator();
-    } catch (err) {
-        failedSdkRef.current = sdkInstance;
+  try {
+    return sessionCreator();
+  } catch (err) {
+    failedSdkRef.current = sdkInstance;
 
-        const detailedError = new Error(errorMessage, { cause: err });
+    const detailedError = new Error(
+      `Failed to create payment session. This may occur if the required component "${component}" is not included in the SDK components array.`,
+      { cause: err },
+    );
 
-        setError(detailedError);
-        return null;
-    }
+    setError(detailedError);
+    return null;
+  }
 }

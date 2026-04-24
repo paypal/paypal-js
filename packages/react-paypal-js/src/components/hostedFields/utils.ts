@@ -1,8 +1,8 @@
 import {
-    DEFAULT_PAYPAL_NAMESPACE,
-    SDK_SETTINGS,
-    HOSTED_FIELDS_CHILDREN_ERROR,
-    HOSTED_FIELDS_DUPLICATE_CHILDREN_ERROR,
+  DEFAULT_PAYPAL_NAMESPACE,
+  SDK_SETTINGS,
+  HOSTED_FIELDS_CHILDREN_ERROR,
+  HOSTED_FIELDS_DUPLICATE_CHILDREN_ERROR,
 } from "../../constants";
 import { PAYPAL_HOSTED_FIELDS_TYPES } from "../../types/enums";
 
@@ -19,19 +19,19 @@ import type { PayPalHostedFieldsNamespace } from "../../types/payPalHostedFieldT
  *
  */
 export const generateMissingHostedFieldsError = ({
-    components = "",
-    [SDK_SETTINGS.DATA_NAMESPACE]: dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
+  components = "",
+  [SDK_SETTINGS.DATA_NAMESPACE]: dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
 }: PayPalHostedFieldsNamespace): string => {
-    const expectedComponents = components
-        ? `${components},hosted-fields`
-        : "hosted-fields";
-    let errorMessage = `Unable to render <PayPalHostedFieldsProvider /> because window.${dataNamespace}.HostedFields is undefined.`;
+  const expectedComponents = components
+    ? `${components},hosted-fields`
+    : "hosted-fields";
+  let errorMessage = `Unable to render <PayPalHostedFieldsProvider /> because window.${dataNamespace}.HostedFields is undefined.`;
 
-    if (!components.includes("hosted-fields")) {
-        errorMessage += `\nTo fix the issue, add 'hosted-fields' to the list of components passed to the parent PayPalScriptProvider: <PayPalScriptProvider options={{ components: '${expectedComponents}'}}>`;
-    }
+  if (!components.includes("hosted-fields")) {
+    errorMessage += `\nTo fix the issue, add 'hosted-fields' to the list of components passed to the parent PayPalScriptProvider: <PayPalScriptProvider options={{ components: '${expectedComponents}'}}>`;
+  }
 
-    return errorMessage;
+  return errorMessage;
 };
 
 /**
@@ -43,13 +43,13 @@ export const generateMissingHostedFieldsError = ({
  * @returns @type {true} when the children are valid
  */
 const validateExpirationDate = (
-    registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[],
+  registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[],
 ) => {
-    return (
-        !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE) &&
-        !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_MONTH) &&
-        !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_YEAR)
-    );
+  return (
+    !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE) &&
+    !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_MONTH) &&
+    !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_YEAR)
+  );
 };
 
 /**
@@ -60,13 +60,13 @@ const validateExpirationDate = (
  * @throw an @type {Error} when not find the default children
  */
 const hasDefaultChildren = (registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[]) => {
-    if (
-        !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.NUMBER) ||
-        !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.CVV) ||
-        validateExpirationDate(registerTypes)
-    ) {
-        throw new Error(HOSTED_FIELDS_CHILDREN_ERROR);
-    }
+  if (
+    !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.NUMBER) ||
+    !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.CVV) ||
+    validateExpirationDate(registerTypes)
+  ) {
+    throw new Error(HOSTED_FIELDS_CHILDREN_ERROR);
+  }
 };
 
 /**
@@ -76,9 +76,9 @@ const hasDefaultChildren = (registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[]) => {
  * @throw an @type {Error} when duplicate types was found
  */
 const noDuplicateChildren = (registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[]) => {
-    if (registerTypes.length !== new Set(registerTypes).size) {
-        throw new Error(HOSTED_FIELDS_DUPLICATE_CHILDREN_ERROR);
-    }
+  if (registerTypes.length !== new Set(registerTypes).size) {
+    throw new Error(HOSTED_FIELDS_DUPLICATE_CHILDREN_ERROR);
+  }
 };
 
 /**
@@ -92,8 +92,8 @@ const noDuplicateChildren = (registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[]) => {
  * @param requiredChildren the list with required children [number, expiration, cvv]
  */
 export const validateHostedFieldChildren = (
-    registeredFields: PAYPAL_HOSTED_FIELDS_TYPES[],
+  registeredFields: PAYPAL_HOSTED_FIELDS_TYPES[],
 ): void => {
-    hasDefaultChildren(registeredFields);
-    noDuplicateChildren(registeredFields);
+  hasDefaultChildren(registeredFields);
+  noDuplicateChildren(registeredFields);
 };

@@ -1,46 +1,33 @@
 {
-    "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"],
-    "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
-    "env": {
-        "browser": true,
-        "es2020": true,
-        "node": true
-    },
-    "parserOptions": {
-        "ecmaVersion": 11,
-        "sourceType": "module"
-    },
-    "globals": {
-        "page": "readonly"
-    },
-    "ignorePatterns": ["dist/*.js"],
-    "rules": {
-        "indent": ["error", 4],
-        "semi": ["error", "always"]
-    },
-    "settings": {
-        "polyfills": ["Promise", "fetch"]
-    },
-    "overrides": [
-        {
-            "files": ["types/v6/**/*.d.ts"],
-            "plugins": ["eslint-plugin-tsdoc"],
-            "rules": {
-                "tsdoc/syntax": "warn"
-            }
-        },
-        {
-            "files": ["*.js"],
-            "rules": {
-                "@typescript-eslint/no-require-imports": "off"
-            }
-        },
-        {
-            "files": ["types/v6/tests/**/*.test.ts"],
-            "rules": {
-                "@typescript-eslint/no-unused-expressions": "off"
-            }
-        }
-    ]
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  "env": {
+    "browser": true,
+    "es2020": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 11,
+    "sourceType": "module"
+  },
+  "globals": {
+    "page": "readonly"
+  },
+  "ignorePatterns": ["dist/*.js"],
+  "rules": {
+    "semi": ["error", "always"]
+  },
+  "settings": {
+    "polyfills": ["Promise", "fetch"]
+  },
+  "overrides": [
+    {
+      "files": ["types/v6/**/*.d.ts"],
+      "plugins": ["eslint-plugin-tsdoc"],
+      "rules": {
+        "tsdoc/syntax": "warn"
+      }
+    }
+  ]
 }

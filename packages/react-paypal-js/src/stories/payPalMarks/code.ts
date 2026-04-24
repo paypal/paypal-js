@@ -1,13 +1,13 @@
 import {
-    generateFundingSource,
-    CREATE_ORDER_URL,
-    CAPTURE_ORDER_URL,
+  generateFundingSource,
+  CREATE_ORDER_URL,
+  CAPTURE_ORDER_URL,
 } from "../utils";
 
 import type { Args } from "@storybook/addons/dist/ts3.9/types";
 
 export const getDefaultCode = (fundingSource?: string): string =>
-    `import { PayPalScriptProvider, PayPalMarks } from "@paypal/react-paypal-js";
+  `import { PayPalScriptProvider, PayPalMarks } from "@paypal/react-paypal-js";
 
 export default function App() {
 	return (
@@ -23,7 +23,7 @@ export default function App() {
 }`;
 
 export const getRadioButtonsCode = (args: Args): string =>
-    `import { useState } from "react";
+  `import { useState } from "react";
 import {
 	PayPalScriptProvider,
 	PayPalButtons,

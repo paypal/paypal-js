@@ -3,55 +3,55 @@ import type { PayPalV6Namespace } from "../index";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function main() {
-    let paypal: PayPalV6Namespace | null;
+  let paypal: PayPalV6Namespace | null;
 
-    try {
-        paypal = await loadCoreSdkScript({
-            environment: "sandbox",
-            debug: true,
-        });
-    } catch (err) {
-        throw new Error(`Failed to load the paypal sdk script: ${err}`);
-    }
-
-    if (!paypal?.createInstance) {
-        throw new Error("Invalid paypal object for v6");
-    }
-
-    if (!paypal?.version) {
-        throw new Error("PayPal v6 namespace missing version property");
-    }
-
-    const sdkInstance = await paypal.createInstance({
-        clientId: "fakeValue",
-        components: [
-            "paypal-payments",
-            "paypal-guest-payments",
-            "venmo-payments",
-            "applepay-payments",
-            "googlepay-payments",
-        ],
+  try {
+    paypal = await loadCoreSdkScript({
+      environment: "sandbox",
+      debug: true,
     });
+  } catch (err) {
+    throw new Error(`Failed to load the paypal sdk script: ${err}`);
+  }
 
-    sdkInstance.createPayPalOneTimePaymentSession({
-        onApprove() {
-            return Promise.resolve();
-        },
-    });
+  if (!paypal?.createInstance) {
+    throw new Error("Invalid paypal object for v6");
+  }
 
-    sdkInstance.createPayPalGuestOneTimePaymentSession({
-        onApprove() {
-            return Promise.resolve();
-        },
-    });
+  if (!paypal?.version) {
+    throw new Error("PayPal v6 namespace missing version property");
+  }
 
-    sdkInstance.createVenmoOneTimePaymentSession({
-        onApprove() {
-            return Promise.resolve();
-        },
-    });
+  const sdkInstance = await paypal.createInstance({
+    clientId: "fakeValue",
+    components: [
+      "paypal-payments",
+      "paypal-guest-payments",
+      "venmo-payments",
+      "applepay-payments",
+      "googlepay-payments",
+    ],
+  });
 
-    sdkInstance.createApplePayOneTimePaymentSession();
+  sdkInstance.createPayPalOneTimePaymentSession({
+    onApprove() {
+      return Promise.resolve();
+    },
+  });
 
-    sdkInstance.createGooglePayOneTimePaymentSession();
+  sdkInstance.createPayPalGuestOneTimePaymentSession({
+    onApprove() {
+      return Promise.resolve();
+    },
+  });
+
+  sdkInstance.createVenmoOneTimePaymentSession({
+    onApprove() {
+      return Promise.resolve();
+    },
+  });
+
+  sdkInstance.createApplePayOneTimePaymentSession();
+
+  sdkInstance.createGooglePayOneTimePaymentSession();
 }

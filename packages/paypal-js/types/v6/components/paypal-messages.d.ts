@@ -12,9 +12,9 @@ type MessageContent = Record<string, unknown>;
  * Base options for PayPal Messages configuration.
  */
 export type PayPalMessagesOptions = {
-    buyerCountry?: string;
-    currencyCode?: string;
-    shopperSessionId?: string;
+  buyerCountry?: string;
+  currencyCode?: string;
+  shopperSessionId?: string;
 };
 
 // ============================================================================
@@ -30,14 +30,14 @@ type TextColor = "BLACK" | "MONOCHROME" | "WHITE";
 type OnReady = (messageContent: MessageContent) => void;
 
 export type FetchContentOptions = PayPalMessagesOptions & {
-    amount?: string;
-    logoPosition: LogoPosition;
-    logoType: LogoType;
-    onContentReady?: OnReady;
-    onReady?: OnReady;
-    onTemplateReady?: OnReady;
-    textColor?: TextColor;
-    [key: string]: unknown;
+  amount?: string;
+  logoPosition: LogoPosition;
+  logoType: LogoType;
+  onContentReady?: OnReady;
+  onReady?: OnReady;
+  onTemplateReady?: OnReady;
+  textColor?: TextColor;
+  [key: string]: unknown;
 };
 
 // ============================================================================
@@ -48,12 +48,12 @@ export type FetchContentOptions = PayPalMessagesOptions & {
  * Options for configuring Learn More presentations.
  */
 export type LearnMoreOptions = PayPalMessagesOptions & {
-    amount?: string;
-    presentationMode: "AUTO" | "MODAL" | "POPUP" | "REDIRECT";
-    onShow?: (data?: object) => void;
-    onClose?: (data?: object) => void;
-    onApply?: (data?: object) => void;
-    onCalculate?: (data?: object) => void;
+  amount?: string;
+  presentationMode: "AUTO" | "MODAL" | "POPUP" | "REDIRECT";
+  onShow?: (data?: object) => void;
+  onClose?: (data?: object) => void;
+  onApply?: (data?: object) => void;
+  onCalculate?: (data?: object) => void;
 };
 
 /**
@@ -61,40 +61,40 @@ export type LearnMoreOptions = PayPalMessagesOptions & {
  * Represents the common public API shared by all LearnMore variants.
  */
 export type LearnMoreBase = {
-    /**
-     * Indicates whether the Learn More presentation is currently open.
-     */
-    isOpen: boolean;
+  /**
+   * Indicates whether the Learn More presentation is currently open.
+   */
+  isOpen: boolean;
 
-    /**
-     * Opens the Learn More presentation.
-     * @param userLearnMoreOptions - Optional configuration to update before opening.
-     * @returns Promise that resolves when the presentation is opened and configured.
-     */
-    open: (userLearnMoreOptions?: LearnMoreOptions) => Promise<void>;
+  /**
+   * Opens the Learn More presentation.
+   * @param userLearnMoreOptions - Optional configuration to update before opening.
+   * @returns Promise that resolves when the presentation is opened and configured.
+   */
+  open: (userLearnMoreOptions?: LearnMoreOptions) => Promise<void>;
 
-    /**
-     * Closes the Learn More presentation.
-     * @param trigger - Optional trigger identifier (e.g., "viaCustomButton").
-     */
-    close: (trigger?: string) => void;
+  /**
+   * Closes the Learn More presentation.
+   * @param trigger - Optional trigger identifier (e.g., "viaCustomButton").
+   */
+  close: (trigger?: string) => void;
 
-    /**
-     * Updates the Learn More presentation with new options.
-     * @param userLearnMoreOptions - New configuration options.
-     * @returns Promise that resolves when the update is complete.
-     */
-    update: (userLearnMoreOptions?: LearnMoreOptions) => Promise<void>;
+  /**
+   * Updates the Learn More presentation with new options.
+   * @param userLearnMoreOptions - New configuration options.
+   * @returns Promise that resolves when the update is complete.
+   */
+  update: (userLearnMoreOptions?: LearnMoreOptions) => Promise<void>;
 
-    /**
-     * Shows the Learn More presentation (internal display method).
-     */
-    show: () => void;
+  /**
+   * Shows the Learn More presentation (internal display method).
+   */
+  show: () => void;
 
-    /**
-     * Sets up the PostMessenger for communication with the Learn More content.
-     */
-    setupPostMessenger: () => void;
+  /**
+   * Sets up the PostMessenger for communication with the Learn More content.
+   */
+  setupPostMessenger: () => void;
 };
 
 /**
@@ -108,11 +108,11 @@ export type LearnMorePopupType = LearnMoreBase;
  * Opens Learn More content in an iframe modal overlay with custom accessibility features.
  */
 export type LearnMoreModalType = LearnMoreBase & {
-    /**
-     * Sets up a custom close button with tab trap functionality.
-     * Modal-specific method for accessibility enhancements.
-     */
-    setupCustomCloseButton: () => void;
+  /**
+   * Sets up a custom close button with tab trap functionality.
+   * Modal-specific method for accessibility enhancements.
+   */
+  setupCustomCloseButton: () => void;
 };
 
 /**
@@ -125,9 +125,9 @@ export type LearnMoreRedirectType = LearnMoreBase;
  * Union type for all Learn More presentation variants.
  */
 export type LearnMore =
-    | LearnMorePopupType
-    | LearnMoreModalType
-    | LearnMoreRedirectType;
+  | LearnMorePopupType
+  | LearnMoreModalType
+  | LearnMoreRedirectType;
 
 // ============================================================================
 // Public API Types
@@ -137,17 +137,17 @@ export type LearnMore =
  * Session object for managing PayPal Messages.
  */
 export type PayPalMessagesSession = {
-    fetchContent: (
-        options?: FetchContentOptions,
-    ) => Promise<MessageContent | null>;
-    createLearnMore: (options?: LearnMoreOptions) => LearnMore;
+  fetchContent: (
+    options?: FetchContentOptions,
+  ) => Promise<MessageContent | null>;
+  createLearnMore: (options?: LearnMoreOptions) => LearnMore;
 };
 
 /**
  * Main PayPal Messages instance interface.
  */
 export interface PayPalMessagesInstance {
-    createPayPalMessages: (
-        messagesOptions?: PayPalMessagesOptions,
-    ) => PayPalMessagesSession;
+  createPayPalMessages: (
+    messagesOptions?: PayPalMessagesOptions,
+  ) => PayPalMessagesSession;
 }

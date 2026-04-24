@@ -1,7 +1,7 @@
 import { CREATE_ORDER_URL, CAPTURE_ORDER_URL } from "../utils";
 
 export const getFormCode = (): string => {
-    return `
+  return `
 	import React, { useState } from "react";
 	import type { CardFieldsOnApproveData } from "@paypal/paypal-js";
 
@@ -117,7 +117,7 @@ export const getFormCode = (): string => {
 };
 
 export const getIndividualFieldCode = (): string => {
-    return `
+  return `
 	import React, { useState } from "react";
 	import type { CardFieldsOnApproveData } from "@paypal/paypal-js";
 

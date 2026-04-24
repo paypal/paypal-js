@@ -6,7 +6,7 @@ import { usePayPal } from "../hooks/usePayPal";
 import type { UsePayPalGuestPaymentSessionProps } from "../hooks/usePayPalGuestPaymentSession";
 
 type PayPalGuestPaymentButtonProps = UsePayPalGuestPaymentSessionProps & {
-    disabled?: boolean;
+  disabled?: boolean;
 };
 
 /**
@@ -27,30 +27,28 @@ type PayPalGuestPaymentButtonProps = UsePayPalGuestPaymentSessionProps & {
  * />
  */
 export const PayPalGuestPaymentButton = ({
-    disabled = false,
-    ...hookProps
+  disabled = false,
+  ...hookProps
 }: PayPalGuestPaymentButtonProps): JSX.Element | null => {
-    const { error, isPending, handleClick, buttonRef } =
-        usePayPalGuestPaymentSession(hookProps);
-    const { isHydrated } = usePayPal();
+  const { error, isPending, handleClick, buttonRef } =
+    usePayPalGuestPaymentSession(hookProps);
+  const { isHydrated } = usePayPal();
 
-    useEffect(() => {
-        if (error) {
-            console.error(error);
-        }
-    }, [error]);
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+    }
+  }, [error]);
 
-    const button = isHydrated ? (
-        <paypal-basic-card-button
-            ref={buttonRef}
-            onClick={handleClick}
-            disabled={
-                disabled || isPending || error !== null ? true : undefined
-            }
-        ></paypal-basic-card-button>
-    ) : (
-        <div />
-    );
+  const button = isHydrated ? (
+    <paypal-basic-card-button
+      ref={buttonRef}
+      onClick={handleClick}
+      disabled={disabled || isPending || error !== null ? true : undefined}
+    ></paypal-basic-card-button>
+  ) : (
+    <div />
+  );
 
-    return <paypal-basic-card-container>{button}</paypal-basic-card-container>;
+  return <paypal-basic-card-container>{button}</paypal-basic-card-container>;
 };

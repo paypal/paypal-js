@@ -1,5 +1,5 @@
 export function successfulSDKResponseMock() {
-    return `
+  return `
     const button = document.createElement('button');
     button.setAttribute('class', 'loaded');
     button.setAttribute('class', 'paypal-button');
@@ -20,7 +20,7 @@ export function successfulSDKResponseMock() {
 }
 
 export function validationErrorSDKResponseMock() {
-    return `
+  return `
     throw new Error("SDK Validation error: 'Expected client-id to be passed'" );
 
     /* Original Error:

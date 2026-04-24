@@ -9,7 +9,7 @@
 - Updated dependencies [6dee5e0]
 - Updated dependencies [3524480]
 - Updated dependencies [bec655c]
-    - @paypal/paypal-js@9.6.0
+  - @paypal/paypal-js@9.6.0
 
 ## 9.1.0
 
@@ -21,7 +21,7 @@
 
 - ee754a1: clarify PayPal SDK versions in readme files
 - Updated dependencies [a5d2818]
-    - @paypal/paypal-js@9.5.0
+  - @paypal/paypal-js@9.5.0
 
 ## 9.0.2
 
@@ -32,7 +32,7 @@
 - 1b44c19: remove unused files and minor doc updates
 - Updated dependencies [10258ca]
 - Updated dependencies [1b44c19]
-    - @paypal/paypal-js@9.4.1
+  - @paypal/paypal-js@9.4.1
 
 ## 9.0.1
 
@@ -45,7 +45,7 @@
 - Updated dependencies [7f66db7]
 - Updated dependencies [8663d7f]
 - Updated dependencies [6ec08d2]
-    - @paypal/paypal-js@9.4.0
+  - @paypal/paypal-js@9.4.0
 
 ## 9.0.0
 
@@ -103,9 +103,9 @@
 - 62bf29b: feat: add v5 storybook to github pages
 - 62bf29b: Update presentation mode options types and integration.
 - 62bf29b: - Default `PayPalProvider` `components` to `["paypal-payments"]`.
-    - Update session hooks to check `loadingStatus` before returning an error for no `sdkInstance`.
-    - `PayPalContext` export was removed since merchants won't need to use that directly.
-    - Check only `window` for `isServer` SSR function.
+  - Update session hooks to check `loadingStatus` before returning an error for no `sdkInstance`.
+  - `PayPalContext` export was removed since merchants won't need to use that directly.
+  - Check only `window` for `isServer` SSR function.
 - 9155ce6: Implement on and update methods on CardFieldsProvider
 - 64d7760: Adding BCDC UI button component
 - 62bf29b: Created CardFieldsProvider and context for creating and providing Card Fields sessions
@@ -129,7 +129,7 @@
 - Updated dependencies [6c83cf1]
 - Updated dependencies [0575877]
 - Updated dependencies [9b6eecc]
-    - @paypal/paypal-js@9.0.0
+  - @paypal/paypal-js@9.0.0
 
 ## 8.9.1
 
@@ -138,7 +138,7 @@
 - 67c5a2a: fix style types on CardField react component
 - Updated dependencies [d3851e4]
 - Updated dependencies [4d51a9a]
-    - @paypal/paypal-js@8.4.0
+  - @paypal/paypal-js@8.4.0
 
 ## 8.9.0
 
@@ -152,7 +152,7 @@
 
 - ebcfbaa: WHAT: Temporary fix for Braintree SDK versioning in React JS SDK. BT SDK version has been upgraded to latest version statically in the React SDK.
 
-    WHY: The BT SDK version is statically typed to an old version in our React SDK. As a short-term fix, we need to upgrade this version to the latest statically.
+  WHY: The BT SDK version is statically typed to an old version in our React SDK. As a short-term fix, we need to upgrade this version to the latest statically.
 
 ## 8.8.2
 
@@ -181,7 +181,7 @@
 ### Patch Changes
 
 - Updated dependencies [a83971e]
-    - @paypal/paypal-js@8.1.2
+  - @paypal/paypal-js@8.1.2
 
 ## 8.6.0
 
@@ -199,7 +199,7 @@
 - Updated dependencies [638e8e6]
 - Updated dependencies [543fa08]
 - Updated dependencies [22f23ab]
-    - @paypal/paypal-js@8.1.1
+  - @paypal/paypal-js@8.1.1
 
 ## 8.5.0
 

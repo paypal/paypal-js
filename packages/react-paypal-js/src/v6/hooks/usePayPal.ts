@@ -11,11 +11,11 @@ import type { PayPalState } from "../context/PayPalProviderContext";
  * @returns {PayPalState}
  */
 export function usePayPal(): PayPalState {
-    const context = useContext(PayPalContext);
+  const context = useContext(PayPalContext);
 
-    if (context === null) {
-        throw new Error("usePayPal must be used within a PayPalProvider");
-    }
+  if (context === null) {
+    throw new Error("usePayPal must be used within a PayPalProvider");
+  }
 
-    return context;
+  return context;
 }

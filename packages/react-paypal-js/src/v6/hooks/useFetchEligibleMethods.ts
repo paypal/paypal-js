@@ -1,67 +1,67 @@
 import "server-only";
 import {
-    type EligiblePaymentMethods,
-    type FindEligiblePaymentMethodsResponse,
+  type EligiblePaymentMethods,
+  type FindEligiblePaymentMethodsResponse,
 } from "../types";
 
 type FindEligiblePaymentMethodsOptions = {
-    environment?: "production" | "sandbox";
-    payload?: FindEligiblePaymentMethodsRequestPayload;
-    headers?: HeadersInit;
+  environment?: "production" | "sandbox";
+  payload?: FindEligiblePaymentMethodsRequestPayload;
+  headers?: HeadersInit;
 };
 
 type PhoneNumber = {
-    country_code?: string;
-    national_number?: string;
+  country_code?: string;
+  national_number?: string;
 };
 
 type PaymentFlow =
-    | "ONE_TIME_PAYMENT"
-    | "RECURRING_PAYMENT"
-    | "VAULT_WITHOUT_PAYMENT"
-    | "VAULT_WITH_PAYMENT";
+  | "ONE_TIME_PAYMENT"
+  | "RECURRING_PAYMENT"
+  | "VAULT_WITHOUT_PAYMENT"
+  | "VAULT_WITH_PAYMENT";
 
 export type FindEligiblePaymentMethodsRequestPayload = {
-    customer?: {
-        channel?: {
-            browser_type?: string;
-            client_os?: string;
-            device_type?: string;
-        };
-        country_code?: string;
-        id?: string;
-        email?: string;
-        phone?: PhoneNumber;
+  customer?: {
+    channel?: {
+      browser_type?: string;
+      client_os?: string;
+      device_type?: string;
     };
-    purchase_units?: ReadonlyArray<{
-        amount: {
-            currency_code: string;
-            value?: string;
-        };
-        payee?: {
-            client_id?: string;
-            display_data?: {
-                business_email?: string;
-                business_phone?: PhoneNumber & {
-                    extension_number: string;
-                };
-                brand_name?: string;
-            };
-            email_address?: string;
-            merchant_id?: string;
-        };
-    }>;
-    preferences?: {
-        // runs advanced customer eligibility checks when set to true
-        include_account_details?: boolean;
-        include_vault_tokens?: boolean;
-        payment_flow?: PaymentFlow;
-        payment_source_constraint?: {
-            constraint_type: string;
-            payment_sources: Uppercase<EligiblePaymentMethods>[];
-        };
+    country_code?: string;
+    id?: string;
+    email?: string;
+    phone?: PhoneNumber;
+  };
+  purchase_units?: ReadonlyArray<{
+    amount: {
+      currency_code: string;
+      value?: string;
     };
-    shopper_session_id?: string;
+    payee?: {
+      client_id?: string;
+      display_data?: {
+        business_email?: string;
+        business_phone?: PhoneNumber & {
+          extension_number: string;
+        };
+        brand_name?: string;
+      };
+      email_address?: string;
+      merchant_id?: string;
+    };
+  }>;
+  preferences?: {
+    // runs advanced customer eligibility checks when set to true
+    include_account_details?: boolean;
+    include_vault_tokens?: boolean;
+    payment_flow?: PaymentFlow;
+    payment_source_constraint?: {
+      constraint_type: string;
+      payment_sources: Uppercase<EligiblePaymentMethods>[];
+    };
+  };
+  shopper_session_id?: string;
 };
 
 /**
@@ -92,35 +92,35 @@ export type FindEligiblePaymentMethodsRequestPayload = {
  * <PayPalProvider eligibleMethodsResponse={response} ... />
  */
 export async function useFetchEligibleMethods(
-    options: FindEligiblePaymentMethodsOptions & { signal?: AbortSignal },
+  options: FindEligiblePaymentMethodsOptions & { signal?: AbortSignal },
 ): Promise<FindEligiblePaymentMethodsResponse> {
-    const { payload, signal, environment, headers } = options;
-    const defaultPayload = payload ?? {};
-    const baseUrl =
-        environment === "production"
-            ? "https://api-m.paypal.com"
-            : "https://api-m.sandbox.paypal.com";
-    try {
-        const response = await fetch(
-            `${baseUrl}/v2/payments/find-eligible-methods`,
-            {
-                method: "POST",
-                headers,
-                body: JSON.stringify(defaultPayload),
-                signal,
-            },
-        );
+  const { payload, signal, environment, headers } = options;
+  const defaultPayload = payload ?? {};
+  const baseUrl =
+    environment === "production"
+      ? "https://api-m.paypal.com"
+      : "https://api-m.sandbox.paypal.com";
+  try {
+    const response = await fetch(
+      `${baseUrl}/v2/payments/find-eligible-methods`,
+      {
+        method: "POST",
+        headers,
+        body: JSON.stringify(defaultPayload),
+        signal,
+      },
+    );
 
-        if (!response.ok) {
-            throw new Error(`Eligibility API error: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        return data;
-    } catch (error) {
-        throw new Error(
-            `Failed to fetch eligible methods: ${error instanceof Error ? error.message : String(error)}`,
-        );
+    if (!response.ok) {
+      throw new Error(`Eligibility API error: ${response.status}`);
     }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    throw new Error(
+      `Failed to fetch eligible methods: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
 }

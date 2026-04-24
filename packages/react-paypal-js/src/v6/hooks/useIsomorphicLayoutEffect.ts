@@ -5,4 +5,4 @@ import { useEffect, useLayoutEffect } from "react";
  * This ensures state updates happen before the browser paints, preventing visual flashes.
  */
 export const useIsomorphicLayoutEffect =
-    typeof window !== "undefined" ? useLayoutEffect : useEffect;
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;

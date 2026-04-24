@@ -16,13 +16,11 @@ import type { InstanceAction } from "../context/PayPalProviderContext";
  * @returns Dispatch function for PayPal instance actions
  */
 export function usePayPalDispatch(): Dispatch<InstanceAction> {
-    const dispatch = useContext(PayPalDispatchContext);
+  const dispatch = useContext(PayPalDispatchContext);
 
-    if (dispatch === null) {
-        throw new Error(
-            "usePayPalDispatch must be used within a PayPalProvider",
-        );
-    }
+  if (dispatch === null) {
+    throw new Error("usePayPalDispatch must be used within a PayPalProvider");
+  }
 
-    return dispatch;
+  return dispatch;
 }

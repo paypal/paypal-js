@@ -11,13 +11,13 @@ import type { BraintreePayPalProvider } from "../../components/Braintree/Braintr
  * @returns {BraintreePayPalState}
  */
 export function useBraintreePayPal(): BraintreePayPalState {
-    const context = useContext(BraintreePayPalContext);
+  const context = useContext(BraintreePayPalContext);
 
-    if (context === null) {
-        throw new Error(
-            "useBraintreePayPal must be used within a BraintreePayPalProvider",
-        );
-    }
+  if (context === null) {
+    throw new Error(
+      "useBraintreePayPal must be used within a BraintreePayPalProvider",
+    );
+  }
 
-    return context;
+  return context;
 }

@@ -11,58 +11,58 @@ export const SUBSCRIPTION = "subscription";
 export const ORDER_INSTANCE_ERROR = "No order instance was provided";
 
 export const CONTAINER_SIZE = {
-    name: "container width",
-    description:
-        "This is not a property from PayPalButtons. It is custom control to change the size of the PayPal buttons container in pixels.",
-    control: { type: "range", min: 200, max: 750, step: 5 },
-    table: {
-        defaultValue: {
-            summary: "750px",
-        },
-        category: "Custom",
-        type: { summary: "number" },
+  name: "container width",
+  description:
+    "This is not a property from PayPalButtons. It is custom control to change the size of the PayPal buttons container in pixels.",
+  control: { type: "range", min: 200, max: 750, step: 5 },
+  table: {
+    defaultValue: {
+      summary: "750px",
     },
+    category: "Custom",
+    type: { summary: "number" },
+  },
 };
 
 export const ARG_TYPE_AMOUNT = {
-    description:
-        "This is not a property from PayPalButtons. It is custom control for testing the amount sent in the createOrder process",
-    options: ["2", "30", "100"],
-    control: {
-        type: "select",
+  description:
+    "This is not a property from PayPalButtons. It is custom control for testing the amount sent in the createOrder process",
+  options: ["2", "30", "100"],
+  control: {
+    type: "select",
+  },
+  table: {
+    defaultValue: {
+      summary: "2.00",
     },
-    table: {
-        defaultValue: {
-            summary: "2.00",
-        },
-        category: "Custom",
-        type: { summary: "number|string" },
-    },
+    category: "Custom",
+    type: { summary: "number|string" },
+  },
 };
 
 export const ARG_TYPE_CURRENCY = {
-    options: Object.values(CURRENCY),
-    description:
-        "This is not a property from PayPalButtons. It is custom control to change the currency create create a PayPal order.",
-    control: {
-        type: "select",
-    },
-    table: {
-        category: "Custom",
-        type: { summary: "string" },
-        defaultValue: { summary: "USD" },
-    },
+  options: Object.values(CURRENCY),
+  description:
+    "This is not a property from PayPalButtons. It is custom control to change the currency create create a PayPal order.",
+  control: {
+    type: "select",
+  },
+  table: {
+    category: "Custom",
+    type: { summary: "string" },
+    defaultValue: { summary: "USD" },
+  },
 };
 
 export const FUNDING_SOURCE_ARG = {
-    options: [...Object.values(FUNDING), undefined],
-    control: {
-        type: "select",
-        labels: {
-            undefined: "all",
-        },
+  options: [...Object.values(FUNDING), undefined],
+  control: {
+    type: "select",
+    labels: {
+      undefined: "all",
     },
-    ...COMPONENT_PROPS_CATEGORY,
+  },
+  ...COMPONENT_PROPS_CATEGORY,
 };
 
 export const SANDPACK_STYLES = `body {

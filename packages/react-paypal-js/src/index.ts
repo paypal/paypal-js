@@ -27,6 +27,6 @@ import type { FUNDING_SOURCE } from "@paypal/paypal-js";
 //
 // See https://github.com/paypal/react-paypal-js/issues/125
 export const FUNDING = constants.FUNDING as Record<
-    Uppercase<FUNDING_SOURCE>,
-    FUNDING_SOURCE
+  Uppercase<FUNDING_SOURCE>,
+  FUNDING_SOURCE
 >;

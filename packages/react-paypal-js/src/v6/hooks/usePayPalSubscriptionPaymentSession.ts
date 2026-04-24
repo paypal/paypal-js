@@ -7,17 +7,17 @@ import { useError } from "./useError";
 import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
 
 import type {
-    BasePaymentSessionReturn,
-    PayPalSubscriptionPresentationModeOptions,
-    PayPalSubscriptionPaymentSession,
-    PayPalSubscriptionSessionOptions,
+  BasePaymentSessionReturn,
+  PayPalSubscriptionPresentationModeOptions,
+  PayPalSubscriptionPaymentSession,
+  PayPalSubscriptionSessionOptions,
 } from "../types";
 
 export type UsePayPalSubscriptionPaymentSessionProps =
-    PayPalSubscriptionSessionOptions &
-        PayPalSubscriptionPresentationModeOptions & {
-            createSubscription: () => Promise<{ subscriptionId: string }>;
-        };
+  PayPalSubscriptionSessionOptions &
+    PayPalSubscriptionPresentationModeOptions & {
+      createSubscription: () => Promise<{ subscriptionId: string }>;
+    };
 
 /**
  * Hook for managing PayPal subscription payment sessions.
@@ -50,106 +50,106 @@ export type UsePayPalSubscriptionPaymentSessionProps =
  * }
  */
 export function usePayPalSubscriptionPaymentSession({
+  presentationMode,
+  fullPageOverlay,
+  createSubscription,
+  ...callbacks
+}: UsePayPalSubscriptionPaymentSessionProps): BasePaymentSessionReturn {
+  const { sdkInstance, loadingStatus } = usePayPal();
+  const isMountedRef = useIsMountedRef();
+  const sessionRef = useRef<PayPalSubscriptionPaymentSession | null>(null);
+  const proxyCallbacks = useProxyProps(callbacks);
+  const [error, setError] = useError();
+
+  // Prevents retrying session creation with a failed SDK instance
+  const failedSdkRef = useRef<unknown>(null);
+
+  const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
+
+  const handleDestroy = useCallback(() => {
+    sessionRef.current?.destroy();
+    sessionRef.current = null;
+  }, []);
+
+  const handleCancel = useCallback(() => {
+    sessionRef.current?.cancel();
+  }, []);
+
+  // Handle SDK availability
+  useEffect(() => {
+    // Reset failed SDK tracking when SDK instance changes
+    if (failedSdkRef.current !== sdkInstance) {
+      failedSdkRef.current = null;
+    }
+
+    if (sdkInstance) {
+      setError(null);
+    } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
+      setError(new Error("no sdk instance available"));
+    }
+  }, [sdkInstance, setError, loadingStatus]);
+
+  // Create and manage session lifecycle
+  useEffect(() => {
+    if (!sdkInstance) {
+      return;
+    }
+
+    const newSession = createPaymentSession(
+      () =>
+        sdkInstance.createPayPalSubscriptionPaymentSession({
+          ...proxyCallbacks,
+        }),
+      failedSdkRef,
+      sdkInstance,
+      setError,
+      "paypal-subscriptions",
+    );
+
+    if (!newSession) {
+      return;
+    }
+
+    sessionRef.current = newSession;
+
+    return () => {
+      newSession.destroy();
+    };
+  }, [sdkInstance, proxyCallbacks, setError]);
+
+  const handleClick = useCallback(async () => {
+    if (!isMountedRef.current) {
+      return;
+    }
+
+    if (!sessionRef.current) {
+      setError(new Error("PayPal subscription session not available"));
+      return;
+    }
+
+    const startOptions = {
+      presentationMode,
+      fullPageOverlay,
+    } as PayPalSubscriptionPresentationModeOptions;
+
+    const result = await sessionRef.current.start(
+      startOptions,
+      createSubscription(),
+    );
+    return result;
+  }, [
+    isMountedRef,
     presentationMode,
     fullPageOverlay,
     createSubscription,
-    ...callbacks
-}: UsePayPalSubscriptionPaymentSessionProps): BasePaymentSessionReturn {
-    const { sdkInstance, loadingStatus } = usePayPal();
-    const isMountedRef = useIsMountedRef();
-    const sessionRef = useRef<PayPalSubscriptionPaymentSession | null>(null);
-    const proxyCallbacks = useProxyProps(callbacks);
-    const [error, setError] = useError();
+    setError,
+  ]);
 
-    // Prevents retrying session creation with a failed SDK instance
-    const failedSdkRef = useRef<unknown>(null);
-
-    const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
-
-    const handleDestroy = useCallback(() => {
-        sessionRef.current?.destroy();
-        sessionRef.current = null;
-    }, []);
-
-    const handleCancel = useCallback(() => {
-        sessionRef.current?.cancel();
-    }, []);
-
-    // Handle SDK availability
-    useEffect(() => {
-        // Reset failed SDK tracking when SDK instance changes
-        if (failedSdkRef.current !== sdkInstance) {
-            failedSdkRef.current = null;
-        }
-
-        if (sdkInstance) {
-            setError(null);
-        } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
-            setError(new Error("no sdk instance available"));
-        }
-    }, [sdkInstance, setError, loadingStatus]);
-
-    // Create and manage session lifecycle
-    useEffect(() => {
-        if (!sdkInstance) {
-            return;
-        }
-
-        const newSession = createPaymentSession(
-            () =>
-                sdkInstance.createPayPalSubscriptionPaymentSession({
-                    ...proxyCallbacks,
-                }),
-            failedSdkRef,
-            sdkInstance,
-            setError,
-            'Failed to create payment session. This may occur if the required component "paypal-subscriptions" is not included in the SDK components array.',
-        );
-
-        if (!newSession) {
-            return;
-        }
-
-        sessionRef.current = newSession;
-
-        return () => {
-            newSession.destroy();
-        };
-    }, [sdkInstance, proxyCallbacks, setError]);
-
-    const handleClick = useCallback(async () => {
-        if (!isMountedRef.current) {
-            return;
-        }
-
-        if (!sessionRef.current) {
-            setError(new Error("PayPal subscription session not available"));
-            return;
-        }
-
-        const startOptions = {
-            presentationMode,
-            fullPageOverlay,
-        } as PayPalSubscriptionPresentationModeOptions;
-
-        const result = await sessionRef.current.start(
-            startOptions,
-            createSubscription(),
-        );
-        return result;
-    }, [
-        isMountedRef,
-        presentationMode,
-        fullPageOverlay,
-        createSubscription,
-        setError,
-    ]);
-
-    return {
-        error,
-        isPending,
-        handleClick,
-        handleCancel,
-        handleDestroy,
-    };
+  return {
+    error,
+    isPending,
+    handleClick,
+    handleCancel,
+    handleDestroy,
+  };
 }
