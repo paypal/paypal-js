@@ -3,56 +3,56 @@ import { act, renderHook } from "@testing-library/react-hooks";
 import { useError } from "./useError";
 
 describe("useError", () => {
-    beforeEach(() => {
-        jest.restoreAllMocks();
+  beforeEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  test("should return and console.log the error", () => {
+    const mockError = new Error("test error");
+
+    const mockConsoleError = jest.fn();
+    jest.spyOn(console, "error").mockImplementation(mockConsoleError);
+
+    const { result } = renderHook(() => useError());
+
+    act(() => {
+      result.current[1](mockError);
     });
 
-    test("should return and console.log the error", () => {
-        const mockError = new Error("test error");
+    expect(mockConsoleError).toHaveBeenCalledTimes(1);
+    expect(mockConsoleError).toHaveBeenCalledWith(mockError);
+    expect(result.current[0]).toBe(mockError);
+  });
 
-        const mockConsoleError = jest.fn();
-        jest.spyOn(console, "error").mockImplementation(mockConsoleError);
+  test("should not call console.error if noConsoleErrors is true", () => {
+    const mockError = new Error("test error");
 
-        const { result } = renderHook(() => useError());
+    const mockConsoleError = jest.fn();
+    jest.spyOn(console, "error").mockImplementation(mockConsoleError);
 
-        act(() => {
-            result.current[1](mockError);
-        });
+    const { result } = renderHook(() => useError(true));
 
-        expect(mockConsoleError).toHaveBeenCalledTimes(1);
-        expect(mockConsoleError).toHaveBeenCalledWith(mockError);
-        expect(result.current[0]).toBe(mockError);
+    act(() => {
+      result.current[1](mockError);
     });
 
-    test("should not call console.error if noConsoleErrors is true", () => {
-        const mockError = new Error("test error");
+    expect(mockConsoleError).not.toHaveBeenCalled();
+    expect(result.current[0]).toBe(mockError);
+  });
 
-        const mockConsoleError = jest.fn();
-        jest.spyOn(console, "error").mockImplementation(mockConsoleError);
+  test("should not call console.error if there is no error", () => {
+    const mockError = null;
 
-        const { result } = renderHook(() => useError(true));
+    const mockConsoleError = jest.fn();
+    jest.spyOn(console, "error").mockImplementation(mockConsoleError);
 
-        act(() => {
-            result.current[1](mockError);
-        });
+    const { result } = renderHook(() => useError());
 
-        expect(mockConsoleError).not.toHaveBeenCalled();
-        expect(result.current[0]).toBe(mockError);
+    act(() => {
+      result.current[1](mockError);
     });
 
-    test("should not call console.error if there is no error", () => {
-        const mockError = null;
-
-        const mockConsoleError = jest.fn();
-        jest.spyOn(console, "error").mockImplementation(mockConsoleError);
-
-        const { result } = renderHook(() => useError());
-
-        act(() => {
-            result.current[1](mockError);
-        });
-
-        expect(mockConsoleError).not.toHaveBeenCalled();
-        expect(result.current[0]).toBe(mockError);
-    });
+    expect(mockConsoleError).not.toHaveBeenCalled();
+    expect(result.current[0]).toBe(mockError);
+  });
 });

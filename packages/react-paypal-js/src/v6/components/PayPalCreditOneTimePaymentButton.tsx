@@ -6,10 +6,10 @@ import { usePayPal } from "../hooks/usePayPal";
 import type { UsePayPalCreditOneTimePaymentSessionProps } from "../hooks/usePayPalCreditOneTimePaymentSession";
 
 export type PayPalCreditOneTimePaymentButtonProps =
-    UsePayPalCreditOneTimePaymentSessionProps & {
-        autoRedirect?: never;
-        disabled?: boolean;
-    };
+  UsePayPalCreditOneTimePaymentSessionProps & {
+    autoRedirect?: never;
+    disabled?: boolean;
+  };
 
 /**
  * `PayPalCreditOneTimePaymentButton` is a button that provides a PayPal Credit payment flow.
@@ -32,33 +32,33 @@ export type PayPalCreditOneTimePaymentButtonProps =
  * />
  */
 export const PayPalCreditOneTimePaymentButton = ({
-    disabled = false,
-    ...hookProps
+  disabled = false,
+  ...hookProps
 }: PayPalCreditOneTimePaymentButtonProps): JSX.Element | null => {
-    const { eligiblePaymentMethods, isHydrated } = usePayPal();
-    const { error, isPending, handleClick } =
-        usePayPalCreditOneTimePaymentSession(hookProps);
+  const { eligiblePaymentMethods, isHydrated } = usePayPal();
+  const { error, isPending, handleClick } =
+    usePayPalCreditOneTimePaymentSession(hookProps);
 
-    const creditDetails = eligiblePaymentMethods?.getDetails("credit");
-    const countryCode = creditDetails?.countryCode;
+  const creditDetails = eligiblePaymentMethods?.getDetails("credit");
+  const countryCode = creditDetails?.countryCode;
 
-    useEffect(() => {
-        if (error) {
-            console.error(error);
-        }
-    }, [error]);
-
-    if (isPending) {
-        return null;
+  useEffect(() => {
+    if (error) {
+      console.error(error);
     }
+  }, [error]);
 
-    return isHydrated ? (
-        <paypal-credit-button
-            onClick={handleClick}
-            countryCode={countryCode}
-            disabled={disabled || !!error || undefined}
-        ></paypal-credit-button>
-    ) : (
-        <div />
-    );
+  if (isPending) {
+    return null;
+  }
+
+  return isHydrated ? (
+    <paypal-credit-button
+      onClick={handleClick}
+      countryCode={countryCode}
+      disabled={disabled || !!error || undefined}
+    ></paypal-credit-button>
+  ) : (
+    <div />
+  );
 };

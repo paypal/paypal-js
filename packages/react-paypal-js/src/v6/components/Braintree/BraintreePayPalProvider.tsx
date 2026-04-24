@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useReducer, useRef, useState } from "react";
 
 import {
-    BraintreePayPalContext,
-    braintreeInitialState,
-    braintreeReducer,
+  BraintreePayPalContext,
+  braintreeInitialState,
+  braintreeReducer,
 } from "../../context/BraintreePayPalContext";
 import {
-    BRAINTREE_DISPATCH_ACTION,
-    INSTANCE_LOADING_STATE,
+  BRAINTREE_DISPATCH_ACTION,
+  INSTANCE_LOADING_STATE,
 } from "../../types/ProviderEnums";
 import { toError } from "../../utils";
 import { useError } from "../../hooks/useError";
@@ -15,15 +15,15 @@ import { useIsomorphicLayoutEffect } from "../../hooks/useIsomorphicLayoutEffect
 import { validateBraintreeNamespace } from "../../types/braintree";
 
 import type {
-    BraintreeV6Namespace,
-    BraintreePayPalCheckoutInstance,
+  BraintreeV6Namespace,
+  BraintreePayPalCheckoutInstance,
 } from "../../types";
 import type { BraintreePayPalState } from "../../context/BraintreePayPalContext";
 
 interface BraintreePayPalProviderProps {
-    namespace: BraintreeV6Namespace;
-    braintreeClientToken: string | undefined;
-    children: React.ReactNode;
+  namespace: BraintreeV6Namespace;
+  braintreeClientToken: string | undefined;
+  children: React.ReactNode;
 }
 
 /**
@@ -60,127 +60,122 @@ interface BraintreePayPalProviderProps {
  * }
  */
 export const BraintreePayPalProvider: React.FC<
-    BraintreePayPalProviderProps
+  BraintreePayPalProviderProps
 > = ({ namespace, braintreeClientToken, children }) => {
-    const [state, dispatch] = useReducer(
-        braintreeReducer,
-        braintreeInitialState,
-    );
-    const [isHydrated, setIsHydrated] = useState(false);
-    const [, setError] = useError();
-    const braintreePayPalCheckoutRef =
-        useRef<BraintreePayPalCheckoutInstance | null>(null);
+  const [state, dispatch] = useReducer(braintreeReducer, braintreeInitialState);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [, setError] = useError();
+  const braintreePayPalCheckoutRef =
+    useRef<BraintreePayPalCheckoutInstance | null>(null);
 
-    // Set hydrated state after initial client render to prevent hydration mismatch
-    useIsomorphicLayoutEffect(() => {
-        setIsHydrated(true);
-    }, []);
+  // Set hydrated state after initial client render to prevent hydration mismatch
+  useIsomorphicLayoutEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
-    useEffect(() => {
-        if (!validateBraintreeNamespace(namespace)) {
-            const validationError = new Error(
-                "Invalid Braintree namespace. Ensure the Braintree client and " +
-                    "paypal-checkout-v6 scripts are loaded and that " +
-                    "namespace.client.create and namespace.paypalCheckoutV6.create are functions.",
-            );
-            setError(validationError);
-            dispatch({
-                type: BRAINTREE_DISPATCH_ACTION.SET_ERROR,
-                value: validationError,
-            });
-            return;
+  useEffect(() => {
+    if (!validateBraintreeNamespace(namespace)) {
+      const validationError = new Error(
+        "Invalid Braintree namespace. Ensure the Braintree client and " +
+          "paypal-checkout-v6 scripts are loaded and that " +
+          "namespace.client.create and namespace.paypalCheckoutV6.create are functions.",
+      );
+      setError(validationError);
+      dispatch({
+        type: BRAINTREE_DISPATCH_ACTION.SET_ERROR,
+        value: validationError,
+      });
+      return;
+    }
+
+    let isSubscribed = true;
+
+    dispatch({
+      type: BRAINTREE_DISPATCH_ACTION.SET_LOADING_STATUS,
+      value: INSTANCE_LOADING_STATE.PENDING,
+    });
+
+    const initialize = async () => {
+      if (!braintreeClientToken) {
+        const clientTokenError = new Error(
+          "Braintree client token is required to initialize the PayPal Checkout instance.",
+        );
+        if (isSubscribed) {
+          setError(clientTokenError);
+          dispatch({
+            type: BRAINTREE_DISPATCH_ACTION.SET_ERROR,
+            value: clientTokenError,
+          });
         }
+        return;
+      }
 
-        let isSubscribed = true;
-
-        dispatch({
-            type: BRAINTREE_DISPATCH_ACTION.SET_LOADING_STATUS,
-            value: INSTANCE_LOADING_STATE.PENDING,
+      try {
+        const clientInstance = await namespace.client.create({
+          authorization: braintreeClientToken,
         });
 
-        const initialize = async () => {
-            if (!braintreeClientToken) {
-                const clientTokenError = new Error(
-                    "Braintree client token is required to initialize the PayPal Checkout instance.",
-                );
-                if (isSubscribed) {
-                    setError(clientTokenError);
-                    dispatch({
-                        type: BRAINTREE_DISPATCH_ACTION.SET_ERROR,
-                        value: clientTokenError,
-                    });
-                }
-                return;
-            }
+        if (!isSubscribed) {
+          return;
+        }
 
-            try {
-                const clientInstance = await namespace.client.create({
-                    authorization: braintreeClientToken,
-                });
+        const paypalCheckoutInstance = await namespace.paypalCheckoutV6.create({
+          client: clientInstance,
+        });
 
-                if (!isSubscribed) {
-                    return;
-                }
+        if (!isSubscribed) {
+          return;
+        }
 
-                const paypalCheckoutInstance =
-                    await namespace.paypalCheckoutV6.create({
-                        client: clientInstance,
-                    });
+        await paypalCheckoutInstance.loadPayPalSDK();
 
-                if (!isSubscribed) {
-                    return;
-                }
+        if (!isSubscribed) {
+          return;
+        }
 
-                await paypalCheckoutInstance.loadPayPalSDK();
+        braintreePayPalCheckoutRef.current = paypalCheckoutInstance;
+        dispatch({
+          type: BRAINTREE_DISPATCH_ACTION.SET_INSTANCE,
+          value: paypalCheckoutInstance,
+        });
+      } catch (error) {
+        if (isSubscribed) {
+          setError(error);
+          dispatch({
+            type: BRAINTREE_DISPATCH_ACTION.SET_ERROR,
+            value: toError(error),
+          });
+        }
+      }
+    };
 
-                if (!isSubscribed) {
-                    return;
-                }
+    initialize();
 
-                braintreePayPalCheckoutRef.current = paypalCheckoutInstance;
-                dispatch({
-                    type: BRAINTREE_DISPATCH_ACTION.SET_INSTANCE,
-                    value: paypalCheckoutInstance,
-                });
-            } catch (error) {
-                if (isSubscribed) {
-                    setError(error);
-                    dispatch({
-                        type: BRAINTREE_DISPATCH_ACTION.SET_ERROR,
-                        value: toError(error),
-                    });
-                }
-            }
-        };
+    return () => {
+      isSubscribed = false;
+      braintreePayPalCheckoutRef.current?.teardown();
+      braintreePayPalCheckoutRef.current = null;
+    };
+  }, [namespace, braintreeClientToken, setError]);
 
-        initialize();
+  const contextValue: BraintreePayPalState = useMemo(
+    () => ({
+      braintreePayPalCheckoutInstance: state.braintreePayPalCheckoutInstance,
+      loadingStatus: state.loadingStatus,
+      error: state.error,
+      isHydrated,
+    }),
+    [
+      state.braintreePayPalCheckoutInstance,
+      state.loadingStatus,
+      state.error,
+      isHydrated,
+    ],
+  );
 
-        return () => {
-            isSubscribed = false;
-            braintreePayPalCheckoutRef.current?.teardown();
-            braintreePayPalCheckoutRef.current = null;
-        };
-    }, [namespace, braintreeClientToken, setError]);
-
-    const contextValue: BraintreePayPalState = useMemo(
-        () => ({
-            braintreePayPalCheckoutInstance:
-                state.braintreePayPalCheckoutInstance,
-            loadingStatus: state.loadingStatus,
-            error: state.error,
-            isHydrated,
-        }),
-        [
-            state.braintreePayPalCheckoutInstance,
-            state.loadingStatus,
-            state.error,
-            isHydrated,
-        ],
-    );
-
-    return (
-        <BraintreePayPalContext.Provider value={contextValue}>
-            {children}
-        </BraintreePayPalContext.Provider>
-    );
+  return (
+    <BraintreePayPalContext.Provider value={contextValue}>
+      {children}
+    </BraintreePayPalContext.Provider>
+  );
 };

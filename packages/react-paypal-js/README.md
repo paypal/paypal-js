@@ -69,40 +69,40 @@ npm install @paypal/react-paypal-js
 
 ```tsx
 import {
-    PayPalProvider,
-    PayPalOneTimePaymentButton,
+  PayPalProvider,
+  PayPalOneTimePaymentButton,
 } from "@paypal/react-paypal-js/sdk-v6";
 
 function App() {
-    return (
-        <PayPalProvider
-            clientId="your-client-id"
-            components={["paypal-payments"]}
-            pageType="checkout"
-        >
-            <CheckoutPage />
-        </PayPalProvider>
-    );
+  return (
+    <PayPalProvider
+      clientId="your-client-id"
+      components={["paypal-payments"]}
+      pageType="checkout"
+    >
+      <CheckoutPage />
+    </PayPalProvider>
+  );
 }
 
 function CheckoutPage() {
-    return (
-        <PayPalOneTimePaymentButton
-            createOrder={async () => {
-                const response = await fetch("/api/create-order", {
-                    method: "POST",
-                });
-                const { orderId } = await response.json();
-                return { orderId };
-            }}
-            onApprove={async ({ orderId }: OnApproveDataOneTimePayments) => {
-                await fetch(`/api/capture-order/${orderId}`, {
-                    method: "POST",
-                });
-                console.log("Payment captured!");
-            }}
-        />
-    );
+  return (
+    <PayPalOneTimePaymentButton
+      createOrder={async () => {
+        const response = await fetch("/api/create-order", {
+          method: "POST",
+        });
+        const { orderId } = await response.json();
+        return { orderId };
+      }}
+      onApprove={async ({ orderId }: OnApproveDataOneTimePayments) => {
+        await fetch(`/api/capture-order/${orderId}`, {
+          method: "POST",
+        });
+        console.log("Payment captured!");
+      }}
+    />
+  );
 }
 ```
 
@@ -145,18 +145,18 @@ The `components` prop accepts an array of the following values:
 
 ```tsx
 function App() {
-    // Memoize to prevent re-fetching on each render
-    const clientIdPromise = useMemo(() => fetchClientId(), []);
+  // Memoize to prevent re-fetching on each render
+  const clientIdPromise = useMemo(() => fetchClientId(), []);
 
-    return (
-        <PayPalProvider
-            clientId={clientIdPromise}
-            components={["paypal-payments"]}
-            pageType="checkout"
-        >
-            <CheckoutPage />
-        </PayPalProvider>
-    );
+  return (
+    <PayPalProvider
+      clientId={clientIdPromise}
+      components={["paypal-payments"]}
+      pageType="checkout"
+    >
+      <CheckoutPage />
+    </PayPalProvider>
+  );
 }
 ```
 
@@ -164,18 +164,18 @@ Alternative: With Promise-based Client Token
 
 ```tsx
 function App() {
-    // Memoize to prevent re-fetching on each render
-    const tokenPromise = useMemo(() => fetchClientToken(), []);
+  // Memoize to prevent re-fetching on each render
+  const tokenPromise = useMemo(() => fetchClientToken(), []);
 
-    return (
-        <PayPalProvider
-            clientToken={tokenPromise}
-            components={["paypal-payments"]}
-            pageType="checkout"
-        >
-            <CheckoutPage />
-        </PayPalProvider>
-    );
+  return (
+    <PayPalProvider
+      clientToken={tokenPromise}
+      components={["paypal-payments"]}
+      pageType="checkout"
+    >
+      <CheckoutPage />
+    </PayPalProvider>
+  );
 }
 ```
 
@@ -183,21 +183,21 @@ function App() {
 
 ```tsx
 function App() {
-    const [clientId, setClientId] = useState<string>();
+  const [clientId, setClientId] = useState<string>();
 
-    useEffect(() => {
-        fetchClientId().then(setClientId);
-    }, []);
+  useEffect(() => {
+    fetchClientId().then(setClientId);
+  }, []);
 
-    return (
-        <PayPalProvider
-            clientId={clientId}
-            components={["paypal-payments"]}
-            pageType="checkout"
-        >
-            <CheckoutPage />
-        </PayPalProvider>
-    );
+  return (
+    <PayPalProvider
+      clientId={clientId}
+      components={["paypal-payments"]}
+      pageType="checkout"
+    >
+      <CheckoutPage />
+    </PayPalProvider>
+  );
 }
 ```
 
@@ -207,26 +207,24 @@ Use the `usePayPal` hook to access the SDK loading status:
 
 ```tsx
 import {
-    usePayPal,
-    INSTANCE_LOADING_STATE,
+  usePayPal,
+  INSTANCE_LOADING_STATE,
 } from "@paypal/react-paypal-js/sdk-v6";
 
 function CheckoutPage() {
-    const { loadingStatus, error } = usePayPal();
+  const { loadingStatus, error } = usePayPal();
 
-    if (loadingStatus === INSTANCE_LOADING_STATE.PENDING) {
-        return <div className="spinner">Loading PayPal...</div>;
-    }
+  if (loadingStatus === INSTANCE_LOADING_STATE.PENDING) {
+    return <div className="spinner">Loading PayPal...</div>;
+  }
 
-    if (loadingStatus === INSTANCE_LOADING_STATE.REJECTED) {
-        return (
-            <div className="error">
-                Failed to load PayPal SDK: {error?.message}
-            </div>
-        );
-    }
+  if (loadingStatus === INSTANCE_LOADING_STATE.REJECTED) {
+    return (
+      <div className="error">Failed to load PayPal SDK: {error?.message}</div>
+    );
+  }
 
-    return <PayPalOneTimePaymentButton orderId="ORDER-123" />;
+  return <PayPalOneTimePaymentButton orderId="ORDER-123" />;
 }
 ```
 
@@ -240,20 +238,20 @@ Renders a PayPal button for one-time payments.
 import { PayPalOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalOneTimePaymentButton
-    createOrder={async () => {
-        const response = await fetch("/api/create-order", { method: "POST" });
-        const { orderId } = await response.json();
-        return { orderId };
-    }}
-    onApprove={async ({ orderId }: OnApproveDataOneTimePayments) => {
-        await fetch(`/api/capture/${orderId}`, { method: "POST" });
-        console.log("Payment approved!");
-    }}
-    onCancel={(data: OnCancelDataOneTimePayments) =>
-        console.log("Payment cancelled")
-    }
-    onError={(data: OnErrorData) => console.error("Payment error:", data)}
-    onComplete={(data: OnCompleteData) => console.log("Payment Flow Completed")}
+  createOrder={async () => {
+    const response = await fetch("/api/create-order", { method: "POST" });
+    const { orderId } = await response.json();
+    return { orderId };
+  }}
+  onApprove={async ({ orderId }: OnApproveDataOneTimePayments) => {
+    await fetch(`/api/capture/${orderId}`, { method: "POST" });
+    console.log("Payment approved!");
+  }}
+  onCancel={(data: OnCancelDataOneTimePayments) =>
+    console.log("Payment cancelled")
+  }
+  onError={(data: OnErrorData) => console.error("Payment error:", data)}
+  onComplete={(data: OnCompleteData) => console.log("Payment Flow Completed")}
 />;
 ```
 
@@ -279,28 +277,26 @@ Renders a Venmo button for one-time payments. Requires `"venmo-payments"` in the
 import { VenmoOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalProvider
-    clientId={clientId}
-    components={["paypal-payments", "venmo-payments"]}
-    pageType="checkout"
+  clientId={clientId}
+  components={["paypal-payments", "venmo-payments"]}
+  pageType="checkout"
 >
-    <VenmoOneTimePaymentButton
-        createOrder={async () => {
-            const { orderId } = await createOrder();
-            return { orderId };
-        }}
-        onApprove={(data: OnApproveDataOneTimePayments) =>
-            console.log("Venmo payment approved!", data)
-        }
-        onCancel={(data: OnCancelDataOneTimePayments) =>
-            console.log("Venmo payment cancelled", data)
-        }
-        onError={(data: OnErrorData) =>
-            console.error("Venmo payment error:", data)
-        }
-        onComplete={(data: OnCompleteData) =>
-            console.log("Venmo payment flow completed", data)
-        }
-    />
+  <VenmoOneTimePaymentButton
+    createOrder={async () => {
+      const { orderId } = await createOrder();
+      return { orderId };
+    }}
+    onApprove={(data: OnApproveDataOneTimePayments) =>
+      console.log("Venmo payment approved!", data)
+    }
+    onCancel={(data: OnCancelDataOneTimePayments) =>
+      console.log("Venmo payment cancelled", data)
+    }
+    onError={(data: OnErrorData) => console.error("Venmo payment error:", data)}
+    onComplete={(data: OnCompleteData) =>
+      console.log("Venmo payment flow completed", data)
+    }
+  />
 </PayPalProvider>;
 ```
 
@@ -312,20 +308,20 @@ Renders a Pay Later button for financing options. Country code and product code 
 import { PayLaterOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayLaterOneTimePaymentButton
-    createOrder={async () => {
-        const { orderId } = await createOrder();
-        return { orderId };
-    }}
-    onApprove={(data: OnApproveDataOneTimePayments) =>
-        console.log("Pay Later approved!", data)
-    }
-    onCancel={(data: OnCancelDataOneTimePayments) =>
-        console.log("Pay Later cancelled", data)
-    }
-    onError={(data: OnErrorData) => console.error("Pay Later error:", data)}
-    onComplete={(data: OnCompleteData) =>
-        console.log("Pay Later flow completed", data)
-    }
+  createOrder={async () => {
+    const { orderId } = await createOrder();
+    return { orderId };
+  }}
+  onApprove={(data: OnApproveDataOneTimePayments) =>
+    console.log("Pay Later approved!", data)
+  }
+  onCancel={(data: OnCancelDataOneTimePayments) =>
+    console.log("Pay Later cancelled", data)
+  }
+  onError={(data: OnErrorData) => console.error("Pay Later error:", data)}
+  onComplete={(data: OnCompleteData) =>
+    console.log("Pay Later flow completed", data)
+  }
 />;
 ```
 
@@ -337,28 +333,26 @@ Renders a guest checkout button for card payments without a PayPal account (Bran
 import { PayPalGuestPaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalProvider
-    clientId={clientId}
-    components={["paypal-payments", "paypal-guest-payments"]}
-    pageType="checkout"
+  clientId={clientId}
+  components={["paypal-payments", "paypal-guest-payments"]}
+  pageType="checkout"
 >
-    <PayPalGuestPaymentButton
-        createOrder={async () => {
-            const { orderId } = await createOrder();
-            return { orderId };
-        }}
-        onApprove={(data: OnApproveDataOneTimePayments) =>
-            console.log("Guest payment approved!", data)
-        }
-        onCancel={(data: OnCancelDataOneTimePayments) =>
-            console.log("Guest payment cancelled", data)
-        }
-        onError={(data: OnErrorData) =>
-            console.error("Guest payment error:", data)
-        }
-        onComplete={(data: OnCompleteData) =>
-            console.log("Guest payment flow completed", data)
-        }
-    />
+  <PayPalGuestPaymentButton
+    createOrder={async () => {
+      const { orderId } = await createOrder();
+      return { orderId };
+    }}
+    onApprove={(data: OnApproveDataOneTimePayments) =>
+      console.log("Guest payment approved!", data)
+    }
+    onCancel={(data: OnCancelDataOneTimePayments) =>
+      console.log("Guest payment cancelled", data)
+    }
+    onError={(data: OnErrorData) => console.error("Guest payment error:", data)}
+    onComplete={(data: OnCompleteData) =>
+      console.log("Guest payment flow completed", data)
+    }
+  />
 </PayPalProvider>;
 ```
 
@@ -370,23 +364,23 @@ Renders a button for vaulting a payment method without making a purchase.
 import { PayPalSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalSavePaymentButton
-    createVaultToken={async () => {
-        const response = await fetch("/api/create-vault-token", {
-            method: "POST",
-        });
-        const { vaultSetupToken } = await response.json();
-        return { vaultSetupToken };
-    }}
-    onApprove={({ vaultSetupToken }: OnApproveDataSavePayments) => {
-        console.log("Payment method saved:", vaultSetupToken);
-    }}
-    onCancel={(data: OnCancelDataSavePayments) =>
-        console.log("Save payment cancelled", data)
-    }
-    onError={(data: OnErrorData) => console.error("Save payment error:", data)}
-    onComplete={(data: OnCompleteData) =>
-        console.log("Save payment flow completed", data)
-    }
+  createVaultToken={async () => {
+    const response = await fetch("/api/create-vault-token", {
+      method: "POST",
+    });
+    const { vaultSetupToken } = await response.json();
+    return { vaultSetupToken };
+  }}
+  onApprove={({ vaultSetupToken }: OnApproveDataSavePayments) => {
+    console.log("Payment method saved:", vaultSetupToken);
+  }}
+  onCancel={(data: OnCancelDataSavePayments) =>
+    console.log("Save payment cancelled", data)
+  }
+  onError={(data: OnErrorData) => console.error("Save payment error:", data)}
+  onComplete={(data: OnCompleteData) =>
+    console.log("Save payment flow completed", data)
+  }
 />;
 ```
 
@@ -398,31 +392,29 @@ Renders a PayPal button for subscription payments. Requires `"paypal-subscriptio
 import { PayPalSubscriptionButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalProvider
-    clientId={clientId}
-    components={["paypal-subscriptions"]}
-    pageType="checkout"
+  clientId={clientId}
+  components={["paypal-subscriptions"]}
+  pageType="checkout"
 >
-    <PayPalSubscriptionButton
-        createSubscription={async () => {
-            const response = await fetch("/api/create-subscription", {
-                method: "POST",
-            });
-            const { subscriptionId } = await response.json();
-            return { subscriptionId };
-        }}
-        onApprove={(data: OnApproveDataOneTimePayments) =>
-            console.log("Subscription approved:", data)
-        }
-        onCancel={(data: OnCancelDataOneTimePayments) =>
-            console.log("Subscription cancelled", data)
-        }
-        onError={(data: OnErrorData) =>
-            console.error("Subscription error:", data)
-        }
-        onComplete={(data: OnCompleteData) =>
-            console.log("Subscription flow completed", data)
-        }
-    />
+  <PayPalSubscriptionButton
+    createSubscription={async () => {
+      const response = await fetch("/api/create-subscription", {
+        method: "POST",
+      });
+      const { subscriptionId } = await response.json();
+      return { subscriptionId };
+    }}
+    onApprove={(data: OnApproveDataOneTimePayments) =>
+      console.log("Subscription approved:", data)
+    }
+    onCancel={(data: OnCancelDataOneTimePayments) =>
+      console.log("Subscription cancelled", data)
+    }
+    onError={(data: OnErrorData) => console.error("Subscription error:", data)}
+    onComplete={(data: OnCompleteData) =>
+      console.log("Subscription flow completed", data)
+    }
+  />
 </PayPalProvider>;
 ```
 
@@ -434,23 +426,21 @@ Renders a PayPal Credit button for one-time payments. The `countryCode` is autom
 import { PayPalCreditOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalCreditOneTimePaymentButton
-    createOrder={async () => {
-        const response = await fetch("/api/create-order", { method: "POST" });
-        const { orderId } = await response.json();
-        return { orderId };
-    }}
-    onApprove={({ orderId }: OnApproveDataOneTimePayments) =>
-        console.log("Credit payment approved:", orderId)
-    }
-    onCancel={(data: OnCancelDataOneTimePayments) =>
-        console.log("Credit payment cancelled", data)
-    }
-    onError={(data: OnErrorData) =>
-        console.error("Credit payment error:", data)
-    }
-    onComplete={(data: OnCompleteData) =>
-        console.log("Credit payment flow completed", data)
-    }
+  createOrder={async () => {
+    const response = await fetch("/api/create-order", { method: "POST" });
+    const { orderId } = await response.json();
+    return { orderId };
+  }}
+  onApprove={({ orderId }: OnApproveDataOneTimePayments) =>
+    console.log("Credit payment approved:", orderId)
+  }
+  onCancel={(data: OnCancelDataOneTimePayments) =>
+    console.log("Credit payment cancelled", data)
+  }
+  onError={(data: OnErrorData) => console.error("Credit payment error:", data)}
+  onComplete={(data: OnCompleteData) =>
+    console.log("Credit payment flow completed", data)
+  }
 />;
 ```
 
@@ -462,23 +452,23 @@ Renders a PayPal Credit button for saving a credit payment method (vaulting).
 import { PayPalCreditSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalCreditSavePaymentButton
-    createVaultToken={async () => {
-        const response = await fetch("/api/create-vault-token", {
-            method: "POST",
-        });
-        const { vaultSetupToken } = await response.json();
-        return { vaultSetupToken };
-    }}
-    onApprove={(data: OnApproveDataSavePayments) =>
-        console.log("Credit saved:", data)
-    }
-    onCancel={(data: OnCancelDataSavePayments) =>
-        console.log("Credit save cancelled", data)
-    }
-    onError={(data: OnErrorData) => console.error("Credit save error:", data)}
-    onComplete={(data: OnCompleteData) =>
-        console.log("Credit save flow completed", data)
-    }
+  createVaultToken={async () => {
+    const response = await fetch("/api/create-vault-token", {
+      method: "POST",
+    });
+    const { vaultSetupToken } = await response.json();
+    return { vaultSetupToken };
+  }}
+  onApprove={(data: OnApproveDataSavePayments) =>
+    console.log("Credit saved:", data)
+  }
+  onCancel={(data: OnCancelDataSavePayments) =>
+    console.log("Credit save cancelled", data)
+  }
+  onError={(data: OnErrorData) => console.error("Credit save error:", data)}
+  onComplete={(data: OnCompleteData) =>
+    console.log("Credit save flow completed", data)
+  }
 />;
 ```
 
@@ -503,28 +493,28 @@ Wraps card field components and manages the Card Fields session.
 
 ```tsx
 import {
-    PayPalProvider,
-    PayPalCardFieldsProvider,
+  PayPalProvider,
+  PayPalCardFieldsProvider,
 } from "@paypal/react-paypal-js/sdk-v6";
 
 function App() {
-    return (
-        <PayPalProvider
-            clientToken="your-client-token"
-            components={["card-fields"]}
-            pageType="checkout"
-        >
-            <CheckoutForm />
-        </PayPalProvider>
-    );
+  return (
+    <PayPalProvider
+      clientToken="your-client-token"
+      components={["card-fields"]}
+      pageType="checkout"
+    >
+      <CheckoutForm />
+    </PayPalProvider>
+  );
 }
 
 function CheckoutForm() {
-    return (
-        <PayPalCardFieldsProvider>
-            <CardPaymentForm />
-        </PayPalCardFieldsProvider>
-    );
+  return (
+    <PayPalCardFieldsProvider>
+      <CardPaymentForm />
+    </PayPalCardFieldsProvider>
+  );
 }
 ```
 
@@ -551,8 +541,8 @@ Renders a card number input field. Must be used within a [PayPalCardFieldsProvid
 import { PayPalCardNumberField } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalCardNumberField
-    placeholder="Card number"
-    containerStyles={{ height: "3rem", marginBottom: "1rem" }}
+  placeholder="Card number"
+  containerStyles={{ height: "3rem", marginBottom: "1rem" }}
 />;
 ```
 
@@ -564,8 +554,8 @@ Renders a card expiry input field. Must be used within a [PayPalCardFieldsProvid
 import { PayPalCardExpiryField } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalCardExpiryField
-    placeholder="MM/YY"
-    containerStyles={{ height: "3rem", marginBottom: "1rem" }}
+  placeholder="MM/YY"
+  containerStyles={{ height: "3rem", marginBottom: "1rem" }}
 />;
 ```
 
@@ -577,8 +567,8 @@ Renders a CVV input field. Must be used within a [PayPalCardFieldsProvider](#pay
 import { PayPalCardCvvField } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalCardCvvField
-    placeholder="CVV"
-    containerStyles={{ height: "3rem", marginBottom: "1rem" }}
+  placeholder="CVV"
+  containerStyles={{ height: "3rem", marginBottom: "1rem" }}
 />;
 ```
 
@@ -614,23 +604,23 @@ Returns the PayPal context including the SDK instance and loading status.
 
 ```tsx
 import {
-    usePayPal,
-    INSTANCE_LOADING_STATE,
+  usePayPal,
+  INSTANCE_LOADING_STATE,
 } from "@paypal/react-paypal-js/sdk-v6";
 
 function MyComponent() {
-    const {
-        sdkInstance, // The PayPal SDK instance
-        eligiblePaymentMethods, // Eligible payment methods
-        loadingStatus, // PENDING | RESOLVED | REJECTED
-        error, // Any initialization error
-        isHydrated, // SSR hydration status
-    } = usePayPal();
+  const {
+    sdkInstance, // The PayPal SDK instance
+    eligiblePaymentMethods, // Eligible payment methods
+    loadingStatus, // PENDING | RESOLVED | REJECTED
+    error, // Any initialization error
+    isHydrated, // SSR hydration status
+  } = usePayPal();
 
-    const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
-    const isReady = loadingStatus === INSTANCE_LOADING_STATE.RESOLVED;
+  const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
+  const isReady = loadingStatus === INSTANCE_LOADING_STATE.RESOLVED;
 
-    // ...
+  // ...
 }
 ```
 
@@ -642,21 +632,21 @@ Returns eligible payment methods and loading state. Use this to conditionally re
 import { useEligibleMethods } from "@paypal/react-paypal-js/sdk-v6";
 
 function PaymentOptions() {
-    const { eligiblePaymentMethods, isLoading, error } = useEligibleMethods();
+  const { eligiblePaymentMethods, isLoading, error } = useEligibleMethods();
 
-    if (isLoading) return <div>Checking eligibility...</div>;
+  if (isLoading) return <div>Checking eligibility...</div>;
 
-    const isPayPalEligible = eligiblePaymentMethods?.isEligible("paypal");
-    const isVenmoEligible = eligiblePaymentMethods?.isEligible("venmo");
-    const isPayLaterEligible = eligiblePaymentMethods?.isEligible("paylater");
+  const isPayPalEligible = eligiblePaymentMethods?.isEligible("paypal");
+  const isVenmoEligible = eligiblePaymentMethods?.isEligible("venmo");
+  const isPayLaterEligible = eligiblePaymentMethods?.isEligible("paylater");
 
-    return (
-        <div>
-            {isPayPalEligible && <PayPalOneTimePaymentButton {...props} />}
-            {isVenmoEligible && <VenmoOneTimePaymentButton {...props} />}
-            {isPayLaterEligible && <PayLaterOneTimePaymentButton {...props} />}
-        </div>
-    );
+  return (
+    <div>
+      {isPayPalEligible && <PayPalOneTimePaymentButton {...props} />}
+      {isVenmoEligible && <VenmoOneTimePaymentButton {...props} />}
+      {isPayLaterEligible && <PayLaterOneTimePaymentButton {...props} />}
+    </div>
+  );
 }
 ```
 
@@ -668,13 +658,13 @@ If your app uses a single `PayPalProvider` across multiple routes with different
 
 ```tsx
 const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
-    payload: { currencyCode: "USD", paymentFlow: "ONE_TIME_PAYMENT" },
+  payload: { currencyCode: "USD", paymentFlow: "ONE_TIME_PAYMENT" },
 });
 
 // Guard eligibility-dependent buttons with isLoading to avoid rendering
 // buttons based on stale data from a previous payment flow
 const isPayLaterEligible =
-    !isLoading && eligiblePaymentMethods?.isEligible("paylater");
+  !isLoading && eligiblePaymentMethods?.isEligible("paylater");
 ```
 
 ### usePayPalMessages
@@ -685,13 +675,13 @@ Hook for integrating PayPal messaging (Pay Later promotions).
 import { usePayPalMessages } from "@paypal/react-paypal-js/sdk-v6";
 
 function PayLaterMessage() {
-    const { error, isReady, handleFetchContent, handleCreateLearnMore } =
-        usePayPalMessages({
-            buyerCountry: "US",
-            currencyCode: "USD",
-        });
+  const { error, isReady, handleFetchContent, handleCreateLearnMore } =
+    usePayPalMessages({
+      buyerCountry: "US",
+      currencyCode: "USD",
+    });
 
-    // Use to display financing messages
+  // Use to display financing messages
 }
 ```
 
@@ -703,16 +693,16 @@ Returns the Card Fields instance initialization errors. Must be used within a [P
 import { usePayPalCardFields } from "@paypal/react-paypal-js/sdk-v6";
 
 function CardFields() {
-    const { error } = usePayPalCardFields();
+  const { error } = usePayPalCardFields();
 
-    useEffect(() => {
-        if (error) {
-            // Handle error logic
-            console.error("Error initializing PayPal Card Fields: ", error);
-        }
-    }, [error]);
+  useEffect(() => {
+    if (error) {
+      // Handle error logic
+      console.error("Error initializing PayPal Card Fields: ", error);
+    }
+  }, [error]);
 
-    return <CardPaymentForm />;
+  return <CardPaymentForm />;
 }
 ```
 
@@ -739,28 +729,27 @@ For advanced use cases where you need full control over the payment flow, use th
 import { usePayPalOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
 function CustomPayPalButton() {
-    const { isPending, error, handleClick } = usePayPalOneTimePaymentSession({
-        createOrder: async () => {
-            const { orderId } = await createOrder();
-            return { orderId };
-        },
-        presentationMode: "auto",
-        onApprove: (data: OnApproveDataOneTimePayments) =>
-            console.log("Approved:", data),
-        onCancel: (data: OnCancelDataOneTimePayments) =>
-            console.log("Cancelled"),
-        onError: (data: OnErrorData) => console.error(data),
-        onComplete: (data: OnCompleteData) =>
-            console.log("Payment session complete", data),
-    });
+  const { isPending, error, handleClick } = usePayPalOneTimePaymentSession({
+    createOrder: async () => {
+      const { orderId } = await createOrder();
+      return { orderId };
+    },
+    presentationMode: "auto",
+    onApprove: (data: OnApproveDataOneTimePayments) =>
+      console.log("Approved:", data),
+    onCancel: (data: OnCancelDataOneTimePayments) => console.log("Cancelled"),
+    onError: (data: OnErrorData) => console.error(data),
+    onComplete: (data: OnCompleteData) =>
+      console.log("Payment session complete", data),
+  });
 
-    return (
-        <paypal-button
-            onClick={() => handleClick()}
-            type="pay"
-            disabled={isPending || error !== null}
-        />
-    );
+  return (
+    <paypal-button
+      onClick={() => handleClick()}
+      type="pay"
+      disabled={isPending || error !== null}
+    />
+  );
 }
 ```
 
@@ -770,21 +759,21 @@ function CustomPayPalButton() {
 import { useVenmoOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
 function CustomVenmoButton() {
-    const { handleClick } = useVenmoOneTimePaymentSession({
-        createOrder: async () => {
-            const { orderId } = await createOrder();
-            return { orderId };
-        },
-        onApprove: (data: OnApproveDataOneTimePayments) =>
-            console.log("Approved:", data),
-        onCancel: (data: OnCancelDataOneTimePayments) =>
-            console.log("Cancelled", data),
-        onError: (data: OnErrorData) => console.error("Error:", data),
-        onComplete: (data: OnCompleteData) =>
-            console.log("Payment session complete", data),
-    });
+  const { handleClick } = useVenmoOneTimePaymentSession({
+    createOrder: async () => {
+      const { orderId } = await createOrder();
+      return { orderId };
+    },
+    onApprove: (data: OnApproveDataOneTimePayments) =>
+      console.log("Approved:", data),
+    onCancel: (data: OnCancelDataOneTimePayments) =>
+      console.log("Cancelled", data),
+    onError: (data: OnErrorData) => console.error("Error:", data),
+    onComplete: (data: OnCompleteData) =>
+      console.log("Payment session complete", data),
+  });
 
-    return <venmo-button onClick={() => handleClick()} />;
+  return <venmo-button onClick={() => handleClick()} />;
 }
 ```
 
@@ -794,21 +783,21 @@ function CustomVenmoButton() {
 import { usePayLaterOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
 function CustomPayLaterButton() {
-    const { handleClick } = usePayLaterOneTimePaymentSession({
-        createOrder: async () => {
-            const { orderId } = await createOrder();
-            return { orderId };
-        },
-        onApprove: (data: OnApproveDataOneTimePayments) =>
-            console.log("Approved:", data),
-        onCancel: (data: OnCancelDataOneTimePayments) =>
-            console.log("Cancelled", data),
-        onError: (data: OnErrorData) => console.error("Error:", data),
-        onComplete: (data: OnCompleteData) =>
-            console.log("Payment session complete", data),
-    });
+  const { handleClick } = usePayLaterOneTimePaymentSession({
+    createOrder: async () => {
+      const { orderId } = await createOrder();
+      return { orderId };
+    },
+    onApprove: (data: OnApproveDataOneTimePayments) =>
+      console.log("Approved:", data),
+    onCancel: (data: OnCancelDataOneTimePayments) =>
+      console.log("Cancelled", data),
+    onError: (data: OnErrorData) => console.error("Error:", data),
+    onComplete: (data: OnCompleteData) =>
+      console.log("Payment session complete", data),
+  });
 
-    return <paypal-pay-later-button onClick={() => handleClick()} />;
+  return <paypal-pay-later-button onClick={() => handleClick()} />;
 }
 ```
 
@@ -818,28 +807,25 @@ function CustomPayLaterButton() {
 import { usePayPalGuestPaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
 function CustomPayPalGuestButton() {
-    const { handleClick, buttonRef } = usePayPalGuestPaymentSession({
-        createOrder: async () => {
-            const { orderId } = await createOrder();
-            return { orderId };
-        },
-        onApprove: (data: OnApproveDataOneTimePayments) =>
-            console.log("Approved:", data),
-        onCancel: (data: OnCancelDataOneTimePayments) =>
-            console.log("Cancelled", data),
-        onError: (data: OnErrorData) => console.error("Error:", data),
-        onComplete: (data: OnCompleteData) =>
-            console.log("Payment session complete", data),
-    });
+  const { handleClick, buttonRef } = usePayPalGuestPaymentSession({
+    createOrder: async () => {
+      const { orderId } = await createOrder();
+      return { orderId };
+    },
+    onApprove: (data: OnApproveDataOneTimePayments) =>
+      console.log("Approved:", data),
+    onCancel: (data: OnCancelDataOneTimePayments) =>
+      console.log("Cancelled", data),
+    onError: (data: OnErrorData) => console.error("Error:", data),
+    onComplete: (data: OnCompleteData) =>
+      console.log("Payment session complete", data),
+  });
 
-    return (
-        <paypal-basic-card-container>
-            <paypal-basic-card-button
-                ref={buttonRef}
-                onClick={() => handleClick()}
-            />
-        </paypal-basic-card-container>
-    );
+  return (
+    <paypal-basic-card-container>
+      <paypal-basic-card-button ref={buttonRef} onClick={() => handleClick()} />
+    </paypal-basic-card-container>
+  );
 }
 ```
 
@@ -849,22 +835,21 @@ function CustomPayPalGuestButton() {
 import { usePayPalSavePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
 function CustomPayPalSaveButton() {
-    const { handleClick } = usePayPalSavePaymentSession({
-        createVaultToken: async () => {
-            const { vaultSetupToken } = await createVaultToken();
-            return { vaultSetupToken };
-        },
-        presentationMode: "popup",
-        onApprove: (data: OnApproveDataSavePayments) =>
-            console.log("Saved:", data),
-        onCancel: (data: OnCancelDataSavePayments) =>
-            console.log("Cancelled", data),
-        onError: (data: OnErrorData) => console.error("Error:", data),
-        onComplete: (data: OnCompleteData) =>
-            console.log("Payment session complete", data),
-    });
+  const { handleClick } = usePayPalSavePaymentSession({
+    createVaultToken: async () => {
+      const { vaultSetupToken } = await createVaultToken();
+      return { vaultSetupToken };
+    },
+    presentationMode: "popup",
+    onApprove: (data: OnApproveDataSavePayments) => console.log("Saved:", data),
+    onCancel: (data: OnCancelDataSavePayments) =>
+      console.log("Cancelled", data),
+    onError: (data: OnErrorData) => console.error("Error:", data),
+    onComplete: (data: OnCompleteData) =>
+      console.log("Payment session complete", data),
+  });
 
-    return <paypal-button onClick={() => handleClick()} type="pay" />;
+  return <paypal-button onClick={() => handleClick()} type="pay" />;
 }
 ```
 
@@ -874,24 +859,24 @@ function CustomPayPalSaveButton() {
 import { usePayPalSubscriptionPaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
 function CustomPayPalSubscriptionButton() {
-    const { handleClick } = usePayPalSubscriptionPaymentSession({
-        createSubscription: async () => {
-            const response = await fetch("/api/create-subscription", {
-                method: "POST",
-            });
-            const { subscriptionId } = await response.json();
-            return { subscriptionId };
-        },
-        onApprove: (data: OnApproveDataOneTimePayments) =>
-            console.log("Subscription approved:", data),
-        onCancel: (data: OnCancelDataOneTimePayments) =>
-            console.log("Cancelled", data),
-        onError: (data: OnErrorData) => console.error("Error:", data),
-        onComplete: (data: OnCompleteData) =>
-            console.log("Payment session complete", data),
-    });
+  const { handleClick } = usePayPalSubscriptionPaymentSession({
+    createSubscription: async () => {
+      const response = await fetch("/api/create-subscription", {
+        method: "POST",
+      });
+      const { subscriptionId } = await response.json();
+      return { subscriptionId };
+    },
+    onApprove: (data: OnApproveDataOneTimePayments) =>
+      console.log("Subscription approved:", data),
+    onCancel: (data: OnCancelDataOneTimePayments) =>
+      console.log("Cancelled", data),
+    onError: (data: OnErrorData) => console.error("Error:", data),
+    onComplete: (data: OnCompleteData) =>
+      console.log("Payment session complete", data),
+  });
 
-    return <paypal-button onClick={() => handleClick()} type="subscribe" />;
+  return <paypal-button onClick={() => handleClick()} type="subscribe" />;
 }
 ```
 
@@ -903,21 +888,21 @@ For PayPal Credit one-time payments.
 import { usePayPalCreditOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
 function CustomPayPalCreditButton() {
-    const { handleClick } = usePayPalCreditOneTimePaymentSession({
-        createOrder: async () => {
-            const { orderId } = await createOrder();
-            return { orderId };
-        },
-        onApprove: (data: OnApproveDataOneTimePayments) =>
-            console.log("Credit approved:", data),
-        onCancel: (data: OnCancelDataOneTimePayments) =>
-            console.log("Cancelled", data),
-        onError: (data: OnErrorData) => console.error("Error:", data),
-        onComplete: (data: OnCompleteData) =>
-            console.log("Payment session complete", data),
-    });
+  const { handleClick } = usePayPalCreditOneTimePaymentSession({
+    createOrder: async () => {
+      const { orderId } = await createOrder();
+      return { orderId };
+    },
+    onApprove: (data: OnApproveDataOneTimePayments) =>
+      console.log("Credit approved:", data),
+    onCancel: (data: OnCancelDataOneTimePayments) =>
+      console.log("Cancelled", data),
+    onError: (data: OnErrorData) => console.error("Error:", data),
+    onComplete: (data: OnCompleteData) =>
+      console.log("Payment session complete", data),
+  });
 
-    return <paypal-credit-button onClick={() => handleClick()} />;
+  return <paypal-credit-button onClick={() => handleClick()} />;
 }
 ```
 
@@ -929,21 +914,21 @@ For saving PayPal Credit as a payment method.
 import { usePayPalCreditSavePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
 function CustomPayPalCreditSaveButton() {
-    const { handleClick } = usePayPalCreditSavePaymentSession({
-        createVaultToken: async () => {
-            const { vaultSetupToken } = await createVaultSetupToken();
-            return { vaultSetupToken };
-        },
-        onApprove: (data: OnApproveDataSavePayments) =>
-            console.log("Credit approved:", data),
-        onCancel: (data: OnCancelDataSavePayments) =>
-            console.log("Cancelled", data),
-        onError: (data: OnErrorData) => console.error("Error:", data),
-        onComplete: (data: OnCompleteData) =>
-            console.log("Payment session complete", data),
-    });
+  const { handleClick } = usePayPalCreditSavePaymentSession({
+    createVaultToken: async () => {
+      const { vaultSetupToken } = await createVaultSetupToken();
+      return { vaultSetupToken };
+    },
+    onApprove: (data: OnApproveDataSavePayments) =>
+      console.log("Credit approved:", data),
+    onCancel: (data: OnCancelDataSavePayments) =>
+      console.log("Cancelled", data),
+    onError: (data: OnErrorData) => console.error("Error:", data),
+    onComplete: (data: OnCompleteData) =>
+      console.log("Payment session complete", data),
+  });
 
-    return <paypal-credit-button onClick={() => handleClick()} />;
+  return <paypal-credit-button onClick={() => handleClick()} />;
 }
 ```
 
@@ -964,50 +949,50 @@ Hook for managing one-time payment Card Fields sessions.
 import { usePayPalCardFieldsOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
 function CardPaymentForm() {
-    const { submit, submitResponse, error } =
-        usePayPalCardFieldsOneTimePaymentSession();
+  const { submit, submitResponse, error } =
+    usePayPalCardFieldsOneTimePaymentSession();
 
-    useEffect(() => {
-        if (error) {
-            // Handle submit error logic
-            console.error("Error submitting PayPal Card Fields payment", error);
-        }
-    }, [error]);
+  useEffect(() => {
+    if (error) {
+      // Handle submit error logic
+      console.error("Error submitting PayPal Card Fields payment", error);
+    }
+  }, [error]);
 
-    useEffect(() => {
-        if (!submitResponse) {
-            return;
-        }
+  useEffect(() => {
+    if (!submitResponse) {
+      return;
+    }
 
-        const { orderId, message } = submitResponse.data;
+    const { orderId, message } = submitResponse.data;
 
-        switch (submitResponse.state) {
-            case "succeeded":
-                // Handle submit success logic
-                console.log(`One time payment succeeded: orderId: ${orderId}`);
-                break;
-            case "failed":
-                // Handle submit failed response logic
-                console.error(
-                    `One time payment failed: orderId: ${orderId}, message: ${message}`,
-                );
-                break;
-        }
-    }, [submitResponse]);
+    switch (submitResponse.state) {
+      case "succeeded":
+        // Handle submit success logic
+        console.log(`One time payment succeeded: orderId: ${orderId}`);
+        break;
+      case "failed":
+        // Handle submit failed response logic
+        console.error(
+          `One time payment failed: orderId: ${orderId}, message: ${message}`,
+        );
+        break;
+    }
+  }, [submitResponse]);
 
-    const handleSubmit = async () => {
-        const orderId = await createOrder();
-        await submit(orderId);
-    };
+  const handleSubmit = async () => {
+    const orderId = await createOrder();
+    await submit(orderId);
+  };
 
-    return (
-        <div>
-            <PayPalCardNumberField />
-            <PayPalCardExpiryField />
-            <PayPalCardCvvField />
-            <button onClick={handleSubmit}>Pay</button>
-        </div>
-    );
+  return (
+    <div>
+      <PayPalCardNumberField />
+      <PayPalCardExpiryField />
+      <PayPalCardCvvField />
+      <button onClick={handleSubmit}>Pay</button>
+    </div>
+  );
 }
 ```
 
@@ -1019,55 +1004,55 @@ Hook for managing save payment Card Fields sessions.
 import { usePayPalCardFieldsSavePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
 function CardPaymentForm() {
-    const { submit, submitResponse, error } =
-        usePayPalCardFieldsSavePaymentSession();
+  const { submit, submitResponse, error } =
+    usePayPalCardFieldsSavePaymentSession();
 
-    useEffect(() => {
-        if (error) {
-            // Handle submit error logic
-            console.error(
-                "Error submitting PayPal Card Fields payment method",
-                error,
-            );
-        }
-    }, [error]);
+  useEffect(() => {
+    if (error) {
+      // Handle submit error logic
+      console.error(
+        "Error submitting PayPal Card Fields payment method",
+        error,
+      );
+    }
+  }, [error]);
 
-    useEffect(() => {
-        if (!submitResponse) {
-            return;
-        }
+  useEffect(() => {
+    if (!submitResponse) {
+      return;
+    }
 
-        const { vaultSetupToken, message } = submitResponse.data;
+    const { vaultSetupToken, message } = submitResponse.data;
 
-        switch (submitResponse.state) {
-            case "succeeded":
-                // Handle submit success logic
-                console.log(
-                    `Save payment method succeeded: vaultSetupToken: ${vaultSetupToken}`,
-                );
-                break;
-            case "failed":
-                // Handle submit failed response logic
-                console.error(
-                    `Save payment method failed: vaultSetupToken: ${vaultSetupToken}, message: ${message}`,
-                );
-                break;
-        }
-    }, [submitResponse]);
+    switch (submitResponse.state) {
+      case "succeeded":
+        // Handle submit success logic
+        console.log(
+          `Save payment method succeeded: vaultSetupToken: ${vaultSetupToken}`,
+        );
+        break;
+      case "failed":
+        // Handle submit failed response logic
+        console.error(
+          `Save payment method failed: vaultSetupToken: ${vaultSetupToken}, message: ${message}`,
+        );
+        break;
+    }
+  }, [submitResponse]);
 
-    const handleSubmit = async () => {
-        const { vaultSetupToken } = await createCardVaultToken();
-        await submit(vaultSetupToken);
-    };
+  const handleSubmit = async () => {
+    const { vaultSetupToken } = await createCardVaultToken();
+    await submit(vaultSetupToken);
+  };
 
-    return (
-        <div>
-            <PayPalCardNumberField />
-            <PayPalCardExpiryField />
-            <PayPalCardCvvField />
-            <button onClick={handleSubmit}>Save Payment Method</button>
-        </div>
-    );
+  return (
+    <div>
+      <PayPalCardNumberField />
+      <PayPalCardExpiryField />
+      <PayPalCardCvvField />
+      <button onClick={handleSubmit}>Save Payment Method</button>
+    </div>
+  );
 }
 ```
 
@@ -1111,28 +1096,26 @@ import { useFetchEligibleMethods } from "@paypal/react-paypal-js/sdk-v6/server";
 import { PayPalProvider } from "@paypal/react-paypal-js/sdk-v6";
 
 export default async function CheckoutPage() {
-    const eligibleMethodsResponse = await useFetchEligibleMethods({
-        environment: "sandbox",
-        headers: {
-            Authorization: `Bearer ${clientToken}`,
-            "Content-Type": "application/json",
-        },
-        payload: {
-            purchase_units: [
-                { amount: { currency_code: "USD", value: "100.00" } },
-            ],
-        },
-    });
+  const eligibleMethodsResponse = await useFetchEligibleMethods({
+    environment: "sandbox",
+    headers: {
+      Authorization: `Bearer ${clientToken}`,
+      "Content-Type": "application/json",
+    },
+    payload: {
+      purchase_units: [{ amount: { currency_code: "USD", value: "100.00" } }],
+    },
+  });
 
-    return (
-        <PayPalProvider
-            clientId={clientId}
-            pageType="checkout"
-            eligibleMethodsResponse={eligibleMethodsResponse}
-        >
-            <CheckoutForm />
-        </PayPalProvider>
-    );
+  return (
+    <PayPalProvider
+      clientId={clientId}
+      pageType="checkout"
+      eligibleMethodsResponse={eligibleMethodsResponse}
+    >
+      <CheckoutForm />
+    </PayPalProvider>
+  );
 }
 ```
 
@@ -1154,18 +1137,18 @@ The v9.0.0 release introduces the V6 SDK with a new API. Here are the key differ
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 <PayPalScriptProvider options={{ clientId: "test" }}>
-    <PayPalButtons
-        createOrder={() => {
-            return fetch("/api/orders", { method: "POST" })
-                .then((res) => res.json())
-                .then((order) => order.id);
-        }}
-        onApprove={(data) => {
-            return fetch(`/api/orders/${data.orderID}/capture`, {
-                method: "POST",
-            });
-        }}
-    />
+  <PayPalButtons
+    createOrder={() => {
+      return fetch("/api/orders", { method: "POST" })
+        .then((res) => res.json())
+        .then((order) => order.id);
+    }}
+    onApprove={(data) => {
+      return fetch(`/api/orders/${data.orderID}/capture`, {
+        method: "POST",
+      });
+    }}
+  />
 </PayPalScriptProvider>;
 ```
 
@@ -1173,21 +1156,21 @@ import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 ```tsx
 import {
-    PayPalProvider,
-    PayPalOneTimePaymentButton,
+  PayPalProvider,
+  PayPalOneTimePaymentButton,
 } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalProvider clientId={clientId} pageType="checkout">
-    <PayPalOneTimePaymentButton
-        createOrder={async () => {
-            const res = await fetch("/api/orders", { method: "POST" });
-            const order = await res.json();
-            return { orderId: order.id };
-        }}
-        onApprove={async ({ orderId }) => {
-            await fetch(`/api/orders/${orderId}/capture`, { method: "POST" });
-        }}
-    />
+  <PayPalOneTimePaymentButton
+    createOrder={async () => {
+      const res = await fetch("/api/orders", { method: "POST" });
+      const order = await res.json();
+      return { orderId: order.id };
+    }}
+    onApprove={async ({ orderId }) => {
+      await fetch(`/api/orders/${orderId}/capture`, { method: "POST" });
+    }}
+  />
 </PayPalProvider>;
 ```
 
@@ -1199,29 +1182,29 @@ This package includes full TypeScript definitions. Import types from the same pa
 
 ```tsx
 import type {
-    // Web component props
-    ButtonProps,
-    PayLaterButtonProps,
-    PayPalBasicCardButtonProps,
-    PayPalCreditButtonProps,
+  // Web component props
+  ButtonProps,
+  PayLaterButtonProps,
+  PayPalBasicCardButtonProps,
+  PayPalCreditButtonProps,
 
-    // Session hook props
-    UsePayPalOneTimePaymentSessionProps,
-    UseVenmoOneTimePaymentSessionProps,
-    UsePayLaterOneTimePaymentSessionProps,
-    UsePayPalGuestPaymentSessionProps,
-    UsePayPalSubscriptionPaymentSessionProps,
-    UsePayPalSavePaymentSessionProps,
-    UsePayPalCreditOneTimePaymentSessionProps,
-    UsePayPalCreditSavePaymentSessionProps,
+  // Session hook props
+  UsePayPalOneTimePaymentSessionProps,
+  UseVenmoOneTimePaymentSessionProps,
+  UsePayLaterOneTimePaymentSessionProps,
+  UsePayPalGuestPaymentSessionProps,
+  UsePayPalSubscriptionPaymentSessionProps,
+  UsePayPalSavePaymentSessionProps,
+  UsePayPalCreditOneTimePaymentSessionProps,
+  UsePayPalCreditSavePaymentSessionProps,
 
-    // Button component props
-    PayPalSubscriptionButtonProps,
-    PayPalCreditOneTimePaymentButtonProps,
-    PayPalCreditSavePaymentButtonProps,
+  // Button component props
+  PayPalSubscriptionButtonProps,
+  PayPalCreditOneTimePaymentButtonProps,
+  PayPalCreditSavePaymentButtonProps,
 
-    // Enums
-    INSTANCE_LOADING_STATE,
+  // Enums
+  INSTANCE_LOADING_STATE,
 } from "@paypal/react-paypal-js/sdk-v6";
 ```
 

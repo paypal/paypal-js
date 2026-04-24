@@ -1,7 +1,7 @@
 import type { Args } from "@storybook/addons/dist/ts3.9/types";
 
 export const getDefaultCode = (style: Args): string =>
-    `import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+  `import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 // Custom error component
 const InEligibleError: FC<{ text?: string }> = ({ text }) => (

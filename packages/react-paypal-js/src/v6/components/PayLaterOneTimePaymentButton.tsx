@@ -6,10 +6,10 @@ import { usePayPal } from "../hooks/usePayPal";
 import type { UsePayLaterOneTimePaymentSessionProps } from "../hooks/usePayLaterOneTimePaymentSession";
 
 export type PayLaterOneTimePaymentButtonProps =
-    UsePayLaterOneTimePaymentSessionProps & {
-        autoRedirect?: never;
-        disabled?: boolean;
-    };
+  UsePayLaterOneTimePaymentSessionProps & {
+    autoRedirect?: never;
+    disabled?: boolean;
+  };
 
 /**
  * `PayLaterOneTimePaymentButton` is a button that provides a PayLater payment flow.
@@ -35,35 +35,35 @@ export type PayLaterOneTimePaymentButtonProps =
  * />
  */
 export const PayLaterOneTimePaymentButton = ({
-    disabled = false,
-    ...hookProps
+  disabled = false,
+  ...hookProps
 }: PayLaterOneTimePaymentButtonProps): JSX.Element | null => {
-    const { eligiblePaymentMethods, isHydrated } = usePayPal();
-    const { error, isPending, handleClick } =
-        usePayLaterOneTimePaymentSession(hookProps);
+  const { eligiblePaymentMethods, isHydrated } = usePayPal();
+  const { error, isPending, handleClick } =
+    usePayLaterOneTimePaymentSession(hookProps);
 
-    const payLaterDetails = eligiblePaymentMethods?.getDetails("paylater");
-    const countryCode = payLaterDetails?.countryCode;
-    const productCode = payLaterDetails?.productCode;
+  const payLaterDetails = eligiblePaymentMethods?.getDetails("paylater");
+  const countryCode = payLaterDetails?.countryCode;
+  const productCode = payLaterDetails?.productCode;
 
-    useEffect(() => {
-        if (error) {
-            console.error(error);
-        }
-    }, [error]);
-
-    if (isPending) {
-        return null;
+  useEffect(() => {
+    if (error) {
+      console.error(error);
     }
+  }, [error]);
 
-    return isHydrated ? (
-        <paypal-pay-later-button
-            onClick={handleClick}
-            countryCode={countryCode}
-            productCode={productCode}
-            disabled={disabled || !!error || undefined}
-        ></paypal-pay-later-button>
-    ) : (
-        <div />
-    );
+  if (isPending) {
+    return null;
+  }
+
+  return isHydrated ? (
+    <paypal-pay-later-button
+      onClick={handleClick}
+      countryCode={countryCode}
+      productCode={productCode}
+      disabled={disabled || !!error || undefined}
+    ></paypal-pay-later-button>
+  ) : (
+    <div />
+  );
 };

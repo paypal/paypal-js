@@ -1,46 +1,46 @@
 import {
-    BasePaymentSessionOptions,
-    BasePaymentSession,
-    OnApproveDataOneTimePayments,
-    PayPalWarning,
-    PresentationModeOptionsForAuto,
+  BasePaymentSessionOptions,
+  BasePaymentSession,
+  OnApproveDataOneTimePayments,
+  PayPalWarning,
+  PresentationModeOptionsForAuto,
 } from "./base-component";
 import {
-    OnShippingAddressChangeData,
-    OnShippingOptionsChangeData,
+  OnShippingAddressChangeData,
+  OnShippingOptionsChangeData,
 } from "./paypal-payments";
 
 export type PayPalGuestOneTimePaymentSessionOptions =
-    BasePaymentSessionOptions & {
-        orderId?: string;
-        onApprove: (data: OnApproveDataOneTimePayments) => Promise<void>;
-        onWarn?: (data: PayPalWarning) => void;
-    };
+  BasePaymentSessionOptions & {
+    orderId?: string;
+    onApprove: (data: OnApproveDataOneTimePayments) => Promise<void>;
+    onWarn?: (data: PayPalWarning) => void;
+  };
 
 export type PayPalGuestPresentationModeOptions =
-    PresentationModeOptionsForAuto & {
-        targetElement?: string | EventTarget;
-        buyerCountry?: string;
-        onShippingAddressChange?: (
-            data: OnShippingAddressChangeData,
-        ) => Promise<void>;
-        onShippingOptionsChange?: (
-            data: OnShippingOptionsChangeData,
-        ) => Promise<void>;
-    };
+  PresentationModeOptionsForAuto & {
+    targetElement?: string | EventTarget;
+    buyerCountry?: string;
+    onShippingAddressChange?: (
+      data: OnShippingAddressChangeData,
+    ) => Promise<void>;
+    onShippingOptionsChange?: (
+      data: OnShippingOptionsChangeData,
+    ) => Promise<void>;
+  };
 
 export type PayPalGuestOneTimePaymentSessionPromise = Promise<{
-    orderId: string;
+  orderId: string;
 }>;
 
 export type PayPalGuestOneTimePaymentSession = Omit<
-    BasePaymentSession,
-    "start"
+  BasePaymentSession,
+  "start"
 > & {
-    start: (
-        presentationModeOptions: PayPalGuestPresentationModeOptions,
-        paymentSessionPromise?: PayPalGuestOneTimePaymentSessionPromise,
-    ) => Promise<void>;
+  start: (
+    presentationModeOptions: PayPalGuestPresentationModeOptions,
+    paymentSessionPromise?: PayPalGuestOneTimePaymentSessionPromise,
+  ) => Promise<void>;
 };
 
 /**
@@ -54,7 +54,7 @@ export type PayPalGuestOneTimePaymentSession = Omit<
  * providing a secure and user-friendly way to process payments through the PayPal platform.
  */
 export interface PayPalGuestPaymentsInstance {
-    createPayPalGuestOneTimePaymentSession: (
-        paymentSessionOptions: PayPalGuestOneTimePaymentSessionOptions,
-    ) => PayPalGuestOneTimePaymentSession;
+  createPayPalGuestOneTimePaymentSession: (
+    paymentSessionOptions: PayPalGuestOneTimePaymentSessionOptions,
+  ) => PayPalGuestOneTimePaymentSession;
 }

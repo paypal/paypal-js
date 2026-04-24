@@ -22,7 +22,7 @@ const AUTH_TOKEN_STATEMENT = `const [clientToken, setClientToken] = useState(nul
 	}, []);`;
 
 const getButtonWrapper = (args: Args) =>
-    `// Custom component to wrap the PayPalButtons and handle currency changes
+  `// Custom component to wrap the PayPalButtons and handle currency changes
 const ButtonWrapper = ({ currency }) => {
 	// usePayPalScriptReducer can be use only inside children of PayPalScriptProviders
     // This is the main reason to wrap the PayPalButtons in a new component
@@ -42,8 +42,8 @@ const ButtonWrapper = ({ currency }) => {
 		style={style}
 		disabled={${args.disabled}}
 		fundingSource="${
-            args.fundingSource || ""
-        }" // Available values are: ["paypal", "card", "credit", "paylater", "venmo"]
+      args.fundingSource || ""
+    }" // Available values are: ["paypal", "card", "credit", "paylater", "venmo"]
 		forceReRender={[style, amount]}
 		createOrder={function (data, actions) {
 			return actions.braintree
@@ -83,7 +83,7 @@ const ButtonWrapper = ({ currency }) => {
 };`;
 
 const getProviderStatement = (args: { intent: string; vault: boolean }) =>
-    `<PayPalScriptProvider
+  `<PayPalScriptProvider
 						options={{
 							clientId: "test",
 							components: "buttons",
@@ -95,7 +95,7 @@ const getProviderStatement = (args: { intent: string; vault: boolean }) =>
 						>`;
 
 export const getDefaultCode = (args: Args): string =>
-    `${IMPORT_STATEMENT}
+  `${IMPORT_STATEMENT}
 
 // This values are the props in the UI
 const style = ${JSON.stringify(args.style)};
@@ -122,7 +122,7 @@ export default function App() {
 }`;
 
 export const getBillingAgreementCode = (args: Args): string =>
-    `${IMPORT_STATEMENT}
+  `${IMPORT_STATEMENT}
 
 // This values are the props in the UI
 const style = ${JSON.stringify(args.style)};
@@ -141,8 +141,8 @@ export default function App() {
 							style={style}
 							disabled={${args.disabled}}
 							fundingSource="${
-                                args.fundingSource || ""
-                            }" // Available values are: ["paypal", "card", "credit", "paylater", "venmo"]
+                args.fundingSource || ""
+              }" // Available values are: ["paypal", "card", "credit", "paylater", "venmo"]
 							forceReRender={[style]}
 							createBillingAgreement={function (data, actions) {
 								return actions.braintree.createPayment({

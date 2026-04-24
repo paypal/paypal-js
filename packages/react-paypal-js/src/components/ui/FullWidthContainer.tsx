@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 
 export const FullWidthContainer: React.FC<{ children: ReactNode }> = ({
-    children,
+  children,
 }) => {
-    return <div style={{ width: "100%" }}>{children}</div>;
+  return <div style={{ width: "100%" }}>{children}</div>;
 };

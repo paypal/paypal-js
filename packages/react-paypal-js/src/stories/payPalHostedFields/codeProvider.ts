@@ -1,5 +1,5 @@
 export const getDefaultCode = (styles: Record<string, unknown>): string =>
-    `import { useState, useEffect } from "react";
+  `import { useState, useEffect } from "react";
 import {
 	PayPalScriptProvider,
 	PayPalHostedFieldsProvider,

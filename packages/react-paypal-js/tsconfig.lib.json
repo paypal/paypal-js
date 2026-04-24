@@ -1,11 +1,11 @@
 {
-    "extends": "./tsconfig.json",
-    "compilerOptions": {
-        "composite": true
-    },
-    // these are overridden by the Rollup plugin
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "include": ["src/**/*.ts", "src/**/*.tsx"],
-    "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true
+  },
+  // these are overridden by the Rollup plugin
+  "outDir": "./dist",
+  "rootDir": "./src",
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
 }

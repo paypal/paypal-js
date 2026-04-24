@@ -5,20 +5,20 @@ import type { ReactElement } from "react";
 import type { Properties as CSSProperties } from "csstype";
 
 const COPY_BUTTON: CSSProperties = {
-    padding: "4px 10px",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    color: "#333333",
-    background: "#FFFFFF",
-    fontSize: "12px",
-    lineHeight: "16px",
-    fontWeight: "700",
-    border: "1px solid rgba(0,0,0,.1)",
-    borderRadius: "4px 0 0 0",
-    float: "right",
-    position: "relative",
-    top: "-26px",
+  padding: "4px 10px",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  color: "#333333",
+  background: "#FFFFFF",
+  fontSize: "12px",
+  lineHeight: "16px",
+  fontWeight: "700",
+  border: "1px solid rgba(0,0,0,.1)",
+  borderRadius: "4px 0 0 0",
+  float: "right",
+  position: "relative",
+  top: "-26px",
 };
 
 /**
@@ -29,28 +29,28 @@ const COPY_BUTTON: CSSProperties = {
  * @returns a ReactElement with the custom copy button
  */
 const CopyButton = (): ReactElement => {
-    const { sandpack } = useSandpack();
-    const [isCopy, setIsCopy] = useState<boolean>(false);
+  const { sandpack } = useSandpack();
+  const [isCopy, setIsCopy] = useState<boolean>(false);
 
-    const getCopyBorder = () => (isCopy ? "2px solid #1DA7FD" : "none");
+  const getCopyBorder = () => (isCopy ? "2px solid #1DA7FD" : "none");
 
-    const onClickHandler = () => {
-        navigator.clipboard.writeText(sandpack.files[sandpack.activePath].code);
-        setIsCopy(true);
-        // Same behavior from default Description storybook component
-        setTimeout(() => {
-            setIsCopy(false);
-        }, 1000);
-    };
+  const onClickHandler = () => {
+    navigator.clipboard.writeText(sandpack.files[sandpack.activePath].code);
+    setIsCopy(true);
+    // Same behavior from default Description storybook component
+    setTimeout(() => {
+      setIsCopy(false);
+    }, 1000);
+  };
 
-    return (
-        <button
-            onClick={onClickHandler}
-            style={{ ...COPY_BUTTON, borderBottom: getCopyBorder() }}
-        >
-            {isCopy ? "Copied" : "Copy"}
-        </button>
-    );
+  return (
+    <button
+      onClick={onClickHandler}
+      style={{ ...COPY_BUTTON, borderBottom: getCopyBorder() }}
+    >
+      {isCopy ? "Copied" : "Copy"}
+    </button>
+  );
 };
 
 export default CopyButton;

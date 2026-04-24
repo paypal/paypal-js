@@ -12,5 +12,5 @@ import type { PayPalHostedFieldContext } from "../types";
  * @returns the hosted fields instance if is available in the component
  */
 export function usePayPalHostedFields(): PayPalHostedFieldContext {
-    return useContext(PayPalHostedFieldsContext);
+  return useContext(PayPalHostedFieldsContext);
 }

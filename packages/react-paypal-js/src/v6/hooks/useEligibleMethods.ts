@@ -3,21 +3,21 @@ import { useEffect, useRef, useState } from "react";
 import { usePayPal } from "./usePayPal";
 import { usePayPalDispatch } from "./usePayPalDispatch";
 import {
-    INSTANCE_DISPATCH_ACTION,
-    type EligiblePaymentMethodsOutput,
-    type FindEligibleMethodsOptions,
+  INSTANCE_DISPATCH_ACTION,
+  type EligiblePaymentMethodsOutput,
+  type FindEligibleMethodsOptions,
 } from "../types";
 import { useError } from "./useError";
 import { deepEqual, useDeepCompareMemoize } from "../utils";
 
 export interface UseFetchEligibleMethodsOptions {
-    payload?: FindEligibleMethodsOptions;
+  payload?: FindEligibleMethodsOptions;
 }
 
 export interface UseFetchEligibleMethodsResult {
-    eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
-    isLoading: boolean;
-    error: Error | null;
+  eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
+  isLoading: boolean;
+  error: Error | null;
 }
 
 /**
@@ -58,140 +58,138 @@ export interface UseFetchEligibleMethodsResult {
  * }
  */
 export function useEligibleMethods(
-    options: UseFetchEligibleMethodsOptions = {},
+  options: UseFetchEligibleMethodsOptions = {},
 ): UseFetchEligibleMethodsResult {
-    const { payload } = options;
-    const {
-        sdkInstance,
-        eligiblePaymentMethods,
-        eligiblePaymentMethodsPayload,
-        error: contextError,
-    } = usePayPal();
-    const dispatch = usePayPalDispatch();
-    const [eligibilityError, setError] = useError();
-    const [isFetching, setIsFetching] = useState(false);
+  const { payload } = options;
+  const {
+    sdkInstance,
+    eligiblePaymentMethods,
+    eligiblePaymentMethodsPayload,
+    error: contextError,
+  } = usePayPal();
+  const dispatch = usePayPalDispatch();
+  const [eligibilityError, setError] = useError();
+  const [isFetching, setIsFetching] = useState(false);
 
-    // Use ref to access eligiblePaymentMethods in effect without adding to deps
-    const eligiblePaymentMethodsRef = useRef(eligiblePaymentMethods);
-    const eligiblePaymentMethodsPayloadRef = useRef(
-        eligiblePaymentMethodsPayload,
-    );
-    eligiblePaymentMethodsRef.current = eligiblePaymentMethods;
-    eligiblePaymentMethodsPayloadRef.current = eligiblePaymentMethodsPayload;
+  // Use ref to access eligiblePaymentMethods in effect without adding to deps
+  const eligiblePaymentMethodsRef = useRef(eligiblePaymentMethods);
+  const eligiblePaymentMethodsPayloadRef = useRef(
+    eligiblePaymentMethodsPayload,
+  );
+  eligiblePaymentMethodsRef.current = eligiblePaymentMethods;
+  eligiblePaymentMethodsPayloadRef.current = eligiblePaymentMethodsPayload;
 
-    // Memoize payload to avoid unnecessary re-fetches when object reference changes
-    const memoizedPayload = useDeepCompareMemoize(payload);
+  // Memoize payload to avoid unnecessary re-fetches when object reference changes
+  const memoizedPayload = useDeepCompareMemoize(payload);
 
-    // Track what we've fetched (instance + payload combo) to prevent duplicate fetches
-    const lastFetchRef = useRef<{
-        instance: typeof sdkInstance;
-        payload: typeof memoizedPayload;
-    } | null>(null);
+  // Track what we've fetched (instance + payload combo) to prevent duplicate fetches
+  const lastFetchRef = useRef<{
+    instance: typeof sdkInstance;
+    payload: typeof memoizedPayload;
+  } | null>(null);
 
-    useEffect(() => {
-        // Only fetch if:
-        // 1. sdkInstance is available
-        // 2. Haven't already fetched for THIS sdkInstance with THIS payload
-        // 3. Eligibility not already in context (from server hydration or another fetch)
-        //    UNLESS the payload has changed from what was used to fetch it
-        if (!sdkInstance) {
-            return;
-        }
-
-        const hasFetchedThisConfig =
-            lastFetchRef.current?.instance === sdkInstance &&
-            lastFetchRef.current?.payload === memoizedPayload;
-
-        // Skip if we already fetched with this exact config
-        if (hasFetchedThisConfig) {
-            return;
-        }
-
-        // If eligibility exists and we haven't fetched anything yet (e.g., server hydration),
-        // mark as fetched to avoid unnecessary re-fetch with same payload.
-        // Use deepEqual instead of === because different component instances will have
-        // different memoizedPayload references even if the values are the same.
-        if (
-            eligiblePaymentMethodsRef.current &&
-            lastFetchRef.current === null &&
-            deepEqual(eligiblePaymentMethodsPayloadRef.current, memoizedPayload)
-        ) {
-            lastFetchRef.current = {
-                instance: sdkInstance,
-                payload: memoizedPayload,
-            };
-            return;
-        }
-
-        // Mark as fetched before starting
-        lastFetchRef.current = {
-            instance: sdkInstance,
-            payload: memoizedPayload,
-        };
-
-        let isSubscribed = true;
-        setIsFetching(true);
-
-        sdkInstance
-            .findEligibleMethods(memoizedPayload)
-            .then((result) => {
-                if (isSubscribed) {
-                    dispatch({
-                        type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-                        value: {
-                            eligiblePaymentMethods: result,
-                            payload: memoizedPayload,
-                        },
-                    });
-                }
-            })
-            .catch((err) => {
-                if (isSubscribed) {
-                    setError(err);
-                }
-            })
-            .finally(() => {
-                if (isSubscribed) {
-                    setIsFetching(false);
-                }
-            });
-
-        return () => {
-            isSubscribed = false;
-            lastFetchRef.current = null; // Reset fetch tracking on unmount or dependency change
-        };
-    }, [sdkInstance, memoizedPayload, dispatch, setError]);
-
-    // isLoading should be true if:
-    // 1. We're actively fetching, OR
-    // 2. We don't have eligibility data yet and no error occurred, OR
-    // 3. Eligibility data exists but was fetched with a different payload
-    //    (e.g., navigating from VAULT_WITHOUT_PAYMENT to ONE_TIME_PAYMENT)
-    // This prevents a flash of stale buttons before the new fetch completes
-    const isStaleData =
-        !!eligiblePaymentMethods &&
-        // Normalize null to undefined so deepEqual doesn't treat
-        // null (no stored payload) as different from undefined (no provided payload)
-        !deepEqual(
-            eligiblePaymentMethodsPayload ?? undefined,
-            memoizedPayload ?? undefined,
-        );
-    const isLoading =
-        isFetching ||
-        (!eligiblePaymentMethods && !eligibilityError) ||
-        isStaleData;
-
-    if (contextError) {
-        return {
-            eligiblePaymentMethods,
-            isLoading,
-            error: new Error(`PayPal context error: ${contextError}`),
-        };
+  useEffect(() => {
+    // Only fetch if:
+    // 1. sdkInstance is available
+    // 2. Haven't already fetched for THIS sdkInstance with THIS payload
+    // 3. Eligibility not already in context (from server hydration or another fetch)
+    //    UNLESS the payload has changed from what was used to fetch it
+    if (!sdkInstance) {
+      return;
     }
 
-    return {
-        eligiblePaymentMethods,
-        isLoading,
-        error: eligibilityError,
+    const hasFetchedThisConfig =
+      lastFetchRef.current?.instance === sdkInstance &&
+      lastFetchRef.current?.payload === memoizedPayload;
+
+    // Skip if we already fetched with this exact config
+    if (hasFetchedThisConfig) {
+      return;
+    }
+
+    // If eligibility exists and we haven't fetched anything yet (e.g., server hydration),
+    // mark as fetched to avoid unnecessary re-fetch with same payload.
+    // Use deepEqual instead of === because different component instances will have
+    // different memoizedPayload references even if the values are the same.
+    if (
+      eligiblePaymentMethodsRef.current &&
+      lastFetchRef.current === null &&
+      deepEqual(eligiblePaymentMethodsPayloadRef.current, memoizedPayload)
+    ) {
+      lastFetchRef.current = {
+        instance: sdkInstance,
+        payload: memoizedPayload,
+      };
+      return;
+    }
+
+    // Mark as fetched before starting
+    lastFetchRef.current = {
+      instance: sdkInstance,
+      payload: memoizedPayload,
     };
+
+    let isSubscribed = true;
+    setIsFetching(true);
+
+    sdkInstance
+      .findEligibleMethods(memoizedPayload)
+      .then((result) => {
+        if (isSubscribed) {
+          dispatch({
+            type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
+            value: {
+              eligiblePaymentMethods: result,
+              payload: memoizedPayload,
+            },
+          });
+        }
+      })
+      .catch((err) => {
+        if (isSubscribed) {
+          setError(err);
+        }
+      })
+      .finally(() => {
+        if (isSubscribed) {
+          setIsFetching(false);
+        }
+      });
+
+    return () => {
+      isSubscribed = false;
+      lastFetchRef.current = null; // Reset fetch tracking on unmount or dependency change
+    };
+  }, [sdkInstance, memoizedPayload, dispatch, setError]);
+
+  // isLoading should be true if:
+  // 1. We're actively fetching, OR
+  // 2. We don't have eligibility data yet and no error occurred, OR
+  // 3. Eligibility data exists but was fetched with a different payload
+  //    (e.g., navigating from VAULT_WITHOUT_PAYMENT to ONE_TIME_PAYMENT)
+  // This prevents a flash of stale buttons before the new fetch completes
+  const isStaleData =
+    !!eligiblePaymentMethods &&
+    // Normalize null to undefined so deepEqual doesn't treat
+    // null (no stored payload) as different from undefined (no provided payload)
+    !deepEqual(
+      eligiblePaymentMethodsPayload ?? undefined,
+      memoizedPayload ?? undefined,
+    );
+  const isLoading =
+    isFetching || (!eligiblePaymentMethods && !eligibilityError) || isStaleData;
+
+  if (contextError) {
+    return {
+      eligiblePaymentMethods,
+      isLoading,
+      error: new Error(`PayPal context error: ${contextError}`),
+    };
+  }
+
+  return {
+    eligiblePaymentMethods,
+    isLoading,
+    error: eligibilityError,
+  };
 }

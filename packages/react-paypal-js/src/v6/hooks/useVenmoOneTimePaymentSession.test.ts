@@ -3,14 +3,14 @@ import { renderHook, act } from "@testing-library/react-hooks";
 import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import { useVenmoOneTimePaymentSession } from "./useVenmoOneTimePaymentSession";
 import {
-    mockPayPalContext,
-    mockPayPalRejected,
-    mockPayPalPending,
+  mockPayPalContext,
+  mockPayPalRejected,
+  mockPayPalPending,
 } from "./usePayPalTestUtils";
 import { useProxyProps } from "../utils";
 import {
-    INSTANCE_LOADING_STATE,
-    type VenmoOneTimePaymentSession,
+  INSTANCE_LOADING_STATE,
+  type VenmoOneTimePaymentSession,
 } from "../types";
 
 import type { UseVenmoOneTimePaymentSessionProps } from "./useVenmoOneTimePaymentSession";
@@ -18,673 +18,658 @@ import type { UseVenmoOneTimePaymentSessionProps } from "./useVenmoOneTimePaymen
 jest.mock("./usePayPal");
 
 jest.mock("../utils", () => ({
-    ...jest.requireActual("../utils"),
-    useProxyProps: jest.fn(),
+  ...jest.requireActual("../utils"),
+  useProxyProps: jest.fn(),
 }));
 
 const mockUseProxyProps = useProxyProps as jest.MockedFunction<
-    typeof useProxyProps
+  typeof useProxyProps
 >;
 
 const createMockVenmoSession = (): VenmoOneTimePaymentSession => ({
-    start: jest.fn().mockResolvedValue(undefined),
-    cancel: jest.fn(),
-    destroy: jest.fn(),
+  start: jest.fn().mockResolvedValue(undefined),
+  cancel: jest.fn(),
+  destroy: jest.fn(),
 });
 
 const createMockSdkInstance = (venmoSession = createMockVenmoSession()) => ({
-    createVenmoOneTimePaymentSession: jest.fn().mockReturnValue(venmoSession),
+  createVenmoOneTimePaymentSession: jest.fn().mockReturnValue(venmoSession),
 });
 
 describe("useVenmoOneTimePaymentSession", () => {
-    let mockVenmoSession: VenmoOneTimePaymentSession;
-    let mockSdkInstance: ReturnType<typeof createMockSdkInstance>;
+  let mockVenmoSession: VenmoOneTimePaymentSession;
+  let mockSdkInstance: ReturnType<typeof createMockSdkInstance>;
 
-    beforeEach(() => {
-        mockUseProxyProps.mockImplementation((callbacks) => callbacks);
+  beforeEach(() => {
+    mockUseProxyProps.mockImplementation((callbacks) => callbacks);
 
+    mockVenmoSession = createMockVenmoSession();
+    mockSdkInstance = createMockSdkInstance(mockVenmoSession);
+
+    mockPayPalContext({ sdkInstance: mockSdkInstance });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("initialization", () => {
+    test("should not create session when no SDK instance is available", () => {
+      mockPayPalRejected();
+
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        onCancel: jest.fn(),
+        onError: jest.fn(),
+      };
+
+      const {
+        result: {
+          current: { error },
+        },
+      } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+      expectCurrentErrorValue(error);
+
+      expect(error).toEqual(new Error("no sdk instance available"));
+      expect(
+        mockSdkInstance.createVenmoOneTimePaymentSession,
+      ).not.toHaveBeenCalled();
+    });
+
+    test("should not error if there is no sdkInstance but loading is still pending", () => {
+      mockPayPalPending();
+
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+      };
+
+      const {
+        result: {
+          current: { error },
+        },
+      } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+      expect(error).toBeNull();
+    });
+
+    test("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
+      const mockSession = createMockVenmoSession();
+      const mockSdkInstanceNew = createMockSdkInstance(mockSession);
+
+      // First render: no sdkInstance and not in PENDING state, should error
+      mockPayPalRejected();
+
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+      };
+
+      const { result, rerender } = renderHook(() =>
+        useVenmoOneTimePaymentSession(props),
+      );
+
+      expectCurrentErrorValue(result.current.error);
+      expect(result.current.error).toEqual(
+        new Error("no sdk instance available"),
+      );
+
+      // Second render: sdkInstance becomes available, error should clear
+      mockPayPalContext({ sdkInstance: mockSdkInstanceNew });
+
+      rerender();
+
+      expect(result.current.error).toBeNull();
+    });
+
+    test.each([
+      {
+        description: "Error object",
+        thrownError: new Error("Required components not loaded in SDK"),
+      },
+      {
+        description: "non-Error string",
+        thrownError: "String error message",
+      },
+    ])(
+      "should handle $description thrown by createVenmoOneTimePaymentSession",
+      ({ thrownError }) => {
+        const mockSdkInstanceWithError = {
+          createVenmoOneTimePaymentSession: jest.fn().mockImplementation(() => {
+            throw thrownError;
+          }),
+        };
+
+        mockPayPalContext({ sdkInstance: mockSdkInstanceWithError });
+
+        const props: UseVenmoOneTimePaymentSessionProps = {
+          presentationMode: "popup",
+          orderId: "test-order-id",
+          onApprove: jest.fn(),
+          onCancel: jest.fn(),
+          onError: jest.fn(),
+        };
+
+        const {
+          result: {
+            current: { error },
+          },
+        } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+        expectCurrentErrorValue(error);
+
+        expect(error?.message).toContain("Failed to create");
+        expect(error?.message).toContain("session");
+        expect(error?.message).toContain(
+          "This may occur if the required component",
+        );
+        expect((error as Error & { cause: typeof thrownError })?.cause).toBe(
+          thrownError,
+        );
+      },
+    );
+
+    test.each([
+      [INSTANCE_LOADING_STATE.PENDING, true],
+      [INSTANCE_LOADING_STATE.RESOLVED, false],
+      [INSTANCE_LOADING_STATE.REJECTED, false],
+    ])(
+      "should return isPending as %s when loadingStatus is %s",
+      (loadingStatus, expectedIsPending) => {
+        mockPayPalContext({ loadingStatus });
+
+        const props: UseVenmoOneTimePaymentSessionProps = {
+          presentationMode: "popup",
+          orderId: "test-order-id",
+          onApprove: jest.fn(),
+        };
+
+        const { result } = renderHook(() =>
+          useVenmoOneTimePaymentSession(props),
+        );
+
+        expect(result.current.isPending).toBe(expectedIsPending);
+      },
+    );
+
+    test("should create Venmo session with orderId when provided", () => {
+      const onApprove = jest.fn();
+      const onCancel = jest.fn();
+      const onError = jest.fn();
+
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove,
+        onCancel,
+        onError,
+      };
+
+      renderHook(() => useVenmoOneTimePaymentSession(props));
+
+      const createSessionCall =
+        mockSdkInstance.createVenmoOneTimePaymentSession.mock.calls[0][0];
+
+      expect(
+        mockSdkInstance.createVenmoOneTimePaymentSession,
+      ).toHaveBeenCalledWith({
+        orderId: "test-order-id",
+        onApprove,
+        onCancel,
+        onError,
+      });
+
+      const mockData = { orderId: "test-order-id" };
+      createSessionCall.onApprove(mockData);
+      createSessionCall.onCancel();
+      createSessionCall.onError(new Error("test error"));
+
+      expect(onApprove).toHaveBeenCalledWith(mockData);
+      expect(onCancel).toHaveBeenCalled();
+      expect(onError).toHaveBeenCalledWith(new Error("test error"));
+    });
+
+    test("should create Venmo session without orderId when createOrder is provided", () => {
+      const mockCreateOrder = jest
+        .fn()
+        .mockReturnValue(Promise.resolve("created-order-id"));
+      const onApprove = jest.fn();
+      const onCancel = jest.fn();
+      const onError = jest.fn();
+
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        createOrder: mockCreateOrder,
+        onApprove,
+        onCancel,
+        onError,
+      };
+
+      renderHook(() => useVenmoOneTimePaymentSession(props));
+
+      const createSessionCall =
+        mockSdkInstance.createVenmoOneTimePaymentSession.mock.calls[0][0];
+
+      expect(
+        mockSdkInstance.createVenmoOneTimePaymentSession,
+      ).toHaveBeenCalledWith({
+        orderId: undefined,
+        onApprove,
+        onCancel,
+        onError,
+      });
+
+      const mockData = { test: "data" };
+      createSessionCall.onApprove(mockData);
+      createSessionCall.onCancel();
+      createSessionCall.onError(new Error("test error"));
+
+      expect(onApprove).toHaveBeenCalledWith(mockData);
+      expect(onCancel).toHaveBeenCalled();
+      expect(onError).toHaveBeenCalledWith(new Error("test error"));
+    });
+  });
+
+  describe("session lifecycle", () => {
+    test("should destroy session on unmount", () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        onCancel: jest.fn(),
+        onError: jest.fn(),
+      };
+
+      const { unmount } = renderHook(() =>
+        useVenmoOneTimePaymentSession(props),
+      );
+
+      unmount();
+
+      expect(mockVenmoSession.destroy).toHaveBeenCalled();
+    });
+
+    test("should recreate session when orderId changes", () => {
+      const onApprove = jest.fn();
+      const onCancel = jest.fn();
+      const onError = jest.fn();
+      const { rerender } = renderHook(
+        ({ orderId }) =>
+          useVenmoOneTimePaymentSession({
+            presentationMode: "popup",
+            orderId,
+            onApprove,
+            onCancel,
+            onError,
+          }),
+        { initialProps: { orderId: "test-order-id-1" } },
+      );
+
+      jest.clearAllMocks();
+
+      rerender({ orderId: "test-order-id-2" });
+
+      expect(mockVenmoSession.destroy).toHaveBeenCalled();
+      expect(
+        mockSdkInstance.createVenmoOneTimePaymentSession,
+      ).toHaveBeenCalledWith({
+        orderId: "test-order-id-2",
+        onApprove,
+        onCancel,
+        onError,
+      });
+    });
+
+    test("should recreate session when SDK instance changes", () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        onCancel: jest.fn(),
+        onError: jest.fn(),
+      };
+
+      const { rerender } = renderHook(() =>
+        useVenmoOneTimePaymentSession(props),
+      );
+
+      jest.clearAllMocks();
+
+      const newMockSession = createMockVenmoSession();
+      const newMockSdkInstance = createMockSdkInstance(newMockSession);
+
+      mockPayPalContext({ sdkInstance: newMockSdkInstance });
+
+      rerender();
+
+      expect(mockVenmoSession.destroy).toHaveBeenCalled();
+      expect(
+        newMockSdkInstance.createVenmoOneTimePaymentSession,
+      ).toHaveBeenCalled();
+    });
+
+    test("should NOT recreate session when only callbacks change", () => {
+      mockUseProxyProps.mockImplementation(
+        jest.requireActual("../utils").useProxyProps,
+      );
+
+      const initialOnApprove = jest.fn();
+      const newOnApprove = jest.fn();
+
+      const { rerender } = renderHook(
+        ({ onApprove }) =>
+          useVenmoOneTimePaymentSession({
+            presentationMode: "popup",
+            orderId: "test-order-id",
+            onApprove,
+          }),
+        { initialProps: { onApprove: initialOnApprove } },
+      );
+
+      jest.clearAllMocks();
+
+      rerender({ onApprove: newOnApprove });
+
+      expect(mockVenmoSession.destroy).not.toHaveBeenCalled();
+      expect(
+        mockSdkInstance.createVenmoOneTimePaymentSession,
+      ).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("handleClick", () => {
+    test("should start session with presentation mode and orderId", async () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        onCancel: jest.fn(),
+        onError: jest.fn(),
+      };
+
+      const { result } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockVenmoSession.start).toHaveBeenCalledWith(
+        {
+          presentationMode: "popup",
+        },
+        undefined,
+      );
+    });
+
+    test("should start session with createOrder when provided", async () => {
+      const mockCreateOrder = jest
+        .fn()
+        .mockReturnValue(Promise.resolve("created-order-id"));
+
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        createOrder: mockCreateOrder,
+        onApprove: jest.fn(),
+        onCancel: jest.fn(),
+        onError: jest.fn(),
+      };
+
+      const { result } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockVenmoSession.start).toHaveBeenCalledWith(
+        { presentationMode: "popup" },
+        expect.any(Promise),
+      );
+      expect(mockCreateOrder).toHaveBeenCalled();
+    });
+
+    test("should do nothing if the click handler is called and the component has been unmounted", async () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        onCancel: jest.fn(),
+        onError: jest.fn(),
+      };
+
+      const { result, unmount } = renderHook(() =>
+        useVenmoOneTimePaymentSession(props),
+      );
+
+      unmount();
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      const { error } = result.current;
+
+      expectCurrentErrorValue(error);
+
+      expect(error).toBeNull();
+      expect(mockVenmoSession.start).not.toHaveBeenCalled();
+    });
+
+    test("should handle different presentation modes", async () => {
+      const presentationModes = ["auto", "popup", "modal"] as const;
+
+      for (const mode of presentationModes) {
+        const props: UseVenmoOneTimePaymentSessionProps = {
+          presentationMode: mode,
+          orderId: "test-order-id",
+          onApprove: jest.fn(),
+          onCancel: jest.fn(),
+          onError: jest.fn(),
+        };
+
+        const { result } = renderHook(() =>
+          useVenmoOneTimePaymentSession(props),
+        );
+
+        await act(async () => {
+          await result.current.handleClick();
+        });
+
+        expect(mockVenmoSession.start).toHaveBeenCalledWith(
+          {
+            presentationMode: mode,
+          },
+          undefined,
+        );
+
+        jest.clearAllMocks();
         mockVenmoSession = createMockVenmoSession();
         mockSdkInstance = createMockSdkInstance(mockVenmoSession);
-
         mockPayPalContext({ sdkInstance: mockSdkInstance });
+      }
+    });
+  });
+
+  describe("handleCancel", () => {
+    test("should cancel session when available", () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        onCancel: jest.fn(),
+        onError: jest.fn(),
+      };
+
+      const { result } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+      act(() => {
+        result.current.handleCancel();
+      });
+
+      expect(mockVenmoSession.cancel).toHaveBeenCalled();
     });
 
-    afterEach(() => {
-        jest.clearAllMocks();
+    test("should not throw error when session is not available", () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        onCancel: jest.fn(),
+        onError: jest.fn(),
+      };
+
+      const { result, unmount } = renderHook(() =>
+        useVenmoOneTimePaymentSession(props),
+      );
+
+      unmount();
+
+      expect(() => {
+        act(() => {
+          result.current.handleCancel();
+        });
+      }).not.toThrow();
+    });
+  });
+
+  describe("handleDestroy", () => {
+    test("should destroy session and clear reference", () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        onCancel: jest.fn(),
+        onError: jest.fn(),
+      };
+
+      const { result } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+      act(() => {
+        result.current.handleDestroy();
+      });
+
+      expect(mockVenmoSession.destroy).toHaveBeenCalled();
     });
 
-    describe("initialization", () => {
-        test("should not create session when no SDK instance is available", () => {
-            mockPayPalRejected();
+    test("should not throw error when session is not available", () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        onCancel: jest.fn(),
+        onError: jest.fn(),
+      };
 
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
-            };
+      const { result, unmount } = renderHook(() =>
+        useVenmoOneTimePaymentSession(props),
+      );
 
-            const {
-                result: {
-                    current: { error },
-                },
-            } = renderHook(() => useVenmoOneTimePaymentSession(props));
+      unmount();
 
-            expectCurrentErrorValue(error);
-
-            expect(error).toEqual(new Error("no sdk instance available"));
-            expect(
-                mockSdkInstance.createVenmoOneTimePaymentSession,
-            ).not.toHaveBeenCalled();
+      expect(() => {
+        act(() => {
+          result.current.handleDestroy();
         });
-
-        test("should not error if there is no sdkInstance but loading is still pending", () => {
-            mockPayPalPending();
-
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-            };
-
-            const {
-                result: {
-                    current: { error },
-                },
-            } = renderHook(() => useVenmoOneTimePaymentSession(props));
-
-            expect(error).toBeNull();
-        });
-
-        test("should clear any sdkInstance related errors if the sdkInstance becomes available", () => {
-            const mockSession = createMockVenmoSession();
-            const mockSdkInstanceNew = createMockSdkInstance(mockSession);
-
-            // First render: no sdkInstance and not in PENDING state, should error
-            mockPayPalRejected();
-
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-            };
-
-            const { result, rerender } = renderHook(() =>
-                useVenmoOneTimePaymentSession(props),
-            );
-
-            expectCurrentErrorValue(result.current.error);
-            expect(result.current.error).toEqual(
-                new Error("no sdk instance available"),
-            );
-
-            // Second render: sdkInstance becomes available, error should clear
-            mockPayPalContext({ sdkInstance: mockSdkInstanceNew });
-
-            rerender();
-
-            expect(result.current.error).toBeNull();
-        });
-
-        test.each([
-            {
-                description: "Error object",
-                thrownError: new Error("Required components not loaded in SDK"),
-            },
-            {
-                description: "non-Error string",
-                thrownError: "String error message",
-            },
-        ])(
-            "should handle $description thrown by createVenmoOneTimePaymentSession",
-            ({ thrownError }) => {
-                const mockSdkInstanceWithError = {
-                    createVenmoOneTimePaymentSession: jest
-                        .fn()
-                        .mockImplementation(() => {
-                            throw thrownError;
-                        }),
-                };
-
-                mockPayPalContext({ sdkInstance: mockSdkInstanceWithError });
-
-                const props: UseVenmoOneTimePaymentSessionProps = {
-                    presentationMode: "popup",
-                    orderId: "test-order-id",
-                    onApprove: jest.fn(),
-                    onCancel: jest.fn(),
-                    onError: jest.fn(),
-                };
-
-                const {
-                    result: {
-                        current: { error },
-                    },
-                } = renderHook(() => useVenmoOneTimePaymentSession(props));
-
-                expectCurrentErrorValue(error);
-
-                expect(error?.message).toContain("Failed to create");
-                expect(error?.message).toContain("session");
-                expect(error?.message).toContain(
-                    "This may occur if the required component",
-                );
-                expect(
-                    (error as Error & { cause: typeof thrownError })?.cause,
-                ).toBe(thrownError);
-            },
-        );
-
-        test.each([
-            [INSTANCE_LOADING_STATE.PENDING, true],
-            [INSTANCE_LOADING_STATE.RESOLVED, false],
-            [INSTANCE_LOADING_STATE.REJECTED, false],
-        ])(
-            "should return isPending as %s when loadingStatus is %s",
-            (loadingStatus, expectedIsPending) => {
-                mockPayPalContext({ loadingStatus });
-
-                const props: UseVenmoOneTimePaymentSessionProps = {
-                    presentationMode: "popup",
-                    orderId: "test-order-id",
-                    onApprove: jest.fn(),
-                };
-
-                const { result } = renderHook(() =>
-                    useVenmoOneTimePaymentSession(props),
-                );
-
-                expect(result.current.isPending).toBe(expectedIsPending);
-            },
-        );
-
-        test("should create Venmo session with orderId when provided", () => {
-            const onApprove = jest.fn();
-            const onCancel = jest.fn();
-            const onError = jest.fn();
-
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove,
-                onCancel,
-                onError,
-            };
-
-            renderHook(() => useVenmoOneTimePaymentSession(props));
-
-            const createSessionCall =
-                mockSdkInstance.createVenmoOneTimePaymentSession.mock
-                    .calls[0][0];
-
-            expect(
-                mockSdkInstance.createVenmoOneTimePaymentSession,
-            ).toHaveBeenCalledWith({
-                orderId: "test-order-id",
-                onApprove,
-                onCancel,
-                onError,
-            });
-
-            const mockData = { orderId: "test-order-id" };
-            createSessionCall.onApprove(mockData);
-            createSessionCall.onCancel();
-            createSessionCall.onError(new Error("test error"));
-
-            expect(onApprove).toHaveBeenCalledWith(mockData);
-            expect(onCancel).toHaveBeenCalled();
-            expect(onError).toHaveBeenCalledWith(new Error("test error"));
-        });
-
-        test("should create Venmo session without orderId when createOrder is provided", () => {
-            const mockCreateOrder = jest
-                .fn()
-                .mockReturnValue(Promise.resolve("created-order-id"));
-            const onApprove = jest.fn();
-            const onCancel = jest.fn();
-            const onError = jest.fn();
-
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                createOrder: mockCreateOrder,
-                onApprove,
-                onCancel,
-                onError,
-            };
-
-            renderHook(() => useVenmoOneTimePaymentSession(props));
-
-            const createSessionCall =
-                mockSdkInstance.createVenmoOneTimePaymentSession.mock
-                    .calls[0][0];
-
-            expect(
-                mockSdkInstance.createVenmoOneTimePaymentSession,
-            ).toHaveBeenCalledWith({
-                orderId: undefined,
-                onApprove,
-                onCancel,
-                onError,
-            });
-
-            const mockData = { test: "data" };
-            createSessionCall.onApprove(mockData);
-            createSessionCall.onCancel();
-            createSessionCall.onError(new Error("test error"));
-
-            expect(onApprove).toHaveBeenCalledWith(mockData);
-            expect(onCancel).toHaveBeenCalled();
-            expect(onError).toHaveBeenCalledWith(new Error("test error"));
-        });
+      }).not.toThrow();
     });
 
-    describe("session lifecycle", () => {
-        test("should destroy session on unmount", () => {
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
-            };
+    test("should handle manually destroyed session gracefully", async () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        onCancel: jest.fn(),
+        onError: jest.fn(),
+      };
 
-            const { unmount } = renderHook(() =>
-                useVenmoOneTimePaymentSession(props),
-            );
+      const { result } = renderHook(() => useVenmoOneTimePaymentSession(props));
 
-            unmount();
+      act(() => {
+        result.current.handleDestroy();
+      });
 
-            expect(mockVenmoSession.destroy).toHaveBeenCalled();
-        });
+      await act(async () => {
+        await result.current.handleClick();
+      });
 
-        test("should recreate session when orderId changes", () => {
-            const onApprove = jest.fn();
-            const onCancel = jest.fn();
-            const onError = jest.fn();
-            const { rerender } = renderHook(
-                ({ orderId }) =>
-                    useVenmoOneTimePaymentSession({
-                        presentationMode: "popup",
-                        orderId,
-                        onApprove,
-                        onCancel,
-                        onError,
-                    }),
-                { initialProps: { orderId: "test-order-id-1" } },
-            );
+      const { error } = result.current;
 
-            jest.clearAllMocks();
+      expectCurrentErrorValue(error);
 
-            rerender({ orderId: "test-order-id-2" });
+      expect(error).toEqual(new Error("Venmo session not available"));
+    });
+  });
 
-            expect(mockVenmoSession.destroy).toHaveBeenCalled();
-            expect(
-                mockSdkInstance.createVenmoOneTimePaymentSession,
-            ).toHaveBeenCalledWith({
-                orderId: "test-order-id-2",
-                onApprove,
-                onCancel,
-                onError,
-            });
-        });
-
-        test("should recreate session when SDK instance changes", () => {
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
-            };
-
-            const { rerender } = renderHook(() =>
-                useVenmoOneTimePaymentSession(props),
-            );
-
-            jest.clearAllMocks();
-
-            const newMockSession = createMockVenmoSession();
-            const newMockSdkInstance = createMockSdkInstance(newMockSession);
-
-            mockPayPalContext({ sdkInstance: newMockSdkInstance });
-
-            rerender();
-
-            expect(mockVenmoSession.destroy).toHaveBeenCalled();
-            expect(
-                newMockSdkInstance.createVenmoOneTimePaymentSession,
-            ).toHaveBeenCalled();
-        });
-
-        test("should NOT recreate session when only callbacks change", () => {
-            mockUseProxyProps.mockImplementation(
-                jest.requireActual("../utils").useProxyProps,
-            );
-
-            const initialOnApprove = jest.fn();
-            const newOnApprove = jest.fn();
-
-            const { rerender } = renderHook(
-                ({ onApprove }) =>
-                    useVenmoOneTimePaymentSession({
-                        presentationMode: "popup",
-                        orderId: "test-order-id",
-                        onApprove,
-                    }),
-                { initialProps: { onApprove: initialOnApprove } },
-            );
-
-            jest.clearAllMocks();
-
-            rerender({ onApprove: newOnApprove });
-
-            expect(mockVenmoSession.destroy).not.toHaveBeenCalled();
-            expect(
-                mockSdkInstance.createVenmoOneTimePaymentSession,
-            ).not.toHaveBeenCalled();
-        });
+  describe("callback proxying", () => {
+    beforeEach(() => {
+      mockUseProxyProps.mockImplementation(
+        jest.requireActual("../utils").useProxyProps,
+      );
     });
 
-    describe("handleClick", () => {
-        test("should start session with presentation mode and orderId", async () => {
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
-            };
+    test("should proxy callbacks correctly through useProxyProps", () => {
+      const onApprove = jest.fn();
+      const onCancel = jest.fn();
+      const onError = jest.fn();
 
-            const { result } = renderHook(() =>
-                useVenmoOneTimePaymentSession(props),
-            );
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove,
+        onCancel,
+        onError,
+      };
 
-            await act(async () => {
-                await result.current.handleClick();
-            });
+      renderHook(() => useVenmoOneTimePaymentSession(props));
 
-            expect(mockVenmoSession.start).toHaveBeenCalledWith(
-                {
-                    presentationMode: "popup",
-                },
-                undefined,
-            );
-        });
+      const createSessionCall =
+        mockSdkInstance.createVenmoOneTimePaymentSession.mock.calls[0][0];
 
-        test("should start session with createOrder when provided", async () => {
-            const mockCreateOrder = jest
-                .fn()
-                .mockReturnValue(Promise.resolve("created-order-id"));
+      expect(createSessionCall).toHaveProperty("onApprove");
+      expect(createSessionCall).toHaveProperty("onCancel");
+      expect(createSessionCall).toHaveProperty("onError");
 
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                createOrder: mockCreateOrder,
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
-            };
-
-            const { result } = renderHook(() =>
-                useVenmoOneTimePaymentSession(props),
-            );
-
-            await act(async () => {
-                await result.current.handleClick();
-            });
-
-            expect(mockVenmoSession.start).toHaveBeenCalledWith(
-                { presentationMode: "popup" },
-                expect.any(Promise),
-            );
-            expect(mockCreateOrder).toHaveBeenCalled();
-        });
-
-        test("should do nothing if the click handler is called and the component has been unmounted", async () => {
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
-            };
-
-            const { result, unmount } = renderHook(() =>
-                useVenmoOneTimePaymentSession(props),
-            );
-
-            unmount();
-
-            await act(async () => {
-                await result.current.handleClick();
-            });
-
-            const { error } = result.current;
-
-            expectCurrentErrorValue(error);
-
-            expect(error).toBeNull();
-            expect(mockVenmoSession.start).not.toHaveBeenCalled();
-        });
-
-        test("should handle different presentation modes", async () => {
-            const presentationModes = ["auto", "popup", "modal"] as const;
-
-            for (const mode of presentationModes) {
-                const props: UseVenmoOneTimePaymentSessionProps = {
-                    presentationMode: mode,
-                    orderId: "test-order-id",
-                    onApprove: jest.fn(),
-                    onCancel: jest.fn(),
-                    onError: jest.fn(),
-                };
-
-                const { result } = renderHook(() =>
-                    useVenmoOneTimePaymentSession(props),
-                );
-
-                await act(async () => {
-                    await result.current.handleClick();
-                });
-
-                expect(mockVenmoSession.start).toHaveBeenCalledWith(
-                    {
-                        presentationMode: mode,
-                    },
-                    undefined,
-                );
-
-                jest.clearAllMocks();
-                mockVenmoSession = createMockVenmoSession();
-                mockSdkInstance = createMockSdkInstance(mockVenmoSession);
-                mockPayPalContext({ sdkInstance: mockSdkInstance });
-            }
-        });
+      expect(createSessionCall.onApprove).not.toBe(onApprove);
+      expect(createSessionCall.onCancel).not.toBe(onCancel);
+      expect(createSessionCall.onError).not.toBe(onError);
     });
+  });
 
-    describe("handleCancel", () => {
-        test("should cancel session when available", () => {
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
-            };
+  describe("return value stability", () => {
+    test("should return stable function references", () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        onCancel: jest.fn(),
+        onError: jest.fn(),
+      };
 
-            const { result } = renderHook(() =>
-                useVenmoOneTimePaymentSession(props),
-            );
+      const { result, rerender } = renderHook(() =>
+        useVenmoOneTimePaymentSession(props),
+      );
 
-            act(() => {
-                result.current.handleCancel();
-            });
+      const firstRender = {
+        handleClick: result.current.handleClick,
+        handleCancel: result.current.handleCancel,
+        handleDestroy: result.current.handleDestroy,
+      };
 
-            expect(mockVenmoSession.cancel).toHaveBeenCalled();
-        });
+      rerender();
 
-        test("should not throw error when session is not available", () => {
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
-            };
+      const secondRender = {
+        handleClick: result.current.handleClick,
+        handleCancel: result.current.handleCancel,
+        handleDestroy: result.current.handleDestroy,
+      };
 
-            const { result, unmount } = renderHook(() =>
-                useVenmoOneTimePaymentSession(props),
-            );
-
-            unmount();
-
-            expect(() => {
-                act(() => {
-                    result.current.handleCancel();
-                });
-            }).not.toThrow();
-        });
+      expect(firstRender.handleClick).toBe(secondRender.handleClick);
+      expect(firstRender.handleCancel).toBe(secondRender.handleCancel);
+      expect(firstRender.handleDestroy).toBe(secondRender.handleDestroy);
     });
-
-    describe("handleDestroy", () => {
-        test("should destroy session and clear reference", () => {
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
-            };
-
-            const { result } = renderHook(() =>
-                useVenmoOneTimePaymentSession(props),
-            );
-
-            act(() => {
-                result.current.handleDestroy();
-            });
-
-            expect(mockVenmoSession.destroy).toHaveBeenCalled();
-        });
-
-        test("should not throw error when session is not available", () => {
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
-            };
-
-            const { result, unmount } = renderHook(() =>
-                useVenmoOneTimePaymentSession(props),
-            );
-
-            unmount();
-
-            expect(() => {
-                act(() => {
-                    result.current.handleDestroy();
-                });
-            }).not.toThrow();
-        });
-
-        test("should handle manually destroyed session gracefully", async () => {
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
-            };
-
-            const { result } = renderHook(() =>
-                useVenmoOneTimePaymentSession(props),
-            );
-
-            act(() => {
-                result.current.handleDestroy();
-            });
-
-            await act(async () => {
-                await result.current.handleClick();
-            });
-
-            const { error } = result.current;
-
-            expectCurrentErrorValue(error);
-
-            expect(error).toEqual(new Error("Venmo session not available"));
-        });
-    });
-
-    describe("callback proxying", () => {
-        beforeEach(() => {
-            mockUseProxyProps.mockImplementation(
-                jest.requireActual("../utils").useProxyProps,
-            );
-        });
-
-        test("should proxy callbacks correctly through useProxyProps", () => {
-            const onApprove = jest.fn();
-            const onCancel = jest.fn();
-            const onError = jest.fn();
-
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove,
-                onCancel,
-                onError,
-            };
-
-            renderHook(() => useVenmoOneTimePaymentSession(props));
-
-            const createSessionCall =
-                mockSdkInstance.createVenmoOneTimePaymentSession.mock
-                    .calls[0][0];
-
-            expect(createSessionCall).toHaveProperty("onApprove");
-            expect(createSessionCall).toHaveProperty("onCancel");
-            expect(createSessionCall).toHaveProperty("onError");
-
-            expect(createSessionCall.onApprove).not.toBe(onApprove);
-            expect(createSessionCall.onCancel).not.toBe(onCancel);
-            expect(createSessionCall.onError).not.toBe(onError);
-        });
-    });
-
-    describe("return value stability", () => {
-        test("should return stable function references", () => {
-            const props: UseVenmoOneTimePaymentSessionProps = {
-                presentationMode: "popup",
-                orderId: "test-order-id",
-                onApprove: jest.fn(),
-                onCancel: jest.fn(),
-                onError: jest.fn(),
-            };
-
-            const { result, rerender } = renderHook(() =>
-                useVenmoOneTimePaymentSession(props),
-            );
-
-            const firstRender = {
-                handleClick: result.current.handleClick,
-                handleCancel: result.current.handleCancel,
-                handleDestroy: result.current.handleDestroy,
-            };
-
-            rerender();
-
-            const secondRender = {
-                handleClick: result.current.handleClick,
-                handleCancel: result.current.handleCancel,
-                handleDestroy: result.current.handleDestroy,
-            };
-
-            expect(firstRender.handleClick).toBe(secondRender.handleClick);
-            expect(firstRender.handleCancel).toBe(secondRender.handleCancel);
-            expect(firstRender.handleDestroy).toBe(secondRender.handleDestroy);
-        });
-    });
+  });
 });

@@ -20,32 +20,32 @@ A basic example showing data-typing for PayPal One Time Payment:
 
 ```typescript
 import type {
-    PayPalV6Namespace,
-    OnApproveDataOneTimePayments,
-    OnShippingAddressChangeData,
+  PayPalV6Namespace,
+  OnApproveDataOneTimePayments,
+  OnShippingAddressChangeData,
 } from "@paypal/paypal-js/sdk-v6";
 
 declare global {
-    interface Window {
-        paypal: PayPalV6Namespace;
-    }
+  interface Window {
+    paypal: PayPalV6Namespace;
+  }
 }
 
 const sdkInstance = await window.paypal.createInstance({
-    clientToken: "INSERT_YOUR_CLIENT_TOKEN_HERE",
-    components: ["paypal-payments", "venmo-payments"],
+  clientToken: "INSERT_YOUR_CLIENT_TOKEN_HERE",
+  components: ["paypal-payments", "venmo-payments"],
 });
 
 function onApproveCallback(data: OnApproveDataOneTimePayments) {
-    // ...
+  // ...
 }
 function onShippingAddressChangeCallback(data: OnShippingAddressChangeData) {
-    // ...
+  // ...
 }
 
 const paypalCheckout = sdkInstance.createPayPalOneTimePaymentSession({
-    onApprove: onApproveCallback,
-    onShippingAddressChange: onShippingAddressChangeCallback,
+  onApprove: onApproveCallback,
+  onShippingAddressChange: onShippingAddressChangeCallback,
 });
 ```
 

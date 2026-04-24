@@ -2,15 +2,15 @@ import React, { useContext } from "react";
 
 import { ScriptContext } from "../context/scriptProviderContext";
 import {
-    validateReducer,
-    validateBraintreeAuthorizationData,
+  validateReducer,
+  validateBraintreeAuthorizationData,
 } from "./contextValidator";
 import { SCRIPT_LOADING_STATE } from "../types";
 
 import type {
-    ScriptContextDerivedState,
-    ScriptContextState,
-    ScriptReducerAction,
+  ScriptContextDerivedState,
+  ScriptContextState,
+  ScriptReducerAction,
 } from "../types";
 
 /**
@@ -21,25 +21,23 @@ import type {
  * a dispatch function to modify the state
  */
 export function usePayPalScriptReducer(): [
-    ScriptContextDerivedState,
-    React.Dispatch<ScriptReducerAction>,
+  ScriptContextDerivedState,
+  React.Dispatch<ScriptReducerAction>,
 ] {
-    const scriptContext = validateReducer(useContext(ScriptContext));
+  const scriptContext = validateReducer(useContext(ScriptContext));
 
-    const derivedStatusContext = {
-        ...scriptContext,
-        isInitial: scriptContext.loadingStatus === SCRIPT_LOADING_STATE.INITIAL,
-        isPending: scriptContext.loadingStatus === SCRIPT_LOADING_STATE.PENDING,
-        isResolved:
-            scriptContext.loadingStatus === SCRIPT_LOADING_STATE.RESOLVED,
-        isRejected:
-            scriptContext.loadingStatus === SCRIPT_LOADING_STATE.REJECTED,
-    };
+  const derivedStatusContext = {
+    ...scriptContext,
+    isInitial: scriptContext.loadingStatus === SCRIPT_LOADING_STATE.INITIAL,
+    isPending: scriptContext.loadingStatus === SCRIPT_LOADING_STATE.PENDING,
+    isResolved: scriptContext.loadingStatus === SCRIPT_LOADING_STATE.RESOLVED,
+    isRejected: scriptContext.loadingStatus === SCRIPT_LOADING_STATE.REJECTED,
+  };
 
-    return [
-        derivedStatusContext,
-        scriptContext.dispatch as React.Dispatch<ScriptReducerAction>,
-    ];
+  return [
+    derivedStatusContext,
+    scriptContext.dispatch as React.Dispatch<ScriptReducerAction>,
+  ];
 }
 
 /**
@@ -48,15 +46,15 @@ export function usePayPalScriptReducer(): [
  * @returns the latest state of the context
  */
 export function useScriptProviderContext(): [
-    ScriptContextState,
-    React.Dispatch<ScriptReducerAction>,
+  ScriptContextState,
+  React.Dispatch<ScriptReducerAction>,
 ] {
-    const scriptContext = validateBraintreeAuthorizationData(
-        validateReducer(useContext(ScriptContext)),
-    );
+  const scriptContext = validateBraintreeAuthorizationData(
+    validateReducer(useContext(ScriptContext)),
+  );
 
-    return [
-        scriptContext,
-        scriptContext.dispatch as React.Dispatch<ScriptReducerAction>,
-    ];
+  return [
+    scriptContext,
+    scriptContext.dispatch as React.Dispatch<ScriptReducerAction>,
+  ];
 }

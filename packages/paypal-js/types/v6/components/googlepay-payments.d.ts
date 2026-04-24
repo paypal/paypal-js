@@ -12,37 +12,37 @@
  * It is derived from the eligibility response via formatConfigForPaymentRequest().
  */
 export type GooglePayConfig = {
-    allowedPaymentMethods: ReadonlyArray<{
-        parameters: {
-            allowedAuthMethods: ReadonlyArray<"CRYPTOGRAM_3DS" | "PAN_ONLY">;
-            allowedCardNetworks: ReadonlyArray<
-                "AMEX" | "DISCOVER" | "INTERAC" | "JCB" | "MASTERCARD" | "VISA"
-            >;
-            assuranceDetailsRequired?: boolean;
-            billingAddressRequired?: boolean;
-            billingAddressParameters?: {
-                format?: "MIN" | "FULL";
-                phoneNumberRequired?: boolean;
-            };
-        };
-        tokenizationSpecification: {
-            parameters: {
-                gateway: string;
-                gatewayMerchantId: string;
-            };
-            type: string;
-        };
-        type: string;
-    }>;
-    apiVersion: number;
-    apiVersionMinor: number;
-    countryCode: string;
-    merchantInfo: {
-        authJwt?: string;
-        merchantId: string;
-        merchantName?: string;
-        merchantOrigin: string;
+  allowedPaymentMethods: ReadonlyArray<{
+    parameters: {
+      allowedAuthMethods: ReadonlyArray<"CRYPTOGRAM_3DS" | "PAN_ONLY">;
+      allowedCardNetworks: ReadonlyArray<
+        "AMEX" | "DISCOVER" | "INTERAC" | "JCB" | "MASTERCARD" | "VISA"
+      >;
+      assuranceDetailsRequired?: boolean;
+      billingAddressRequired?: boolean;
+      billingAddressParameters?: {
+        format?: "MIN" | "FULL";
+        phoneNumberRequired?: boolean;
+      };
     };
+    tokenizationSpecification: {
+      parameters: {
+        gateway: string;
+        gatewayMerchantId: string;
+      };
+      type: string;
+    };
+    type: string;
+  }>;
+  apiVersion: number;
+  apiVersionMinor: number;
+  countryCode: string;
+  merchantInfo: {
+    authJwt?: string;
+    merchantId: string;
+    merchantName?: string;
+    merchantOrigin: string;
+  };
 };
 
 /**
@@ -56,53 +56,53 @@ export type GooglePayConfig = {
  * becomes `allowedCardNetworks`, `merchantCountry` becomes `countryCode`).
  */
 export type GooglePayConfigFromFindEligibleMethods = {
-    eligible: boolean;
-    merchantCountry: string;
-    apiVersion: number;
-    apiVersionMinor: number;
-    allowedPaymentMethods: ReadonlyArray<{
-        type: string;
-        parameters: {
-            allowedAuthMethods: ReadonlyArray<"CRYPTOGRAM_3DS" | "PAN_ONLY">;
-            supportedNetworks: ReadonlyArray<
-                "AMEX" | "DISCOVER" | "INTERAC" | "JCB" | "MASTERCARD" | "VISA"
-            >;
-            billingAddressRequired: boolean;
-            assuranceDetailsRequired: boolean;
-            billingAddressParameters: {
-                format?: "MIN" | "FULL";
-                phoneNumberRequired?: boolean;
-            };
-        };
-        tokenizationSpecification: {
-            type: string;
-            parameters: {
-                gateway: string;
-                gatewayMerchantId: string;
-            };
-        };
-    }>;
-    merchantInfo: {
-        merchantOrigin: string;
-        merchantId: string;
-        authJwt?: string;
+  eligible: boolean;
+  merchantCountry: string;
+  apiVersion: number;
+  apiVersionMinor: number;
+  allowedPaymentMethods: ReadonlyArray<{
+    type: string;
+    parameters: {
+      allowedAuthMethods: ReadonlyArray<"CRYPTOGRAM_3DS" | "PAN_ONLY">;
+      supportedNetworks: ReadonlyArray<
+        "AMEX" | "DISCOVER" | "INTERAC" | "JCB" | "MASTERCARD" | "VISA"
+      >;
+      billingAddressRequired: boolean;
+      assuranceDetailsRequired: boolean;
+      billingAddressParameters: {
+        format?: "MIN" | "FULL";
+        phoneNumberRequired?: boolean;
+      };
     };
+    tokenizationSpecification: {
+      type: string;
+      parameters: {
+        gateway: string;
+        gatewayMerchantId: string;
+      };
+    };
+  }>;
+  merchantInfo: {
+    merchantOrigin: string;
+    merchantId: string;
+    authJwt?: string;
+  };
 };
 
 /**
  * Contact information in Google Pay payment data
  */
 export type GooglePayPaymentContact = {
-    name: string;
-    postalCode: string;
-    countryCode: string;
-    phoneNumber: string;
-    address1: string;
-    address2: string;
-    address3: string;
-    locality: string;
-    administrativeArea: string;
-    sortingCode: string;
+  name: string;
+  postalCode: string;
+  countryCode: string;
+  phoneNumber: string;
+  address1: string;
+  address2: string;
+  address3: string;
+  locality: string;
+  administrativeArea: string;
+  sortingCode: string;
 };
 
 /**
@@ -111,8 +111,8 @@ export type GooglePayPaymentContact = {
  * @internal
  */
 type AssuranceDetailsSpec = {
-    accountVerified: boolean;
-    cardHolderAuthenticated: boolean;
+  accountVerified: boolean;
+  cardHolderAuthenticated: boolean;
 };
 
 /**
@@ -121,10 +121,10 @@ type AssuranceDetailsSpec = {
  * @internal
  */
 type CardInfo = {
-    cardDetails: string;
-    cardNetwork: string;
-    assuranceDetails: AssuranceDetailsSpec;
-    billingAddress?: GooglePayPaymentContact;
+  cardDetails: string;
+  cardNetwork: string;
+  assuranceDetails: AssuranceDetailsSpec;
+  billingAddress?: GooglePayPaymentContact;
 };
 
 /**
@@ -133,8 +133,8 @@ type CardInfo = {
  * @internal
  */
 type GooglePayTokenizationData = {
-    type: string;
-    token: string;
+  type: string;
+  token: string;
 };
 
 /**
@@ -145,10 +145,10 @@ type GooglePayTokenizationData = {
  * in the onPaymentAuthorized callback. It's passed to confirmOrder().
  */
 export type GooglePayPaymentMethodData = {
-    description: string | null;
-    tokenizationData: GooglePayTokenizationData;
-    type: string;
-    info: CardInfo;
+  description: string | null;
+  tokenizationData: GooglePayTokenizationData;
+  type: string;
+  info: CardInfo;
 };
 
 /**
@@ -160,26 +160,26 @@ export type GooglePayPaymentMethodData = {
  * as it includes all required fields for Google's PaymentsClient.
  */
 export type GooglePayConfigResponse = {
-    allowedPaymentMethods: ReadonlyArray<{
-        parameters: {
-            allowedAuthMethods: ReadonlyArray<string>;
-            allowedCardNetworks: ReadonlyArray<string>;
-        };
-        tokenizationSpecification: {
-            parameters: {
-                gateway: string;
-                gatewayMerchantId: string;
-            };
-            type: string;
-        };
-        type: string;
-    }>;
-    merchantInfo: {
-        authJwt: string;
-        merchantId: string;
-        merchantName: string;
-        merchantOrigin: string;
+  allowedPaymentMethods: ReadonlyArray<{
+    parameters: {
+      allowedAuthMethods: ReadonlyArray<string>;
+      allowedCardNetworks: ReadonlyArray<string>;
     };
+    tokenizationSpecification: {
+      parameters: {
+        gateway: string;
+        gatewayMerchantId: string;
+      };
+      type: string;
+    };
+    type: string;
+  }>;
+  merchantInfo: {
+    authJwt: string;
+    merchantId: string;
+    merchantName: string;
+    merchantOrigin: string;
+  };
 };
 
 /**
@@ -190,23 +190,23 @@ export type GooglePayConfigResponse = {
  * Check the status field to determine if 3DS authentication is required.
  */
 export type GooglePayApprovePaymentResponse = {
-    id: string;
-    status: string;
-    payment_source: {
-        google_pay: {
-            name: string;
-            card: {
-                last_digits: string;
-                type: string;
-                brand: string;
-            };
-        };
+  id: string;
+  status: string;
+  payment_source: {
+    google_pay: {
+      name: string;
+      card: {
+        last_digits: string;
+        type: string;
+        brand: string;
+      };
     };
-    links: ReadonlyArray<{
-        href: string;
-        rel: string;
-        method: string;
-    }>;
+  };
+  links: ReadonlyArray<{
+    href: string;
+    rel: string;
+    method: string;
+  }>;
 };
 
 /**
@@ -217,11 +217,11 @@ export type GooglePayApprovePaymentResponse = {
  * The clientId is managed internally by the SDK.
  */
 export type GooglePayConfirmOrderOptions = {
-    orderId: string;
-    paymentMethodData: GooglePayPaymentMethodData;
-    shippingAddress?: GooglePayPaymentContact;
-    billingAddress?: GooglePayPaymentContact;
-    email?: string;
+  orderId: string;
+  paymentMethodData: GooglePayPaymentMethodData;
+  shippingAddress?: GooglePayPaymentContact;
+  billingAddress?: GooglePayPaymentContact;
+  email?: string;
 };
 
 /**
@@ -234,88 +234,88 @@ export type GooglePayConfirmOrderOptions = {
  * call confirmOrder() when payment data is received.
  */
 export interface GooglePayOneTimePaymentSession {
-    /**
-     * Transforms Google Pay eligibility config into the format required by Google's PaymentsClient
-     *
-     * @remarks
-     * Performs field renames required by Google's API:
-     * - `supportedNetworks` becomes `allowedCardNetworks`
-     * - `merchantCountry` becomes `countryCode`
-     * - Removes `authJwt` in sandbox environments
-     *
-     * This must be called before passing config to `isReadyToPay()` or `loadPaymentData()`.
-     *
-     * @param googlePayConfigFromFindEligibleMethods - Configuration from `getDetails("googlepay").config`
-     * @returns Formatted configuration ready for Google Pay SDK
-     *
-     * @example
-     * ```typescript
-     * const details = paymentMethods.getDetails("googlepay");
-     * const googlePayConfig = session.formatConfigForPaymentRequest(details.config);
-     * const isReady = await paymentsClient.isReadyToPay({
-     *   allowedPaymentMethods: googlePayConfig.allowedPaymentMethods,
-     *   apiVersion: googlePayConfig.apiVersion,
-     *   apiVersionMinor: googlePayConfig.apiVersionMinor,
-     * });
-     * ```
-     */
-    formatConfigForPaymentRequest(
-        googlePayConfigFromFindEligibleMethods: GooglePayConfigFromFindEligibleMethods,
-    ): GooglePayConfig;
+  /**
+   * Transforms Google Pay eligibility config into the format required by Google's PaymentsClient
+   *
+   * @remarks
+   * Performs field renames required by Google's API:
+   * - `supportedNetworks` becomes `allowedCardNetworks`
+   * - `merchantCountry` becomes `countryCode`
+   * - Removes `authJwt` in sandbox environments
+   *
+   * This must be called before passing config to `isReadyToPay()` or `loadPaymentData()`.
+   *
+   * @param googlePayConfigFromFindEligibleMethods - Configuration from `getDetails("googlepay").config`
+   * @returns Formatted configuration ready for Google Pay SDK
+   *
+   * @example
+   * ```typescript
+   * const details = paymentMethods.getDetails("googlepay");
+   * const googlePayConfig = session.formatConfigForPaymentRequest(details.config);
+   * const isReady = await paymentsClient.isReadyToPay({
+   *   allowedPaymentMethods: googlePayConfig.allowedPaymentMethods,
+   *   apiVersion: googlePayConfig.apiVersion,
+   *   apiVersionMinor: googlePayConfig.apiVersionMinor,
+   * });
+   * ```
+   */
+  formatConfigForPaymentRequest(
+    googlePayConfigFromFindEligibleMethods: GooglePayConfigFromFindEligibleMethods,
+  ): GooglePayConfig;
 
-    /**
-     * Fetches Google Pay configuration from PayPal
-     *
-     * @remarks
-     * Makes an API request for fresh Google Pay configuration. This is an
-     * alternative code path that is rarely used in practice — the config
-     * bundled in findEligibleMethods() is the recommended approach.
-     *
-     * @returns Promise resolving to Google Pay configuration
-     *
-     * @example
-     * ```typescript
-     * const config = await session.getGooglePayConfig();
-     * ```
-     */
-    getGooglePayConfig(): Promise<GooglePayConfigResponse>;
+  /**
+   * Fetches Google Pay configuration from PayPal
+   *
+   * @remarks
+   * Makes an API request for fresh Google Pay configuration. This is an
+   * alternative code path that is rarely used in practice — the config
+   * bundled in findEligibleMethods() is the recommended approach.
+   *
+   * @returns Promise resolving to Google Pay configuration
+   *
+   * @example
+   * ```typescript
+   * const config = await session.getGooglePayConfig();
+   * ```
+   */
+  getGooglePayConfig(): Promise<GooglePayConfigResponse>;
 
-    /**
-     * Confirms a Google Pay payment with PayPal
-     *
-     * @remarks
-     * After the customer approves payment through Google Pay, call this method
-     * with the payment data from Google's onPaymentAuthorized callback.
-     * The response indicates whether 3DS authentication is required.
-     *
-     * @param options - Payment confirmation options
-     * @returns Promise resolving to the approved payment response
-     *
-     * @example
-     * ```typescript
-     * const response = await session.confirmOrder({
-     *   orderId: "ORDER-ID",
-     *   paymentMethodData: paymentData.paymentMethodData,
-     * });
-     *
-     * if (response.status !== "PAYER_ACTION_REQUIRED") {
-     *   // Capture the order
-     * }
-     * ```
-     */
-    confirmOrder(
-        options: GooglePayConfirmOrderOptions,
-    ): Promise<GooglePayApprovePaymentResponse>;
+  /**
+   * Confirms a Google Pay payment with PayPal
+   *
+   * @remarks
+   * After the customer approves payment through Google Pay, call this method
+   * with the payment data from Google's onPaymentAuthorized callback.
+   * The response indicates whether 3DS authentication is required.
+   *
+   * @param options - Payment confirmation options
+   * @returns Promise resolving to the approved payment response
+   *
+   * @example
+   * ```typescript
+   * const response = await session.confirmOrder({
+   *   orderId: "ORDER-ID",
+   *   paymentMethodData: paymentData.paymentMethodData,
+   * });
+   *
+   * if (response.status !== "PAYER_ACTION_REQUIRED") {
+   *   // Capture the order
+   * }
+   * ```
+   */
+  confirmOrder(
+    options: GooglePayConfirmOrderOptions,
+  ): Promise<GooglePayApprovePaymentResponse>;
 
-    /**
-     * Initiates 3DS authentication flow (placeholder)
-     *
-     * @remarks
-     * This method is currently a placeholder for future 3DS support.
-     *
-     * @internal
-     */
-    initiatePayerAction(): void;
+  /**
+   * Initiates 3DS authentication flow (placeholder)
+   *
+   * @remarks
+   * This method is currently a placeholder for future 3DS support.
+   *
+   * @internal
+   */
+  initiatePayerAction(): void;
 }
 
 /**
@@ -341,15 +341,15 @@ export interface GooglePayOneTimePaymentSession {
  * ```
  */
 export interface GooglePayPaymentsInstance {
-    /**
-     * Creates a Google Pay one-time payment session
-     *
-     * @remarks
-     * This session object provides methods to configure Google Pay and confirm orders.
-     * Note that this session does not drive the UI directly — you'll use Google's
-     * PaymentsClient to render the button and collect payment data.
-     *
-     * @returns A session object for managing the Google Pay payment flow
-     */
-    createGooglePayOneTimePaymentSession(): GooglePayOneTimePaymentSession;
+  /**
+   * Creates a Google Pay one-time payment session
+   *
+   * @remarks
+   * This session object provides methods to configure Google Pay and confirm orders.
+   * Note that this session does not drive the UI directly — you'll use Google's
+   * PaymentsClient to render the button and collect payment data.
+   *
+   * @returns A session object for managing the Google Pay payment flow
+   */
+  createGooglePayOneTimePaymentSession(): GooglePayOneTimePaymentSession;
 }
