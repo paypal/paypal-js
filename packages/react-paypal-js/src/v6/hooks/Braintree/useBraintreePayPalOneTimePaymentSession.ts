@@ -121,7 +121,7 @@ export function useBraintreePayPalOneTimePaymentSession({
       return;
     }
 
-    const newSession = createBraintreePaymentSession(
+    const newSession = createPaymentSession(
       () =>
         braintreePayPalCheckoutInstance.createOneTimePaymentSession({
           amount,
@@ -142,6 +142,7 @@ export function useBraintreePayPalOneTimePaymentSession({
       failedInstanceRef,
       braintreePayPalCheckoutInstance,
       setError,
+      "Failed to create Braintree payment session. Ensure the BraintreePayPalProvider is properly initialized with a valid client token and namespace.",
     );
 
     if (!newSession) {
