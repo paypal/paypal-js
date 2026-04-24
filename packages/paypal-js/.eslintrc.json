@@ -16,7 +16,6 @@
   },
   "ignorePatterns": ["dist/*.js"],
   "rules": {
-    "indent": ["error", 4],
     "semi": ["error", "always"]
   },
   "settings": {
