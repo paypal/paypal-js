@@ -41,8 +41,8 @@ export interface UseBraintreePayPalOneTimePaymentSessionReturn {
  *     currency: "USD",
  *     onApprove: async (data) => {
  *       const payload = await braintreePayPalCheckoutInstance.tokenizePayment({
- *         payerID: data.payerID,
- *         orderID: data.orderID,
+ *         payerID: data.payerId,
+ *         orderID: data.orderId,
  *       });
  *       // Send payload.nonce to your server
  *     },
