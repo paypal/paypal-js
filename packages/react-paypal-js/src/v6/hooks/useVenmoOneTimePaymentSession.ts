@@ -94,8 +94,8 @@ export function useVenmoOneTimePaymentSession({
       return;
     }
 
-    const newSession = createPaymentSession(
-      () =>
+    const newSession = createPaymentSession({
+      sessionCreator: () =>
         sdkInstance.createVenmoOneTimePaymentSession({
           orderId,
           ...proxyCallbacks,
@@ -103,8 +103,9 @@ export function useVenmoOneTimePaymentSession({
       failedSdkRef,
       sdkInstance,
       setError,
-      'Failed to create payment session. This may occur if the required component "venmo-payments" is not included in the SDK components array.',
-    );
+      errorMessage:
+        'Failed to create payment session. This may occur if the required component "venmo-payments" is not included in the SDK components array.',
+    });
 
     if (!newSession) {
       return;

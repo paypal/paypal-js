@@ -177,6 +177,7 @@ describe("PayPalProvider", () => {
       ],
     ])(
       "should inject script element for %s environment",
+      // eslint-disable-next-line max-params
       async (_env, environment, scriptSrc, urlFragment) => {
         (loadCoreSdkScript as jest.Mock).mockImplementation(() => {
           const script = document.createElement("script");

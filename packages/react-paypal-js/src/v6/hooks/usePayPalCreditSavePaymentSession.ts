@@ -100,8 +100,8 @@ export function usePayPalCreditSavePaymentSession({
       return;
     }
 
-    const newSession = createPaymentSession(
-      () =>
+    const newSession = createPaymentSession({
+      sessionCreator: () =>
         sdkInstance.createPayPalSavePaymentSession({
           vaultSetupToken,
           ...proxyCallbacks,
@@ -109,8 +109,9 @@ export function usePayPalCreditSavePaymentSession({
       failedSdkRef,
       sdkInstance,
       setError,
-      'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
-    );
+      errorMessage:
+        'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
+    });
 
     if (!newSession) {
       return;
