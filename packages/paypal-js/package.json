@@ -65,10 +65,10 @@
     "@rollup/plugin-typescript": "^12.1.4",
     "@types/node": "^20.10.5",
     "@types/promise-polyfill": "6.0.6",
-    "@typescript-eslint/eslint-plugin": "6.15.0",
-    "@typescript-eslint/parser": "6.15.0",
+    "@typescript-eslint/eslint-plugin": "8.59.0",
+    "@typescript-eslint/parser": "8.59.0",
     "@vitest/coverage-v8": "^1.6.0",
-    "eslint": "8.56.0",
+    "eslint": "8.57.1",
     "eslint-plugin-tsdoc": "^0.4.0",
     "filesize": "10.1.0",
     "husky": "8.0.3",
@@ -80,7 +80,7 @@
     "tslib": "2.6.2",
     "typedoc": "^0.28.13",
     "typedoc-material-theme": "^1.4.0",
-    "typescript": "5.3.3",
+    "typescript": "5.9.3",
     "vitest": "1.6.1"
   },
   "dependencies": {
