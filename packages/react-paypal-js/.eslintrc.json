@@ -30,6 +30,7 @@
     "jsdoc/no-undefined-types": 1,
     "react/prop-types": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
+    "max-params": ["error", 3],
     "curly": "warn",
     "eqeqeq": "warn",
     "import/order": [

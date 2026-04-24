@@ -112,8 +112,8 @@ export function usePayPalGuestPaymentSession({
       return;
     }
 
-    const newSession = createPaymentSession(
-      () =>
+    const newSession = createPaymentSession({
+      sessionCreator: () =>
         sdkInstance.createPayPalGuestOneTimePaymentSession({
           orderId,
           ...proxyCallbacks,
@@ -123,8 +123,9 @@ export function usePayPalGuestPaymentSession({
       failedSdkRef,
       sdkInstance,
       setError,
-      "paypal-guest-payments",
-    );
+      errorMessage:
+        'Failed to create payment session. This may occur if the required component "paypal-guest-payments" is not included in the SDK components array.',
+    });
 
     if (!newSession) {
       return;

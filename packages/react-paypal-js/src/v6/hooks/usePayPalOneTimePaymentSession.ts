@@ -99,8 +99,8 @@ export function usePayPalOneTimePaymentSession({
       return;
     }
 
-    const newSession = createPaymentSession(
-      () =>
+    const newSession = createPaymentSession({
+      sessionCreator: () =>
         sdkInstance.createPayPalOneTimePaymentSession({
           orderId,
           savePayment,
@@ -110,8 +110,9 @@ export function usePayPalOneTimePaymentSession({
       failedSdkRef,
       sdkInstance,
       setError,
-      "paypal-payments",
-    );
+      errorMessage:
+        'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
+    });
 
     if (!newSession) {
       return;

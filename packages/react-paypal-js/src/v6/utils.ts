@@ -177,6 +177,7 @@ export function useDeepCompareMemoize<T>(value: T): T {
  * deepEqual({ amount: "10.00", currency: "USD" }, { amount: "10.00", currency: "USD" }); // true
  * deepEqual({ amount: "10.00" }, { amount: "20.00" }); // false
  */
+// eslint-disable-next-line max-params
 export function deepEqual(
   obj1: unknown,
   obj2: unknown,
@@ -252,34 +253,38 @@ export function deepEqual(
   return true;
 }
 
+interface CreatePaymentSessionOptions<T> {
+  sessionCreator: () => T;
+  failedSdkRef: { current: unknown };
+  sdkInstance: unknown;
+  setError: (error: Error | null) => void;
+  errorMessage: string;
+}
+
 /**
  * Creates a payment session with error handling and retry prevention.
  *
- * @param sessionCreator - Function that creates the payment session
- * @param failedSdkRef - Ref tracking which SDK instance failed
- * @param sdkInstance - Current SDK instance
- * @param setError - Error state setter
- * @param component - The required component name for this session type
+ * @param options - Configuration for creating the payment session
  * @returns The payment session or null if creation fails
  *
  * @example
- * const session = createPaymentSession(
- *   () => sdkInstance.createPayPalOneTimePaymentSession({ orderId, ...callbacks }),
+ * const session = createPaymentSession({
+ *   sessionCreator: () => sdkInstance.createPayPalOneTimePaymentSession({ orderId, ...callbacks }),
  *   failedSdkRef,
  *   sdkInstance,
  *   setError,
- *   "paypal-payments"
- * );
+ *   errorMessage: 'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
+ * });
  *
  * if (!session) return;
  */
-export function createPaymentSession<T>(
-  sessionCreator: () => T,
-  failedSdkRef: { current: unknown },
-  sdkInstance: unknown,
-  setError: (error: Error | null) => void,
-  component: string,
-): T | null {
+export function createPaymentSession<T>({
+  sessionCreator,
+  failedSdkRef,
+  sdkInstance,
+  setError,
+  errorMessage,
+}: CreatePaymentSessionOptions<T>): T | null {
   // Skip retry if this SDK instance already failed
   if (failedSdkRef.current === sdkInstance) {
     return null;
@@ -290,10 +295,7 @@ export function createPaymentSession<T>(
   } catch (err) {
     failedSdkRef.current = sdkInstance;
 
-    const detailedError = new Error(
-      `Failed to create payment session. This may occur if the required component "${component}" is not included in the SDK components array.`,
-      { cause: err },
-    );
+    const detailedError = new Error(errorMessage, { cause: err });
 
     setError(detailedError);
     return null;

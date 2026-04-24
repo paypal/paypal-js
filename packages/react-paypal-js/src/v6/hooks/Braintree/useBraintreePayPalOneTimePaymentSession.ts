@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useRef } from "react";
 
 import { useBraintreePayPal } from "./useBraintreePayPal";
-import { createBraintreePaymentSession } from "./braintreeUtils";
 import { useIsMountedRef } from "../useIsMounted";
 import { useError } from "../useError";
-import { useProxyProps, useDeepCompareMemoize } from "../../utils";
+import {
+  createPaymentSession,
+  useProxyProps,
+  useDeepCompareMemoize,
+} from "../../utils";
 import { INSTANCE_LOADING_STATE } from "../../types/ProviderEnums";
 
 import type {
@@ -38,8 +41,8 @@ export interface UseBraintreePayPalOneTimePaymentSessionReturn {
  *     currency: "USD",
  *     onApprove: async (data) => {
  *       const payload = await braintreePayPalCheckoutInstance.tokenizePayment({
- *         payerID: data.payerID,
- *         orderID: data.orderID,
+ *         payerID: data.payerId,
+ *         orderID: data.orderId,
  *       });
  *       // Send payload.nonce to your server
  *     },
@@ -118,8 +121,8 @@ export function useBraintreePayPalOneTimePaymentSession({
       return;
     }
 
-    const newSession = createBraintreePaymentSession(
-      () =>
+    const newSession = createPaymentSession({
+      sessionCreator: () =>
         braintreePayPalCheckoutInstance.createOneTimePaymentSession({
           amount,
           currency,
@@ -136,10 +139,12 @@ export function useBraintreePayPalOneTimePaymentSession({
           amountBreakdown: memoizedAmountBreakdown,
           ...proxyCallbacks,
         }),
-      failedInstanceRef,
-      braintreePayPalCheckoutInstance,
+      failedSdkRef: failedInstanceRef,
+      sdkInstance: braintreePayPalCheckoutInstance,
       setError,
-    );
+      errorMessage:
+        "Failed to create Braintree payment session. Ensure the BraintreePayPalProvider is properly initialized with a valid client token and namespace.",
+    });
 
     if (!newSession) {
       return;

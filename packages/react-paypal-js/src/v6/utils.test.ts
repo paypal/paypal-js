@@ -11,6 +11,8 @@ import {
 } from "./utils";
 
 describe("createPaymentSession", () => {
+  const errorMessage =
+    'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.';
   let mockSetError: jest.Mock;
   let failedSdkRef: { current: unknown };
   let mockSdkInstance: unknown;
@@ -30,13 +32,13 @@ describe("createPaymentSession", () => {
       const mockSession = { start: jest.fn(), destroy: jest.fn() };
       const sessionCreator = jest.fn().mockReturnValue(mockSession);
 
-      const result = createPaymentSession(
+      const result = createPaymentSession({
         sessionCreator,
         failedSdkRef,
-        mockSdkInstance,
-        mockSetError,
-        "paypal-payments",
-      );
+        sdkInstance: mockSdkInstance,
+        setError: mockSetError,
+        errorMessage,
+      });
 
       expect(result).toBe(mockSession);
       expect(sessionCreator).toHaveBeenCalledTimes(1);
@@ -45,29 +47,27 @@ describe("createPaymentSession", () => {
     });
   });
 
-  describe("error handling with component parameter", () => {
+  describe("error handling with errorMessage parameter", () => {
     test("should handle session creation failure with proper error message and error preservation", () => {
       const originalError = new Error("Component missing");
       const sessionCreator = jest.fn().mockImplementation(() => {
         throw originalError;
       });
 
-      const result = createPaymentSession(
+      const result = createPaymentSession({
         sessionCreator,
         failedSdkRef,
-        mockSdkInstance,
-        mockSetError,
-        "paypal-payments",
-      );
+        sdkInstance: mockSdkInstance,
+        setError: mockSetError,
+        errorMessage,
+      });
 
       expect(result).toBeNull();
       expect(mockSetError).toHaveBeenCalledTimes(1);
 
       const thrownError = mockSetError.mock.calls[0][0];
       expect(thrownError).toBeInstanceOf(Error);
-      expect(thrownError.message).toBe(
-        'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
-      );
+      expect(thrownError.message).toBe(errorMessage);
       expect(thrownError.cause).toBe(originalError);
       expect(failedSdkRef.current).toBe(mockSdkInstance);
     });
@@ -80,13 +80,13 @@ describe("createPaymentSession", () => {
         throw new Error("Failed");
       });
 
-      const firstResult = createPaymentSession(
+      const firstResult = createPaymentSession({
         sessionCreator,
         failedSdkRef,
-        mockSdkInstance,
-        mockSetError,
-        "paypal-payments",
-      );
+        sdkInstance: mockSdkInstance,
+        setError: mockSetError,
+        errorMessage,
+      });
 
       expect(firstResult).toBeNull();
       expect(sessionCreator).toHaveBeenCalledTimes(1);
@@ -96,13 +96,13 @@ describe("createPaymentSession", () => {
       jest.clearAllMocks();
 
       // Second call with same SDK instance should return null immediately
-      const secondResult = createPaymentSession(
+      const secondResult = createPaymentSession({
         sessionCreator,
         failedSdkRef,
-        mockSdkInstance,
-        mockSetError,
-        "paypal-payments",
-      );
+        sdkInstance: mockSdkInstance,
+        setError: mockSetError,
+        errorMessage,
+      });
 
       expect(secondResult).toBeNull();
       expect(sessionCreator).not.toHaveBeenCalled();
@@ -115,13 +115,13 @@ describe("createPaymentSession", () => {
         throw new Error("Failed");
       });
 
-      createPaymentSession(
-        failingCreator,
+      createPaymentSession({
+        sessionCreator: failingCreator,
         failedSdkRef,
-        mockSdkInstance,
-        mockSetError,
-        "paypal-payments",
-      );
+        sdkInstance: mockSdkInstance,
+        setError: mockSetError,
+        errorMessage,
+      });
 
       expect(failedSdkRef.current).toBe(mockSdkInstance);
 
@@ -131,13 +131,13 @@ describe("createPaymentSession", () => {
       const successfulCreator = jest.fn().mockReturnValue(mockSession);
 
       // Should succeed with new SDK instance
-      const result = createPaymentSession(
-        successfulCreator,
+      const result = createPaymentSession({
+        sessionCreator: successfulCreator,
         failedSdkRef,
-        newSdkInstance,
-        mockSetError,
-        "paypal-payments",
-      );
+        sdkInstance: newSdkInstance,
+        setError: mockSetError,
+        errorMessage,
+      });
 
       expect(result).toBe(mockSession);
       expect(successfulCreator).toHaveBeenCalledTimes(1);

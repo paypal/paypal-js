@@ -191,13 +191,14 @@ export function useApplePayOneTimePaymentSession({
       return;
     }
 
-    const newSession = createPaymentSession(
-      () => sdkInstance.createApplePayOneTimePaymentSession(),
+    const newSession = createPaymentSession({
+      sessionCreator: () => sdkInstance.createApplePayOneTimePaymentSession(),
       failedSdkRef,
       sdkInstance,
       setError,
-      "applepay-payments",
-    );
+      errorMessage:
+        'Failed to create payment session. This may occur if the required component "applepay-payments" is not included in the SDK components array.',
+    });
 
     if (!newSession) {
       return;

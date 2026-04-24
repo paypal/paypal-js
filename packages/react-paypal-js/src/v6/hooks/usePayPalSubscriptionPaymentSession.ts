@@ -95,16 +95,17 @@ export function usePayPalSubscriptionPaymentSession({
       return;
     }
 
-    const newSession = createPaymentSession(
-      () =>
+    const newSession = createPaymentSession({
+      sessionCreator: () =>
         sdkInstance.createPayPalSubscriptionPaymentSession({
           ...proxyCallbacks,
         }),
       failedSdkRef,
       sdkInstance,
       setError,
-      "paypal-subscriptions",
-    );
+      errorMessage:
+        'Failed to create payment session. This may occur if the required component "paypal-subscriptions" is not included in the SDK components array.',
+    });
 
     if (!newSession) {
       return;
