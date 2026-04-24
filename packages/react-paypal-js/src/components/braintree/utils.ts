@@ -2,8 +2,8 @@ import { loadCustomScript } from "@paypal/paypal-js";
 
 import { getBraintreeWindowNamespace } from "../../utils";
 import {
-    BRAINTREE_SOURCE,
-    BRAINTREE_PAYPAL_CHECKOUT_SOURCE,
+  BRAINTREE_SOURCE,
+  BRAINTREE_PAYPAL_CHECKOUT_SOURCE,
 } from "../../constants";
 
 import type { BraintreeNamespace } from "./../../types/braintreePayPalButtonTypes";
@@ -17,15 +17,15 @@ import type { BraintreePayPalButtonsComponentProps } from "../../types";
  * @returns a boolean representing if the namespace is valid.
  */
 const isValidBraintreeNamespace = (braintreeSource?: BraintreeNamespace) => {
-    if (
-        typeof braintreeSource?.client?.create !== "function" &&
-        typeof braintreeSource?.paypalCheckout?.create !== "function"
-    ) {
-        throw new Error(
-            "The braintreeNamespace property is not a valid BraintreeNamespace type.",
-        );
-    }
-    return true;
+  if (
+    typeof braintreeSource?.client?.create !== "function" &&
+    typeof braintreeSource?.paypalCheckout?.create !== "function"
+  ) {
+    throw new Error(
+      "The braintreeNamespace property is not a valid BraintreeNamespace type.",
+    );
+  }
+  return true;
 };
 
 /**
@@ -36,38 +36,38 @@ const isValidBraintreeNamespace = (braintreeSource?: BraintreeNamespace) => {
  * @returns a new copy of the component button options casted as {@link PayPalButtonsComponentProps}
  */
 export const decorateActions = (
-    buttonProps: BraintreePayPalButtonsComponentProps,
-    payPalCheckoutInstance: BraintreePayPalCheckout,
+  buttonProps: BraintreePayPalButtonsComponentProps,
+  payPalCheckoutInstance: BraintreePayPalCheckout,
 ): BraintreePayPalButtonsComponentProps => {
-    const createOrderRef = buttonProps.createOrder;
-    const createBillingAgreementRef = buttonProps.createBillingAgreement;
-    const onApproveRef = buttonProps.onApprove;
+  const createOrderRef = buttonProps.createOrder;
+  const createBillingAgreementRef = buttonProps.createBillingAgreement;
+  const onApproveRef = buttonProps.onApprove;
 
-    if (typeof createOrderRef === "function") {
-        buttonProps.createOrder = (data, actions) =>
-            createOrderRef(data, {
-                ...actions,
-                braintree: payPalCheckoutInstance,
-            });
-    }
+  if (typeof createOrderRef === "function") {
+    buttonProps.createOrder = (data, actions) =>
+      createOrderRef(data, {
+        ...actions,
+        braintree: payPalCheckoutInstance,
+      });
+  }
 
-    if (typeof createBillingAgreementRef === "function") {
-        buttonProps.createBillingAgreement = (data, actions) =>
-            createBillingAgreementRef(data, {
-                ...actions,
-                braintree: payPalCheckoutInstance,
-            });
-    }
+  if (typeof createBillingAgreementRef === "function") {
+    buttonProps.createBillingAgreement = (data, actions) =>
+      createBillingAgreementRef(data, {
+        ...actions,
+        braintree: payPalCheckoutInstance,
+      });
+  }
 
-    if (typeof onApproveRef === "function") {
-        buttonProps.onApprove = (data, actions) =>
-            onApproveRef(data, {
-                ...actions,
-                braintree: payPalCheckoutInstance,
-            });
-    }
+  if (typeof onApproveRef === "function") {
+    buttonProps.onApprove = (data, actions) =>
+      onApproveRef(data, {
+        ...actions,
+        braintree: payPalCheckoutInstance,
+      });
+  }
 
-    return { ...buttonProps };
+  return { ...buttonProps };
 };
 /**
  * Get the Braintree namespace from the component props.
@@ -86,14 +86,14 @@ export const decorateActions = (
  * @returns the {@link BraintreeNamespace}
  */
 export const getBraintreeNamespace = (
-    braintreeSource?: BraintreeNamespace,
+  braintreeSource?: BraintreeNamespace,
 ): Promise<BraintreeNamespace> => {
-    if (braintreeSource && isValidBraintreeNamespace(braintreeSource)) {
-        return Promise.resolve(braintreeSource);
-    }
+  if (braintreeSource && isValidBraintreeNamespace(braintreeSource)) {
+    return Promise.resolve(braintreeSource);
+  }
 
-    return Promise.all([
-        loadCustomScript({ url: BRAINTREE_SOURCE }),
-        loadCustomScript({ url: BRAINTREE_PAYPAL_CHECKOUT_SOURCE }),
-    ]).then(() => getBraintreeWindowNamespace());
+  return Promise.all([
+    loadCustomScript({ url: BRAINTREE_SOURCE }),
+    loadCustomScript({ url: BRAINTREE_PAYPAL_CHECKOUT_SOURCE }),
+  ]).then(() => getBraintreeWindowNamespace());
 };

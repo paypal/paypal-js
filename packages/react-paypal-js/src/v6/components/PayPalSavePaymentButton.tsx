@@ -7,9 +7,9 @@ import type { ButtonProps } from "../types";
 import type { UsePayPalSavePaymentSessionProps } from "../hooks/usePayPalSavePaymentSession";
 
 type PayPalSavePaymentButtonProps = UsePayPalSavePaymentSessionProps &
-    ButtonProps & {
-        autoRedirect?: never;
-    };
+  ButtonProps & {
+    autoRedirect?: never;
+  };
 
 /**
  * `PayPalSavePaymentButton` is a button that provides a PayPal vault/save payment flow
@@ -32,29 +32,27 @@ type PayPalSavePaymentButtonProps = UsePayPalSavePaymentSessionProps &
  * />
  */
 export const PayPalSavePaymentButton = ({
-    type = "pay",
-    disabled = false,
-    ...hookProps
+  type = "pay",
+  disabled = false,
+  ...hookProps
 }: PayPalSavePaymentButtonProps): JSX.Element | null => {
-    const { error, isPending, handleClick } =
-        usePayPalSavePaymentSession(hookProps);
-    const { isHydrated } = usePayPal();
+  const { error, isPending, handleClick } =
+    usePayPalSavePaymentSession(hookProps);
+  const { isHydrated } = usePayPal();
 
-    useEffect(() => {
-        if (error) {
-            console.error(error);
-        }
-    }, [error]);
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+    }
+  }, [error]);
 
-    return isHydrated ? (
-        <paypal-button
-            type={type}
-            disabled={
-                disabled || isPending || error !== null ? true : undefined
-            }
-            onClick={handleClick}
-        ></paypal-button>
-    ) : (
-        <div />
-    );
+  return isHydrated ? (
+    <paypal-button
+      type={type}
+      disabled={disabled || isPending || error !== null ? true : undefined}
+      onClick={handleClick}
+    ></paypal-button>
+  ) : (
+    <div />
+  );
 };

@@ -3,409 +3,398 @@ import { renderHook, act } from "@testing-library/react-hooks";
 import { expectCurrentErrorValue } from "./useErrorTestUtil";
 import { usePayPalMessages } from "./usePayPalMessages";
 import {
-    mockPayPalContext,
-    mockPayPalRejected,
-    mockPayPalPending,
+  mockPayPalContext,
+  mockPayPalRejected,
+  mockPayPalPending,
 } from "./usePayPalTestUtils";
 
 import type {
-    PayPalMessagesSession,
-    LearnMore,
-    FetchContentOptions,
-    LearnMoreOptions,
-    PayPalMessagesOptions,
+  PayPalMessagesSession,
+  LearnMore,
+  FetchContentOptions,
+  LearnMoreOptions,
+  PayPalMessagesOptions,
 } from "../types";
 
 jest.mock("./usePayPal");
 
 const createMockPayPalMessagesSession = (): PayPalMessagesSession => ({
-    fetchContent: jest.fn().mockResolvedValue({
-        content: "<div>Mock PayPal Messages content</div>",
-        meta: {
-            trackingPayload: "mock-tracking-payload",
-        },
-    }),
-    createLearnMore: jest.fn().mockReturnValue({
-        isOpen: false,
-        open: jest.fn(),
-        close: jest.fn(),
-        update: jest.fn(),
-        show: jest.fn(),
-        setupPostMessenger: jest.fn(),
-    } as LearnMore),
+  fetchContent: jest.fn().mockResolvedValue({
+    content: "<div>Mock PayPal Messages content</div>",
+    meta: {
+      trackingPayload: "mock-tracking-payload",
+    },
+  }),
+  createLearnMore: jest.fn().mockReturnValue({
+    isOpen: false,
+    open: jest.fn(),
+    close: jest.fn(),
+    update: jest.fn(),
+    show: jest.fn(),
+    setupPostMessenger: jest.fn(),
+  } as LearnMore),
 });
 
 const createMockSdkInstance = (
-    messagesSession = createMockPayPalMessagesSession(),
+  messagesSession = createMockPayPalMessagesSession(),
 ) => ({
-    createPayPalMessages: jest.fn().mockReturnValue(messagesSession),
+  createPayPalMessages: jest.fn().mockReturnValue(messagesSession),
 });
 
 describe("usePayPalMessages", () => {
-    let mockMessagesSession: PayPalMessagesSession;
-    let mockSdkInstance: ReturnType<typeof createMockSdkInstance>;
+  let mockMessagesSession: PayPalMessagesSession;
+  let mockSdkInstance: ReturnType<typeof createMockSdkInstance>;
 
-    beforeEach(() => {
-        mockMessagesSession = createMockPayPalMessagesSession();
-        mockSdkInstance = createMockSdkInstance(mockMessagesSession);
+  beforeEach(() => {
+    mockMessagesSession = createMockPayPalMessagesSession();
+    mockSdkInstance = createMockSdkInstance(mockMessagesSession);
 
-        mockPayPalContext({ sdkInstance: mockSdkInstance });
+    mockPayPalContext({ sdkInstance: mockSdkInstance });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  describe("initialization", () => {
+    test("should error if there is no sdkInstance when called", () => {
+      mockPayPalRejected();
+
+      const props: PayPalMessagesOptions = {
+        buyerCountry: "US",
+        currencyCode: "USD",
+      };
+
+      const {
+        result: {
+          current: { error },
+        },
+      } = renderHook(() => usePayPalMessages(props));
+
+      expectCurrentErrorValue(error);
+
+      expect(error).toEqual(new Error("no sdk instance available"));
     });
 
-    afterEach(() => {
-        jest.clearAllMocks();
+    test("should create a PayPal Messages session with all options", () => {
+      const props: PayPalMessagesOptions = {
+        buyerCountry: "US",
+        currencyCode: "USD",
+        shopperSessionId: "test-session-id",
+      };
+
+      renderHook(() => usePayPalMessages(props));
+
+      expect(mockSdkInstance.createPayPalMessages).toHaveBeenCalledWith({
+        buyerCountry: "US",
+        currencyCode: "USD",
+        shopperSessionId: "test-session-id",
+      });
     });
 
-    describe("initialization", () => {
-        test("should error if there is no sdkInstance when called", () => {
-            mockPayPalRejected();
+    test("should create a PayPal Messages session without optional shopperSessionId", () => {
+      const props: PayPalMessagesOptions = {
+        buyerCountry: "US",
+        currencyCode: "USD",
+      };
 
-            const props: PayPalMessagesOptions = {
-                buyerCountry: "US",
-                currencyCode: "USD",
-            };
+      renderHook(() => usePayPalMessages(props));
 
-            const {
-                result: {
-                    current: { error },
-                },
-            } = renderHook(() => usePayPalMessages(props));
+      expect(mockSdkInstance.createPayPalMessages).toHaveBeenCalledWith({
+        buyerCountry: "US",
+        currencyCode: "USD",
+        shopperSessionId: undefined,
+      });
+    });
+  });
 
-            expectCurrentErrorValue(error);
+  describe("session lifecycle", () => {
+    test("should create new session when buyerCountry changes", () => {
+      const { rerender } = renderHook(
+        ({ buyerCountry }) =>
+          usePayPalMessages({
+            buyerCountry,
+            currencyCode: "USD",
+          }),
+        { initialProps: { buyerCountry: "US" } },
+      );
 
-            expect(error).toEqual(new Error("no sdk instance available"));
-        });
+      jest.clearAllMocks();
 
-        test("should create a PayPal Messages session with all options", () => {
-            const props: PayPalMessagesOptions = {
-                buyerCountry: "US",
-                currencyCode: "USD",
-                shopperSessionId: "test-session-id",
-            };
+      rerender({ buyerCountry: "GB" });
 
-            renderHook(() => usePayPalMessages(props));
-
-            expect(mockSdkInstance.createPayPalMessages).toHaveBeenCalledWith({
-                buyerCountry: "US",
-                currencyCode: "USD",
-                shopperSessionId: "test-session-id",
-            });
-        });
-
-        test("should create a PayPal Messages session without optional shopperSessionId", () => {
-            const props: PayPalMessagesOptions = {
-                buyerCountry: "US",
-                currencyCode: "USD",
-            };
-
-            renderHook(() => usePayPalMessages(props));
-
-            expect(mockSdkInstance.createPayPalMessages).toHaveBeenCalledWith({
-                buyerCountry: "US",
-                currencyCode: "USD",
-                shopperSessionId: undefined,
-            });
-        });
+      expect(mockSdkInstance.createPayPalMessages).toHaveBeenCalledWith({
+        buyerCountry: "GB",
+        currencyCode: "USD",
+        shopperSessionId: undefined,
+      });
     });
 
-    describe("session lifecycle", () => {
-        test("should create new session when buyerCountry changes", () => {
-            const { rerender } = renderHook(
-                ({ buyerCountry }) =>
-                    usePayPalMessages({
-                        buyerCountry,
-                        currencyCode: "USD",
-                    }),
-                { initialProps: { buyerCountry: "US" } },
-            );
+    test("should create new session when currencyCode changes", () => {
+      const { rerender } = renderHook(
+        ({ currencyCode }) =>
+          usePayPalMessages({
+            buyerCountry: "US",
+            currencyCode,
+          }),
+        { initialProps: { currencyCode: "USD" } },
+      );
 
-            jest.clearAllMocks();
+      jest.clearAllMocks();
 
-            rerender({ buyerCountry: "GB" });
+      rerender({ currencyCode: "EUR" });
 
-            expect(mockSdkInstance.createPayPalMessages).toHaveBeenCalledWith({
-                buyerCountry: "GB",
-                currencyCode: "USD",
-                shopperSessionId: undefined,
-            });
-        });
-
-        test("should create new session when currencyCode changes", () => {
-            const { rerender } = renderHook(
-                ({ currencyCode }) =>
-                    usePayPalMessages({
-                        buyerCountry: "US",
-                        currencyCode,
-                    }),
-                { initialProps: { currencyCode: "USD" } },
-            );
-
-            jest.clearAllMocks();
-
-            rerender({ currencyCode: "EUR" });
-
-            expect(mockSdkInstance.createPayPalMessages).toHaveBeenCalledWith({
-                buyerCountry: "US",
-                currencyCode: "EUR",
-                shopperSessionId: undefined,
-            });
-        });
-
-        test("should create new session when shopperSessionId changes", () => {
-            const { rerender } = renderHook(
-                ({ shopperSessionId }) =>
-                    usePayPalMessages({
-                        buyerCountry: "US",
-                        currencyCode: "USD",
-                        shopperSessionId,
-                    }),
-                { initialProps: { shopperSessionId: "session-1" } },
-            );
-
-            jest.clearAllMocks();
-
-            rerender({ shopperSessionId: "session-2" });
-
-            expect(mockSdkInstance.createPayPalMessages).toHaveBeenCalledWith({
-                buyerCountry: "US",
-                currencyCode: "USD",
-                shopperSessionId: "session-2",
-            });
-        });
-
-        test("should create new session when sdkInstance changes", () => {
-            const props: PayPalMessagesOptions = {
-                buyerCountry: "US",
-                currencyCode: "USD",
-            };
-
-            const { rerender } = renderHook(() => usePayPalMessages(props));
-
-            jest.clearAllMocks();
-
-            const newMockSession = createMockPayPalMessagesSession();
-            const newMockSdkInstance = createMockSdkInstance(newMockSession);
-
-            mockPayPalContext({ sdkInstance: newMockSdkInstance });
-
-            rerender();
-
-            expect(newMockSdkInstance.createPayPalMessages).toHaveBeenCalled();
-        });
+      expect(mockSdkInstance.createPayPalMessages).toHaveBeenCalledWith({
+        buyerCountry: "US",
+        currencyCode: "EUR",
+        shopperSessionId: undefined,
+      });
     });
 
-    describe("handleFetchContent", () => {
-        test("should successfully fetch content with valid options", async () => {
-            const props: PayPalMessagesOptions = {
-                buyerCountry: "US",
-                currencyCode: "USD",
-            };
+    test("should create new session when shopperSessionId changes", () => {
+      const { rerender } = renderHook(
+        ({ shopperSessionId }) =>
+          usePayPalMessages({
+            buyerCountry: "US",
+            currencyCode: "USD",
+            shopperSessionId,
+          }),
+        { initialProps: { shopperSessionId: "session-1" } },
+      );
 
-            const { result } = renderHook(() => usePayPalMessages(props));
+      jest.clearAllMocks();
 
-            const fetchOptions: FetchContentOptions = {
-                amount: "100",
-                logoPosition: "INLINE",
-                logoType: "MONOGRAM",
-            };
+      rerender({ shopperSessionId: "session-2" });
 
-            let content: Record<string, unknown> | null | void = undefined;
-
-            await act(async () => {
-                content = await result.current.handleFetchContent(fetchOptions);
-            });
-
-            expect(mockMessagesSession.fetchContent).toHaveBeenCalledWith(
-                fetchOptions,
-            );
-            expect(content).toEqual({
-                content: "<div>Mock PayPal Messages content</div>",
-                meta: {
-                    trackingPayload: "mock-tracking-payload",
-                },
-            });
-        });
-
-        test("should return undefined when component is unmounted", async () => {
-            const props: PayPalMessagesOptions = {
-                buyerCountry: "US",
-                currencyCode: "USD",
-            };
-
-            const { result, unmount } = renderHook(() =>
-                usePayPalMessages(props),
-            );
-
-            unmount();
-
-            let content: Record<string, unknown> | null | void = undefined;
-
-            await act(async () => {
-                content = await result.current.handleFetchContent({
-                    amount: "100",
-                    logoPosition: "INLINE",
-                    logoType: "MONOGRAM",
-                });
-            });
-
-            expect(content).toBeUndefined();
-            expect(mockMessagesSession.fetchContent).not.toHaveBeenCalled();
-        });
-
-        test("should set error when session is not available", async () => {
-            mockPayPalPending();
-
-            const props: PayPalMessagesOptions = {
-                buyerCountry: "US",
-                currencyCode: "USD",
-            };
-
-            const { result } = renderHook(() => usePayPalMessages(props));
-
-            await act(async () => {
-                await result.current.handleFetchContent({
-                    amount: "100",
-                    logoPosition: "INLINE",
-                    logoType: "MONOGRAM",
-                });
-            });
-
-            const { error } = result.current;
-
-            expectCurrentErrorValue(error);
-
-            expect(error).toEqual(
-                new Error("PayPal Messages session not available"),
-            );
-        });
-
-        test("should set error when fetchContent returns null", async () => {
-            (mockMessagesSession.fetchContent as jest.Mock).mockResolvedValue(
-                null,
-            );
-
-            const props: PayPalMessagesOptions = {
-                buyerCountry: "US",
-                currencyCode: "USD",
-            };
-
-            const { result } = renderHook(() => usePayPalMessages(props));
-
-            await act(async () => {
-                await result.current.handleFetchContent({
-                    amount: "100",
-                    logoPosition: "INLINE",
-                    logoType: "MONOGRAM",
-                });
-            });
-
-            const { error } = result.current;
-
-            expectCurrentErrorValue(error);
-
-            expect(error).toEqual(
-                new Error("Failed to fetch PayPal Messages content"),
-            );
-        });
+      expect(mockSdkInstance.createPayPalMessages).toHaveBeenCalledWith({
+        buyerCountry: "US",
+        currencyCode: "USD",
+        shopperSessionId: "session-2",
+      });
     });
 
-    describe("handleCreateLearnMore", () => {
-        test("should successfully create learn more link with options", () => {
-            const props: PayPalMessagesOptions = {
-                buyerCountry: "US",
-                currencyCode: "USD",
-            };
+    test("should create new session when sdkInstance changes", () => {
+      const props: PayPalMessagesOptions = {
+        buyerCountry: "US",
+        currencyCode: "USD",
+      };
 
-            const { result } = renderHook(() => usePayPalMessages(props));
+      const { rerender } = renderHook(() => usePayPalMessages(props));
 
-            const learnMoreOptions: LearnMoreOptions = {
-                amount: "100",
-                presentationMode: "MODAL",
-            };
+      jest.clearAllMocks();
 
-            let learnMore: LearnMore | undefined;
+      const newMockSession = createMockPayPalMessagesSession();
+      const newMockSdkInstance = createMockSdkInstance(newMockSession);
 
-            act(() => {
-                learnMore =
-                    result.current.handleCreateLearnMore(learnMoreOptions);
-            });
+      mockPayPalContext({ sdkInstance: newMockSdkInstance });
 
-            expect(mockMessagesSession.createLearnMore).toHaveBeenCalledWith(
-                learnMoreOptions,
-            );
-            expect(learnMore).toEqual({
-                isOpen: false,
-                open: expect.any(Function),
-                close: expect.any(Function),
-                update: expect.any(Function),
-                show: expect.any(Function),
-                setupPostMessenger: expect.any(Function),
-            });
-        });
+      rerender();
 
-        test("should successfully create learn more link without options", () => {
-            const props: PayPalMessagesOptions = {
-                buyerCountry: "US",
-                currencyCode: "USD",
-            };
-
-            const { result } = renderHook(() => usePayPalMessages(props));
-
-            let learnMore: LearnMore | undefined;
-
-            act(() => {
-                learnMore = result.current.handleCreateLearnMore();
-            });
-
-            expect(mockMessagesSession.createLearnMore).toHaveBeenCalledWith(
-                undefined,
-            );
-            expect(learnMore).toBeDefined();
-        });
-
-        test("should return undefined when component is unmounted", () => {
-            const props: PayPalMessagesOptions = {
-                buyerCountry: "US",
-                currencyCode: "USD",
-            };
-
-            const { result, unmount } = renderHook(() =>
-                usePayPalMessages(props),
-            );
-
-            unmount();
-
-            let learnMore: LearnMore | undefined;
-
-            act(() => {
-                learnMore = result.current.handleCreateLearnMore();
-            });
-
-            expect(learnMore).toBeUndefined();
-            expect(mockMessagesSession.createLearnMore).not.toHaveBeenCalled();
-        });
-
-        test("should set error when session is not available", () => {
-            mockPayPalPending();
-
-            const props: PayPalMessagesOptions = {
-                buyerCountry: "US",
-                currencyCode: "USD",
-            };
-
-            const { result } = renderHook(() => usePayPalMessages(props));
-
-            act(() => {
-                result.current.handleCreateLearnMore();
-            });
-
-            const { error } = result.current;
-
-            expectCurrentErrorValue(error);
-
-            expect(error).toEqual(
-                new Error("PayPal Messages session not available"),
-            );
-        });
+      expect(newMockSdkInstance.createPayPalMessages).toHaveBeenCalled();
     });
+  });
+
+  describe("handleFetchContent", () => {
+    test("should successfully fetch content with valid options", async () => {
+      const props: PayPalMessagesOptions = {
+        buyerCountry: "US",
+        currencyCode: "USD",
+      };
+
+      const { result } = renderHook(() => usePayPalMessages(props));
+
+      const fetchOptions: FetchContentOptions = {
+        amount: "100",
+        logoPosition: "INLINE",
+        logoType: "MONOGRAM",
+      };
+
+      let content: Record<string, unknown> | null | void = undefined;
+
+      await act(async () => {
+        content = await result.current.handleFetchContent(fetchOptions);
+      });
+
+      expect(mockMessagesSession.fetchContent).toHaveBeenCalledWith(
+        fetchOptions,
+      );
+      expect(content).toEqual({
+        content: "<div>Mock PayPal Messages content</div>",
+        meta: {
+          trackingPayload: "mock-tracking-payload",
+        },
+      });
+    });
+
+    test("should return undefined when component is unmounted", async () => {
+      const props: PayPalMessagesOptions = {
+        buyerCountry: "US",
+        currencyCode: "USD",
+      };
+
+      const { result, unmount } = renderHook(() => usePayPalMessages(props));
+
+      unmount();
+
+      let content: Record<string, unknown> | null | void = undefined;
+
+      await act(async () => {
+        content = await result.current.handleFetchContent({
+          amount: "100",
+          logoPosition: "INLINE",
+          logoType: "MONOGRAM",
+        });
+      });
+
+      expect(content).toBeUndefined();
+      expect(mockMessagesSession.fetchContent).not.toHaveBeenCalled();
+    });
+
+    test("should set error when session is not available", async () => {
+      mockPayPalPending();
+
+      const props: PayPalMessagesOptions = {
+        buyerCountry: "US",
+        currencyCode: "USD",
+      };
+
+      const { result } = renderHook(() => usePayPalMessages(props));
+
+      await act(async () => {
+        await result.current.handleFetchContent({
+          amount: "100",
+          logoPosition: "INLINE",
+          logoType: "MONOGRAM",
+        });
+      });
+
+      const { error } = result.current;
+
+      expectCurrentErrorValue(error);
+
+      expect(error).toEqual(new Error("PayPal Messages session not available"));
+    });
+
+    test("should set error when fetchContent returns null", async () => {
+      (mockMessagesSession.fetchContent as jest.Mock).mockResolvedValue(null);
+
+      const props: PayPalMessagesOptions = {
+        buyerCountry: "US",
+        currencyCode: "USD",
+      };
+
+      const { result } = renderHook(() => usePayPalMessages(props));
+
+      await act(async () => {
+        await result.current.handleFetchContent({
+          amount: "100",
+          logoPosition: "INLINE",
+          logoType: "MONOGRAM",
+        });
+      });
+
+      const { error } = result.current;
+
+      expectCurrentErrorValue(error);
+
+      expect(error).toEqual(
+        new Error("Failed to fetch PayPal Messages content"),
+      );
+    });
+  });
+
+  describe("handleCreateLearnMore", () => {
+    test("should successfully create learn more link with options", () => {
+      const props: PayPalMessagesOptions = {
+        buyerCountry: "US",
+        currencyCode: "USD",
+      };
+
+      const { result } = renderHook(() => usePayPalMessages(props));
+
+      const learnMoreOptions: LearnMoreOptions = {
+        amount: "100",
+        presentationMode: "MODAL",
+      };
+
+      let learnMore: LearnMore | undefined;
+
+      act(() => {
+        learnMore = result.current.handleCreateLearnMore(learnMoreOptions);
+      });
+
+      expect(mockMessagesSession.createLearnMore).toHaveBeenCalledWith(
+        learnMoreOptions,
+      );
+      expect(learnMore).toEqual({
+        isOpen: false,
+        open: expect.any(Function),
+        close: expect.any(Function),
+        update: expect.any(Function),
+        show: expect.any(Function),
+        setupPostMessenger: expect.any(Function),
+      });
+    });
+
+    test("should successfully create learn more link without options", () => {
+      const props: PayPalMessagesOptions = {
+        buyerCountry: "US",
+        currencyCode: "USD",
+      };
+
+      const { result } = renderHook(() => usePayPalMessages(props));
+
+      let learnMore: LearnMore | undefined;
+
+      act(() => {
+        learnMore = result.current.handleCreateLearnMore();
+      });
+
+      expect(mockMessagesSession.createLearnMore).toHaveBeenCalledWith(
+        undefined,
+      );
+      expect(learnMore).toBeDefined();
+    });
+
+    test("should return undefined when component is unmounted", () => {
+      const props: PayPalMessagesOptions = {
+        buyerCountry: "US",
+        currencyCode: "USD",
+      };
+
+      const { result, unmount } = renderHook(() => usePayPalMessages(props));
+
+      unmount();
+
+      let learnMore: LearnMore | undefined;
+
+      act(() => {
+        learnMore = result.current.handleCreateLearnMore();
+      });
+
+      expect(learnMore).toBeUndefined();
+      expect(mockMessagesSession.createLearnMore).not.toHaveBeenCalled();
+    });
+
+    test("should set error when session is not available", () => {
+      mockPayPalPending();
+
+      const props: PayPalMessagesOptions = {
+        buyerCountry: "US",
+        currencyCode: "USD",
+      };
+
+      const { result } = renderHook(() => usePayPalMessages(props));
+
+      act(() => {
+        result.current.handleCreateLearnMore();
+      });
+
+      const { error } = result.current;
+
+      expectCurrentErrorValue(error);
+
+      expect(error).toEqual(new Error("PayPal Messages session not available"));
+    });
+  });
 });

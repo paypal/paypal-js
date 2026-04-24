@@ -5,346 +5,343 @@ import type { PayPalScriptOptions } from "../types/script-options";
 vi.useFakeTimers();
 
 import {
-    findScript,
-    insertScriptElement,
-    objectToQueryString,
-    processOptions,
-    processSdkBaseUrl,
+  findScript,
+  insertScriptElement,
+  objectToQueryString,
+  processOptions,
+  processSdkBaseUrl,
 } from "./utils";
 
 describe("objectToQueryString()", () => {
-    test("coverts an object to a query string", () => {
-        const params = {
-            "client-id": "test",
-            currency: "USD",
-        };
+  test("coverts an object to a query string", () => {
+    const params = {
+      "client-id": "test",
+      currency: "USD",
+    };
 
-        expect(objectToQueryString(params)).toBe("client-id=test&currency=USD");
-    });
+    expect(objectToQueryString(params)).toBe("client-id=test&currency=USD");
+  });
 });
 
 describe("processOptions()", () => {
-    test("returns attributes and url", () => {
-        const options = {
-            clientId: "test",
-            currency: "USD",
-            dataPageType: "checkout",
-            someRandomKey: "some-random-value",
-        };
+  test("returns attributes and url", () => {
+    const options = {
+      clientId: "test",
+      currency: "USD",
+      dataPageType: "checkout",
+      someRandomKey: "some-random-value",
+    };
 
-        const { url, attributes } = processOptions(options);
+    const { url, attributes } = processOptions(options);
 
-        expect(url).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&currency=USD&some-random-key=some-random-value",
-        );
-        expect(attributes).toEqual({ "data-page-type": "checkout" });
+    expect(url).toBe(
+      "https://www.paypal.com/sdk/js?client-id=test&currency=USD&some-random-key=some-random-value",
+    );
+    expect(attributes).toEqual({ "data-page-type": "checkout" });
+  });
+
+  test("supports the crossorigin attribute", () => {
+    const options: PayPalScriptOptions = {
+      clientId: "test",
+      crossorigin: "anonymous",
+    };
+
+    const { url, attributes } = processOptions(options);
+
+    expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
+    expect(attributes).toEqual({ crossorigin: "anonymous" });
+  });
+
+  test("sets a custom base url", () => {
+    const { url } = processOptions({
+      clientId: "test",
+      sdkBaseUrl: "http://localhost.paypal.com:8000/sdk/js",
     });
 
-    test("supports the crossorigin attribute", () => {
-        const options: PayPalScriptOptions = {
-            clientId: "test",
-            crossorigin: "anonymous",
-        };
+    expect(url).toBe("http://localhost.paypal.com:8000/sdk/js?client-id=test");
+  });
 
-        const { url, attributes } = processOptions(options);
+  test("ignores prototype-polluted sdkBaseUrl", () => {
+    // Simulate prototype pollution
+    (Object.prototype as Record<string, unknown>)["sdkBaseUrl"] =
+      "https://evil.com/malicious.js";
+    try {
+      const { url } = processOptions({ clientId: "test" });
+      expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
+    } finally {
+      delete (Object.prototype as Record<string, unknown>)["sdkBaseUrl"];
+    }
+  });
 
-        expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
-        expect(attributes).toEqual({ crossorigin: "anonymous" });
+  test("default values when only client-id is passed in", () => {
+    const { url, attributes } = processOptions({ clientId: "test" });
+
+    expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
+    expect(attributes).toEqual({});
+  });
+
+  test("support passing arrays for query string params", () => {
+    const { url, attributes } = processOptions({
+      clientId: "test",
+      components: ["buttons", "marks", "messages"],
+      enableFunding: ["venmo", "paylater"],
+      disableFunding: ["card"],
     });
 
-    test("sets a custom base url", () => {
-        const { url } = processOptions({
-            clientId: "test",
-            sdkBaseUrl: "http://localhost.paypal.com:8000/sdk/js",
-        });
+    expect(url).toBe(
+      "https://www.paypal.com/sdk/js?client-id=test&components=buttons,marks,messages&enable-funding=venmo,paylater&disable-funding=card",
+    );
+    expect(attributes).toEqual({});
+  });
 
-        expect(url).toBe(
-            "http://localhost.paypal.com:8000/sdk/js?client-id=test",
-        );
+  test("supports passing an array of merchant ids", () => {
+    const { url, attributes } = processOptions({
+      clientId: "test",
+      merchantId: ["123", "456", "789"],
     });
 
-    test("ignores prototype-polluted sdkBaseUrl", () => {
-        // Simulate prototype pollution
-        (Object.prototype as Record<string, unknown>)["sdkBaseUrl"] =
-            "https://evil.com/malicious.js";
-        try {
-            const { url } = processOptions({ clientId: "test" });
-            expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
-        } finally {
-            delete (Object.prototype as Record<string, unknown>)["sdkBaseUrl"];
-        }
+    expect(url).toBe(
+      "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*",
+    );
+    expect(attributes).toEqual({ "data-merchant-id": "123,456,789" });
+  });
+
+  test("supports passing a single merchant id", () => {
+    const { url, attributes } = processOptions({
+      clientId: "test",
+      merchantId: "123",
     });
 
-    test("default values when only client-id is passed in", () => {
-        const { url, attributes } = processOptions({ clientId: "test" });
+    expect(url).toBe(
+      "https://www.paypal.com/sdk/js?client-id=test&merchant-id=123",
+    );
+    expect(attributes).toEqual({});
 
-        expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
-        expect(attributes).toEqual({});
+    const { url: url2, attributes: attributes2 } = processOptions({
+      clientId: "test",
+      merchantId: ["123"],
     });
 
-    test("support passing arrays for query string params", () => {
-        const { url, attributes } = processOptions({
-            clientId: "test",
-            components: ["buttons", "marks", "messages"],
-            enableFunding: ["venmo", "paylater"],
-            disableFunding: ["card"],
-        });
+    expect(url2).toBe(
+      "https://www.paypal.com/sdk/js?client-id=test&merchant-id=123",
+    );
+    expect(attributes2).toEqual({});
+  });
 
-        expect(url).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&components=buttons,marks,messages&enable-funding=venmo,paylater&disable-funding=card",
-        );
-        expect(attributes).toEqual({});
+  test("supports passing options in kebab-case or camelCase format", () => {
+    const { url, attributes } = processOptions({
+      // @ts-expect-error ignore invalid arguments error
+      "client-id": "test",
+      "merchant-id": ["123", "456", "789"],
     });
 
-    test("supports passing an array of merchant ids", () => {
-        const { url, attributes } = processOptions({
-            clientId: "test",
-            merchantId: ["123", "456", "789"],
-        });
+    expect(url).toBe(
+      "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*",
+    );
+    expect(attributes).toEqual({ "data-merchant-id": "123,456,789" });
 
-        expect(url).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*",
-        );
-        expect(attributes).toEqual({ "data-merchant-id": "123,456,789" });
+    const { url: url2, attributes: attributes2 } = processOptions({
+      clientId: "test",
+      merchantId: ["123", "456", "789"],
     });
 
-    test("supports passing a single merchant id", () => {
-        const { url, attributes } = processOptions({
-            clientId: "test",
-            merchantId: "123",
-        });
+    expect(url2).toBe(
+      "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*",
+    );
+    expect(attributes2).toEqual({ "data-merchant-id": "123,456,789" });
+  });
 
-        expect(url).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=123",
-        );
-        expect(attributes).toEqual({});
+  test("did not modified options parameter", () => {
+    const options: PayPalScriptOptions = {
+      clientId: "",
+      sdkBaseUrl: "sdkBaseUrl",
+    };
+    const optionsCopy = JSON.parse(JSON.stringify(options));
 
-        const { url: url2, attributes: attributes2 } = processOptions({
-            clientId: "test",
-            merchantId: ["123"],
-        });
+    processOptions(options);
 
-        expect(url2).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=123",
-        );
-        expect(attributes2).toEqual({});
-    });
-
-    test("supports passing options in kebab-case or camelCase format", () => {
-        const { url, attributes } = processOptions({
-            // @ts-expect-error ignore invalid arguments error
-            "client-id": "test",
-            "merchant-id": ["123", "456", "789"],
-        });
-
-        expect(url).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*",
-        );
-        expect(attributes).toEqual({ "data-merchant-id": "123,456,789" });
-
-        const { url: url2, attributes: attributes2 } = processOptions({
-            clientId: "test",
-            merchantId: ["123", "456", "789"],
-        });
-
-        expect(url2).toBe(
-            "https://www.paypal.com/sdk/js?client-id=test&merchant-id=*",
-        );
-        expect(attributes2).toEqual({ "data-merchant-id": "123,456,789" });
-    });
-
-    test("did not modified options parameter", () => {
-        const options: PayPalScriptOptions = {
-            clientId: "",
-            sdkBaseUrl: "sdkBaseUrl",
-        };
-        const optionsCopy = JSON.parse(JSON.stringify(options));
-
-        processOptions(options);
-
-        expect(options).toEqual(optionsCopy);
-    });
+    expect(options).toEqual(optionsCopy);
+  });
 });
 
 describe("findScript()", () => {
-    beforeEach(() => {
-        document.head.innerHTML = "";
+  beforeEach(() => {
+    document.head.innerHTML = "";
+  });
+
+  test("finds the existing script in the DOM", () => {
+    const url = "https://www.paypal.com/sdk/js?client-id=test";
+    document.head.innerHTML = `<script src="${url}" data-client-token="123" data-page-type="checkout" data-uid-auto="81376a99ff_mdm6mji6mzg"></script>`;
+
+    const result = findScript(url, {
+      "data-page-type": "checkout",
+      "data-client-token": "123",
     });
+    if (!result) throw new Error("Expected to find <script> element");
 
-    test("finds the existing script in the DOM", () => {
-        const url = "https://www.paypal.com/sdk/js?client-id=test";
-        document.head.innerHTML = `<script src="${url}" data-client-token="123" data-page-type="checkout" data-uid-auto="81376a99ff_mdm6mji6mzg"></script>`;
+    expect(result.src).toBe(url);
+  });
 
-        const result = findScript(url, {
-            "data-page-type": "checkout",
-            "data-client-token": "123",
-        });
-        if (!result) throw new Error("Expected to find <script> element");
+  test("returns null when the script is not found", () => {
+    expect(
+      findScript("https://www.paypal.com/sdk/js?client-id=test"),
+    ).toBeNull();
+  });
 
-        expect(result.src).toBe(url);
-    });
+  test("returns null when the script is found but the number of data attributes do not match", () => {
+    const url = "https://www.paypal.com/sdk/js?client-id=test";
+    document.head.innerHTML = `<script src="${url}" data-client-token="12345" data-page-type="home"></script>`;
 
-    test("returns null when the script is not found", () => {
-        expect(
-            findScript("https://www.paypal.com/sdk/js?client-id=test"),
-        ).toBeNull();
-    });
+    const result = findScript(url, { "data-client-token": "12345" });
+    expect(result).toBeNull();
+  });
 
-    test("returns null when the script is found but the number of data attributes do not match", () => {
-        const url = "https://www.paypal.com/sdk/js?client-id=test";
-        document.head.innerHTML = `<script src="${url}" data-client-token="12345" data-page-type="home"></script>`;
+  test("returns null when the script is found but the data attribute values do not match", () => {
+    const url = "https://www.paypal.com/sdk/js?client-id=test";
+    document.head.innerHTML = `<script src="${url}" data-page-type="home"></script>`;
 
-        const result = findScript(url, { "data-client-token": "12345" });
-        expect(result).toBeNull();
-    });
-
-    test("returns null when the script is found but the data attribute values do not match", () => {
-        const url = "https://www.paypal.com/sdk/js?client-id=test";
-        document.head.innerHTML = `<script src="${url}" data-page-type="home"></script>`;
-
-        const result = findScript(url, { "data-page-type": "checkout" });
-        expect(result).toBeNull();
-    });
+    const result = findScript(url, { "data-page-type": "checkout" });
+    expect(result).toBeNull();
+  });
 });
 
 describe("insertScriptElement()", () => {
-    const url = "https://www.paypal.com/sdk/js?client-id=test";
+  const url = "https://www.paypal.com/sdk/js?client-id=test";
+
+  beforeEach(() => {
+    document.head.innerHTML = "";
+  });
+
+  test("inserts a <script> with attributes into the DOM", () => {
+    insertScriptElement({
+      url,
+      attributes: { "data-client-token": "12345" },
+      onError: vi.fn(),
+      onSuccess: vi.fn(),
+    });
+
+    const scriptFromDOM =
+      document.querySelector<HTMLScriptElement>("head script");
+
+    if (!scriptFromDOM) {
+      throw new Error("Expected to find <script> element");
+    }
+
+    expect(scriptFromDOM.src).toBe(url);
+    expect(scriptFromDOM.getAttribute("data-client-token")).toBe("12345");
+  });
+
+  test("sets a nonce on the script tag when data-csp-nonce is used", () => {
+    insertScriptElement({
+      url,
+      attributes: { "data-csp-nonce": "12345" },
+      onError: vi.fn(),
+      onSuccess: vi.fn(),
+    });
+
+    const scriptFromDOM =
+      document.querySelector<HTMLScriptElement>("head script");
+    if (!scriptFromDOM) throw new Error("Expected to find <script> element");
+
+    expect(scriptFromDOM.getAttribute("data-csp-nonce")).toBe("12345");
+    expect(scriptFromDOM.getAttribute("nonce")).toBe("12345");
+  });
+
+  test("prepends a <script> to the top of the <head> before any other scripts", () => {
+    // simulate having the JS SDK already loaded with currency=USD
+    const existingScript = document.createElement("script");
+    existingScript.src = `${url}&currency=USD`;
+    document.head.appendChild(existingScript);
+
+    // load the JS SDK with currency=EUR
+    const newScriptSrc = `${url}&currency=EUR`;
+    insertScriptElement({
+      url: newScriptSrc,
+      onError: vi.fn(),
+      onSuccess: vi.fn(),
+    });
+
+    const [firstScript, secondScript] = Array.from(
+      document.querySelectorAll<HTMLScriptElement>("head script"),
+    );
+
+    expect(firstScript.src).toBe(newScriptSrc);
+    expect(secondScript.src).toBe(existingScript.src);
+  });
+
+  describe("callbacks", () => {
+    const loadFailureSrcKey = "http://localhost/error";
 
     beforeEach(() => {
-        document.head.innerHTML = "";
-    });
-
-    test("inserts a <script> with attributes into the DOM", () => {
-        insertScriptElement({
-            url,
-            attributes: { "data-client-token": "12345" },
-            onError: vi.fn(),
-            onSuccess: vi.fn(),
-        });
-
-        const scriptFromDOM =
-            document.querySelector<HTMLScriptElement>("head script");
-
-        if (!scriptFromDOM) {
-            throw new Error("Expected to find <script> element");
+      const insertBeforeSpy = vi.spyOn(document.head, "insertBefore");
+      interface MockHTMLScriptElement extends Node {
+        src: string;
+        onerror: () => void;
+        onload: () => void;
+      }
+      insertBeforeSpy.mockImplementation((domNode) => {
+        const newScript = <MockHTMLScriptElement>domNode;
+        if (newScript.src === loadFailureSrcKey) {
+          setTimeout(() => newScript.onerror());
+        } else if (newScript.onload) {
+          setTimeout(() => newScript.onload());
         }
-
-        expect(scriptFromDOM.src).toBe(url);
-        expect(scriptFromDOM.getAttribute("data-client-token")).toBe("12345");
+        return newScript;
+      });
     });
 
-    test("sets a nonce on the script tag when data-csp-nonce is used", () => {
-        insertScriptElement({
-            url,
-            attributes: { "data-csp-nonce": "12345" },
-            onError: vi.fn(),
-            onSuccess: vi.fn(),
-        });
-
-        const scriptFromDOM =
-            document.querySelector<HTMLScriptElement>("head script");
-        if (!scriptFromDOM)
-            throw new Error("Expected to find <script> element");
-
-        expect(scriptFromDOM.getAttribute("data-csp-nonce")).toBe("12345");
-        expect(scriptFromDOM.getAttribute("nonce")).toBe("12345");
+    afterEach(() => {
+      vi.clearAllMocks();
     });
 
-    test("prepends a <script> to the top of the <head> before any other scripts", () => {
-        // simulate having the JS SDK already loaded with currency=USD
-        const existingScript = document.createElement("script");
-        existingScript.src = `${url}&currency=USD`;
-        document.head.appendChild(existingScript);
+    test("onload() event", () => {
+      expect.assertions(1);
+      const onloadMock = vi.fn();
 
-        // load the JS SDK with currency=EUR
-        const newScriptSrc = `${url}&currency=EUR`;
-        insertScriptElement({
-            url: newScriptSrc,
-            onError: vi.fn(),
-            onSuccess: vi.fn(),
-        });
+      const url = "https://www.paypal.com/sdk/js";
+      insertScriptElement({
+        url,
+        onError: vi.fn(),
+        onSuccess: onloadMock,
+      });
 
-        const [firstScript, secondScript] = Array.from(
-            document.querySelectorAll<HTMLScriptElement>("head script"),
-        );
-
-        expect(firstScript.src).toBe(newScriptSrc);
-        expect(secondScript.src).toBe(existingScript.src);
+      vi.runAllTimers();
+      expect(onloadMock).toBeCalled();
     });
 
-    describe("callbacks", () => {
-        const loadFailureSrcKey = "http://localhost/error";
+    test("onerror() event", () => {
+      expect.assertions(1);
+      const onErrorMock = vi.fn();
+      const url = loadFailureSrcKey;
 
-        beforeEach(() => {
-            const insertBeforeSpy = vi.spyOn(document.head, "insertBefore");
-            interface MockHTMLScriptElement extends Node {
-                src: string;
-                onerror: () => void;
-                onload: () => void;
-            }
-            insertBeforeSpy.mockImplementation((domNode) => {
-                const newScript = <MockHTMLScriptElement>domNode;
-                if (newScript.src === loadFailureSrcKey) {
-                    setTimeout(() => newScript.onerror());
-                } else if (newScript.onload) {
-                    setTimeout(() => newScript.onload());
-                }
-                return newScript;
-            });
-        });
+      insertScriptElement({
+        url,
+        onError: onErrorMock,
+        onSuccess: vi.fn(),
+      });
 
-        afterEach(() => {
-            vi.clearAllMocks();
-        });
-
-        test("onload() event", () => {
-            expect.assertions(1);
-            const onloadMock = vi.fn();
-
-            const url = "https://www.paypal.com/sdk/js";
-            insertScriptElement({
-                url,
-                onError: vi.fn(),
-                onSuccess: onloadMock,
-            });
-
-            vi.runAllTimers();
-            expect(onloadMock).toBeCalled();
-        });
-
-        test("onerror() event", () => {
-            expect.assertions(1);
-            const onErrorMock = vi.fn();
-            const url = loadFailureSrcKey;
-
-            insertScriptElement({
-                url,
-                onError: onErrorMock,
-                onSuccess: vi.fn(),
-            });
-
-            vi.runAllTimers();
-            expect(onErrorMock).toBeCalled();
-        });
+      vi.runAllTimers();
+      expect(onErrorMock).toBeCalled();
     });
+  });
 });
 
 describe("processSdkBaseUrl()", () => {
-    const sandboxBaseUrl = "https://www.sandbox.paypal.com/sdk/js";
-    const productionUrl = "https://www.paypal.com/sdk/js";
+  const sandboxBaseUrl = "https://www.sandbox.paypal.com/sdk/js";
+  const productionUrl = "https://www.paypal.com/sdk/js";
 
-    test("returns sandboxUrl", () => {
-        const sdkBaseUrl = processSdkBaseUrl("sandbox");
-        expect(sdkBaseUrl).toEqual(sandboxBaseUrl);
-    });
+  test("returns sandboxUrl", () => {
+    const sdkBaseUrl = processSdkBaseUrl("sandbox");
+    expect(sdkBaseUrl).toEqual(sandboxBaseUrl);
+  });
 
-    test("returns production url", () => {
-        const sdkBaseUrl = processSdkBaseUrl("production");
-        expect(sdkBaseUrl).toEqual(productionUrl);
-    });
+  test("returns production url", () => {
+    const sdkBaseUrl = processSdkBaseUrl("production");
+    expect(sdkBaseUrl).toEqual(productionUrl);
+  });
 
-    test("defaults to production url", () => {
-        const sdkBaseUrl = processSdkBaseUrl(undefined);
-        expect(sdkBaseUrl).toEqual(productionUrl);
-    });
+  test("defaults to production url", () => {
+    const sdkBaseUrl = processSdkBaseUrl(undefined);
+    expect(sdkBaseUrl).toEqual(productionUrl);
+  });
 });

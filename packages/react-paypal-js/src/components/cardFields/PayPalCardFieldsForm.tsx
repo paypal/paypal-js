@@ -14,20 +14,20 @@ This setup relies on the `<PayPalCardFieldsProvider />` parent component, which 
 Note: If you want to have more granular control over the layout of how the fields are rendered, you can alternatively use our Individual Fields.
 */
 export const PayPalCardFieldsForm: React.FC<PayPalCardFieldsFormOptions> = ({
-    className,
+  className,
 }) => {
-    return (
-        <div className={className}>
-            <PayPalCardField fieldName="NameField" />
-            <PayPalCardField fieldName="NumberField" />
-            <FlexContainer>
-                <FullWidthContainer>
-                    <PayPalCardField fieldName="ExpiryField" />
-                </FullWidthContainer>
-                <FullWidthContainer>
-                    <PayPalCardField fieldName="CVVField" />
-                </FullWidthContainer>
-            </FlexContainer>
-        </div>
-    );
+  return (
+    <div className={className}>
+      <PayPalCardField fieldName="NameField" />
+      <PayPalCardField fieldName="NumberField" />
+      <FlexContainer>
+        <FullWidthContainer>
+          <PayPalCardField fieldName="ExpiryField" />
+        </FullWidthContainer>
+        <FullWidthContainer>
+          <PayPalCardField fieldName="CVVField" />
+        </FullWidthContainer>
+      </FlexContainer>
+    </div>
+  );
 };

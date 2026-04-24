@@ -7,8 +7,8 @@ import type { CardFieldComponent, CardFieldOptions } from "../types";
 import type { PayPalCardFieldsProvider } from "./PayPalCardFieldsProvider";
 
 type PayPalCardFieldProps = CardFieldOptions & {
-    containerStyles?: React.CSSProperties;
-    containerClassName?: string;
+  containerStyles?: React.CSSProperties;
+  containerClassName?: string;
 };
 
 /**
@@ -24,42 +24,42 @@ type PayPalCardFieldProps = CardFieldOptions & {
  *
  */
 export const PayPalCardField = ({
-    containerStyles,
-    containerClassName,
-    ...options
+  containerStyles,
+  containerClassName,
+  ...options
 }: PayPalCardFieldProps): JSX.Element | null => {
-    const { cardFieldsSession, setError } = usePayPalCardFieldsSession();
-    const cardFieldContainerRef = useRef<HTMLDivElement>(null);
-    const optionsRef = useRef<CardFieldOptions>(options);
+  const { cardFieldsSession, setError } = usePayPalCardFieldsSession();
+  const cardFieldContainerRef = useRef<HTMLDivElement>(null);
+  const optionsRef = useRef<CardFieldOptions>(options);
 
-    useEffect(() => {
-        if (!cardFieldsSession) {
-            return;
-        }
+  useEffect(() => {
+    if (!cardFieldsSession) {
+      return;
+    }
 
-        let cardField: CardFieldComponent;
-        optionsRef.current = options;
-        try {
-            cardField = cardFieldsSession.createCardFieldsComponent(
-                optionsRef.current,
-            );
-            cardFieldContainerRef.current?.appendChild(cardField);
-        } catch (error) {
-            setError(toError(error));
-        }
+    let cardField: CardFieldComponent;
+    optionsRef.current = options;
+    try {
+      cardField = cardFieldsSession.createCardFieldsComponent(
+        optionsRef.current,
+      );
+      cardFieldContainerRef.current?.appendChild(cardField);
+    } catch (error) {
+      setError(toError(error));
+    }
 
-        return () => {
-            cardField?.remove();
-            cardField?.destroy();
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cardFieldsSession]);
+    return () => {
+      cardField?.remove();
+      cardField?.destroy();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardFieldsSession]);
 
-    return (
-        <div
-            style={containerStyles}
-            className={containerClassName}
-            ref={cardFieldContainerRef}
-        />
-    );
+  return (
+    <div
+      style={containerStyles}
+      className={containerClassName}
+      ref={cardFieldContainerRef}
+    />
+  );
 };

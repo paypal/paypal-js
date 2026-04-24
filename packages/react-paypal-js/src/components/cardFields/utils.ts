@@ -13,27 +13,27 @@ import type { PayPalCardFieldsNamespace } from "../../types/payPalCardFieldsType
  *
  */
 export const generateMissingCardFieldsError = ({
-    components = "",
-    [SDK_SETTINGS.DATA_NAMESPACE]: dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
+  components = "",
+  [SDK_SETTINGS.DATA_NAMESPACE]: dataNamespace = DEFAULT_PAYPAL_NAMESPACE,
 }: PayPalCardFieldsNamespace): string => {
-    const expectedComponents = components
-        ? `${components},card-fields`
-        : "card-fields";
-    let errorMessage = `Unable to render <PayPalCardFieldsProvider /> because window.${dataNamespace}.CardFields is undefined.`;
+  const expectedComponents = components
+    ? `${components},card-fields`
+    : "card-fields";
+  let errorMessage = `Unable to render <PayPalCardFieldsProvider /> because window.${dataNamespace}.CardFields is undefined.`;
 
-    if (!components.includes("card-fields")) {
-        errorMessage += `\nTo fix the issue, add 'card-fields' to the list of components passed to the parent PayPalScriptProvider: <PayPalScriptProvider options={{ components: '${expectedComponents}'}}>`;
-    }
+  if (!components.includes("card-fields")) {
+    errorMessage += `\nTo fix the issue, add 'card-fields' to the list of components passed to the parent PayPalScriptProvider: <PayPalScriptProvider options={{ components: '${expectedComponents}'}}>`;
+  }
 
-    return errorMessage;
+  return errorMessage;
 };
 
 export function ignore(): void {
-    return;
+  return;
 }
 
 export function hasChildren(
-    container: React.RefObject<HTMLDivElement>,
+  container: React.RefObject<HTMLDivElement>,
 ): boolean {
-    return !!container.current?.children.length;
+  return !!container.current?.children.length;
 }

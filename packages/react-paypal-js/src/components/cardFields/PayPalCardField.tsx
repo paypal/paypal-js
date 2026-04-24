@@ -6,65 +6,61 @@ import { CARD_FIELDS_CONTEXT_ERROR } from "../../constants";
 import { useProxyProps } from "../../hooks/useProxyProps";
 
 import type {
-    FieldComponentName,
-    PayPalCardFieldsIndividualFieldOptions,
+  FieldComponentName,
+  PayPalCardFieldsIndividualFieldOptions,
 } from "../../types";
 
 export const PayPalCardField: React.FC<
-    PayPalCardFieldsIndividualFieldOptions & {
-        fieldName: FieldComponentName;
-    }
+  PayPalCardFieldsIndividualFieldOptions & {
+    fieldName: FieldComponentName;
+  }
 > = ({ className, fieldName, ...options }) => {
-    const { cardFieldsForm, registerField, unregisterField } =
-        usePayPalCardFields();
+  const { cardFieldsForm, registerField, unregisterField } =
+    usePayPalCardFields();
 
-    const containerRef = useRef<HTMLDivElement>(null);
-    const proxyInputEvents = useProxyProps(
-        options.inputEvents as Record<PropertyKey, unknown>,
-    );
+  const containerRef = useRef<HTMLDivElement>(null);
+  const proxyInputEvents = useProxyProps(
+    options.inputEvents as Record<PropertyKey, unknown>,
+  );
 
-    // Set errors is state so that they can be caught by React's error boundary
-    const [, setError] = useState(null);
+  // Set errors is state so that they can be caught by React's error boundary
+  const [, setError] = useState(null);
 
-    function closeComponent() {
-        unregisterField(fieldName);
+  function closeComponent() {
+    unregisterField(fieldName);
+  }
+
+  useEffect(() => {
+    if (!cardFieldsForm) {
+      setError(() => {
+        throw new Error(CARD_FIELDS_CONTEXT_ERROR);
+      });
+      return closeComponent;
+    }
+    if (!containerRef.current) {
+      return closeComponent;
+    }
+    if (options.inputEvents) {
+      options.inputEvents = proxyInputEvents;
     }
 
-    useEffect(() => {
-        if (!cardFieldsForm) {
-            setError(() => {
-                throw new Error(CARD_FIELDS_CONTEXT_ERROR);
-            });
-            return closeComponent;
-        }
-        if (!containerRef.current) {
-            return closeComponent;
-        }
-        if (options.inputEvents) {
-            options.inputEvents = proxyInputEvents;
-        }
+    const registeredField = registerField(fieldName, options, cardFieldsForm);
 
-        const registeredField = registerField(
-            fieldName,
-            options,
-            cardFieldsForm,
+    registeredField?.render(containerRef.current).catch((err) => {
+      if (!hasChildren(containerRef)) {
+        // Component no longer in the DOM, we can safely ignore the error
+        return;
+      }
+      // Component is still in the DOM
+      setError(() => {
+        throw new Error(
+          `Failed to render <PayPal${fieldName} /> component. ${err}`,
         );
+      });
+    });
 
-        registeredField?.render(containerRef.current).catch((err) => {
-            if (!hasChildren(containerRef)) {
-                // Component no longer in the DOM, we can safely ignore the error
-                return;
-            }
-            // Component is still in the DOM
-            setError(() => {
-                throw new Error(
-                    `Failed to render <PayPal${fieldName} /> component. ${err}`,
-                );
-            });
-        });
+    return closeComponent;
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-        return closeComponent;
-    }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-    return <div ref={containerRef} className={className} />;
+  return <div ref={containerRef} className={className} />;
 };

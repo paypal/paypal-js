@@ -10,4 +10,4 @@ import type { InstanceAction } from "./PayPalProviderContext";
  * @internal
  */
 export const PayPalDispatchContext =
-    createContext<Dispatch<InstanceAction> | null>(null);
+  createContext<Dispatch<InstanceAction> | null>(null);

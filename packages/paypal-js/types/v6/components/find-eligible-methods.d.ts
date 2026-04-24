@@ -1,117 +1,117 @@
 import {
-    PayLaterCountryCodes,
-    PayLaterProductCodes,
-    PayPalCreditCountryCodes,
+  PayLaterCountryCodes,
+  PayLaterProductCodes,
+  PayPalCreditCountryCodes,
 } from "./paypal-payments";
 import { ApplePayConfig } from "./applepay-payments";
 import type { GooglePayConfigFromFindEligibleMethods } from "./googlepay-payments";
 
 export type EligiblePaymentMethods =
-    | "basic_cards"
-    | "paypal_pay_later"
-    | "paypal_credit"
-    | "paypal"
-    | "venmo"
-    | "apple_pay"
-    | "advanced_cards"
-    | "google_pay";
+  | "basic_cards"
+  | "paypal_pay_later"
+  | "paypal_credit"
+  | "paypal"
+  | "venmo"
+  | "apple_pay"
+  | "advanced_cards"
+  | "google_pay";
 
 export type PaymentFlow =
-    | "ONE_TIME_PAYMENT"
-    | "RECURRING_PAYMENT"
-    | "VAULT_WITH_PAYMENT"
-    | "VAULT_WITHOUT_PAYMENT";
+  | "ONE_TIME_PAYMENT"
+  | "RECURRING_PAYMENT"
+  | "VAULT_WITH_PAYMENT"
+  | "VAULT_WITHOUT_PAYMENT";
 
 export type FindEligibleMethodsOptions = {
-    amount?: string;
-    currencyCode?: string;
-    paymentFlow?: PaymentFlow;
+  amount?: string;
+  currencyCode?: string;
+  paymentFlow?: PaymentFlow;
 };
 
 export type FundingSource =
-    | "credit"
-    | "paylater"
-    | "paypal"
-    | "venmo"
-    | "card"
-    | "advanced_cards"
-    | "applepay"
-    | "googlepay";
+  | "credit"
+  | "paylater"
+  | "paypal"
+  | "venmo"
+  | "card"
+  | "advanced_cards"
+  | "applepay"
+  | "googlepay";
 
 type BaseEligiblePaymentMethodDetails = {
-    canBeVaulted: boolean;
+  canBeVaulted: boolean;
 };
 
 type CreditEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
-    countryCode: PayPalCreditCountryCodes;
+  countryCode: PayPalCreditCountryCodes;
 };
 
 type PayLaterEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
-    countryCode: PayLaterCountryCodes;
-    productCode: PayLaterProductCodes;
+  countryCode: PayLaterCountryCodes;
+  productCode: PayLaterProductCodes;
 };
 
 type CardFieldsEligiblePaymentMethodDetails = {
-    supportsInstallments: boolean;
-    cobrandedEnabled: boolean;
-    vendors: CardFieldsEligibleVendorDetails[];
+  supportsInstallments: boolean;
+  cobrandedEnabled: boolean;
+  vendors: CardFieldsEligibleVendorDetails[];
 };
 
 type CardFieldsCardNetwork =
-    | "AMEX"
-    | "CUP"
-    | "DINERS"
-    | "DISCOVER"
-    | "JCB"
-    | "MAESTRO"
-    | "MASTERCARD"
-    | "VISA";
+  | "AMEX"
+  | "CUP"
+  | "DINERS"
+  | "DISCOVER"
+  | "JCB"
+  | "MAESTRO"
+  | "MASTERCARD"
+  | "VISA";
 
 type CardFieldsEligibleVendorDetails = {
-    network: CardFieldsCardNetwork;
-    eligible: boolean;
-    canBeVaulted: boolean;
-    branded: boolean;
+  network: CardFieldsCardNetwork;
+  eligible: boolean;
+  canBeVaulted: boolean;
+  branded: boolean;
 };
 
 type ApplePayEligiblePaymentMethodDetails = BaseEligiblePaymentMethodDetails & {
-    config: ApplePayConfig;
+  config: ApplePayConfig;
 };
 
 type GooglePayEligiblePaymentMethodDetails = {
-    canBeVaulted?: boolean;
-    config: GooglePayConfigFromFindEligibleMethods;
+  canBeVaulted?: boolean;
+  config: GooglePayConfigFromFindEligibleMethods;
 };
 
 export type FindEligibleMethodsGetDetails<T extends FundingSource> =
-    T extends "credit"
-        ? CreditEligiblePaymentMethodDetails
-        : T extends "paylater"
-          ? PayLaterEligiblePaymentMethodDetails
-          : T extends "applepay"
-            ? ApplePayEligiblePaymentMethodDetails
-            : T extends "advanced_cards"
-              ? CardFieldsEligiblePaymentMethodDetails
-              : T extends "googlepay"
-                ? GooglePayEligiblePaymentMethodDetails
-                : BaseEligiblePaymentMethodDetails;
+  T extends "credit"
+    ? CreditEligiblePaymentMethodDetails
+    : T extends "paylater"
+      ? PayLaterEligiblePaymentMethodDetails
+      : T extends "applepay"
+        ? ApplePayEligiblePaymentMethodDetails
+        : T extends "advanced_cards"
+          ? CardFieldsEligiblePaymentMethodDetails
+          : T extends "googlepay"
+            ? GooglePayEligiblePaymentMethodDetails
+            : BaseEligiblePaymentMethodDetails;
 
 type EligiblePaymentMethodDetails = {
-    can_be_vaulted?: boolean;
-    eligible_in_paypal_network?: boolean;
-    recommended?: boolean;
-    recommended_priority?: number;
-    country_code?: PayLaterCountryCodes | PayPalCreditCountryCodes;
-    product_code?: PayLaterProductCodes;
+  can_be_vaulted?: boolean;
+  eligible_in_paypal_network?: boolean;
+  recommended?: boolean;
+  recommended_priority?: number;
+  country_code?: PayLaterCountryCodes | PayPalCreditCountryCodes;
+  product_code?: PayLaterProductCodes;
 };
 
 export type FindEligiblePaymentMethodsResponse = {
-    eligible_methods: {
-        [key in EligiblePaymentMethods]?: EligiblePaymentMethodDetails;
-    };
-    supplementary_data?: {
-        buyer_country_code?: string;
-    };
+  eligible_methods: {
+    [key in EligiblePaymentMethods]?: EligiblePaymentMethodDetails;
+  };
+  supplementary_data?: {
+    buyer_country_code?: string;
+  };
 };
 
 /**
@@ -176,20 +176,20 @@ export type FindEligiblePaymentMethodsResponse = {
  * ```
  */
 export interface EligiblePaymentMethodsOutput {
-    /**
-     * Determines if a specific payment method is eligible.
-     *
-     * @param paymentMethod - The funding source to check eligibility for
-     * @returns `true` if the payment method is eligible, `false` otherwise
-     */
-    isEligible: (paymentMethod: FundingSource) => boolean;
-    /**
-     * Retrieves details for a specific funding source.
-     *
-     * @param fundingSource - The funding source to get details for
-     * @returns Configuration details including country codes, product codes, and vaulting capabilities
-     */
-    getDetails: <T extends FundingSource>(
-        fundingSource: T,
-    ) => FindEligibleMethodsGetDetails<T>;
+  /**
+   * Determines if a specific payment method is eligible.
+   *
+   * @param paymentMethod - The funding source to check eligibility for
+   * @returns `true` if the payment method is eligible, `false` otherwise
+   */
+  isEligible: (paymentMethod: FundingSource) => boolean;
+  /**
+   * Retrieves details for a specific funding source.
+   *
+   * @param fundingSource - The funding source to get details for
+   * @returns Configuration details including country codes, product codes, and vaulting capabilities
+   */
+  getDetails: <T extends FundingSource>(
+    fundingSource: T,
+  ) => FindEligibleMethodsGetDetails<T>;
 }

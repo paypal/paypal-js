@@ -1,27 +1,27 @@
 import {
-    BasePaymentSessionOptions,
-    BasePaymentSession,
-    PresentationModeOptionsForPopup,
-    PresentationModeOptionsForModal,
-    PresentationModeOptionsForAuto,
+  BasePaymentSessionOptions,
+  BasePaymentSession,
+  PresentationModeOptionsForPopup,
+  PresentationModeOptionsForModal,
+  PresentationModeOptionsForAuto,
 } from "./base-component";
 
 export type VenmoOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
-    orderId?: string;
+  orderId?: string;
 };
 
 export type VenmoPresentationModeOptions =
-    | PresentationModeOptionsForAuto
-    | PresentationModeOptionsForPopup
-    | PresentationModeOptionsForModal;
+  | PresentationModeOptionsForAuto
+  | PresentationModeOptionsForPopup
+  | PresentationModeOptionsForModal;
 
 export type VenmoOneTimePaymentSessionPromise = Promise<{ orderId: string }>;
 
 export type VenmoOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
-    start: (
-        presentationModeOptions: VenmoPresentationModeOptions,
-        paymentSessionPromise?: VenmoOneTimePaymentSessionPromise,
-    ) => Promise<void>;
+  start: (
+    presentationModeOptions: VenmoPresentationModeOptions,
+    paymentSessionPromise?: VenmoOneTimePaymentSessionPromise,
+  ) => Promise<void>;
 };
 
 /**
@@ -35,32 +35,32 @@ export type VenmoOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
  * providing a secure and user-friendly way to process payments through the Venmo platform.
  */
 export interface VenmoPaymentsInstance {
-    /**
-     * Creates a Venmo one-time payment session for processing payments through Venmo.
-     *
-     * @remarks
-     * This method allows you to configure callback functions to handle different stages
-     * of the Venmo checkout process, including payment approval, cancelation, and errors.
-     *
-     * @param paymentSessionOptions - Configuration options for the Venmo payment session
-     * @returns A session object that can be used to start the payment flow
-     *
-     * @example
-     * ```typescript
-     * const venmoSession = sdkInstance.createVenmoOneTimePaymentSession({
-     *   onApprove: (data) => {
-     *     console.log('Venmo payment approved:', data);
-     *   },
-     *   onCancel: () => {
-     *     console.log('Venmo payment canceled');
-     *   },
-     *   onError: (data) => {
-     *     console.error('Venmo payment error:', data);
-     *   }
-     * });
-     * ```
-     */
-    createVenmoOneTimePaymentSession: (
-        paymentSessionOptions: VenmoOneTimePaymentSessionOptions,
-    ) => VenmoOneTimePaymentSession;
+  /**
+   * Creates a Venmo one-time payment session for processing payments through Venmo.
+   *
+   * @remarks
+   * This method allows you to configure callback functions to handle different stages
+   * of the Venmo checkout process, including payment approval, cancelation, and errors.
+   *
+   * @param paymentSessionOptions - Configuration options for the Venmo payment session
+   * @returns A session object that can be used to start the payment flow
+   *
+   * @example
+   * ```typescript
+   * const venmoSession = sdkInstance.createVenmoOneTimePaymentSession({
+   *   onApprove: (data) => {
+   *     console.log('Venmo payment approved:', data);
+   *   },
+   *   onCancel: () => {
+   *     console.log('Venmo payment canceled');
+   *   },
+   *   onError: (data) => {
+   *     console.error('Venmo payment error:', data);
+   *   }
+   * });
+   * ```
+   */
+  createVenmoOneTimePaymentSession: (
+    paymentSessionOptions: VenmoOneTimePaymentSessionOptions,
+  ) => VenmoOneTimePaymentSession;
 }

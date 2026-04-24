@@ -7,9 +7,9 @@ import type { ButtonProps } from "../types";
 import type { UseVenmoOneTimePaymentSessionProps } from "../hooks/useVenmoOneTimePaymentSession";
 
 type VenmoOneTimePaymentButtonProps = UseVenmoOneTimePaymentSessionProps &
-    ButtonProps & {
-        autoRedirect?: never;
-    };
+  ButtonProps & {
+    autoRedirect?: never;
+  };
 
 /**
  * `VenmoOneTimePaymentButton` is a button that provides a standard Venmo payment flow.
@@ -27,29 +27,27 @@ type VenmoOneTimePaymentButtonProps = UseVenmoOneTimePaymentSessionProps &
  * />
  */
 export const VenmoOneTimePaymentButton = ({
-    type = "pay",
-    disabled = false,
-    ...hookProps
+  type = "pay",
+  disabled = false,
+  ...hookProps
 }: VenmoOneTimePaymentButtonProps): JSX.Element | null => {
-    const { error, isPending, handleClick } =
-        useVenmoOneTimePaymentSession(hookProps);
-    const { isHydrated } = usePayPal();
+  const { error, isPending, handleClick } =
+    useVenmoOneTimePaymentSession(hookProps);
+  const { isHydrated } = usePayPal();
 
-    useEffect(() => {
-        if (error) {
-            console.error(error);
-        }
-    }, [error]);
+  useEffect(() => {
+    if (error) {
+      console.error(error);
+    }
+  }, [error]);
 
-    return isHydrated ? (
-        <venmo-button
-            onClick={handleClick}
-            type={type}
-            disabled={
-                disabled || isPending || error !== null ? true : undefined
-            }
-        ></venmo-button>
-    ) : (
-        <div />
-    );
+  return isHydrated ? (
+    <venmo-button
+      onClick={handleClick}
+      type={type}
+      disabled={disabled || isPending || error !== null ? true : undefined}
+    ></venmo-button>
+  ) : (
+    <div />
+  );
 };

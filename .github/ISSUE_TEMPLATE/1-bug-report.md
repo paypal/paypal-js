@@ -1,8 +1,8 @@
 ---
 name: 🐞 Bug report
 about:
-    Report a bug with the PayPal JS SDK. Before you create a new issue, please search for similar issues.
-    It's possible somebody has encountered this bug already.
+  Report a bug with the PayPal JS SDK. Before you create a new issue, please search for similar issues.
+  It's possible somebody has encountered this bug already.
 title: "[Bug] Bug report"
 labels: "bug"
 assignees: ""

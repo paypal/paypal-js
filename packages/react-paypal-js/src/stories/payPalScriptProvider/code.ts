@@ -1,5 +1,5 @@
 export const getDefaultCode = (deferLoading: boolean): string =>
-    `import {
+  `import {
 	PayPalScriptProvider,
 	usePayPalScriptReducer,
 	getScriptID,

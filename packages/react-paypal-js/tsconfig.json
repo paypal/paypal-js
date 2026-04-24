@@ -1,14 +1,14 @@
 {
-    "compilerOptions": {
-        "allowJs": false,
-        "allowSyntheticDefaultImports": true,
-        "forceConsistentCasingInFileNames": true,
-        "jsx": "react",
-        "lib": ["ES2022", "DOM"],
-        "module": "esnext",
-        "moduleResolution": "bundler",
-        "target": "esnext",
-        "strict": true,
-        "skipLibCheck": true
-    }
+  "compilerOptions": {
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react",
+    "lib": ["ES2022", "DOM"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "esnext",
+    "strict": true,
+    "skipLibCheck": true
+  }
 }

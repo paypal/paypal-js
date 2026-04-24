@@ -107,13 +107,13 @@ const CUSTOM_INPUT_WITH_LABEL = `<label title="This represents the full name as 
 				</label>`;
 
 const getCode = (
-    {
-        customCardNameField,
-        expirationDateFieldType,
-    }: { expirationDateFieldType: string; customCardNameField: string },
-    args: Args,
+  {
+    customCardNameField,
+    expirationDateFieldType,
+  }: { expirationDateFieldType: string; customCardNameField: string },
+  args: Args,
 ): string =>
-    `import { useState, useEffect, useRef } from "react";
+  `import { useState, useEffect, useRef } from "react";
 import {
 	PayPalScriptProvider,
 	PayPalHostedFieldsProvider,
@@ -263,18 +263,18 @@ export default function App() {
 }`;
 
 export const getDefaultCode = (args: Args): string =>
-    getCode(
-        {
-            customCardNameField: CUSTOM_INPUT_WITH_LABEL,
-            expirationDateFieldType: EXPIRATION_DATE_SINGLE_FIELD,
-        },
-        args,
-    );
+  getCode(
+    {
+      customCardNameField: CUSTOM_INPUT_WITH_LABEL,
+      expirationDateFieldType: EXPIRATION_DATE_SINGLE_FIELD,
+    },
+    args,
+  );
 export const getExpirationDateCode = (args: Args): string =>
-    getCode(
-        {
-            customCardNameField: CUSTOM_INPUT,
-            expirationDateFieldType: EXPIRATION_DATE_MULTI_FIELD,
-        },
-        args,
-    );
+  getCode(
+    {
+      customCardNameField: CUSTOM_INPUT,
+      expirationDateFieldType: EXPIRATION_DATE_MULTI_FIELD,
+    },
+    args,
+  );

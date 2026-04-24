@@ -10,78 +10,78 @@
  */
 
 import type {
-    OnApproveDataOneTimePayments,
-    OnApproveDataSubscriptions,
-    OnCancelDataOneTimePayments,
-    OnCancelDataSavePayments,
-    OnErrorData,
-    ConfirmOrderResponse,
+  OnApproveDataOneTimePayments,
+  OnApproveDataSubscriptions,
+  OnCancelDataOneTimePayments,
+  OnCancelDataSavePayments,
+  OnErrorData,
+  ConfirmOrderResponse,
 } from "@paypal/react-paypal-js/sdk-v6";
 import { action } from "storybook/actions";
 import { dispatchPaymentResult } from "./PaymentResult";
 
 export const SAMPLE_INTEGRATION_API =
-    import.meta.env.STORYBOOK_PAYPAL_API_URL ||
-    "https://v6-web-sdk-sample-integration-server.fly.dev";
+  import.meta.env.STORYBOOK_PAYPAL_API_URL ||
+  "https://v6-web-sdk-sample-integration-server.fly.dev";
 
 export const PAYPAL_CLIENT_ID =
-    import.meta.env.STORYBOOK_PAYPAL_SANDBOX_CLIENT_ID || "";
+  import.meta.env.STORYBOOK_PAYPAL_SANDBOX_CLIENT_ID || "";
 
 // One-Time Payment APIs
 
 export async function createOrder(): Promise<{ orderId: string }> {
-    const response = await fetch(
-        `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/create-order-for-one-time-payment`,
-        {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-        },
-    );
-    const data = await response.json();
-    return { orderId: data.id };
+  const response = await fetch(
+    `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/create-order-for-one-time-payment`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    },
+  );
+  const data = await response.json();
+  return { orderId: data.id };
 }
 
 export async function captureOrder(
-    orderId: string,
+  orderId: string,
 ): Promise<Record<string, unknown>> {
-    const response = await fetch(
-        `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/${orderId}/capture`,
-        {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-        },
-    );
-    return response.json();
+  const response = await fetch(
+    `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/${orderId}/capture`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    },
+  );
+  return response.json();
 }
 
 // Vault/Save Payment APIs
 
 export async function createVaultToken(): Promise<{ vaultSetupToken: string }> {
-    const response = await fetch(
-        `${SAMPLE_INTEGRATION_API}/paypal-api/vault/create-setup-token-for-paypal-save-payment`,
-        {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-        },
-    );
-    const data = await response.json();
-    return { vaultSetupToken: data.id };
+  const response = await fetch(
+    `${SAMPLE_INTEGRATION_API}/paypal-api/vault/create-setup-token-for-paypal-save-payment`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    },
+  );
+  const data = await response.json();
+  return { vaultSetupToken: data.id };
 }
 
 // Subscription APIs
 
 export async function createSubscription(): Promise<{
-    subscriptionId: string;
+  subscriptionId: string;
 }> {
-    const response = await fetch(
-        `${SAMPLE_INTEGRATION_API}/paypal-api/billing/create-subscription`,
-        {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-        },
-    );
-    const data = await response.json();
-    return { subscriptionId: data.id };
+  const response = await fetch(
+    `${SAMPLE_INTEGRATION_API}/paypal-api/billing/create-subscription`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    },
+  );
+  const data = await response.json();
+  return { subscriptionId: data.id };
 }
 
 // Shared Callbacks
@@ -89,168 +89,162 @@ export async function createSubscription(): Promise<{
 // PayPalError and HTMLButtonElement's onError (ReactEventHandler) in the component props
 
 export const oneTimePaymentCallbacks = {
-    onApprove: async (data: OnApproveDataOneTimePayments) => {
-        const orderData = await captureOrder(data.orderId);
-        action("approve")({
-            ...orderData,
-            orderID: data.orderId,
-        });
-        dispatchPaymentResult(
-            "success",
-            `Payment captured successfully. Order ID: ${data.orderId}`,
-        );
-    },
-    onCancel: (data: OnCancelDataOneTimePayments) => {
-        action("cancel")(data);
-        dispatchPaymentResult("cancel", "Payment was cancelled by the buyer.");
-    },
-    onError: (error: unknown) => {
-        action("error")(error as OnErrorData);
-        dispatchPaymentResult(
-            "error",
-            `Payment error: ${(error as OnErrorData)?.message || "Unknown error"}`,
-        );
-    },
+  onApprove: async (data: OnApproveDataOneTimePayments) => {
+    const orderData = await captureOrder(data.orderId);
+    action("approve")({
+      ...orderData,
+      orderID: data.orderId,
+    });
+    dispatchPaymentResult(
+      "success",
+      `Payment captured successfully. Order ID: ${data.orderId}`,
+    );
+  },
+  onCancel: (data: OnCancelDataOneTimePayments) => {
+    action("cancel")(data);
+    dispatchPaymentResult("cancel", "Payment was cancelled by the buyer.");
+  },
+  onError: (error: unknown) => {
+    action("error")(error as OnErrorData);
+    dispatchPaymentResult(
+      "error",
+      `Payment error: ${(error as OnErrorData)?.message || "Unknown error"}`,
+    );
+  },
 };
 
 export const savePaymentCallbacks = {
-    onApprove: async (data: { vaultSetupToken: string }) => {
-        action("approve")(data);
-        dispatchPaymentResult(
-            "success",
-            `Payment method saved successfully. Token: ${data.vaultSetupToken}`,
-        );
-    },
-    onCancel: (data: OnCancelDataSavePayments) => {
-        action("cancel")(data);
-        dispatchPaymentResult(
-            "cancel",
-            "Save payment was cancelled by the buyer.",
-        );
-    },
-    onError: (error: unknown) => {
-        action("error")(error as OnErrorData);
-        dispatchPaymentResult(
-            "error",
-            `Save payment error: ${(error as OnErrorData)?.message || "Unknown error"}`,
-        );
-    },
+  onApprove: async (data: { vaultSetupToken: string }) => {
+    action("approve")(data);
+    dispatchPaymentResult(
+      "success",
+      `Payment method saved successfully. Token: ${data.vaultSetupToken}`,
+    );
+  },
+  onCancel: (data: OnCancelDataSavePayments) => {
+    action("cancel")(data);
+    dispatchPaymentResult("cancel", "Save payment was cancelled by the buyer.");
+  },
+  onError: (error: unknown) => {
+    action("error")(error as OnErrorData);
+    dispatchPaymentResult(
+      "error",
+      `Save payment error: ${(error as OnErrorData)?.message || "Unknown error"}`,
+    );
+  },
 };
 
 export const subscriptionCallbacks = {
-    onApprove: async (data: OnApproveDataSubscriptions) => {
-        action("approve")({
-            subscriptionId: data.subscriptionId,
-            payerId: data.payerId,
-        });
-        dispatchPaymentResult(
-            "success",
-            `Subscription approved. ID: ${data.subscriptionId}`,
-        );
-    },
-    onCancel: (data: OnCancelDataOneTimePayments) => {
-        action("cancel")(data);
-        dispatchPaymentResult(
-            "cancel",
-            "Subscription was cancelled by the buyer.",
-        );
-    },
-    onError: (error: unknown) => {
-        action("error")(error as OnErrorData);
-        dispatchPaymentResult(
-            "error",
-            `Subscription error: ${(error as OnErrorData)?.message || "Unknown error"}`,
-        );
-    },
+  onApprove: async (data: OnApproveDataSubscriptions) => {
+    action("approve")({
+      subscriptionId: data.subscriptionId,
+      payerId: data.payerId,
+    });
+    dispatchPaymentResult(
+      "success",
+      `Subscription approved. ID: ${data.subscriptionId}`,
+    );
+  },
+  onCancel: (data: OnCancelDataOneTimePayments) => {
+    action("cancel")(data);
+    dispatchPaymentResult("cancel", "Subscription was cancelled by the buyer.");
+  },
+  onError: (error: unknown) => {
+    action("error")(error as OnErrorData);
+    dispatchPaymentResult(
+      "error",
+      `Subscription error: ${(error as OnErrorData)?.message || "Unknown error"}`,
+    );
+  },
 };
 
 // Shared ArgTypes
 
 export const BUTTON_TYPES = [
-    "pay",
-    "checkout",
-    "buynow",
-    "subscribe",
-    "donate",
+  "pay",
+  "checkout",
+  "buynow",
+  "subscribe",
+  "donate",
 ] as const;
 
 export const buttonTypeArgType = {
-    control: { type: "select" as const },
-    options: BUTTON_TYPES,
-    description: "Button label type",
+  control: { type: "select" as const },
+  options: BUTTON_TYPES,
+  description: "Button label type",
 };
 
 export const presentationModeArgType = {
-    control: { type: "select" as const },
-    options: ["auto", "popup", "modal", "redirect"],
-    description: "How the checkout flow is presented",
+  control: { type: "select" as const },
+  options: ["auto", "popup", "modal", "redirect"],
+  description: "How the checkout flow is presented",
 };
 
 export const venmoPresentationModeArgType = {
-    control: { type: "select" as const },
-    options: ["auto", "popup", "modal"],
-    description: "Venmo presentation mode (auto, popup, or modal only)",
+  control: { type: "select" as const },
+  options: ["auto", "popup", "modal"],
+  description: "Venmo presentation mode (auto, popup, or modal only)",
 };
 
 export const disabledArgType = {
-    control: { type: "boolean" as const },
-    description: "Disable the button",
+  control: { type: "boolean" as const },
+  description: "Disable the button",
 };
 
 // Apple Pay Callbacks
 
 export const applePayCallbacks = {
-    onApprove: async (data: ConfirmOrderResponse) => {
-        const orderId = data.approveApplePayPayment.id;
-        const orderData = await captureOrder(orderId);
-        action("approve")({ ...orderData, orderID: orderId });
-        dispatchPaymentResult(
-            "success",
-            `Apple Pay payment captured. Order ID: ${orderId}`,
-        );
-    },
-    onCancel: () => {
-        action("cancel")("Apple Pay cancelled");
-        dispatchPaymentResult(
-            "cancel",
-            "Apple Pay payment was cancelled by the buyer.",
-        );
-    },
-    onError: (error: Error) => {
-        action("error")(error);
-        dispatchPaymentResult(
-            "error",
-            `Apple Pay error: ${error.message || "Unknown error"}`,
-        );
-    },
+  onApprove: async (data: ConfirmOrderResponse) => {
+    const orderId = data.approveApplePayPayment.id;
+    const orderData = await captureOrder(orderId);
+    action("approve")({ ...orderData, orderID: orderId });
+    dispatchPaymentResult(
+      "success",
+      `Apple Pay payment captured. Order ID: ${orderId}`,
+    );
+  },
+  onCancel: () => {
+    action("cancel")("Apple Pay cancelled");
+    dispatchPaymentResult(
+      "cancel",
+      "Apple Pay payment was cancelled by the buyer.",
+    );
+  },
+  onError: (error: Error) => {
+    action("error")(error);
+    dispatchPaymentResult(
+      "error",
+      `Apple Pay error: ${error.message || "Unknown error"}`,
+    );
+  },
 };
 
 // Apple Pay ArgTypes
 
 export const APPLE_PAY_BUTTON_STYLES = [
-    "black",
-    "white",
-    "white-outline",
+  "black",
+  "white",
+  "white-outline",
 ] as const;
 
 export const APPLE_PAY_BUTTON_TYPES = [
-    "pay",
-    "buy",
-    "set-up",
-    "donate",
-    "check-out",
-    "book",
-    "subscribe",
+  "pay",
+  "buy",
+  "set-up",
+  "donate",
+  "check-out",
+  "book",
+  "subscribe",
 ] as const;
 
 export const applePayButtonStyleArgType = {
-    control: { type: "select" as const },
-    options: APPLE_PAY_BUTTON_STYLES,
-    description: "Apple Pay button visual style",
+  control: { type: "select" as const },
+  options: APPLE_PAY_BUTTON_STYLES,
+  description: "Apple Pay button visual style",
 };
 
 export const applePayButtonTypeArgType = {
-    control: { type: "select" as const },
-    options: APPLE_PAY_BUTTON_TYPES,
-    description: "Apple Pay button label type",
+  control: { type: "select" as const },
+  options: APPLE_PAY_BUTTON_TYPES,
+  description: "Apple Pay button label type",
 };

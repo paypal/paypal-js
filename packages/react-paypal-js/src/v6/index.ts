@@ -7,12 +7,12 @@ import type { SDKWebComponents } from "./types/sdkWebComponents";
 export * from "./types";
 
 export type {
-    ButtonProps,
-    InternalButtonProps,
-    PayLaterButtonProps,
-    PayPalBasicCardButtonProps,
-    PayPalCreditButtonProps,
-    PayPalMessagesElement,
+  ButtonProps,
+  InternalButtonProps,
+  PayLaterButtonProps,
+  PayPalBasicCardButtonProps,
+  PayPalCreditButtonProps,
+  PayPalMessagesElement,
 } from "./types/sdkWebComponents";
 
 // ============================================================================
@@ -20,34 +20,34 @@ export type {
 // ============================================================================
 
 export {
-    PayPalCardFieldsProvider,
-    type CardFieldsSessionType,
+  PayPalCardFieldsProvider,
+  type CardFieldsSessionType,
 } from "./components/PayPalCardFieldsProvider";
 export {
-    PayLaterOneTimePaymentButton,
-    type PayLaterOneTimePaymentButtonProps,
+  PayLaterOneTimePaymentButton,
+  type PayLaterOneTimePaymentButtonProps,
 } from "./components/PayLaterOneTimePaymentButton";
 export {
-    PayPalCreditOneTimePaymentButton,
-    type PayPalCreditOneTimePaymentButtonProps,
+  PayPalCreditOneTimePaymentButton,
+  type PayPalCreditOneTimePaymentButtonProps,
 } from "./components/PayPalCreditOneTimePaymentButton";
 export {
-    PayPalCreditSavePaymentButton,
-    type PayPalCreditSavePaymentButtonProps,
+  PayPalCreditSavePaymentButton,
+  type PayPalCreditSavePaymentButtonProps,
 } from "./components/PayPalCreditSavePaymentButton";
 export { PayPalGuestPaymentButton } from "./components/PayPalGuestPaymentButton";
 export { PayPalOneTimePaymentButton } from "./components/PayPalOneTimePaymentButton";
 export {
-    PayPalSubscriptionButton,
-    type PayPalSubscriptionButtonProps,
+  PayPalSubscriptionButton,
+  type PayPalSubscriptionButtonProps,
 } from "./components/PayPalSubscriptionButton";
 export { PayPalProvider } from "./components/PayPalProvider";
 export { BraintreePayPalProvider } from "./components/Braintree/BraintreePayPalProvider";
 export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
 export {
-    ApplePayOneTimePaymentButton,
-    type ApplePayOneTimePaymentButtonProps,
+  ApplePayOneTimePaymentButton,
+  type ApplePayOneTimePaymentButtonProps,
 } from "./components/ApplePayOneTimePaymentButton";
 export { PayPalCardNumberField } from "./components/PayPalCardNumberField";
 export { PayPalCardExpiryField } from "./components/PayPalCardExpiryField";
@@ -59,71 +59,76 @@ export { PayPalCardCvvField } from "./components/PayPalCardCvvField";
 
 // Core hooks
 export { usePayPal } from "./hooks/usePayPal";
-export { useBraintreePayPal } from "./hooks/useBraintreePayPal";
+export { useBraintreePayPal } from "./hooks/Braintree/useBraintreePayPal";
+export {
+  useBraintreePayPalOneTimePaymentSession,
+  type UseBraintreePayPalOneTimePaymentSessionProps,
+  type UseBraintreePayPalOneTimePaymentSessionReturn,
+} from "./hooks/Braintree/useBraintreePayPalOneTimePaymentSession";
 export * from "./hooks/useEligibleMethods";
 export { usePayPalMessages } from "./hooks/usePayPalMessages";
 
 // Card fields hooks
 export { usePayPalCardFields } from "./hooks/usePayPalCardFields";
 export {
-    usePayPalCardFieldsOneTimePaymentSession,
-    type UsePayPalCardFieldsOneTimePaymentSessionResult,
+  usePayPalCardFieldsOneTimePaymentSession,
+  type UsePayPalCardFieldsOneTimePaymentSessionResult,
 } from "./hooks/usePayPalCardFieldsOneTimePaymentSession";
 export {
-    usePayPalCardFieldsSavePaymentSession,
-    type UsePayPalCardFieldsSavePaymentSessionResult,
+  usePayPalCardFieldsSavePaymentSession,
+  type UsePayPalCardFieldsSavePaymentSessionResult,
 } from "./hooks/usePayPalCardFieldsSavePaymentSession";
 
 // Payment session hooks
 export {
-    usePayLaterOneTimePaymentSession,
-    type UsePayLaterOneTimePaymentSessionProps,
+  usePayLaterOneTimePaymentSession,
+  type UsePayLaterOneTimePaymentSessionProps,
 } from "./hooks/usePayLaterOneTimePaymentSession";
 export {
-    usePayPalCreditOneTimePaymentSession,
-    type UsePayPalCreditOneTimePaymentSessionProps,
+  usePayPalCreditOneTimePaymentSession,
+  type UsePayPalCreditOneTimePaymentSessionProps,
 } from "./hooks/usePayPalCreditOneTimePaymentSession";
 export {
-    usePayPalCreditSavePaymentSession,
-    type UsePayPalCreditSavePaymentSessionProps,
+  usePayPalCreditSavePaymentSession,
+  type UsePayPalCreditSavePaymentSessionProps,
 } from "./hooks/usePayPalCreditSavePaymentSession";
 export {
-    usePayPalGuestPaymentSession,
-    type UsePayPalGuestPaymentSessionProps,
+  usePayPalGuestPaymentSession,
+  type UsePayPalGuestPaymentSessionProps,
 } from "./hooks/usePayPalGuestPaymentSession";
 export {
-    usePayPalOneTimePaymentSession,
-    type UsePayPalOneTimePaymentSessionProps,
+  usePayPalOneTimePaymentSession,
+  type UsePayPalOneTimePaymentSessionProps,
 } from "./hooks/usePayPalOneTimePaymentSession";
 export {
-    usePayPalSavePaymentSession,
-    type UsePayPalSavePaymentSessionProps,
+  usePayPalSavePaymentSession,
+  type UsePayPalSavePaymentSessionProps,
 } from "./hooks/usePayPalSavePaymentSession";
 export {
-    usePayPalSubscriptionPaymentSession,
-    type UsePayPalSubscriptionPaymentSessionProps,
+  usePayPalSubscriptionPaymentSession,
+  type UsePayPalSubscriptionPaymentSessionProps,
 } from "./hooks/usePayPalSubscriptionPaymentSession";
 export {
-    useVenmoOneTimePaymentSession,
-    type UseVenmoOneTimePaymentSessionProps,
+  useVenmoOneTimePaymentSession,
+  type UseVenmoOneTimePaymentSessionProps,
 } from "./hooks/useVenmoOneTimePaymentSession";
 export {
-    useApplePayOneTimePaymentSession,
-    type UseApplePayOneTimePaymentSessionProps,
+  useApplePayOneTimePaymentSession,
+  type UseApplePayOneTimePaymentSessionProps,
 } from "./hooks/useApplePayOneTimePaymentSession";
 
 // React 19+ JSX SDK Web Components type declaration
 declare global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace JSX {
-        interface IntrinsicElements extends SDKWebComponents {}
-    }
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace JSX {
+    interface IntrinsicElements extends SDKWebComponents {}
+  }
 }
 
 // React 17/18 JSX SDK Web Components type declaration (for backwards compatibility)
 declare module "react" {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
-    namespace JSX {
-        interface IntrinsicElements extends SDKWebComponents {}
-    }
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace JSX {
+    interface IntrinsicElements extends SDKWebComponents {}
+  }
 }
