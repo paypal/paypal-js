@@ -278,7 +278,7 @@ export function createPaymentSession<T>(
   failedSdkRef: { current: unknown },
   sdkInstance: unknown,
   setError: (error: Error | null) => void,
-  component: string,
+  errorMessage: string,
 ): T | null {
   // Skip retry if this SDK instance already failed
   if (failedSdkRef.current === sdkInstance) {
@@ -290,10 +290,7 @@ export function createPaymentSession<T>(
   } catch (err) {
     failedSdkRef.current = sdkInstance;
 
-    const detailedError = new Error(
-      `Failed to create payment session. This may occur if the required component "${component}" is not included in the SDK components array.`,
-      { cause: err },
-    );
+    const detailedError = new Error(errorMessage, { cause: err });
 
     setError(detailedError);
     return null;

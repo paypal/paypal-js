@@ -123,7 +123,7 @@ export function usePayPalGuestPaymentSession({
       failedSdkRef,
       sdkInstance,
       setError,
-      "paypal-guest-payments",
+      'Failed to create payment session. This may occur if the required component "paypal-guest-payments" is not included in the SDK components array.',
     );
 
     if (!newSession) {

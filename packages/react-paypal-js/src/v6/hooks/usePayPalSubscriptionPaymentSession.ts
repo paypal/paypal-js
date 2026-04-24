@@ -103,7 +103,7 @@ export function usePayPalSubscriptionPaymentSession({
       failedSdkRef,
       sdkInstance,
       setError,
-      "paypal-subscriptions",
+      'Failed to create payment session. This may occur if the required component "paypal-subscriptions" is not included in the SDK components array.',
     );
 
     if (!newSession) {

@@ -35,7 +35,7 @@ describe("createPaymentSession", () => {
         failedSdkRef,
         mockSdkInstance,
         mockSetError,
-        "paypal-payments",
+        'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
       );
 
       expect(result).toBe(mockSession);
@@ -45,7 +45,7 @@ describe("createPaymentSession", () => {
     });
   });
 
-  describe("error handling with component parameter", () => {
+  describe("error handling with errorMessage parameter", () => {
     test("should handle session creation failure with proper error message and error preservation", () => {
       const originalError = new Error("Component missing");
       const sessionCreator = jest.fn().mockImplementation(() => {
@@ -57,7 +57,7 @@ describe("createPaymentSession", () => {
         failedSdkRef,
         mockSdkInstance,
         mockSetError,
-        "paypal-payments",
+        'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
       );
 
       expect(result).toBeNull();
@@ -85,7 +85,7 @@ describe("createPaymentSession", () => {
         failedSdkRef,
         mockSdkInstance,
         mockSetError,
-        "paypal-payments",
+        'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
       );
 
       expect(firstResult).toBeNull();
@@ -101,7 +101,7 @@ describe("createPaymentSession", () => {
         failedSdkRef,
         mockSdkInstance,
         mockSetError,
-        "paypal-payments",
+        'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
       );
 
       expect(secondResult).toBeNull();
@@ -120,7 +120,7 @@ describe("createPaymentSession", () => {
         failedSdkRef,
         mockSdkInstance,
         mockSetError,
-        "paypal-payments",
+        'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
       );
 
       expect(failedSdkRef.current).toBe(mockSdkInstance);
@@ -136,7 +136,7 @@ describe("createPaymentSession", () => {
         failedSdkRef,
         newSdkInstance,
         mockSetError,
-        "paypal-payments",
+        'Failed to create payment session. This may occur if the required component "paypal-payments" is not included in the SDK components array.',
       );
 
       expect(result).toBe(mockSession);

@@ -103,7 +103,7 @@ export function useVenmoOneTimePaymentSession({
       failedSdkRef,
       sdkInstance,
       setError,
-      "venmo-payments",
+      'Failed to create payment session. This may occur if the required component "venmo-payments" is not included in the SDK components array.',
     );
 
     if (!newSession) {
