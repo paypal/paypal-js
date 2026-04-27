@@ -1,5 +1,18 @@
 # Changelog
 
+## 9.7.0
+
+### Minor Changes
+
+- 8615050: Updates typescript to version minimum 5.9.3
+
+### Patch Changes
+
+- f37e7bb: Fixes a root package-lock missing caret for typescript.
+- 4974af9: Updating ApplePay types
+- aea0e42: Fixes an issue with a missing type in the Card Fields component.
+- 309d308: Use default prettier settings for code formatting
+
 ## 9.6.0
 
 ### Minor Changes
