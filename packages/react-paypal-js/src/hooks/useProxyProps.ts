@@ -22,8 +22,7 @@ export function useProxyProps<T extends Record<PropertyKey, unknown>>(
          * */
         if (typeof target[prop] === "function") {
           return (...args: unknown[]) =>
-            // eslint-disable-next-line @typescript-eslint/ban-types
-            (target[prop] as Function)(...args);
+            (target[prop] as (...args: unknown[]) => unknown)(...args);
         }
 
         return Reflect.get(target, prop, receiver);

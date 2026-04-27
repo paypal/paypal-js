@@ -50,9 +50,21 @@
   },
   "overrides": [
     {
+      "files": ["*.js"],
+      "rules": {
+        "@typescript-eslint/no-require-imports": "off"
+      }
+    },
+    {
       "files": ["*.ts", "*.tsx"],
       "rules": {
         "@typescript-eslint/explicit-module-boundary-types": ["error"]
+      }
+    },
+    {
+      "files": ["src/v6/index.ts"],
+      "rules": {
+        "@typescript-eslint/no-empty-object-type": "off"
       }
     }
   ]
