@@ -23,6 +23,18 @@
   },
   "overrides": [
     {
+      "files": ["*.js"],
+      "rules": {
+        "@typescript-eslint/no-require-imports": "off"
+      }
+    },
+    {
+      "files": ["types/v6/**/*.test.ts"],
+      "rules": {
+        "@typescript-eslint/no-unused-expressions": "off"
+      }
+    },
+    {
       "files": ["types/v6/**/*.d.ts"],
       "plugins": ["eslint-plugin-tsdoc"],
       "rules": {
