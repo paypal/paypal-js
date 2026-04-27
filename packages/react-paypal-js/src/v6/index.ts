@@ -43,6 +43,7 @@ export {
 } from "./components/PayPalSubscriptionButton";
 export { PayPalProvider } from "./components/PayPalProvider";
 export { BraintreePayPalProvider } from "./components/Braintree/BraintreePayPalProvider";
+export { BraintreePayPalButton } from "./components/Braintree/BraintreePayPalButton";
 export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
 export {
