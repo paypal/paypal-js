@@ -9,6 +9,27 @@ import type { UseBraintreePayPalOneTimePaymentSessionProps } from "../../hooks/B
 type BraintreePayPalButtonProps = UseBraintreePayPalOneTimePaymentSessionProps &
   ButtonProps;
 
+/**
+ * `BraintreePayPalOneTimePaymentButton` is a button that provides a Braintree PayPal one-time payment flow.
+ *
+ * `BraintreePayPalButtonProps` combines the arguments for {@link UseBraintreePayPalOneTimePaymentSessionProps}
+ * and {@link ButtonProps}.
+ *
+ * Must be rendered inside a {@link BraintreePayPalProvider}.
+ *
+ * @example
+ * <BraintreePayPalOneTimePaymentButton
+ *   amount="10.00"
+ *   currency="USD"
+ *   onApprove={async (data) => {
+ *     const payload = await braintreePayPalCheckoutInstance.tokenizePayment({
+ *       payerID: data.payerId,
+ *       orderID: data.orderId,
+ *     });
+ *     // Send payload.nonce to your server
+ *   }}
+ * />
+ */
 export const BraintreePayPalOneTimePaymentButton = ({
   type = "pay",
   disabled = false,

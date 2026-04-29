@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 
-import { BraintreePayPalButton } from "./BraintreePayPalButton";
+import { BraintreePayPalOneTimePaymentButton } from "./BraintreePayPalButton";
 import { useBraintreePayPalOneTimePaymentSession } from "../../hooks/Braintree/useBraintreePayPalOneTimePaymentSession";
 import { useBraintreePayPal } from "../../hooks/Braintree/useBraintreePayPal";
 
@@ -15,7 +15,7 @@ jest.mock("../../hooks/Braintree/useBraintreePayPal", () => ({
   useBraintreePayPal: jest.fn(),
 }));
 
-describe("BraintreePayPalButton", () => {
+describe("BraintreePayPalOneTimePaymentButton", () => {
   const mockHandleClick = jest.fn();
   const mockUseBraintreePayPalOneTimePaymentSession =
     useBraintreePayPalOneTimePaymentSession as jest.Mock;
@@ -35,7 +35,7 @@ describe("BraintreePayPalButton", () => {
 
   it("should render paypal-button when hydrated", () => {
     const { container } = render(
-      <BraintreePayPalButton
+      <BraintreePayPalOneTimePaymentButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -49,7 +49,7 @@ describe("BraintreePayPalButton", () => {
       isHydrated: false,
     });
     const { container } = render(
-      <BraintreePayPalButton
+      <BraintreePayPalOneTimePaymentButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -61,7 +61,7 @@ describe("BraintreePayPalButton", () => {
 
   it("should call handleClick when button is clicked", () => {
     const { container } = render(
-      <BraintreePayPalButton
+      <BraintreePayPalOneTimePaymentButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -77,7 +77,7 @@ describe("BraintreePayPalButton", () => {
 
   it("should disable the button when disabled=true is given as a prop", () => {
     const { container } = render(
-      <BraintreePayPalButton
+      <BraintreePayPalOneTimePaymentButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -96,7 +96,7 @@ describe("BraintreePayPalButton", () => {
       handleClick: mockHandleClick,
     });
     const { container } = render(
-      <BraintreePayPalButton
+      <BraintreePayPalOneTimePaymentButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -113,7 +113,7 @@ describe("BraintreePayPalButton", () => {
       handleClick: mockHandleClick,
     });
     const { container } = render(
-      <BraintreePayPalButton
+      <BraintreePayPalOneTimePaymentButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -130,7 +130,7 @@ describe("BraintreePayPalButton", () => {
       handleClick: mockHandleClick,
     });
     const { container } = render(
-      <BraintreePayPalButton
+      <BraintreePayPalOneTimePaymentButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -143,7 +143,7 @@ describe("BraintreePayPalButton", () => {
 
   it("should pass type prop to paypal-button", () => {
     const { container } = render(
-      <BraintreePayPalButton
+      <BraintreePayPalOneTimePaymentButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -157,7 +157,7 @@ describe("BraintreePayPalButton", () => {
   it("should pass hook props to useBraintreePayPalOneTimePaymentSession", () => {
     const onApprove = () => Promise.resolve();
     render(
-      <BraintreePayPalButton
+      <BraintreePayPalOneTimePaymentButton
         amount="10.00"
         currency="USD"
         onApprove={onApprove}
@@ -194,7 +194,7 @@ describe("BraintreePayPalButton", () => {
       handleClick: mockHandleClick,
     });
     render(
-      <BraintreePayPalButton
+      <BraintreePayPalOneTimePaymentButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
