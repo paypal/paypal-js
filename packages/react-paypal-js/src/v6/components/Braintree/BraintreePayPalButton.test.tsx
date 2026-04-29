@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 
-import { BraintreePayPalOneTimePaymentButton } from "./BraintreePayPalButton";
+import { BraintreePayPalOneTimePaymentButton } from "./BraintreePayPalOneTimePaymentButton";
 import { useBraintreePayPalOneTimePaymentSession } from "../../hooks/Braintree/useBraintreePayPalOneTimePaymentSession";
 import { useBraintreePayPal } from "../../hooks/Braintree/useBraintreePayPal";
 
