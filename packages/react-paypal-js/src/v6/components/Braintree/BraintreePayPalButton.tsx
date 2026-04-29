@@ -9,7 +9,7 @@ import type { UseBraintreePayPalOneTimePaymentSessionProps } from "../../hooks/B
 type BraintreePayPalButtonProps = UseBraintreePayPalOneTimePaymentSessionProps &
   ButtonProps;
 
-export const BraintreePayPalButton = ({
+export const BraintreePayPalOneTimePaymentButton = ({
   type = "pay",
   disabled = false,
   // Callbacks
