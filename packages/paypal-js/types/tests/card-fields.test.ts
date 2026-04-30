@@ -1,6 +1,11 @@
 import { test, vi, describe, expect } from "vitest";
 
-import { PayPalCardFieldsComponentOptions } from "../components/card-fields";
+import {
+  PayPalCardFieldsComponentOptions,
+  PayPalCardFieldsComponent,
+  PayPalCardFieldsBillingAddress,
+  PayPalCardFieldsSubmitOptions,
+} from "../components/card-fields";
 
 describe.only("testing createOrder and createVaultToken types", () => {
   test("only creatOrder", () => {
@@ -43,5 +48,62 @@ describe.only("testing createOrder and createVaultToken types", () => {
     };
 
     expect(callback).toThrowError();
+  });
+});
+
+describe("testing submit options types", () => {
+  const mockCardFields = {
+    getState: vi.fn(),
+    isEligible: vi.fn(),
+    submit: vi.fn(),
+    NameField: vi.fn(),
+    NumberField: vi.fn(),
+    CVVField: vi.fn(),
+    ExpiryField: vi.fn(),
+  } as unknown as PayPalCardFieldsComponent;
+
+  test("submit with no arguments", () => {
+    mockCardFields.submit();
+  });
+
+  test("submit with empty options", () => {
+    mockCardFields.submit({});
+  });
+
+  test("submit with billingAddress only", () => {
+    mockCardFields.submit({
+      billingAddress: {
+        postalCode: "12345",
+        countryCode: "US",
+      },
+    });
+  });
+
+  test("submit with name only", () => {
+    mockCardFields.submit({ name: "John Doe" });
+  });
+
+  test("submit with all options", () => {
+    mockCardFields.submit({
+      name: "John Doe",
+      billingAddress: {
+        addressLine1: "123 Main St",
+        addressLine2: "Apt 4B",
+        adminArea2: "San Jose",
+        adminArea1: "CA",
+        postalCode: "95131",
+        countryCode: "US",
+      },
+    });
+  });
+
+  test("BillingAddress allows all fields optional", () => {
+    const emptyAddress: PayPalCardFieldsBillingAddress = {};
+    expect(emptyAddress).toBeDefined();
+  });
+
+  test("SubmitOptions allows all fields optional", () => {
+    const emptyOptions: PayPalCardFieldsSubmitOptions = {};
+    expect(emptyOptions).toBeDefined();
   });
 });
