@@ -1,5 +1,15 @@
 # Changelog
 
+## 9.3.0
+
+### Minor Changes
+
+- 2bcb79d: Add a new static UI component for braintree paypal one time payment.
+
+### Patch Changes
+
+- 6e97c29: Fix onError type intersection in ApplePayButtonElementProps by adding Omit<HTMLAttributes, "onError"> consistent with ButtonProps pattern
+
 ## 9.2.0
 
 ### Minor Changes
