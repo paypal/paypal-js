@@ -15,10 +15,11 @@ type BraintreePayPalButtonProps = UseBraintreePayPalOneTimePaymentSessionProps &
  * `BraintreePayPalButtonProps` combines the arguments for {@link UseBraintreePayPalOneTimePaymentSessionProps}
  * and {@link ButtonProps}.
  *
- * Must be rendered inside a {@link BraintreePayPalProvider}.
+ * Must be rendered inside a `BraintreePayPalProvider`.
  *
  * @example
  * <BraintreePayPalOneTimePaymentButton
+ *   type="checkout"
  *   amount="10.00"
  *   currency="USD"
  *   onApprove={async (data) => {
