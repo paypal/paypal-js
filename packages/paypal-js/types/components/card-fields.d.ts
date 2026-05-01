@@ -39,6 +39,20 @@ export interface PayPalCardFieldsStyleOptions {
   "-webkit-transition"?: string;
 }
 
+export type PayPalCardFieldsBillingAddress = {
+  addressLine1?: string;
+  addressLine2?: string;
+  adminArea2?: string;
+  adminArea1?: string;
+  postalCode?: string;
+  countryCode?: string;
+};
+
+export type PayPalCardFieldsSubmitOptions = {
+  name?: string;
+  billingAddress?: PayPalCardFieldsBillingAddress;
+};
+
 export type CardFieldsOnApproveData = {
   orderID: string;
   liabilityShift?: string;
@@ -156,7 +170,7 @@ export type PayPalCardFieldsComponentOptions =
 export interface PayPalCardFieldsComponent {
   getState: () => Promise<PayPalCardFieldsStateObject>;
   isEligible: () => boolean;
-  submit: () => Promise<void>;
+  submit: (options?: PayPalCardFieldsSubmitOptions) => Promise<void>;
   NameField: (
     options: PayPalCardFieldsIndividualFieldOptions,
   ) => PayPalCardFieldsIndividualField;
