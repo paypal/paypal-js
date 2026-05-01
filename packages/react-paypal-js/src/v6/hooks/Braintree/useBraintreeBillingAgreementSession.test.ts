@@ -284,11 +284,12 @@ describe("useBraintreeBillingAgreementSession", () => {
         billingToken: "BA-TOKEN123",
       };
       createSessionCall.onApprove(mockApprovalData);
-      createSessionCall.onCancel();
+      const mockCancelData = { billingToken: "BA-TOKEN123" };
+      createSessionCall.onCancel(mockCancelData);
       createSessionCall.onError(new Error("test error"));
 
       expect(onApprove).toHaveBeenCalledWith(mockApprovalData);
-      expect(onCancel).toHaveBeenCalled();
+      expect(onCancel).toHaveBeenCalledWith(mockCancelData);
       expect(onError).toHaveBeenCalledWith(new Error("test error"));
     });
   });

@@ -285,11 +285,12 @@ describe("useBraintreePayPalOneTimePaymentSession", () => {
         orderId: "ORDER456",
       };
       createSessionCall.onApprove(mockApprovalData);
-      createSessionCall.onCancel();
+      const mockCancelData = { orderId: "ORDER456" };
+      createSessionCall.onCancel(mockCancelData);
       createSessionCall.onError(new Error("test error"));
 
       expect(onApprove).toHaveBeenCalledWith(mockApprovalData);
-      expect(onCancel).toHaveBeenCalled();
+      expect(onCancel).toHaveBeenCalledWith(mockCancelData);
       expect(onError).toHaveBeenCalledWith(new Error("test error"));
     });
   });
