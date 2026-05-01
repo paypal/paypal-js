@@ -15,6 +15,7 @@ import type {
   OnCancelDataOneTimePayments,
   OnCancelDataSavePayments,
   OnErrorData,
+  ConfirmOrderResponse,
 } from "@paypal/react-paypal-js/sdk-v6";
 import { action } from "storybook/actions";
 import { dispatchPaymentResult } from "./PaymentResult";
@@ -188,4 +189,62 @@ export const venmoPresentationModeArgType = {
 export const disabledArgType = {
   control: { type: "boolean" as const },
   description: "Disable the button",
+};
+
+// Apple Pay Callbacks
+
+export const applePayCallbacks = {
+  onApprove: async (data: ConfirmOrderResponse) => {
+    const orderId = data.approveApplePayPayment.id;
+    const orderData = await captureOrder(orderId);
+    action("approve")({ ...orderData, orderID: orderId });
+    dispatchPaymentResult(
+      "success",
+      `Apple Pay payment captured. Order ID: ${orderId}`,
+    );
+  },
+  onCancel: () => {
+    action("cancel")("Apple Pay cancelled");
+    dispatchPaymentResult(
+      "cancel",
+      "Apple Pay payment was cancelled by the buyer.",
+    );
+  },
+  onError: (error: Error) => {
+    action("error")(error);
+    dispatchPaymentResult(
+      "error",
+      `Apple Pay error: ${error.message || "Unknown error"}`,
+    );
+  },
+};
+
+// Apple Pay ArgTypes
+
+export const APPLE_PAY_BUTTON_STYLES = [
+  "black",
+  "white",
+  "white-outline",
+] as const;
+
+export const APPLE_PAY_BUTTON_TYPES = [
+  "pay",
+  "buy",
+  "set-up",
+  "donate",
+  "check-out",
+  "book",
+  "subscribe",
+] as const;
+
+export const applePayButtonStyleArgType = {
+  control: { type: "select" as const },
+  options: APPLE_PAY_BUTTON_STYLES,
+  description: "Apple Pay button visual style",
+};
+
+export const applePayButtonTypeArgType = {
+  control: { type: "select" as const },
+  options: APPLE_PAY_BUTTON_TYPES,
+  description: "Apple Pay button label type",
 };

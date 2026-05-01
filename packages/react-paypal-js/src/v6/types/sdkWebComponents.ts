@@ -75,7 +75,10 @@ export interface PayPalMessagesElement extends HTMLAttributes<HTMLElement> {
 
   setContent?: (content: Record<string, unknown>) => void;
 }
-export interface ApplePayButtonElementProps extends HTMLAttributes<HTMLElement> {
+export interface ApplePayButtonElementProps extends Omit<
+  HTMLAttributes<HTMLElement>,
+  "onError"
+> {
   buttonstyle?: string;
   type?: string;
   locale?: string;
