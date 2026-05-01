@@ -67,6 +67,11 @@ export interface BraintreeApprovalData {
   billingToken?: string;
 }
 
+export interface BraintreeOnCancelData {
+  orderId?: string;
+  billingToken?: string;
+}
+
 export interface BraintreeShippingAddress {
   city: string;
   countryCode: string;
@@ -162,7 +167,7 @@ export interface BraintreeOneTimePaymentSessionOptions {
   commit?: boolean;
   offerCredit?: boolean;
   onApprove: (data: BraintreeApprovalData) => Promise<void>;
-  onCancel?: () => void;
+  onCancel?: (data: BraintreeOnCancelData) => void;
   onError?: (err: Error) => void;
   onShippingAddressChange?: (
     data: BraintreeShippingAddressChangeData,
@@ -193,7 +198,7 @@ export interface BraintreeBillingAgreementSessionOptions {
   returnUrl?: string;
   cancelUrl?: string;
   onApprove: (data: BraintreeApprovalData) => Promise<void>;
-  onCancel?: () => void;
+  onCancel?: (data: BraintreeOnCancelData) => void;
   onError?: (err: Error) => void;
   presentationMode?: BraintreePresentationMode;
 }
