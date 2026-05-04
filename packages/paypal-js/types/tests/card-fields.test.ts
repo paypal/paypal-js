@@ -7,7 +7,7 @@ import {
   PayPalCardFieldsSubmitOptions,
 } from "../components/card-fields";
 
-describe.only("testing createOrder and createVaultToken types", () => {
+describe("testing createOrder and createVaultToken types", () => {
   test("only creatOrder", () => {
     const createOrderCallback: PayPalCardFieldsComponentOptions = {
       createOrder: vi.fn(),
@@ -105,5 +105,17 @@ describe("testing submit options types", () => {
   test("SubmitOptions allows all fields optional", () => {
     const emptyOptions: PayPalCardFieldsSubmitOptions = {};
     expect(emptyOptions).toBeDefined();
+  });
+
+  test("submit rejects invalid billingAddress type", () => {
+    mockCardFields.submit({
+      // @ts-expect-error: billingAddress should be an object, not a string
+      billingAddress: "123 Main St",
+    });
+  });
+
+  test("submit rejects non-object argument", () => {
+    // @ts-expect-error: submit should not accept a string
+    mockCardFields.submit("billingAddress");
   });
 });
