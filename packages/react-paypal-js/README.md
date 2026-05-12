@@ -48,6 +48,7 @@ Integrating PayPal into React applications requires careful handling of SDK scri
 - **PayPal Subscriptions** - Recurring billing subscriptions
 - **PayPal Save** - Vault payment methods without purchase
 - **PayPal Credit** - PayPal Credit one-time and save payments
+- **Apple Pay** - Native Apple Pay payments (Safari + HTTPS only)
 
 ## Resources
 
@@ -472,6 +473,159 @@ import { PayPalCreditSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 />;
 ```
 
+### ApplePayOneTimePaymentButton
+
+Renders Apple's native `<apple-pay-button>` web component and manages the full Apple Pay payment flow — including merchant validation, payment authorization, and order confirmation — via the PayPal SDK.
+
+**Requirements:**
+
+- Safari browser (macOS 10.12+ / iOS 10+)
+- HTTPS connection
+- Apple Pay configured on the user's device
+- `components={["applepay-payments"]}` in `PayPalProvider`
+- Apple Pay JS SDK loaded via a script tag in your HTML:
+
+```html
+<script
+  crossorigin
+  src="https://applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js"
+></script>
+```
+
+**Integration steps:**
+
+1. Check `window.ApplePaySession?.canMakePayments()` — only render the button if this returns `true`. Wrap in `try-catch` because it throws on non-HTTPS connections.
+2. Call `useEligibleMethods()` to fetch eligibility and obtain `applePayConfig` from `getDetails("applepay").config`.
+3. Pass `applePayConfig` explicitly to the component — it is a required prop.
+
+```tsx
+import {
+  PayPalProvider,
+  ApplePayOneTimePaymentButton,
+  useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+async function createOrder() {
+  const response = await fetch("/api/paypal/create-order", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      items: [{ id: "item-1", quantity: 1 }],
+    }),
+  });
+  const data = await response.json();
+  return { orderId: data.id };
+}
+
+async function onApprove(data) {
+  // confirmOrder is handled internally by the hook.
+  // Capture the order using the ID from the confirmation response.
+  const orderId = data.approveApplePayPayment.id;
+  const response = await fetch(`/api/paypal/capture/${orderId}`, {
+    method: "POST",
+  });
+  const result = await response.json();
+  console.log("Apple Pay payment captured:", result);
+}
+
+function ApplePayCheckout() {
+  // Step 1: Check if Apple Pay is supported by the browser/device.
+  // canMakePayments() throws on non-HTTPS, so wrap in try-catch.
+  let canUseApplePay = false;
+  try {
+    canUseApplePay =
+      typeof window !== "undefined" &&
+      !!window.ApplePaySession?.canMakePayments();
+  } catch {
+    // Not available (e.g., non-HTTPS environment)
+  }
+
+  // Step 2: Fetch eligibility.
+  // Note: hooks must be called unconditionally (React rules of hooks).
+  // To avoid the eligibility API call on unsupported browsers, split the
+  // check and the button into separate components in your app.
+  const { eligiblePaymentMethods, isLoading, error } = useEligibleMethods({
+    payload: { currencyCode: "USD" },
+  });
+
+  if (!canUseApplePay)
+    return <div>Apple Pay is not available in this browser.</div>;
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  // Step 3: Check merchant eligibility and get config.
+  const isEligible = eligiblePaymentMethods?.isEligible("applepay");
+  if (!isEligible) return <div>Apple Pay is not eligible.</div>;
+
+  const applePayConfig = eligiblePaymentMethods?.getDetails("applepay")?.config;
+  if (!applePayConfig) return null;
+
+  return (
+    <ApplePayOneTimePaymentButton
+      applePayConfig={applePayConfig}
+      paymentRequest={{
+        countryCode: "US",
+        currencyCode: "USD",
+        requiredBillingContactFields: [
+          "name",
+          "phone",
+          "email",
+          "postalAddress",
+        ],
+        requiredShippingContactFields: [],
+        total: {
+          label: "Demo (Card is not charged)",
+          amount: "20.00",
+          type: "final",
+        },
+      }}
+      createOrder={createOrder}
+      onApprove={onApprove}
+      onCancel={() => console.log("Apple Pay cancelled")}
+      onError={(error) => console.error("Apple Pay error:", error)}
+      applePaySessionVersion={4}
+      buttonstyle="black"
+      type="buy"
+    />
+  );
+}
+
+export default function App() {
+  return (
+    <PayPalProvider
+      clientId="YOUR_CLIENT_ID"
+      components={["applepay-payments"]}
+      pageType="checkout"
+    >
+      <ApplePayCheckout />
+    </PayPalProvider>
+  );
+}
+```
+
+**Props:**
+
+| Prop                     | Type                                                                             | Required | Description                                                                        |
+| ------------------------ | -------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------- |
+| `applePayConfig`         | `ApplePayConfig`                                                                 | Yes      | Config object from `useEligibleMethods().getDetails("applepay").config`            |
+| `paymentRequest`         | `ApplePayPaymentRequest`                                                         | Yes      | Apple Pay payment request (countryCode, currencyCode, total, etc.)                 |
+| `createOrder`            | `() => Promise<{ orderId: string }>`                                             | Yes      | Called during authorization to create the PayPal order                             |
+| `onApprove`              | `(data: ConfirmOrderResponse) => void`                                           | Yes      | Called after payment confirmation; use `data.approveApplePayPayment.id` to capture |
+| `onCancel`               | `() => void`                                                                     | No       | Called when the buyer dismisses the payment sheet                                  |
+| `onError`                | `(error: Error) => void`                                                         | No       | Called on errors (merchant validation failure, network error, etc.)                |
+| `applePaySessionVersion` | `number`                                                                         | No       | Apple Pay JS API version passed to `ApplePaySession` (minimum: 4)                  |
+| `buttonstyle`            | `"black" \| "white" \| "white-outline"`                                          | No       | Visual style of the Apple Pay button                                               |
+| `type`                   | `"pay" \| "buy" \| "set-up" \| "donate" \| "check-out" \| "book" \| "subscribe"` | No       | Label displayed on the button                                                      |
+| `locale`                 | `string`                                                                         | No       | Locale for the button label (e.g., `"en"`, `"fr"`, `"ja"`)                         |
+| `disabled`               | `boolean`                                                                        | No       | Disables the button                                                                |
+
+**Key differences from other PayPal buttons:**
+
+- No `presentationMode` — Apple controls the native payment sheet UI
+- No eager order creation (`orderId` prop) — orders are always created lazily during payment authorization
+- `applePayConfig` is required and must be obtained from `useEligibleMethods()`
+- `onApprove` receives `ConfirmOrderResponse` — capture the order using `data.approveApplePayPayment.id`
+
 ## Payment Flow
 
 1. User clicks a payment button
@@ -722,6 +876,7 @@ For advanced use cases where you need full control over the payment flow, use th
 | `usePayPalSavePaymentSession`          | Save Payment Method |
 | `usePayPalCreditOneTimePaymentSession` | Credit (One-time)   |
 | `usePayPalCreditSavePaymentSession`    | Credit (Save)       |
+| `useApplePayOneTimePaymentSession`     | Apple Pay           |
 
 #### usePayPalOneTimePaymentSession
 
@@ -929,6 +1084,61 @@ function CustomPayPalCreditSaveButton() {
   });
 
   return <paypal-credit-button onClick={() => handleClick()} />;
+}
+```
+
+#### useApplePayOneTimePaymentSession
+
+For advanced use cases where you need full control over the Apple Pay flow. Most integrations should use [`ApplePayOneTimePaymentButton`](#applepayone-timepaymentbutton) instead.
+
+```tsx
+import {
+  useApplePayOneTimePaymentSession,
+  useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomApplePayButton() {
+  const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
+    payload: { currencyCode: "USD" },
+  });
+
+  const applePayConfig =
+    eligiblePaymentMethods?.getDetails("applepay")?.config ?? null;
+
+  const { isPending, error, handleClick } = useApplePayOneTimePaymentSession({
+    applePayConfig,
+    paymentRequest: {
+      countryCode: "US",
+      currencyCode: "USD",
+      total: { label: "My Store", amount: "100.00", type: "final" },
+    },
+    applePaySessionVersion: 4,
+    createOrder: async () => {
+      const response = await fetch("/api/paypal/create-order", {
+        method: "POST",
+      });
+      const data = await response.json();
+      return { orderId: data.id };
+    },
+    onApprove: async (data) => {
+      const orderId = data.approveApplePayPayment.id;
+      await fetch(`/api/paypal/capture/${orderId}`, { method: "POST" });
+    },
+    onError: (err) => console.error("Apple Pay error:", err),
+  });
+
+  if (isLoading || !applePayConfig) return null;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <apple-pay-button
+      buttonstyle="black"
+      type="buy"
+      locale="en"
+      onClick={() => handleClick()}
+      disabled={isPending}
+    />
+  );
 }
 ```
 
