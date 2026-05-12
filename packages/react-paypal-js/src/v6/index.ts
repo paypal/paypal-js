@@ -73,6 +73,11 @@ export {
   type UseBraintreeBillingAgreementSessionProps,
   type UseBraintreeBillingAgreementSessionReturn,
 } from "./hooks/Braintree/useBraintreeBillingAgreementSession";
+export {
+  useBraintreeCheckoutWithVaultSession,
+  type UseBraintreeCheckoutWithVaultSessionProps,
+  type UseBraintreeCheckoutWithVaultSessionReturn,
+} from "./hooks/Braintree/useBraintreeCheckoutWithVaultSession";
 export * from "./hooks/useEligibleMethods";
 export { usePayPalMessages } from "./hooks/usePayPalMessages";
 
