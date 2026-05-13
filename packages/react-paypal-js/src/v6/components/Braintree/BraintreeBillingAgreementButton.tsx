@@ -10,25 +10,34 @@ export type BraintreeBillingAgreementButtonProps =
   UseBraintreeBillingAgreementSessionProps & ButtonProps;
 
 /**
- * `BraintreeBillingAgreementButton` is a button that provides a Braintree PayPal billing agreement flow.
+ * `BraintreeBillingAgreementButton` is a prebuilt button that renders a `<paypal-button>`
+ * web component and manages the Braintree PayPal billing agreement flow.
  *
- * `BraintreeBillingAgreementButtonProps` combines the arguments for {@link UseBraintreeBillingAgreementSessionProps}
- * and {@link ButtonProps}.
+ * Combines {@link UseBraintreeBillingAgreementSessionProps} and {@link ButtonProps}.
+ * Must be rendered inside a {@link BraintreePayPalProvider}.
  *
- * Must be rendered inside a `BraintreePayPalProvider`.
+ * For full control over the button UI, use the {@link useBraintreeBillingAgreementSession}
+ * hook directly instead.
  *
  * @example
- * <BraintreeBillingAgreementButton
- *   type="subscribe"
- *   billingAgreementDescription="Monthly subscription"
- *   planType="SUBSCRIPTION"
- *   onApprove={async (data) => {
- *     const payload = await braintreePayPalCheckoutInstance.tokenizePayment({
+ * function CheckoutButtons() {
+ *   const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
+ *
+ *   const handleApprove = async (data) => {
+ *     const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment({
  *       billingToken: data.billingToken,
  *     });
- *     // Send payload.nonce to your server
- *   }}
- * />
+ *     // Send nonce to your server to vault the payment method
+ *   };
+ *
+ *   return (
+ *     <BraintreeBillingAgreementButton
+ *       onApprove={handleApprove}
+ *       onCancel={(data) => console.log("onCancel", data)}
+ *       onError={(err) => console.error("onError", err)}
+ *     />
+ *   );
+ * }
  */
 export const BraintreeBillingAgreementButton = ({
   type = "pay",
