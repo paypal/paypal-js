@@ -44,6 +44,10 @@ export {
 export { PayPalProvider } from "./components/PayPalProvider";
 export { BraintreePayPalProvider } from "./components/Braintree/BraintreePayPalProvider";
 export { BraintreePayPalOneTimePaymentButton } from "./components/Braintree/BraintreePayPalOneTimePaymentButton";
+export {
+  BraintreeBillingAgreementButton,
+  type BraintreeBillingAgreementButtonProps,
+} from "./components/Braintree/BraintreeBillingAgreementButton";
 export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
 export {
