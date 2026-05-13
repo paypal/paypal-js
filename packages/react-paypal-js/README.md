@@ -48,6 +48,7 @@ Integrating PayPal into React applications requires careful handling of SDK scri
 - **PayPal Subscriptions** - Recurring billing subscriptions
 - **PayPal Save** - Vault payment methods without purchase
 - **PayPal Credit** - PayPal Credit one-time and save payments
+- **Google Pay** - Native Google Pay button flow through PaymentsClient
 
 ## Resources
 
@@ -140,6 +141,7 @@ The `components` prop accepts an array of the following values:
 - `"paypal-guest-payments"` - Guest checkout (card payments)
 - `"paypal-subscriptions"` - Subscription payments
 - `"card-fields"` - Card Fields (advanced card payment UI)
+- `"googlepay-payments"` - Google Pay
 
 ### With Promise-based Client ID
 
@@ -299,6 +301,91 @@ import { VenmoOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
   />
 </PayPalProvider>;
 ```
+
+### GooglePayOneTimePaymentButton
+
+Renders a native Google Pay button for one-time payments. Requires `"googlepay-payments"` in the provider's `components` array.
+
+```tsx
+import {
+  PayPalProvider,
+  GooglePayOneTimePaymentButton,
+  useEligibleMethods,
+  INSTANCE_LOADING_STATE,
+  usePayPal,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+function GooglePayCheckout() {
+  const { loadingStatus } = usePayPal();
+  const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
+    payload: { currencyCode: "USD" },
+  });
+
+  if (loadingStatus === INSTANCE_LOADING_STATE.PENDING || isLoading) {
+    return <div>Loading Google Pay...</div>;
+  }
+
+  const googlePayConfig = eligiblePaymentMethods?.isEligible("googlepay")
+    ? eligiblePaymentMethods.getDetails("googlepay").config
+    : null;
+
+  if (!googlePayConfig) {
+    return <div>Google Pay is not eligible for this buyer.</div>;
+  }
+
+  return (
+    <GooglePayOneTimePaymentButton
+      googlePayConfig={googlePayConfig}
+      transactionInfo={{
+        countryCode: "US",
+        currencyCode: "USD",
+        totalPriceStatus: "FINAL",
+        totalPrice: "100.00",
+      }}
+      createOrder={async () => {
+        const response = await fetch("/api/create-order", { method: "POST" });
+        const { orderId } = await response.json();
+        return { orderId };
+      }}
+      onApprove={(data) => console.log("Google Pay approved", data)}
+      onCancel={() => console.log("Google Pay cancelled")}
+      onError={(error) => console.error("Google Pay error", error)}
+      buttonType="pay"
+      buttonColor="default"
+      buttonSizeMode="fill"
+    />
+  );
+}
+
+function App() {
+  return (
+    <PayPalProvider
+      clientId="your-client-id"
+      components={["paypal-payments", "googlepay-payments"]}
+      pageType="checkout"
+    >
+      <GooglePayCheckout />
+    </PayPalProvider>
+  );
+}
+```
+
+**Props:**
+
+| Prop              | Type                                     | Description                                                                            |
+| ----------------- | ---------------------------------------- | -------------------------------------------------------------------------------------- |
+| `googlePayConfig` | `GooglePayConfigFromFindEligibleMethods` | Google Pay config returned by `eligiblePaymentMethods.getDetails("googlepay")`         |
+| `transactionInfo` | `GooglePayTransactionInfo`               | Google Pay transaction details (country, currency, amount, and optional display items) |
+| `createOrder`     | `() => Promise<{ orderId: string }>`     | Async function to create an order                                                      |
+| `onApprove`       | `(data) => void \| Promise<void>`        | Called when Google Pay payment is approved                                             |
+| `onCancel`        | `() => void`                             | Called when buyer cancels the Google Pay sheet                                         |
+| `onError`         | `(error: Error) => void`                 | Called on setup or payment errors                                                      |
+| `environment`     | `"TEST" \| "PRODUCTION"`                 | Google Pay environment (default: `"TEST"`)                                             |
+| `buttonType`      | `"pay" \| ...`                           | Google Pay button type                                                                 |
+| `buttonColor`     | `"default" \| "black" \| "white"`        | Google Pay button color                                                                |
+| `buttonSizeMode`  | `"fill" \| "static"`                     | Google Pay button size mode                                                            |
+| `buttonLocale`    | `string`                                 | Google Pay button locale                                                               |
+| `disabled`        | `boolean`                                | Disable interaction                                                                    |
 
 ### PayLaterOneTimePaymentButton
 
@@ -722,6 +809,7 @@ For advanced use cases where you need full control over the payment flow, use th
 | `usePayPalSavePaymentSession`          | Save Payment Method |
 | `usePayPalCreditOneTimePaymentSession` | Credit (One-time)   |
 | `usePayPalCreditSavePaymentSession`    | Credit (Save)       |
+| `useGooglePayOneTimePaymentSession`    | Google Pay          |
 
 #### usePayPalOneTimePaymentSession
 
