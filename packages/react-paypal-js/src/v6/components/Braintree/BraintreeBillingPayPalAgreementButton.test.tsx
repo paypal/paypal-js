@@ -6,7 +6,7 @@ import { useBraintreePayPalBillingAgreementSession } from "../../hooks/Braintree
 import { useBraintreePayPal } from "../../hooks/Braintree/useBraintreePayPal";
 
 jest.mock(
-  "../../hooks/Braintree/useBraintreePAyPalBillingAgreementSession",
+  "../../hooks/Braintree/useBraintreePayPalBillingAgreementSession",
   () => ({
     useBraintreePayPalBillingAgreementSession: jest.fn(),
   }),
@@ -138,7 +138,7 @@ describe("BraintreePayPalBillingAgreementButton", () => {
     expect(button).toHaveAttribute("type", "subscribe");
   });
 
-  it("should pass hook props to useBraintreePAyPalBillingAgreementSession", () => {
+  it("should pass hook props to useBraintreePayPalBillingAgreementSession", () => {
     const onApprove = () => Promise.resolve();
     render(
       <BraintreePayPalBillingAgreementButton
