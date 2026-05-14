@@ -15,10 +15,10 @@ import type {
   BraintreePaymentSession,
 } from "../../types/braintree";
 
-export type UseBraintreeBillingAgreementSessionProps =
+export type UseBraintreePayPalBillingAgreementSessionProps =
   BraintreeBillingAgreementSessionOptions;
 
-export interface UseBraintreeBillingAgreementSessionReturn {
+export interface UseBraintreePayPalBillingAgreementSessionReturn {
   error: Error | null;
   isPending: boolean;
   handleClick: () => void;
@@ -40,8 +40,8 @@ export interface UseBraintreeBillingAgreementSessionReturn {
  *
  * @example
  * // Custom button using the hook directly with a <paypal-button> web component
- * function PayPalBillingAgreementButton(props: UseBraintreeBillingAgreementSessionProps) {
- *   const { isPending, handleClick } = useBraintreeBillingAgreementSession(props);
+ * function PayPalBillingAgreementButton(props: UseBraintreePayPalBillingAgreementSessionProps) {
+ *   const { isPending, handleClick } = useBraintreePayPalBillingAgreementSession(props);
  *
  *   return (
  *     <paypal-button
@@ -93,7 +93,7 @@ export interface UseBraintreeBillingAgreementSessionReturn {
  *   onApprove={handleApprove}
  * />
  */
-export function useBraintreeBillingAgreementSession({
+export function useBraintreePayPalBillingAgreementSession({
   // Callbacks
   onApprove,
   onCancel,
@@ -112,7 +112,7 @@ export function useBraintreeBillingAgreementSession({
   // Object data options (require deep comparison)
   planMetadata,
   shippingAddressOverride,
-}: UseBraintreeBillingAgreementSessionProps): UseBraintreeBillingAgreementSessionReturn {
+}: UseBraintreePayPalBillingAgreementSessionProps): UseBraintreePayPalBillingAgreementSessionReturn {
   const { braintreePayPalCheckoutInstance, loadingStatus } =
     useBraintreePayPal();
   const isMountedRef = useIsMountedRef();

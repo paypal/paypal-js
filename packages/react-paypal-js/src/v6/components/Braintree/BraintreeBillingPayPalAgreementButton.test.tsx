@@ -1,26 +1,29 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 
-import { BraintreeBillingAgreementButton } from "./BraintreeBillingAgreementButton";
-import { useBraintreeBillingAgreementSession } from "../../hooks/Braintree/useBraintreeBillingAgreementSession";
+import { BraintreePayPalBillingAgreementButton } from "./BraintreePayPalBillingAgreementButton";
+import { useBraintreePayPalBillingAgreementSession } from "../../hooks/Braintree/useBraintreePayPalBillingAgreementSession";
 import { useBraintreePayPal } from "../../hooks/Braintree/useBraintreePayPal";
 
-jest.mock("../../hooks/Braintree/useBraintreeBillingAgreementSession", () => ({
-  useBraintreeBillingAgreementSession: jest.fn(),
-}));
+jest.mock(
+  "../../hooks/Braintree/useBraintreePAyPalBillingAgreementSession",
+  () => ({
+    useBraintreePayPalBillingAgreementSession: jest.fn(),
+  }),
+);
 jest.mock("../../hooks/Braintree/useBraintreePayPal", () => ({
   useBraintreePayPal: jest.fn(),
 }));
 
-describe("BraintreeBillingAgreementButton", () => {
+describe("BraintreePayPalBillingAgreementButton", () => {
   const mockHandleClick = jest.fn();
-  const mockUseBraintreeBillingAgreementSession =
-    useBraintreeBillingAgreementSession as jest.Mock;
+  const mockUseBraintreePayPalBillingAgreementSession =
+    useBraintreePayPalBillingAgreementSession as jest.Mock;
   const mockUseBraintreePayPal = useBraintreePayPal as jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseBraintreeBillingAgreementSession.mockReturnValue({
+    mockUseBraintreePayPalBillingAgreementSession.mockReturnValue({
       error: null,
       isPending: false,
       handleClick: mockHandleClick,
@@ -32,7 +35,9 @@ describe("BraintreeBillingAgreementButton", () => {
 
   it("should render paypal-button when hydrated", () => {
     const { container } = render(
-      <BraintreeBillingAgreementButton onApprove={() => Promise.resolve()} />,
+      <BraintreePayPalBillingAgreementButton
+        onApprove={() => Promise.resolve()}
+      />,
     );
     expect(container.querySelector("paypal-button")).toBeInTheDocument();
   });
@@ -42,7 +47,9 @@ describe("BraintreeBillingAgreementButton", () => {
       isHydrated: false,
     });
     const { container } = render(
-      <BraintreeBillingAgreementButton onApprove={() => Promise.resolve()} />,
+      <BraintreePayPalBillingAgreementButton
+        onApprove={() => Promise.resolve()}
+      />,
     );
     expect(container.querySelector("paypal-button")).not.toBeInTheDocument();
     expect(container.querySelector("div")).toBeInTheDocument();
@@ -50,7 +57,9 @@ describe("BraintreeBillingAgreementButton", () => {
 
   it("should call handleClick when button is clicked", () => {
     const { container } = render(
-      <BraintreeBillingAgreementButton onApprove={() => Promise.resolve()} />,
+      <BraintreePayPalBillingAgreementButton
+        onApprove={() => Promise.resolve()}
+      />,
     );
     const button = container.querySelector("paypal-button");
 
@@ -62,7 +71,7 @@ describe("BraintreeBillingAgreementButton", () => {
 
   it("should disable the button when disabled=true is given as a prop", () => {
     const { container } = render(
-      <BraintreeBillingAgreementButton
+      <BraintreePayPalBillingAgreementButton
         onApprove={() => Promise.resolve()}
         disabled={true}
       />,
@@ -73,39 +82,45 @@ describe("BraintreeBillingAgreementButton", () => {
 
   it("should disable button when error is present", () => {
     jest.spyOn(console, "error").mockImplementation();
-    mockUseBraintreeBillingAgreementSession.mockReturnValue({
+    mockUseBraintreePayPalBillingAgreementSession.mockReturnValue({
       error: new Error("Test error"),
       isPending: false,
       handleClick: mockHandleClick,
     });
     const { container } = render(
-      <BraintreeBillingAgreementButton onApprove={() => Promise.resolve()} />,
+      <BraintreePayPalBillingAgreementButton
+        onApprove={() => Promise.resolve()}
+      />,
     );
     const button = container.querySelector("paypal-button");
     expect(button).toHaveAttribute("disabled");
   });
 
   it("should not disable button when error is null", () => {
-    mockUseBraintreeBillingAgreementSession.mockReturnValue({
+    mockUseBraintreePayPalBillingAgreementSession.mockReturnValue({
       error: null,
       isPending: false,
       handleClick: mockHandleClick,
     });
     const { container } = render(
-      <BraintreeBillingAgreementButton onApprove={() => Promise.resolve()} />,
+      <BraintreePayPalBillingAgreementButton
+        onApprove={() => Promise.resolve()}
+      />,
     );
     const button = container.querySelector("paypal-button");
     expect(button).not.toHaveAttribute("disabled");
   });
 
   it("should disable button when isPending is true", () => {
-    mockUseBraintreeBillingAgreementSession.mockReturnValue({
+    mockUseBraintreePayPalBillingAgreementSession.mockReturnValue({
       error: null,
       isPending: true,
       handleClick: mockHandleClick,
     });
     const { container } = render(
-      <BraintreeBillingAgreementButton onApprove={() => Promise.resolve()} />,
+      <BraintreePayPalBillingAgreementButton
+        onApprove={() => Promise.resolve()}
+      />,
     );
     const button = container.querySelector("paypal-button");
     expect(button).toBeInTheDocument();
@@ -114,7 +129,7 @@ describe("BraintreeBillingAgreementButton", () => {
 
   it("should pass type prop to paypal-button", () => {
     const { container } = render(
-      <BraintreeBillingAgreementButton
+      <BraintreePayPalBillingAgreementButton
         onApprove={() => Promise.resolve()}
         type="subscribe"
       />,
@@ -123,16 +138,16 @@ describe("BraintreeBillingAgreementButton", () => {
     expect(button).toHaveAttribute("type", "subscribe");
   });
 
-  it("should pass hook props to useBraintreeBillingAgreementSession", () => {
+  it("should pass hook props to useBraintreePAyPalBillingAgreementSession", () => {
     const onApprove = () => Promise.resolve();
     render(
-      <BraintreeBillingAgreementButton
+      <BraintreePayPalBillingAgreementButton
         onApprove={onApprove}
         billingAgreementDescription="Monthly subscription"
         planType="SUBSCRIPTION"
       />,
     );
-    expect(mockUseBraintreeBillingAgreementSession).toHaveBeenCalledWith({
+    expect(mockUseBraintreePayPalBillingAgreementSession).toHaveBeenCalledWith({
       onApprove,
       onCancel: undefined,
       onError: undefined,
@@ -154,13 +169,15 @@ describe("BraintreeBillingAgreementButton", () => {
   it("should log error to console when an error from the hook is present", () => {
     const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
     const testError = new Error("Test error");
-    mockUseBraintreeBillingAgreementSession.mockReturnValue({
+    mockUseBraintreePayPalBillingAgreementSession.mockReturnValue({
       error: testError,
       isPending: false,
       handleClick: mockHandleClick,
     });
     render(
-      <BraintreeBillingAgreementButton onApprove={() => Promise.resolve()} />,
+      <BraintreePayPalBillingAgreementButton
+        onApprove={() => Promise.resolve()}
+      />,
     );
     expect(consoleErrorSpy).toHaveBeenCalledWith(testError);
     consoleErrorSpy.mockRestore();

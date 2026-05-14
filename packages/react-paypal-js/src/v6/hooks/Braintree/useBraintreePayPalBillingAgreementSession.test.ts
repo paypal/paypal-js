@@ -1,14 +1,14 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 
 import { expectCurrentErrorValue } from "../useErrorTestUtil";
-import { useBraintreeBillingAgreementSession } from "./useBraintreeBillingAgreementSession";
+import { useBraintreeBillingAgreementSession } from "./useBraintreePayPalBillingAgreementSession";
 import { useBraintreePayPal } from "./useBraintreePayPal";
 import { useProxyProps } from "../../utils";
 import { INSTANCE_LOADING_STATE } from "../../types/ProviderEnums";
 
 import type { BraintreePaymentSession } from "../../types/braintree";
 import type { BraintreePayPalState } from "../../context/BraintreePayPalContext";
-import type { UseBraintreeBillingAgreementSessionProps } from "./useBraintreeBillingAgreementSession";
+import type { UseBraintreeBillingAgreementSessionProps } from "./useBraintreePayPalBillingAgreementSession";
 
 jest.mock("./useBraintreePayPal");
 

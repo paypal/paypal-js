@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 
-import { useBraintreeBillingAgreementSession } from "../../hooks/Braintree/useBraintreeBillingAgreementSession";
+import { useBraintreePayPalBillingAgreementSession } from "../../hooks/Braintree/useBraintreePayPalBillingAgreementSession";
 import { useBraintreePayPal } from "../../hooks/Braintree/useBraintreePayPal";
 
 import type { ButtonProps } from "../../types";
-import type { UseBraintreeBillingAgreementSessionProps } from "../../hooks/Braintree/useBraintreeBillingAgreementSession";
+import type { UseBraintreePayPalBillingAgreementSessionProps } from "../../hooks/Braintree/useBraintreePayPalBillingAgreementSession";
 
-export type BraintreeBillingAgreementButtonProps =
-  UseBraintreeBillingAgreementSessionProps & ButtonProps;
+export type BraintreePayPalBillingAgreementButtonProps =
+  UseBraintreePayPalBillingAgreementSessionProps & ButtonProps;
 
 /**
- * `BraintreeBillingAgreementButton` is a prebuilt button that renders a `<paypal-button>`
+ * `BraintreePayPalBillingAgreementButton` is a prebuilt button that renders a `<paypal-button>`
  * web component and manages the Braintree PayPal billing agreement flow.
  *
  * Combines {@link UseBraintreeBillingAgreementSessionProps} and {@link ButtonProps}.
@@ -31,7 +31,7 @@ export type BraintreeBillingAgreementButtonProps =
  *   };
  *
  *   return (
- *     <BraintreeBillingAgreementButton
+ *     <BraintreePayPalBillingAgreementButton
  *       onApprove={handleApprove}
  *       onCancel={(data) => console.log("onCancel", data)}
  *       onError={(err) => console.error("onError", err)}
@@ -39,7 +39,7 @@ export type BraintreeBillingAgreementButtonProps =
  *   );
  * }
  */
-export const BraintreeBillingAgreementButton = ({
+export const BraintreePayPalBillingAgreementButton = ({
   type = "pay",
   disabled = false,
   // Callbacks
@@ -60,9 +60,9 @@ export const BraintreeBillingAgreementButton = ({
   // Object data options
   planMetadata,
   shippingAddressOverride,
-}: BraintreeBillingAgreementButtonProps): JSX.Element | null => {
-  const { error, isPending, handleClick } = useBraintreeBillingAgreementSession(
-    {
+}: BraintreePayPalBillingAgreementButtonProps): JSX.Element | null => {
+  const { error, isPending, handleClick } =
+    useBraintreePayPalBillingAgreementSession({
       onApprove,
       onCancel,
       onError,
@@ -78,8 +78,7 @@ export const BraintreeBillingAgreementButton = ({
       presentationMode,
       planMetadata,
       shippingAddressOverride,
-    },
-  );
+    });
   const { isHydrated } = useBraintreePayPal();
 
   useEffect(() => {
