@@ -1,14 +1,14 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 
 import { expectCurrentErrorValue } from "../useErrorTestUtil";
-import { useBraintreeCheckoutWithVaultSession } from "./useBraintreeCheckoutWithVaultSession";
+import { useBraintreePayPalCheckoutWithVaultSession } from "./useBraintreePayPalCheckoutWithVaultSession";
 import { useBraintreePayPal } from "./useBraintreePayPal";
 import { useProxyProps } from "../../utils";
 import { INSTANCE_LOADING_STATE } from "../../types/ProviderEnums";
 
 import type { BraintreePaymentSession } from "../../types/braintree";
 import type { BraintreePayPalState } from "../../context/BraintreePayPalContext";
-import type { UseBraintreeCheckoutWithVaultSessionProps } from "./useBraintreeCheckoutWithVaultSession";
+import type { UseBraintreePayPalCheckoutWithVaultSessionProps } from "./useBraintreePayPalCheckoutWithVaultSession";
 
 jest.mock("./useBraintreePayPal");
 
@@ -66,11 +66,11 @@ function mockBraintreeRejected(): void {
   });
 }
 
-describe("useBraintreeCheckoutWithVaultSession", () => {
+describe("useBraintreePayPalCheckoutWithVaultSession", () => {
   let mockSession: BraintreePaymentSession;
   let mockCheckoutInstance: ReturnType<typeof createMockCheckoutInstance>;
 
-  const defaultProps: UseBraintreeCheckoutWithVaultSessionProps = {
+  const defaultProps: UseBraintreePayPalCheckoutWithVaultSessionProps = {
     amount: "10.00",
     currency: "USD",
     onApprove: jest.fn(),
@@ -99,7 +99,9 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
         result: {
           current: { error },
         },
-      } = renderHook(() => useBraintreeCheckoutWithVaultSession(defaultProps));
+      } = renderHook(() =>
+        useBraintreePayPalCheckoutWithVaultSession(defaultProps),
+      );
 
       expectCurrentErrorValue(error);
 
@@ -138,7 +140,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
             current: { error },
           },
         } = renderHook(() =>
-          useBraintreeCheckoutWithVaultSession(defaultProps),
+          useBraintreePayPalCheckoutWithVaultSession(defaultProps),
         );
 
         expectCurrentErrorValue(error);
@@ -162,7 +164,9 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
         result: {
           current: { error },
         },
-      } = renderHook(() => useBraintreeCheckoutWithVaultSession(defaultProps));
+      } = renderHook(() =>
+        useBraintreePayPalCheckoutWithVaultSession(defaultProps),
+      );
 
       expect(error).toBeNull();
     });
@@ -171,7 +175,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
       mockBraintreeRejected();
 
       const { result, rerender } = renderHook(() =>
-        useBraintreeCheckoutWithVaultSession(defaultProps),
+        useBraintreePayPalCheckoutWithVaultSession(defaultProps),
       );
 
       expectCurrentErrorValue(result.current.error);
@@ -202,7 +206,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
         mockBraintreeContext({ loadingStatus });
 
         const { result } = renderHook(() =>
-          useBraintreeCheckoutWithVaultSession(defaultProps),
+          useBraintreePayPalCheckoutWithVaultSession(defaultProps),
         );
 
         expect(result.current.isPending).toBe(expectedIsPending);
@@ -216,7 +220,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
       const onShippingAddressChange = jest.fn();
       const onShippingOptionsChange = jest.fn();
 
-      const props: UseBraintreeCheckoutWithVaultSessionProps = {
+      const props: UseBraintreePayPalCheckoutWithVaultSessionProps = {
         amount: "25.00",
         currency: "USD",
         intent: "capture",
@@ -231,7 +235,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
         onShippingOptionsChange,
       };
 
-      renderHook(() => useBraintreeCheckoutWithVaultSession(props));
+      renderHook(() => useBraintreePayPalCheckoutWithVaultSession(props));
 
       expect(
         mockCheckoutInstance.createCheckoutWithVaultSession,
@@ -260,7 +264,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
       const onShippingAddressChange = jest.fn();
       const onShippingOptionsChange = jest.fn();
 
-      const props: UseBraintreeCheckoutWithVaultSessionProps = {
+      const props: UseBraintreePayPalCheckoutWithVaultSessionProps = {
         amount: "10.00",
         currency: "USD",
         onApprove,
@@ -270,7 +274,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
         onShippingOptionsChange,
       };
 
-      renderHook(() => useBraintreeCheckoutWithVaultSession(props));
+      renderHook(() => useBraintreePayPalCheckoutWithVaultSession(props));
 
       const createSessionCall =
         mockCheckoutInstance.createCheckoutWithVaultSession.mock.calls[0][0];
@@ -297,7 +301,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
   describe("session lifecycle", () => {
     test("should nullify session on unmount", () => {
       const { result, unmount } = renderHook(() =>
-        useBraintreeCheckoutWithVaultSession(defaultProps),
+        useBraintreePayPalCheckoutWithVaultSession(defaultProps),
       );
 
       unmount();
@@ -314,7 +318,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
 
       const { rerender } = renderHook(
         ({ amount }) =>
-          useBraintreeCheckoutWithVaultSession({
+          useBraintreePayPalCheckoutWithVaultSession({
             amount,
             currency: "USD",
             onApprove,
@@ -344,7 +348,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
 
     test("should recreate session when checkout instance changes", () => {
       const { rerender } = renderHook(() =>
-        useBraintreeCheckoutWithVaultSession(defaultProps),
+        useBraintreePayPalCheckoutWithVaultSession(defaultProps),
       );
 
       jest.clearAllMocks();
@@ -374,7 +378,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
 
       const { rerender } = renderHook(
         ({ onApprove }) =>
-          useBraintreeCheckoutWithVaultSession({
+          useBraintreePayPalCheckoutWithVaultSession({
             amount: "10.00",
             currency: "USD",
             onApprove,
@@ -402,7 +406,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
 
       const { rerender } = renderHook(
         ({ billingAgreementDetails }) =>
-          useBraintreeCheckoutWithVaultSession({
+          useBraintreePayPalCheckoutWithVaultSession({
             amount: "10.00",
             currency: "USD",
             onApprove: jest.fn(),
@@ -442,7 +446,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
 
       const { rerender } = renderHook(
         ({ lineItems }) =>
-          useBraintreeCheckoutWithVaultSession({
+          useBraintreePayPalCheckoutWithVaultSession({
             amount: "10.00",
             currency: "USD",
             onApprove: jest.fn(),
@@ -485,7 +489,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
       });
 
       const { rerender } = renderHook(() =>
-        useBraintreeCheckoutWithVaultSession(defaultProps),
+        useBraintreePayPalCheckoutWithVaultSession(defaultProps),
       );
 
       expect(
@@ -517,7 +521,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
       });
 
       const { rerender } = renderHook(() =>
-        useBraintreeCheckoutWithVaultSession(defaultProps),
+        useBraintreePayPalCheckoutWithVaultSession(defaultProps),
       );
 
       expect(
@@ -543,7 +547,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
   describe("handleClick", () => {
     test("should call session.start() when session is available", () => {
       const { result } = renderHook(() =>
-        useBraintreeCheckoutWithVaultSession(defaultProps),
+        useBraintreePayPalCheckoutWithVaultSession(defaultProps),
       );
 
       act(() => {
@@ -557,7 +561,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
       mockBraintreeRejected();
 
       const { result } = renderHook(() =>
-        useBraintreeCheckoutWithVaultSession(defaultProps),
+        useBraintreePayPalCheckoutWithVaultSession(defaultProps),
       );
 
       act(() => {
@@ -575,7 +579,7 @@ describe("useBraintreeCheckoutWithVaultSession", () => {
 
     test("should not call start after component is unmounted", () => {
       const { result, unmount } = renderHook(() =>
-        useBraintreeCheckoutWithVaultSession(defaultProps),
+        useBraintreePayPalCheckoutWithVaultSession(defaultProps),
       );
 
       unmount();

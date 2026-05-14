@@ -15,10 +15,10 @@ import type {
   BraintreePaymentSession,
 } from "../../types/braintree";
 
-export type UseBraintreeCheckoutWithVaultSessionProps =
+export type UseBraintreePayPalCheckoutWithVaultSessionProps =
   BraintreeCheckoutWithVaultSessionOptions;
 
-export interface UseBraintreeCheckoutWithVaultSessionReturn {
+export interface UseBraintreePayPalCheckoutWithVaultSessionReturn {
   error: Error | null;
   isPending: boolean;
   handleClick: () => void;
@@ -39,7 +39,7 @@ export interface UseBraintreeCheckoutWithVaultSessionReturn {
  * @example
  * function BraintreeCheckoutWithVaultButton() {
  *   const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
- *   const { isPending, error, handleClick } = useBraintreeCheckoutWithVaultSession({
+ *   const { isPending, error, handleClick } = useBraintreePayPalCheckoutWithVaultSession({
  *     amount: "10.00",
  *     currency: "USD",
  *     billingAgreementDetails: { description: "Save payment method for future use" },
@@ -58,7 +58,7 @@ export interface UseBraintreeCheckoutWithVaultSessionReturn {
  *   return <button onClick={handleClick}>Pay and Save Payment Method</button>;
  * }
  */
-export function useBraintreeCheckoutWithVaultSession({
+export function useBraintreePayPalCheckoutWithVaultSession({
   // Callbacks
   onApprove,
   onCancel,
@@ -80,7 +80,7 @@ export function useBraintreeCheckoutWithVaultSession({
   lineItems,
   shippingOptions,
   amountBreakdown,
-}: UseBraintreeCheckoutWithVaultSessionProps): UseBraintreeCheckoutWithVaultSessionReturn {
+}: UseBraintreePayPalCheckoutWithVaultSessionProps): UseBraintreePayPalCheckoutWithVaultSessionReturn {
   const { braintreePayPalCheckoutInstance, loadingStatus } =
     useBraintreePayPal();
   const isMountedRef = useIsMountedRef();
