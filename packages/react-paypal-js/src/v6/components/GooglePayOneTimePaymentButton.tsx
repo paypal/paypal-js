@@ -4,37 +4,9 @@ import { useGooglePayOneTimePaymentSession } from "../hooks/useGooglePayOneTimeP
 import { usePayPal } from "../hooks/usePayPal";
 
 import type { UseGooglePayOneTimePaymentSessionProps } from "../hooks/useGooglePayOneTimePaymentSession";
+import type { GooglePayButtonOptions } from "../types";
 
-export type GooglePayButtonStyle = {
-  /**
-   * The Google Pay button type.
-   * @see https://developers.google.com/pay/api/web/reference/request-objects#ButtonOptions
-   * @default "pay"
-   */
-  buttonType?:
-    | "book"
-    | "buy"
-    | "checkout"
-    | "donate"
-    | "order"
-    | "pay"
-    | "plain"
-    | "subscribe";
-  /**
-   * The Google Pay button color.
-   * @default "default"
-   */
-  buttonColor?: "default" | "black" | "white";
-  /**
-   * The Google Pay button size mode.
-   * @default "fill"
-   */
-  buttonSizeMode?: "static" | "fill";
-  /**
-   * The Google Pay button locale (BCP 47).
-   */
-  buttonLocale?: string;
-};
+export type GooglePayButtonStyle = Omit<GooglePayButtonOptions, "onClick">;
 
 export type GooglePayOneTimePaymentButtonProps =
   UseGooglePayOneTimePaymentSessionProps &

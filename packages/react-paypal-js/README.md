@@ -361,7 +361,7 @@ function App() {
   return (
     <PayPalProvider
       clientId="your-client-id"
-      components={["paypal-payments", "googlepay-payments"]}
+      components={["googlepay-payments"]}
       pageType="checkout"
     >
       <GooglePayCheckout />
