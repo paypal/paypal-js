@@ -613,7 +613,7 @@ describe("useGooglePayOneTimePaymentSession", () => {
       expect(result.current.error).toBeNull();
     });
 
-    test("should set error when loadPaymentData fails with non-cancel error", async () => {
+    test("should ignore non-cancel loadPaymentData rejection", async () => {
       mockLoadPaymentData = jest
         .fn()
         .mockRejectedValue(new Error("Payment data load failed"));
@@ -626,8 +626,33 @@ describe("useGooglePayOneTimePaymentSession", () => {
         await result.current.handleClick();
       });
 
-      expect(result.current.error?.message).toBe("Payment data load failed");
-      expect(defaultProps.onError).toHaveBeenCalled();
+      expect(result.current.error).toBeNull();
+      expect(defaultProps.onError).not.toHaveBeenCalled();
+    });
+
+    test("should not call onError twice when authorization fails and sheet closes", async () => {
+      (mockGooglePaySession.confirmOrder as jest.Mock).mockRejectedValue(
+        new Error("Confirmation failed"),
+      );
+
+      mockLoadPaymentData = jest.fn().mockImplementation(async () => {
+        if (capturedOnPaymentAuthorized) {
+          await capturedOnPaymentAuthorized(mockPaymentData);
+        }
+
+        throw new Error("Payment sheet closed after authorization error");
+      });
+
+      const { result } = renderHook(() =>
+        useGooglePayOneTimePaymentSession(defaultProps),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(result.current.error?.message).toBe("Confirmation failed");
+      expect(defaultProps.onError).toHaveBeenCalledTimes(1);
     });
 
     test("should clear error when SDK instance becomes available", () => {

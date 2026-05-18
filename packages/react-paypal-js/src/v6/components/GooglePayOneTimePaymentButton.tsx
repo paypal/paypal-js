@@ -55,20 +55,15 @@ export const GooglePayOneTimePaymentButton = ({
   buttonLocale,
   ...hookProps
 }: GooglePayOneTimePaymentButtonProps): JSX.Element | null => {
-  const {
-    error,
-    isPending,
-    handleClick,
-    handleDestroy,
-    createGooglePayButton,
-  } = useGooglePayOneTimePaymentSession(hookProps);
+  const { isPending, handleClick, handleDestroy, createGooglePayButton } =
+    useGooglePayOneTimePaymentSession(hookProps);
   const { isHydrated } = usePayPal();
   const containerRef = useRef<HTMLDivElement>(null);
   const buttonMountedRef = useRef(false);
   const handleClickRef = useRef(handleClick);
   handleClickRef.current = handleClick;
 
-  const isDisabled = disabled || isPending || error !== null;
+  const isDisabled = disabled || isPending;
 
   // Create and mount the Google Pay button
   const mountButton = useCallback(() => {
@@ -130,6 +125,7 @@ export const GooglePayOneTimePaymentButton = ({
   return (
     <div
       ref={containerRef}
+      aria-disabled={isDisabled || undefined}
       style={isDisabled ? { pointerEvents: "none", opacity: "0.5" } : undefined}
     />
   );

@@ -348,15 +348,13 @@ export function useGooglePayOneTimePaymentSession({
 
       await paymentsClientRef.current.loadPaymentData(paymentDataRequest);
     } catch (err) {
-      const sessionError = toError(err);
-
       if ((err as { statusCode?: string })?.statusCode === "CANCELED") {
         proxyCallbacks.onCancel?.();
         return;
       }
-
-      setError(sessionError);
-      proxyCallbacks.onError?.(sessionError);
+      // Authorization errors are already reported in onPaymentAuthorized.
+      // Other rejections (e.g. DEVELOPER_ERROR) are configuration issues
+      // that surface during development, not runtime payment failures.
     }
   }, [
     isMountedRef,

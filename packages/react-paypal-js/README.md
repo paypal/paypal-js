@@ -306,6 +306,16 @@ import { VenmoOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 Renders a native Google Pay button for one-time payments. Requires `"googlepay-payments"` in the provider's `components` array.
 
+Google Pay prerequisites:
+
+1. Load Google Pay JS in your app HTML shell (for example `public/index.html`):
+
+```html
+<script async src="https://pay.google.com/gp/p/js/pay.js"></script>
+```
+
+2. Ensure the script is available before rendering `GooglePayOneTimePaymentButton`, since this component depends on `window.google.payments.api.PaymentsClient`.
+
 ```tsx
 import {
   PayPalProvider,

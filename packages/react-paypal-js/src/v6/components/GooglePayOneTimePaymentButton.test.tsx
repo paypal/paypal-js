@@ -197,6 +197,7 @@ describe("GooglePayOneTimePaymentButton", () => {
     const wrapper = container.firstElementChild as HTMLElement;
     expect(wrapper.style.pointerEvents).toBe("none");
     expect(wrapper.style.opacity).toBe("0.5");
+    expect(wrapper).toHaveAttribute("aria-disabled", "true");
   });
 
   it("applies disabled styling when isPending is true", () => {
@@ -220,7 +221,7 @@ describe("GooglePayOneTimePaymentButton", () => {
     expect(mockCreateGooglePayButton).not.toHaveBeenCalled();
   });
 
-  it("applies disabled styling when hook returns an error", () => {
+  it("does not apply disabled styling when hook returns an error", () => {
     const testError = new Error("Test error");
     mockUseGooglePayOneTimePaymentSession.mockReturnValue({
       error: testError,
@@ -237,8 +238,8 @@ describe("GooglePayOneTimePaymentButton", () => {
       <GooglePayOneTimePaymentButton {...defaultProps} />,
     );
     const wrapper = container.firstElementChild as HTMLElement;
-    expect(wrapper.style.pointerEvents).toBe("none");
-    expect(wrapper.style.opacity).toBe("0.5");
+    expect(wrapper.style.pointerEvents).toBe("");
+    expect(wrapper.style.opacity).toBe("");
   });
 
   it("passes only hook props to useGooglePayOneTimePaymentSession", () => {
