@@ -1,5 +1,11 @@
 # Changelog
 
+## 9.7.1
+
+### Patch Changes
+
+- 9007a82: Add optional submit options to CardFields submit() method, including billingAddress and name fields for 3DS authentication support
+
 ## 9.7.0
 
 ### Minor Changes

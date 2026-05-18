@@ -1,5 +1,21 @@
 # Changelog
 
+## 9.3.0
+
+### Minor Changes
+
+- 2bcb79d: Add a new static UI component for braintree paypal one time payment.
+- 63d8fca: Add the Braintree-PayPal Billing Agreement Hook
+- 82da8dd: Adds Braintree Checkout with Vault hook
+
+### Patch Changes
+
+- 6e97c29: Fix onError type intersection in ApplePayButtonElementProps by adding Omit<HTMLAttributes, "onError"> consistent with ButtonProps pattern
+- 658db62: Fixing ApplePay styling issue
+- ee72ab1: Update README with Apple component documentation.
+- Updated dependencies [9007a82]
+  - @paypal/paypal-js@9.7.1
+
 ## 9.2.0
 
 ### Minor Changes
