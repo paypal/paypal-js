@@ -89,7 +89,7 @@ export const BraintreeCheckoutWithVaultButton = ({
     <paypal-button
       onClick={handleClick}
       type={type}
-      disabled={disabled || isPending || error !== null ? true : undefined}
+      disabled={disabled || isPending || error ? true : undefined}
     ></paypal-button>
   ) : (
     <div />
