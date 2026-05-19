@@ -6,19 +6,19 @@ import { useBraintreePayPal } from "../../hooks/Braintree/useBraintreePayPal";
 import type { ButtonProps } from "../../types";
 import type { UseBraintreePayPalCheckoutWithVaultSessionProps } from "../../hooks/Braintree/useBraintreePayPalCheckoutWithVaultSession";
 
-export type BraintreeCheckoutWithVaultButtonProps =
+export type BraintreePayPalCheckoutWithVaultButtonProps =
   UseBraintreePayPalCheckoutWithVaultSessionProps & ButtonProps;
 
 /**
- * `BraintreeCheckoutWithVaultButton` is a button that provides a Braintree PayPal checkout with vault flow.
+ * `BraintreePayPalCheckoutWithVaultButton` is a button that provides a Braintree PayPal checkout with vault flow.
  *
- * `BraintreeCheckoutWithVaultButtonProps` combines the arguments for {@link UseBraintreePayPalCheckoutWithVaultSessionProps}
+ * `BraintreePayPalCheckoutWithVaultButtonProps` combines the arguments for {@link UseBraintreePayPalCheckoutWithVaultSessionProps}
  * and {@link ButtonProps}.
  *
  * Must be rendered inside a `BraintreePayPalProvider`.
  *
  * @example
- * <BraintreeCheckoutWithVaultButton
+ * <BraintreePayPalCheckoutWithVaultButton
  *   amount="10.00"
  *   currency="USD"
  *   billingAgreementDetails={{ description: "Save payment method for future use" }}
@@ -31,7 +31,7 @@ export type BraintreeCheckoutWithVaultButtonProps =
  *   }}
  * />
  */
-export const BraintreeCheckoutWithVaultButton = ({
+export const BraintreePayPalCheckoutWithVaultButton = ({
   type = "pay",
   disabled = false,
   // Callbacks
@@ -55,7 +55,7 @@ export const BraintreeCheckoutWithVaultButton = ({
   lineItems,
   shippingOptions,
   amountBreakdown,
-}: BraintreeCheckoutWithVaultButtonProps): JSX.Element | null => {
+}: BraintreePayPalCheckoutWithVaultButtonProps): JSX.Element | null => {
   const { error, isPending, handleClick } =
     useBraintreePayPalCheckoutWithVaultSession({
       onApprove,

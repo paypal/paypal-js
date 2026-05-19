@@ -1,7 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 
-import { BraintreeCheckoutWithVaultButton } from "./BraintreeCheckoutWithVaultButton";
+import { BraintreePayPalCheckoutWithVaultButton } from "./BraintreePayPalCheckoutWithVaultButton";
 import { useBraintreePayPalCheckoutWithVaultSession } from "../../hooks/Braintree/useBraintreePayPalCheckoutWithVaultSession";
 import { useBraintreePayPal } from "../../hooks/Braintree/useBraintreePayPal";
 
@@ -15,7 +15,7 @@ jest.mock("../../hooks/Braintree/useBraintreePayPal", () => ({
   useBraintreePayPal: jest.fn(),
 }));
 
-describe("BraintreeCheckoutWithVaultButton", () => {
+describe("BraintreePayPalCheckoutWithVaultButton", () => {
   const mockHandleClick = jest.fn();
   const mockUseBraintreePayPalCheckoutWithVaultSession =
     useBraintreePayPalCheckoutWithVaultSession as jest.Mock;
@@ -35,7 +35,7 @@ describe("BraintreeCheckoutWithVaultButton", () => {
 
   it("should render paypal-button when hydrated", () => {
     const { container } = render(
-      <BraintreeCheckoutWithVaultButton
+      <BraintreePayPalCheckoutWithVaultButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -49,7 +49,7 @@ describe("BraintreeCheckoutWithVaultButton", () => {
       isHydrated: false,
     });
     const { container } = render(
-      <BraintreeCheckoutWithVaultButton
+      <BraintreePayPalCheckoutWithVaultButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -61,7 +61,7 @@ describe("BraintreeCheckoutWithVaultButton", () => {
 
   it("should call handleClick when button is clicked", () => {
     const { container } = render(
-      <BraintreeCheckoutWithVaultButton
+      <BraintreePayPalCheckoutWithVaultButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -77,7 +77,7 @@ describe("BraintreeCheckoutWithVaultButton", () => {
 
   it("should disable the button when disabled=true is given as a prop", () => {
     const { container } = render(
-      <BraintreeCheckoutWithVaultButton
+      <BraintreePayPalCheckoutWithVaultButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -96,7 +96,7 @@ describe("BraintreeCheckoutWithVaultButton", () => {
       handleClick: mockHandleClick,
     });
     const { container } = render(
-      <BraintreeCheckoutWithVaultButton
+      <BraintreePayPalCheckoutWithVaultButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -114,7 +114,7 @@ describe("BraintreeCheckoutWithVaultButton", () => {
       handleClick: mockHandleClick,
     });
     const { container } = render(
-      <BraintreeCheckoutWithVaultButton
+      <BraintreePayPalCheckoutWithVaultButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -131,7 +131,7 @@ describe("BraintreeCheckoutWithVaultButton", () => {
       handleClick: mockHandleClick,
     });
     const { container } = render(
-      <BraintreeCheckoutWithVaultButton
+      <BraintreePayPalCheckoutWithVaultButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -144,7 +144,7 @@ describe("BraintreeCheckoutWithVaultButton", () => {
 
   it("should pass type prop to paypal-button", () => {
     const { container } = render(
-      <BraintreeCheckoutWithVaultButton
+      <BraintreePayPalCheckoutWithVaultButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
@@ -158,7 +158,7 @@ describe("BraintreeCheckoutWithVaultButton", () => {
   it("should pass hook props to useBraintreePayPalCheckoutWithVaultSession", () => {
     const onApprove = () => Promise.resolve();
     render(
-      <BraintreeCheckoutWithVaultButton
+      <BraintreePayPalCheckoutWithVaultButton
         amount="10.00"
         currency="USD"
         onApprove={onApprove}
@@ -197,7 +197,7 @@ describe("BraintreeCheckoutWithVaultButton", () => {
       handleClick: mockHandleClick,
     });
     render(
-      <BraintreeCheckoutWithVaultButton
+      <BraintreePayPalCheckoutWithVaultButton
         onApprove={() => Promise.resolve()}
         amount="10.00"
         currency="USD"
