@@ -13,8 +13,8 @@ export type BraintreePayPalBillingAgreementButtonProps =
  * `BraintreePayPalBillingAgreementButton` is a prebuilt button that renders a `<paypal-button>`
  * web component and manages the Braintree PayPal billing agreement flow.
  *
- * Combines {@link UseBraintreePayPalBillingAgreementSessionProps} and {@link ButtonProps}.
- * Must be rendered inside a {@link BraintreePayPalProvider}.
+ * Combines UseBraintreePayPalBillingAgreementSessionProps and ButtonProps.
+ * Must be rendered inside a BraintreePayPalProvider.
  *
  * For full control over the button UI, use the {@link useBraintreePayPalBillingAgreementSession}
  * hook directly instead.
