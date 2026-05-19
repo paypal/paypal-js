@@ -48,12 +48,20 @@ export {
   BraintreePayPalBillingAgreementButton,
   type BraintreePayPalBillingAgreementButtonProps,
 } from "./components/Braintree/BraintreePayPalBillingAgreementButton";
+export {
+  BraintreePayPalCheckoutWithVaultButton,
+  type BraintreePayPalCheckoutWithVaultButtonProps,
+} from "./components/Braintree/BraintreePayPalCheckoutWithVaultButton";
 export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
 export {
   ApplePayOneTimePaymentButton,
   type ApplePayOneTimePaymentButtonProps,
 } from "./components/ApplePayOneTimePaymentButton";
+export {
+  GooglePayOneTimePaymentButton,
+  type GooglePayOneTimePaymentButtonProps,
+} from "./components/GooglePayOneTimePaymentButton";
 export { PayPalCardNumberField } from "./components/PayPalCardNumberField";
 export { PayPalCardExpiryField } from "./components/PayPalCardExpiryField";
 export { PayPalCardCvvField } from "./components/PayPalCardCvvField";
@@ -133,6 +141,10 @@ export {
   useApplePayOneTimePaymentSession,
   type UseApplePayOneTimePaymentSessionProps,
 } from "./hooks/useApplePayOneTimePaymentSession";
+export {
+  useGooglePayOneTimePaymentSession,
+  type UseGooglePayOneTimePaymentSessionProps,
+} from "./hooks/useGooglePayOneTimePaymentSession";
 
 // React 19+ JSX SDK Web Components type declaration
 declare global {
