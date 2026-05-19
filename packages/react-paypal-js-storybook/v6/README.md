@@ -80,6 +80,7 @@ v6/
 - **VenmoOneTimePaymentButton** - Venmo checkout button
 - **PayPalSavePaymentButton** - Save payment method (vaulting) button
 - **PayPalGuestPaymentButton** - Guest checkout with credit/debit cards
+- **ApplePayOneTimePaymentButton** - Apple Pay one-time payment button (Safari + HTTPS required)
 
 ## Environment Variables
 

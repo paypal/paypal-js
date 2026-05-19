@@ -46,6 +46,63 @@ export type GooglePayConfig = {
 };
 
 /**
+ * Transaction information for Google Pay payment requests
+ *
+ * @remarks
+ * Passed to Google PaymentsClient.loadPaymentData() as part of the request payload.
+ */
+export type GooglePayTransactionInfo = {
+  countryCode: string;
+  currencyCode: string;
+  totalPriceStatus: "FINAL" | "ESTIMATED" | "NOT_CURRENTLY_KNOWN";
+  totalPrice: string;
+  totalPriceLabel?: string;
+  displayItems?: Array<{
+    label: string;
+    type: string;
+    price: string;
+  }>;
+  [key: string]: unknown;
+};
+
+/**
+ * Request payload for Google PaymentsClient.isReadyToPay()
+ */
+export type GooglePayIsReadyToPayRequest = {
+  allowedPaymentMethods: GooglePayConfig["allowedPaymentMethods"];
+  apiVersion: GooglePayConfig["apiVersion"];
+  apiVersionMinor: GooglePayConfig["apiVersionMinor"];
+};
+
+/**
+ * Request payload for Google PaymentsClient.loadPaymentData()
+ */
+export type GooglePayPaymentDataRequest = GooglePayIsReadyToPayRequest & {
+  merchantInfo: GooglePayConfig["merchantInfo"];
+  transactionInfo: GooglePayTransactionInfo;
+  callbackIntents: ReadonlyArray<"PAYMENT_AUTHORIZATION">;
+};
+
+/**
+ * Options for Google PaymentsClient.createButton()
+ */
+export type GooglePayButtonOptions = {
+  onClick: () => void;
+  buttonType?:
+    | "book"
+    | "buy"
+    | "checkout"
+    | "donate"
+    | "order"
+    | "pay"
+    | "plain"
+    | "subscribe";
+  buttonColor?: "default" | "black" | "white";
+  buttonSizeMode?: "static" | "fill";
+  buttonLocale?: string;
+};
+
+/**
  * Google Pay configuration from the eligibility response
  *
  * @remarks
