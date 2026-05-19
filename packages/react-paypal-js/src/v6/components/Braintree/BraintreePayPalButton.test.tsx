@@ -89,7 +89,7 @@ describe("BraintreePayPalOneTimePaymentButton", () => {
   });
 
   it("should disable button when error is present", () => {
-    jest.spyOn(console, "error").mockImplementation();
+    const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
     mockUseBraintreePayPalOneTimePaymentSession.mockReturnValue({
       error: new Error("Test error"),
       isPending: false,
@@ -104,6 +104,7 @@ describe("BraintreePayPalOneTimePaymentButton", () => {
     );
     const button = container.querySelector("paypal-button");
     expect(button).toHaveAttribute("disabled");
+    consoleErrorSpy.mockRestore();
   });
 
   it("should not disable button when error is null", () => {
