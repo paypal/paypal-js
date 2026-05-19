@@ -31,27 +31,43 @@ export interface UseBraintreePayPalOneTimePaymentSessionReturn {
  * instance is still being initialized. Buttons should wait to render until `isPending`
  * is false.
  *
+ * For a ready-to-use component that wraps this hook, see {@link BraintreePayPalOneTimePaymentButton}.
+ *
  * @returns Object with: `error` (any session error), `isPending` (checkout instance loading), `handleClick` (starts session)
  *
  * @example
- * function BraintreePayPalButton() {
+ * // Custom button using the hook directly with a <paypal-button> web component
+ * function PayPalOneTimePaymentButton(props: UseBraintreePayPalOneTimePaymentSessionProps) {
+ *   const { isPending, handleClick } = useBraintreePayPalOneTimePaymentSession(props);
+ *
+ *   return (
+ *     <paypal-button
+ *       type="pay"
+ *       onClick={() => handleClick()}
+ *       disabled={isPending}
+ *     />
+ *   );
+ * }
+ *
+ * // Usage with tokenization in onApprove:
+ * function Checkout() {
  *   const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
- *   const { isPending, error, handleClick } = useBraintreePayPalOneTimePaymentSession({
- *     amount: "10.00",
- *     currency: "USD",
- *     onApprove: async (data) => {
- *       const payload = await braintreePayPalCheckoutInstance.tokenizePayment({
- *         payerID: data.payerId,
- *         orderID: data.orderId,
- *       });
- *       // Send payload.nonce to your server
- *     },
- *   });
  *
- *   if (isPending) return null;
- *   if (error) return <div>Error: {error.message}</div>;
+ *   const handleOnApprove = async (data) => {
+ *     const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment({
+ *       orderID: data.orderId,
+ *       payerID: data.payerId,
+ *     });
+ *     // Send nonce to your server to complete the transaction
+ *   };
  *
- *   return <button onClick={handleClick}>Pay with PayPal</button>;
+ *   return (
+ *     <PayPalOneTimePaymentButton
+ *       amount="10.00"
+ *       currency="USD"
+ *       onApprove={handleOnApprove}
+ *     />
+ *   );
  * }
  */
 export function useBraintreePayPalOneTimePaymentSession({

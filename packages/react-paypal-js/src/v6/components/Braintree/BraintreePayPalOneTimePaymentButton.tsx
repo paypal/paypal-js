@@ -10,26 +10,35 @@ type BraintreePayPalButtonProps = UseBraintreePayPalOneTimePaymentSessionProps &
   ButtonProps;
 
 /**
- * `BraintreePayPalOneTimePaymentButton` is a button that provides a Braintree PayPal one-time payment flow.
+ * `BraintreePayPalOneTimePaymentButton` is a prebuilt button that renders a `<paypal-button>`
+ * web component and manages the Braintree PayPal one-time payment flow.
  *
- * `BraintreePayPalButtonProps` combines the arguments for {@link UseBraintreePayPalOneTimePaymentSessionProps}
- * and {@link ButtonProps}.
+ * Combines {@link UseBraintreePayPalOneTimePaymentSessionProps} and {@link ButtonProps}.
+ * Must be rendered inside a {@link BraintreePayPalProvider}.
  *
- * Must be rendered inside a `BraintreePayPalProvider`.
+ * For full control over the button UI, use the {@link useBraintreePayPalOneTimePaymentSession}
+ * hook directly instead.
  *
  * @example
- * <BraintreePayPalOneTimePaymentButton
- *   type="checkout"
- *   amount="10.00"
- *   currency="USD"
- *   onApprove={async (data) => {
- *     const payload = await braintreePayPalCheckoutInstance.tokenizePayment({
- *       payerID: data.payerId,
+ * function CheckoutButtons() {
+ *   const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
+ *
+ *   const handleOnApprove = async (data) => {
+ *     const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment({
  *       orderID: data.orderId,
+ *       payerID: data.payerId,
  *     });
- *     // Send payload.nonce to your server
- *   }}
- * />
+ *     // Send nonce to your server to complete the transaction
+ *   };
+ *
+ *   return (
+ *     <BraintreePayPalOneTimePaymentButton
+ *       amount="100"
+ *       currency="USD"
+ *       onApprove={handleOnApprove}
+ *     />
+ *   );
+ * }
  */
 export const BraintreePayPalOneTimePaymentButton = ({
   type = "pay",

@@ -1,29 +1,29 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 
-import { BraintreePayPalOneTimePaymentButton } from "./BraintreePayPalOneTimePaymentButton";
-import { useBraintreePayPalOneTimePaymentSession } from "../../hooks/Braintree/useBraintreePayPalOneTimePaymentSession";
+import { BraintreePayPalBillingAgreementButton } from "./BraintreePayPalBillingAgreementButton";
+import { useBraintreePayPalBillingAgreementSession } from "../../hooks/Braintree/useBraintreePayPalBillingAgreementSession";
 import { useBraintreePayPal } from "../../hooks/Braintree/useBraintreePayPal";
 
 jest.mock(
-  "../../hooks/Braintree/useBraintreePayPalOneTimePaymentSession",
+  "../../hooks/Braintree/useBraintreePayPalBillingAgreementSession",
   () => ({
-    useBraintreePayPalOneTimePaymentSession: jest.fn(),
+    useBraintreePayPalBillingAgreementSession: jest.fn(),
   }),
 );
 jest.mock("../../hooks/Braintree/useBraintreePayPal", () => ({
   useBraintreePayPal: jest.fn(),
 }));
 
-describe("BraintreePayPalOneTimePaymentButton", () => {
+describe("BraintreePayPalBillingAgreementButton", () => {
   const mockHandleClick = jest.fn();
-  const mockUseBraintreePayPalOneTimePaymentSession =
-    useBraintreePayPalOneTimePaymentSession as jest.Mock;
+  const mockUseBraintreePayPalBillingAgreementSession =
+    useBraintreePayPalBillingAgreementSession as jest.Mock;
   const mockUseBraintreePayPal = useBraintreePayPal as jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockUseBraintreePayPalOneTimePaymentSession.mockReturnValue({
+    mockUseBraintreePayPalBillingAgreementSession.mockReturnValue({
       error: null,
       isPending: false,
       handleClick: mockHandleClick,
@@ -35,10 +35,8 @@ describe("BraintreePayPalOneTimePaymentButton", () => {
 
   it("should render paypal-button when hydrated", () => {
     const { container } = render(
-      <BraintreePayPalOneTimePaymentButton
+      <BraintreePayPalBillingAgreementButton
         onApprove={() => Promise.resolve()}
-        amount="10.00"
-        currency="USD"
       />,
     );
     expect(container.querySelector("paypal-button")).toBeInTheDocument();
@@ -49,10 +47,8 @@ describe("BraintreePayPalOneTimePaymentButton", () => {
       isHydrated: false,
     });
     const { container } = render(
-      <BraintreePayPalOneTimePaymentButton
+      <BraintreePayPalBillingAgreementButton
         onApprove={() => Promise.resolve()}
-        amount="10.00"
-        currency="USD"
       />,
     );
     expect(container.querySelector("paypal-button")).not.toBeInTheDocument();
@@ -61,10 +57,8 @@ describe("BraintreePayPalOneTimePaymentButton", () => {
 
   it("should call handleClick when button is clicked", () => {
     const { container } = render(
-      <BraintreePayPalOneTimePaymentButton
+      <BraintreePayPalBillingAgreementButton
         onApprove={() => Promise.resolve()}
-        amount="10.00"
-        currency="USD"
       />,
     );
     const button = container.querySelector("paypal-button");
@@ -77,10 +71,8 @@ describe("BraintreePayPalOneTimePaymentButton", () => {
 
   it("should disable the button when disabled=true is given as a prop", () => {
     const { container } = render(
-      <BraintreePayPalOneTimePaymentButton
+      <BraintreePayPalBillingAgreementButton
         onApprove={() => Promise.resolve()}
-        amount="10.00"
-        currency="USD"
         disabled={true}
       />,
     );
@@ -90,16 +82,14 @@ describe("BraintreePayPalOneTimePaymentButton", () => {
 
   it("should disable button when error is present", () => {
     const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
-    mockUseBraintreePayPalOneTimePaymentSession.mockReturnValue({
+    mockUseBraintreePayPalBillingAgreementSession.mockReturnValue({
       error: new Error("Test error"),
       isPending: false,
       handleClick: mockHandleClick,
     });
     const { container } = render(
-      <BraintreePayPalOneTimePaymentButton
+      <BraintreePayPalBillingAgreementButton
         onApprove={() => Promise.resolve()}
-        amount="10.00"
-        currency="USD"
       />,
     );
     const button = container.querySelector("paypal-button");
@@ -108,16 +98,14 @@ describe("BraintreePayPalOneTimePaymentButton", () => {
   });
 
   it("should not disable button when error is null", () => {
-    mockUseBraintreePayPalOneTimePaymentSession.mockReturnValue({
+    mockUseBraintreePayPalBillingAgreementSession.mockReturnValue({
       error: null,
       isPending: false,
       handleClick: mockHandleClick,
     });
     const { container } = render(
-      <BraintreePayPalOneTimePaymentButton
+      <BraintreePayPalBillingAgreementButton
         onApprove={() => Promise.resolve()}
-        amount="10.00"
-        currency="USD"
       />,
     );
     const button = container.querySelector("paypal-button");
@@ -125,16 +113,14 @@ describe("BraintreePayPalOneTimePaymentButton", () => {
   });
 
   it("should disable button when isPending is true", () => {
-    mockUseBraintreePayPalOneTimePaymentSession.mockReturnValue({
+    mockUseBraintreePayPalBillingAgreementSession.mockReturnValue({
       error: null,
       isPending: true,
       handleClick: mockHandleClick,
     });
     const { container } = render(
-      <BraintreePayPalOneTimePaymentButton
+      <BraintreePayPalBillingAgreementButton
         onApprove={() => Promise.resolve()}
-        amount="10.00"
-        currency="USD"
       />,
     );
     const button = container.querySelector("paypal-button");
@@ -144,10 +130,8 @@ describe("BraintreePayPalOneTimePaymentButton", () => {
 
   it("should pass type prop to paypal-button", () => {
     const { container } = render(
-      <BraintreePayPalOneTimePaymentButton
+      <BraintreePayPalBillingAgreementButton
         onApprove={() => Promise.resolve()}
-        amount="10.00"
-        currency="USD"
         type="subscribe"
       />,
     );
@@ -155,50 +139,45 @@ describe("BraintreePayPalOneTimePaymentButton", () => {
     expect(button).toHaveAttribute("type", "subscribe");
   });
 
-  it("should pass hook props to useBraintreePayPalOneTimePaymentSession", () => {
+  it("should pass hook props to useBraintreePayPalBillingAgreementSession", () => {
     const onApprove = () => Promise.resolve();
     render(
-      <BraintreePayPalOneTimePaymentButton
-        amount="10.00"
-        currency="USD"
+      <BraintreePayPalBillingAgreementButton
         onApprove={onApprove}
+        billingAgreementDescription="Monthly subscription"
+        planType="SUBSCRIPTION"
       />,
     );
-    expect(mockUseBraintreePayPalOneTimePaymentSession).toHaveBeenCalledWith({
+    expect(mockUseBraintreePayPalBillingAgreementSession).toHaveBeenCalledWith({
       onApprove,
       onCancel: undefined,
       onError: undefined,
-      onShippingAddressChange: undefined,
-      onShippingOptionsChange: undefined,
-      amount: "10.00",
-      currency: "USD",
-      intent: undefined,
-      commit: undefined,
+      billingAgreementDescription: "Monthly subscription",
+      planType: "SUBSCRIPTION",
+      amount: undefined,
+      currency: undefined,
       offerCredit: undefined,
-      userAuthenticationEmail: undefined,
+      userAction: undefined,
+      displayName: undefined,
       returnUrl: undefined,
       cancelUrl: undefined,
-      displayName: undefined,
       presentationMode: undefined,
-      lineItems: undefined,
-      shippingOptions: undefined,
-      amountBreakdown: undefined,
+      planMetadata: undefined,
+      shippingAddressOverride: undefined,
     });
   });
 
   it("should log error to console when an error from the hook is present", () => {
     const consoleErrorSpy = jest.spyOn(console, "error").mockImplementation();
     const testError = new Error("Test error");
-    mockUseBraintreePayPalOneTimePaymentSession.mockReturnValue({
+    mockUseBraintreePayPalBillingAgreementSession.mockReturnValue({
       error: testError,
       isPending: false,
       handleClick: mockHandleClick,
     });
     render(
-      <BraintreePayPalOneTimePaymentButton
+      <BraintreePayPalBillingAgreementButton
         onApprove={() => Promise.resolve()}
-        amount="10.00"
-        currency="USD"
       />,
     );
     expect(consoleErrorSpy).toHaveBeenCalledWith(testError);
