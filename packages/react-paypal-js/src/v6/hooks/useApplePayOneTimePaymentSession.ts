@@ -62,8 +62,16 @@ export type UseApplePayOneTimePaymentSessionProps = {
   createOrder: () => Promise<{ orderId: string }>;
   /**
    * Callback invoked when the payment is successfully approved.
+   * Keep this callback fast — it runs before Apple Pay session completion,
+   * which has a strict timeout window (commonly around 30 seconds).
+   * Move non-critical follow-up work to onApproveCompleted instead.
    */
   onApprove: (data: ConfirmOrderResponse) => void | Promise<void>;
+  /**
+   * Optional callback invoked after Apple Pay session completion succeeds.
+   * Use this for non-critical follow-up work that should not block completion.
+   */
+  onApproveCompleted?: (data: ConfirmOrderResponse) => void | Promise<void>;
   /**
    * Optional callback invoked when the payment is cancelled.
    */
@@ -294,6 +302,25 @@ export function useApplePayOneTimePaymentSession({
           shippingContact?: ApplePayContact;
         };
       }) => {
+        let didCompletePayment = false;
+
+        // Call completePayment only once per ApplePaySession.
+        const completePaymentOnce = (status: number) => {
+          if (didCompletePayment) {
+            return;
+          }
+
+          didCompletePayment = true;
+
+          try {
+            applePaySession.completePayment({ status });
+          } catch (err) {
+            const completePaymentError = toError(err);
+            setError(completePaymentError);
+            proxyCallbacks.onError?.(completePaymentError);
+          }
+        };
+
         try {
           // Create the order
           const order = await createOrder();
@@ -306,20 +333,25 @@ export function useApplePayOneTimePaymentSession({
             shippingContact: event.payment.shippingContact,
           });
 
-          // Complete the Apple Pay session successfully
-          applePaySession.completePayment({
-            status: ApplePaySessionConstructor.STATUS_SUCCESS,
-          });
-
           // Call onApprove callback
           await proxyCallbacks.onApprove(confirmResult);
+
+          // Complete the Apple Pay session successfully
+          completePaymentOnce(ApplePaySessionConstructor.STATUS_SUCCESS);
+
+          // Run non-critical post-completion logic without affecting payment status.
+          try {
+            await proxyCallbacks.onApproveCompleted?.(confirmResult);
+          } catch (err) {
+            const postApproveError = toError(err);
+            setError(postApproveError);
+            proxyCallbacks.onError?.(postApproveError);
+          }
         } catch (err) {
           const paymentError = toError(err);
           setError(paymentError);
           proxyCallbacks.onError?.(paymentError);
-          applePaySession.completePayment({
-            status: ApplePaySessionConstructor.STATUS_FAILURE,
-          });
+          completePaymentOnce(ApplePaySessionConstructor.STATUS_FAILURE);
         }
       };
 

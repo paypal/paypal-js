@@ -311,6 +311,43 @@ describe("useApplePayOneTimePaymentSession", () => {
       expect(defaultProps.onApprove).toHaveBeenCalled();
     });
 
+    test("should call onApproveCompleted after successful completion", async () => {
+      defaultProps.onApproveCompleted = jest.fn();
+
+      const { result } = renderHook(() =>
+        useApplePayOneTimePaymentSession(defaultProps),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(capturedApplePaySession).not.toBeNull();
+      await act(async () => {
+        await capturedApplePaySession!.onpaymentauthorized?.({
+          payment: {
+            token: {},
+            billingContact: {},
+          },
+        });
+      });
+
+      expect(capturedApplePaySession!.completePayment).toHaveBeenCalledWith({
+        status: MockApplePaySession.STATUS_SUCCESS,
+      });
+      expect(defaultProps.onApproveCompleted).toHaveBeenCalledTimes(1);
+
+      const completePaymentCallOrder =
+        capturedApplePaySession!.completePayment.mock.invocationCallOrder[0];
+      const onApproveCompletedCallOrder = (
+        defaultProps.onApproveCompleted as jest.Mock
+      ).mock.invocationCallOrder[0];
+
+      expect(completePaymentCallOrder).toBeLessThan(
+        onApproveCompletedCallOrder,
+      );
+    });
+
     test("should handle payment method selection", async () => {
       const { result } = renderHook(() =>
         useApplePayOneTimePaymentSession(defaultProps),
@@ -509,6 +546,104 @@ describe("useApplePayOneTimePaymentSession", () => {
       expect(capturedApplePaySession!.completePayment).toHaveBeenCalledWith({
         status: MockApplePaySession.STATUS_FAILURE,
       });
+    });
+
+    test("should complete with STATUS_FAILURE when onApprove throws", async () => {
+      const onApproveError = new Error("Capture failed");
+      defaultProps.onApprove = jest.fn().mockRejectedValue(onApproveError);
+
+      const { result } = renderHook(() =>
+        useApplePayOneTimePaymentSession(defaultProps),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(capturedApplePaySession).not.toBeNull();
+      await act(async () => {
+        await capturedApplePaySession!.onpaymentauthorized?.({
+          payment: {
+            token: {},
+            billingContact: {},
+          },
+        });
+      });
+
+      expect(result.current.error).toEqual(onApproveError);
+      expect(defaultProps.onError).toHaveBeenCalledWith(onApproveError);
+      expect(capturedApplePaySession!.completePayment).toHaveBeenCalledTimes(1);
+      expect(capturedApplePaySession!.completePayment).toHaveBeenCalledWith({
+        status: MockApplePaySession.STATUS_FAILURE,
+      });
+    });
+
+    test("should call onError when completePayment throws after successful onApprove", async () => {
+      const completePaymentError = new Error("InvalidAccessError");
+
+      const { result } = renderHook(() =>
+        useApplePayOneTimePaymentSession(defaultProps),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(capturedApplePaySession).not.toBeNull();
+      capturedApplePaySession!.completePayment.mockImplementation(() => {
+        throw completePaymentError;
+      });
+
+      await act(async () => {
+        await capturedApplePaySession!.onpaymentauthorized?.({
+          payment: {
+            token: {},
+            billingContact: {},
+          },
+        });
+      });
+
+      expect(defaultProps.onApprove).toHaveBeenCalledTimes(1);
+      expect(defaultProps.onError).toHaveBeenCalledWith(completePaymentError);
+      expect(result.current.error).toEqual(completePaymentError);
+      expect(capturedApplePaySession!.completePayment).toHaveBeenCalledTimes(1);
+      expect(capturedApplePaySession!.completePayment).toHaveBeenCalledWith({
+        status: MockApplePaySession.STATUS_SUCCESS,
+      });
+    });
+
+    test("should call onError when onApproveCompleted throws", async () => {
+      const onApproveCompletedError = new Error("Post-approve failed");
+      defaultProps.onApproveCompleted = jest
+        .fn()
+        .mockRejectedValue(onApproveCompletedError);
+
+      const { result } = renderHook(() =>
+        useApplePayOneTimePaymentSession(defaultProps),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(capturedApplePaySession).not.toBeNull();
+      await act(async () => {
+        await capturedApplePaySession!.onpaymentauthorized?.({
+          payment: {
+            token: {},
+            billingContact: {},
+          },
+        });
+      });
+
+      expect(capturedApplePaySession!.completePayment).toHaveBeenCalledWith({
+        status: MockApplePaySession.STATUS_SUCCESS,
+      });
+      expect(defaultProps.onError).toHaveBeenCalledWith(
+        onApproveCompletedError,
+      );
+      expect(result.current.error).toEqual(onApproveCompletedError);
+      expect(capturedApplePaySession!.completePayment).toHaveBeenCalledTimes(1);
     });
 
     test("should clear error when SDK instance becomes available", () => {
