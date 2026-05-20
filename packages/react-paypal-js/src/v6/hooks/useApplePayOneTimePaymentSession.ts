@@ -294,6 +294,25 @@ export function useApplePayOneTimePaymentSession({
           shippingContact?: ApplePayContact;
         };
       }) => {
+        let didCompletePayment = false;
+
+        // Call completePayment only once per ApplePaySession.
+        const completePaymentOnce = (status: number) => {
+          if (didCompletePayment) {
+            return;
+          }
+
+          didCompletePayment = true;
+
+          try {
+            applePaySession.completePayment({ status });
+          } catch (err) {
+            const completePaymentError = toError(err);
+            setError(completePaymentError);
+            proxyCallbacks.onError?.(completePaymentError);
+          }
+        };
+
         try {
           // Create the order
           const order = await createOrder();
@@ -306,20 +325,16 @@ export function useApplePayOneTimePaymentSession({
             shippingContact: event.payment.shippingContact,
           });
 
-          // Complete the Apple Pay session successfully
-          applePaySession.completePayment({
-            status: ApplePaySessionConstructor.STATUS_SUCCESS,
-          });
-
           // Call onApprove callback
           await proxyCallbacks.onApprove(confirmResult);
+
+          // Complete the Apple Pay session successfully
+          completePaymentOnce(ApplePaySessionConstructor.STATUS_SUCCESS);
         } catch (err) {
           const paymentError = toError(err);
           setError(paymentError);
           proxyCallbacks.onError?.(paymentError);
-          applePaySession.completePayment({
-            status: ApplePaySessionConstructor.STATUS_FAILURE,
-          });
+          completePaymentOnce(ApplePaySessionConstructor.STATUS_FAILURE);
         }
       };
 

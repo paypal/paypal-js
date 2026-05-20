@@ -511,6 +511,36 @@ describe("useApplePayOneTimePaymentSession", () => {
       });
     });
 
+    test("should complete with STATUS_FAILURE when onApprove throws", async () => {
+      const onApproveError = new Error("Capture failed");
+      defaultProps.onApprove = jest.fn().mockRejectedValue(onApproveError);
+
+      const { result } = renderHook(() =>
+        useApplePayOneTimePaymentSession(defaultProps),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(capturedApplePaySession).not.toBeNull();
+      await act(async () => {
+        await capturedApplePaySession!.onpaymentauthorized?.({
+          payment: {
+            token: {},
+            billingContact: {},
+          },
+        });
+      });
+
+      expect(result.current.error).toEqual(onApproveError);
+      expect(defaultProps.onError).toHaveBeenCalledWith(onApproveError);
+      expect(capturedApplePaySession!.completePayment).toHaveBeenCalledTimes(1);
+      expect(capturedApplePaySession!.completePayment).toHaveBeenCalledWith({
+        status: MockApplePaySession.STATUS_FAILURE,
+      });
+    });
+
     test("should clear error when SDK instance becomes available", () => {
       const { rerender, result } = renderHook(() =>
         useApplePayOneTimePaymentSession(defaultProps),
