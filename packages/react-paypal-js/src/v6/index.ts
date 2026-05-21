@@ -44,14 +44,6 @@ export {
 export { PayPalProvider } from "./components/PayPalProvider";
 export { BraintreePayPalProvider } from "./components/Braintree/BraintreePayPalProvider";
 export { BraintreePayPalOneTimePaymentButton } from "./components/Braintree/BraintreePayPalOneTimePaymentButton";
-export {
-  BraintreePayPalBillingAgreementButton,
-  type BraintreePayPalBillingAgreementButtonProps,
-} from "./components/Braintree/BraintreePayPalBillingAgreementButton";
-export {
-  BraintreePayPalCheckoutWithVaultButton,
-  type BraintreePayPalCheckoutWithVaultButtonProps,
-} from "./components/Braintree/BraintreePayPalCheckoutWithVaultButton";
 export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
 export {
@@ -59,9 +51,68 @@ export {
   type ApplePayOneTimePaymentButtonProps,
 } from "./components/ApplePayOneTimePaymentButton";
 export {
-  GooglePayOneTimePaymentButton,
-  type GooglePayOneTimePaymentButtonProps,
-} from "./components/GooglePayOneTimePaymentButton";
+  LPMOneTimePaymentButton,
+  type LPMOneTimePaymentButtonProps,
+} from "./components/LPMOneTimePaymentButton";
+export { LPM_REGISTRY } from "./config/lpmRegistry";
+export type { LPMName } from "./config/lpmRegistry";
+// Factory-generated named LPM button components
+export {
+  IdealOneTimePaymentButton,
+  BancontactOneTimePaymentButton,
+  EpsOneTimePaymentButton,
+  BlikOneTimePaymentButton,
+  MybankOneTimePaymentButton,
+  TrustlyOneTimePaymentButton,
+  P24OneTimePaymentButton,
+  MultibancoOneTimePaymentButton,
+  BizumOneTimePaymentButton,
+  SwishOneTimePaymentButton,
+  KlarnaOneTimePaymentButton,
+  TwintOneTimePaymentButton,
+  WechatpayOneTimePaymentButton,
+  AfterpayOneTimePaymentButton,
+  OxxopayOneTimePaymentButton,
+  BoletobancarioOneTimePaymentButton,
+  VerkkopankkiOneTimePaymentButton,
+  PayuOneTimePaymentButton,
+  PaysafecardOneTimePaymentButton,
+  MbwayOneTimePaymentButton,
+  SatispayOneTimePaymentButton,
+  WeroOneTimePaymentButton,
+  FloaOneTimePaymentButton,
+  ScalapayOneTimePaymentButton,
+  GrabpayOneTimePaymentButton,
+  PixInternationalOneTimePaymentButton,
+  SepaOneTimePaymentButton,
+  CryptoOneTimePaymentButton,
+  DokuOneTimePaymentButton,
+  DragonpayOneTimePaymentButton,
+  EstoniaOneTimePaymentButton,
+  FpxOneTimePaymentButton,
+  GopayOneTimePaymentButton,
+  AlipayOneTimePaymentButton,
+  IndomaretOneTimePaymentButton,
+  IndonesiaBanksOneTimePaymentButton,
+  KredivoOneTimePaymentButton,
+  LinkajaOneTimePaymentButton,
+  OvoOneTimePaymentButton,
+  PayseraOneTimePaymentButton,
+  SkrillOneTimePaymentButton,
+  ThailandBanksOneTimePaymentButton,
+  BlikPayLaterOneTimePaymentButton,
+  AlfamartOneTimePaymentButton,
+  ZipOneTimePaymentButton,
+  BancomatPayOneTimePaymentButton,
+  LatviaBanksOneTimePaymentButton,
+  FiuuOneTimePaymentButton,
+  LithuaniaBanksOneTimePaymentButton,
+  JeniuspayOneTimePaymentButton,
+  type IdealOneTimePaymentButtonProps,
+  type BancontactOneTimePaymentButtonProps,
+  type EpsOneTimePaymentButtonProps,
+  type BlikOneTimePaymentButtonProps,
+} from "./lpmExports";
 export { PayPalCardNumberField } from "./components/PayPalCardNumberField";
 export { PayPalCardExpiryField } from "./components/PayPalCardExpiryField";
 export { PayPalCardCvvField } from "./components/PayPalCardCvvField";
@@ -73,23 +124,11 @@ export { PayPalCardCvvField } from "./components/PayPalCardCvvField";
 // Core hooks
 export { usePayPal } from "./hooks/usePayPal";
 export { useBraintreePayPal } from "./hooks/Braintree/useBraintreePayPal";
-
-// Braintree hooks
 export {
   useBraintreePayPalOneTimePaymentSession,
   type UseBraintreePayPalOneTimePaymentSessionProps,
   type UseBraintreePayPalOneTimePaymentSessionReturn,
 } from "./hooks/Braintree/useBraintreePayPalOneTimePaymentSession";
-export {
-  useBraintreePayPalBillingAgreementSession,
-  type UseBraintreePayPalBillingAgreementSessionProps,
-  type UseBraintreePayPalBillingAgreementSessionReturn,
-} from "./hooks/Braintree/useBraintreePayPalBillingAgreementSession";
-export {
-  useBraintreePayPalCheckoutWithVaultSession,
-  type UseBraintreePayPalCheckoutWithVaultSessionProps,
-  type UseBraintreePayPalCheckoutWithVaultSessionReturn,
-} from "./hooks/Braintree/useBraintreePayPalCheckoutWithVaultSession";
 export * from "./hooks/useEligibleMethods";
 export { usePayPalMessages } from "./hooks/usePayPalMessages";
 
@@ -141,10 +180,115 @@ export {
   useApplePayOneTimePaymentSession,
   type UseApplePayOneTimePaymentSessionProps,
 } from "./hooks/useApplePayOneTimePaymentSession";
+// Generic LPM hook
 export {
-  useGooglePayOneTimePaymentSession,
-  type UseGooglePayOneTimePaymentSessionProps,
-} from "./hooks/useGooglePayOneTimePaymentSession";
+  useLPMOneTimePaymentSession,
+  type UseLPMOneTimePaymentSessionProps,
+  type LPMPaymentSessionReturn,
+} from "./hooks/useLPMOneTimePaymentSession";
+// Factory-generated named LPM hooks
+export {
+  useIdealOneTimePaymentSession,
+  useBancontactOneTimePaymentSession,
+  useEpsOneTimePaymentSession,
+  useBlikOneTimePaymentSession,
+  useMybankOneTimePaymentSession,
+  useTrustlyOneTimePaymentSession,
+  useP24OneTimePaymentSession,
+  useMultibancoOneTimePaymentSession,
+  useBizumOneTimePaymentSession,
+  useSwishOneTimePaymentSession,
+  useKlarnaOneTimePaymentSession,
+  useTwintOneTimePaymentSession,
+  useWechatpayOneTimePaymentSession,
+  useAfterpayOneTimePaymentSession,
+  useOxxopayOneTimePaymentSession,
+  useBoletobancarioOneTimePaymentSession,
+  useVerkkopankkiOneTimePaymentSession,
+  usePayuOneTimePaymentSession,
+  usePaysafecardOneTimePaymentSession,
+  useMbwayOneTimePaymentSession,
+  useSatispayOneTimePaymentSession,
+  useWeroOneTimePaymentSession,
+  useFloaOneTimePaymentSession,
+  useScalapayOneTimePaymentSession,
+  useGrabpayOneTimePaymentSession,
+  usePixInternationalOneTimePaymentSession,
+  useSepaOneTimePaymentSession,
+  useCryptoOneTimePaymentSession,
+  useDokuOneTimePaymentSession,
+  useDragonpayOneTimePaymentSession,
+  useEstoniaOneTimePaymentSession,
+  useFpxOneTimePaymentSession,
+  useGopayOneTimePaymentSession,
+  useAlipayOneTimePaymentSession,
+  useIndomaretOneTimePaymentSession,
+  useIndonesiaBanksOneTimePaymentSession,
+  useKredivoOneTimePaymentSession,
+  useLinkajaOneTimePaymentSession,
+  useOvoOneTimePaymentSession,
+  usePayseraOneTimePaymentSession,
+  useSkrillOneTimePaymentSession,
+  useThailandBanksOneTimePaymentSession,
+  useBlikPayLaterOneTimePaymentSession,
+  useAlfamartOneTimePaymentSession,
+  useZipOneTimePaymentSession,
+  useBancomatPayOneTimePaymentSession,
+  useLatviaBanksOneTimePaymentSession,
+  useFiuuOneTimePaymentSession,
+  useLithuaniaBanksOneTimePaymentSession,
+  useJeniuspayOneTimePaymentSession,
+  type UseIdealOneTimePaymentSessionProps,
+  type UseBancontactOneTimePaymentSessionProps,
+  type UseEpsOneTimePaymentSessionProps,
+  type UseBlikOneTimePaymentSessionProps,
+  type UseMybankOneTimePaymentSessionProps,
+  type UseTrustlyOneTimePaymentSessionProps,
+  type UseP24OneTimePaymentSessionProps,
+  type UseMultibancoOneTimePaymentSessionProps,
+  type UseBizumOneTimePaymentSessionProps,
+  type UseSwishOneTimePaymentSessionProps,
+  type UseKlarnaOneTimePaymentSessionProps,
+  type UseTwintOneTimePaymentSessionProps,
+  type UseWechatpayOneTimePaymentSessionProps,
+  type UseAfterpayOneTimePaymentSessionProps,
+  type UseOxxopayOneTimePaymentSessionProps,
+  type UseBoletobancarioOneTimePaymentSessionProps,
+  type UseVerkkopankkiOneTimePaymentSessionProps,
+  type UsePayuOneTimePaymentSessionProps,
+  type UsePaysafecardOneTimePaymentSessionProps,
+  type UseMbwayOneTimePaymentSessionProps,
+  type UseSatispayOneTimePaymentSessionProps,
+  type UseWeroOneTimePaymentSessionProps,
+  type UseFloaOneTimePaymentSessionProps,
+  type UseScalapayOneTimePaymentSessionProps,
+  type UseGrabpayOneTimePaymentSessionProps,
+  type UsePixInternationalOneTimePaymentSessionProps,
+  type UseSepaOneTimePaymentSessionProps,
+  type UseCryptoOneTimePaymentSessionProps,
+  type UseDokuOneTimePaymentSessionProps,
+  type UseDragonpayOneTimePaymentSessionProps,
+  type UseEstoniaOneTimePaymentSessionProps,
+  type UseFpxOneTimePaymentSessionProps,
+  type UseGopayOneTimePaymentSessionProps,
+  type UseAlipayOneTimePaymentSessionProps,
+  type UseIndomaretOneTimePaymentSessionProps,
+  type UseIndonesiaBanksOneTimePaymentSessionProps,
+  type UseKredivoOneTimePaymentSessionProps,
+  type UseLinkajaOneTimePaymentSessionProps,
+  type UseOvoOneTimePaymentSessionProps,
+  type UsePayseraOneTimePaymentSessionProps,
+  type UseSkrillOneTimePaymentSessionProps,
+  type UseThailandBanksOneTimePaymentSessionProps,
+  type UseBlikPayLaterOneTimePaymentSessionProps,
+  type UseAlfamartOneTimePaymentSessionProps,
+  type UseZipOneTimePaymentSessionProps,
+  type UseBancomatPayOneTimePaymentSessionProps,
+  type UseLatviaBanksOneTimePaymentSessionProps,
+  type UseFiuuOneTimePaymentSessionProps,
+  type UseLithuaniaBanksOneTimePaymentSessionProps,
+  type UseJeniuspayOneTimePaymentSessionProps,
+} from "./lpmExports";
 
 // React 19+ JSX SDK Web Components type declaration
 declare global {

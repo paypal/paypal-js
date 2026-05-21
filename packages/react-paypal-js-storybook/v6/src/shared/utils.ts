@@ -219,6 +219,40 @@ export const applePayCallbacks = {
   },
 };
 
+// Braintree Callbacks
+
+export const braintreeOneTimePaymentCallbacks = {
+  onApprove: async (data: { payerId?: string; orderId?: string }) => {
+    action("approve")(data);
+    dispatchPaymentResult(
+      "success",
+      `Braintree payment approved. Order ID: ${data.orderId || "N/A"}`,
+    );
+  },
+  onCancel: (data: { orderId?: string }) => {
+    action("cancel")(data);
+    dispatchPaymentResult(
+      "cancel",
+      "Braintree payment was cancelled by the buyer.",
+    );
+  },
+  onError: (error: unknown) => {
+    action("error")(error);
+    dispatchPaymentResult(
+      "error",
+      `Braintree error: ${(error as Error)?.message || "Unknown error"}`,
+    );
+  },
+};
+
+// Braintree ArgTypes
+
+export const braintreeIntentArgType = {
+  control: { type: "select" as const },
+  options: ["authorize", "capture", "order"],
+  description: "Payment intent for the Braintree transaction",
+};
+
 // Apple Pay ArgTypes
 
 export const APPLE_PAY_BUTTON_STYLES = [
