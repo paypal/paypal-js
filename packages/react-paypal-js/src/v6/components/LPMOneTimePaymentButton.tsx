@@ -74,6 +74,7 @@ export const LPMOneTimePaymentButton = ({
       {config.fields.map((fieldType) => (
         <div
           key={fieldType}
+          data-testid={`${lpm}-${fieldType}-field`}
           ref={setFieldRef(fieldType)}
           style={{ marginBottom: 8 }}
         />

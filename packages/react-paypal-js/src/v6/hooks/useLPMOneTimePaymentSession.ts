@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
@@ -19,6 +19,7 @@ import type {
 
 export interface LPMPaymentSessionReturn extends BasePaymentSessionReturn {
   session: LPMOneTimePaymentSession | null;
+  Button: React.ComponentType;
 }
 
 export type UseLPMOneTimePaymentSessionProps = {
@@ -122,6 +123,11 @@ export function useLPMOneTimePaymentSession({
     sessionRef.current?.cancel();
   }, []);
 
+  const Button = useCallback(
+    () => React.createElement(config.buttonTag),
+    [config.buttonTag],
+  );
+
   const handleClick = useCallback(async () => {
     if (!isMountedRef.current) {
       return;
@@ -147,5 +153,6 @@ export function useLPMOneTimePaymentSession({
     handleCancel,
     handleClick,
     handleDestroy,
+    Button,
   };
 }
