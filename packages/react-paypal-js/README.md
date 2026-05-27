@@ -736,7 +736,7 @@ Braintree merchants use `BraintreePayPalProvider` instead of `PayPalProvider` to
 ### Prerequisites
 
 - A Braintree merchant account with PayPal enabled
-- A Braintree **client token** generated server-side via the [Braintree SDK](https://developer.paypal.com/braintree/docs/start/hello-server)
+- A Braintree **client token** generated server-side via the [Braintree SDK](https://developer.paypal.com/braintree/docs/start/hello-server). See the [sample integration's gateway setup](https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration/blob/main/server/node/src/braintreeServerSdkClient.ts) and [client token route handler](https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration/blob/main/server/node/src/routes/authRouteHandler.ts) for a Node.js example.
 - The Braintree Web `client` and `paypal-checkout-v6` scripts loaded before rendering:
 
 ```html
