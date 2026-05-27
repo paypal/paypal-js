@@ -740,8 +740,8 @@ Braintree merchants use `BraintreePayPalProvider` instead of `PayPalProvider` to
 - The Braintree Web `client` and `paypal-checkout-v6` scripts loaded before rendering:
 
 ```html
-<script src="https://js.braintreegateway.com/web/3.139.0/js/client.min.js"></script>
-<script src="https://js.braintreegateway.com/web/3.139.0/js/paypal-checkout-v6.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.142.0/js/client.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.142.0/js/paypal-checkout-v6.min.js"></script>
 ```
 
 ### BraintreePayPalProvider
@@ -808,10 +808,7 @@ function CheckoutPage() {
       intent="capture"
       onApprove={async (data: BraintreeApprovalData) => {
         const { nonce } =
-          await braintreePayPalCheckoutInstance!.tokenizePayment({
-            payerID: data.payerId,
-            orderID: data.orderId,
-          });
+          await braintreePayPalCheckoutInstance!.tokenizePayment(data);
         // Send nonce to your server
         await fetch("/api/braintree/checkout", {
           method: "POST",
