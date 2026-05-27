@@ -968,10 +968,7 @@ function CheckoutWithVaultPage() {
       }}
       onApprove={async (data: BraintreeApprovalData) => {
         const { nonce } =
-          await braintreePayPalCheckoutInstance!.tokenizePayment({
-            payerID: data.payerId,
-            orderID: data.orderId,
-          });
+          await braintreePayPalCheckoutInstance!.tokenizePayment(data);
         await fetch("/api/braintree/checkout-and-vault", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
