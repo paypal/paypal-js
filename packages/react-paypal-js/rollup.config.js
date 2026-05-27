@@ -125,6 +125,49 @@ export default [
     ],
   },
 
+  // V6 IIFE — browser-consumable bundle for the merchant-demo sandbox
+  // React and ReactDOM are externalized as globals (loaded separately via CDN).
+  // @paypal/paypal-js is bundled in. server-only is stubbed (browser context).
+  {
+    input: "src/v6/index.ts",
+    plugins: [
+      typescript({
+        tsconfig: "./tsconfig.v6.json",
+        outputToFilesystem: true,
+        outDir: "./dist/v6/iife",
+      }),
+      nodeResolve(),
+      {
+        name: "stub-server-only",
+        resolveId: (id) => (id === "server-only" ? "server-only" : null),
+        load: (id) => (id === "server-only" ? "export default {};" : null),
+      },
+      babel({
+        babelHelpers: "bundled",
+        presets: ["@babel/preset-react"],
+      }),
+      cleanup({ comments: "none" }),
+    ],
+    external: ["react", "react-dom"],
+    output: [
+      {
+        file: "dist/v6/iife/react-paypal-js.js",
+        format: "iife",
+        name: "ReactPayPalJsV6",
+        globals: { react: "React", "react-dom": "ReactDOM" },
+        banner,
+      },
+      {
+        file: "dist/v6/iife/react-paypal-js.min.js",
+        format: "iife",
+        name: "ReactPayPalJsV6",
+        globals: { react: "React", "react-dom": "ReactDOM" },
+        plugins: [terser()],
+        banner,
+      },
+    ],
+  },
+
   // V6 Server ESM
   {
     input: "src/v6/server.ts",

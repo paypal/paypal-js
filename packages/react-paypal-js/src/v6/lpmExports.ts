@@ -4,7 +4,7 @@ import {
   LPMOneTimePaymentButton,
   type LPMOneTimePaymentButtonProps,
 } from "./components/LPMOneTimePaymentButton";
-import { useLPMOneTimePaymentSession } from "./hooks/useLPMOneTimePaymentSession";
+import { createEnhancedLPMHook } from "./components/LPMPaymentProvider";
 import { LPM_REGISTRY } from "./config/lpmRegistry";
 
 import type { UseLPMOneTimePaymentSessionProps } from "./hooks/useLPMOneTimePaymentSession";
@@ -23,12 +23,17 @@ function createLPMButton(lpm: LPMName) {
   return Component;
 }
 
+/**
+ * Creates a named `use*OneTimePaymentSession` hook.
+ *
+ * The hook returns everything `useLPMOneTimePaymentSession` returns plus a
+ * pre-bound field component for every field the LPM requires (e.g. `NameField`,
+ * `EmailField`) and a `PaymentButton`. Field and button can be placed anywhere
+ * in the component tree — no Provider or `paymentSession` prop needed.
+ */
 function createLPMHook(lpm: LPMName) {
-  return (props: NamedLPMHookProps) =>
-    useLPMOneTimePaymentSession({
-      lpm,
-      ...props,
-    } as UseLPMOneTimePaymentSessionProps);
+  const { fields, buttonTag } = LPM_REGISTRY[lpm];
+  return createEnhancedLPMHook(lpm, fields, buttonTag);
 }
 
 // Named Button Components

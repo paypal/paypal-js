@@ -56,6 +56,72 @@ export {
 } from "./components/LPMOneTimePaymentButton";
 export { LPM_REGISTRY } from "./config/lpmRegistry";
 export type { LPMName } from "./config/lpmRegistry";
+// ─── LPM field component prop types + session handle ─────────────────────────
+// Hooks (e.g. useIdealOneTimePaymentSession) return pre-bound field components
+// (NameField, EmailField…) alongside session data. Buttons are imported
+// separately and receive the hook's return value as `paymentSession`.
+export type {
+  LPMSessionHandle,
+  LPMFieldComponentProps,
+  LPMButtonComponentProps,
+} from "./components/LPMPaymentProvider";
+
+// ─── Named LPM payment buttons ────────────────────────────────────────────────
+// Import the button for your LPM, then pass the hook's return value as
+// the `paymentSession` prop. No Provider — the button can live anywhere.
+export {
+  IdealPaymentButton,
+  BancontactPaymentButton,
+  EpsPaymentButton,
+  BlikPaymentButton,
+  MybankPaymentButton,
+  TrustlyPaymentButton,
+  P24PaymentButton,
+  MultibancoPaymentButton,
+  BizumPaymentButton,
+  SwishPaymentButton,
+  KlarnaPaymentButton,
+  TwintPaymentButton,
+  WechatpayPaymentButton,
+  AfterpayPaymentButton,
+  OxxopayPaymentButton,
+  BoletobancarioPaymentButton,
+  VerkkopankkiPaymentButton,
+  PayuPaymentButton,
+  PaysafecardPaymentButton,
+  MbwayPaymentButton,
+  SatispayPaymentButton,
+  WeroPaymentButton,
+  FloaPaymentButton,
+  ScalapayPaymentButton,
+  GrabpayPaymentButton,
+  PixInternationalPaymentButton,
+  SepaPaymentButton,
+  CryptoPaymentButton,
+  DokuPaymentButton,
+  DragonpayPaymentButton,
+  EstoniaPaymentButton,
+  FpxPaymentButton,
+  GopayPaymentButton,
+  AlipayPaymentButton,
+  IndomaretPaymentButton,
+  IndonesiaBanksPaymentButton,
+  KredivoPaymentButton,
+  LinkajaPaymentButton,
+  OvoPaymentButton,
+  PayseraPaymentButton,
+  SkrillPaymentButton,
+  ThailandBanksPaymentButton,
+  BlikPayLaterPaymentButton,
+  AlfamartPaymentButton,
+  ZipPaymentButton,
+  BancomatPayPaymentButton,
+  LatviaBanksPaymentButton,
+  FiuuPaymentButton,
+  LithuaniaBanksPaymentButton,
+  JeniuspayPaymentButton,
+} from "./lpmProviderExports";
+
 // Factory-generated named LPM button components
 export {
   IdealOneTimePaymentButton,

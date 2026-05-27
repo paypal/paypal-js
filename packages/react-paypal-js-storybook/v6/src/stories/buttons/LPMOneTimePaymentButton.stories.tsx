@@ -40,7 +40,7 @@ const meta: Meta<typeof LPMOneTimePaymentButton> = {
 **Three ways to use LPMs:**
 - **Named component** — \`import { IdealOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6"\` (recommended)
 - **Generic component** — \`<LPMOneTimePaymentButton lpm="ideal" />\` (for dynamic selection)
-- **Named hook** — \`const { session, Button } = useIdealOneTimePaymentSession(...)\` (full control, access to payment fields)
+- **Named hook + standalone button** — \`const { NameField, ...session } = useIdealOneTimePaymentSession(...)\` then \`<IdealPaymentButton paymentSession={session} />\` (full layout control — fields and button can live anywhere in your component tree)
 
 It relies on the \`<PayPalProvider />\` parent component for SDK initialization.`,
       },

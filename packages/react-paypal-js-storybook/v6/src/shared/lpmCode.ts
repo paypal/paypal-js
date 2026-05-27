@@ -146,30 +146,38 @@ export default function App() {
 export function getLPMHookCode(lpm: LPMName): string {
   const config = LPM_REGISTRY[lpm];
   const hookName = `use${capitalize(lpm)}OneTimePaymentSession`;
+  const buttonName = `${capitalize(lpm)}PaymentButton`;
   const country = LPM_COUNTRY_MAP[lpm];
   const componentId = config.displayName.replace(/[^a-zA-Z0-9]/g, "");
 
-  const fieldEffectCode =
-    config.fields.length > 0
+  // e.g. ["name"] → ["NameField"], ["name", "email"] → ["NameField", "EmailField"]
+  const fieldComponentNames = config.fields.map((f) => `${capitalize(f)}Field`);
+
+  // Destructuring line — only include field names if there are any
+  const destructure =
+    fieldComponentNames.length > 0
+      ? `const { ${fieldComponentNames.join(", ")}, isPending, error } = ${hookName}Session;`
+      : `const { isPending, error } = ${hookName}Session;`;
+
+  // Billing section — render field components returned by the hook
+  const billingSection =
+    fieldComponentNames.length > 0
       ? `
-    // Mount secure iframe fields when session is ready
-    useEffect(() => {
-        if (!session) return;
-${config.fields.map((f) => `        const ${f}Field = session.createPaymentFields({ type: "${f}" });
-        document.getElementById("${f}-container")?.appendChild(${f}Field);`).join("\n")}
-    }, [session]);`
-      : "";
+            {/* Secure iframe fields — returned directly by the hook, no Provider needed */}
+            <section className="billing">
+${fieldComponentNames.map((f) => `                <${f} containerStyles={{ marginBottom: 8 }} />`).join("\n")}
+            </section>
+`
+      : `
+`;
 
-  const fieldJsx =
-    config.fields.length > 0
-      ? `\n${config.fields.map((f) => `            <div id="${f}-container" style={{ border: "1px solid #ccc", minHeight: 44, borderRadius: 4 }} />`).join("\n")}`
-      : "";
-
-  return `import { useEffect } from "react";
-import { PayPalProvider, ${hookName} } from "@paypal/react-paypal-js/sdk-v6";
+  return `import { PayPalProvider, ${hookName}, ${buttonName} } from "@paypal/react-paypal-js/sdk-v6";
 
 function ${componentId}Payment() {
-    const { session, Button, error, isPending } = ${hookName}({
+    // The hook returns field components (e.g. NameField) pre-bound to this session.
+    // The button is imported separately and receives the full session as a prop —
+    // both can live anywhere in your component tree with no Provider restriction.
+    const ${hookName}Session = ${hookName}({
         presentationMode: "popup",
         testBuyerCountry: "${country}",
         createOrder: async () => {
@@ -182,11 +190,15 @@ function ${componentId}Payment() {
         },
         onCancel: () => console.log("Payment cancelled"),
         onError: (err) => console.error("Payment error:", err),
-    });${fieldEffectCode}
+    });
+
+    ${destructure}
 
     return (
-        <div>${fieldJsx}
-            <Button />
+        <div>${billingSection}            {/* Button receives the session as a prop — place it anywhere */}
+            <footer>
+                <${buttonName} paymentSession={${hookName}Session} type="pay" />
+            </footer>
             {error && <p style={{ color: "red" }}>{error.message}</p>}
         </div>
     );

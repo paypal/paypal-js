@@ -40,15 +40,15 @@ export const LPMOneTimePaymentButton = ({
 
   const setFieldRef = useCallback(
     (fieldType: string) => (el: HTMLDivElement | null) => {
-      if (el) fieldRefs.current.set(fieldType, el);
-      else fieldRefs.current.delete(fieldType);
+      if (el) { fieldRefs.current.set(fieldType, el); }
+      else { fieldRefs.current.delete(fieldType); }
     },
     [],
   );
 
   // Render payment field iframes into their containers when session is ready
   useEffect(() => {
-    if (!session || !session.createPaymentFields) return;
+    if (!session || !session.createPaymentFields) { return; }
     config.fields.forEach((fieldType) => {
       const container = fieldRefs.current.get(fieldType);
       if (container) {
