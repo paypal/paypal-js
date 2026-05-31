@@ -103,6 +103,7 @@ function CheckoutPage() {
         });
         console.log("Payment captured!");
       }}
+      presentationMode: "auto"
     />
   );
 }
