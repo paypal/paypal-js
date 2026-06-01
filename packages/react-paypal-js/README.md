@@ -875,13 +875,12 @@ Renders a `<paypal-button>` for vault-only flows — saving a buyer's PayPal acc
 
 ```tsx
 import {
-  BraintreePayPalProvider,
   BraintreePayPalBillingAgreementButton,
   useBraintreePayPal,
 } from "@paypal/react-paypal-js/sdk-v6";
 import type { BraintreeApprovalData } from "@paypal/react-paypal-js/sdk-v6";
 
-function VaultPage() {
+function BillingAgreementButton() {
   const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
 
   return (
@@ -905,9 +904,7 @@ function VaultPage() {
       }}
       onApprove={async (data: BraintreeApprovalData) => {
         const { nonce } =
-          await braintreePayPalCheckoutInstance!.tokenizePayment({
-            billingToken: data.billingToken,
-          });
+          await braintreePayPalCheckoutInstance!.tokenizePayment(data);
         await fetch("/api/braintree/vault", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -949,13 +946,12 @@ Renders a `<paypal-button>` for a combined flow — charging the buyer and savin
 
 ```tsx
 import {
-  BraintreePayPalProvider,
   BraintreePayPalCheckoutWithVaultButton,
   useBraintreePayPal,
 } from "@paypal/react-paypal-js/sdk-v6";
 import type { BraintreeApprovalData } from "@paypal/react-paypal-js/sdk-v6";
 
-function CheckoutWithVaultPage() {
+function CheckoutWithVaultButton() {
   const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
 
   return (
