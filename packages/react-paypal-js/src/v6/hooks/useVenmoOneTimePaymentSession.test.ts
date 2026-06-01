@@ -459,6 +459,24 @@ describe("useVenmoOneTimePaymentSession", () => {
       expect(mockVenmoSession.start).not.toHaveBeenCalled();
     });
 
+    test("should default presentationMode to 'auto' when not provided", async () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+      };
+
+      const { result } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockVenmoSession.start).toHaveBeenCalledWith(
+        expect.objectContaining({ presentationMode: "auto" }),
+        undefined,
+      );
+    });
+
     test("should handle different presentation modes", async () => {
       const presentationModes = ["auto", "popup", "modal"] as const;
 

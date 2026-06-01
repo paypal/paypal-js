@@ -10,6 +10,7 @@ import {
   PayPalPresentationModeOptions,
   PayPalOneTimePaymentSessionOptions,
   BasePaymentSessionReturn,
+  WithOptionalPresentationMode,
 } from "../types";
 
 export type UsePayPalOneTimePaymentSessionProps = (
@@ -22,7 +23,7 @@ export type UsePayPalOneTimePaymentSessionProps = (
       orderId: string;
     })
 ) &
-  PayPalPresentationModeOptions;
+  WithOptionalPresentationMode<PayPalPresentationModeOptions>;
 
 /**
  * Hook for managing one-time payment sessions with PayPal.
@@ -167,7 +168,7 @@ export function usePayPalOneTimePaymentSession({
     }
 
     const startOptions = {
-      presentationMode,
+      presentationMode: presentationMode ?? "auto",
       fullPageOverlay,
       autoRedirect,
     } as PayPalPresentationModeOptions;

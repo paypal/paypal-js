@@ -570,6 +570,25 @@ describe("usePayPalCreditSavePaymentSession", () => {
       expect(mockSavePaymentSession.start).not.toHaveBeenCalled();
     });
 
+    test("should default presentationMode to 'auto' when not provided", async () => {
+      const props: UsePayPalCreditSavePaymentSessionProps = {
+        vaultSetupToken: "test-vault-token",
+        onApprove: jest.fn(),
+      };
+
+      const { result } = renderHook(() =>
+        usePayPalCreditSavePaymentSession(props),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockSavePaymentSession.start).toHaveBeenCalledWith(
+        expect.objectContaining({ presentationMode: "auto" }),
+      );
+    });
+
     test("should handle different presentation modes", async () => {
       const presentationModes = [
         "auto",

@@ -472,6 +472,26 @@ describe("usePayPalCreditOneTimePaymentSession", () => {
       expect(mockPayPalSession.start).not.toHaveBeenCalled();
     });
 
+    test("should default presentationMode to 'auto' when not provided", async () => {
+      const props: UsePayPalCreditOneTimePaymentSessionProps = {
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+      };
+
+      const { result } = renderHook(() =>
+        usePayPalCreditOneTimePaymentSession(props),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockPayPalSession.start).toHaveBeenCalledWith(
+        expect.objectContaining({ presentationMode: "auto" }),
+        undefined,
+      );
+    });
+
     test("should handle different presentation modes", async () => {
       const presentationModes = ["auto", "popup", "modal"] as const;
 

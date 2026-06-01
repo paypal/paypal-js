@@ -504,6 +504,26 @@ describe("usePayPalOneTimePaymentSession", () => {
         mockPayPalContext({ sdkInstance: mockSdkInstance });
       }
     });
+
+    test("should default presentationMode to 'auto' when not provided", async () => {
+      const props: UsePayPalOneTimePaymentSessionProps = {
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+      };
+
+      const { result } = renderHook(() =>
+        usePayPalOneTimePaymentSession(props),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockPayPalSession.start).toHaveBeenCalledWith(
+        expect.objectContaining({ presentationMode: "auto" }),
+        undefined,
+      );
+    });
   });
 
   describe("handleCancel", () => {

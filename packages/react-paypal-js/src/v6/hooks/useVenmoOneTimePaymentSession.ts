@@ -12,6 +12,7 @@ import type {
   VenmoOneTimePaymentSessionOptions,
   VenmoOneTimePaymentSessionPromise,
   BasePaymentSessionReturn,
+  WithOptionalPresentationMode,
 } from "../types";
 
 export type UseVenmoOneTimePaymentSessionProps = (
@@ -24,7 +25,7 @@ export type UseVenmoOneTimePaymentSessionProps = (
       orderId: string;
     })
 ) &
-  VenmoPresentationModeOptions;
+  WithOptionalPresentationMode<VenmoPresentationModeOptions>;
 
 /**
  * Hook for managing Venmo one-time payment sessions.
@@ -133,7 +134,7 @@ export function useVenmoOneTimePaymentSession({
     }
 
     const startOptions = {
-      presentationMode,
+      presentationMode: presentationMode ?? "auto",
       fullPageOverlay,
     } as VenmoPresentationModeOptions;
 

@@ -11,11 +11,12 @@ import type {
   PayPalSubscriptionPresentationModeOptions,
   PayPalSubscriptionPaymentSession,
   PayPalSubscriptionSessionOptions,
+  WithOptionalPresentationMode,
 } from "../types";
 
 export type UsePayPalSubscriptionPaymentSessionProps =
   PayPalSubscriptionSessionOptions &
-    PayPalSubscriptionPresentationModeOptions & {
+    WithOptionalPresentationMode<PayPalSubscriptionPresentationModeOptions> & {
       createSubscription: () => Promise<{ subscriptionId: string }>;
     };
 
@@ -129,7 +130,7 @@ export function usePayPalSubscriptionPaymentSession({
     }
 
     const startOptions = {
-      presentationMode,
+      presentationMode: presentationMode ?? "auto",
       fullPageOverlay,
     } as PayPalSubscriptionPresentationModeOptions;
 

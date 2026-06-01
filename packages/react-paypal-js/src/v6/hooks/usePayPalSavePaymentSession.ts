@@ -11,6 +11,7 @@ import type {
   PayPalPresentationModeOptions,
   SavePaymentSessionOptions,
   BasePaymentSessionReturn,
+  WithOptionalPresentationMode,
 } from "../types";
 
 export type UsePayPalSavePaymentSessionProps = (
@@ -23,7 +24,7 @@ export type UsePayPalSavePaymentSessionProps = (
       vaultSetupToken: string;
     })
 ) &
-  PayPalPresentationModeOptions;
+  WithOptionalPresentationMode<PayPalPresentationModeOptions>;
 
 /**
  * Hook for managing a PayPal save payment session, vault without purchase.
@@ -162,7 +163,7 @@ export function usePayPalSavePaymentSession({
     }
 
     const startOptions = {
-      presentationMode,
+      presentationMode: presentationMode ?? "auto",
       fullPageOverlay,
       autoRedirect,
     } as PayPalPresentationModeOptions;

@@ -419,6 +419,29 @@ describe("usePayPalSubscriptionPaymentSession", () => {
       expect(mockPayPalSession.start).not.toHaveBeenCalled();
     });
 
+    test("should default presentationMode to 'auto' when not provided", async () => {
+      const subscriptionPromise = Promise.resolve({
+        subscriptionId: "test-subscription-id",
+      });
+      const props: UsePayPalSubscriptionPaymentSessionProps = {
+        createSubscription: jest.fn().mockReturnValue(subscriptionPromise),
+        onApprove: jest.fn(),
+      };
+
+      const { result } = renderHook(() =>
+        usePayPalSubscriptionPaymentSession(props),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockPayPalSession.start).toHaveBeenCalledWith(
+        expect.objectContaining({ presentationMode: "auto" }),
+        subscriptionPromise,
+      );
+    });
+
     test("should handle different presentation modes", async () => {
       const presentationModes = [
         "auto",
