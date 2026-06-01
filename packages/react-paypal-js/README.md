@@ -752,7 +752,11 @@ Wraps child components with Braintree context. On mount it validates the namespa
 import { useState, useEffect } from "react";
 import { BraintreePayPalProvider } from "@paypal/react-paypal-js/sdk-v6";
 
-declare const braintree: BraintreeV6Namespace;
+declare global {
+  interface Window {
+    braintree: BraintreeV6Namespace;
+  }
+}
 
 function App() {
   const [clientToken, setClientToken] = useState<string | undefined>(undefined);
