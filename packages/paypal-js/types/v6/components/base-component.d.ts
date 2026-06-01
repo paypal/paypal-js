@@ -89,7 +89,7 @@ export type CreateOrderCallback = () => CreateOrderPromise;
  */
 export type BasePaymentSession = {
   start: (
-    options: PresentationModeOptionsForAuto,
+    options?: PresentationModeOptionsForAuto,
     PaymentSessionPromise?: CreateOrderPromise,
   ) => Promise<void>;
   destroy: () => void;
