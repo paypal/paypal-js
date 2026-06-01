@@ -77,7 +77,14 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const withPayPalProvider: Decorator = (Story) => {
+export const withPayPalProvider: Decorator = (Story, context) => {
+  // Stories using a non-PayPal provider (e.g. Braintree) opt out via
+  // `parameters: { providerType: "braintree" }` and supply their own decorator.
+  const providerType = context.parameters?.providerType ?? "paypal";
+  if (providerType !== "paypal") {
+    return <Story />;
+  }
+
   return (
     <ProviderWrapper>
       <Story />
