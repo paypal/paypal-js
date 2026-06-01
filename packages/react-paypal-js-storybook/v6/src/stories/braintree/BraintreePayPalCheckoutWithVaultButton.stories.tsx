@@ -46,13 +46,7 @@ function BraintreeCheckoutWithVaultButtonStoryWrapper({
       billingAgreementDetails={{ description: billingAgreementDescription }}
       disabled={disabled}
       onApprove={async (data: BraintreeApprovalData) => {
-        // CheckoutWithVault tokenizes via orderID + payerID (same as OneTime),
-        // but settles via the sale endpoint with storeInVaultOnSuccess so the
-        // payment method is saved alongside the charge.
-        const { nonce } = await instance.tokenizePayment({
-          orderID: data.orderId,
-          payerID: data.payerId,
-        });
+        const { nonce } = await instance.tokenizePayment(data);
         const result = await braintreeTransactionSaleWithVault(nonce, amount);
         action("approve")({ nonce, ...((result as object) ?? {}) });
         dispatchPaymentResult(

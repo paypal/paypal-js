@@ -85,10 +85,7 @@ function CheckoutButton() {
             type="pay"
             presentationMode="auto"
             onApprove={async (data: BraintreeApprovalData) => {
-                const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment({
-                    orderID: data.orderId,
-                    payerID: data.payerId,
-                });
+                const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment(data);
                 const result = await completePayment(nonce, "10.00");
                 console.log("Payment captured:", result);
             }}
@@ -150,11 +147,7 @@ function SavePayPalButton() {
             type="pay"
             presentationMode="auto"
             onApprove={async (data: BraintreeApprovalData) => {
-                // BillingAgreement tokenizes via billingToken — not orderID/payerID,
-                // which is what the OneTime and CheckoutWithVault flows use.
-                const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment({
-                    billingToken: data.billingToken,
-                });
+                const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment(data);
                 const result = await vaultPaymentMethod(nonce);
                 console.log("Payment method vaulted:", result);
             }}
@@ -222,10 +215,7 @@ function CheckoutAndSaveButton() {
             type="pay"
             presentationMode="auto"
             onApprove={async (data: BraintreeApprovalData) => {
-                const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment({
-                    orderID: data.orderId,
-                    payerID: data.payerId,
-                });
+                const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment(data);
                 const result = await completePaymentAndVault(nonce, "10.00");
                 console.log("Captured and vaulted:", result);
             }}

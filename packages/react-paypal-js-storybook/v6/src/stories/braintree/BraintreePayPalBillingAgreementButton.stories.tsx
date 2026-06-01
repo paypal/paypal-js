@@ -40,11 +40,7 @@ function BraintreeBillingAgreementButtonStoryWrapper({
       billingAgreementDescription={billingAgreementDescription}
       disabled={disabled}
       onApprove={async (data: BraintreeApprovalData) => {
-        // BillingAgreement tokenizes via billingToken (not orderID/payerID
-        // — those are populated by the OneTime and CheckoutWithVault flows).
-        const { nonce } = await instance.tokenizePayment({
-          billingToken: data.billingToken,
-        });
+        const { nonce } = await instance.tokenizePayment(data);
         const result = await braintreeVaultPaymentMethod(nonce);
         action("approve")({ nonce, ...((result as object) ?? {}) });
         dispatchPaymentResult(
