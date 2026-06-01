@@ -806,6 +806,7 @@ function CheckoutPage() {
       amount="100.00"
       currency="USD"
       intent="capture"
+      type="pay"
       onApprove={async (data: BraintreeApprovalData) => {
         const { nonce } =
           await braintreePayPalCheckoutInstance!.tokenizePayment(data);
@@ -866,7 +867,7 @@ function App() {
 | `presentationMode`        | `BraintreePresentationMode`                                   | No       | UI mode: `"auto"`, `"popup"`, `"modal"`, `"redirect"`, etc.       |
 | `returnUrl`               | `string`                                                      | No       | Return URL (required for `"direct-app-switch"` presentation mode) |
 | `cancelUrl`               | `string`                                                      | No       | Cancel URL (required for `"direct-app-switch"` presentation mode) |
-| `type`                    | `string`                                                      | No       | Button type (default: `"pay"`)                                    |
+| `type`                    | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"`  | No       | Button label type (default: `"pay"`)                              |
 | `disabled`                | `boolean`                                                     | No       | Disable the button                                                |
 
 ### BraintreePayPalBillingAgreementButton
@@ -885,6 +886,7 @@ function BillingAgreementButton() {
 
   return (
     <BraintreePayPalBillingAgreementButton
+      type="subscribe"
       billingAgreementDescription="Monthly subscription to Premium"
       planType="SUBSCRIPTION"
       planMetadata={{
@@ -937,7 +939,7 @@ function BillingAgreementButton() {
 | `presentationMode`            | `BraintreePresentationMode`                                        | No       | UI mode: `"auto"`, `"popup"`, `"modal"`, `"redirect"`, etc.    |
 | `returnUrl`                   | `string`                                                           | No       | Return URL (required for app-switch modes)                     |
 | `cancelUrl`                   | `string`                                                           | No       | Cancel URL (required for app-switch modes)                     |
-| `type`                        | `string`                                                           | No       | Button type (default: `"pay"`)                                 |
+| `type`                        | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"`       | No       | Button label type (default: `"pay"`)                           |
 | `disabled`                    | `boolean`                                                          | No       | Disable the button                                             |
 
 ### BraintreePayPalCheckoutWithVaultButton
@@ -959,6 +961,7 @@ function CheckoutWithVaultButton() {
       amount="49.99"
       currency="USD"
       intent="capture"
+      type="pay"
       billingAgreementDetails={{
         description: "Monthly subscription to Products!",
       }}
@@ -1000,7 +1003,7 @@ function CheckoutWithVaultButton() {
 | `presentationMode`        | `BraintreePresentationMode`                                   | No       | UI mode: `"auto"`, `"popup"`, `"modal"`, `"redirect"`, etc.       |
 | `returnUrl`               | `string`                                                      | No       | Return URL (required for `"direct-app-switch"` presentation mode) |
 | `cancelUrl`               | `string`                                                      | No       | Cancel URL (required for `"direct-app-switch"` presentation mode) |
-| `type`                    | `string`                                                      | No       | Button type (default: `"pay"`)                                    |
+| `type`                    | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"`  | No       | Button label type (default: `"pay"`)                              |
 | `disabled`                | `boolean`                                                     | No       | Disable the button                                                |
 
 ### Braintree Hooks
