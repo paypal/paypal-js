@@ -103,6 +103,7 @@ function CheckoutPage() {
         });
         console.log("Payment captured!");
       }}
+      presentationMode="auto"
     />
   );
 }
@@ -255,6 +256,7 @@ import { PayPalOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
   }
   onError={(data: OnErrorData) => console.error("Payment error:", data)}
   onComplete={(data: OnCompleteData) => console.log("Payment Flow Completed")}
+  presentationMode="auto"
 />;
 ```
 
@@ -299,6 +301,7 @@ import { VenmoOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
     onComplete={(data: OnCompleteData) =>
       console.log("Venmo payment flow completed", data)
     }
+    presentationMode="auto"
   />
 </PayPalProvider>;
 ```
@@ -420,6 +423,7 @@ import { PayLaterOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
   onComplete={(data: OnCompleteData) =>
     console.log("Pay Later flow completed", data)
   }
+  presentationMode="auto"
 />;
 ```
 
@@ -450,6 +454,7 @@ import { PayPalGuestPaymentButton } from "@paypal/react-paypal-js/sdk-v6";
     onComplete={(data: OnCompleteData) =>
       console.log("Guest payment flow completed", data)
     }
+    presentationMode="auto"
   />
 </PayPalProvider>;
 ```
@@ -479,6 +484,7 @@ import { PayPalSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
   onComplete={(data: OnCompleteData) =>
     console.log("Save payment flow completed", data)
   }
+  presentationMode="popup"
 />;
 ```
 
@@ -512,6 +518,7 @@ import { PayPalSubscriptionButton } from "@paypal/react-paypal-js/sdk-v6";
     onComplete={(data: OnCompleteData) =>
       console.log("Subscription flow completed", data)
     }
+    presentationMode="auto"
   />
 </PayPalProvider>;
 ```
@@ -539,6 +546,7 @@ import { PayPalCreditOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6
   onComplete={(data: OnCompleteData) =>
     console.log("Credit payment flow completed", data)
   }
+  presentationMode="auto"
 />;
 ```
 
@@ -567,6 +575,7 @@ import { PayPalCreditSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
   onComplete={(data: OnCompleteData) =>
     console.log("Credit save flow completed", data)
   }
+  presentationMode="popup"
 />;
 ```
 
@@ -1017,6 +1026,7 @@ function CustomVenmoButton() {
       const { orderId } = await createOrder();
       return { orderId };
     },
+    presentationMode: "auto",
     onApprove: (data: OnApproveDataOneTimePayments) =>
       console.log("Approved:", data),
     onCancel: (data: OnCancelDataOneTimePayments) =>
@@ -1041,6 +1051,7 @@ function CustomPayLaterButton() {
       const { orderId } = await createOrder();
       return { orderId };
     },
+    presentationMode: "auto",
     onApprove: (data: OnApproveDataOneTimePayments) =>
       console.log("Approved:", data),
     onCancel: (data: OnCancelDataOneTimePayments) =>
@@ -1065,6 +1076,7 @@ function CustomPayPalGuestButton() {
       const { orderId } = await createOrder();
       return { orderId };
     },
+    presentationMode: "auto",
     onApprove: (data: OnApproveDataOneTimePayments) =>
       console.log("Approved:", data),
     onCancel: (data: OnCancelDataOneTimePayments) =>
@@ -1120,6 +1132,7 @@ function CustomPayPalSubscriptionButton() {
       const { subscriptionId } = await response.json();
       return { subscriptionId };
     },
+    presentationMode: "auto",
     onApprove: (data: OnApproveDataOneTimePayments) =>
       console.log("Subscription approved:", data),
     onCancel: (data: OnCancelDataOneTimePayments) =>
@@ -1146,6 +1159,7 @@ function CustomPayPalCreditButton() {
       const { orderId } = await createOrder();
       return { orderId };
     },
+    presentationMode: "auto",
     onApprove: (data: OnApproveDataOneTimePayments) =>
       console.log("Credit approved:", data),
     onCancel: (data: OnCancelDataOneTimePayments) =>
@@ -1172,6 +1186,7 @@ function CustomPayPalCreditSaveButton() {
       const { vaultSetupToken } = await createVaultSetupToken();
       return { vaultSetupToken };
     },
+    presentationMode: "popup",
     onApprove: (data: OnApproveDataSavePayments) =>
       console.log("Credit approved:", data),
     onCancel: (data: OnCancelDataSavePayments) =>
@@ -1478,6 +1493,7 @@ import {
     onApprove={async ({ orderId }) => {
       await fetch(`/api/orders/${orderId}/capture`, { method: "POST" });
     }}
+    presentationMode="auto"
   />
 </PayPalProvider>;
 ```
