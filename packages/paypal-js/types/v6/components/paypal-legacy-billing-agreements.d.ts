@@ -43,7 +43,7 @@ export type PayPalLegacyBillingAgreementsSession = Omit<
   "start"
 > & {
   start: (
-    presentationModeOptions: PayPalLegacyBillingPresentationModeOptions,
+    presentationModeOptions?: PayPalLegacyBillingPresentationModeOptions,
     paymentSessionPromise?: PayPalLegacyBillingAgreementsSessionPromise,
   ) => Promise<void>;
 };

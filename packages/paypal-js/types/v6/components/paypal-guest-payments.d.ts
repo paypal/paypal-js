@@ -38,7 +38,7 @@ export type PayPalGuestOneTimePaymentSession = Omit<
   "start"
 > & {
   start: (
-    presentationModeOptions: PayPalGuestPresentationModeOptions,
+    presentationModeOptions?: PayPalGuestPresentationModeOptions,
     paymentSessionPromise?: PayPalGuestOneTimePaymentSessionPromise,
   ) => Promise<void>;
 };
