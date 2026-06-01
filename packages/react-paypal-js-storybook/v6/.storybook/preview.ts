@@ -24,6 +24,7 @@ const preview: Preview = {
               "PayLaterOneTimePaymentButton",
               "VenmoOneTimePaymentButton",
               "ApplePayOneTimePaymentButton",
+              "GooglePayOneTimePaymentButton",
               "PayPalSavePaymentButton",
               "PayPalGuestPaymentButton",
               "PayPalSubscriptionButton",

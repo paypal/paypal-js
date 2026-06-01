@@ -69,6 +69,7 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
         "paypal-subscriptions",
         "card-fields",
         "applepay-payments",
+        "googlepay-payments",
       ]}
       pageType="checkout"
     >
