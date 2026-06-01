@@ -52,6 +52,8 @@ export type OnApproveData = {
   paymentID?: string | null;
   subscriptionID?: string | null;
   authCode?: string | null;
+  /** Present for vault-without-purchase flows (Venmo, PayPal save-payment). Empty string for one-time payments. */
+  vaultSetupToken?: string | null;
 };
 
 export type OnApproveActions = {
@@ -294,8 +296,11 @@ export interface PayPalButtonsComponentOptions {
    */
   createSubscription?: PayPalButtonCreateSubscription;
   /**
-   * Save payment methods to charge payers after a set amount of time. For example, you can offer a free trial and charge payers after the trial expires. Payers don't need to be present when charged. No checkout required.
-   * https://developer.paypal.com/docs/checkout/save-payment-methods/purchase-later/js-sdk/paypal/#link-clientsidecodesample
+   * Called on button click to set up vault-without-purchase tokenization.
+   * Used for PayPal save-payment and Venmo vault-without-purchase flows.
+   * Return a vault setup token created server-side via the PayPal Vault API (/v3/vault/setup-tokens).
+   * For Venmo, create the token with `payment_source: { venmo: {...} }`.
+   * https://developer.paypal.com/docs/checkout/save-payment-methods/purchase-later/js-sdk/paypal/
    */
   createVaultSetupToken?: PayPalButtonCreateVaultSetupToken;
   /**
@@ -304,7 +309,9 @@ export interface PayPalButtonsComponentOptions {
    */
   fundingSource?: PayPalButtonFundingSource;
   /**
-   * Called when finalizing the transaction. Often used to inform the buyer that the transaction is complete. [onApprove docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#onapprove).
+   * Called when finalizing the transaction. Often used to inform the buyer that the transaction is complete.
+   * For vault-without-purchase flows, `data.vaultSetupToken` contains the approved token; `data.orderID` will be empty.
+   * [onApprove docs](https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-reference/#onapprove).
    */
   onApprove?: PayPalButtonOnApprove;
   /**
