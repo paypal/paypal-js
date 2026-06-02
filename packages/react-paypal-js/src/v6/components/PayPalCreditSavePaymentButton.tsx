@@ -22,13 +22,14 @@ export type PayPalCreditSavePaymentButtonProps =
  * would not be able to provide back `redirectURL` from `start`. Advanced integrations that need
  * `redirectURL` should use the {@link usePayPalCreditSavePaymentSession} hook directly.
  *
+ * `presentationMode` is optional and defaults to `"auto"`.
+ *
  * @example
  * <PayPalCreditSavePaymentButton
  *   onApprove={() => {
  *      // ... on approve logic
  *   }}
  *   vaultSetupToken="your-vault-setup-token"
- *   presentationMode="auto"
  * />
  */
 export const PayPalCreditSavePaymentButton = ({

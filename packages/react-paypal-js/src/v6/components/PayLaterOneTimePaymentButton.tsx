@@ -25,13 +25,14 @@ export type PayLaterOneTimePaymentButtonProps =
  * would not be able to provide back `redirectURL` from `start`. Advanced integrations that need
  * `redirectURL` should use the {@link usePayLaterOneTimePaymentSession} hook directly.
  *
+ * `presentationMode` is optional and defaults to `"auto"`.
+ *
  * @example
  * <PayLaterOneTimePaymentButton
  *   onApprove={() => {
  *      // ... on approve logic
  *   }}
  *   orderId="your-order-id"
- *   presentationMode="auto"
  * />
  */
 export const PayLaterOneTimePaymentButton = ({

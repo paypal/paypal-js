@@ -34,6 +34,8 @@ export type UsePayPalCreditOneTimePaymentSessionProps = (
  *
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
+ * `presentationMode` is optional and defaults to `"auto"`.
+ *
  * @example
  * function CreditCheckoutButton() {
  *   const { error, isPending, handleClick, handleCancel } = usePayPalCreditOneTimePaymentSession({

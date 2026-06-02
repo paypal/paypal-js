@@ -34,11 +34,12 @@ export type UsePayPalOneTimePaymentSessionProps = (
  *
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
+ * `presentationMode` is optional and defaults to `"auto"`.
+ *
  * @example
  * function PayPalCheckoutButton() {
  *   const { isPending, error, handleClick, handleCancel } = usePayPalOneTimePaymentSession({
  *     orderId: "ORDER-123",
- *     presentationMode: "auto",
  *     onApprove: (data) => console.log("Approved:", data),
  *   });
  *

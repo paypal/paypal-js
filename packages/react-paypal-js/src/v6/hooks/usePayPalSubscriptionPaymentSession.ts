@@ -28,9 +28,11 @@ export type UsePayPalSubscriptionPaymentSessionProps =
  *
  * @param props - Configuration options including presentation mode and callbacks
  * @param props.createSubscription - Function that returns a promise resolving to an object with subscriptionId
- * @param props.presentationMode - How the subscription experience is presented: 'popup', 'modal', 'auto', or 'payment-handler'
+ * @param props.presentationMode - (Optional, defaults to `'auto'`) How the subscription experience is presented: 'popup', 'modal', 'auto', or 'payment-handler'
  * @param props.fullPageOverlay - Whether to show a full-page overlay during the subscription flow
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
+ *
+ * `presentationMode` is optional and defaults to `"auto"`.
  *
  * @example
  * function SubscriptionCheckoutButton() {
