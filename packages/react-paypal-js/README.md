@@ -723,6 +723,448 @@ export default function App() {
 - `applePayConfig` is required and must be obtained from `useEligibleMethods()`
 - `onApprove` receives `ConfirmOrderResponse` — capture the order using `data.approveApplePayPayment.id`
 
+## Braintree PayPal Integration
+
+Braintree merchants use `BraintreePayPalProvider` instead of `PayPalProvider` to integrate PayPal via Braintree's [`paypalCheckoutV6`](https://braintree.github.io/braintree-web/current/PayPalCheckoutV6.html) module. This provider initializes the Braintree client, creates a PayPal Checkout V6 instance, and loads the PayPal SDK — then exposes the instance to child components and hooks via React context.
+
+**Resources:**
+
+- [Braintree PayPalCheckoutV6 API Reference](https://braintree.github.io/braintree-web/current/PayPalCheckoutV6.html) — full method signatures, options, and type definitions
+- [Sample Integration Repo](https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration) — working Braintree + React example with setup instructions
+- [Braintree Server SDK Guide](https://developer.paypal.com/braintree/docs/start/hello-server) — server-side nonce processing
+
+### Prerequisites
+
+- A Braintree merchant account with PayPal enabled
+- A Braintree **client token** generated server-side via the [Braintree SDK](https://developer.paypal.com/braintree/docs/start/hello-server). See the [sample integration's gateway setup](https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration/blob/main/server/node/src/braintreeServerSdkClient.ts) and [client token route handler](https://github.com/paypal-examples/v6-web-sdk-with-braintree-sdk-sample-integration/blob/main/server/node/src/routes/authRouteHandler.ts) for a Node.js example.
+- The Braintree Web `client` and `paypal-checkout-v6` scripts loaded before rendering:
+
+```html
+<script src="https://js.braintreegateway.com/web/3.142.0/js/client.min.js"></script>
+<script src="https://js.braintreegateway.com/web/3.142.0/js/paypal-checkout-v6.min.js"></script>
+```
+
+### BraintreePayPalProvider
+
+Wraps child components with Braintree context. On mount it validates the namespace, creates a Braintree client instance, creates a `paypalCheckoutV6` instance, and calls `loadPayPalSDK()`. On unmount it calls `teardown()` to release resources.
+
+```tsx
+import { useState, useEffect } from "react";
+import { BraintreePayPalProvider } from "@paypal/react-paypal-js/sdk-v6";
+
+declare global {
+  interface Window {
+    braintree: BraintreeV6Namespace;
+  }
+}
+
+function App() {
+  const [clientToken, setClientToken] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    fetch("/auth/browser-safe-client-token")
+      .then((res) => res.json())
+      .then(({ clientToken }) => setClientToken(clientToken));
+  }, []);
+
+  if (!clientToken) return <div>Loading...</div>;
+
+  return (
+    <BraintreePayPalProvider
+      namespace={window.braintree}
+      braintreeClientToken={clientToken}
+    >
+      <CheckoutPage />
+    </BraintreePayPalProvider>
+  );
+}
+```
+
+**Props:**
+
+| Prop                   | Type                   | Required | Description                                                                                            |
+| ---------------------- | ---------------------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| `namespace`            | `BraintreeV6Namespace` | Yes      | The `braintree` global namespace — must expose `client.create` and `paypalCheckoutV6.create` functions |
+| `braintreeClientToken` | `string \| undefined`  | Yes      | Client token from your server (generated via the Braintree SDK)                                        |
+| `children`             | `ReactNode`            | Yes      | Child components                                                                                       |
+
+> **Note:** The `namespace` prop must have referential stability across renders. An unstable reference (e.g., creating the object inline) will cause re-initialization on every render. Use a module-level constant, `useRef`, or `useMemo`.
+
+### BraintreePayPalOneTimePaymentButton
+
+Renders a `<paypal-button>` web component for one-time Braintree PayPal payments. Internally uses `useBraintreePayPalOneTimePaymentSession` to create and start payment sessions.
+
+```tsx
+import {
+  BraintreePayPalProvider,
+  BraintreePayPalOneTimePaymentButton,
+  useBraintreePayPal,
+} from "@paypal/react-paypal-js/sdk-v6";
+import type { BraintreeApprovalData } from "@paypal/react-paypal-js/sdk-v6";
+
+function CheckoutPage() {
+  const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
+
+  return (
+    <BraintreePayPalOneTimePaymentButton
+      amount="100.00"
+      currency="USD"
+      intent="capture"
+      type="pay"
+      onApprove={async (data: BraintreeApprovalData) => {
+        const { nonce } =
+          await braintreePayPalCheckoutInstance!.tokenizePayment(data);
+        // Send nonce to your server
+        await fetch("/api/braintree/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nonce }),
+        });
+      }}
+      onCancel={(data) => console.log("Cancelled", data)}
+      onError={(err) => console.error("Error", err)}
+    />
+  );
+}
+
+function App() {
+  const [clientToken, setClientToken] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    fetch("/auth/browser-safe-client-token")
+      .then((res) => res.json())
+      .then(({ clientToken }) => setClientToken(clientToken));
+  }, []);
+
+  if (!clientToken) return <div>Loading...</div>;
+
+  return (
+    <BraintreePayPalProvider
+      namespace={window.braintree}
+      braintreeClientToken={clientToken}
+    >
+      <CheckoutPage />
+    </BraintreePayPalProvider>
+  );
+}
+```
+
+**Props:**
+
+| Prop                      | Type                                                          | Required | Description                                                       |
+| ------------------------- | ------------------------------------------------------------- | -------- | ----------------------------------------------------------------- |
+| `amount`                  | `string`                                                      | Yes      | Payment amount (e.g., `"100.00"`)                                 |
+| `currency`                | `string`                                                      | Yes      | ISO 4217 currency code (e.g., `"USD"`)                            |
+| `onApprove`               | `(data: BraintreeApprovalData) => Promise<void>`              | Yes      | Called when buyer approves — tokenize the payment here            |
+| `intent`                  | `"authorize" \| "capture" \| "order"`                         | No       | Payment intent (default: `"capture"`)                             |
+| `commit`                  | `boolean`                                                     | No       | `true` for "Pay Now", `false` for "Continue"                      |
+| `offerCredit`             | `boolean`                                                     | No       | Offer PayPal Credit as default funding                            |
+| `onCancel`                | `(data: BraintreeOnCancelData) => void`                       | No       | Called when buyer cancels                                         |
+| `onError`                 | `(err: Error) => void`                                        | No       | Called on errors                                                  |
+| `onShippingAddressChange` | `(data: BraintreeShippingAddressChangeData) => Promise<void>` | No       | Called when buyer changes shipping address                        |
+| `onShippingOptionsChange` | `(data: BraintreeShippingOptionsChangeData) => Promise<void>` | No       | Called when buyer selects a shipping option                       |
+| `lineItems`               | `BraintreeLineItem[]`                                         | No       | Line items for the transaction                                    |
+| `shippingOptions`         | `BraintreeShippingOption[]`                                   | No       | Available shipping options                                        |
+| `amountBreakdown`         | `BraintreeAmountBreakdown`                                    | No       | Breakdown of the total amount (item total, shipping, tax, etc.)   |
+| `userAuthenticationEmail` | `string`                                                      | No       | Pre-fill the PayPal login email                                   |
+| `displayName`             | `string`                                                      | No       | Merchant name displayed in the PayPal lightbox                    |
+| `presentationMode`        | `BraintreePresentationMode`                                   | No       | UI mode: `"auto"`, `"popup"`, `"modal"`, `"redirect"`, etc.       |
+| `returnUrl`               | `string`                                                      | No       | Return URL (required for `"direct-app-switch"` presentation mode) |
+| `cancelUrl`               | `string`                                                      | No       | Cancel URL (required for `"direct-app-switch"` presentation mode) |
+| `type`                    | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"`  | No       | Button label type (default: `"pay"`)                              |
+| `disabled`                | `boolean`                                                     | No       | Disable the button                                                |
+
+### BraintreePayPalBillingAgreementButton
+
+Renders a `<paypal-button>` for vault-only flows — saving a buyer's PayPal account as a payment method without an immediate charge. Supports subscription plans via `planType` and `planMetadata`.
+
+```tsx
+import {
+  BraintreePayPalBillingAgreementButton,
+  useBraintreePayPal,
+} from "@paypal/react-paypal-js/sdk-v6";
+import type { BraintreeApprovalData } from "@paypal/react-paypal-js/sdk-v6";
+
+function BillingAgreementButton() {
+  const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
+
+  return (
+    <BraintreePayPalBillingAgreementButton
+      type="subscribe"
+      billingAgreementDescription="Monthly subscription to Premium"
+      planType="SUBSCRIPTION"
+      planMetadata={{
+        currencyIsoCode: "USD",
+        name: "Premium Plan",
+        billingCycles: [
+          {
+            billingFrequency: 1,
+            billingFrequencyUnit: "MONTH",
+            numberOfExecutions: 0,
+            sequence: 1,
+            startDate: "2026-07-01T00:00:00Z",
+            trial: false,
+            pricingScheme: { pricingModel: "FIXED", price: "9.99" },
+          },
+        ],
+      }}
+      onApprove={async (data: BraintreeApprovalData) => {
+        const { nonce } =
+          await braintreePayPalCheckoutInstance!.tokenizePayment(data);
+        await fetch("/api/braintree/vault", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nonce }),
+        });
+      }}
+      onCancel={(data) => console.log("Cancelled", data)}
+      onError={(err) => console.error("Error", err)}
+    />
+  );
+}
+```
+
+**Props:**
+
+| Prop                          | Type                                                               | Required | Description                                                    |
+| ----------------------------- | ------------------------------------------------------------------ | -------- | -------------------------------------------------------------- |
+| `onApprove`                   | `(data: BraintreeApprovalData) => Promise<void>`                   | Yes      | Called when buyer approves — tokenize with `data.billingToken` |
+| `billingAgreementDescription` | `string`                                                           | No       | Description shown to the buyer (e.g., "Monthly subscription")  |
+| `planType`                    | `"RECURRING" \| "SUBSCRIPTION" \| "UNSCHEDULED" \| "INSTALLMENTS"` | No       | Type of billing plan                                           |
+| `planMetadata`                | `BraintreePlanMetadata`                                            | No       | Subscription plan details including billing cycles             |
+| `amount`                      | `string`                                                           | No       | Amount for vault-with-purchase flows                           |
+| `currency`                    | `string`                                                           | No       | Currency for vault-with-purchase flows                         |
+| `offerCredit`                 | `boolean`                                                          | No       | Offer PayPal Credit                                            |
+| `userAction`                  | `"CONTINUE" \| "COMMIT" \| "SETUP_NOW"`                            | No       | Button action label                                            |
+| `displayName`                 | `string`                                                           | No       | Merchant name in the PayPal lightbox                           |
+| `shippingAddressOverride`     | `Record<string, unknown>`                                          | No       | Pre-collected shipping address                                 |
+| `onCancel`                    | `(data: BraintreeOnCancelData) => void`                            | No       | Called when buyer cancels                                      |
+| `onError`                     | `(err: Error) => void`                                             | No       | Called on errors                                               |
+| `presentationMode`            | `BraintreePresentationMode`                                        | No       | UI mode: `"auto"`, `"popup"`, `"modal"`, `"redirect"`, etc.    |
+| `returnUrl`                   | `string`                                                           | No       | Return URL (required for app-switch modes)                     |
+| `cancelUrl`                   | `string`                                                           | No       | Cancel URL (required for app-switch modes)                     |
+| `type`                        | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"`       | No       | Button label type (default: `"pay"`)                           |
+| `disabled`                    | `boolean`                                                          | No       | Disable the button                                             |
+
+### BraintreePayPalCheckoutWithVaultButton
+
+Renders a `<paypal-button>` for a combined flow — charging the buyer and saving their payment method in a single transaction (one-time payment + billing agreement consent).
+
+```tsx
+import {
+  BraintreePayPalCheckoutWithVaultButton,
+  useBraintreePayPal,
+} from "@paypal/react-paypal-js/sdk-v6";
+import type { BraintreeApprovalData } from "@paypal/react-paypal-js/sdk-v6";
+
+function CheckoutWithVaultButton() {
+  const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
+
+  return (
+    <BraintreePayPalCheckoutWithVaultButton
+      amount="49.99"
+      currency="USD"
+      intent="capture"
+      type="pay"
+      billingAgreementDetails={{
+        description: "Monthly subscription to Products!",
+      }}
+      onApprove={async (data: BraintreeApprovalData) => {
+        const { nonce } =
+          await braintreePayPalCheckoutInstance!.tokenizePayment(data);
+        await fetch("/api/braintree/checkout-and-vault", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nonce }),
+        });
+      }}
+      onCancel={() => console.log("Cancelled")}
+      onError={(err) => console.error("Error", err)}
+    />
+  );
+}
+```
+
+**Props:**
+
+| Prop                      | Type                                                          | Required | Description                                                       |
+| ------------------------- | ------------------------------------------------------------- | -------- | ----------------------------------------------------------------- |
+| `amount`                  | `string`                                                      | Yes      | Payment amount (e.g., `"49.99"`)                                  |
+| `currency`                | `string`                                                      | Yes      | ISO 4217 currency code                                            |
+| `onApprove`               | `(data: BraintreeApprovalData) => Promise<void>`              | Yes      | Called when buyer approves — tokenize the payment here            |
+| `intent`                  | `"authorize" \| "capture" \| "order"`                         | No       | Payment intent (default: `"capture"`)                             |
+| `commit`                  | `boolean`                                                     | No       | `true` for "Pay Now", `false` for "Continue"                      |
+| `billingAgreementDetails` | `{ description?: string }`                                    | No       | Billing agreement details shown to the buyer                      |
+| `onCancel`                | `() => void`                                                  | No       | Called when buyer cancels                                         |
+| `onError`                 | `(err: Error) => void`                                        | No       | Called on errors                                                  |
+| `onShippingAddressChange` | `(data: BraintreeShippingAddressChangeData) => Promise<void>` | No       | Called when buyer changes shipping address                        |
+| `onShippingOptionsChange` | `(data: BraintreeShippingOptionsChangeData) => Promise<void>` | No       | Called when buyer selects a shipping option                       |
+| `lineItems`               | `BraintreeLineItem[]`                                         | No       | Line items for the transaction                                    |
+| `shippingOptions`         | `BraintreeShippingOption[]`                                   | No       | Available shipping options                                        |
+| `amountBreakdown`         | `BraintreeAmountBreakdown`                                    | No       | Breakdown of the total amount                                     |
+| `userAuthenticationEmail` | `string`                                                      | No       | Pre-fill the PayPal login email                                   |
+| `displayName`             | `string`                                                      | No       | Merchant name in the PayPal lightbox                              |
+| `presentationMode`        | `BraintreePresentationMode`                                   | No       | UI mode: `"auto"`, `"popup"`, `"modal"`, `"redirect"`, etc.       |
+| `returnUrl`               | `string`                                                      | No       | Return URL (required for `"direct-app-switch"` presentation mode) |
+| `cancelUrl`               | `string`                                                      | No       | Cancel URL (required for `"direct-app-switch"` presentation mode) |
+| `type`                    | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"`  | No       | Button label type (default: `"pay"`)                              |
+| `disabled`                | `boolean`                                                     | No       | Disable the button                                                |
+
+### Braintree Hooks
+
+#### `useBraintreePayPal()`
+
+Accesses the Braintree PayPal context. Returns the checkout instance, loading status, and error state. Must be used within a `BraintreePayPalProvider`.
+
+```tsx
+import {
+  useBraintreePayPal,
+  INSTANCE_LOADING_STATE,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomCheckout() {
+  const { braintreePayPalCheckoutInstance, loadingStatus, error, isHydrated } =
+    useBraintreePayPal();
+
+  if (loadingStatus === INSTANCE_LOADING_STATE.PENDING) {
+    return <div>Initializing Braintree...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  // Use braintreePayPalCheckoutInstance directly for custom flows
+}
+```
+
+**Returns:**
+
+| Property                          | Type                                      | Description                                |
+| --------------------------------- | ----------------------------------------- | ------------------------------------------ |
+| `braintreePayPalCheckoutInstance` | `BraintreePayPalCheckoutInstance \| null` | The checkout instance (null while loading) |
+| `loadingStatus`                   | `INSTANCE_LOADING_STATE`                  | `"pending"`, `"resolved"`, or `"rejected"` |
+| `error`                           | `Error \| null`                           | Initialization error, if any               |
+| `isHydrated`                      | `boolean`                                 | `true` after client-side hydration         |
+
+#### `useBraintreePayPalOneTimePaymentSession(props)`
+
+Creates a one-time payment session. Returns a `handleClick` function to start the PayPal flow. Accepts the same props as `BraintreePayPalOneTimePaymentButton` (minus `type` and `disabled`).
+
+```tsx
+import { useBraintreePayPalOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomPayButton() {
+  const { handleClick, isPending, error } =
+    useBraintreePayPalOneTimePaymentSession({
+      amount: "50.00",
+      currency: "USD",
+      onApprove: async (data) => {
+        // tokenize and process
+      },
+    });
+
+  return (
+    <button onClick={handleClick} disabled={isPending}>
+      Pay with PayPal
+    </button>
+  );
+}
+```
+
+**Returns:** `{ handleClick: () => void, isPending: boolean, error: Error | null }`
+
+#### `useBraintreePayPalBillingAgreementSession(props)`
+
+Creates a billing agreement session for vault flows. Returns a `handleClick` function to start the flow. Accepts the same props as `BraintreePayPalBillingAgreementButton` (minus `type` and `disabled`).
+
+```tsx
+import { useBraintreePayPalBillingAgreementSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomVaultButton() {
+  const { handleClick, isPending, error } =
+    useBraintreePayPalBillingAgreementSession({
+      billingAgreementDescription: "Monthly subscription",
+      planType: "SUBSCRIPTION",
+      onApprove: async (data) => {
+        // tokenize with data.billingToken
+      },
+    });
+
+  return (
+    <button onClick={handleClick} disabled={isPending}>
+      Save PayPal Account
+    </button>
+  );
+}
+```
+
+**Returns:** `{ handleClick: () => void, isPending: boolean, error: Error | null }`
+
+#### `useBraintreePayPalCheckoutWithVaultSession(props)`
+
+Creates a checkout-with-vault session combining one-time payment and billing agreement consent. Returns a `handleClick` function. Accepts the same props as `BraintreePayPalCheckoutWithVaultButton` (minus `type` and `disabled`).
+
+```tsx
+import { useBraintreePayPalCheckoutWithVaultSession } from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomCheckoutVaultButton() {
+  const { handleClick, isPending, error } =
+    useBraintreePayPalCheckoutWithVaultSession({
+      amount: "49.99",
+      currency: "USD",
+      billingAgreementDetails: { description: "Monthly subscription" },
+      onApprove: async (data) => {
+        // tokenize and process
+      },
+    });
+
+  return (
+    <button onClick={handleClick} disabled={isPending}>
+      Pay & Save
+    </button>
+  );
+}
+```
+
+**Returns:** `{ handleClick: () => void, isPending: boolean, error: Error | null }`
+
+### Key Braintree Types
+
+Import these types from `@paypal/react-paypal-js/sdk-v6`:
+
+```tsx
+import type {
+  BraintreeApprovalData,
+  BraintreeTokenizePayload,
+  BraintreeLineItem,
+  BraintreeShippingOption,
+  BraintreeAmountBreakdown,
+  BraintreePlanMetadata,
+  BraintreePresentationMode,
+  BraintreeV6Namespace,
+} from "@paypal/react-paypal-js/sdk-v6";
+```
+
+| Type                        | Description                                                                                            |
+| --------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `BraintreeApprovalData`     | `{ payerId?, orderId?, billingToken? }` — data passed to `onApprove`                                   |
+| `BraintreeTokenizePayload`  | `{ nonce, type, details: { email, payerId, firstName, lastName, ... } }` — result of `tokenizePayment` |
+| `BraintreeLineItem`         | `{ quantity, unitAmount, name, kind, unitTaxAmount?, description? }` — transaction line item           |
+| `BraintreeShippingOption`   | `{ id, label, selected, type, amount: { currency, value } }` — shipping option                         |
+| `BraintreeAmountBreakdown`  | `{ itemTotal?, shipping?, handling?, taxTotal?, insurance?, discount?, ... }` — amount breakdown       |
+| `BraintreePlanMetadata`     | `{ billingCycles?, currencyIsoCode, name, ... }` — subscription plan details                           |
+| `BraintreePresentationMode` | `"auto" \| "popup" \| "modal" \| "redirect" \| "payment-handler" \| "direct-app-switch"`               |
+| `BraintreeV6Namespace`      | The Braintree namespace type expected by `BraintreePayPalProvider`                                     |
+
+### Key Differences from Standard PayPal Buttons
+
+- **Different provider** — uses `BraintreePayPalProvider` with a Braintree client token instead of `PayPalProvider` with a PayPal client ID
+- **No `createOrder` / `orderId`** — payment sessions are created internally by the Braintree SDK; you pass `amount` and `currency` directly as props
+- **Nonce-based flow** — `onApprove` receives `BraintreeApprovalData`; call `braintreePayPalCheckoutInstance.tokenizePayment()` to get a payment method nonce
+- **Server-side with Braintree SDK** — send the nonce to your server and process it with the [Braintree server SDK](https://developer.paypal.com/braintree/docs/start/hello-server) (not PayPal's Orders API)
+- **Presentation modes** — supports `"auto"`, `"popup"`, `"modal"`, `"redirect"`, `"payment-handler"`, and `"direct-app-switch"`
+
 ## Payment Flow
 
 1. User clicks a payment button
