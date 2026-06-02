@@ -442,6 +442,33 @@ describe("usePayPalSubscriptionPaymentSession", () => {
       );
     });
 
+    test("should forward fullPageOverlay when presentationMode is omitted", async () => {
+      const subscriptionPromise = Promise.resolve({
+        subscriptionId: "test-subscription-id",
+      });
+      const props: UsePayPalSubscriptionPaymentSessionProps = {
+        createSubscription: jest.fn().mockReturnValue(subscriptionPromise),
+        onApprove: jest.fn(),
+        fullPageOverlay: { enabled: true },
+      };
+
+      const { result } = renderHook(() =>
+        usePayPalSubscriptionPaymentSession(props),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockPayPalSession.start).toHaveBeenCalledWith(
+        expect.objectContaining({
+          presentationMode: "auto",
+          fullPageOverlay: { enabled: true },
+        }),
+        subscriptionPromise,
+      );
+    });
+
     test("should handle different presentation modes", async () => {
       const presentationModes = [
         "auto",

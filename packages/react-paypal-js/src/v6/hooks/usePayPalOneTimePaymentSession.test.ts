@@ -524,6 +524,30 @@ describe("usePayPalOneTimePaymentSession", () => {
         undefined,
       );
     });
+
+    test("should forward fullPageOverlay when presentationMode is omitted", async () => {
+      const props: UsePayPalOneTimePaymentSessionProps = {
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        fullPageOverlay: { enabled: true },
+      };
+
+      const { result } = renderHook(() =>
+        usePayPalOneTimePaymentSession(props),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockPayPalSession.start).toHaveBeenCalledWith(
+        expect.objectContaining({
+          presentationMode: "auto",
+          fullPageOverlay: { enabled: true },
+        }),
+        undefined,
+      );
+    });
   });
 
   describe("handleCancel", () => {

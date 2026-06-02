@@ -325,6 +325,49 @@ describe("usePayLaterOneTimePaymentSession", () => {
     );
   });
 
+  test("should forward fullPageOverlay when presentationMode is omitted", async () => {
+    const mockStart = jest.fn();
+    const mockSession: OneTimePaymentSession = {
+      cancel: jest.fn(),
+      destroy: jest.fn(),
+      start: mockStart,
+    };
+    const mockCreatePayLaterOneTimePaymentSession = jest
+      .fn()
+      .mockReturnValue(mockSession);
+
+    (usePayPal as jest.Mock).mockReturnValue({
+      sdkInstance: {
+        createPayLaterOneTimePaymentSession:
+          mockCreatePayLaterOneTimePaymentSession,
+      },
+    });
+
+    const {
+      result: {
+        current: { handleClick },
+      },
+    } = renderHook(() =>
+      usePayLaterOneTimePaymentSession({
+        orderId: "123",
+        onApprove: jest.fn(),
+        fullPageOverlay: { enabled: true },
+      }),
+    );
+
+    await act(async () => {
+      handleClick();
+    });
+
+    expect(mockStart).toHaveBeenCalledWith(
+      expect.objectContaining({
+        presentationMode: "auto",
+        fullPageOverlay: { enabled: true },
+      }),
+      undefined,
+    );
+  });
+
   test("should call the createOrder callback, if it was provided, on start inside the click handler", async () => {
     const mockStart = jest.fn();
     const mockSession: OneTimePaymentSession = {

@@ -887,4 +887,45 @@ describe("usePayPalSavePaymentSession", () => {
       expect.objectContaining({ presentationMode: "auto" }),
     );
   });
+
+  test("should forward fullPageOverlay when presentationMode is omitted", async () => {
+    const mockStart = jest.fn();
+    const mockSession: SavePaymentSession = {
+      cancel: jest.fn(),
+      destroy: jest.fn(),
+      start: mockStart,
+    };
+    const mockCreatePayPalSavePaymentSession = jest
+      .fn()
+      .mockReturnValue(mockSession);
+
+    (usePayPal as jest.Mock).mockReturnValue({
+      sdkInstance: {
+        createPayPalSavePaymentSession: mockCreatePayPalSavePaymentSession,
+      },
+    });
+
+    const {
+      result: {
+        current: { handleClick },
+      },
+    } = renderHook(() =>
+      usePayPalSavePaymentSession({
+        vaultSetupToken: "vault-token-123",
+        onApprove: jest.fn(),
+        fullPageOverlay: { enabled: true },
+      }),
+    );
+
+    await act(async () => {
+      handleClick();
+    });
+
+    expect(mockStart).toHaveBeenCalledWith(
+      expect.objectContaining({
+        presentationMode: "auto",
+        fullPageOverlay: { enabled: true },
+      }),
+    );
+  });
 });

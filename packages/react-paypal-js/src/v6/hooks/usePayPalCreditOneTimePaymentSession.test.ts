@@ -492,6 +492,30 @@ describe("usePayPalCreditOneTimePaymentSession", () => {
       );
     });
 
+    test("should forward fullPageOverlay when presentationMode is omitted", async () => {
+      const props: UsePayPalCreditOneTimePaymentSessionProps = {
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        fullPageOverlay: { enabled: true },
+      };
+
+      const { result } = renderHook(() =>
+        usePayPalCreditOneTimePaymentSession(props),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockPayPalSession.start).toHaveBeenCalledWith(
+        expect.objectContaining({
+          presentationMode: "auto",
+          fullPageOverlay: { enabled: true },
+        }),
+        undefined,
+      );
+    });
+
     test("should handle different presentation modes", async () => {
       const presentationModes = ["auto", "popup", "modal"] as const;
 

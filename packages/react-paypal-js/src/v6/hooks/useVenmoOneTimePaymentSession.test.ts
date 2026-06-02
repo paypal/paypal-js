@@ -477,6 +477,28 @@ describe("useVenmoOneTimePaymentSession", () => {
       );
     });
 
+    test("should forward fullPageOverlay when presentationMode is omitted", async () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        fullPageOverlay: { enabled: true },
+      };
+
+      const { result } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockVenmoSession.start).toHaveBeenCalledWith(
+        expect.objectContaining({
+          presentationMode: "auto",
+          fullPageOverlay: { enabled: true },
+        }),
+        undefined,
+      );
+    });
+
     test("should handle different presentation modes", async () => {
       const presentationModes = ["auto", "popup", "modal"] as const;
 
