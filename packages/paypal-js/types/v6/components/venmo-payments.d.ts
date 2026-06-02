@@ -19,7 +19,9 @@ export type VenmoOneTimePaymentSessionPromise = Promise<{ orderId: string }>;
 
 export type VenmoOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
   start: (
-    presentationModeOptions: VenmoPresentationModeOptions,
+    presentationModeOptions?: VenmoPresentationModeOptions = {
+      presentationMode: "auto",
+    },
     paymentSessionPromise?: VenmoOneTimePaymentSessionPromise,
   ) => Promise<void>;
 };
