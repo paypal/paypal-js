@@ -53,7 +53,7 @@ export type UsePayPalSavePaymentSessionProps = (
  * }
  */
 export function usePayPalSavePaymentSession({
-  presentationMode,
+  presentationMode = "auto",
   fullPageOverlay,
   autoRedirect,
   createVaultToken,
@@ -163,7 +163,7 @@ export function usePayPalSavePaymentSession({
     }
 
     const startOptions = {
-      presentationMode: presentationMode ?? "auto",
+      presentationMode,
       fullPageOverlay,
       autoRedirect,
     } as PayPalPresentationModeOptions;

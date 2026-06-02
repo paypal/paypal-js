@@ -51,7 +51,7 @@ export type UsePayPalSubscriptionPaymentSessionProps =
  * }
  */
 export function usePayPalSubscriptionPaymentSession({
-  presentationMode,
+  presentationMode = "auto",
   fullPageOverlay,
   createSubscription,
   ...callbacks
@@ -130,7 +130,7 @@ export function usePayPalSubscriptionPaymentSession({
     }
 
     const startOptions = {
-      presentationMode: presentationMode ?? "auto",
+      presentationMode,
       fullPageOverlay,
     } as PayPalSubscriptionPresentationModeOptions;
 

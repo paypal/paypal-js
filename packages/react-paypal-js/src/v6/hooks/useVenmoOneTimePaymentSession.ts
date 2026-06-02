@@ -53,7 +53,7 @@ export type UseVenmoOneTimePaymentSessionProps = (
  * }
  */
 export function useVenmoOneTimePaymentSession({
-  presentationMode,
+  presentationMode = "auto",
   fullPageOverlay,
   createOrder,
   orderId,
@@ -134,7 +134,7 @@ export function useVenmoOneTimePaymentSession({
     }
 
     const startOptions = {
-      presentationMode: presentationMode ?? "auto",
+      presentationMode,
       fullPageOverlay,
     } as VenmoPresentationModeOptions;
 

@@ -61,7 +61,7 @@ export type UsePayLaterOneTimePaymentSessionProps = (
  * }
  */
 export function usePayLaterOneTimePaymentSession({
-  presentationMode,
+  presentationMode = "auto",
   fullPageOverlay,
   autoRedirect,
   createOrder,
@@ -166,7 +166,7 @@ export function usePayLaterOneTimePaymentSession({
     }
 
     const startOptions = {
-      presentationMode: presentationMode ?? "auto",
+      presentationMode,
       fullPageOverlay,
       autoRedirect,
     } as PayPalPresentationModeOptions;

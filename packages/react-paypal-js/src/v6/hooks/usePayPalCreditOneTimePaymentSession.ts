@@ -58,7 +58,7 @@ export type UsePayPalCreditOneTimePaymentSessionProps = (
  * }
  */
 export function usePayPalCreditOneTimePaymentSession({
-  presentationMode,
+  presentationMode = "auto",
   fullPageOverlay,
   autoRedirect,
   createOrder,
@@ -163,7 +163,7 @@ export function usePayPalCreditOneTimePaymentSession({
     }
 
     const startOptions = {
-      presentationMode: presentationMode ?? "auto",
+      presentationMode: presentationMode,
       fullPageOverlay,
       autoRedirect,
     } as PayPalPresentationModeOptions;
