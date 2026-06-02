@@ -112,7 +112,9 @@ export type PayPalPresentationModeOptions =
 
 export type OneTimePaymentSession = BasePaymentSession & {
   start: (
-    presentationModeOptions: PayPalPresentationModeOptions,
+    presentationModeOptions?: PayPalPresentationModeOptions = {
+      presentationMode: "auto",
+    },
     paymentSessionPromise?: Promise<{ orderId: string }>,
   ) => Promise<void | { redirectURL?: string }>;
   hasReturned?: () => boolean;
