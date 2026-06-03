@@ -155,6 +155,14 @@ type OnShippingAddressChangeBuildOrderPatchPayloadArgs =
     shippingOptions?: CheckoutShippingOption[];
   };
 
+type ShippingAddressErrorType =
+  | "ADDRESS_ERROR"
+  | "COUNTRY_ERROR"
+  | "STATE_ERROR"
+  | "ZIP_ERROR";
+
+type ShippingAddressErrorMessages = Record<ShippingAddressErrorType, string>;
+
 type OnShippingOptionsChangeActions = {
   buildOrderPatchPayload: ({
     discount,
@@ -170,6 +178,7 @@ type OnShippingOptionsChangeActions = {
 
 type OnShippingAddressChangeData = {
   amount: CurrencyCodeAndValue;
+  errors: ShippingAddressErrorMessages;
   orderID?: string;
   paymentID?: string;
   paymentToken?: string;
@@ -196,7 +205,7 @@ type OnShippingAddressChangeActions = {
     shippingDiscount,
     taxTotal,
   }: OnShippingAddressChangeBuildOrderPatchPayloadArgs) => PatchOrderRequestBody;
-  reject: () => Promise<void>;
+  reject: (error: string) => Promise<void>;
 };
 
 export type DisplayOnlyOptions = "vaultable";
