@@ -22,13 +22,14 @@ export type PayPalSubscriptionButtonProps =
  * would not be able to provide back `redirectURL` from `start`. Advanced integrations that need
  * `redirectURL` should use the {@link usePayPalSubscriptionPaymentSession} hook directly.
  *
+ * `presentationMode` is optional and defaults to `"auto"`.
+ *
  * @example
  * <PayPalSubscriptionButton
  *   onApprove={() => {
  *      // ... on approve logic
  *   }}
  *   createSubscription={() => Promise.resolve({ subscriptionId: "SUB-123" })}
- *   presentationMode="auto"
  * />
  */
 export const PayPalSubscriptionButton = ({

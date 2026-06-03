@@ -12,6 +12,7 @@ import type {
   OneTimePaymentSession,
   PayLaterOneTimePaymentSessionOptions,
   PayPalPresentationModeOptions,
+  WithOptionalPresentationMode,
 } from "../types";
 
 export type UsePayLaterOneTimePaymentSessionProps = (
@@ -24,7 +25,7 @@ export type UsePayLaterOneTimePaymentSessionProps = (
       orderId: string;
     })
 ) &
-  PayPalPresentationModeOptions;
+  WithOptionalPresentationMode<PayPalPresentationModeOptions>;
 
 /**
  * Hook for managing Pay Later one-time payment sessions.
@@ -34,6 +35,8 @@ export type UsePayLaterOneTimePaymentSessionProps = (
  * to start, cancel, and destroy the session.
  *
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
+ *
+ * `presentationMode` is optional and defaults to `"auto"`.
  *
  * @example
  * function PayLaterCheckoutButton() {
@@ -60,7 +63,7 @@ export type UsePayLaterOneTimePaymentSessionProps = (
  * }
  */
 export function usePayLaterOneTimePaymentSession({
-  presentationMode,
+  presentationMode = "auto",
   fullPageOverlay,
   autoRedirect,
   createOrder,

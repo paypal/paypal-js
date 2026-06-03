@@ -260,17 +260,17 @@ import { PayPalOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 **Props:**
 
-| Prop               | Type                                                         | Description                                            |
-| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------ |
-| `orderId`          | `string`                                                     | Static order ID (alternative to `createOrder`)         |
-| `createOrder`      | `() => Promise<{ orderId: string }>`                         | Async function to create an order                      |
-| `presentationMode` | `"auto" \| "popup" \| "modal" \| "redirect"`                 | How to present the payment session (default: `"auto"`) |
-| `onApprove`        | `(data) => void`                                             | Called when payment is approved                        |
-| `onCancel`         | `() => void`                                                 | Called when buyer cancels                              |
-| `onError`          | `(error) => void`                                            | Called on error                                        |
-| `onComplete`       | `(data) => void`                                             | Called when payment session completes                  |
-| `type`             | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"` | Button label type                                      |
-| `disabled`         | `boolean`                                                    | Disable the button                                     |
+| Prop               | Type                                                         | Description                                                         |
+| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------- |
+| `orderId`          | `string`                                                     | Static order ID (alternative to `createOrder`)                      |
+| `createOrder`      | `() => Promise<{ orderId: string }>`                         | Async function to create an order                                   |
+| `presentationMode` | `"auto" \| "popup" \| "modal" \| "redirect"`                 | Optional. How to present the payment session. Defaults to `"auto"`. |
+| `onApprove`        | `(data) => void`                                             | Called when payment is approved                                     |
+| `onCancel`         | `() => void`                                                 | Called when buyer cancels                                           |
+| `onError`          | `(error) => void`                                            | Called on error                                                     |
+| `onComplete`       | `(data) => void`                                             | Called when payment session completes                               |
+| `type`             | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"` | Button label type                                                   |
+| `disabled`         | `boolean`                                                    | Disable the button                                                  |
 
 ### VenmoOneTimePaymentButton
 
@@ -1429,7 +1429,6 @@ function CustomPayPalButton() {
       const { orderId } = await createOrder();
       return { orderId };
     },
-    presentationMode: "auto",
     onApprove: (data: OnApproveDataOneTimePayments) =>
       console.log("Approved:", data),
     onCancel: (data: OnCancelDataOneTimePayments) => console.log("Cancelled"),
@@ -1535,7 +1534,6 @@ function CustomPayPalSaveButton() {
       const { vaultSetupToken } = await createVaultToken();
       return { vaultSetupToken };
     },
-    presentationMode: "popup",
     onApprove: (data: OnApproveDataSavePayments) => console.log("Saved:", data),
     onCancel: (data: OnCancelDataSavePayments) =>
       console.log("Cancelled", data),
