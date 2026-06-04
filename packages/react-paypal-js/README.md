@@ -79,6 +79,7 @@ function App() {
   return (
     <PayPalProvider
       clientId="your-client-id"
+      environment="sandbox"
       components={["paypal-payments"]}
       pageType="checkout"
     >
@@ -121,7 +122,7 @@ The `PayPalProvider` component is the entry point for the V6 SDK. It handles loa
 | `components`              | `Components[]`                       | No       | SDK components to load. Defaults to `["paypal-payments"]`.                                                   |
 | `pageType`                | `string`                             | No       | Type of page: `"checkout"`, `"product-details"`, `"cart"`, `"product-listing"`, etc.                         |
 | `locale`                  | `string`                             | No       | Locale for the SDK (e.g., `"en_US"`).                                                                        |
-| `environment`             | `"sandbox" \| "production"`          | No       | SDK environment.                                                                                             |
+| `environment`             | `"sandbox" \| "production"`          | **Yes**  | **Required.** SDK environment. `clientId` does not select the environment in v6 — this prop does.            |
 | `merchantId`              | `string \| string[]`                 | No       | PayPal merchant ID(s).                                                                                       |
 | `clientMetadataId`        | `string`                             | No       | Client metadata ID for tracking.                                                                             |
 | `partnerAttributionId`    | `string`                             | No       | Partner attribution ID (BN code).                                                                            |
@@ -154,6 +155,7 @@ function App() {
   return (
     <PayPalProvider
       clientId={clientIdPromise}
+      environment="sandbox"
       components={["paypal-payments"]}
       pageType="checkout"
     >
@@ -173,6 +175,7 @@ function App() {
   return (
     <PayPalProvider
       clientToken={tokenPromise}
+      environment="sandbox"
       components={["paypal-payments"]}
       pageType="checkout"
     >
@@ -195,6 +198,7 @@ function App() {
   return (
     <PayPalProvider
       clientId={clientId}
+      environment="sandbox"
       components={["paypal-payments"]}
       pageType="checkout"
     >
@@ -281,6 +285,7 @@ import { VenmoOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalProvider
   clientId={clientId}
+  environment="sandbox"
   components={["paypal-payments", "venmo-payments"]}
   pageType="checkout"
 >
@@ -372,6 +377,7 @@ function App() {
   return (
     <PayPalProvider
       clientId="your-client-id"
+      environment="sandbox"
       components={["googlepay-payments"]}
       pageType="checkout"
     >
@@ -432,6 +438,7 @@ import { PayPalGuestPaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalProvider
   clientId={clientId}
+  environment="sandbox"
   components={["paypal-payments", "paypal-guest-payments"]}
   pageType="checkout"
 >
@@ -491,6 +498,7 @@ import { PayPalSubscriptionButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PayPalProvider
   clientId={clientId}
+  environment="sandbox"
   components={["paypal-subscriptions"]}
   pageType="checkout"
 >
@@ -691,6 +699,7 @@ export default function App() {
   return (
     <PayPalProvider
       clientId="YOUR_CLIENT_ID"
+      environment="sandbox"
       components={["applepay-payments"]}
       pageType="checkout"
     >
@@ -1194,6 +1203,7 @@ function App() {
   return (
     <PayPalProvider
       clientToken="your-client-token"
+      environment="sandbox"
       components={["card-fields"]}
       pageType="checkout"
     >
@@ -1858,6 +1868,7 @@ export default async function CheckoutPage() {
   return (
     <PayPalProvider
       clientId={clientId}
+      environment="sandbox"
       pageType="checkout"
       eligibleMethodsResponse={eligibleMethodsResponse}
     >
@@ -1908,7 +1919,7 @@ import {
   PayPalOneTimePaymentButton,
 } from "@paypal/react-paypal-js/sdk-v6";
 
-<PayPalProvider clientId={clientId} pageType="checkout">
+<PayPalProvider clientId={clientId} environment="sandbox" pageType="checkout">
   <PayPalOneTimePaymentButton
     createOrder={async () => {
       const res = await fetch("/api/orders", { method: "POST" });
