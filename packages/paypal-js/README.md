@@ -306,11 +306,13 @@ const paypal = await loadCoreSdkScript({
 
 **Options:**
 
-| Option          | Type                          | Description             |
-| --------------- | ----------------------------- | ----------------------- |
-| `environment`   | `"sandbox"` \| `"production"` | Target environment      |
-| `debug`         | `boolean`                     | Enable debug mode       |
-| `dataNamespace` | `string`                      | Custom global namespace |
+> **Important:** `environment` is **required**. The `clientId` does not determine which environment is loaded in v6 — `environment` does. A live `clientId` will still load the sandbox SDK if `environment: "sandbox"` is passed.
+
+| Option          | Type                          | Description                                                                                            |
+| --------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `environment`   | `"sandbox"` \| `"production"` | **Required.** Target environment. `clientId` does not select the environment in v6 — this option does. |
+| `debug`         | `boolean`                     | Enable debug mode                                                                                      |
+| `dataNamespace` | `string`                      | Custom global namespace                                                                                |
 
 ### Creating an SDK Instance
 

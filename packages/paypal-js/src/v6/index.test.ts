@@ -23,8 +23,8 @@ describe("loadCoreSdkScript()", () => {
       });
   });
 
-  test("should default to using the sandbox environment", async () => {
-    const result = await loadCoreSdkScript();
+  test("should load the sandbox environment when environment is 'sandbox'", async () => {
+    const result = await loadCoreSdkScript({ environment: "sandbox" });
     expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
     const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
     expect(scriptElement.src).toBe(
@@ -46,7 +46,10 @@ describe("loadCoreSdkScript()", () => {
   });
 
   test("should support enabling debugging", async () => {
-    const result = await loadCoreSdkScript({ debug: true });
+    const result = await loadCoreSdkScript({
+      environment: "sandbox",
+      debug: true,
+    });
     expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
     const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
     expect(scriptElement.src).toBe(
@@ -58,8 +61,8 @@ describe("loadCoreSdkScript()", () => {
   });
 
   test("should avoid inserting two script elements when called twice sequentially", async () => {
-    const result1 = await loadCoreSdkScript();
-    const result2 = await loadCoreSdkScript();
+    const result1 = await loadCoreSdkScript({ environment: "sandbox" });
+    const result2 = await loadCoreSdkScript({ environment: "sandbox" });
     // should only insert the script once
     // the existing loaded window.paypal reference is returned on the second call
     expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
@@ -76,8 +79,8 @@ describe("loadCoreSdkScript()", () => {
 
   test("should avoid inserting two script elements when called twice in parallel", async () => {
     const [result1, result2] = await Promise.all([
-      loadCoreSdkScript(),
-      loadCoreSdkScript(),
+      loadCoreSdkScript({ environment: "sandbox" }),
+      loadCoreSdkScript({ environment: "sandbox" }),
     ]);
     // should only insert the script once
     expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
@@ -94,7 +97,9 @@ describe("loadCoreSdkScript()", () => {
 
   test("should return reference to existing script when loading state is pending", async () => {
     document.head.innerHTML = `<script src="https://www.sandbox.paypal.com/web-sdk/v6/core" data-loading-state="pending"></script>`;
-    const loadCoreSdkScriptReference = loadCoreSdkScript();
+    const loadCoreSdkScriptReference = loadCoreSdkScript({
+      environment: "sandbox",
+    });
 
     process.nextTick(() => {
       vi.stubGlobal("paypal", { version: "6" });
@@ -123,7 +128,7 @@ describe("loadCoreSdkScript()", () => {
     });
 
     expect(async () => {
-      await loadCoreSdkScript();
+      await loadCoreSdkScript({ environment: "sandbox" });
     }).rejects.toThrowError(
       'The script "https://www.sandbox.paypal.com/web-sdk/v6/core" failed to load. Check the HTTP status code and response body in DevTools to learn more.',
     );
@@ -139,7 +144,25 @@ describe("loadCoreSdkScript()", () => {
       // @ts-expect-error invalid arguments
       await loadCoreSdkScript({ environment: "bad_value" });
     }).rejects.toThrowError(
-      'The "environment" option must be either "production" or "sandbox"',
+      'The "environment" option is required and must be either "production" or "sandbox"',
+    );
+  });
+
+  test("should error when environment is omitted", async () => {
+    expect(async () => {
+      // @ts-expect-error environment is required
+      await loadCoreSdkScript({});
+    }).rejects.toThrowError(
+      'The "environment" option is required and must be either "production" or "sandbox"',
+    );
+  });
+
+  test("should error when environment is explicitly undefined", async () => {
+    expect(async () => {
+      // @ts-expect-error environment is required
+      await loadCoreSdkScript({ environment: undefined });
+    }).rejects.toThrowError(
+      'The "environment" option is required and must be either "production" or "sandbox"',
     );
   });
 
@@ -148,6 +171,7 @@ describe("loadCoreSdkScript()", () => {
       const customNamespace = "myCustomNamespace";
 
       const result = await loadCoreSdkScript({
+        environment: "sandbox",
         dataNamespace: customNamespace,
       });
 
@@ -168,7 +192,7 @@ describe("loadCoreSdkScript()", () => {
 
     test("should error when dataNamespace is an empty string", async () => {
       expect(async () => {
-        await loadCoreSdkScript({ dataNamespace: "" });
+        await loadCoreSdkScript({ environment: "sandbox", dataNamespace: "" });
       }).rejects.toThrowError(
         'The "dataNamespace" option cannot be an empty string',
       );
@@ -176,7 +200,10 @@ describe("loadCoreSdkScript()", () => {
 
     test("should error when dataNamespace is only whitespace", async () => {
       expect(async () => {
-        await loadCoreSdkScript({ dataNamespace: "   " });
+        await loadCoreSdkScript({
+          environment: "sandbox",
+          dataNamespace: "   ",
+        });
       }).rejects.toThrowError(
         'The "dataNamespace" option cannot be an empty string',
       );
@@ -188,6 +215,7 @@ describe("loadCoreSdkScript()", () => {
       const integrationSource = "react-paypal-js";
 
       const result = await loadCoreSdkScript({
+        environment: "sandbox",
         dataSdkIntegrationSource: integrationSource,
       });
 
@@ -207,7 +235,10 @@ describe("loadCoreSdkScript()", () => {
 
     test("should error when dataSdkIntegrationSource is an empty string", async () => {
       expect(async () => {
-        await loadCoreSdkScript({ dataSdkIntegrationSource: "" });
+        await loadCoreSdkScript({
+          environment: "sandbox",
+          dataSdkIntegrationSource: "",
+        });
       }).rejects.toThrowError(
         'The "dataSdkIntegrationSource" option cannot be an empty string',
       );
@@ -215,7 +246,10 @@ describe("loadCoreSdkScript()", () => {
 
     test("should error when dataSdkIntegrationSource is only whitespace", async () => {
       expect(async () => {
-        await loadCoreSdkScript({ dataSdkIntegrationSource: "   " });
+        await loadCoreSdkScript({
+          environment: "sandbox",
+          dataSdkIntegrationSource: "   ",
+        });
       }).rejects.toThrowError(
         'The "dataSdkIntegrationSource" option cannot be an empty string',
       );
