@@ -37,6 +37,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -95,6 +96,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -124,6 +126,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["venmo-payments"]}
             pageType="checkout"
         >
@@ -178,6 +181,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["venmo-payments"]}
             pageType="checkout"
         >
@@ -207,6 +211,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -257,6 +262,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -323,6 +329,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -388,6 +395,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -417,6 +425,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-guest-payments"]}
             pageType="checkout"
         >
@@ -469,6 +478,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-guest-payments"]}
             pageType="checkout"
         >
@@ -496,6 +506,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-subscriptions"]}
             pageType="checkout"
         >
@@ -569,6 +580,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -632,6 +644,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -760,6 +773,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["card-fields"]}
             pageType="checkout"
         >
@@ -877,6 +891,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["card-fields"]}
             pageType="checkout"
         >
@@ -982,6 +997,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["applepay-payments"]}
             pageType="checkout"
         >
@@ -1066,6 +1082,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["googlepay-payments"]}
             pageType="checkout"
         >

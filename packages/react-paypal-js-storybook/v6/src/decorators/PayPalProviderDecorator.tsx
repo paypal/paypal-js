@@ -62,6 +62,7 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
   return (
     <PayPalProvider
       clientId={PAYPAL_CLIENT_ID}
+      environment="sandbox"
       components={[
         "paypal-payments",
         "venmo-payments",
