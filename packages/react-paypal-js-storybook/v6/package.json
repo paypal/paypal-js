@@ -8,7 +8,9 @@
   ],
   "scripts": {
     "storybook": "NODE_PATH=./node_modules storybook dev -p 6006",
-    "build-storybook": "NODE_PATH=./node_modules storybook build -o ../../../docs/web-sdk-v6-react-storybook"
+    "build-storybook": "NODE_PATH=./node_modules storybook build -o ../../../docs/web-sdk-v6-react-storybook",
+    "typecheck": "tsc --noEmit",
+    "lint": "npm run typecheck"
   },
   "keywords": [
     "paypal",
