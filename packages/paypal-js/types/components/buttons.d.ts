@@ -52,7 +52,7 @@ export type OnApproveData = {
   paymentID?: string | null;
   subscriptionID?: string | null;
   authCode?: string | null;
-  /** Present for vault-without-purchase flows (Venmo, PayPal save-payment). Empty string for one-time payments. */
+  /** Present for vault-without-purchase flows (Venmo, PayPal save-payment). */
   vaultSetupToken?: string | null;
 };
 
