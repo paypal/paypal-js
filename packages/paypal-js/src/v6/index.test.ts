@@ -25,6 +25,7 @@ describe("loadCoreSdkScript()", () => {
 
   test("should require an explicit environment", async () => {
     expect(async () => {
+      // @ts-expect-error missing required environment
       await loadCoreSdkScript();
     }).rejects.toThrowError(
       'The "environment" option is required and must be either "production" or "sandbox"',

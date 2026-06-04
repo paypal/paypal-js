@@ -14,6 +14,9 @@ const SCRIPT_LOADING_STATE = {
 
 const DATA_ATTRIBUTE_LOADING_STATE = "data-loading-state";
 
+function loadCoreSdkScript(
+  options: LoadCoreSdkScriptOptions,
+): Promise<PayPalV6Namespace | null>;
 function loadCoreSdkScript(options?: LoadCoreSdkScriptOptions) {
   const scriptOptions = options ?? {};
 
