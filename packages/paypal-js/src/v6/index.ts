@@ -14,15 +14,17 @@ const SCRIPT_LOADING_STATE = {
 
 const DATA_ATTRIBUTE_LOADING_STATE = "data-loading-state";
 
-function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
-  validateArguments(options);
+function loadCoreSdkScript(options?: LoadCoreSdkScriptOptions) {
+  const scriptOptions = options ?? {};
+
+  validateArguments(scriptOptions);
+
+  const { environment, debug, dataNamespace, dataSdkIntegrationSource } =
+    scriptOptions as LoadCoreSdkScriptOptions;
 
   if (isServer()) {
     return Promise.resolve(null);
   }
-
-  const { environment, debug, dataNamespace, dataSdkIntegrationSource } =
-    options;
   const namespace = dataNamespace ?? "paypal";
   const paypalWindowReference = getPayPalWindowNamespace(namespace);
   if (paypalWindowReference?.version.startsWith("6")) {
@@ -101,11 +103,13 @@ function validateArguments(options: unknown) {
   const { environment, dataNamespace, dataSdkIntegrationSource } =
     options as LoadCoreSdkScriptOptions;
 
-  if (
-    environment &&
-    environment !== "production" &&
-    environment !== "sandbox"
-  ) {
+  if (!environment) {
+    throw new Error(
+      'The "environment" option is required and must be either "production" or "sandbox"',
+    );
+  }
+
+  if (environment !== "production" && environment !== "sandbox") {
     throw new Error(
       'The "environment" option must be either "production" or "sandbox"',
     );

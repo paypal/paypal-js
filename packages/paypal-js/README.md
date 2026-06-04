@@ -299,18 +299,18 @@ Use `loadCoreSdkScript()` to asynchronously load the V6 SDK:
 import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
 
 const paypal = await loadCoreSdkScript({
-  environment: "sandbox", // "sandbox" | "production"
+  environment: "sandbox", // required: "sandbox" | "production"
   debug: true, // optional
 });
 ```
 
 **Options:**
 
-| Option          | Type                          | Description             |
-| --------------- | ----------------------------- | ----------------------- |
-| `environment`   | `"sandbox"` \| `"production"` | Target environment      |
-| `debug`         | `boolean`                     | Enable debug mode       |
-| `dataNamespace` | `string`                      | Custom global namespace |
+| Option          | Type                          | Required | Description                                                                        |
+| --------------- | ----------------------------- | -------- | ---------------------------------------------------------------------------------- |
+| `environment`   | `"sandbox"` \| `"production"` | Yes      | Target environment. The `clientId` does not determine which environment is loaded. |
+| `debug`         | `boolean`                     | No       | Enable debug mode                                                                  |
+| `dataNamespace` | `string`                      | No       | Custom global namespace                                                            |
 
 ### Creating an SDK Instance
 

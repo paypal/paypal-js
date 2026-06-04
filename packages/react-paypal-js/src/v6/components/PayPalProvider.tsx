@@ -59,6 +59,7 @@ type PayPalProviderProps =
  * @example
  * // With string clientToken
  * <PayPalProvider
+ *   environment="sandbox"
  *   clientToken={token}
  *   components={["paypal-payments", "venmo-payments"]}
  *   pageType="checkout"
@@ -69,6 +70,7 @@ type PayPalProviderProps =
  * @example
  * // With string clientId
  * <PayPalProvider
+ *   environment="sandbox"
  *   clientId="YOUR_CLIENT_ID"
  *   components={["paypal-payments"]}
  *   pageType="checkout"
@@ -81,6 +83,7 @@ type PayPalProviderProps =
  * const tokenPromise = useMemo(() => fetchClientToken(), []);
  *
  * <PayPalProvider
+ *   environment="sandbox"
  *   clientToken={tokenPromise}
  *   pageType="checkout"
  * >
@@ -92,6 +95,7 @@ type PayPalProviderProps =
  * const clientIdPromise = useMemo(() => fetchClientId(), []);
  *
  * <PayPalProvider
+ *   environment="sandbox"
  *   clientId={clientIdPromise}
  *   pageType="checkout"
  * >
@@ -107,6 +111,7 @@ type PayPalProviderProps =
  * }, []);
  *
  * <PayPalProvider
+ *   environment="sandbox"
  *   clientToken={clientToken}
  *   pageType="checkout"
  * >
@@ -122,6 +127,7 @@ type PayPalProviderProps =
  * }, []);
  *
  * <PayPalProvider
+ *   environment="sandbox"
  *   clientId={clientId}
  *   pageType="checkout"
  * >
@@ -141,7 +147,7 @@ type PayPalProviderProps =
  *   return <PayPalOneTimePaymentButton orderId="ORDER-123" />;
  * }
  *
- * <PayPalProvider clientToken={token} pageType="checkout">
+ * <PayPalProvider environment="sandbox" clientToken={token} pageType="checkout">
  *   <MyCheckout />
  * </PayPalProvider>
  */
