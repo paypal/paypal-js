@@ -78,7 +78,11 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const withPayPalProvider: Decorator = (Story) => {
+export const withPayPalProvider: Decorator = (Story, context) => {
+  // Let LPM stories (and any others with their own provider) manage SDK loading themselves
+  if (context.parameters?.skipPayPalProvider) {
+    return <Story />;
+  }
   return (
     <ProviderWrapper>
       <Story />
