@@ -86,10 +86,12 @@ export function useBraintreePayPalPayLaterSession({
   cancelUrl,
   displayName,
   presentationMode,
+  shippingCallbackUrl,
   // Object/array data options (require deep comparison)
   lineItems,
   shippingOptions,
   amountBreakdown,
+  shippingAddressOverride,
 }: UseBraintreePayPalPayLaterSessionProps): UseBraintreePayPalPayLaterSessionReturn {
   const {
     braintreePayPalCheckoutInstance,
@@ -116,6 +118,9 @@ export function useBraintreePayPalPayLaterSession({
   const memoizedLineItems = useDeepCompareMemoize(lineItems);
   const memoizedShippingOptions = useDeepCompareMemoize(shippingOptions);
   const memoizedAmountBreakdown = useDeepCompareMemoize(amountBreakdown);
+  const memoizedShippingAddressOverride = useDeepCompareMemoize(
+    shippingAddressOverride,
+  );
 
   const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
 
@@ -156,9 +161,11 @@ export function useBraintreePayPalPayLaterSession({
           cancelUrl,
           displayName,
           presentationMode,
+          shippingCallbackUrl,
           lineItems: memoizedLineItems,
           shippingOptions: memoizedShippingOptions,
           amountBreakdown: memoizedAmountBreakdown,
+          shippingAddressOverride: memoizedShippingAddressOverride,
           ...proxyCallbacks,
         }),
       failedSdkRef: failedInstanceRef,
@@ -187,9 +194,11 @@ export function useBraintreePayPalPayLaterSession({
     cancelUrl,
     displayName,
     presentationMode,
+    shippingCallbackUrl,
     memoizedLineItems,
     memoizedShippingOptions,
     memoizedAmountBreakdown,
+    memoizedShippingAddressOverride,
     proxyCallbacks,
     setError,
   ]);

@@ -75,6 +75,7 @@ export function useBraintreePayPalCheckoutWithVaultSession({
   cancelUrl,
   displayName,
   presentationMode,
+  shippingCallbackUrl,
   // Object/array data options (require deep comparison)
   billingAgreementDetails,
   lineItems,
@@ -148,6 +149,7 @@ export function useBraintreePayPalCheckoutWithVaultSession({
           cancelUrl,
           displayName,
           presentationMode,
+          shippingCallbackUrl,
           billingAgreementDetails: memoizedBillingAgreementDetails,
           lineItems: memoizedLineItems,
           shippingOptions: memoizedShippingOptions,
@@ -181,6 +183,7 @@ export function useBraintreePayPalCheckoutWithVaultSession({
     cancelUrl,
     displayName,
     presentationMode,
+    shippingCallbackUrl,
     memoizedBillingAgreementDetails,
     memoizedLineItems,
     memoizedShippingOptions,
