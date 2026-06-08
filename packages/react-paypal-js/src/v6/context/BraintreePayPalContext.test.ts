@@ -9,6 +9,10 @@ import type {
   BraintreeAction,
 } from "./BraintreePayPalContext";
 import type { BraintreePayPalCheckoutInstance } from "../types";
+import type {
+  BraintreeEligibilityResult,
+  BraintreeFindEligibleMethodsOptions,
+} from "../types/braintree";
 
 function createMockCheckoutInstance(): BraintreePayPalCheckoutInstance {
   return {
@@ -49,11 +53,29 @@ function createMockCheckoutInstance(): BraintreePayPalCheckoutInstance {
 function createInitialState(): BraintreePayPalState {
   return {
     braintreePayPalCheckoutInstance: null,
+    eligibleMethods: null,
+    eligibleMethodsPayload: null,
     loadingStatus: INSTANCE_LOADING_STATE.PENDING,
     error: null,
     isHydrated: false,
   };
 }
+
+function createMockEligibility(): BraintreeEligibilityResult {
+  return {
+    paypal: true,
+    paylater: true,
+    credit: false,
+    getDetails: jest.fn().mockReturnValue(null),
+  };
+}
+
+const SAMPLE_PAYLOAD: BraintreeFindEligibleMethodsOptions = {
+  amount: "10.00",
+  currency: "USD",
+  countryCode: "US",
+  paymentFlow: "ONE_TIME_PAYMENT",
+};
 
 describe("braintreeReducer", () => {
   let initialState: BraintreePayPalState;
@@ -117,10 +139,48 @@ describe("braintreeReducer", () => {
     );
   });
 
+  describe("SET_ELIGIBILITY action", () => {
+    test("should store eligibility result and the payload it was fetched with", () => {
+      const eligibility = createMockEligibility();
+      const action: BraintreeAction = {
+        type: BRAINTREE_DISPATCH_ACTION.SET_ELIGIBILITY,
+        value: {
+          eligibleMethods: eligibility,
+          payload: SAMPLE_PAYLOAD,
+        },
+      };
+
+      const result = braintreeReducer(initialState, action);
+
+      expect(result.eligibleMethods).toBe(eligibility);
+      expect(result.eligibleMethodsPayload).toBe(SAMPLE_PAYLOAD);
+      expect(result.loadingStatus).toBe(initialState.loadingStatus);
+      expect(result).not.toBe(initialState);
+    });
+
+    test("should accept null eligibility (e.g. when clearing the cache)", () => {
+      const stateWithEligibility: BraintreePayPalState = {
+        ...initialState,
+        eligibleMethods: createMockEligibility(),
+        eligibleMethodsPayload: SAMPLE_PAYLOAD,
+      };
+
+      const result = braintreeReducer(stateWithEligibility, {
+        type: BRAINTREE_DISPATCH_ACTION.SET_ELIGIBILITY,
+        value: { eligibleMethods: null, payload: null },
+      });
+
+      expect(result.eligibleMethods).toBe(null);
+      expect(result.eligibleMethodsPayload).toBe(null);
+    });
+  });
+
   describe("RESET_STATE action", () => {
     test("should reset state to initial values", () => {
       const stateWithData: BraintreePayPalState = {
         braintreePayPalCheckoutInstance: createMockCheckoutInstance(),
+        eligibleMethods: createMockEligibility(),
+        eligibleMethodsPayload: SAMPLE_PAYLOAD,
         error: new Error("previous error"),
         loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
         isHydrated: false,
@@ -133,6 +193,8 @@ describe("braintreeReducer", () => {
       const result = braintreeReducer(stateWithData, action);
 
       expect(result.braintreePayPalCheckoutInstance).toBe(null);
+      expect(result.eligibleMethods).toBe(null);
+      expect(result.eligibleMethodsPayload).toBe(null);
       expect(result.error).toBe(null);
       expect(result.loadingStatus).toBe(INSTANCE_LOADING_STATE.PENDING);
       expect(result.isHydrated).toBe(false);
@@ -181,8 +243,11 @@ describe("braintreeReducer", () => {
 
     test("should preserve unmodified properties", () => {
       const mockInstance = createMockCheckoutInstance();
+      const eligibility = createMockEligibility();
       const stateWithInstance: BraintreePayPalState = {
         braintreePayPalCheckoutInstance: mockInstance,
+        eligibleMethods: eligibility,
+        eligibleMethodsPayload: SAMPLE_PAYLOAD,
         loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
         error: null,
         isHydrated: false,
@@ -196,6 +261,8 @@ describe("braintreeReducer", () => {
       const result = braintreeReducer(stateWithInstance, action);
 
       expect(result.braintreePayPalCheckoutInstance).toBe(mockInstance);
+      expect(result.eligibleMethods).toBe(eligibility);
+      expect(result.eligibleMethodsPayload).toBe(SAMPLE_PAYLOAD);
     });
   });
 });

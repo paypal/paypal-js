@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useBraintreePayPal } from "./useBraintreePayPal";
+import { useBraintreePayPalDispatch } from "./useBraintreePayPalDispatch";
 import { useIsMountedRef } from "../useIsMounted";
 import { useError } from "../useError";
-import { useDeepCompareMemoize } from "../../utils";
-import { INSTANCE_LOADING_STATE } from "../../types/ProviderEnums";
+import { deepEqual, useDeepCompareMemoize } from "../../utils";
+import {
+  BRAINTREE_DISPATCH_ACTION,
+  INSTANCE_LOADING_STATE,
+} from "../../types/ProviderEnums";
 
 import type {
   BraintreeEligibilityResult,
@@ -24,15 +28,19 @@ export interface UseBraintreeEligibleMethodsReturn {
  * Hook for fetching Braintree PayPal eligibility for given checkout options.
  *
  * Calls {@link https://braintree.github.io/braintree-web/current/PayPalCheckoutV6.html#findEligibleMethods | BraintreePayPalCheckoutInstance.findEligibleMethods}
- * on the shared instance from {@link useBraintreePayPal} and re-fetches when the
- * options change. Use to gate rendering of buttons (e.g. Pay Later) on eligibility.
+ * on the shared instance from {@link useBraintreePayPal} and stores the result
+ * in the `BraintreePayPalProvider` context. The fetch is deduplicated by
+ * `(instance, options)` so that mounting this hook in multiple components, or
+ * re-mounting it with the same options, will reuse the cached result instead
+ * of firing a new request. The hook re-fetches when the options change.
  *
  * `isPending` is true while the provider's checkout instance is initializing
- * OR while eligibility is being fetched.
+ * OR while eligibility is being fetched OR while the cached eligibility was
+ * fetched with different options than the ones currently requested.
  *
  * @example
  * function Checkout() {
- *   const { eligibility, isPending, error } = useBraintreeEligibleMethods({
+ *   const { eligibleMethods, isPending, error } = useBraintreeEligibleMethods({
  *     amount: "10.00",
  *     currency: "USD",
  *     countryCode: "US",
@@ -44,8 +52,8 @@ export interface UseBraintreeEligibleMethodsReturn {
  *
  *   return (
  *     <>
- *       {eligibility?.paypal && <BraintreePayPalOneTimePaymentButton ... />}
- *       {eligibility?.paylater && <PayPalPayLaterButton ... />}
+ *       {eligibleMethods?.paypal && <BraintreePayPalOneTimePaymentButton ... />}
+ *       {eligibleMethods?.paylater && <PayPalPayLaterButton ... />}
  *     </>
  *   );
  * }
@@ -56,13 +64,24 @@ export function useBraintreeEligibleMethods({
   countryCode,
   paymentFlow,
 }: UseBraintreeEligibleMethodsProps): UseBraintreeEligibleMethodsReturn {
-  const { braintreePayPalCheckoutInstance, loadingStatus } =
-    useBraintreePayPal();
+  const {
+    braintreePayPalCheckoutInstance,
+    eligibleMethods,
+    eligibleMethodsPayload,
+    loadingStatus,
+  } = useBraintreePayPal();
+  const dispatch = useBraintreePayPalDispatch();
   const isMountedRef = useIsMountedRef();
   const [error, setError] = useError();
-  const [eligibleMethods, setEligibleMethods] =
-    useState<BraintreeEligibilityResult | null>(null);
   const [isFetching, setIsFetching] = useState(false);
+
+  // Refs let the effect see the latest context-cached eligibility without
+  // adding it to the dep array (which would re-run the effect every time
+  // *we* dispatch SET_ELIGIBILITY and re-trigger the fetch).
+  const eligibleMethodsRef = useRef(eligibleMethods);
+  const eligibleMethodsPayloadRef = useRef(eligibleMethodsPayload);
+  eligibleMethodsRef.current = eligibleMethods;
+  eligibleMethodsPayloadRef.current = eligibleMethodsPayload;
 
   const memoizedOptions = useDeepCompareMemoize({
     amount,
@@ -70,6 +89,12 @@ export function useBraintreeEligibleMethods({
     countryCode,
     paymentFlow,
   });
+
+  // Track what we've fetched (instance + payload combo) to prevent duplicate fetches
+  const lastFetchRef = useRef<{
+    instance: typeof braintreePayPalCheckoutInstance;
+    payload: typeof memoizedOptions;
+  } | null>(null);
 
   // Prevents retrying with a checkout instance whose findEligibleMethods has already failed
   const failedInstanceRef = useRef<unknown>(null);
@@ -87,9 +112,38 @@ export function useBraintreeEligibleMethods({
       return;
     }
 
+    const hasFetchedThisConfig =
+      lastFetchRef.current?.instance === braintreePayPalCheckoutInstance &&
+      lastFetchRef.current?.payload === memoizedOptions;
+
+    if (hasFetchedThisConfig) {
+      return;
+    }
+
+    // Another hook instance (or earlier mount) may have already populated
+    // eligibility on context with a deep-equal payload. If so, claim it as
+    // ours and skip the network call. Use deepEqual instead of === because
+    // separate hook mounts will memoize different references for the same
+    // option values.
+    if (
+      eligibleMethodsRef.current &&
+      lastFetchRef.current === null &&
+      deepEqual(eligibleMethodsPayloadRef.current, memoizedOptions)
+    ) {
+      lastFetchRef.current = {
+        instance: braintreePayPalCheckoutInstance,
+        payload: memoizedOptions,
+      };
+      return;
+    }
+
+    lastFetchRef.current = {
+      instance: braintreePayPalCheckoutInstance,
+      payload: memoizedOptions,
+    };
+
     let isSubscribed = true;
     setIsFetching(true);
-    setEligibleMethods(null);
     setError(null);
 
     braintreePayPalCheckoutInstance
@@ -98,7 +152,13 @@ export function useBraintreeEligibleMethods({
         if (!isSubscribed || !isMountedRef.current) {
           return;
         }
-        setEligibleMethods(result);
+        dispatch({
+          type: BRAINTREE_DISPATCH_ACTION.SET_ELIGIBILITY,
+          value: {
+            eligibleMethods: result,
+            payload: memoizedOptions,
+          },
+        });
       })
       .catch((err: unknown) => {
         if (!isSubscribed || !isMountedRef.current) {
@@ -120,12 +180,26 @@ export function useBraintreeEligibleMethods({
   }, [
     braintreePayPalCheckoutInstance,
     memoizedOptions,
+    dispatch,
     setError,
     isMountedRef,
   ]);
 
+  // Cached eligibility is stale if it was fetched with a different payload than
+  // the one currently requested. Normalize null/undefined so the deepEqual
+  // doesn't treat "no stored payload" as different from "no provided payload".
+  const isStaleData =
+    !!eligibleMethods &&
+    !deepEqual(
+      eligibleMethodsPayload ?? undefined,
+      memoizedOptions ?? undefined,
+    );
+
   const isPending =
-    loadingStatus === INSTANCE_LOADING_STATE.PENDING || isFetching;
+    loadingStatus === INSTANCE_LOADING_STATE.PENDING ||
+    isFetching ||
+    (!eligibleMethods && !error) ||
+    isStaleData;
 
   return {
     eligibleMethods,

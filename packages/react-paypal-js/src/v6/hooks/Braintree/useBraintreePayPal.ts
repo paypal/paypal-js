@@ -11,6 +11,10 @@ import type { BraintreePayPalProvider } from "../../components/Braintree/Braintr
  * The returned state includes:
  * - `braintreePayPalCheckoutInstance` — the Braintree PayPal Checkout V6 instance
  *   used for `tokenizePayment()`, `findEligibleMethods()`, and `updatePayment()`
+ * - `eligibleMethods` — eligibility result cached by `useBraintreeEligibleMethods`,
+ *   or `null` if it has not been fetched yet
+ * - `eligibleMethodsPayload` — the options the cached `eligibleMethods` was
+ *   fetched with, used to detect stale data
  * - `loadingStatus` — `"pending"`, `"resolved"`, or `"rejected"`
  * - `error` — any initialization error
  * - `isHydrated` — `false` during SSR, `true` after client hydration

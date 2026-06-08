@@ -1,21 +1,28 @@
+import React, { useReducer } from "react";
 import { renderHook, act } from "@testing-library/react-hooks";
 
 import { expectCurrentErrorValue } from "../useErrorTestUtil";
 import { useBraintreeEligibleMethods } from "./useBraintreeEligibleMethods";
-import { useBraintreePayPal } from "./useBraintreePayPal";
-import { INSTANCE_LOADING_STATE } from "../../types/ProviderEnums";
+import {
+  BraintreePayPalContext,
+  braintreeInitialState,
+  braintreeReducer,
+} from "../../context/BraintreePayPalContext";
+import { BraintreeDispatchContext } from "../../context/BraintreeDispatchContext";
+import {
+  BRAINTREE_DISPATCH_ACTION,
+  INSTANCE_LOADING_STATE,
+} from "../../types/ProviderEnums";
 
 import type {
   BraintreeEligibilityResult,
   BraintreeFindEligibleMethodsOptions,
 } from "../../types/braintree";
-import type { BraintreePayPalState } from "../../context/BraintreePayPalContext";
-
-jest.mock("./useBraintreePayPal");
-
-const mockUseBraintreePayPal = useBraintreePayPal as jest.MockedFunction<
-  typeof useBraintreePayPal
->;
+import type {
+  BraintreeAction,
+  BraintreePayPalState,
+} from "../../context/BraintreePayPalContext";
+import type { BraintreePayPalCheckoutInstance } from "../../types";
 
 const createMockEligibility = (
   overrides: Partial<BraintreeEligibilityResult> = {},
@@ -27,38 +34,22 @@ const createMockEligibility = (
   ...overrides,
 });
 
+type MockCheckoutInstance = Pick<
+  BraintreePayPalCheckoutInstance,
+  "findEligibleMethods"
+>;
+
 const createMockCheckoutInstance = (
   result:
     | BraintreeEligibilityResult
     | Promise<BraintreeEligibilityResult> = createMockEligibility(),
-) => ({
+): MockCheckoutInstance => ({
   findEligibleMethods: jest
     .fn()
     .mockReturnValue(
       result instanceof Promise ? result : Promise.resolve(result),
     ),
 });
-
-const defaultBraintreeState: BraintreePayPalState = {
-  braintreePayPalCheckoutInstance: null,
-  loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
-  error: null,
-  isHydrated: true,
-};
-
-function mockBraintreeContext(
-  overrides: Partial<
-    Omit<BraintreePayPalState, "braintreePayPalCheckoutInstance"> & {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      braintreePayPalCheckoutInstance?: any;
-    }
-  > = {},
-): void {
-  mockUseBraintreePayPal.mockReturnValue({
-    ...defaultBraintreeState,
-    ...overrides,
-  } as BraintreePayPalState);
-}
 
 const defaultProps: BraintreeFindEligibleMethodsOptions = {
   amount: "10.00",
@@ -67,6 +58,55 @@ const defaultProps: BraintreeFindEligibleMethodsOptions = {
   paymentFlow: "ONE_TIME_PAYMENT",
 };
 
+// Wrapper accepts arbitrary props because @testing-library/react-hooks types
+// the wrapper to match the hook's initialProps shape.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type TestWrapper = React.ComponentType<any>;
+
+interface ProviderHandle {
+  Wrapper: TestWrapper;
+  dispatch: (action: BraintreeAction) => void;
+}
+
+/**
+ * Creates a reducer-backed test provider that exposes the real
+ * BraintreeDispatchContext so that dispatched SET_ELIGIBILITY actions actually
+ * update the BraintreePayPalContext state observed by the hook.
+ *
+ * Returns a `dispatch` handle for tests that want to mutate state externally
+ * (e.g. swapping the checkout instance).
+ */
+function makeProvider(
+  initialOverrides: Partial<BraintreePayPalState> = {},
+): ProviderHandle {
+  const handle: ProviderHandle = {
+    Wrapper: () => null,
+    dispatch: () => {},
+  };
+
+  const Wrapper: TestWrapper = ({ children }) => {
+    const [state, dispatch] = useReducer(braintreeReducer, {
+      ...braintreeInitialState,
+      loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+      isHydrated: true,
+      ...initialOverrides,
+    });
+    handle.dispatch = dispatch;
+    return React.createElement(
+      BraintreeDispatchContext.Provider,
+      { value: dispatch },
+      React.createElement(
+        BraintreePayPalContext.Provider,
+        { value: state },
+        children,
+      ),
+    );
+  };
+
+  handle.Wrapper = Wrapper;
+  return handle;
+}
+
 describe("useBraintreeEligibleMethods", () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -74,37 +114,44 @@ describe("useBraintreeEligibleMethods", () => {
 
   describe("initialization", () => {
     test("should return isPending=true while provider instance is pending", () => {
-      mockBraintreeContext({ loadingStatus: INSTANCE_LOADING_STATE.PENDING });
+      const { Wrapper } = makeProvider({
+        loadingStatus: INSTANCE_LOADING_STATE.PENDING,
+      });
 
-      const { result } = renderHook(() =>
-        useBraintreeEligibleMethods(defaultProps),
+      const { result } = renderHook(
+        () => useBraintreeEligibleMethods(defaultProps),
+        { wrapper: Wrapper },
       );
 
       expect(result.current.isPending).toBe(true);
-      expect(result.current.eligibility).toBeNull();
+      expect(result.current.eligibleMethods).toBeNull();
       expect(result.current.error).toBeNull();
     });
 
-    test("should not call findEligibleMethods when no checkout instance is available", () => {
-      mockBraintreeContext({
+    test("should not crash when no checkout instance is available", () => {
+      const { Wrapper } = makeProvider({
         loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
       });
 
-      renderHook(() => useBraintreeEligibleMethods(defaultProps));
+      const { result } = renderHook(
+        () => useBraintreeEligibleMethods(defaultProps),
+        { wrapper: Wrapper },
+      );
 
-      // Nothing to assert on the instance — it's null. Just confirm no crash and no eligibility.
+      expect(result.current.eligibleMethods).toBeNull();
     });
 
     test("should call findEligibleMethods with the supplied options when instance is available", async () => {
       const eligibility = createMockEligibility();
       const checkoutInstance = createMockCheckoutInstance(eligibility);
-
-      mockBraintreeContext({
-        braintreePayPalCheckoutInstance: checkoutInstance,
+      const { Wrapper } = makeProvider({
+        braintreePayPalCheckoutInstance:
+          checkoutInstance as unknown as BraintreePayPalCheckoutInstance,
       });
 
-      const { result, waitForNextUpdate } = renderHook(() =>
-        useBraintreeEligibleMethods(defaultProps),
+      const { result, waitForNextUpdate } = renderHook(
+        () => useBraintreeEligibleMethods(defaultProps),
+        { wrapper: Wrapper },
       );
 
       expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledWith(
@@ -113,7 +160,7 @@ describe("useBraintreeEligibleMethods", () => {
 
       await waitForNextUpdate();
 
-      expect(result.current.eligibility).toBe(eligibility);
+      expect(result.current.eligibleMethods).toBe(eligibility);
       expect(result.current.isPending).toBe(false);
       expect(result.current.error).toBeNull();
     });
@@ -123,20 +170,21 @@ describe("useBraintreeEligibleMethods", () => {
       const checkoutInstance = {
         findEligibleMethods: jest.fn().mockRejectedValue(thrownError),
       };
-
-      mockBraintreeContext({
-        braintreePayPalCheckoutInstance: checkoutInstance,
+      const { Wrapper } = makeProvider({
+        braintreePayPalCheckoutInstance:
+          checkoutInstance as unknown as BraintreePayPalCheckoutInstance,
       });
 
-      const { result, waitForNextUpdate } = renderHook(() =>
-        useBraintreeEligibleMethods(defaultProps),
+      const { result, waitForNextUpdate } = renderHook(
+        () => useBraintreeEligibleMethods(defaultProps),
+        { wrapper: Wrapper },
       );
 
       await waitForNextUpdate();
 
       expectCurrentErrorValue(result.current.error);
       expect(result.current.error).toBe(thrownError);
-      expect(result.current.eligibility).toBeNull();
+      expect(result.current.eligibleMethods).toBeNull();
       expect(result.current.isPending).toBe(false);
     });
   });
@@ -144,15 +192,15 @@ describe("useBraintreeEligibleMethods", () => {
   describe("refetch behavior", () => {
     test("should refetch when options change", async () => {
       const checkoutInstance = createMockCheckoutInstance();
-
-      mockBraintreeContext({
-        braintreePayPalCheckoutInstance: checkoutInstance,
+      const { Wrapper } = makeProvider({
+        braintreePayPalCheckoutInstance:
+          checkoutInstance as unknown as BraintreePayPalCheckoutInstance,
       });
 
       const { rerender, waitForNextUpdate } = renderHook(
         ({ amount }) =>
           useBraintreeEligibleMethods({ ...defaultProps, amount }),
-        { initialProps: { amount: "10.00" } },
+        { initialProps: { amount: "10.00" }, wrapper: Wrapper },
       );
 
       await waitForNextUpdate();
@@ -171,15 +219,15 @@ describe("useBraintreeEligibleMethods", () => {
 
     test("should not refetch when options are deep-equal but referentially different", async () => {
       const checkoutInstance = createMockCheckoutInstance();
-
-      mockBraintreeContext({
-        braintreePayPalCheckoutInstance: checkoutInstance,
+      const { Wrapper } = makeProvider({
+        braintreePayPalCheckoutInstance:
+          checkoutInstance as unknown as BraintreePayPalCheckoutInstance,
       });
 
       const { rerender, waitForNextUpdate } = renderHook(
         (props: BraintreeFindEligibleMethodsOptions) =>
           useBraintreeEligibleMethods(props),
-        { initialProps: { ...defaultProps } },
+        { initialProps: { ...defaultProps }, wrapper: Wrapper },
       );
 
       await waitForNextUpdate();
@@ -194,13 +242,14 @@ describe("useBraintreeEligibleMethods", () => {
 
     test("should refetch when checkout instance changes", async () => {
       const firstInstance = createMockCheckoutInstance();
-
-      mockBraintreeContext({
-        braintreePayPalCheckoutInstance: firstInstance,
+      const { Wrapper, dispatch } = makeProvider({
+        braintreePayPalCheckoutInstance:
+          firstInstance as unknown as BraintreePayPalCheckoutInstance,
       });
 
-      const { rerender, waitForNextUpdate } = renderHook(() =>
-        useBraintreeEligibleMethods(defaultProps),
+      const { waitForNextUpdate } = renderHook(
+        () => useBraintreeEligibleMethods(defaultProps),
+        { wrapper: Wrapper },
       );
 
       await waitForNextUpdate();
@@ -208,11 +257,12 @@ describe("useBraintreeEligibleMethods", () => {
       expect(firstInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
 
       const secondInstance = createMockCheckoutInstance();
-      mockBraintreeContext({
-        braintreePayPalCheckoutInstance: secondInstance,
+      act(() => {
+        dispatch({
+          type: BRAINTREE_DISPATCH_ACTION.SET_INSTANCE,
+          value: secondInstance as unknown as BraintreePayPalCheckoutInstance,
+        });
       });
-
-      rerender();
 
       expect(secondInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
     });
@@ -223,23 +273,58 @@ describe("useBraintreeEligibleMethods", () => {
           .fn()
           .mockRejectedValue(new Error("init failure")),
       };
-
-      mockBraintreeContext({
-        braintreePayPalCheckoutInstance: checkoutInstance,
+      const { Wrapper } = makeProvider({
+        braintreePayPalCheckoutInstance:
+          checkoutInstance as unknown as BraintreePayPalCheckoutInstance,
       });
 
-      const { rerender, waitForNextUpdate } = renderHook(() =>
-        useBraintreeEligibleMethods(defaultProps),
+      const { rerender, waitForNextUpdate } = renderHook(
+        () => useBraintreeEligibleMethods(defaultProps),
+        { wrapper: Wrapper },
       );
 
       await waitForNextUpdate();
 
       expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
 
-      jest.clearAllMocks();
+      checkoutInstance.findEligibleMethods.mockClear();
       rerender();
 
       expect(checkoutInstance.findEligibleMethods).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("context caching", () => {
+    test("should reuse cached eligibility for a second hook mount with the same options", async () => {
+      const eligibility = createMockEligibility();
+      const checkoutInstance = createMockCheckoutInstance(eligibility);
+      const { Wrapper } = makeProvider({
+        braintreePayPalCheckoutInstance:
+          checkoutInstance as unknown as BraintreePayPalCheckoutInstance,
+      });
+
+      const first = renderHook(
+        () => useBraintreeEligibleMethods(defaultProps),
+        { wrapper: Wrapper },
+      );
+
+      await first.waitForNextUpdate();
+
+      expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
+      expect(first.result.current.eligibleMethods).toBe(eligibility);
+
+      // Mount a second consumer with the same options under the same provider.
+      // The cached eligibility on context should be returned immediately and no
+      // additional findEligibleMethods call should fire.
+      const second = renderHook(
+        () => useBraintreeEligibleMethods(defaultProps),
+        { wrapper: Wrapper },
+      );
+
+      // Hook is brand-new — its lastFetchRef is null — but a deep-equal payload
+      // is already cached on context, so it should still skip the network call.
+      expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
+      expect(second.result.current.eligibleMethods).toBe(eligibility);
     });
   });
 
@@ -253,13 +338,14 @@ describe("useBraintreeEligibleMethods", () => {
       const checkoutInstance = {
         findEligibleMethods: jest.fn().mockReturnValue(pending),
       };
-
-      mockBraintreeContext({
-        braintreePayPalCheckoutInstance: checkoutInstance,
+      const { Wrapper } = makeProvider({
+        braintreePayPalCheckoutInstance:
+          checkoutInstance as unknown as BraintreePayPalCheckoutInstance,
       });
 
-      const { result, unmount } = renderHook(() =>
-        useBraintreeEligibleMethods(defaultProps),
+      const { result, unmount } = renderHook(
+        () => useBraintreeEligibleMethods(defaultProps),
+        { wrapper: Wrapper },
       );
 
       unmount();
@@ -270,7 +356,7 @@ describe("useBraintreeEligibleMethods", () => {
       });
 
       // Eligibility should remain null because the post-unmount update was skipped
-      expect(result.current.eligibility).toBeNull();
+      expect(result.current.eligibleMethods).toBeNull();
     });
   });
 });
