@@ -1,8 +1,12 @@
 import React, { useReducer } from "react";
 import { renderHook, act } from "@testing-library/react-hooks";
+import { render, waitFor } from "@testing-library/react";
 
 import { expectCurrentErrorValue } from "../useErrorTestUtil";
-import { useBraintreeEligibleMethods } from "./useBraintreeEligibleMethods";
+import {
+  useBraintreeEligibleMethods,
+  UseBraintreeEligibleMethodsReturn,
+} from "./useBraintreeEligibleMethods";
 import {
   BraintreePayPalContext,
   braintreeInitialState,
@@ -79,10 +83,11 @@ interface ProviderHandle {
 function makeProvider(
   initialOverrides: Partial<BraintreePayPalState> = {},
 ): ProviderHandle {
-  const handle: ProviderHandle = {
-    Wrapper: () => null,
-    dispatch: () => {},
-  };
+  // `currentDispatch` is rebound on every Wrapper render. The returned
+  // `dispatch` forwards to it so callers can destructure `dispatch` from the
+  // handle BEFORE the Wrapper has mounted (when the real reducer dispatch is
+  // not yet known) and still hit the live dispatch at call time.
+  let currentDispatch: (action: BraintreeAction) => void = () => {};
 
   const Wrapper: TestWrapper = ({ children }) => {
     const [state, dispatch] = useReducer(braintreeReducer, {
@@ -91,7 +96,7 @@ function makeProvider(
       isHydrated: true,
       ...initialOverrides,
     });
-    handle.dispatch = dispatch;
+    currentDispatch = dispatch;
     return React.createElement(
       BraintreeDispatchContext.Provider,
       { value: dispatch },
@@ -103,8 +108,10 @@ function makeProvider(
     );
   };
 
-  handle.Wrapper = Wrapper;
-  return handle;
+  return {
+    Wrapper,
+    dispatch: (action) => currentDispatch(action),
+  };
 }
 
 describe("useBraintreeEligibleMethods", () => {
@@ -257,7 +264,7 @@ describe("useBraintreeEligibleMethods", () => {
       expect(firstInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
 
       const secondInstance = createMockCheckoutInstance();
-      act(() => {
+      await act(async () => {
         dispatch({
           type: BRAINTREE_DISPATCH_ACTION.SET_INSTANCE,
           value: secondInstance as unknown as BraintreePayPalCheckoutInstance,
@@ -342,28 +349,52 @@ describe("useBraintreeEligibleMethods", () => {
           checkoutInstance as unknown as BraintreePayPalCheckoutInstance,
       });
 
-      const first = renderHook(
-        () => useBraintreeEligibleMethods(defaultProps),
-        { wrapper: Wrapper },
+      // Each renderHook() call mounts an independent React tree, so the two
+      // consumers cannot share context via separate renderHook invocations.
+      // To exercise the cross-mount cache contract, render both consumers as
+      // siblings under one Wrapper instance and capture their hook returns
+      // through component refs.
+      const firstReturn: {
+        current: UseBraintreeEligibleMethodsReturn | null;
+      } = { current: null };
+      const secondReturn: {
+        current: UseBraintreeEligibleMethodsReturn | null;
+      } = { current: null };
+
+      function First() {
+        firstReturn.current = useBraintreeEligibleMethods(defaultProps);
+        return null;
+      }
+      function Second() {
+        secondReturn.current = useBraintreeEligibleMethods(defaultProps);
+        return null;
+      }
+
+      const { rerender } = render(
+        React.createElement(Wrapper, null, React.createElement(First)),
       );
 
-      await first.waitForNextUpdate();
-
+      await waitFor(() =>
+        expect(firstReturn.current?.eligibleMethods).toBe(eligibility),
+      );
       expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
-      expect(first.result.current.eligibleMethods).toBe(eligibility);
 
       // Mount a second consumer with the same options under the same provider.
       // The cached eligibility on context should be returned immediately and no
       // additional findEligibleMethods call should fire.
-      const second = renderHook(
-        () => useBraintreeEligibleMethods(defaultProps),
-        { wrapper: Wrapper },
+      rerender(
+        React.createElement(
+          Wrapper,
+          null,
+          React.createElement(First),
+          React.createElement(Second),
+        ),
       );
 
       // Hook is brand-new — its lastFetchRef is null — but a deep-equal payload
       // is already cached on context, so it should still skip the network call.
       expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
-      expect(second.result.current.eligibleMethods).toBe(eligibility);
+      expect(secondReturn.current?.eligibleMethods).toBe(eligibility);
     });
   });
 
