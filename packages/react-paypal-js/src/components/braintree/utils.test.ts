@@ -30,17 +30,14 @@ describe("decorateActions", () => {
 
     decorateActions(buttonProps, mockedCheckout);
 
-    expect(buttonProps).toMatchInlineSnapshot(
-      buttonProps,
-      `
-            Object {
-              "children": null,
-              "disabled": false,
-              "onClick": [MockFunction],
-              "onInit": [MockFunction],
-            }
-        `,
-    );
+    expect(buttonProps).toMatchInlineSnapshot(`
+      {
+        "children": null,
+        "disabled": false,
+        "onClick": [MockFunction],
+        "onInit": [MockFunction],
+      }
+    `);
   });
 
   test("should modify the createOrder", () => {
