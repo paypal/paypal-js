@@ -12,6 +12,7 @@ import type {
   VenmoOneTimePaymentSessionOptions,
   VenmoOneTimePaymentSessionPromise,
   BasePaymentSessionReturn,
+  WithOptionalPresentationMode,
 } from "../types";
 
 export type UseVenmoOneTimePaymentSessionProps = (
@@ -24,7 +25,7 @@ export type UseVenmoOneTimePaymentSessionProps = (
       orderId: string;
     })
 ) &
-  VenmoPresentationModeOptions;
+  WithOptionalPresentationMode<VenmoPresentationModeOptions>;
 
 /**
  * Hook for managing Venmo one-time payment sessions.
@@ -34,10 +35,11 @@ export type UseVenmoOneTimePaymentSessionProps = (
  *
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
+ * `presentationMode` is optional and defaults to `"auto"`.
+ *
  * @example
  * function VenmoCheckout() {
  *   const { error, isPending, handleClick, handleCancel } = useVenmoOneTimePaymentSession({
- *     presentationMode: 'auto',
  *     createOrder: async () => ({ orderId: 'ORDER-123' }),
  *     onApprove: (data) => console.log('Approved:', data),
  *     onCancel: () => console.log('Cancelled'),
@@ -52,7 +54,7 @@ export type UseVenmoOneTimePaymentSessionProps = (
  * }
  */
 export function useVenmoOneTimePaymentSession({
-  presentationMode,
+  presentationMode = "auto",
   fullPageOverlay,
   createOrder,
   orderId,

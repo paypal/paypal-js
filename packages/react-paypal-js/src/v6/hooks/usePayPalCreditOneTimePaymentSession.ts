@@ -11,6 +11,7 @@ import type {
   OneTimePaymentSession,
   PayPalPresentationModeOptions,
   PayPalCreditOneTimePaymentSessionOptions,
+  WithOptionalPresentationMode,
 } from "../types";
 
 export type UsePayPalCreditOneTimePaymentSessionProps = (
@@ -23,7 +24,7 @@ export type UsePayPalCreditOneTimePaymentSessionProps = (
       orderId: string;
     })
 ) &
-  PayPalPresentationModeOptions;
+  WithOptionalPresentationMode<PayPalPresentationModeOptions>;
 
 /**
  * Hook for managing PayPal Credit one-time payment sessions.
@@ -32,6 +33,8 @@ export type UsePayPalCreditOneTimePaymentSessionProps = (
  * for redirect-based flows, and provides methods to start, cancel, and destroy the session.
  *
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
+ *
+ * `presentationMode` is optional and defaults to `"auto"`.
  *
  * @example
  * function CreditCheckoutButton() {
@@ -57,7 +60,7 @@ export type UsePayPalCreditOneTimePaymentSessionProps = (
  * }
  */
 export function usePayPalCreditOneTimePaymentSession({
-  presentationMode,
+  presentationMode = "auto",
   fullPageOverlay,
   autoRedirect,
   createOrder,
@@ -162,7 +165,7 @@ export function usePayPalCreditOneTimePaymentSession({
     }
 
     const startOptions = {
-      presentationMode,
+      presentationMode: presentationMode,
       fullPageOverlay,
       autoRedirect,
     } as PayPalPresentationModeOptions;

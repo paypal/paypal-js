@@ -11,6 +11,7 @@ import type {
   PayPalPresentationModeOptions,
   SavePaymentSessionOptions,
   BasePaymentSessionReturn,
+  WithOptionalPresentationMode,
 } from "../types";
 
 export type UsePayPalSavePaymentSessionProps = (
@@ -23,7 +24,7 @@ export type UsePayPalSavePaymentSessionProps = (
       vaultSetupToken: string;
     })
 ) &
-  PayPalPresentationModeOptions;
+  WithOptionalPresentationMode<PayPalPresentationModeOptions>;
 
 /**
  * Hook for managing a PayPal save payment session, vault without purchase.
@@ -33,6 +34,8 @@ export type UsePayPalSavePaymentSessionProps = (
  * flows, and provides methods to start, cancel, and destroy the session.
  *
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
+ *
+ * `presentationMode` is optional and defaults to `"auto"`.
  *
  * @example
  * function SavePayPalButton() {
@@ -52,7 +55,7 @@ export type UsePayPalSavePaymentSessionProps = (
  * }
  */
 export function usePayPalSavePaymentSession({
-  presentationMode,
+  presentationMode = "auto",
   fullPageOverlay,
   autoRedirect,
   createVaultToken,

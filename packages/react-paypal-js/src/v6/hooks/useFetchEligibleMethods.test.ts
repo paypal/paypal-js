@@ -140,6 +140,29 @@ describe("fetchEligibleMethods", () => {
     ).rejects.toThrow("Failed to fetch eligible methods: Network error");
   });
 
+  test("should error when environment is omitted", async () => {
+    await expect(
+      // @ts-expect-error environment is required
+      useFetchEligibleMethods({ headers: mockHeaders }),
+    ).rejects.toThrow(
+      'The "environment" option is required and must be either "production" or "sandbox"',
+    );
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  test("should error when environment is explicitly undefined", async () => {
+    await expect(
+      useFetchEligibleMethods({
+        // @ts-expect-error environment is required
+        environment: undefined,
+        headers: mockHeaders,
+      }),
+    ).rejects.toThrow(
+      'The "environment" option is required and must be either "production" or "sandbox"',
+    );
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
   test("should support abort signal", async () => {
     const abortController = new AbortController();
     (global.fetch as jest.Mock).mockResolvedValueOnce({

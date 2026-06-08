@@ -1,5 +1,33 @@
 # Changelog
 
+## 10.0.0
+
+### Major Changes
+
+- 114d09c: **BREAKING:** The v6 `environment` option is now required on `loadCoreSdkScript`. Previously, omitting `environment` silently defaulted to sandbox, which could cause production builds to load the sandbox SDK with a live `clientId`. Pass `environment: "production"` or `environment: "sandbox"` explicitly. TypeScript users will see a compile error; runtime callers will see a thrown `Error`.
+
+  ### v6 loadCoreSdkScript
+
+  Update usage of loadCoreSdkScript to pass the environment property correctly
+
+  ```
+  const paypalGlobalNamespace = await loadCoreSdkScript({
+    environment: "sandbox", // "production"
+  });
+  ```
+
+## 9.8.0
+
+### Minor Changes
+
+- 0ff45b7: Consolidating the shared GooglePay types to paypal-js package.
+
+### Patch Changes
+
+- 9007a82: Add optional submit options to CardFields submit() method, including billingAddress and name fields for 3DS authentication support
+- 6e1de75: Fix a typescript bug that was making .start options required.
+- 164d373: Update paypal one time payment session start options to be optional.
+
 ## 9.7.0
 
 ### Minor Changes

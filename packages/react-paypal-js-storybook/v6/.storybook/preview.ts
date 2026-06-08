@@ -32,6 +32,12 @@ const preview: Preview = {
             ],
             "Card Fields",
             ["CardFieldsOneTimePayment"],
+            "Braintree",
+            [
+              "BraintreePayPalOneTimePaymentButton",
+              "BraintreePayPalBillingAgreementButton",
+              "BraintreePayPalCheckoutWithVaultButton",
+            ],
           ],
         ],
       },
