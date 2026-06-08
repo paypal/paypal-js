@@ -93,8 +93,11 @@ export function useBraintreePayPalOneTimePaymentSession({
   shippingOptions,
   amountBreakdown,
 }: UseBraintreePayPalOneTimePaymentSessionProps): UseBraintreePayPalOneTimePaymentSessionReturn {
-  const { braintreePayPalCheckoutInstance, loadingStatus } =
-    useBraintreePayPal();
+  const {
+    braintreePayPalCheckoutInstance,
+    loadingStatus,
+    error: contextError,
+  } = useBraintreePayPal();
   const isMountedRef = useIsMountedRef();
   const sessionRef = useRef<BraintreePaymentSession | null>(null);
   const [error, setError] = useError();
@@ -127,9 +130,17 @@ export function useBraintreePayPalOneTimePaymentSession({
     if (braintreePayPalCheckoutInstance) {
       setError(null);
     } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
-      setError(new Error("Braintree checkout instance not available"));
+      setError(
+        contextError
+          ? new Error(`Braintree provider error: ${contextError.message}`, {
+              cause: contextError,
+            })
+          : new Error(
+              "Braintree One-Time Payment checkout instance not available",
+            ),
+      );
     }
-  }, [braintreePayPalCheckoutInstance, setError, loadingStatus]);
+  }, [braintreePayPalCheckoutInstance, setError, loadingStatus, contextError]);
 
   // Create and manage session lifecycle
   useEffect(() => {

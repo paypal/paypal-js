@@ -109,11 +109,33 @@ describe("useBraintreePayPalOneTimePaymentSession", () => {
       expectCurrentErrorValue(error);
 
       expect(error).toEqual(
-        new Error("Braintree checkout instance not available"),
+        new Error("Braintree One-Time Payment checkout instance not available"),
       );
       expect(
         mockCheckoutInstance.createOneTimePaymentSession,
       ).not.toHaveBeenCalled();
+    });
+
+    test("should surface provider error as the cause when the provider failed to initialize", () => {
+      const providerError = new Error("init failed");
+      mockBraintreeContext({
+        loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
+        error: providerError,
+      });
+
+      const {
+        result: {
+          current: { error: hookError },
+        },
+      } = renderHook(() =>
+        useBraintreePayPalOneTimePaymentSession(defaultProps),
+      );
+
+      expectCurrentErrorValue(hookError);
+      expect(hookError?.message).toBe("Braintree provider error: init failed");
+      expect((hookError as Error & { cause?: unknown })?.cause).toBe(
+        providerError,
+      );
     });
 
     test.each([
@@ -184,7 +206,7 @@ describe("useBraintreePayPalOneTimePaymentSession", () => {
 
       expectCurrentErrorValue(result.current.error);
       expect(result.current.error).toEqual(
-        new Error("Braintree checkout instance not available"),
+        new Error("Braintree One-Time Payment checkout instance not available"),
       );
 
       // Second render: instance becomes available

@@ -108,11 +108,33 @@ describe("useBraintreePayPalCheckoutWithVaultSession", () => {
       expectCurrentErrorValue(error);
 
       expect(error).toEqual(
-        new Error("Braintree checkout instance not available"),
+        new Error(
+          "Braintree Checkout With Vault checkout instance not available",
+        ),
       );
       expect(
         mockCheckoutInstance.createCheckoutWithVaultSession,
       ).not.toHaveBeenCalled();
+    });
+
+    test("should surface provider error as the cause when the provider failed to initialize", () => {
+      const providerError = new Error("init failed");
+      mockBraintreeContext({
+        loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
+        error: providerError,
+      });
+
+      const {
+        result: {
+          current: { error },
+        },
+      } = renderHook(() =>
+        useBraintreePayPalCheckoutWithVaultSession(defaultProps),
+      );
+
+      expectCurrentErrorValue(error);
+      expect(error?.message).toBe("Braintree provider error: init failed");
+      expect((error as Error & { cause?: unknown })?.cause).toBe(providerError);
     });
 
     test.each([
@@ -182,7 +204,9 @@ describe("useBraintreePayPalCheckoutWithVaultSession", () => {
 
       expectCurrentErrorValue(result.current.error);
       expect(result.current.error).toEqual(
-        new Error("Braintree checkout instance not available"),
+        new Error(
+          "Braintree Checkout With Vault checkout instance not available",
+        ),
       );
 
       const newMockSession = createMockSession();

@@ -96,19 +96,28 @@ export function useBraintreeEligibleMethods({
     payload: typeof memoizedOptions;
   } | null>(null);
 
-  // Prevents retrying with a checkout instance whose findEligibleMethods has already failed
-  const failedInstanceRef = useRef<unknown>(null);
+  // Prevents auto-retrying the exact (instance, payload) call that just failed.
+  // Keyed on payload too so that changing options on the same failed instance
+  // is still allowed to retry — a failed request shouldn't pin the hook in an
+  // error state forever when the consumer corrects the input.
+  const failedFetchRef = useRef<{
+    instance: typeof braintreePayPalCheckoutInstance;
+    payload: typeof memoizedOptions;
+  } | null>(null);
 
   useEffect(() => {
-    if (failedInstanceRef.current !== braintreePayPalCheckoutInstance) {
-      failedInstanceRef.current = null;
+    if (failedFetchRef.current?.instance !== braintreePayPalCheckoutInstance) {
+      failedFetchRef.current = null;
     }
 
     if (!braintreePayPalCheckoutInstance) {
       return;
     }
 
-    if (failedInstanceRef.current === braintreePayPalCheckoutInstance) {
+    if (
+      failedFetchRef.current?.instance === braintreePayPalCheckoutInstance &&
+      failedFetchRef.current?.payload === memoizedOptions
+    ) {
       return;
     }
 
@@ -164,7 +173,10 @@ export function useBraintreeEligibleMethods({
         if (!isSubscribed || !isMountedRef.current) {
           return;
         }
-        failedInstanceRef.current = braintreePayPalCheckoutInstance;
+        failedFetchRef.current = {
+          instance: braintreePayPalCheckoutInstance,
+          payload: memoizedOptions,
+        };
         setError(err);
       })
       .finally(() => {

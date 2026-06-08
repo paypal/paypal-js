@@ -267,6 +267,45 @@ describe("useBraintreeEligibleMethods", () => {
       expect(secondInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
     });
 
+    test("should retry with new options after a failure (transient errors must recover)", async () => {
+      const successResult = createMockEligibility();
+      const checkoutInstance = {
+        findEligibleMethods: jest
+          .fn()
+          .mockRejectedValueOnce(new Error("network blip"))
+          .mockResolvedValueOnce(successResult),
+      };
+      const { Wrapper } = makeProvider({
+        braintreePayPalCheckoutInstance:
+          checkoutInstance as unknown as BraintreePayPalCheckoutInstance,
+      });
+
+      const { result, rerender, waitForNextUpdate } = renderHook(
+        ({ amount }) =>
+          useBraintreeEligibleMethods({ ...defaultProps, amount }),
+        { initialProps: { amount: "10.00" }, wrapper: Wrapper },
+      );
+
+      await waitForNextUpdate();
+
+      expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
+      expect(result.current.error).not.toBeNull();
+      expect(result.current.eligibleMethods).toBeNull();
+
+      // Consumer corrects an option on the SAME (now-failed) instance.
+      // The hook must retry rather than stay pinned to the prior failure.
+      rerender({ amount: "20.00" });
+
+      await waitForNextUpdate();
+
+      expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledTimes(2);
+      expect(checkoutInstance.findEligibleMethods).toHaveBeenLastCalledWith(
+        expect.objectContaining({ amount: "20.00" }),
+      );
+      expect(result.current.eligibleMethods).toBe(successResult);
+      expect(result.current.error).toBeNull();
+    });
+
     test("should not retry on the same failed checkout instance", async () => {
       const checkoutInstance = {
         findEligibleMethods: jest
