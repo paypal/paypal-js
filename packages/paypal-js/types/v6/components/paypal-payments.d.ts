@@ -12,6 +12,7 @@ import {
 
 export type PayLaterCountryCodes =
   | "AU"
+  | "CA"
   | "DE"
   | "ES"
   | "FR"
