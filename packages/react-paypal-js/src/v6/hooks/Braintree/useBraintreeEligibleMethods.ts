@@ -34,20 +34,21 @@ export interface UseBraintreeEligibleMethodsReturn {
  * re-mounting it with the same options, will reuse the cached result instead
  * of firing a new request. The hook re-fetches when the options change.
  *
- * `isPending` is true while the provider's checkout instance is initializing
+ * `isLoading` is true while the provider's checkout instance is initializing
  * OR while eligibility is being fetched OR while the cached eligibility was
- * fetched with different options than the ones currently requested.
+ * fetched with different options than the ones currently requested. It is
+ * forced false whenever an error (fetch- or provider-level) is present.
  *
  * @example
  * function Checkout() {
- *   const { eligibleMethods, isPending, error } = useBraintreeEligibleMethods({
+ *   const { eligibleMethods, isLoading, error } = useBraintreeEligibleMethods({
  *     amount: "10.00",
  *     currency: "USD",
  *     countryCode: "US",
  *     paymentFlow: "ONE_TIME_PAYMENT",
  *   });
  *
- *   if (isPending) return <Spinner />;
+ *   if (isLoading) return <Spinner />;
  *   if (error) return <ErrorMessage error={error} />;
  *
  *   return (
@@ -58,17 +59,15 @@ export interface UseBraintreeEligibleMethodsReturn {
  *   );
  * }
  */
-export function useBraintreeEligibleMethods({
-  amount,
-  currency,
-  countryCode,
-  paymentFlow,
-}: UseBraintreeEligibleMethodsProps): UseBraintreeEligibleMethodsReturn {
+export function useBraintreeEligibleMethods(
+  options: UseBraintreeEligibleMethodsProps,
+): UseBraintreeEligibleMethodsReturn {
   const {
     braintreePayPalCheckoutInstance,
     eligibleMethods,
     eligibleMethodsPayload,
     loadingStatus,
+    error: contextError,
   } = useBraintreePayPal();
   const dispatch = useBraintreePayPalDispatch();
   const isMountedRef = useIsMountedRef();
@@ -83,12 +82,11 @@ export function useBraintreeEligibleMethods({
   eligibleMethodsRef.current = eligibleMethods;
   eligibleMethodsPayloadRef.current = eligibleMethodsPayload;
 
-  const memoizedOptions = useDeepCompareMemoize({
-    amount,
-    currency,
-    countryCode,
-    paymentFlow,
-  });
+  // Memoize the whole options object so every field the caller passes is
+  // forwarded to findEligibleMethods. Don't destructure-and-rebuild a fixed
+  // set of keys here — that would silently drop any field later added to
+  // BraintreeFindEligibleMethodsOptions.
+  const memoizedOptions = useDeepCompareMemoize(options);
 
   // Track what we've fetched (instance + payload combo) to prevent duplicate fetches
   const lastFetchRef = useRef<{
@@ -197,7 +195,7 @@ export function useBraintreeEligibleMethods({
       // StrictMode mount/cleanup/mount cycle), clear the dedup marker so the
       // remount re-fetches. Without this, the remount sees lastFetchRef already
       // matching (instance, payload) and skips, while the only in-flight fetch
-      // was just aborted — leaving the hook stuck with isPending=true forever.
+      // was just aborted — leaving the hook stuck with isLoading=true forever.
       if (
         !didSettle &&
         lastFetchRef.current?.instance === braintreePayPalCheckoutInstance &&
@@ -225,10 +223,23 @@ export function useBraintreeEligibleMethods({
     );
 
   const isLoading =
-    loadingStatus === INSTANCE_LOADING_STATE.PENDING ||
-    isFetching ||
-    (!eligibleMethods && !error) ||
-    isStaleData;
+    !error &&
+    (loadingStatus === INSTANCE_LOADING_STATE.PENDING ||
+      isFetching ||
+      !eligibleMethods ||
+      isStaleData);
+
+  // Provider-level failures (e.g. the checkout instance failed to initialize)
+  // are surfaced in their own return and labeled, distinct from fetch-level
+  // errors, so the developer can tell which layer failed — rather than merging
+  // both into a single error. Mirrors useEligibleMethods.
+  if (contextError) {
+    return {
+      eligibleMethods,
+      isLoading: false,
+      error: new Error(`Braintree PayPal context error: ${contextError}`),
+    };
+  }
 
   return {
     eligibleMethods,

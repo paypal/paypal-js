@@ -120,7 +120,7 @@ describe("useBraintreeEligibleMethods", () => {
   });
 
   describe("initialization", () => {
-    test("should return isPending=true while provider instance is pending", () => {
+    test("should return isLoading=true while provider instance is pending", () => {
       const { Wrapper } = makeProvider({
         loadingStatus: INSTANCE_LOADING_STATE.PENDING,
       });
@@ -130,7 +130,7 @@ describe("useBraintreeEligibleMethods", () => {
         { wrapper: Wrapper },
       );
 
-      expect(result.current.isPending).toBe(true);
+      expect(result.current.isLoading).toBe(true);
       expect(result.current.eligibleMethods).toBeNull();
       expect(result.current.error).toBeNull();
     });
@@ -168,7 +168,7 @@ describe("useBraintreeEligibleMethods", () => {
       await waitForNextUpdate();
 
       expect(result.current.eligibleMethods).toBe(eligibility);
-      expect(result.current.isPending).toBe(false);
+      expect(result.current.isLoading).toBe(false);
       expect(result.current.error).toBeNull();
     });
 
@@ -192,7 +192,62 @@ describe("useBraintreeEligibleMethods", () => {
       expectCurrentErrorValue(result.current.error);
       expect(result.current.error).toBe(thrownError);
       expect(result.current.eligibleMethods).toBeNull();
-      expect(result.current.isPending).toBe(false);
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    test("should forward option fields beyond the known four to findEligibleMethods", async () => {
+      const checkoutInstance = createMockCheckoutInstance();
+      const { Wrapper } = makeProvider({
+        braintreePayPalCheckoutInstance:
+          checkoutInstance as unknown as BraintreePayPalCheckoutInstance,
+      });
+
+      // Simulates a field added to BraintreeFindEligibleMethodsOptions later.
+      // The hook must forward the whole options object, not a fixed subset of
+      // keys, otherwise newly added options are silently dropped.
+      const optionsWithExtraField = {
+        ...defaultProps,
+        futureField: "forward-me",
+      } as unknown as BraintreeFindEligibleMethodsOptions;
+
+      const { waitForNextUpdate } = renderHook(
+        () => useBraintreeEligibleMethods(optionsWithExtraField),
+        { wrapper: Wrapper },
+      );
+
+      expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledWith(
+        expect.objectContaining({ futureField: "forward-me" }),
+      );
+
+      await waitForNextUpdate();
+    });
+  });
+
+  describe("provider errors", () => {
+    test("should surface a labeled provider-level error and stop loading", () => {
+      const providerError = new Error("checkout instance failed to initialize");
+      const { Wrapper } = makeProvider({
+        braintreePayPalCheckoutInstance: null,
+        loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
+        error: providerError,
+      });
+
+      const { result } = renderHook(
+        () => useBraintreeEligibleMethods(defaultProps),
+        { wrapper: Wrapper },
+      );
+
+      // Provider/context errors are surfaced separately from fetch errors and
+      // labeled so the developer can tell which layer failed.
+      expect(result.current.error).toBeInstanceOf(Error);
+      expect(result.current.error?.message).toContain(
+        "Braintree PayPal context error",
+      );
+      expect(result.current.error?.message).toContain(
+        "checkout instance failed to initialize",
+      );
+      expect(result.current.isLoading).toBe(false);
+      expect(result.current.eligibleMethods).toBeNull();
     });
   });
 
@@ -399,7 +454,7 @@ describe("useBraintreeEligibleMethods", () => {
   });
 
   describe("StrictMode", () => {
-    test("should resolve isPending under React 18 StrictMode double-mount", async () => {
+    test("should resolve isLoading under React 18 StrictMode double-mount", async () => {
       const eligibility = createMockEligibility();
       const checkoutInstance = createMockCheckoutInstance(eligibility);
       const { Wrapper } = makeProvider({
@@ -419,7 +474,7 @@ describe("useBraintreeEligibleMethods", () => {
       // StrictMode mounts effects twice (mount -> cleanup -> mount). The first
       // mount starts a fetch and is immediately aborted by its cleanup; the
       // dedup marker must be rolled back so the second mount re-fetches.
-      // Without the rollback, the hook stays stuck at isPending=true.
+      // Without the rollback, the hook stays stuck at isLoading=true.
       render(
         React.createElement(
           React.StrictMode,
@@ -428,7 +483,7 @@ describe("useBraintreeEligibleMethods", () => {
         ),
       );
 
-      await waitFor(() => expect(hookReturn.current?.isPending).toBe(false));
+      await waitFor(() => expect(hookReturn.current?.isLoading).toBe(false));
 
       expect(hookReturn.current?.eligibleMethods).toBe(eligibility);
       expect(hookReturn.current?.error).toBeNull();
