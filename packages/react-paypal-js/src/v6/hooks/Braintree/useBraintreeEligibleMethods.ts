@@ -234,7 +234,7 @@ export function useBraintreeEligibleMethods(
   // Provider-level failures (e.g. the checkout instance failed to initialize)
   // are surfaced in their own return and labeled, distinct from fetch-level
   // errors, so the developer can tell which layer failed — rather than merging
-  // both into a single error. Mirrors useEligibleMethods.
+  // both into a single error.
   if (contextError) {
     return {
       eligiblePaymentMethods,
