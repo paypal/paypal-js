@@ -90,6 +90,16 @@ export {
   type UseBraintreePayPalCheckoutWithVaultSessionProps,
   type UseBraintreePayPalCheckoutWithVaultSessionReturn,
 } from "./hooks/Braintree/useBraintreePayPalCheckoutWithVaultSession";
+export {
+  useBraintreePayPalPayLaterSession,
+  type UseBraintreePayPalPayLaterSessionProps,
+  type UseBraintreePayPalPayLaterSessionReturn,
+} from "./hooks/Braintree/useBraintreePayPalPayLaterSession";
+export {
+  useBraintreeEligibleMethods,
+  type UseBraintreeEligibleMethodsProps,
+  type UseBraintreeEligibleMethodsReturn,
+} from "./hooks/Braintree/useBraintreeEligibleMethods";
 export * from "./hooks/useEligibleMethods";
 export { usePayPalMessages } from "./hooks/usePayPalMessages";
 

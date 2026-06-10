@@ -5,6 +5,7 @@ import {
   braintreeInitialState,
   braintreeReducer,
 } from "../../context/BraintreePayPalContext";
+import { BraintreeDispatchContext } from "../../context/BraintreeDispatchContext";
 import {
   BRAINTREE_DISPATCH_ACTION,
   INSTANCE_LOADING_STATE,
@@ -188,12 +189,16 @@ export const BraintreePayPalProvider: React.FC<
   const contextValue: BraintreePayPalState = useMemo(
     () => ({
       braintreePayPalCheckoutInstance: state.braintreePayPalCheckoutInstance,
+      eligiblePaymentMethods: state.eligiblePaymentMethods,
+      eligiblePaymentMethodsPayload: state.eligiblePaymentMethodsPayload,
       loadingStatus: state.loadingStatus,
       error: state.error,
       isHydrated,
     }),
     [
       state.braintreePayPalCheckoutInstance,
+      state.eligiblePaymentMethods,
+      state.eligiblePaymentMethodsPayload,
       state.loadingStatus,
       state.error,
       isHydrated,
@@ -201,8 +206,10 @@ export const BraintreePayPalProvider: React.FC<
   );
 
   return (
-    <BraintreePayPalContext.Provider value={contextValue}>
-      {children}
-    </BraintreePayPalContext.Provider>
+    <BraintreeDispatchContext.Provider value={dispatch}>
+      <BraintreePayPalContext.Provider value={contextValue}>
+        {children}
+      </BraintreePayPalContext.Provider>
+    </BraintreeDispatchContext.Provider>
   );
 };

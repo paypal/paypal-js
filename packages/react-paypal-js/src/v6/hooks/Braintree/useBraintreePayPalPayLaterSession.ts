@@ -11,38 +11,37 @@ import {
 import { INSTANCE_LOADING_STATE } from "../../types/ProviderEnums";
 
 import type {
-  BraintreeOneTimePaymentSessionOptions,
+  BraintreePayLaterSessionOptions,
   BraintreePaymentSession,
 } from "../../types/braintree";
 
-export type UseBraintreePayPalOneTimePaymentSessionProps =
-  BraintreeOneTimePaymentSessionOptions;
+export type UseBraintreePayPalPayLaterSessionProps =
+  BraintreePayLaterSessionOptions;
 
-export interface UseBraintreePayPalOneTimePaymentSessionReturn {
+export interface UseBraintreePayPalPayLaterSessionReturn {
   error: Error | null;
   isPending: boolean;
   handleClick: () => void;
 }
 
 /**
- * Hook for managing one-time payment sessions with Braintree PayPal.
+ * Hook for managing Pay Later (Buy Now, Pay Later) sessions with Braintree PayPal.
  *
  * The hook returns an `isPending` flag that indicates whether the Braintree checkout
  * instance is still being initialized. Buttons should wait to render until `isPending`
  * is false.
  *
- * For a ready-to-use component that wraps this hook, see `BraintreePayPalOneTimePaymentButton`.
- *
  * @returns Object with: `error` (any session error), `isPending` (checkout instance loading), `handleClick` (starts session)
  *
  * @example
  * // Custom button using the hook directly with a <paypal-button> web component
- * function PayPalOneTimePaymentButton(props: UseBraintreePayPalOneTimePaymentSessionProps) {
- *   const { isPending, handleClick } = useBraintreePayPalOneTimePaymentSession(props);
+ * function PayPalPayLaterButton(props: UseBraintreePayPalPayLaterSessionProps) {
+ *   const { isPending, handleClick } = useBraintreePayPalPayLaterSession(props);
  *
  *   return (
  *     <paypal-button
  *       type="pay"
+ *       fundingSource="paylater"
  *       onClick={() => handleClick()}
  *       disabled={isPending}
  *     />
@@ -62,18 +61,19 @@ export interface UseBraintreePayPalOneTimePaymentSessionReturn {
  *   };
  *
  *   return (
- *     <PayPalOneTimePaymentButton
- *       amount="10.00"
+ *     <PayPalPayLaterButton
+ *       amount="100.00"
  *       currency="USD"
  *       onApprove={handleOnApprove}
  *     />
  *   );
  * }
  */
-export function useBraintreePayPalOneTimePaymentSession({
+export function useBraintreePayPalPayLaterSession({
   // Callbacks
   onApprove,
   onCancel,
+  onComplete,
   onError: onErrorCallback,
   onShippingAddressChange,
   onShippingOptionsChange,
@@ -81,8 +81,6 @@ export function useBraintreePayPalOneTimePaymentSession({
   amount,
   currency,
   intent,
-  commit,
-  offerCredit,
   userAuthenticationEmail,
   returnUrl,
   cancelUrl,
@@ -94,7 +92,7 @@ export function useBraintreePayPalOneTimePaymentSession({
   shippingOptions,
   amountBreakdown,
   shippingAddressOverride,
-}: UseBraintreePayPalOneTimePaymentSessionProps): UseBraintreePayPalOneTimePaymentSessionReturn {
+}: UseBraintreePayPalPayLaterSessionProps): UseBraintreePayPalPayLaterSessionReturn {
   const {
     braintreePayPalCheckoutInstance,
     loadingStatus,
@@ -110,6 +108,7 @@ export function useBraintreePayPalOneTimePaymentSession({
   const proxyCallbacks = useProxyProps({
     onApprove,
     onCancel,
+    onComplete,
     onError: onErrorCallback,
     onShippingAddressChange,
     onShippingOptionsChange,
@@ -140,9 +139,7 @@ export function useBraintreePayPalOneTimePaymentSession({
           ? new Error(`Braintree provider error: ${contextError.message}`, {
               cause: contextError,
             })
-          : new Error(
-              "Braintree One-Time Payment checkout instance not available",
-            ),
+          : new Error("Braintree Pay Later checkout instance not available"),
       );
     }
   }, [braintreePayPalCheckoutInstance, setError, loadingStatus, contextError]);
@@ -155,12 +152,10 @@ export function useBraintreePayPalOneTimePaymentSession({
 
     const newSession = createPaymentSession({
       sessionCreator: () =>
-        braintreePayPalCheckoutInstance.createOneTimePaymentSession({
+        braintreePayPalCheckoutInstance.createPayLaterSession({
           amount,
           currency,
           intent,
-          commit,
-          offerCredit,
           userAuthenticationEmail,
           returnUrl,
           cancelUrl,
@@ -177,7 +172,7 @@ export function useBraintreePayPalOneTimePaymentSession({
       sdkInstance: braintreePayPalCheckoutInstance,
       setError,
       errorMessage:
-        "Failed to create Braintree payment session. Ensure the BraintreePayPalProvider is properly initialized with a valid client token and namespace.",
+        "Failed to create Braintree Pay Later session. Ensure the BraintreePayPalProvider is properly initialized with a valid client token and namespace.",
     });
 
     if (!newSession) {
@@ -194,8 +189,6 @@ export function useBraintreePayPalOneTimePaymentSession({
     amount,
     currency,
     intent,
-    commit,
-    offerCredit,
     userAuthenticationEmail,
     returnUrl,
     cancelUrl,

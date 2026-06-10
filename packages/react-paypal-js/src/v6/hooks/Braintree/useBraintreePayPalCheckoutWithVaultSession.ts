@@ -75,14 +75,18 @@ export function useBraintreePayPalCheckoutWithVaultSession({
   cancelUrl,
   displayName,
   presentationMode,
+  shippingCallbackUrl,
   // Object/array data options (require deep comparison)
   billingAgreementDetails,
   lineItems,
   shippingOptions,
   amountBreakdown,
 }: UseBraintreePayPalCheckoutWithVaultSessionProps): UseBraintreePayPalCheckoutWithVaultSessionReturn {
-  const { braintreePayPalCheckoutInstance, loadingStatus } =
-    useBraintreePayPal();
+  const {
+    braintreePayPalCheckoutInstance,
+    loadingStatus,
+    error: contextError,
+  } = useBraintreePayPal();
   const isMountedRef = useIsMountedRef();
   const sessionRef = useRef<BraintreePaymentSession | null>(null);
   const [error, setError] = useError();
@@ -116,9 +120,17 @@ export function useBraintreePayPalCheckoutWithVaultSession({
     if (braintreePayPalCheckoutInstance) {
       setError(null);
     } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
-      setError(new Error("Braintree checkout instance not available"));
+      setError(
+        contextError
+          ? new Error(`Braintree provider error: ${contextError.message}`, {
+              cause: contextError,
+            })
+          : new Error(
+              "Braintree Checkout With Vault checkout instance not available",
+            ),
+      );
     }
-  }, [braintreePayPalCheckoutInstance, setError, loadingStatus]);
+  }, [braintreePayPalCheckoutInstance, setError, loadingStatus, contextError]);
 
   useEffect(() => {
     if (!braintreePayPalCheckoutInstance) {
@@ -137,6 +149,7 @@ export function useBraintreePayPalCheckoutWithVaultSession({
           cancelUrl,
           displayName,
           presentationMode,
+          shippingCallbackUrl,
           billingAgreementDetails: memoizedBillingAgreementDetails,
           lineItems: memoizedLineItems,
           shippingOptions: memoizedShippingOptions,
@@ -170,6 +183,7 @@ export function useBraintreePayPalCheckoutWithVaultSession({
     cancelUrl,
     displayName,
     presentationMode,
+    shippingCallbackUrl,
     memoizedBillingAgreementDetails,
     memoizedLineItems,
     memoizedShippingOptions,

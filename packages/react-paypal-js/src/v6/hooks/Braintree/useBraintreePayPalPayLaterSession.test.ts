@@ -1,15 +1,16 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 
 import { expectCurrentErrorValue } from "../useErrorTestUtil";
-import { useBraintreePayPalBillingAgreementSession } from "./useBraintreePayPalBillingAgreementSession";
+import { useBraintreePayPalPayLaterSession } from "./useBraintreePayPalPayLaterSession";
 import { useBraintreePayPal } from "./useBraintreePayPal";
 import { useProxyProps } from "../../utils";
 import { INSTANCE_LOADING_STATE } from "../../types/ProviderEnums";
 
 import type { BraintreePaymentSession } from "../../types/braintree";
 import type { BraintreePayPalState } from "../../context/BraintreePayPalContext";
-import type { UseBraintreePayPalBillingAgreementSessionProps } from "./useBraintreePayPalBillingAgreementSession";
+import type { UseBraintreePayPalPayLaterSessionProps } from "./useBraintreePayPalPayLaterSession";
 
+// Must declare jest.mock at top level for hoisting
 jest.mock("./useBraintreePayPal");
 
 jest.mock("../../utils", () => ({
@@ -30,7 +31,7 @@ const createMockSession = (): BraintreePaymentSession => ({
 });
 
 const createMockCheckoutInstance = (session = createMockSession()) => ({
-  createBillingAgreementSession: jest.fn().mockReturnValue(session),
+  createPayLaterSession: jest.fn().mockReturnValue(session),
 });
 
 const defaultBraintreeState: BraintreePayPalState = {
@@ -68,12 +69,13 @@ function mockBraintreeRejected(): void {
   });
 }
 
-describe("useBraintreeBillingAgreementSession", () => {
+describe("useBraintreePayPalPayLaterSession", () => {
   let mockSession: BraintreePaymentSession;
   let mockCheckoutInstance: ReturnType<typeof createMockCheckoutInstance>;
 
-  const defaultProps: UseBraintreePayPalBillingAgreementSessionProps = {
-    billingAgreementDescription: "Test billing agreement",
+  const defaultProps: UseBraintreePayPalPayLaterSessionProps = {
+    amount: "10.00",
+    currency: "USD",
     onApprove: jest.fn(),
   };
 
@@ -100,20 +102,14 @@ describe("useBraintreeBillingAgreementSession", () => {
         result: {
           current: { error },
         },
-      } = renderHook(() =>
-        useBraintreePayPalBillingAgreementSession(defaultProps),
-      );
+      } = renderHook(() => useBraintreePayPalPayLaterSession(defaultProps));
 
       expectCurrentErrorValue(error);
 
       expect(error).toEqual(
-        new Error(
-          "Braintree Billing Agreement checkout instance not available",
-        ),
+        new Error("Braintree Pay Later checkout instance not available"),
       );
-      expect(
-        mockCheckoutInstance.createBillingAgreementSession,
-      ).not.toHaveBeenCalled();
+      expect(mockCheckoutInstance.createPayLaterSession).not.toHaveBeenCalled();
     });
 
     test("should surface provider error as the cause when the provider failed to initialize", () => {
@@ -127,9 +123,7 @@ describe("useBraintreeBillingAgreementSession", () => {
         result: {
           current: { error },
         },
-      } = renderHook(() =>
-        useBraintreePayPalBillingAgreementSession(defaultProps),
-      );
+      } = renderHook(() => useBraintreePayPalPayLaterSession(defaultProps));
 
       expectCurrentErrorValue(error);
       expect(error?.message).toBe("Braintree provider error: init failed");
@@ -146,10 +140,10 @@ describe("useBraintreeBillingAgreementSession", () => {
         thrownError: "String error message",
       },
     ])(
-      "should handle $description thrown by createBillingAgreementSession",
+      "should handle $description thrown by createPayLaterSession",
       ({ thrownError }) => {
         const mockCheckoutInstanceWithError = {
-          createBillingAgreementSession: jest.fn().mockImplementation(() => {
+          createPayLaterSession: jest.fn().mockImplementation(() => {
             throw thrownError;
           }),
         };
@@ -162,14 +156,12 @@ describe("useBraintreeBillingAgreementSession", () => {
           result: {
             current: { error },
           },
-        } = renderHook(() =>
-          useBraintreePayPalBillingAgreementSession(defaultProps),
-        );
+        } = renderHook(() => useBraintreePayPalPayLaterSession(defaultProps));
 
         expectCurrentErrorValue(error);
 
         expect(error?.message).toContain(
-          "Failed to create Braintree billing agreement session",
+          "Failed to create Braintree Pay Later session",
         );
         expect(error?.message).toContain(
           "BraintreePayPalProvider is properly initialized",
@@ -187,27 +179,25 @@ describe("useBraintreeBillingAgreementSession", () => {
         result: {
           current: { error },
         },
-      } = renderHook(() =>
-        useBraintreePayPalBillingAgreementSession(defaultProps),
-      );
+      } = renderHook(() => useBraintreePayPalPayLaterSession(defaultProps));
 
       expect(error).toBeNull();
     });
 
     test("should clear errors when checkout instance becomes available", () => {
+      // First render: no instance, REJECTED state
       mockBraintreeRejected();
 
       const { result, rerender } = renderHook(() =>
-        useBraintreePayPalBillingAgreementSession(defaultProps),
+        useBraintreePayPalPayLaterSession(defaultProps),
       );
 
       expectCurrentErrorValue(result.current.error);
       expect(result.current.error).toEqual(
-        new Error(
-          "Braintree Billing Agreement checkout instance not available",
-        ),
+        new Error("Braintree Pay Later checkout instance not available"),
       );
 
+      // Second render: instance becomes available
       const newMockSession = createMockSession();
       const newMockCheckoutInstance =
         createMockCheckoutInstance(newMockSession);
@@ -231,7 +221,7 @@ describe("useBraintreeBillingAgreementSession", () => {
         mockBraintreeContext({ loadingStatus });
 
         const { result } = renderHook(() =>
-          useBraintreePayPalBillingAgreementSession(defaultProps),
+          useBraintreePayPalPayLaterSession(defaultProps),
         );
 
         expect(result.current.isPending).toBe(expectedIsPending);
@@ -241,56 +231,42 @@ describe("useBraintreeBillingAgreementSession", () => {
     test("should create a session with the correct options", () => {
       const onApprove = jest.fn();
       const onCancel = jest.fn();
+      const onComplete = jest.fn();
       const onError = jest.fn();
+      const onShippingAddressChange = jest.fn();
+      const onShippingOptionsChange = jest.fn();
 
-      const props: UseBraintreePayPalBillingAgreementSessionProps = {
-        billingAgreementDescription: "Premium subscription",
-        planType: "SUBSCRIPTION",
-        planMetadata: {
-          currencyIsoCode: "USD",
-          name: "Premium Plan",
-          billingCycles: [
-            {
-              billingFrequency: 1,
-              billingFrequencyUnit: "MONTH",
-              numberOfExecutions: 0,
-              sequence: 1,
-              startDate: "2025-12-01T00:00:00Z",
-              trial: false,
-              pricingScheme: { pricingModel: "FIXED", price: "9.99" },
-            },
-          ],
-        },
-        amount: "9.99",
-        currency: "USD",
-        offerCredit: true,
+      const props: UseBraintreePayPalPayLaterSessionProps = {
+        amount: "25.00",
+        currency: "EUR",
+        intent: "authorize",
+        userAuthenticationEmail: "test@example.com",
         displayName: "Test Store",
         presentationMode: "popup",
         onApprove,
         onCancel,
+        onComplete,
         onError,
+        onShippingAddressChange,
+        onShippingOptionsChange,
       };
 
-      renderHook(() => useBraintreePayPalBillingAgreementSession(props));
+      renderHook(() => useBraintreePayPalPayLaterSession(props));
 
-      expect(
-        mockCheckoutInstance.createBillingAgreementSession,
-      ).toHaveBeenCalledWith(
+      expect(mockCheckoutInstance.createPayLaterSession).toHaveBeenCalledWith(
         expect.objectContaining({
-          billingAgreementDescription: "Premium subscription",
-          planType: "SUBSCRIPTION",
-          planMetadata: expect.objectContaining({
-            currencyIsoCode: "USD",
-            name: "Premium Plan",
-          }),
-          amount: "9.99",
-          currency: "USD",
-          offerCredit: true,
+          amount: "25.00",
+          currency: "EUR",
+          intent: "authorize",
+          userAuthenticationEmail: "test@example.com",
           displayName: "Test Store",
           presentationMode: "popup",
           onApprove,
           onCancel,
+          onComplete,
           onError,
+          onShippingAddressChange,
+          onShippingOptionsChange,
         }),
       );
     });
@@ -298,30 +274,35 @@ describe("useBraintreeBillingAgreementSession", () => {
     test("should forward callback invocations to the consumer", () => {
       const onApprove = jest.fn();
       const onCancel = jest.fn();
+      const onComplete = jest.fn();
       const onError = jest.fn();
 
-      const props: UseBraintreePayPalBillingAgreementSessionProps = {
-        billingAgreementDescription: "Test agreement",
+      const props: UseBraintreePayPalPayLaterSessionProps = {
+        amount: "10.00",
+        currency: "USD",
         onApprove,
         onCancel,
+        onComplete,
         onError,
       };
 
-      renderHook(() => useBraintreePayPalBillingAgreementSession(props));
+      renderHook(() => useBraintreePayPalPayLaterSession(props));
 
       const createSessionCall =
-        mockCheckoutInstance.createBillingAgreementSession.mock.calls[0][0];
+        mockCheckoutInstance.createPayLaterSession.mock.calls[0][0];
 
       const mockApprovalData = {
-        billingToken: "BA-TOKEN123",
+        payerId: "PAYER123",
+        orderId: "ORDER456",
       };
       createSessionCall.onApprove(mockApprovalData);
-      const mockCancelData = { billingToken: "BA-TOKEN123" };
-      createSessionCall.onCancel(mockCancelData);
+      createSessionCall.onCancel();
+      createSessionCall.onComplete();
       createSessionCall.onError(new Error("test error"));
 
       expect(onApprove).toHaveBeenCalledWith(mockApprovalData);
-      expect(onCancel).toHaveBeenCalledWith(mockCancelData);
+      expect(onCancel).toHaveBeenCalledWith();
+      expect(onComplete).toHaveBeenCalledWith();
       expect(onError).toHaveBeenCalledWith(new Error("test error"));
     });
   });
@@ -329,11 +310,12 @@ describe("useBraintreeBillingAgreementSession", () => {
   describe("session lifecycle", () => {
     test("should nullify session on unmount", () => {
       const { result, unmount } = renderHook(() =>
-        useBraintreePayPalBillingAgreementSession(defaultProps),
+        useBraintreePayPalPayLaterSession(defaultProps),
       );
 
       unmount();
 
+      // After unmount, handleClick should not call start
       act(() => {
         result.current.handleClick();
       });
@@ -345,37 +327,34 @@ describe("useBraintreeBillingAgreementSession", () => {
       const onApprove = jest.fn();
 
       const { rerender } = renderHook(
-        ({ billingAgreementDescription }) =>
-          useBraintreePayPalBillingAgreementSession({
-            billingAgreementDescription,
+        ({ amount }) =>
+          useBraintreePayPalPayLaterSession({
+            amount,
+            currency: "USD",
             onApprove,
           }),
-        { initialProps: { billingAgreementDescription: "First agreement" } },
+        { initialProps: { amount: "10.00" } },
       );
 
-      expect(
-        mockCheckoutInstance.createBillingAgreementSession,
-      ).toHaveBeenCalledTimes(1);
+      expect(mockCheckoutInstance.createPayLaterSession).toHaveBeenCalledTimes(
+        1,
+      );
 
       jest.clearAllMocks();
 
-      rerender({ billingAgreementDescription: "Updated agreement" });
+      rerender({ amount: "20.00" });
 
-      expect(
-        mockCheckoutInstance.createBillingAgreementSession,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        mockCheckoutInstance.createBillingAgreementSession,
-      ).toHaveBeenCalledWith(
-        expect.objectContaining({
-          billingAgreementDescription: "Updated agreement",
-        }),
+      expect(mockCheckoutInstance.createPayLaterSession).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(mockCheckoutInstance.createPayLaterSession).toHaveBeenCalledWith(
+        expect.objectContaining({ amount: "20.00" }),
       );
     });
 
     test("should recreate session when checkout instance changes", () => {
       const { rerender } = renderHook(() =>
-        useBraintreePayPalBillingAgreementSession(defaultProps),
+        useBraintreePayPalPayLaterSession(defaultProps),
       );
 
       jest.clearAllMocks();
@@ -390,9 +369,7 @@ describe("useBraintreeBillingAgreementSession", () => {
 
       rerender();
 
-      expect(
-        newMockCheckoutInstance.createBillingAgreementSession,
-      ).toHaveBeenCalled();
+      expect(newMockCheckoutInstance.createPayLaterSession).toHaveBeenCalled();
     });
 
     test("should not recreate session when only callbacks change", () => {
@@ -405,8 +382,9 @@ describe("useBraintreeBillingAgreementSession", () => {
 
       const { rerender } = renderHook(
         ({ onApprove }) =>
-          useBraintreePayPalBillingAgreementSession({
-            billingAgreementDescription: "Test agreement",
+          useBraintreePayPalPayLaterSession({
+            amount: "10.00",
+            currency: "USD",
             onApprove,
           }),
         { initialProps: { onApprove: initialOnApprove } },
@@ -416,9 +394,7 @@ describe("useBraintreeBillingAgreementSession", () => {
 
       rerender({ onApprove: newOnApprove });
 
-      expect(
-        mockCheckoutInstance.createBillingAgreementSession,
-      ).not.toHaveBeenCalled();
+      expect(mockCheckoutInstance.createPayLaterSession).not.toHaveBeenCalled();
     });
 
     test("should not recreate session when inline object options have the same values", () => {
@@ -426,67 +402,48 @@ describe("useBraintreeBillingAgreementSession", () => {
         jest.requireActual("../../utils").useProxyProps,
       );
 
-      const planMetadata = {
-        currencyIsoCode: "USD",
-        name: "Premium Plan",
-        billingCycles: [
-          {
-            billingFrequency: 1,
-            billingFrequencyUnit: "MONTH" as const,
-            numberOfExecutions: 0,
-            sequence: 1,
-            startDate: "2025-12-01T00:00:00Z",
-            trial: false,
-            pricingScheme: {
-              pricingModel: "FIXED" as const,
-              price: "9.99",
-            },
-          },
-        ],
-      };
-
       const { rerender } = renderHook(
-        ({ planMetadata }) =>
-          useBraintreePayPalBillingAgreementSession({
-            billingAgreementDescription: "Test agreement",
+        ({ lineItems }) =>
+          useBraintreePayPalPayLaterSession({
+            amount: "10.00",
+            currency: "USD",
             onApprove: jest.fn(),
-            planType: "SUBSCRIPTION",
-            planMetadata,
+            lineItems,
           }),
-        { initialProps: { planMetadata } },
+        {
+          initialProps: {
+            lineItems: [
+              {
+                quantity: "1",
+                unitAmount: "10.00",
+                name: "Item",
+                kind: "debit" as const,
+              },
+            ],
+          },
+        },
       );
 
       jest.clearAllMocks();
 
+      // Pass a new array reference with the same values
       rerender({
-        planMetadata: {
-          currencyIsoCode: "USD",
-          name: "Premium Plan",
-          billingCycles: [
-            {
-              billingFrequency: 1,
-              billingFrequencyUnit: "MONTH" as const,
-              numberOfExecutions: 0,
-              sequence: 1,
-              startDate: "2025-12-01T00:00:00Z",
-              trial: false,
-              pricingScheme: {
-                pricingModel: "FIXED" as const,
-                price: "9.99",
-              },
-            },
-          ],
-        },
+        lineItems: [
+          {
+            quantity: "1",
+            unitAmount: "10.00",
+            name: "Item",
+            kind: "debit" as const,
+          },
+        ],
       });
 
-      expect(
-        mockCheckoutInstance.createBillingAgreementSession,
-      ).not.toHaveBeenCalled();
+      expect(mockCheckoutInstance.createPayLaterSession).not.toHaveBeenCalled();
     });
 
     test("should not retry session creation on a failed checkout instance", () => {
       const mockCheckoutInstanceWithError = {
-        createBillingAgreementSession: jest.fn().mockImplementation(() => {
+        createPayLaterSession: jest.fn().mockImplementation(() => {
           throw new Error("init failure");
         }),
       };
@@ -496,19 +453,20 @@ describe("useBraintreeBillingAgreementSession", () => {
       });
 
       const { rerender } = renderHook(() =>
-        useBraintreePayPalBillingAgreementSession(defaultProps),
+        useBraintreePayPalPayLaterSession(defaultProps),
       );
 
       expect(
-        mockCheckoutInstanceWithError.createBillingAgreementSession,
+        mockCheckoutInstanceWithError.createPayLaterSession,
       ).toHaveBeenCalledTimes(1);
 
       jest.clearAllMocks();
 
+      // Rerender with same failed instance — should not retry
       rerender();
 
       expect(
-        mockCheckoutInstanceWithError.createBillingAgreementSession,
+        mockCheckoutInstanceWithError.createPayLaterSession,
       ).not.toHaveBeenCalled();
     });
 
@@ -518,7 +476,7 @@ describe("useBraintreeBillingAgreementSession", () => {
       );
 
       const mockCheckoutInstanceWithError = {
-        createBillingAgreementSession: jest.fn().mockImplementation(() => {
+        createPayLaterSession: jest.fn().mockImplementation(() => {
           throw new Error("init failure");
         }),
       };
@@ -528,13 +486,14 @@ describe("useBraintreeBillingAgreementSession", () => {
       });
 
       const { rerender } = renderHook(() =>
-        useBraintreePayPalBillingAgreementSession(defaultProps),
+        useBraintreePayPalPayLaterSession(defaultProps),
       );
 
       expect(
-        mockCheckoutInstanceWithError.createBillingAgreementSession,
+        mockCheckoutInstanceWithError.createPayLaterSession,
       ).toHaveBeenCalledTimes(1);
 
+      // Replace with a working instance
       const newMockSession = createMockSession();
       const newMockCheckoutInstance =
         createMockCheckoutInstance(newMockSession);
@@ -546,7 +505,7 @@ describe("useBraintreeBillingAgreementSession", () => {
       rerender();
 
       expect(
-        newMockCheckoutInstance.createBillingAgreementSession,
+        newMockCheckoutInstance.createPayLaterSession,
       ).toHaveBeenCalledTimes(1);
     });
   });
@@ -554,7 +513,7 @@ describe("useBraintreeBillingAgreementSession", () => {
   describe("handleClick", () => {
     test("should call session.start() when session is available", () => {
       const { result } = renderHook(() =>
-        useBraintreePayPalBillingAgreementSession(defaultProps),
+        useBraintreePayPalPayLaterSession(defaultProps),
       );
 
       act(() => {
@@ -568,7 +527,7 @@ describe("useBraintreeBillingAgreementSession", () => {
       mockBraintreeRejected();
 
       const { result } = renderHook(() =>
-        useBraintreePayPalBillingAgreementSession(defaultProps),
+        useBraintreePayPalPayLaterSession(defaultProps),
       );
 
       act(() => {
@@ -580,13 +539,13 @@ describe("useBraintreeBillingAgreementSession", () => {
       expectCurrentErrorValue(error);
 
       expect(error).toEqual(
-        new Error("Braintree billing agreement session not available"),
+        new Error("Braintree payment session not available"),
       );
     });
 
     test("should not call start after component is unmounted", () => {
       const { result, unmount } = renderHook(() =>
-        useBraintreePayPalBillingAgreementSession(defaultProps),
+        useBraintreePayPalPayLaterSession(defaultProps),
       );
 
       unmount();
