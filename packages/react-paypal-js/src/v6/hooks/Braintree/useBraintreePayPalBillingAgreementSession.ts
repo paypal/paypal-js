@@ -34,7 +34,7 @@ export interface UseBraintreePayPalBillingAgreementSessionReturn {
  * instance is still being initialized. Buttons should wait to render until `isPending`
  * is false.
  *
- * For a ready-to-use component that wraps this hook, see {@link BraintreePayPalBillingAgreementButton}.
+ * For a ready-to-use component that wraps this hook, see `BraintreePayPalBillingAgreementButton`.
  *
  * @returns Object with: `error` (any session error), `isPending` (checkout instance loading), `handleClick` (starts session)
  *
