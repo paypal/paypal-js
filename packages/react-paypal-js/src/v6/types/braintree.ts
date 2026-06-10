@@ -1,3 +1,5 @@
+import type { FindEligibleMethodsGetDetails } from "@paypal/paypal-js/sdk-v6";
+
 // ---- Shared types ----
 
 export interface BraintreeLineItem {
@@ -157,13 +159,17 @@ export interface BraintreeTokenizePayload {
 
 // ---- Eligibility result ----
 
+// Braintree supports a subset of the SDK's funding sources — no applepay,
+// googlepay, or advanced_cards.
+export type BraintreeEligibleFundingSource = "paypal" | "paylater" | "credit";
+
 export interface BraintreeEligibilityResult {
   paypal: boolean;
   paylater: boolean;
   credit: boolean;
-  getDetails: (
-    methodName: "paypal" | "paylater" | "credit",
-  ) => Record<string, unknown> | null;
+  getDetails: <T extends BraintreeEligibleFundingSource>(
+    methodName: T,
+  ) => FindEligibleMethodsGetDetails<T>;
 }
 
 // ---- Method options ----

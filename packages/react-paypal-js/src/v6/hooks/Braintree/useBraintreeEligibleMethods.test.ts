@@ -34,7 +34,7 @@ const createMockEligibility = (
   paypal: true,
   paylater: true,
   credit: false,
-  getDetails: jest.fn().mockReturnValue(null),
+  getDetails: jest.fn().mockReturnValue({ canBeVaulted: false }),
   ...overrides,
 });
 
@@ -395,6 +395,46 @@ describe("useBraintreeEligibleMethods", () => {
       // is already cached on context, so it should still skip the network call.
       expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
       expect(secondReturn.current?.eligibleMethods).toBe(eligibility);
+    });
+  });
+
+  describe("StrictMode", () => {
+    test("should resolve isPending under React 18 StrictMode double-mount", async () => {
+      const eligibility = createMockEligibility();
+      const checkoutInstance = createMockCheckoutInstance(eligibility);
+      const { Wrapper } = makeProvider({
+        braintreePayPalCheckoutInstance:
+          checkoutInstance as unknown as BraintreePayPalCheckoutInstance,
+      });
+
+      const hookReturn: {
+        current: UseBraintreeEligibleMethodsReturn | null;
+      } = { current: null };
+
+      function Consumer() {
+        hookReturn.current = useBraintreeEligibleMethods(defaultProps);
+        return null;
+      }
+
+      // StrictMode mounts effects twice (mount -> cleanup -> mount). The first
+      // mount starts a fetch and is immediately aborted by its cleanup; the
+      // dedup marker must be rolled back so the second mount re-fetches.
+      // Without the rollback, the hook stays stuck at isPending=true.
+      render(
+        React.createElement(
+          React.StrictMode,
+          null,
+          React.createElement(Wrapper, null, React.createElement(Consumer)),
+        ),
+      );
+
+      await waitFor(() => expect(hookReturn.current?.isPending).toBe(false));
+
+      expect(hookReturn.current?.eligibleMethods).toBe(eligibility);
+      expect(hookReturn.current?.error).toBeNull();
+      expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledWith(
+        defaultProps,
+      );
     });
   });
 

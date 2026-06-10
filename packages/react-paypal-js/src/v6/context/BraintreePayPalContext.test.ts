@@ -42,7 +42,7 @@ function createMockCheckoutInstance(): BraintreePayPalCheckoutInstance {
       paypal: true,
       paylater: false,
       credit: false,
-      getDetails: jest.fn().mockReturnValue(null),
+      getDetails: jest.fn().mockReturnValue({ canBeVaulted: false }),
     }),
     getClientId: jest.fn().mockResolvedValue("client-id"),
     updatePayment: jest.fn().mockResolvedValue(undefined),
@@ -66,7 +66,7 @@ function createMockEligibility(): BraintreeEligibilityResult {
     paypal: true,
     paylater: true,
     credit: false,
-    getDetails: jest.fn().mockReturnValue(null),
+    getDetails: jest.fn().mockReturnValue({ canBeVaulted: false }),
   };
 }
 

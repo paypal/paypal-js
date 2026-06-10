@@ -20,7 +20,7 @@ export type UseBraintreeEligibleMethodsProps =
 
 export interface UseBraintreeEligibleMethodsReturn {
   eligibleMethods: BraintreeEligibilityResult | null;
-  isPending: boolean;
+  isLoading: boolean;
   error: Error | null;
 }
 
@@ -152,6 +152,7 @@ export function useBraintreeEligibleMethods({
     };
 
     let isSubscribed = true;
+    let didSettle = false;
     setIsFetching(true);
     setError(null);
 
@@ -180,6 +181,10 @@ export function useBraintreeEligibleMethods({
         setError(err);
       })
       .finally(() => {
+        // Mark the request as settled regardless of subscription so the
+        // cleanup below knows it completed and should not roll back the dedup
+        // marker.
+        didSettle = true;
         if (!isSubscribed || !isMountedRef.current) {
           return;
         }
@@ -188,6 +193,18 @@ export function useBraintreeEligibleMethods({
 
     return () => {
       isSubscribed = false;
+      // If this fetch was torn down before it settled (e.g. a React 18
+      // StrictMode mount/cleanup/mount cycle), clear the dedup marker so the
+      // remount re-fetches. Without this, the remount sees lastFetchRef already
+      // matching (instance, payload) and skips, while the only in-flight fetch
+      // was just aborted — leaving the hook stuck with isPending=true forever.
+      if (
+        !didSettle &&
+        lastFetchRef.current?.instance === braintreePayPalCheckoutInstance &&
+        lastFetchRef.current?.payload === memoizedOptions
+      ) {
+        lastFetchRef.current = null;
+      }
     };
   }, [
     braintreePayPalCheckoutInstance,
@@ -207,7 +224,7 @@ export function useBraintreeEligibleMethods({
       memoizedOptions ?? undefined,
     );
 
-  const isPending =
+  const isLoading =
     loadingStatus === INSTANCE_LOADING_STATE.PENDING ||
     isFetching ||
     (!eligibleMethods && !error) ||
@@ -215,7 +232,7 @@ export function useBraintreeEligibleMethods({
 
   return {
     eligibleMethods,
-    isPending,
+    isLoading,
     error,
   };
 }
