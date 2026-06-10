@@ -19,7 +19,7 @@ import {
 } from "../../types/ProviderEnums";
 
 import type {
-  BraintreeEligiblePaymentMethodsOutput,
+  BraintreeEligibilityResult,
   BraintreeFindEligibleMethodsOptions,
 } from "../../types/braintree";
 import type {
@@ -29,8 +29,8 @@ import type {
 import type { BraintreePayPalCheckoutInstance } from "../../types";
 
 const createMockEligibility = (
-  overrides: Partial<BraintreeEligiblePaymentMethodsOutput> = {},
-): BraintreeEligiblePaymentMethodsOutput => ({
+  overrides: Partial<BraintreeEligibilityResult> = {},
+): BraintreeEligibilityResult => ({
   paypal: true,
   paylater: true,
   credit: false,
@@ -45,8 +45,8 @@ type MockCheckoutInstance = Pick<
 
 const createMockCheckoutInstance = (
   result:
-    | BraintreeEligiblePaymentMethodsOutput
-    | Promise<BraintreeEligiblePaymentMethodsOutput> = createMockEligibility(),
+    | BraintreeEligibilityResult
+    | Promise<BraintreeEligibilityResult> = createMockEligibility(),
 ): MockCheckoutInstance => ({
   findEligibleMethods: jest
     .fn()
@@ -495,14 +495,10 @@ describe("useBraintreeEligibleMethods", () => {
 
   describe("unmount", () => {
     test("should not update state after unmount", async () => {
-      let resolveFetch: (
-        value: BraintreeEligiblePaymentMethodsOutput,
-      ) => void = () => {};
-      const pending = new Promise<BraintreeEligiblePaymentMethodsOutput>(
-        (resolve) => {
-          resolveFetch = resolve;
-        },
-      );
+      let resolveFetch: (value: BraintreeEligibilityResult) => void = () => {};
+      const pending = new Promise<BraintreeEligibilityResult>((resolve) => {
+        resolveFetch = resolve;
+      });
 
       const checkoutInstance = {
         findEligibleMethods: jest.fn().mockReturnValue(pending),

@@ -11,7 +11,7 @@ import {
 } from "../../types/ProviderEnums";
 
 import type {
-  BraintreeEligiblePaymentMethodsOutput,
+  BraintreeEligibilityResult,
   BraintreeFindEligibleMethodsOptions,
 } from "../../types/braintree";
 
@@ -19,7 +19,7 @@ export type UseBraintreeEligibleMethodsProps =
   BraintreeFindEligibleMethodsOptions;
 
 export interface UseBraintreeEligibleMethodsReturn {
-  eligiblePaymentMethods: BraintreeEligiblePaymentMethodsOutput | null;
+  eligiblePaymentMethods: BraintreeEligibilityResult | null;
   isLoading: boolean;
   error: Error | null;
 }

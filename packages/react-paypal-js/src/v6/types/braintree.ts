@@ -163,7 +163,7 @@ export interface BraintreeTokenizePayload {
 // googlepay, or advanced_cards.
 export type BraintreeEligibleFundingSource = "paypal" | "paylater" | "credit";
 
-export interface BraintreeEligiblePaymentMethodsOutput {
+export interface BraintreeEligibilityResult {
   paypal: boolean;
   paylater: boolean;
   credit: boolean;
@@ -368,7 +368,7 @@ export interface BraintreePayPalCheckoutInstance {
   createPayment: (options: BraintreeCreatePaymentOptions) => Promise<string>;
   findEligibleMethods: (
     options: BraintreeFindEligibleMethodsOptions,
-  ) => Promise<BraintreeEligiblePaymentMethodsOutput>;
+  ) => Promise<BraintreeEligibilityResult>;
   getClientId: () => Promise<string>;
   updatePayment: (
     options: BraintreeUpdatePaymentOptions,

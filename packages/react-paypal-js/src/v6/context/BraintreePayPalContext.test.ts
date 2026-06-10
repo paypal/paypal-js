@@ -10,7 +10,7 @@ import type {
 } from "./BraintreePayPalContext";
 import type { BraintreePayPalCheckoutInstance } from "../types";
 import type {
-  BraintreeEligiblePaymentMethodsOutput,
+  BraintreeEligibilityResult,
   BraintreeFindEligibleMethodsOptions,
 } from "../types/braintree";
 
@@ -61,7 +61,7 @@ function createInitialState(): BraintreePayPalState {
   };
 }
 
-function createMockEligibility(): BraintreeEligiblePaymentMethodsOutput {
+function createMockEligibility(): BraintreeEligibilityResult {
   return {
     paypal: true,
     paylater: true,

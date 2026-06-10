@@ -7,13 +7,13 @@ import {
 
 import type { BraintreePayPalCheckoutInstance } from "../types";
 import type {
-  BraintreeEligiblePaymentMethodsOutput,
+  BraintreeEligibilityResult,
   BraintreeFindEligibleMethodsOptions,
 } from "../types/braintree";
 
 export interface BraintreePayPalState {
   braintreePayPalCheckoutInstance: BraintreePayPalCheckoutInstance | null;
-  eligiblePaymentMethods: BraintreeEligiblePaymentMethodsOutput | null;
+  eligiblePaymentMethods: BraintreeEligibilityResult | null;
   eligiblePaymentMethodsPayload?: BraintreeFindEligibleMethodsOptions | null;
   loadingStatus: INSTANCE_LOADING_STATE;
   error: Error | null;
@@ -32,7 +32,7 @@ export type BraintreeAction =
   | {
       type: BRAINTREE_DISPATCH_ACTION.SET_ELIGIBILITY;
       value: {
-        eligiblePaymentMethods: BraintreeEligiblePaymentMethodsOutput | null;
+        eligiblePaymentMethods: BraintreeEligibilityResult | null;
         payload?: BraintreeFindEligibleMethodsOptions | null;
       };
     }
