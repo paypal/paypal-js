@@ -19,7 +19,7 @@ import {
 } from "../../types/ProviderEnums";
 
 import type {
-  BraintreeEligibilityResult,
+  BraintreeEligiblePaymentMethodsOutput,
   BraintreeFindEligibleMethodsOptions,
 } from "../../types/braintree";
 import type {
@@ -29,8 +29,8 @@ import type {
 import type { BraintreePayPalCheckoutInstance } from "../../types";
 
 const createMockEligibility = (
-  overrides: Partial<BraintreeEligibilityResult> = {},
-): BraintreeEligibilityResult => ({
+  overrides: Partial<BraintreeEligiblePaymentMethodsOutput> = {},
+): BraintreeEligiblePaymentMethodsOutput => ({
   paypal: true,
   paylater: true,
   credit: false,
@@ -45,8 +45,8 @@ type MockCheckoutInstance = Pick<
 
 const createMockCheckoutInstance = (
   result:
-    | BraintreeEligibilityResult
-    | Promise<BraintreeEligibilityResult> = createMockEligibility(),
+    | BraintreeEligiblePaymentMethodsOutput
+    | Promise<BraintreeEligiblePaymentMethodsOutput> = createMockEligibility(),
 ): MockCheckoutInstance => ({
   findEligibleMethods: jest
     .fn()
@@ -131,7 +131,7 @@ describe("useBraintreeEligibleMethods", () => {
       );
 
       expect(result.current.isLoading).toBe(true);
-      expect(result.current.eligibleMethods).toBeNull();
+      expect(result.current.eligiblePaymentMethods).toBeNull();
       expect(result.current.error).toBeNull();
     });
 
@@ -145,7 +145,7 @@ describe("useBraintreeEligibleMethods", () => {
         { wrapper: Wrapper },
       );
 
-      expect(result.current.eligibleMethods).toBeNull();
+      expect(result.current.eligiblePaymentMethods).toBeNull();
     });
 
     test("should call findEligibleMethods with the supplied options when instance is available", async () => {
@@ -167,7 +167,7 @@ describe("useBraintreeEligibleMethods", () => {
 
       await waitForNextUpdate();
 
-      expect(result.current.eligibleMethods).toBe(eligibility);
+      expect(result.current.eligiblePaymentMethods).toBe(eligibility);
       expect(result.current.isLoading).toBe(false);
       expect(result.current.error).toBeNull();
     });
@@ -191,7 +191,7 @@ describe("useBraintreeEligibleMethods", () => {
 
       expectCurrentErrorValue(result.current.error);
       expect(result.current.error).toBe(thrownError);
-      expect(result.current.eligibleMethods).toBeNull();
+      expect(result.current.eligiblePaymentMethods).toBeNull();
       expect(result.current.isLoading).toBe(false);
     });
 
@@ -247,7 +247,7 @@ describe("useBraintreeEligibleMethods", () => {
         "checkout instance failed to initialize",
       );
       expect(result.current.isLoading).toBe(false);
-      expect(result.current.eligibleMethods).toBeNull();
+      expect(result.current.eligiblePaymentMethods).toBeNull();
     });
   });
 
@@ -352,7 +352,7 @@ describe("useBraintreeEligibleMethods", () => {
 
       expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
       expect(result.current.error).not.toBeNull();
-      expect(result.current.eligibleMethods).toBeNull();
+      expect(result.current.eligiblePaymentMethods).toBeNull();
 
       // Consumer corrects an option on the SAME (now-failed) instance.
       // The hook must retry rather than stay pinned to the prior failure.
@@ -364,7 +364,7 @@ describe("useBraintreeEligibleMethods", () => {
       expect(checkoutInstance.findEligibleMethods).toHaveBeenLastCalledWith(
         expect.objectContaining({ amount: "20.00" }),
       );
-      expect(result.current.eligibleMethods).toBe(successResult);
+      expect(result.current.eligiblePaymentMethods).toBe(successResult);
       expect(result.current.error).toBeNull();
     });
 
@@ -430,7 +430,7 @@ describe("useBraintreeEligibleMethods", () => {
       );
 
       await waitFor(() =>
-        expect(firstReturn.current?.eligibleMethods).toBe(eligibility),
+        expect(firstReturn.current?.eligiblePaymentMethods).toBe(eligibility),
       );
       expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
 
@@ -449,7 +449,7 @@ describe("useBraintreeEligibleMethods", () => {
       // Hook is brand-new — its lastFetchRef is null — but a deep-equal payload
       // is already cached on context, so it should still skip the network call.
       expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledTimes(1);
-      expect(secondReturn.current?.eligibleMethods).toBe(eligibility);
+      expect(secondReturn.current?.eligiblePaymentMethods).toBe(eligibility);
     });
   });
 
@@ -485,7 +485,7 @@ describe("useBraintreeEligibleMethods", () => {
 
       await waitFor(() => expect(hookReturn.current?.isLoading).toBe(false));
 
-      expect(hookReturn.current?.eligibleMethods).toBe(eligibility);
+      expect(hookReturn.current?.eligiblePaymentMethods).toBe(eligibility);
       expect(hookReturn.current?.error).toBeNull();
       expect(checkoutInstance.findEligibleMethods).toHaveBeenCalledWith(
         defaultProps,
@@ -495,10 +495,14 @@ describe("useBraintreeEligibleMethods", () => {
 
   describe("unmount", () => {
     test("should not update state after unmount", async () => {
-      let resolveFetch: (value: BraintreeEligibilityResult) => void = () => {};
-      const pending = new Promise<BraintreeEligibilityResult>((resolve) => {
-        resolveFetch = resolve;
-      });
+      let resolveFetch: (
+        value: BraintreeEligiblePaymentMethodsOutput,
+      ) => void = () => {};
+      const pending = new Promise<BraintreeEligiblePaymentMethodsOutput>(
+        (resolve) => {
+          resolveFetch = resolve;
+        },
+      );
 
       const checkoutInstance = {
         findEligibleMethods: jest.fn().mockReturnValue(pending),
@@ -521,7 +525,7 @@ describe("useBraintreeEligibleMethods", () => {
       });
 
       // Eligibility should remain null because the post-unmount update was skipped
-      expect(result.current.eligibleMethods).toBeNull();
+      expect(result.current.eligiblePaymentMethods).toBeNull();
     });
   });
 });

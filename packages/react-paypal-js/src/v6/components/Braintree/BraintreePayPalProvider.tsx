@@ -189,16 +189,16 @@ export const BraintreePayPalProvider: React.FC<
   const contextValue: BraintreePayPalState = useMemo(
     () => ({
       braintreePayPalCheckoutInstance: state.braintreePayPalCheckoutInstance,
-      eligibleMethods: state.eligibleMethods,
-      eligibleMethodsPayload: state.eligibleMethodsPayload,
+      eligiblePaymentMethods: state.eligiblePaymentMethods,
+      eligiblePaymentMethodsPayload: state.eligiblePaymentMethodsPayload,
       loadingStatus: state.loadingStatus,
       error: state.error,
       isHydrated,
     }),
     [
       state.braintreePayPalCheckoutInstance,
-      state.eligibleMethods,
-      state.eligibleMethodsPayload,
+      state.eligiblePaymentMethods,
+      state.eligiblePaymentMethodsPayload,
       state.loadingStatus,
       state.error,
       isHydrated,

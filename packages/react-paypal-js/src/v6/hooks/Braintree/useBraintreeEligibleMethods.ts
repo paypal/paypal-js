@@ -11,7 +11,7 @@ import {
 } from "../../types/ProviderEnums";
 
 import type {
-  BraintreeEligibilityResult,
+  BraintreeEligiblePaymentMethodsOutput,
   BraintreeFindEligibleMethodsOptions,
 } from "../../types/braintree";
 
@@ -19,7 +19,7 @@ export type UseBraintreeEligibleMethodsProps =
   BraintreeFindEligibleMethodsOptions;
 
 export interface UseBraintreeEligibleMethodsReturn {
-  eligibleMethods: BraintreeEligibilityResult | null;
+  eligiblePaymentMethods: BraintreeEligiblePaymentMethodsOutput | null;
   isLoading: boolean;
   error: Error | null;
 }
@@ -41,7 +41,7 @@ export interface UseBraintreeEligibleMethodsReturn {
  *
  * @example
  * function Checkout() {
- *   const { eligibleMethods, isLoading, error } = useBraintreeEligibleMethods({
+ *   const { eligiblePaymentMethods, isLoading, error } = useBraintreeEligibleMethods({
  *     amount: "10.00",
  *     currency: "USD",
  *     countryCode: "US",
@@ -53,8 +53,8 @@ export interface UseBraintreeEligibleMethodsReturn {
  *
  *   return (
  *     <>
- *       {eligibleMethods?.paypal && <BraintreePayPalOneTimePaymentButton ... />}
- *       {eligibleMethods?.paylater && <PayPalPayLaterButton ... />}
+ *       {eligiblePaymentMethods?.paypal && <BraintreePayPalOneTimePaymentButton ... />}
+ *       {eligiblePaymentMethods?.paylater && <PayPalPayLaterButton ... />}
  *     </>
  *   );
  * }
@@ -64,8 +64,8 @@ export function useBraintreeEligibleMethods(
 ): UseBraintreeEligibleMethodsReturn {
   const {
     braintreePayPalCheckoutInstance,
-    eligibleMethods,
-    eligibleMethodsPayload,
+    eligiblePaymentMethods,
+    eligiblePaymentMethodsPayload,
     loadingStatus,
     error: contextError,
   } = useBraintreePayPal();
@@ -77,10 +77,12 @@ export function useBraintreeEligibleMethods(
   // Refs let the effect see the latest context-cached eligibility without
   // adding it to the dep array (which would re-run the effect every time
   // *we* dispatch SET_ELIGIBILITY and re-trigger the fetch).
-  const eligibleMethodsRef = useRef(eligibleMethods);
-  const eligibleMethodsPayloadRef = useRef(eligibleMethodsPayload);
-  eligibleMethodsRef.current = eligibleMethods;
-  eligibleMethodsPayloadRef.current = eligibleMethodsPayload;
+  const eligiblePaymentMethodsRef = useRef(eligiblePaymentMethods);
+  const eligiblePaymentMethodsPayloadRef = useRef(
+    eligiblePaymentMethodsPayload,
+  );
+  eligiblePaymentMethodsRef.current = eligiblePaymentMethods;
+  eligiblePaymentMethodsPayloadRef.current = eligiblePaymentMethodsPayload;
 
   // Memoize the whole options object so every field the caller passes is
   // forwarded to findEligibleMethods. Don't destructure-and-rebuild a fixed
@@ -133,9 +135,9 @@ export function useBraintreeEligibleMethods(
     // separate hook mounts will memoize different references for the same
     // option values.
     if (
-      eligibleMethodsRef.current &&
+      eligiblePaymentMethodsRef.current &&
       lastFetchRef.current === null &&
-      deepEqual(eligibleMethodsPayloadRef.current, memoizedOptions)
+      deepEqual(eligiblePaymentMethodsPayloadRef.current, memoizedOptions)
     ) {
       lastFetchRef.current = {
         instance: braintreePayPalCheckoutInstance,
@@ -163,7 +165,7 @@ export function useBraintreeEligibleMethods(
         dispatch({
           type: BRAINTREE_DISPATCH_ACTION.SET_ELIGIBILITY,
           value: {
-            eligibleMethods: result,
+            eligiblePaymentMethods: result,
             payload: memoizedOptions,
           },
         });
@@ -216,9 +218,9 @@ export function useBraintreeEligibleMethods(
   // the one currently requested. Normalize null/undefined so the deepEqual
   // doesn't treat "no stored payload" as different from "no provided payload".
   const isStaleData =
-    !!eligibleMethods &&
+    !!eligiblePaymentMethods &&
     !deepEqual(
-      eligibleMethodsPayload ?? undefined,
+      eligiblePaymentMethodsPayload ?? undefined,
       memoizedOptions ?? undefined,
     );
 
@@ -226,7 +228,7 @@ export function useBraintreeEligibleMethods(
     !error &&
     (loadingStatus === INSTANCE_LOADING_STATE.PENDING ||
       isFetching ||
-      !eligibleMethods ||
+      !eligiblePaymentMethods ||
       isStaleData);
 
   // Provider-level failures (e.g. the checkout instance failed to initialize)
@@ -235,14 +237,14 @@ export function useBraintreeEligibleMethods(
   // both into a single error. Mirrors useEligibleMethods.
   if (contextError) {
     return {
-      eligibleMethods,
+      eligiblePaymentMethods,
       isLoading: false,
       error: new Error(`Braintree PayPal context error: ${contextError}`),
     };
   }
 
   return {
-    eligibleMethods,
+    eligiblePaymentMethods,
     isLoading,
     error,
   };

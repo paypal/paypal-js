@@ -36,8 +36,8 @@ const createMockCheckoutInstance = (session = createMockSession()) => ({
 
 const defaultBraintreeState: BraintreePayPalState = {
   braintreePayPalCheckoutInstance: null,
-  eligibleMethods: null,
-  eligibleMethodsPayload: null,
+  eligiblePaymentMethods: null,
+  eligiblePaymentMethodsPayload: null,
   loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
   error: null,
   isHydrated: true,

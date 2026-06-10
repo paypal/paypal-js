@@ -69,8 +69,8 @@ function setupTestComponent() {
   const state: BraintreePayPalState = {
     loadingStatus: INSTANCE_LOADING_STATE.PENDING,
     braintreePayPalCheckoutInstance: null,
-    eligibleMethods: null,
-    eligibleMethodsPayload: null,
+    eligiblePaymentMethods: null,
+    eligiblePaymentMethodsPayload: null,
     isHydrated: false,
     error: null,
   };
