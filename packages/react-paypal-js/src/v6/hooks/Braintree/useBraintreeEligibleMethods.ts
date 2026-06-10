@@ -231,6 +231,7 @@ export function useBraintreeEligibleMethods(
       !eligiblePaymentMethods ||
       isStaleData);
 
+  // dropping in a placeholder commit
   // Provider-level failures (e.g. the checkout instance failed to initialize)
   // are surfaced in their own return and labeled, distinct from fetch-level
   // errors, so the developer can tell which layer failed — rather than merging
