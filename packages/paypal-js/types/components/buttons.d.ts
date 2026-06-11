@@ -354,6 +354,10 @@ export interface PayPalButtonsComponentOptions {
    * When true, clicking the button will first attempt to open the paysheet in the PayPal app (if supported). If not supported, Checkout will open in the web flow.
    */
   appSwitchWhenAvailable?: boolean;
+  /**
+   * The unique ID of a PayPal hosted button. Used to identify the hosted button flow.
+   */
+  hostedButtonId?: string;
 }
 
 export interface PayPalButtonsComponent {
