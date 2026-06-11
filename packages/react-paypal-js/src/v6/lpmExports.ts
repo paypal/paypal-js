@@ -4,7 +4,7 @@ import {
   LPMOneTimePaymentButton,
   type LPMOneTimePaymentButtonProps,
 } from "./components/LPMOneTimePaymentButton";
-import { createEnhancedLPMHook } from "./components/LPMPaymentProvider";
+import { useLPMOneTimePaymentSession } from "./hooks/useLPMOneTimePaymentSession";
 import { LPM_REGISTRY } from "./config/lpmRegistry";
 
 import type { UseLPMOneTimePaymentSessionProps } from "./hooks/useLPMOneTimePaymentSession";
@@ -12,6 +12,41 @@ import type { LPMName } from "./config/lpmRegistry";
 
 type NamedLPMButtonProps = Omit<LPMOneTimePaymentButtonProps, "lpm">;
 type NamedLPMHookProps = Omit<UseLPMOneTimePaymentSessionProps, "lpm">;
+
+// ─── Standalone button infrastructure ────────────────────────────────────────
+
+/** Minimal subset of a payment session needed by a standalone LPM button. */
+export interface LPMSessionHandle {
+  handleClick: () => Promise<{ redirectURL?: string } | void>;
+  isPending: boolean;
+  error: Error | null;
+}
+
+export interface LPMButtonComponentProps {
+  paymentSession: LPMSessionHandle;
+  type?: string;
+  disabled?: boolean;
+  [key: string]: unknown;
+}
+
+function createLPMButtonComponent(buttonTag: string, displayName: string) {
+  function ButtonComponent({
+    paymentSession,
+    type = "pay",
+    disabled,
+    ...rest
+  }: LPMButtonComponentProps) {
+    const { handleClick, isPending, error } = paymentSession;
+    return React.createElement(buttonTag, {
+      ...rest,
+      onClick: handleClick,
+      type,
+      disabled: disabled || isPending || error !== null ? true : undefined,
+    });
+  }
+  ButtonComponent.displayName = displayName;
+  return ButtonComponent;
+}
 
 function createLPMButton(lpm: LPMName) {
   const Component = (props: NamedLPMButtonProps): JSX.Element | null =>
@@ -23,17 +58,12 @@ function createLPMButton(lpm: LPMName) {
   return Component;
 }
 
-/**
- * Creates a named `use*OneTimePaymentSession` hook.
- *
- * The hook returns everything `useLPMOneTimePaymentSession` returns plus a
- * pre-bound field component for every field the LPM requires (e.g. `NameField`,
- * `EmailField`) and a `PaymentButton`. Field and button can be placed anywhere
- * in the component tree — no Provider or `paymentSession` prop needed.
- */
 function createLPMHook(lpm: LPMName) {
-  const { fields, buttonTag } = LPM_REGISTRY[lpm];
-  return createEnhancedLPMHook(lpm, fields, buttonTag);
+  return (props: NamedLPMHookProps) =>
+    useLPMOneTimePaymentSession({
+      lpm,
+      ...props,
+    } as UseLPMOneTimePaymentSessionProps);
 }
 
 // Named Button Components
@@ -146,6 +176,20 @@ export const useFiuuOneTimePaymentSession = createLPMHook("fiuu");
 export const useLithuaniaBanksOneTimePaymentSession = createLPMHook("lithuaniaBanks");
 export const useJeniuspayOneTimePaymentSession = createLPMHook("jeniuspay");
 
+// Generic LPM exports — also accessible from this subpath so the subpath is
+// fully self-contained and consumers never need to import from ./sdk-v6 for LPMs.
+export {
+  LPMOneTimePaymentButton,
+  type LPMOneTimePaymentButtonProps,
+} from "./components/LPMOneTimePaymentButton";
+export { LPM_REGISTRY } from "./config/lpmRegistry";
+export type { LPMName } from "./config/lpmRegistry";
+export {
+  useLPMOneTimePaymentSession,
+  type UseLPMOneTimePaymentSessionProps,
+  type LPMPaymentSessionReturn,
+} from "./hooks/useLPMOneTimePaymentSession";
+
 // Hook prop type aliases
 export type UseIdealOneTimePaymentSessionProps = NamedLPMHookProps;
 export type UseBancontactOneTimePaymentSessionProps = NamedLPMHookProps;
@@ -197,3 +241,57 @@ export type UseLatviaBanksOneTimePaymentSessionProps = NamedLPMHookProps;
 export type UseFiuuOneTimePaymentSessionProps = NamedLPMHookProps;
 export type UseLithuaniaBanksOneTimePaymentSessionProps = NamedLPMHookProps;
 export type UseJeniuspayOneTimePaymentSessionProps = NamedLPMHookProps;
+
+// ─── Named standalone button components ───────────────────────────────────────
+// Accept a `paymentSession` prop (return value of the corresponding named hook).
+// Can be placed anywhere in the layout — no Provider wrapping required.
+export const IdealPaymentButton = createLPMButtonComponent(LPM_REGISTRY.ideal.buttonTag, "IdealPaymentButton");
+export const BancontactPaymentButton = createLPMButtonComponent(LPM_REGISTRY.bancontact.buttonTag, "BancontactPaymentButton");
+export const EpsPaymentButton = createLPMButtonComponent(LPM_REGISTRY.eps.buttonTag, "EpsPaymentButton");
+export const BlikPaymentButton = createLPMButtonComponent(LPM_REGISTRY.blik.buttonTag, "BlikPaymentButton");
+export const MybankPaymentButton = createLPMButtonComponent(LPM_REGISTRY.mybank.buttonTag, "MybankPaymentButton");
+export const TrustlyPaymentButton = createLPMButtonComponent(LPM_REGISTRY.trustly.buttonTag, "TrustlyPaymentButton");
+export const P24PaymentButton = createLPMButtonComponent(LPM_REGISTRY.p24.buttonTag, "P24PaymentButton");
+export const MultibancoPaymentButton = createLPMButtonComponent(LPM_REGISTRY.multibanco.buttonTag, "MultibancoPaymentButton");
+export const BizumPaymentButton = createLPMButtonComponent(LPM_REGISTRY.bizum.buttonTag, "BizumPaymentButton");
+export const SwishPaymentButton = createLPMButtonComponent(LPM_REGISTRY.swish.buttonTag, "SwishPaymentButton");
+export const KlarnaPaymentButton = createLPMButtonComponent(LPM_REGISTRY.klarna.buttonTag, "KlarnaPaymentButton");
+export const TwintPaymentButton = createLPMButtonComponent(LPM_REGISTRY.twint.buttonTag, "TwintPaymentButton");
+export const WechatpayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.wechatpay.buttonTag, "WechatpayPaymentButton");
+export const AfterpayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.afterpay.buttonTag, "AfterpayPaymentButton");
+export const OxxopayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.oxxopay.buttonTag, "OxxopayPaymentButton");
+export const BoletobancarioPaymentButton = createLPMButtonComponent(LPM_REGISTRY.boletobancario.buttonTag, "BoletobancarioPaymentButton");
+export const VerkkopankkiPaymentButton = createLPMButtonComponent(LPM_REGISTRY.verkkopankki.buttonTag, "VerkkopankkiPaymentButton");
+export const PayuPaymentButton = createLPMButtonComponent(LPM_REGISTRY.payu.buttonTag, "PayuPaymentButton");
+export const PaysafecardPaymentButton = createLPMButtonComponent(LPM_REGISTRY.paysafecard.buttonTag, "PaysafecardPaymentButton");
+export const MbwayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.mbway.buttonTag, "MbwayPaymentButton");
+export const SatispayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.satispay.buttonTag, "SatispayPaymentButton");
+export const WeroPaymentButton = createLPMButtonComponent(LPM_REGISTRY.wero.buttonTag, "WeroPaymentButton");
+export const FloaPaymentButton = createLPMButtonComponent(LPM_REGISTRY.floa.buttonTag, "FloaPaymentButton");
+export const ScalapayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.scalapay.buttonTag, "ScalapayPaymentButton");
+export const GrabpayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.grabpay.buttonTag, "GrabpayPaymentButton");
+export const PixInternationalPaymentButton = createLPMButtonComponent(LPM_REGISTRY.pixInternational.buttonTag, "PixInternationalPaymentButton");
+export const SepaPaymentButton = createLPMButtonComponent(LPM_REGISTRY.sepa.buttonTag, "SepaPaymentButton");
+export const CryptoPaymentButton = createLPMButtonComponent(LPM_REGISTRY.crypto.buttonTag, "CryptoPaymentButton");
+export const DokuPaymentButton = createLPMButtonComponent(LPM_REGISTRY.doku.buttonTag, "DokuPaymentButton");
+export const DragonpayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.dragonpay.buttonTag, "DragonpayPaymentButton");
+export const EstoniaPaymentButton = createLPMButtonComponent(LPM_REGISTRY.estonia.buttonTag, "EstoniaPaymentButton");
+export const FpxPaymentButton = createLPMButtonComponent(LPM_REGISTRY.fpx.buttonTag, "FpxPaymentButton");
+export const GopayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.gopay.buttonTag, "GopayPaymentButton");
+export const AlipayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.alipay.buttonTag, "AlipayPaymentButton");
+export const IndomaretPaymentButton = createLPMButtonComponent(LPM_REGISTRY.indomaret.buttonTag, "IndomaretPaymentButton");
+export const IndonesiaBanksPaymentButton = createLPMButtonComponent(LPM_REGISTRY.indonesiaBanks.buttonTag, "IndonesiaBanksPaymentButton");
+export const KredivoPaymentButton = createLPMButtonComponent(LPM_REGISTRY.kredivo.buttonTag, "KredivoPaymentButton");
+export const LinkajaPaymentButton = createLPMButtonComponent(LPM_REGISTRY.linkaja.buttonTag, "LinkajaPaymentButton");
+export const OvoPaymentButton = createLPMButtonComponent(LPM_REGISTRY.ovo.buttonTag, "OvoPaymentButton");
+export const PayseraPaymentButton = createLPMButtonComponent(LPM_REGISTRY.paysera.buttonTag, "PayseraPaymentButton");
+export const SkrillPaymentButton = createLPMButtonComponent(LPM_REGISTRY.skrill.buttonTag, "SkrillPaymentButton");
+export const ThailandBanksPaymentButton = createLPMButtonComponent(LPM_REGISTRY.thailandBanks.buttonTag, "ThailandBanksPaymentButton");
+export const BlikPayLaterPaymentButton = createLPMButtonComponent(LPM_REGISTRY.blikPayLater.buttonTag, "BlikPayLaterPaymentButton");
+export const AlfamartPaymentButton = createLPMButtonComponent(LPM_REGISTRY.alfamart.buttonTag, "AlfamartPaymentButton");
+export const ZipPaymentButton = createLPMButtonComponent(LPM_REGISTRY.zip.buttonTag, "ZipPaymentButton");
+export const BancomatPayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.bancomatPay.buttonTag, "BancomatPayPaymentButton");
+export const LatviaBanksPaymentButton = createLPMButtonComponent(LPM_REGISTRY.latviaBanks.buttonTag, "LatviaBanksPaymentButton");
+export const FiuuPaymentButton = createLPMButtonComponent(LPM_REGISTRY.fiuu.buttonTag, "FiuuPaymentButton");
+export const LithuaniaBanksPaymentButton = createLPMButtonComponent(LPM_REGISTRY.lithuaniaBanks.buttonTag, "LithuaniaBanksPaymentButton");
+export const JeniuspayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.jeniuspay.buttonTag, "JeniuspayPaymentButton");

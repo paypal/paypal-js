@@ -56,73 +56,13 @@ export {
 } from "./components/LPMOneTimePaymentButton";
 export { LPM_REGISTRY } from "./config/lpmRegistry";
 export type { LPMName } from "./config/lpmRegistry";
-// ─── LPM field component prop types + session handle ─────────────────────────
-// Hooks (e.g. useIdealOneTimePaymentSession) return pre-bound field components
-// (NameField, EmailField…) alongside session data. Buttons are imported
-// separately and receive the hook's return value as `paymentSession`.
-export type {
-  LPMSessionHandle,
-  LPMFieldComponentProps,
-  LPMButtonComponentProps,
-} from "./components/LPMPaymentProvider";
-
-// ─── Named LPM payment buttons ────────────────────────────────────────────────
-// Import the button for your LPM, then pass the hook's return value as
-// the `paymentSession` prop. No Provider — the button can live anywhere.
+// Generic LPM hook
 export {
-  IdealPaymentButton,
-  BancontactPaymentButton,
-  EpsPaymentButton,
-  BlikPaymentButton,
-  MybankPaymentButton,
-  TrustlyPaymentButton,
-  P24PaymentButton,
-  MultibancoPaymentButton,
-  BizumPaymentButton,
-  SwishPaymentButton,
-  KlarnaPaymentButton,
-  TwintPaymentButton,
-  WechatpayPaymentButton,
-  AfterpayPaymentButton,
-  OxxopayPaymentButton,
-  BoletobancarioPaymentButton,
-  VerkkopankkiPaymentButton,
-  PayuPaymentButton,
-  PaysafecardPaymentButton,
-  MbwayPaymentButton,
-  SatispayPaymentButton,
-  WeroPaymentButton,
-  FloaPaymentButton,
-  ScalapayPaymentButton,
-  GrabpayPaymentButton,
-  PixInternationalPaymentButton,
-  SepaPaymentButton,
-  CryptoPaymentButton,
-  DokuPaymentButton,
-  DragonpayPaymentButton,
-  EstoniaPaymentButton,
-  FpxPaymentButton,
-  GopayPaymentButton,
-  AlipayPaymentButton,
-  IndomaretPaymentButton,
-  IndonesiaBanksPaymentButton,
-  KredivoPaymentButton,
-  LinkajaPaymentButton,
-  OvoPaymentButton,
-  PayseraPaymentButton,
-  SkrillPaymentButton,
-  ThailandBanksPaymentButton,
-  BlikPayLaterPaymentButton,
-  AlfamartPaymentButton,
-  ZipPaymentButton,
-  BancomatPayPaymentButton,
-  LatviaBanksPaymentButton,
-  FiuuPaymentButton,
-  LithuaniaBanksPaymentButton,
-  JeniuspayPaymentButton,
-} from "./lpmProviderExports";
-
-// Factory-generated named LPM button components
+  useLPMOneTimePaymentSession,
+  type UseLPMOneTimePaymentSessionProps,
+  type LPMPaymentSessionReturn,
+} from "./hooks/useLPMOneTimePaymentSession";
+// Factory-generated named LPM button components and hooks (Approach 2)
 export {
   IdealOneTimePaymentButton,
   BancontactOneTimePaymentButton,
@@ -178,82 +118,60 @@ export {
   type BancontactOneTimePaymentButtonProps,
   type EpsOneTimePaymentButtonProps,
   type BlikOneTimePaymentButtonProps,
-} from "./lpmExports";
-export { PayPalCardNumberField } from "./components/PayPalCardNumberField";
-export { PayPalCardExpiryField } from "./components/PayPalCardExpiryField";
-export { PayPalCardCvvField } from "./components/PayPalCardCvvField";
-
-// ============================================================================
-// Hooks
-// ============================================================================
-
-// Core hooks
-export { usePayPal } from "./hooks/usePayPal";
-export { useBraintreePayPal } from "./hooks/Braintree/useBraintreePayPal";
-export {
-  useBraintreePayPalOneTimePaymentSession,
-  type UseBraintreePayPalOneTimePaymentSessionProps,
-  type UseBraintreePayPalOneTimePaymentSessionReturn,
-} from "./hooks/Braintree/useBraintreePayPalOneTimePaymentSession";
-export * from "./hooks/useEligibleMethods";
-export { usePayPalMessages } from "./hooks/usePayPalMessages";
-
-// Card fields hooks
-export { usePayPalCardFields } from "./hooks/usePayPalCardFields";
-export {
-  usePayPalCardFieldsOneTimePaymentSession,
-  type UsePayPalCardFieldsOneTimePaymentSessionResult,
-} from "./hooks/usePayPalCardFieldsOneTimePaymentSession";
-export {
-  usePayPalCardFieldsSavePaymentSession,
-  type UsePayPalCardFieldsSavePaymentSessionResult,
-} from "./hooks/usePayPalCardFieldsSavePaymentSession";
-
-// Payment session hooks
-export {
-  usePayLaterOneTimePaymentSession,
-  type UsePayLaterOneTimePaymentSessionProps,
-} from "./hooks/usePayLaterOneTimePaymentSession";
-export {
-  usePayPalCreditOneTimePaymentSession,
-  type UsePayPalCreditOneTimePaymentSessionProps,
-} from "./hooks/usePayPalCreditOneTimePaymentSession";
-export {
-  usePayPalCreditSavePaymentSession,
-  type UsePayPalCreditSavePaymentSessionProps,
-} from "./hooks/usePayPalCreditSavePaymentSession";
-export {
-  usePayPalGuestPaymentSession,
-  type UsePayPalGuestPaymentSessionProps,
-} from "./hooks/usePayPalGuestPaymentSession";
-export {
-  usePayPalOneTimePaymentSession,
-  type UsePayPalOneTimePaymentSessionProps,
-} from "./hooks/usePayPalOneTimePaymentSession";
-export {
-  usePayPalSavePaymentSession,
-  type UsePayPalSavePaymentSessionProps,
-} from "./hooks/usePayPalSavePaymentSession";
-export {
-  usePayPalSubscriptionPaymentSession,
-  type UsePayPalSubscriptionPaymentSessionProps,
-} from "./hooks/usePayPalSubscriptionPaymentSession";
-export {
-  useVenmoOneTimePaymentSession,
-  type UseVenmoOneTimePaymentSessionProps,
-} from "./hooks/useVenmoOneTimePaymentSession";
-export {
-  useApplePayOneTimePaymentSession,
-  type UseApplePayOneTimePaymentSessionProps,
-} from "./hooks/useApplePayOneTimePaymentSession";
-// Generic LPM hook
-export {
-  useLPMOneTimePaymentSession,
-  type UseLPMOneTimePaymentSessionProps,
-  type LPMPaymentSessionReturn,
-} from "./hooks/useLPMOneTimePaymentSession";
-// Factory-generated named LPM hooks
-export {
+  // Standalone button components (accept paymentSession prop)
+  IdealPaymentButton,
+  BancontactPaymentButton,
+  EpsPaymentButton,
+  BlikPaymentButton,
+  MybankPaymentButton,
+  TrustlyPaymentButton,
+  P24PaymentButton,
+  MultibancoPaymentButton,
+  BizumPaymentButton,
+  SwishPaymentButton,
+  KlarnaPaymentButton,
+  TwintPaymentButton,
+  WechatpayPaymentButton,
+  AfterpayPaymentButton,
+  OxxopayPaymentButton,
+  BoletobancarioPaymentButton,
+  VerkkopankkiPaymentButton,
+  PayuPaymentButton,
+  PaysafecardPaymentButton,
+  MbwayPaymentButton,
+  SatispayPaymentButton,
+  WeroPaymentButton,
+  FloaPaymentButton,
+  ScalapayPaymentButton,
+  GrabpayPaymentButton,
+  PixInternationalPaymentButton,
+  SepaPaymentButton,
+  CryptoPaymentButton,
+  DokuPaymentButton,
+  DragonpayPaymentButton,
+  EstoniaPaymentButton,
+  FpxPaymentButton,
+  GopayPaymentButton,
+  AlipayPaymentButton,
+  IndomaretPaymentButton,
+  IndonesiaBanksPaymentButton,
+  KredivoPaymentButton,
+  LinkajaPaymentButton,
+  OvoPaymentButton,
+  PayseraPaymentButton,
+  SkrillPaymentButton,
+  ThailandBanksPaymentButton,
+  BlikPayLaterPaymentButton,
+  AlfamartPaymentButton,
+  ZipPaymentButton,
+  BancomatPayPaymentButton,
+  LatviaBanksPaymentButton,
+  FiuuPaymentButton,
+  LithuaniaBanksPaymentButton,
+  JeniuspayPaymentButton,
+  type LPMSessionHandle,
+  type LPMButtonComponentProps,
+  // Named hooks
   useIdealOneTimePaymentSession,
   useBancontactOneTimePaymentSession,
   useEpsOneTimePaymentSession,
@@ -355,6 +273,73 @@ export {
   type UseLithuaniaBanksOneTimePaymentSessionProps,
   type UseJeniuspayOneTimePaymentSessionProps,
 } from "./lpmExports";
+export { PayPalCardNumberField } from "./components/PayPalCardNumberField";
+export { PayPalCardExpiryField } from "./components/PayPalCardExpiryField";
+export { PayPalCardCvvField } from "./components/PayPalCardCvvField";
+
+// ============================================================================
+// Hooks
+// ============================================================================
+
+// Core hooks
+export { usePayPal } from "./hooks/usePayPal";
+export { useBraintreePayPal } from "./hooks/Braintree/useBraintreePayPal";
+export {
+  useBraintreePayPalOneTimePaymentSession,
+  type UseBraintreePayPalOneTimePaymentSessionProps,
+  type UseBraintreePayPalOneTimePaymentSessionReturn,
+} from "./hooks/Braintree/useBraintreePayPalOneTimePaymentSession";
+export * from "./hooks/useEligibleMethods";
+export { usePayPalMessages } from "./hooks/usePayPalMessages";
+
+// Card fields hooks
+export { usePayPalCardFields } from "./hooks/usePayPalCardFields";
+export {
+  usePayPalCardFieldsOneTimePaymentSession,
+  type UsePayPalCardFieldsOneTimePaymentSessionResult,
+} from "./hooks/usePayPalCardFieldsOneTimePaymentSession";
+export {
+  usePayPalCardFieldsSavePaymentSession,
+  type UsePayPalCardFieldsSavePaymentSessionResult,
+} from "./hooks/usePayPalCardFieldsSavePaymentSession";
+
+// Payment session hooks
+export {
+  usePayLaterOneTimePaymentSession,
+  type UsePayLaterOneTimePaymentSessionProps,
+} from "./hooks/usePayLaterOneTimePaymentSession";
+export {
+  usePayPalCreditOneTimePaymentSession,
+  type UsePayPalCreditOneTimePaymentSessionProps,
+} from "./hooks/usePayPalCreditOneTimePaymentSession";
+export {
+  usePayPalCreditSavePaymentSession,
+  type UsePayPalCreditSavePaymentSessionProps,
+} from "./hooks/usePayPalCreditSavePaymentSession";
+export {
+  usePayPalGuestPaymentSession,
+  type UsePayPalGuestPaymentSessionProps,
+} from "./hooks/usePayPalGuestPaymentSession";
+export {
+  usePayPalOneTimePaymentSession,
+  type UsePayPalOneTimePaymentSessionProps,
+} from "./hooks/usePayPalOneTimePaymentSession";
+export {
+  usePayPalSavePaymentSession,
+  type UsePayPalSavePaymentSessionProps,
+} from "./hooks/usePayPalSavePaymentSession";
+export {
+  usePayPalSubscriptionPaymentSession,
+  type UsePayPalSubscriptionPaymentSessionProps,
+} from "./hooks/usePayPalSubscriptionPaymentSession";
+export {
+  useVenmoOneTimePaymentSession,
+  type UseVenmoOneTimePaymentSessionProps,
+} from "./hooks/useVenmoOneTimePaymentSession";
+export {
+  useApplePayOneTimePaymentSession,
+  type UseApplePayOneTimePaymentSessionProps,
+} from "./hooks/useApplePayOneTimePaymentSession";
 
 // React 19+ JSX SDK Web Components type declaration
 declare global {

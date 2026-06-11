@@ -1,6 +1,6 @@
 {
   "name": "@paypal/react-paypal-js",
-  "version": "9.2.0",
+  "version": "0.0.0-lpm-wrapper-20260512083004",
   "description": "React components for the PayPal JS SDK",
   "keywords": [
     "react",
@@ -62,7 +62,7 @@
   },
   "homepage": "https://paypal.github.io/paypal-js/web-sdk-v6-react-storybook/",
   "dependencies": {
-    "@paypal/paypal-js": "^9.7.0",
+    "@paypal/paypal-js": "0.0.0-lpm-wrapper-20260512083004",
     "@paypal/sdk-constants": "^1.0.122",
     "server-only": "^0.0.1"
   },
@@ -100,7 +100,7 @@
     "eslint-plugin-jsdoc": "^61.1.11",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "husky": "^7.0.4",
+    "husky": "^9.1.7",
     "jest": "^27.5.1",
     "jest-mock-extended": "^3.0.4",
     "react": "^17.0.2",

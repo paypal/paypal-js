@@ -138,13 +138,22 @@ export function useLPMOneTimePaymentSession({
       return;
     }
 
+    // Build start options including any merchant-collected session fields
+    // (billingAddress, taxInfo, expiryDate, phone) required by LPMs like Boleto.
+    const sessionFieldValues: Record<string, unknown> = {};
+    for (const field of config.sessionFields) {
+      const value = (proxyCallbacks as Record<string, unknown>)[field];
+      if (value !== undefined) sessionFieldValues[field] = value;
+    }
+
     const startOptions = {
       presentationMode,
       fullPageOverlay,
+      ...sessionFieldValues,
     } as LPMPresentationModeOptions;
 
     await sessionRef.current.start(startOptions, createOrder?.());
-  }, [isMountedRef, presentationMode, fullPageOverlay, createOrder, setError, config]);
+  }, [isMountedRef, presentationMode, fullPageOverlay, createOrder, setError, config, proxyCallbacks]);
 
   return {
     error,
