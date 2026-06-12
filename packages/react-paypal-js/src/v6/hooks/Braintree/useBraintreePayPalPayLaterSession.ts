@@ -100,6 +100,7 @@ export function useBraintreePayPalPayLaterSession({
   shippingOptions,
   amountBreakdown,
   shippingAddressOverride,
+  contactPreference,
 }: UseBraintreePayPalPayLaterSessionProps): UseBraintreePayPalPayLaterSessionReturn {
   const {
     braintreePayPalCheckoutInstance,
@@ -174,6 +175,7 @@ export function useBraintreePayPalPayLaterSession({
           shippingOptions: memoizedShippingOptions,
           amountBreakdown: memoizedAmountBreakdown,
           shippingAddressOverride: memoizedShippingAddressOverride,
+          contactPreference,
           ...proxyCallbacks,
         }),
       failedSdkRef: failedInstanceRef,
