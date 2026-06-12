@@ -205,6 +205,7 @@ export function useBraintreePayPalPayLaterSession({
     displayName,
     presentationMode,
     shippingCallbackUrl,
+    contactPreference,
     memoizedLineItems,
     memoizedShippingOptions,
     memoizedAmountBreakdown,
