@@ -34,29 +34,36 @@ export interface UseBraintreePayPalPayLaterSessionReturn {
  * @returns Object with: `error` (any session error), `isPending` (checkout instance loading), `handleClick` (starts session)
  *
  * @example
- * // Custom button using the hook directly with a <paypal-button> web component
+ * // Custom button using the hook directly with a <paypal-pay-later-button> web component
  * function PayPalPayLaterButton(props: UseBraintreePayPalPayLaterSessionProps) {
  *   const { isPending, handleClick } = useBraintreePayPalPayLaterSession(props);
+ *   const { isLoading, eligiblePaymentMethods } = useBraintreeEligibleMethods();
+ *
+ *   if (isPending || isLoading) return <Spinner />;
+ *
+ *   if (!eligiblePaymentMethods?.isEligible("paylater")) {
+ *    return null;
+ *   }
+ *
+ *   const payLaterDetails = eligiblePaymentMethods.getDetails("paylater");
  *
  *   return (
- *     <paypal-button
- *       type="pay"
- *       fundingSource="paylater"
+ *     <paypal-pay-later-button
  *       onClick={() => handleClick()}
  *       disabled={isPending}
+ *       country={payLaterDetails?.countryCode}
+ *       product={payLaterDetails?.productCode}
  *     />
  *   );
  * }
  *
- * // Usage with tokenization in onApprove:
+ * // Pass your custom button props from a parent component:
  * function Checkout() {
  *   const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
  *
+ *   // Tokenize payment in the onApprove callback and send the nonce to your server
  *   const handleOnApprove = async (data) => {
- *     const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment({
- *       orderID: data.orderId,
- *       payerID: data.payerId,
- *     });
+ *     const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment(data);
  *     // Send nonce to your server to complete the transaction
  *   };
  *
@@ -65,6 +72,7 @@ export interface UseBraintreePayPalPayLaterSessionReturn {
  *       amount="100.00"
  *       currency="USD"
  *       onApprove={handleOnApprove}
+ *       // ...other props (onCancel, onError, etc.)
  *     />
  *   );
  * }

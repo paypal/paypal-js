@@ -30,6 +30,7 @@ export type BraintreePayPalPayLaterButtonProps =
  * @example
  * function CheckoutButtons() {
  *   const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
+ *   // Wait for eligibility to be determined before rendering buttons
  *   const { eligiblePaymentMethods, isLoading } = useBraintreeEligibleMethods({
  *     amount,
  *     currency,
@@ -43,13 +44,16 @@ export type BraintreePayPalPayLaterButtonProps =
  *     // Send nonce to your server to complete the transaction
  *   };
  *
- *   if (!eligiblePaymentMethods?.isEligible("paylater")) return null;
+ *   if (!eligiblePaymentMethods?.isEligible("paylater")) {
+ *     return null;
+ *   }
  *
  *   return (
  *     <BraintreePayPalPayLaterButton
  *       amount="100"
  *       currency="USD"
  *       onApprove={handleOnApprove}
+ *       // ...other props (onCancel, onError, etc.)
  *     />
  *   );
  * }
