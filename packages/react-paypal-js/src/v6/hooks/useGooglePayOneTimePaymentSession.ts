@@ -227,6 +227,17 @@ export function useGooglePayOneTimePaymentSession({
       paymentsClientRef.current = null;
       setPaymentsClient(null);
       setFormattedConfig(null);
+
+      // This effect only runs in the browser (React skips effects during SSR),
+      // so reaching here means pay.js has not loaded yet. Fail loudly instead of
+      // silently rendering an empty button container.
+      const sdkNotLoadedError = new Error(
+        "Google Pay JS SDK (pay.js) is not loaded. Add " +
+          '<script src="https://pay.google.com/gp/p/js/pay.js"></script> ' +
+          "to your HTML before <GooglePayOneTimePaymentButton> mounts.",
+      );
+      setError(sdkNotLoadedError);
+      proxyCallbacks.onError?.(sdkNotLoadedError);
       return;
     }
 
