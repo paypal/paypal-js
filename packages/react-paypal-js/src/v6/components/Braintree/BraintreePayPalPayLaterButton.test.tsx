@@ -23,7 +23,7 @@ describe("BraintreePayPalPayLaterButton", () => {
     jest.clearAllMocks();
     mockGetDetails.mockReturnValue({
       countryCode: "US",
-      productCode: "PAY_LATER",
+      productCode: "PAYLATER",
     });
     mockUseBraintreePayPalPayLaterSession.mockReturnValue({
       error: null,
@@ -94,7 +94,7 @@ describe("BraintreePayPalPayLaterButton", () => {
     const button = container.querySelector("paypal-pay-later-button");
     expect(mockGetDetails).toHaveBeenCalledWith("paylater");
     expect(button).toHaveAttribute("countryCode", "US");
-    expect(button).toHaveAttribute("productCode", "PAY_LATER");
+    expect(button).toHaveAttribute("productCode", "PAYLATER");
   });
 
   it("should render without eligibility details when not available", () => {
