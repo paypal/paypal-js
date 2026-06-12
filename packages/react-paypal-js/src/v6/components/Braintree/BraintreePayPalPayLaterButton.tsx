@@ -18,9 +18,11 @@ export type BraintreePayPalPayLaterButtonProps =
  * Combines {@link UseBraintreePayPalPayLaterSessionProps} and a `disabled` prop.
  * Must be rendered inside a BraintreePayPalProvider.
  *
- * The `countryCode` and `productCode` are automatically populated from the Braintree
- * eligibility result (available via `useBraintreePayPal().eligiblePaymentMethods`).
- * Configure eligibility with the `useBraintreeEligibleMethods` hook.
+ * **Requires eligibility data.** This component reads `countryCode` and
+ * `productCode` from `useBraintreePayPal().eligiblePaymentMethods`, which is
+ * populated by `useBraintreeEligibleMethods`. **Without eligibility, the button
+ * renders with `display: none` and is invisible.** Wait for eligibility before
+ * rendering.
  *
  * For full control over the button UI, use the {@link useBraintreePayPalPayLaterSession}
  * hook directly instead.
@@ -28,14 +30,20 @@ export type BraintreePayPalPayLaterButtonProps =
  * @example
  * function CheckoutButtons() {
  *   const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
+ *   const { eligiblePaymentMethods, isLoading } = useBraintreeEligibleMethods({
+ *     amount,
+ *     currency,
+ *     countryCode: "US",
+ *     paymentFlow: "ONE_TIME_PAYMENT",
+ *   });
+ *   if (isLoading) return <Spinner />;
  *
  *   const handleOnApprove = async (data) => {
- *     const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment({
- *       orderID: data.orderId,
- *       payerID: data.payerId,
- *     });
+ *     const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment(data);
  *     // Send nonce to your server to complete the transaction
  *   };
+ *
+ *   if (!eligiblePaymentMethods?.isEligible("paylater")) return null;
  *
  *   return (
  *     <BraintreePayPalPayLaterButton
