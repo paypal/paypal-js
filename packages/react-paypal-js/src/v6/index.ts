@@ -52,6 +52,10 @@ export {
   BraintreePayPalCheckoutWithVaultButton,
   type BraintreePayPalCheckoutWithVaultButtonProps,
 } from "./components/Braintree/BraintreePayPalCheckoutWithVaultButton";
+export {
+  BraintreePayPalPayLaterButton,
+  type BraintreePayPalPayLaterButtonProps,
+} from "./components/Braintree/BraintreePayPalPayLaterButton";
 export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
 export {

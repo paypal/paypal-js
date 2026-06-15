@@ -406,27 +406,46 @@ function App() {
 
 ### PayLaterOneTimePaymentButton
 
-Renders a Pay Later button for financing options. Country code and product code are automatically populated from eligibility data.
+Renders a Pay Later button for financing options. Country code and product code are automatically populated from eligibility data, so eligibility must be fetched first — via `useEligibleMethods()` client-side (shown below) or the provider's `eligibleMethodsResponse` prop server-side.
 
 ```tsx
-import { PayLaterOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+import {
+  PayLaterOneTimePaymentButton,
+  useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
 
-<PayLaterOneTimePaymentButton
-  createOrder={async () => {
-    const { orderId } = await createOrder();
-    return { orderId };
-  }}
-  onApprove={(data: OnApproveDataOneTimePayments) =>
-    console.log("Pay Later approved!", data)
+function PayLaterCheckout() {
+  // Fetch eligibility first (or hydrate server-side via eligibleMethodsResponse)
+  const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
+    payload: { purchase_units: [{ amount: { currency_code: "USD" } }] },
+  });
+
+  if (isLoading) {
+    return <Spinner />;
   }
-  onCancel={(data: OnCancelDataOneTimePayments) =>
-    console.log("Pay Later cancelled", data)
+  if (!eligiblePaymentMethods?.isEligible("paylater")) {
+    return null;
   }
-  onError={(data: OnErrorData) => console.error("Pay Later error:", data)}
-  onComplete={(data: OnCompleteData) =>
-    console.log("Pay Later flow completed", data)
-  }
-/>;
+
+  return (
+    <PayLaterOneTimePaymentButton
+      createOrder={async () => {
+        const { orderId } = await createOrder();
+        return { orderId };
+      }}
+      onApprove={(data: OnApproveDataOneTimePayments) =>
+        console.log("Pay Later approved!", data)
+      }
+      onCancel={(data: OnCancelDataOneTimePayments) =>
+        console.log("Pay Later cancelled", data)
+      }
+      onError={(data: OnErrorData) => console.error("Pay Later error:", data)}
+      onComplete={(data: OnCompleteData) =>
+        console.log("Pay Later flow completed", data)
+      }
+    />
+  );
+}
 ```
 
 ### PayPalGuestPaymentButton
@@ -526,56 +545,96 @@ import { PayPalSubscriptionButton } from "@paypal/react-paypal-js/sdk-v6";
 
 ### PayPalCreditOneTimePaymentButton
 
-Renders a PayPal Credit button for one-time payments. The `countryCode` is automatically populated from eligibility data.
+Renders a PayPal Credit button for one-time payments. The `countryCode` is automatically populated from eligibility data, so eligibility must be fetched first — via `useEligibleMethods()` client-side (shown below) or the provider's `eligibleMethodsResponse` prop server-side.
 
 ```tsx
-import { PayPalCreditOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+import {
+  PayPalCreditOneTimePaymentButton,
+  useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
 
-<PayPalCreditOneTimePaymentButton
-  createOrder={async () => {
-    const response = await fetch("/api/create-order", { method: "POST" });
-    const { orderId } = await response.json();
-    return { orderId };
-  }}
-  onApprove={({ orderId }: OnApproveDataOneTimePayments) =>
-    console.log("Credit payment approved:", orderId)
+function CreditCheckout() {
+  // Fetch eligibility first (or hydrate server-side via eligibleMethodsResponse)
+  const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
+    payload: { purchase_units: [{ amount: { currency_code: "USD" } }] },
+  });
+
+  if (isLoading) {
+    return <Spinner />;
   }
-  onCancel={(data: OnCancelDataOneTimePayments) =>
-    console.log("Credit payment cancelled", data)
+  if (!eligiblePaymentMethods?.isEligible("credit")) {
+    return null;
   }
-  onError={(data: OnErrorData) => console.error("Credit payment error:", data)}
-  onComplete={(data: OnCompleteData) =>
-    console.log("Credit payment flow completed", data)
-  }
-/>;
+
+  return (
+    <PayPalCreditOneTimePaymentButton
+      createOrder={async () => {
+        const response = await fetch("/api/create-order", { method: "POST" });
+        const { orderId } = await response.json();
+        return { orderId };
+      }}
+      onApprove={({ orderId }: OnApproveDataOneTimePayments) =>
+        console.log("Credit payment approved:", orderId)
+      }
+      onCancel={(data: OnCancelDataOneTimePayments) =>
+        console.log("Credit payment cancelled", data)
+      }
+      onError={(data: OnErrorData) =>
+        console.error("Credit payment error:", data)
+      }
+      onComplete={(data: OnCompleteData) =>
+        console.log("Credit payment flow completed", data)
+      }
+    />
+  );
+}
 ```
 
 ### PayPalCreditSavePaymentButton
 
-Renders a PayPal Credit button for saving a credit payment method (vaulting).
+Renders a PayPal Credit button for saving a credit payment method (vaulting). The `countryCode` is automatically populated from eligibility data, so eligibility must be fetched first — via `useEligibleMethods()` client-side (shown below) or the provider's `eligibleMethodsResponse` prop server-side.
 
 ```tsx
-import { PayPalCreditSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+import {
+  PayPalCreditSavePaymentButton,
+  useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
 
-<PayPalCreditSavePaymentButton
-  createVaultToken={async () => {
-    const response = await fetch("/api/create-vault-token", {
-      method: "POST",
-    });
-    const { vaultSetupToken } = await response.json();
-    return { vaultSetupToken };
-  }}
-  onApprove={(data: OnApproveDataSavePayments) =>
-    console.log("Credit saved:", data)
+function CreditSaveCheckout() {
+  // Fetch eligibility first (or hydrate server-side via eligibleMethodsResponse)
+  const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
+    payload: { purchase_units: [{ amount: { currency_code: "USD" } }] },
+  });
+
+  if (isLoading) {
+    return <Spinner />;
   }
-  onCancel={(data: OnCancelDataSavePayments) =>
-    console.log("Credit save cancelled", data)
+  if (!eligiblePaymentMethods?.isEligible("credit")) {
+    return null;
   }
-  onError={(data: OnErrorData) => console.error("Credit save error:", data)}
-  onComplete={(data: OnCompleteData) =>
-    console.log("Credit save flow completed", data)
-  }
-/>;
+
+  return (
+    <PayPalCreditSavePaymentButton
+      createVaultToken={async () => {
+        const response = await fetch("/api/create-vault-token", {
+          method: "POST",
+        });
+        const { vaultSetupToken } = await response.json();
+        return { vaultSetupToken };
+      }}
+      onApprove={(data: OnApproveDataSavePayments) =>
+        console.log("Credit saved:", data)
+      }
+      onCancel={(data: OnCancelDataSavePayments) =>
+        console.log("Credit save cancelled", data)
+      }
+      onError={(data: OnErrorData) => console.error("Credit save error:", data)}
+      onComplete={(data: OnCompleteData) =>
+        console.log("Credit save flow completed", data)
+      }
+    />
+  );
+}
 ```
 
 ### ApplePayOneTimePaymentButton
@@ -653,17 +712,26 @@ function ApplePayCheckout() {
     payload: { currencyCode: "USD" },
   });
 
-  if (!canUseApplePay)
+  if (!canUseApplePay) {
     return <div>Apple Pay is not available in this browser.</div>;
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  }
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   // Step 3: Check merchant eligibility and get config.
   const isEligible = eligiblePaymentMethods?.isEligible("applepay");
-  if (!isEligible) return <div>Apple Pay is not eligible.</div>;
+  if (!isEligible) {
+    return <div>Apple Pay is not eligible.</div>;
+  }
 
   const applePayConfig = eligiblePaymentMethods?.getDetails("applepay")?.config;
-  if (!applePayConfig) return null;
+  if (!applePayConfig) {
+    return null;
+  }
 
   return (
     <ApplePayOneTimePaymentButton
@@ -776,7 +844,9 @@ function App() {
       .then(({ clientToken }) => setClientToken(clientToken));
   }, []);
 
-  if (!clientToken) return <div>Loading...</div>;
+  if (!clientToken) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <BraintreePayPalProvider
@@ -845,7 +915,9 @@ function App() {
       .then(({ clientToken }) => setClientToken(clientToken));
   }, []);
 
-  if (!clientToken) return <div>Loading...</div>;
+  if (!clientToken) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <BraintreePayPalProvider
@@ -1019,6 +1091,89 @@ function CheckoutWithVaultButton() {
 | `type`                    | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"`  | No       | Button label type (default: `"pay"`)                              |
 | `disabled`                | `boolean`                                                     | No       | Disable the button                                                |
 
+### BraintreePayPalPayLaterButton
+
+Renders a `<paypal-pay-later-button>` web component for Braintree PayPal Pay Later (Buy Now, Pay Later) financing. Internally uses `useBraintreePayPalPayLaterSession` to create and start Pay Later sessions.
+
+Unlike the other Braintree buttons, **this button requires eligibility data.** It reads `countryCode` and `productCode` from `useBraintreePayPal().eligiblePaymentMethods`, which is populated by `useBraintreeEligibleMethods`. Fetch eligibility first — without it the button renders hidden (`display: none`).
+
+```tsx
+import {
+  BraintreePayPalPayLaterButton,
+  useBraintreePayPal,
+  useBraintreeEligibleMethods,
+  INSTANCE_LOADING_STATE,
+} from "@paypal/react-paypal-js/sdk-v6";
+import type { BraintreeApprovalData } from "@paypal/react-paypal-js/sdk-v6";
+
+function PayLaterCheckout() {
+  const { loadingStatus, braintreePayPalCheckoutInstance } =
+    useBraintreePayPal();
+
+  // Fetch eligibility before rendering the button
+  const { eligiblePaymentMethods, isLoading } = useBraintreeEligibleMethods({
+    amount: "100.00",
+    currency: "USD", // required
+    countryCode: "US",
+    paymentFlow: "ONE_TIME_PAYMENT",
+  });
+
+  if (isLoading || loadingStatus === INSTANCE_LOADING_STATE.PENDING) {
+    return <Spinner />;
+  }
+  if (!eligiblePaymentMethods?.paylater) {
+    return null;
+  }
+
+  return (
+    <BraintreePayPalPayLaterButton
+      amount="100.00"
+      currency="USD"
+      onApprove={async (data: BraintreeApprovalData) => {
+        const { nonce } =
+          await braintreePayPalCheckoutInstance!.tokenizePayment(data);
+        // Send nonce to your server
+        await fetch("/api/braintree/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nonce }),
+        });
+      }}
+      onCancel={() => console.log("Cancelled")}
+      onError={(err) => console.error("Error", err)}
+    />
+  );
+}
+```
+
+Render `PayLaterCheckout` inside a `BraintreePayPalProvider` (see [BraintreePayPalProvider](#braintreepaypalprovider)).
+
+**Props:**
+
+| Prop                      | Type                                                                  | Required | Description                                                       |
+| ------------------------- | --------------------------------------------------------------------- | -------- | ----------------------------------------------------------------- |
+| `amount`                  | `string`                                                              | Yes      | Payment amount (e.g., `"100.00"`)                                 |
+| `currency`                | `string`                                                              | Yes      | ISO 4217 currency code (e.g., `"USD"`)                            |
+| `onApprove`               | `(data: BraintreeApprovalData) => Promise<void>`                      | Yes      | Called when buyer approves — tokenize the payment here            |
+| `intent`                  | `"authorize" \| "capture" \| "order"`                                 | No       | Payment intent (default: `"capture"`)                             |
+| `onCancel`                | `() => void`                                                          | No       | Called when buyer cancels                                         |
+| `onComplete`              | `() => void`                                                          | No       | Called when the payment flow completes                            |
+| `onError`                 | `(err: Error) => void`                                                | No       | Called on errors                                                  |
+| `onShippingAddressChange` | `(data: BraintreeShippingAddressChangeData) => Promise<void>`         | No       | Called when buyer changes shipping address                        |
+| `onShippingOptionsChange` | `(data: BraintreeShippingOptionsChangeData) => Promise<void>`         | No       | Called when buyer selects a shipping option                       |
+| `lineItems`               | `BraintreeLineItem[]`                                                 | No       | Line items for the transaction                                    |
+| `shippingOptions`         | `BraintreeShippingOption[]`                                           | No       | Available shipping options                                        |
+| `shippingCallbackUrl`     | `string`                                                              | No       | URL for server-side shipping callbacks                            |
+| `shippingAddressOverride` | `BraintreeShippingAddressOverride`                                    | No       | Pre-collected shipping address                                    |
+| `amountBreakdown`         | `BraintreeAmountBreakdown`                                            | No       | Breakdown of the total amount (item total, shipping, tax, etc.)   |
+| `contactPreference`       | `"NO_CONTACT_INFO" \| "RETAIN_CONTACT_INFO" \| "UPDATE_CONTACT_INFO"` | No       | How buyer contact information is handled                          |
+| `userAuthenticationEmail` | `string`                                                              | No       | Pre-fill the PayPal login email                                   |
+| `returnUrl`               | `string`                                                              | No       | Return URL (required for `"direct-app-switch"` presentation mode) |
+| `cancelUrl`               | `string`                                                              | No       | Cancel URL (required for `"direct-app-switch"` presentation mode) |
+| `displayName`             | `string`                                                              | No       | Merchant name displayed in the PayPal lightbox                    |
+| `presentationMode`        | `BraintreePresentationMode`                                           | No       | UI mode: `"auto"`, `"popup"`, `"modal"`, `"redirect"`, etc.       |
+| `disabled`                | `boolean`                                                             | No       | Disable the button                                                |
+
 ### Braintree Hooks
 
 #### `useBraintreePayPal()`
@@ -1049,12 +1204,84 @@ function CustomCheckout() {
 
 **Returns:**
 
-| Property                          | Type                                      | Description                                |
-| --------------------------------- | ----------------------------------------- | ------------------------------------------ |
-| `braintreePayPalCheckoutInstance` | `BraintreePayPalCheckoutInstance \| null` | The checkout instance (null while loading) |
-| `loadingStatus`                   | `INSTANCE_LOADING_STATE`                  | `"pending"`, `"resolved"`, or `"rejected"` |
-| `error`                           | `Error \| null`                           | Initialization error, if any               |
-| `isHydrated`                      | `boolean`                                 | `true` after client-side hydration         |
+| Property                          | Type                                      | Description                                                                |
+| --------------------------------- | ----------------------------------------- | -------------------------------------------------------------------------- |
+| `braintreePayPalCheckoutInstance` | `BraintreePayPalCheckoutInstance \| null` | The checkout instance (null while loading)                                 |
+| `eligiblePaymentMethods`          | `BraintreeEligibilityResult \| null`      | Eligibility cached by `useBraintreeEligibleMethods` (`null` until fetched) |
+| `loadingStatus`                   | `INSTANCE_LOADING_STATE`                  | `"pending"`, `"resolved"`, or `"rejected"`                                 |
+| `error`                           | `Error \| null`                           | Initialization error, if any                                               |
+| `isHydrated`                      | `boolean`                                 | `true` after client-side hydration                                         |
+
+#### `useBraintreeEligibleMethods(props)`
+
+Fetches Braintree PayPal eligibility for the given checkout options by calling `findEligibleMethods()` on the shared checkout instance, and caches the result in `BraintreePayPalProvider` context (where buttons read it via `useBraintreePayPal().eligiblePaymentMethods`). Fetches are deduplicated by `(instance, options)` and re-run when the options change. Required before rendering eligibility-gated buttons such as `BraintreePayPalPayLaterButton`.
+
+```tsx
+import {
+  useBraintreePayPal,
+  useBraintreeEligibleMethods,
+  BraintreePayPalOneTimePaymentButton,
+  BraintreePayPalPayLaterButton,
+  INSTANCE_LOADING_STATE,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+function CheckoutButtons() {
+  const { loadingStatus, braintreePayPalCheckoutInstance } =
+    useBraintreePayPal();
+  const { eligiblePaymentMethods, isLoading, error } =
+    useBraintreeEligibleMethods({
+      amount: "100.00",
+      currency: "USD",
+      countryCode: "US",
+      paymentFlow: "ONE_TIME_PAYMENT",
+    });
+
+  if (isLoading || loadingStatus === INSTANCE_LOADING_STATE.PENDING) {
+    return <Spinner />;
+  }
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  return (
+    <>
+      <BraintreePayPalOneTimePaymentButton
+        amount="100.00"
+        currency="USD"
+        // onApprove not shown in this example
+        // see other examples for usage of tokenizePayment in onApprove
+        onApprove={onApprove}
+      />
+      {eligiblePaymentMethods?.paylater && (
+        <BraintreePayPalPayLaterButton
+          amount="100.00"
+          currency="USD"
+          onApprove={onApprove}
+        />
+      )}
+    </>
+  );
+}
+```
+
+**Props (`BraintreeFindEligibleMethodsOptions`):**
+
+| Prop          | Type                                                                                           | Required | Description                                 |
+| ------------- | ---------------------------------------------------------------------------------------------- | -------- | ------------------------------------------- |
+| `currency`    | `string`                                                                                       | Yes      | ISO 4217 currency code (e.g., `"USD"`)      |
+| `amount`      | `string`                                                                                       | No       | Checkout amount used for eligibility checks |
+| `countryCode` | `string`                                                                                       | No       | Buyer country code (e.g., `"US"`)           |
+| `paymentFlow` | `"ONE_TIME_PAYMENT" \| "VAULT_WITH_PAYMENT" \| "VAULT_WITHOUT_PAYMENT" \| "RECURRING_PAYMENT"` | No       | The flow eligibility is being checked for   |
+
+**Returns:**
+
+| Property                 | Type                                 | Description                                                               |
+| ------------------------ | ------------------------------------ | ------------------------------------------------------------------------- |
+| `eligiblePaymentMethods` | `BraintreeEligibilityResult \| null` | Eligibility result, or `null` until fetched                               |
+| `isLoading`              | `boolean`                            | `true` while the instance is initializing or eligibility is being fetched |
+| `error`                  | `Error \| null`                      | Fetch- or provider-level error, if any                                    |
+
+`BraintreeEligibilityResult` exposes the booleans `paypal`, `paylater`, and `credit`, plus `getDetails(method)` which returns the `countryCode` and `productCode` the buttons consume.
 
 #### `useBraintreePayPalOneTimePaymentSession(props)`
 
@@ -1132,6 +1359,51 @@ function CustomCheckoutVaultButton() {
     <button onClick={handleClick} disabled={isPending}>
       Pay & Save
     </button>
+  );
+}
+```
+
+**Returns:** `{ handleClick: () => void, isPending: boolean, error: Error | null }`
+
+#### `useBraintreePayPalPayLaterSession(props)`
+
+Creates a Pay Later (Buy Now, Pay Later) session. Returns a `handleClick` function to start the flow. Accepts the same props as `BraintreePayPalPayLaterButton` (minus `disabled`) — use this hook directly when you need full control over the `<paypal-pay-later-button>` UI. Eligibility (`countryCode`/`productCode`) must still be fetched via `useBraintreeEligibleMethods`.
+
+```tsx
+import {
+  useBraintreePayPalPayLaterSession,
+  useBraintreeEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomPayLaterButton() {
+  const { handleClick, isPending } = useBraintreePayPalPayLaterSession({
+    amount: "100.00",
+    currency: "USD",
+    onApprove: async (data) => {
+      // tokenize and process
+    },
+  });
+
+  const { isLoading, eligiblePaymentMethods } = useBraintreeEligibleMethods({
+    currency: "USD",
+  });
+
+  if (isPending || isLoading) {
+    return <Spinner />;
+  }
+  if (!eligiblePaymentMethods?.paylater) {
+    return null;
+  }
+
+  const payLaterDetails = eligiblePaymentMethods.getDetails("paylater");
+
+  return (
+    <paypal-pay-later-button
+      onClick={() => handleClick()}
+      disabled={isPending}
+      countryCode={payLaterDetails?.countryCode}
+      productCode={payLaterDetails?.productCode}
+    />
   );
 }
 ```
@@ -1337,7 +1609,9 @@ import { useEligibleMethods } from "@paypal/react-paypal-js/sdk-v6";
 function PaymentOptions() {
   const { eligiblePaymentMethods, isLoading, error } = useEligibleMethods();
 
-  if (isLoading) return <div>Checking eligibility...</div>;
+  if (isLoading) {
+    return <div>Checking eligibility...</div>;
+  }
 
   const isPayPalEligible = eligiblePaymentMethods?.isEligible("paypal");
   const isVenmoEligible = eligiblePaymentMethods?.isEligible("venmo");
@@ -1484,7 +1758,10 @@ function CustomVenmoButton() {
 #### usePayLaterOneTimePaymentSession
 
 ```tsx
-import { usePayLaterOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+import {
+  usePayLaterOneTimePaymentSession,
+  useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
 
 function CustomPayLaterButton() {
   const { handleClick } = usePayLaterOneTimePaymentSession({
@@ -1501,7 +1778,27 @@ function CustomPayLaterButton() {
       console.log("Payment session complete", data),
   });
 
-  return <paypal-pay-later-button onClick={() => handleClick()} />;
+  // Fetch eligibility to obtain the countryCode/productCode the button needs
+  const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
+    payload: { purchase_units: [{ amount: { currency_code: "USD" } }] },
+  });
+
+  if (isLoading) {
+    return null;
+  }
+  if (!eligiblePaymentMethods?.isEligible("paylater")) {
+    return null;
+  }
+
+  const payLaterDetails = eligiblePaymentMethods.getDetails("paylater");
+
+  return (
+    <paypal-pay-later-button
+      onClick={() => handleClick()}
+      countryCode={payLaterDetails?.countryCode}
+      productCode={payLaterDetails?.productCode}
+    />
+  );
 }
 ```
 
@@ -1588,7 +1885,10 @@ function CustomPayPalSubscriptionButton() {
 For PayPal Credit one-time payments.
 
 ```tsx
-import { usePayPalCreditOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+import {
+  usePayPalCreditOneTimePaymentSession,
+  useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
 
 function CustomPayPalCreditButton() {
   const { handleClick } = usePayPalCreditOneTimePaymentSession({
@@ -1605,7 +1905,26 @@ function CustomPayPalCreditButton() {
       console.log("Payment session complete", data),
   });
 
-  return <paypal-credit-button onClick={() => handleClick()} />;
+  // Fetch eligibility to obtain the countryCode the button needs
+  const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
+    payload: { purchase_units: [{ amount: { currency_code: "USD" } }] },
+  });
+
+  if (isLoading) {
+    return null;
+  }
+  if (!eligiblePaymentMethods?.isEligible("credit")) {
+    return null;
+  }
+
+  const creditDetails = eligiblePaymentMethods.getDetails("credit");
+
+  return (
+    <paypal-credit-button
+      onClick={() => handleClick()}
+      countryCode={creditDetails?.countryCode}
+    />
+  );
 }
 ```
 
@@ -1614,7 +1933,10 @@ function CustomPayPalCreditButton() {
 For saving PayPal Credit as a payment method.
 
 ```tsx
-import { usePayPalCreditSavePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
+import {
+  usePayPalCreditSavePaymentSession,
+  useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
 
 function CustomPayPalCreditSaveButton() {
   const { handleClick } = usePayPalCreditSavePaymentSession({
@@ -1631,7 +1953,26 @@ function CustomPayPalCreditSaveButton() {
       console.log("Payment session complete", data),
   });
 
-  return <paypal-credit-button onClick={() => handleClick()} />;
+  // Fetch eligibility to obtain the countryCode the button needs
+  const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
+    payload: { purchase_units: [{ amount: { currency_code: "USD" } }] },
+  });
+
+  if (isLoading) {
+    return null;
+  }
+  if (!eligiblePaymentMethods?.isEligible("credit")) {
+    return null;
+  }
+
+  const creditDetails = eligiblePaymentMethods.getDetails("credit");
+
+  return (
+    <paypal-credit-button
+      onClick={() => handleClick()}
+      countryCode={creditDetails?.countryCode}
+    />
+  );
 }
 ```
 
@@ -1675,8 +2016,12 @@ function CustomApplePayButton() {
     onError: (err) => console.error("Apple Pay error:", err),
   });
 
-  if (isLoading || !applePayConfig) return null;
-  if (error) return <div>Error: {error.message}</div>;
+  if (isLoading || !applePayConfig) {
+    return null;
+  }
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <apple-pay-button

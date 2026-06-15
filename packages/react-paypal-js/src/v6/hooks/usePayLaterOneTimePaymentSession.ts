@@ -34,6 +34,10 @@ export type UsePayLaterOneTimePaymentSessionProps = (
  * for redirect-based presentation modes (`"redirect"` and `"direct-app-switch"`), and provides methods
  * to start, cancel, and destroy the session.
  *
+ * Eligibility must be fetched separately (via the `useEligibleMethods` hook client-side or
+ * `useFetchEligibleMethods` server-side) to obtain the `countryCode`/`productCode` the
+ * `<paypal-pay-later-button>` needs to render.
+ *
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
  * `presentationMode` is optional and defaults to `"auto"`.
@@ -46,10 +50,20 @@ export type UsePayLaterOneTimePaymentSessionProps = (
  *     onApprove: (data) => console.log('Approved:', data),
  *     onCancel: () => console.log('Cancelled'),
  *   });
- *   const { eligiblePaymentMethods } = usePayPal();
+ *
+ *   // Fetch eligibility (or hydrate server-side via useFetchEligibleMethods)
+ *   const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
+ *     payload: { purchase_units: [{ amount: { currency_code: "USD" } }] },
+ *   });
+ *
+ *   if (isPending || isLoading) return <Spinner />;
+ *
+ *   if (!eligiblePaymentMethods?.isEligible("paylater")) {
+ *     return null;
+ *   }
+ *
  *   const payLaterDetails = eligiblePaymentMethods?.getDetails?.("paylater");
  *
- *   if (isPending) return null;
  *   if (error) return <div>Error: {error.message}</div>;
  *
  *   return (
