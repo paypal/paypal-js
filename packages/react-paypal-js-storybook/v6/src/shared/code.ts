@@ -21,6 +21,9 @@ async function createOrder() {
             items: [{ id: "item-1", quantity: 1 }],
         }),
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to create order: \${response.status} \${response.statusText}\`);
+    }
     const data = await response.json();
     return { orderId: data.id };
 }
@@ -29,6 +32,9 @@ async function onApprove(data) {
     const response = await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
         method: "POST",
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to capture order: \${response.status} \${response.statusText}\`);
+    }
     const result = await response.json();
     console.log("Payment captured:", result);
 }
@@ -70,7 +76,10 @@ function Checkout() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
         })
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) throw new Error(\`Failed to create order: \${res.status} \${res.statusText}\`);
+                return res.json();
+            })
             .then((data) => setOrderId(data.id));
     }, []);
 
@@ -80,9 +89,12 @@ function Checkout() {
         <PayPalOneTimePaymentButton
             orderId={orderId}
             onApprove={async (data) => {
-                await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
+                const response = await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
                     method: "POST",
                 });
+                if (!response.ok) {
+                    throw new Error(\`Failed to capture order: \${response.status} \${response.statusText}\`);
+                }
             }}
             onCancel={(data) => console.log("Cancelled:", data)}
             onError={(error) => console.error("Error:", error)}
@@ -118,6 +130,9 @@ async function createOrder() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to create order: \${response.status} \${response.statusText}\`);
+    }
     const data = await response.json();
     return { orderId: data.id };
 }
@@ -133,9 +148,12 @@ export default function App() {
             <VenmoOneTimePaymentButton
                 createOrder={createOrder}
                 onApprove={async (data) => {
-                    await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
+                    const response = await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
                         method: "POST",
                     });
+                    if (!response.ok) {
+                        throw new Error(\`Failed to capture order: \${response.status} \${response.statusText}\`);
+                    }
                 }}
                 presentationMode="auto"
             />
@@ -158,7 +176,10 @@ function Checkout() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
         })
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) throw new Error(\`Failed to create order: \${res.status} \${res.statusText}\`);
+                return res.json();
+            })
             .then((data) => setOrderId(data.id));
     }, []);
 
@@ -168,9 +189,12 @@ function Checkout() {
         <VenmoOneTimePaymentButton
             orderId={orderId}
             onApprove={async (data) => {
-                await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
+                const response = await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
                     method: "POST",
                 });
+                if (!response.ok) {
+                    throw new Error(\`Failed to capture order: \${response.status} \${response.statusText}\`);
+                }
             }}
             presentationMode="auto"
         />
@@ -203,6 +227,9 @@ async function createVaultToken() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to create vault token: \${response.status} \${response.statusText}\`);
+    }
     const data = await response.json();
     return { vaultSetupToken: data.id };
 }
@@ -241,7 +268,10 @@ function Checkout() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
         })
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) throw new Error(\`Failed to create vault token: \${res.status} \${res.statusText}\`);
+                return res.json();
+            })
             .then((data) => setVaultSetupToken(data.id));
     }, []);
 
@@ -289,6 +319,9 @@ async function createOrder() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to create order: \${response.status} \${response.statusText}\`);
+    }
     const data = await response.json();
     return { orderId: data.id };
 }
@@ -316,9 +349,12 @@ function Checkout() {
         <PayLaterOneTimePaymentButton
             createOrder={createOrder}
             onApprove={async (data) => {
-                await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
+                const response = await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
                     method: "POST",
                 });
+                if (!response.ok) {
+                    throw new Error(\`Failed to capture order: \${response.status} \${response.statusText}\`);
+                }
             }}
             presentationMode="auto"
         />
@@ -371,7 +407,10 @@ function Checkout() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
         })
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) throw new Error(\`Failed to create order: \${res.status} \${res.statusText}\`);
+                return res.json();
+            })
             .then((data) => setOrderId(data.id));
     }, []);
 
@@ -382,9 +421,12 @@ function Checkout() {
         <PayLaterOneTimePaymentButton
             orderId={orderId}
             onApprove={async (data) => {
-                await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
+                const response = await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
                     method: "POST",
                 });
+                if (!response.ok) {
+                    throw new Error(\`Failed to capture order: \${response.status} \${response.statusText}\`);
+                }
             }}
             presentationMode="auto"
         />
@@ -417,6 +459,9 @@ async function createOrder() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to create order: \${response.status} \${response.statusText}\`);
+    }
     const data = await response.json();
     return { orderId: data.id };
 }
@@ -432,9 +477,12 @@ export default function App() {
             <PayPalGuestPaymentButton
                 createOrder={createOrder}
                 onApprove={async (data) => {
-                    await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
+                    const response = await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
                         method: "POST",
                     });
+                    if (!response.ok) {
+                        throw new Error(\`Failed to capture order: \${response.status} \${response.statusText}\`);
+                    }
                 }}
             />
         </PayPalProvider>
@@ -456,7 +504,10 @@ function Checkout() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
         })
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) throw new Error(\`Failed to create order: \${res.status} \${res.statusText}\`);
+                return res.json();
+            })
             .then((data) => setOrderId(data.id));
     }, []);
 
@@ -466,9 +517,12 @@ function Checkout() {
         <PayPalGuestPaymentButton
             orderId={orderId}
             onApprove={async (data) => {
-                await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
+                const response = await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
                     method: "POST",
                 });
+                if (!response.ok) {
+                    throw new Error(\`Failed to capture order: \${response.status} \${response.statusText}\`);
+                }
             }}
         />
     );
@@ -498,6 +552,9 @@ async function createSubscription() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to create subscription: \${response.status} \${response.statusText}\`);
+    }
     const data = await response.json();
     return { subscriptionId: data.id };
 }
@@ -542,6 +599,9 @@ async function createVaultToken() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to create vault token: \${response.status} \${response.statusText}\`);
+    }
     const data = await response.json();
     return { vaultSetupToken: data.id };
 }
@@ -622,7 +682,10 @@ function Checkout() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
         })
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) throw new Error(\`Failed to create vault token: \${res.status} \${res.statusText}\`);
+                return res.json();
+            })
             .then((data) => setVaultSetupToken(data.id));
     }, []);
 
@@ -677,6 +740,9 @@ async function createOrder() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to create order: \${response.status} \${response.statusText}\`);
+    }
     const data = await response.json();
     return { orderId: data.id };
 }
@@ -685,6 +751,9 @@ async function captureOrder(orderId: string) {
     const response = await fetch(\`/api/paypal/capture/\${orderId}\`, {
         method: "POST",
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to capture order: \${response.status} \${response.statusText}\`);
+    }
     return response.json();
 }
 
@@ -804,6 +873,9 @@ async function createVaultSetupToken() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to create vault setup token: \${response.status} \${response.statusText}\`);
+    }
     const data = await response.json();
     return data.id;
 }
@@ -922,6 +994,9 @@ async function createOrder() {
             items: [{ id: "item-1", quantity: 1 }],
         }),
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to create order: \${response.status} \${response.statusText}\`);
+    }
     const data = await response.json();
     return { orderId: data.id };
 }
@@ -933,6 +1008,9 @@ async function onApprove(data) {
     const response = await fetch(\\\`/api/paypal/capture/\\\${orderId}\\\`, {
         method: "POST",
     });
+    if (!response.ok) {
+        throw new Error(\\\`Failed to capture order: \\\${response.status} \\\${response.statusText}\\\`);
+    }
     const result = await response.json();
     console.log("Apple Pay payment captured:", result);
 }
@@ -1024,6 +1102,9 @@ async function createOrder() {
             items: [{ id: "item-1", quantity: 1 }],
         }),
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to create order: \${response.status} \${response.statusText}\`);
+    }
     const data = await response.json();
     return { orderId: data.id };
 }
@@ -1035,6 +1116,9 @@ async function onApprove(data) {
     const response = await fetch(\\\`/api/paypal/capture/\\\${orderId}\\\`, {
         method: "POST",
     });
+    if (!response.ok) {
+        throw new Error(\\\`Failed to capture order: \\\${response.status} \\\${response.statusText}\\\`);
+    }
     const result = await response.json();
     console.log("Google Pay payment captured:", result);
 }
