@@ -1236,7 +1236,7 @@ function CheckoutButtons() {
       paymentFlow: "ONE_TIME_PAYMENT",
     });
 
-  if (isLoading || loadingStatus === INSTANCE_LOADING_STATES.PENDING) {
+  if (isLoading || loadingStatus === INSTANCE_LOADING_STATE.PENDING) {
     return <Spinner />;
   }
   if (error) {
@@ -1248,7 +1248,7 @@ function CheckoutButtons() {
       <BraintreePayPalOneTimePaymentButton
         amount="100.00"
         currency="USD"
-        // onApprove not show in this example
+        // onApprove not shown in this example
         // see other examples for usage of tokenizePayment in onApprove
         onApprove={onApprove}
       />
