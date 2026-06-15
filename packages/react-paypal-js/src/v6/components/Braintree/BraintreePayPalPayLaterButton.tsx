@@ -32,8 +32,8 @@ export type BraintreePayPalPayLaterButtonProps =
  *   const { braintreePayPalCheckoutInstance } = useBraintreePayPal();
  *   // Wait for eligibility to be determined before rendering buttons
  *   const { eligiblePaymentMethods, isLoading } = useBraintreeEligibleMethods({
- *     amount,
- *     currency,
+ *     amount, // dynamic checkout amount that can be used for eligibility checks
+ *     currency: "USD",
  *     countryCode: "US",
  *     paymentFlow: "ONE_TIME_PAYMENT",
  *   });

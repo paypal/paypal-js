@@ -37,7 +37,9 @@ export interface UseBraintreePayPalPayLaterSessionReturn {
  * // Custom button using the hook directly with a <paypal-pay-later-button> web component
  * function PayPalPayLaterButton(props: UseBraintreePayPalPayLaterSessionProps) {
  *   const { isPending, handleClick } = useBraintreePayPalPayLaterSession(props);
- *   const { isLoading, eligiblePaymentMethods } = useBraintreeEligibleMethods();
+ *   const { isLoading, eligiblePaymentMethods } = useBraintreeEligibleMethods({
+ *     currency: "USD"
+ *   });
  *
  *   if (isPending || isLoading) return <Spinner />;
  *
@@ -51,8 +53,8 @@ export interface UseBraintreePayPalPayLaterSessionReturn {
  *     <paypal-pay-later-button
  *       onClick={() => handleClick()}
  *       disabled={isPending}
- *       country={payLaterDetails?.countryCode}
- *       product={payLaterDetails?.productCode}
+ *       countryCode={payLaterDetails?.countryCode}
+ *       productCode={payLaterDetails?.productCode}
  *     />
  *   );
  * }
