@@ -1091,6 +1091,89 @@ function CheckoutWithVaultButton() {
 | `type`                    | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"`  | No       | Button label type (default: `"pay"`)                              |
 | `disabled`                | `boolean`                                                     | No       | Disable the button                                                |
 
+### BraintreePayPalPayLaterButton
+
+Renders a `<paypal-pay-later-button>` web component for Braintree PayPal Pay Later (Buy Now, Pay Later) financing. Internally uses `useBraintreePayPalPayLaterSession` to create and start Pay Later sessions.
+
+Unlike the other Braintree buttons, **this button requires eligibility data.** It reads `countryCode` and `productCode` from `useBraintreePayPal().eligiblePaymentMethods`, which is populated by `useBraintreeEligibleMethods`. Fetch eligibility first — without it the button renders hidden (`display: none`).
+
+```tsx
+import {
+  BraintreePayPalPayLaterButton,
+  useBraintreePayPal,
+  useBraintreeEligibleMethods,
+  INSTANCE_LOADING_STATE,
+} from "@paypal/react-paypal-js/sdk-v6";
+import type { BraintreeApprovalData } from "@paypal/react-paypal-js/sdk-v6";
+
+function PayLaterCheckout() {
+  const { loadingStatus, braintreePayPalCheckoutInstance } =
+    useBraintreePayPal();
+
+  // Fetch eligibility before rendering the button
+  const { eligiblePaymentMethods, isLoading } = useBraintreeEligibleMethods({
+    amount: "100.00",
+    currency: "USD", // required
+    countryCode: "US",
+    paymentFlow: "ONE_TIME_PAYMENT",
+  });
+
+  if (isLoading || loadingStatus === INSTANCE_LOADING_STATE.PENDING) {
+    return <Spinner />;
+  }
+  if (!eligiblePaymentMethods?.paylater) {
+    return null;
+  }
+
+  return (
+    <BraintreePayPalPayLaterButton
+      amount="100.00"
+      currency="USD"
+      onApprove={async (data: BraintreeApprovalData) => {
+        const { nonce } =
+          await braintreePayPalCheckoutInstance!.tokenizePayment(data);
+        // Send nonce to your server
+        await fetch("/api/braintree/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nonce }),
+        });
+      }}
+      onCancel={() => console.log("Cancelled")}
+      onError={(err) => console.error("Error", err)}
+    />
+  );
+}
+```
+
+Render `PayLaterCheckout` inside a `BraintreePayPalProvider` (see [BraintreePayPalProvider](#braintreepaypalprovider)).
+
+**Props:**
+
+| Prop                      | Type                                                                  | Required | Description                                                       |
+| ------------------------- | --------------------------------------------------------------------- | -------- | ----------------------------------------------------------------- |
+| `amount`                  | `string`                                                              | Yes      | Payment amount (e.g., `"100.00"`)                                 |
+| `currency`                | `string`                                                              | Yes      | ISO 4217 currency code (e.g., `"USD"`)                            |
+| `onApprove`               | `(data: BraintreeApprovalData) => Promise<void>`                      | Yes      | Called when buyer approves — tokenize the payment here            |
+| `intent`                  | `"authorize" \| "capture" \| "order"`                                 | No       | Payment intent (default: `"capture"`)                             |
+| `onCancel`                | `() => void`                                                          | No       | Called when buyer cancels                                         |
+| `onComplete`              | `() => void`                                                          | No       | Called when the payment flow completes                            |
+| `onError`                 | `(err: Error) => void`                                                | No       | Called on errors                                                  |
+| `onShippingAddressChange` | `(data: BraintreeShippingAddressChangeData) => Promise<void>`         | No       | Called when buyer changes shipping address                        |
+| `onShippingOptionsChange` | `(data: BraintreeShippingOptionsChangeData) => Promise<void>`         | No       | Called when buyer selects a shipping option                       |
+| `lineItems`               | `BraintreeLineItem[]`                                                 | No       | Line items for the transaction                                    |
+| `shippingOptions`         | `BraintreeShippingOption[]`                                           | No       | Available shipping options                                        |
+| `shippingCallbackUrl`     | `string`                                                              | No       | URL for server-side shipping callbacks                            |
+| `shippingAddressOverride` | `BraintreeShippingAddressOverride`                                    | No       | Pre-collected shipping address                                    |
+| `amountBreakdown`         | `BraintreeAmountBreakdown`                                            | No       | Breakdown of the total amount (item total, shipping, tax, etc.)   |
+| `contactPreference`       | `"NO_CONTACT_INFO" \| "RETAIN_CONTACT_INFO" \| "UPDATE_CONTACT_INFO"` | No       | How buyer contact information is handled                          |
+| `userAuthenticationEmail` | `string`                                                              | No       | Pre-fill the PayPal login email                                   |
+| `returnUrl`               | `string`                                                              | No       | Return URL (required for `"direct-app-switch"` presentation mode) |
+| `cancelUrl`               | `string`                                                              | No       | Cancel URL (required for `"direct-app-switch"` presentation mode) |
+| `displayName`             | `string`                                                              | No       | Merchant name displayed in the PayPal lightbox                    |
+| `presentationMode`        | `BraintreePresentationMode`                                           | No       | UI mode: `"auto"`, `"popup"`, `"modal"`, `"redirect"`, etc.       |
+| `disabled`                | `boolean`                                                             | No       | Disable the button                                                |
+
 ### Braintree Hooks
 
 #### `useBraintreePayPal()`
@@ -1121,12 +1204,84 @@ function CustomCheckout() {
 
 **Returns:**
 
-| Property                          | Type                                      | Description                                |
-| --------------------------------- | ----------------------------------------- | ------------------------------------------ |
-| `braintreePayPalCheckoutInstance` | `BraintreePayPalCheckoutInstance \| null` | The checkout instance (null while loading) |
-| `loadingStatus`                   | `INSTANCE_LOADING_STATE`                  | `"pending"`, `"resolved"`, or `"rejected"` |
-| `error`                           | `Error \| null`                           | Initialization error, if any               |
-| `isHydrated`                      | `boolean`                                 | `true` after client-side hydration         |
+| Property                          | Type                                      | Description                                                                |
+| --------------------------------- | ----------------------------------------- | -------------------------------------------------------------------------- |
+| `braintreePayPalCheckoutInstance` | `BraintreePayPalCheckoutInstance \| null` | The checkout instance (null while loading)                                 |
+| `eligiblePaymentMethods`          | `BraintreeEligibilityResult \| null`      | Eligibility cached by `useBraintreeEligibleMethods` (`null` until fetched) |
+| `loadingStatus`                   | `INSTANCE_LOADING_STATE`                  | `"pending"`, `"resolved"`, or `"rejected"`                                 |
+| `error`                           | `Error \| null`                           | Initialization error, if any                                               |
+| `isHydrated`                      | `boolean`                                 | `true` after client-side hydration                                         |
+
+#### `useBraintreeEligibleMethods(props)`
+
+Fetches Braintree PayPal eligibility for the given checkout options by calling `findEligibleMethods()` on the shared checkout instance, and caches the result in `BraintreePayPalProvider` context (where buttons read it via `useBraintreePayPal().eligiblePaymentMethods`). Fetches are deduplicated by `(instance, options)` and re-run when the options change. Required before rendering eligibility-gated buttons such as `BraintreePayPalPayLaterButton`.
+
+```tsx
+import {
+  useBraintreePayPal,
+  useBraintreeEligibleMethods,
+  BraintreePayPalOneTimePaymentButton,
+  BraintreePayPalPayLaterButton,
+  INSTANCE_LOADING_STATE,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+function CheckoutButtons() {
+  const { loadingStatus, braintreePayPalCheckoutInstance } =
+    useBraintreePayPal();
+  const { eligiblePaymentMethods, isLoading, error } =
+    useBraintreeEligibleMethods({
+      amount: "100.00",
+      currency: "USD",
+      countryCode: "US",
+      paymentFlow: "ONE_TIME_PAYMENT",
+    });
+
+  if (isLoading || loadingStatus === INSTANCE_LOADING_STATES.PENDING) {
+    return <Spinner />;
+  }
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
+  return (
+    <>
+      <BraintreePayPalOneTimePaymentButton
+        amount="100.00"
+        currency="USD"
+        // onApprove not show in this example
+        // see other examples for usage of tokenizePayment in onApprove
+        onApprove={onApprove}
+      />
+      {eligiblePaymentMethods?.paylater && (
+        <BraintreePayPalPayLaterButton
+          amount="100.00"
+          currency="USD"
+          onApprove={onApprove}
+        />
+      )}
+    </>
+  );
+}
+```
+
+**Props (`BraintreeFindEligibleMethodsOptions`):**
+
+| Prop          | Type                                                                                           | Required | Description                                 |
+| ------------- | ---------------------------------------------------------------------------------------------- | -------- | ------------------------------------------- |
+| `currency`    | `string`                                                                                       | Yes      | ISO 4217 currency code (e.g., `"USD"`)      |
+| `amount`      | `string`                                                                                       | No       | Checkout amount used for eligibility checks |
+| `countryCode` | `string`                                                                                       | No       | Buyer country code (e.g., `"US"`)           |
+| `paymentFlow` | `"ONE_TIME_PAYMENT" \| "VAULT_WITH_PAYMENT" \| "VAULT_WITHOUT_PAYMENT" \| "RECURRING_PAYMENT"` | No       | The flow eligibility is being checked for   |
+
+**Returns:**
+
+| Property                 | Type                                 | Description                                                               |
+| ------------------------ | ------------------------------------ | ------------------------------------------------------------------------- |
+| `eligiblePaymentMethods` | `BraintreeEligibilityResult \| null` | Eligibility result, or `null` until fetched                               |
+| `isLoading`              | `boolean`                            | `true` while the instance is initializing or eligibility is being fetched |
+| `error`                  | `Error \| null`                      | Fetch- or provider-level error, if any                                    |
+
+`BraintreeEligibilityResult` exposes the booleans `paypal`, `paylater`, and `credit`, plus `getDetails(method)` which returns the `countryCode` and `productCode` the buttons consume.
 
 #### `useBraintreePayPalOneTimePaymentSession(props)`
 
@@ -1204,6 +1359,51 @@ function CustomCheckoutVaultButton() {
     <button onClick={handleClick} disabled={isPending}>
       Pay & Save
     </button>
+  );
+}
+```
+
+**Returns:** `{ handleClick: () => void, isPending: boolean, error: Error | null }`
+
+#### `useBraintreePayPalPayLaterSession(props)`
+
+Creates a Pay Later (Buy Now, Pay Later) session. Returns a `handleClick` function to start the flow. Accepts the same props as `BraintreePayPalPayLaterButton` (minus `disabled`) — use this hook directly when you need full control over the `<paypal-pay-later-button>` UI. Eligibility (`countryCode`/`productCode`) must still be fetched via `useBraintreeEligibleMethods`.
+
+```tsx
+import {
+  useBraintreePayPalPayLaterSession,
+  useBraintreeEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+function CustomPayLaterButton() {
+  const { handleClick, isPending } = useBraintreePayPalPayLaterSession({
+    amount: "100.00",
+    currency: "USD",
+    onApprove: async (data) => {
+      // tokenize and process
+    },
+  });
+
+  const { isLoading, eligiblePaymentMethods } = useBraintreeEligibleMethods({
+    currency: "USD",
+  });
+
+  if (isPending || isLoading) {
+    return <Spinner />;
+  }
+  if (!eligiblePaymentMethods?.paylater) {
+    return null;
+  }
+
+  const payLaterDetails = eligiblePaymentMethods.getDetails("paylater");
+
+  return (
+    <paypal-pay-later-button
+      onClick={() => handleClick()}
+      disabled={isPending}
+      countryCode={payLaterDetails?.countryCode}
+      productCode={payLaterDetails?.productCode}
+    />
   );
 }
 ```
