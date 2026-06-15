@@ -44,7 +44,7 @@ export type BraintreePayPalPayLaterButtonProps =
  *     // Send nonce to your server to complete the transaction
  *   };
  *
- *   if (!eligiblePaymentMethods?.isEligible("paylater")) {
+ *   if (!eligiblePaymentMethods?.paylater) {
  *     return null;
  *   }
  *

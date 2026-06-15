@@ -43,7 +43,7 @@ export interface UseBraintreePayPalPayLaterSessionReturn {
  *
  *   if (isPending || isLoading) return <Spinner />;
  *
- *   if (!eligiblePaymentMethods?.isEligible("paylater")) {
+ *   if (!eligiblePaymentMethods?.paylater) {
  *    return null;
  *   }
  *
