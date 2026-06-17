@@ -89,12 +89,52 @@ Create a `.env` file in this directory (`packages/react-paypal-js-storybook/v6/.
 ```bash
 # Required: PayPal sandbox client ID from https://developer.paypal.com/dashboard/applications/sandbox
 STORYBOOK_PAYPAL_SANDBOX_CLIENT_ID=your_sandbox_client_id_here
+
+# Required for LPM testing: Point to the local websdknodeweb integration API server
+STORYBOOK_PAYPAL_API_URL=http://localhost:8000/lpm-demo/api
 ```
 
 | Variable                             | Required | Description                                                                                                                                                                          |
 | ------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `STORYBOOK_PAYPAL_SANDBOX_CLIENT_ID` | Yes      | PayPal sandbox client ID. Without this, buttons will not render. Create an app at [developer.paypal.com](https://developer.paypal.com/dashboard/applications/sandbox) to obtain one. |
-| `STORYBOOK_PAYPAL_API_URL`           | No       | Override the sample integration server URL (defaults to `https://v6-web-sdk-sample-integration-server.fly.dev`)                                                                      |
+| `STORYBOOK_PAYPAL_API_URL`           | Yes      | URL of the local `websdknodeweb` integration API server. Must point to `http://localhost:8000/lpm-demo/api` (or custom port if changed). Start the server with `cd ../../websdknodeweb && npm run dev` |
+
+### Running the Storybook with LPM Support
+
+LPMs (Local Payment Methods) require credentials from the `websdknodeweb` integration server:
+
+#### Step 1: Start the websdknodeweb server
+```bash
+cd ../../websdknodeweb
+npm install
+npm run dev
+# Server will start on http://localhost:8000
+```
+
+#### Step 2: Ensure `.env` is configured
+```bash
+# In packages/react-paypal-js-storybook/v6/.env
+STORYBOOK_PAYPAL_SANDBOX_CLIENT_ID=your_client_id
+STORYBOOK_PAYPAL_API_URL=http://localhost:8000/lpm-demo/api
+```
+
+#### Step 3: Run Storybook
+```bash
+npm run storybook:v6
+# Storybook will open at http://localhost:6006
+```
+
+#### Step 4: Test LPMs
+Select any LPM story (ideal, giropay, sofort, scalapay, etc.) — credentials will be loaded from the local server.
+
+### Troubleshooting: "Failed to load credentials for [LPM]"
+
+**Error**: `❌ Failed to load credentials for [LPM]. Failed to fetch`
+
+**Solution**: 
+- Ensure `websdknodeweb` is running on `http://localhost:8000`
+- Verify `STORYBOOK_PAYPAL_API_URL` in `.env` matches the server URL
+- Check that the server is responding: `curl http://localhost:8000/lpm-demo/api/client-token`                                                                      |
 
 ## Technology Stack
 

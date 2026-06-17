@@ -10,6 +10,7 @@ import {
 import type { LPMName } from "@paypal/react-paypal-js/sdk-v6";
 import {
   createOrder,
+  createOrderForLpm,
   oneTimePaymentCallbacks,
   presentationModeArgType,
   disabledArgType,
@@ -106,6 +107,21 @@ export default meta;
 
 type Story = StoryObj<typeof LPMOneTimePaymentButton>;
 
+// Session fields required by specific LPMs at start() time (not hosted PayPal fields).
+// billingAddress / taxInfo / expiryDate are merchant-collected — supply test values here.
+const LPM_SESSION_FIELDS: Partial<Record<LPMName, Record<string, unknown>>> = {
+  boletobancario: {
+    billingAddress: {
+      streetAddress: "Rua Exemplo, 123",
+      city: "São Paulo",
+      state: "SP",
+      postalCode: "01310-100",
+      countryCode: "BR",
+    },
+    taxInfo: { taxId: "123.456.789-09", taxIdType: "BR_CPF" },
+  },
+};
+
 function lpmArgs(lpm: LPMName): Story {
   return {
     name: LPM_REGISTRY[lpm].displayName,
@@ -113,8 +129,9 @@ function lpmArgs(lpm: LPMName): Story {
       lpm,
       presentationMode: "popup",
       testBuyerCountry: LPM_COUNTRY_MAP[lpm],
-      createOrder,
+      createOrder: () => createOrderForLpm(lpm),
       ...oneTimePaymentCallbacks,
+      ...(LPM_SESSION_FIELDS[lpm] ?? {}),
     },
   };
 }
@@ -126,7 +143,7 @@ export const Default: Story = {
     lpm: "ideal",
     presentationMode: "popup",
     testBuyerCountry: "NL",
-    createOrder,
+    createOrder: () => createOrderForLpm("ideal"),
     ...oneTimePaymentCallbacks,
   },
 };

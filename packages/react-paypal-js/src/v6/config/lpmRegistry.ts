@@ -1,6 +1,6 @@
 import type { LPMComponents, LPMSessionMethodName } from "../types";
 
-export type SessionFieldType = "phone" | "billingAddress" | "taxInfo" | "expiryDate";
+export type SessionFieldType = "phone" | "billingAddress" | "taxInfo" | "expiryDate" | "dateOfBirth" | "numberOfInstallments";
 
 export interface LPMConfig {
   readonly component: LPMComponents;
@@ -194,7 +194,7 @@ export const LPM_REGISTRY = {
     sessionMethod: "createFloaOneTimePaymentSession",
     displayName: "FLOA",
     fields: ["name"],
-    sessionFields: [],
+    sessionFields: ["dateOfBirth", "numberOfInstallments"],
   },
   scalapay: {
     component: "scalapay-payments",
@@ -218,7 +218,7 @@ export const LPM_REGISTRY = {
     sessionMethod: "createPixInternationalOneTimePaymentSession",
     displayName: "Pix",
     fields: ["name", "email"],
-    sessionFields: ["phone", "billingAddress"],
+    sessionFields: ["phone", "billingAddress", "taxInfo"],
   },
   sepa: {
     component: "sepa-payments",
