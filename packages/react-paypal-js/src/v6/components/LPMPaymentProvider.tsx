@@ -3,8 +3,23 @@ import React, { useEffect, useReducer, useRef, type JSX } from "react";
 import { useLPMOneTimePaymentSession } from "../hooks/useLPMOneTimePaymentSession";
 
 import type { LPMName } from "../config/lpmRegistry";
-import type { UseLPMOneTimePaymentSessionProps } from "../hooks/useLPMOneTimePaymentSession";
+import type { UseLPMOneTimePaymentSessionProps, LPMPaymentSessionReturn } from "../hooks/useLPMOneTimePaymentSession";
 import type { ButtonProps } from "../types/sdkWebComponents";
+
+// ─── Enhanced hook return type ─────────────────────────────────────────────────
+
+/** Return type of every `createEnhancedLPMHook`-generated hook.
+ *
+ * Extends `LPMPaymentSessionReturn` with a field-component map so merchants
+ * can destructure `NameField`, `EmailField`, etc. with correct prop types:
+ *
+ * ```tsx
+ * const { NameField, handleClick, isPending } = useIdealOneTimePaymentSession({ ... });
+ * ```
+ */
+export type LPMEnhancedHookReturn = LPMPaymentSessionReturn & {
+  [fieldKey: string]: (props: LPMFieldComponentProps) => JSX.Element;
+};
 
 // ─── Session handle ───────────────────────────────────────────────────────────
 
@@ -133,15 +148,12 @@ export function createLPMButtonComponent(
 export function createEnhancedLPMHook(
   lpm: LPMName,
   fieldTypes: ReadonlyArray<string>,
-  buttonTag: string,
-): (props: Omit<UseLPMOneTimePaymentSessionProps, "lpm">) => Record<string, unknown> {
-  // buttonTag kept in signature so the factory signature stays uniform with
-  // lpmExports, even though the button is no longer created inside the hook.
-  void buttonTag;
+  _buttonTag: string, // kept for call-site uniformity with lpmExports; button is standalone
+): (props: Omit<UseLPMOneTimePaymentSessionProps, "lpm">) => LPMEnhancedHookReturn {
 
   type NamedHookProps = Omit<UseLPMOneTimePaymentSessionProps, "lpm">;
 
-  return function useLPMEnhancedSession(props: NamedHookProps): Record<string, unknown> {
+  return function useLPMEnhancedSession(props: NamedHookProps): LPMEnhancedHookReturn {
     const result = useLPMOneTimePaymentSession({
       lpm,
       ...props,
@@ -228,10 +240,7 @@ export function createEnhancedLPMHook(
 
     return {
       ...result,
-      ...(fieldComponentsRef.current as Record<
-        string,
-        (props: LPMFieldComponentProps) => JSX.Element
-      >),
-    };
+      ...fieldComponentsRef.current,
+    } as LPMEnhancedHookReturn;
   };
 }

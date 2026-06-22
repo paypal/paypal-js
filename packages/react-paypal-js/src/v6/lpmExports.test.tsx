@@ -11,7 +11,7 @@ import {
 import {
   IdealPaymentButton,
   EpsPaymentButton,
-} from "./lpmProviderExports";
+} from "./lpmExports";
 import { useLPMOneTimePaymentSession } from "./hooks/useLPMOneTimePaymentSession";
 
 jest.mock("./hooks/useLPMOneTimePaymentSession", () => ({

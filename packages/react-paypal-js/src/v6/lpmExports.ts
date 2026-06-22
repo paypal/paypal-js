@@ -4,49 +4,23 @@ import {
   LPMOneTimePaymentButton,
   type LPMOneTimePaymentButtonProps,
 } from "./components/LPMOneTimePaymentButton";
-import { useLPMOneTimePaymentSession } from "./hooks/useLPMOneTimePaymentSession";
 import { LPM_REGISTRY } from "./config/lpmRegistry";
+import {
+  createLPMButtonComponent,
+  createEnhancedLPMHook,
+  type LPMSessionHandle,
+  type LPMButtonComponentProps,
+  type LPMFieldComponentProps,
+  type LPMEnhancedHookReturn,
+} from "./components/LPMPaymentProvider";
 
 import type { UseLPMOneTimePaymentSessionProps } from "./hooks/useLPMOneTimePaymentSession";
 import type { LPMName } from "./config/lpmRegistry";
 
+export type { LPMSessionHandle, LPMButtonComponentProps, LPMFieldComponentProps, LPMEnhancedHookReturn };
+
 type NamedLPMButtonProps = Omit<LPMOneTimePaymentButtonProps, "lpm">;
 type NamedLPMHookProps = Omit<UseLPMOneTimePaymentSessionProps, "lpm">;
-
-// ─── Standalone button infrastructure ────────────────────────────────────────
-
-/** Minimal subset of a payment session needed by a standalone LPM button. */
-export interface LPMSessionHandle {
-  handleClick: () => Promise<{ redirectURL?: string } | void>;
-  isPending: boolean;
-  error: Error | null;
-}
-
-export interface LPMButtonComponentProps {
-  paymentSession: LPMSessionHandle;
-  type?: string;
-  disabled?: boolean;
-  [key: string]: unknown;
-}
-
-function createLPMButtonComponent(buttonTag: string, displayName: string) {
-  function ButtonComponent({
-    paymentSession,
-    type = "pay",
-    disabled,
-    ...rest
-  }: LPMButtonComponentProps) {
-    const { handleClick, isPending, error } = paymentSession;
-    return React.createElement(buttonTag, {
-      ...rest,
-      onClick: handleClick,
-      type,
-      disabled: disabled || isPending || error !== null ? true : undefined,
-    });
-  }
-  ButtonComponent.displayName = displayName;
-  return ButtonComponent;
-}
 
 function createLPMButton(lpm: LPMName) {
   const Component = (props: NamedLPMButtonProps): JSX.Element | null =>
@@ -59,11 +33,11 @@ function createLPMButton(lpm: LPMName) {
 }
 
 function createLPMHook(lpm: LPMName) {
-  return (props: NamedLPMHookProps) =>
-    useLPMOneTimePaymentSession({
-      lpm,
-      ...props,
-    } as UseLPMOneTimePaymentSessionProps);
+  return createEnhancedLPMHook(
+    lpm,
+    LPM_REGISTRY[lpm].fields,
+    LPM_REGISTRY[lpm].buttonTag,
+  );
 }
 
 // Named Button Components

@@ -127,22 +127,24 @@ describe("LPMOneTimePaymentButton", () => {
   });
 
   describe("error handling", () => {
-    test("should log error to console when error is present", () => {
-      const consoleErrorSpy = jest
-        .spyOn(console, "error")
-        .mockImplementation();
+    test("should disable button when error is present", () => {
       const testError = new Error("Test error");
 
       useLPMOneTimePaymentSession.mockReturnValue({
         error: testError,
         isPending: false,
         handleClick: mockHandleClick,
+        handleCancel: jest.fn(),
+        handleDestroy: jest.fn(),
+        session: null,
+        Button: () => null,
       });
 
       render(<LPMOneTimePaymentButton {...defaultProps} />);
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(testError);
-      consoleErrorSpy.mockRestore();
+      // Error state disables the button; console.error is the merchant's responsibility
+      const button = document.querySelector("ideal-button");
+      expect(button).toHaveAttribute("disabled");
     });
   });
 

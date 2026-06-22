@@ -187,6 +187,8 @@ export {
   JeniuspayPaymentButton,
   type LPMSessionHandle,
   type LPMButtonComponentProps,
+  type LPMFieldComponentProps,
+  type LPMEnhancedHookReturn,
   // Named hooks
   useIdealOneTimePaymentSession,
   useBancontactOneTimePaymentSession,

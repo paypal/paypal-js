@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, type JSX } from "react";
 
 import { useLPMOneTimePaymentSession } from "../hooks/useLPMOneTimePaymentSession";
 import { usePayPal } from "../hooks/usePayPal";
@@ -58,12 +58,6 @@ export const LPMOneTimePaymentButton = ({
       }
     });
   }, [session, config.fields]);
-
-  useEffect(() => {
-    if (error) {
-      console.error(error);
-    }
-  }, [error]);
 
   if (!isHydrated) {
     return <div />;
