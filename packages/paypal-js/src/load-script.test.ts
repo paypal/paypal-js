@@ -213,7 +213,7 @@ describe("loadCustomScript()", () => {
   });
 
   test("should use the provided promise ponyfill", () => {
-    const PromisePonyfill = vi.fn(() => {
+    const PromisePonyfill = vi.fn(function () {
       return {
         then: vi.fn(),
       };

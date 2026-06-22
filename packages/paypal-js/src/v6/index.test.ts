@@ -127,7 +127,7 @@ describe("loadCoreSdkScript()", () => {
       return node;
     });
 
-    expect(async () => {
+    await expect(async () => {
       await loadCoreSdkScript({ environment: "sandbox" });
     }).rejects.toThrowError(
       'The script "https://www.sandbox.paypal.com/web-sdk/v6/core" failed to load. Check the HTTP status code and response body in DevTools to learn more.',
@@ -135,12 +135,12 @@ describe("loadCoreSdkScript()", () => {
   });
 
   test("should error due to unvalid input", async () => {
-    expect(async () => {
+    await expect(async () => {
       // @ts-expect-error invalid arguments
       await loadCoreSdkScript(123);
     }).rejects.toThrowError("Expected an options object");
 
-    expect(async () => {
+    await expect(async () => {
       // @ts-expect-error invalid arguments
       await loadCoreSdkScript({ environment: "bad_value" });
     }).rejects.toThrowError(
@@ -149,7 +149,7 @@ describe("loadCoreSdkScript()", () => {
   });
 
   test("should error when environment is omitted", async () => {
-    expect(async () => {
+    await expect(async () => {
       // @ts-expect-error environment is required
       await loadCoreSdkScript({});
     }).rejects.toThrowError(
@@ -158,7 +158,7 @@ describe("loadCoreSdkScript()", () => {
   });
 
   test("should error when environment is explicitly undefined", async () => {
-    expect(async () => {
+    await expect(async () => {
       // @ts-expect-error environment is required
       await loadCoreSdkScript({ environment: undefined });
     }).rejects.toThrowError(
@@ -191,7 +191,7 @@ describe("loadCoreSdkScript()", () => {
     });
 
     test("should error when dataNamespace is an empty string", async () => {
-      expect(async () => {
+      await expect(async () => {
         await loadCoreSdkScript({ environment: "sandbox", dataNamespace: "" });
       }).rejects.toThrowError(
         'The "dataNamespace" option cannot be an empty string',
@@ -199,7 +199,7 @@ describe("loadCoreSdkScript()", () => {
     });
 
     test("should error when dataNamespace is only whitespace", async () => {
-      expect(async () => {
+      await expect(async () => {
         await loadCoreSdkScript({
           environment: "sandbox",
           dataNamespace: "   ",
@@ -234,7 +234,7 @@ describe("loadCoreSdkScript()", () => {
     });
 
     test("should error when dataSdkIntegrationSource is an empty string", async () => {
-      expect(async () => {
+      await expect(async () => {
         await loadCoreSdkScript({
           environment: "sandbox",
           dataSdkIntegrationSource: "",
@@ -245,7 +245,7 @@ describe("loadCoreSdkScript()", () => {
     });
 
     test("should error when dataSdkIntegrationSource is only whitespace", async () => {
-      expect(async () => {
+      await expect(async () => {
         await loadCoreSdkScript({
           environment: "sandbox",
           dataSdkIntegrationSource: "   ",
