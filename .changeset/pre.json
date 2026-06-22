@@ -1,0 +1,17 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "@paypal/paypal-js": "10.0.0",
+    "@paypal/react-paypal-js": "10.0.0",
+    "@paypal/react-paypal-js-storybook-v6": "0.1.0"
+  },
+  "changesets": [
+    "eager-months-tie",
+    "fruity-bats-say",
+    "nasty-rockets-cut",
+    "require-environment-in-fetch-eligible-methods",
+    "tiny-seas-drive",
+    "v6-web-component-dom-types"
+  ]
+}
