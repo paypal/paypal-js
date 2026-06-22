@@ -62,6 +62,7 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
   return (
     <PayPalProvider
       clientId={PAYPAL_CLIENT_ID}
+      environment="sandbox"
       components={[
         "paypal-payments",
         "venmo-payments",
@@ -79,8 +80,10 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
 }
 
 export const withPayPalProvider: Decorator = (Story, context) => {
-  // Let LPM stories (and any others with their own provider) manage SDK loading themselves
-  if (context.parameters?.skipPayPalProvider) {
+  // Stories can opt out via `parameters: { providerType: "braintree" }` (Braintree)
+  // or `parameters: { skipPayPalProvider: true }` (LPM and others with their own provider).
+  const providerType = context.parameters?.providerType ?? "paypal";
+  if (providerType !== "paypal" || context.parameters?.skipPayPalProvider) {
     return <Story />;
   }
   return (

@@ -18,18 +18,37 @@ export type PayPalCreditOneTimePaymentButtonProps =
  * (available via `usePayPal().eligiblePaymentMethods`). The button requires eligibility to be configured
  * in the parent `PayPalProvider`, using either the `useEligibleMethods` hook client-side or `useFetchEligibleMethods` server-side.
  *
+ * **Eligibility must be fetched first.** Until eligibility is available, internally the button has no
+ * `countryCode` to render with. Fetch eligibility (and wait for it) before rendering.
+ *
  * Note, `autoRedirect` is not allowed because if given a `presentationMode` of `"redirect"` the button
  * would not be able to provide back `redirectURL` from `start`. Advanced integrations that need
  * `redirectURL` should use the {@link usePayPalCreditOneTimePaymentSession} hook directly.
  *
+ * `presentationMode` is optional and defaults to `"auto"`.
+ *
  * @example
- * <PayPalCreditOneTimePaymentButton
- *   onApprove={() => {
- *      // ... on approve logic
- *   }}
- *   orderId="your-order-id"
- *   presentationMode="auto"
- * />
+ * function CreditCheckout() {
+ *   // Fetch eligibility before rendering the button (or hydrate it server-side
+ *   // via useFetchEligibleMethods)
+ *   const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
+ *     payload: { purchase_units: [{ amount: { currency_code: "USD" } }] },
+ *   });
+ *
+ *   if (isLoading) return <Spinner />;
+ *   if (!eligiblePaymentMethods?.isEligible("credit")) {
+ *     return null;
+ *   }
+ *
+ *   return (
+ *     <PayPalCreditOneTimePaymentButton
+ *       onApprove={() => {
+ *         // ... on approve logic
+ *       }}
+ *       orderId="your-order-id"
+ *     />
+ *   );
+ * }
  */
 export const PayPalCreditOneTimePaymentButton = ({
   disabled = false,

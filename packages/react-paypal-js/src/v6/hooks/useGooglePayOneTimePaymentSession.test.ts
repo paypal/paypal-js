@@ -419,6 +419,61 @@ describe("useGooglePayOneTimePaymentSession", () => {
     });
   });
 
+  describe("pay.js loading timing (Tier 1: loud failure)", () => {
+    test("surfaces an error and calls onError when pay.js is missing at mount", () => {
+      removeGooglePayGlobal();
+
+      const { result } = renderHook(() =>
+        useGooglePayOneTimePaymentSession(defaultProps),
+      );
+
+      expectCurrentErrorValue(result.current.error);
+      expect(result.current.error?.message).toContain("pay.js");
+      expect(result.current.paymentsClient).toBeNull();
+      expect(result.current.formattedConfig).toBeNull();
+      expect(defaultProps.onError).toHaveBeenCalledTimes(1);
+      expect(defaultProps.onError).toHaveBeenCalledWith(result.current.error);
+    });
+
+    test("does NOT auto-recover after pay.js loads late (recovery is Tier 2)", () => {
+      removeGooglePayGlobal();
+
+      const { result, rerender } = renderHook(() =>
+        useGooglePayOneTimePaymentSession(defaultProps),
+      );
+
+      expect(result.current.paymentsClient).toBeNull();
+      expect(result.current.error?.message).toContain("pay.js");
+
+      // pay.js arrives after mount; an unrelated re-render does not re-run the
+      // setup effect (window.google is not — and cannot be — a dependency).
+      setupGooglePayGlobal();
+      rerender();
+
+      expect(result.current.paymentsClient).toBeNull();
+      expect(result.current.error?.message).toContain("pay.js");
+    });
+
+    test("createGooglePayButton returns null and an error is present when pay.js is missing", async () => {
+      removeGooglePayGlobal();
+
+      const { result } = renderHook(() =>
+        useGooglePayOneTimePaymentSession(defaultProps),
+      );
+
+      let button: HTMLElement | null = null;
+      await act(async () => {
+        button = await result.current.createGooglePayButton({
+          onClick: jest.fn(),
+          buttonType: "pay",
+        });
+      });
+
+      expect(button).toBeNull();
+      expect(result.current.error?.message).toContain("pay.js");
+    });
+  });
+
   describe("handleClick - payment flow", () => {
     test("should handle payment authorization, confirm order, and call onApprove", async () => {
       const { result } = renderHook(() =>

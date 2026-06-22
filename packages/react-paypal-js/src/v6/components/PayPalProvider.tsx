@@ -56,10 +56,15 @@ type PayPalProviderProps =
  * An unstable Promise reference (e.g., calling `fetchClientToken()` or `fetchClientId()` inline)
  * will cause the SDK to re-initialize on every render. Wrap the promise in `useMemo` or store it in state.
  *
+ * **The `environment` prop is required.** `clientId` does not select the environment in v6 — a
+ * live `clientId` will still load the sandbox SDK if `environment="sandbox"`. Pass
+ * `environment="production"` or `environment="sandbox"` explicitly.
+ *
  * @example
  * // With string clientToken
  * <PayPalProvider
  *   clientToken={token}
+ *   environment="sandbox"
  *   components={["paypal-payments", "venmo-payments"]}
  *   pageType="checkout"
  * >
@@ -70,6 +75,7 @@ type PayPalProviderProps =
  * // With string clientId
  * <PayPalProvider
  *   clientId="YOUR_CLIENT_ID"
+ *   environment="sandbox"
  *   components={["paypal-payments"]}
  *   pageType="checkout"
  * >
@@ -82,6 +88,7 @@ type PayPalProviderProps =
  *
  * <PayPalProvider
  *   clientToken={tokenPromise}
+ *   environment="sandbox"
  *   pageType="checkout"
  * >
  *   <PayPalOneTimePaymentButton />
@@ -93,6 +100,7 @@ type PayPalProviderProps =
  *
  * <PayPalProvider
  *   clientId={clientIdPromise}
+ *   environment="sandbox"
  *   pageType="checkout"
  * >
  *   <PayPalOneTimePaymentButton />
@@ -108,6 +116,7 @@ type PayPalProviderProps =
  *
  * <PayPalProvider
  *   clientToken={clientToken}
+ *   environment="sandbox"
  *   pageType="checkout"
  * >
  *   <PayPalOneTimePaymentButton />
@@ -123,6 +132,7 @@ type PayPalProviderProps =
  *
  * <PayPalProvider
  *   clientId={clientId}
+ *   environment="sandbox"
  *   pageType="checkout"
  * >
  *   <PayPalOneTimePaymentButton />
@@ -141,7 +151,7 @@ type PayPalProviderProps =
  *   return <PayPalOneTimePaymentButton orderId="ORDER-123" />;
  * }
  *
- * <PayPalProvider clientToken={token} pageType="checkout">
+ * <PayPalProvider clientToken={token} environment="sandbox" pageType="checkout">
  *   <MyCheckout />
  * </PayPalProvider>
  */

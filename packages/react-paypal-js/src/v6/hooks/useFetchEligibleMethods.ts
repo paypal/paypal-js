@@ -5,7 +5,7 @@ import {
 } from "../types";
 
 type FindEligiblePaymentMethodsOptions = {
-  environment?: "production" | "sandbox";
+  environment: "production" | "sandbox";
   payload?: FindEligiblePaymentMethodsRequestPayload;
   headers?: HeadersInit;
 };
@@ -95,6 +95,13 @@ export async function useFetchEligibleMethods(
   options: FindEligiblePaymentMethodsOptions & { signal?: AbortSignal },
 ): Promise<FindEligiblePaymentMethodsResponse> {
   const { payload, signal, environment, headers } = options;
+
+  if (environment !== "production" && environment !== "sandbox") {
+    throw new Error(
+      'The "environment" option is required and must be either "production" or "sandbox"',
+    );
+  }
+
   const defaultPayload = payload ?? {};
   const baseUrl =
     environment === "production"

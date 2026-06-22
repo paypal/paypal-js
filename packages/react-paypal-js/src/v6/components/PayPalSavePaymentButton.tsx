@@ -22,13 +22,14 @@ type PayPalSavePaymentButtonProps = UsePayPalSavePaymentSessionProps &
  * would not be able to provide back `redirectURL` from `start`. Advanced integrations that need
  * `redirectURL` should use the {@link usePayPalSavePaymentSession} hook directly.
  *
+ * `presentationMode` is optional and defaults to `"auto"`.
+ *
  * @example
  * <PayPalSavePaymentButton
  *   onApprove={() => {
  *      // ... on approve logic
  *   }}
  *   vaultSetupToken="your-vault-setup-token"
- *   presentationMode="auto"
  * />
  */
 export const PayPalSavePaymentButton = ({

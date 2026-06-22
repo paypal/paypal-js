@@ -34,7 +34,7 @@ export interface UseBraintreePayPalBillingAgreementSessionReturn {
  * instance is still being initialized. Buttons should wait to render until `isPending`
  * is false.
  *
- * For a ready-to-use component that wraps this hook, see {@link BraintreePayPalBillingAgreementButton}.
+ * For a ready-to-use component that wraps this hook, see `BraintreePayPalBillingAgreementButton`.
  *
  * @returns Object with: `error` (any session error), `isPending` (checkout instance loading), `handleClick` (starts session)
  *
@@ -113,8 +113,11 @@ export function useBraintreePayPalBillingAgreementSession({
   planMetadata,
   shippingAddressOverride,
 }: UseBraintreePayPalBillingAgreementSessionProps): UseBraintreePayPalBillingAgreementSessionReturn {
-  const { braintreePayPalCheckoutInstance, loadingStatus } =
-    useBraintreePayPal();
+  const {
+    braintreePayPalCheckoutInstance,
+    loadingStatus,
+    error: contextError,
+  } = useBraintreePayPal();
   const isMountedRef = useIsMountedRef();
   const sessionRef = useRef<BraintreePaymentSession | null>(null);
   const [error, setError] = useError();
@@ -142,9 +145,17 @@ export function useBraintreePayPalBillingAgreementSession({
     if (braintreePayPalCheckoutInstance) {
       setError(null);
     } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
-      setError(new Error("Braintree checkout instance not available"));
+      setError(
+        contextError
+          ? new Error(`Braintree provider error: ${contextError.message}`, {
+              cause: contextError,
+            })
+          : new Error(
+              "Braintree Billing Agreement checkout instance not available",
+            ),
+      );
     }
-  }, [braintreePayPalCheckoutInstance, setError, loadingStatus]);
+  }, [braintreePayPalCheckoutInstance, setError, loadingStatus, contextError]);
 
   useEffect(() => {
     if (!braintreePayPalCheckoutInstance) {

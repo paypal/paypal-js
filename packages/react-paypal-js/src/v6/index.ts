@@ -44,12 +44,28 @@ export {
 export { PayPalProvider } from "./components/PayPalProvider";
 export { BraintreePayPalProvider } from "./components/Braintree/BraintreePayPalProvider";
 export { BraintreePayPalOneTimePaymentButton } from "./components/Braintree/BraintreePayPalOneTimePaymentButton";
+export {
+  BraintreePayPalBillingAgreementButton,
+  type BraintreePayPalBillingAgreementButtonProps,
+} from "./components/Braintree/BraintreePayPalBillingAgreementButton";
+export {
+  BraintreePayPalCheckoutWithVaultButton,
+  type BraintreePayPalCheckoutWithVaultButtonProps,
+} from "./components/Braintree/BraintreePayPalCheckoutWithVaultButton";
+export {
+  BraintreePayPalPayLaterButton,
+  type BraintreePayPalPayLaterButtonProps,
+} from "./components/Braintree/BraintreePayPalPayLaterButton";
 export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
 export {
   ApplePayOneTimePaymentButton,
   type ApplePayOneTimePaymentButtonProps,
 } from "./components/ApplePayOneTimePaymentButton";
+export {
+  GooglePayOneTimePaymentButton,
+  type GooglePayOneTimePaymentButtonProps,
+} from "./components/GooglePayOneTimePaymentButton";
 export {
   LPMOneTimePaymentButton,
   type LPMOneTimePaymentButtonProps,
@@ -289,6 +305,26 @@ export {
   type UseBraintreePayPalOneTimePaymentSessionProps,
   type UseBraintreePayPalOneTimePaymentSessionReturn,
 } from "./hooks/Braintree/useBraintreePayPalOneTimePaymentSession";
+export {
+  useBraintreePayPalBillingAgreementSession,
+  type UseBraintreePayPalBillingAgreementSessionProps,
+  type UseBraintreePayPalBillingAgreementSessionReturn,
+} from "./hooks/Braintree/useBraintreePayPalBillingAgreementSession";
+export {
+  useBraintreePayPalCheckoutWithVaultSession,
+  type UseBraintreePayPalCheckoutWithVaultSessionProps,
+  type UseBraintreePayPalCheckoutWithVaultSessionReturn,
+} from "./hooks/Braintree/useBraintreePayPalCheckoutWithVaultSession";
+export {
+  useBraintreePayPalPayLaterSession,
+  type UseBraintreePayPalPayLaterSessionProps,
+  type UseBraintreePayPalPayLaterSessionReturn,
+} from "./hooks/Braintree/useBraintreePayPalPayLaterSession";
+export {
+  useBraintreeEligibleMethods,
+  type UseBraintreeEligibleMethodsProps,
+  type UseBraintreeEligibleMethodsReturn,
+} from "./hooks/Braintree/useBraintreeEligibleMethods";
 export * from "./hooks/useEligibleMethods";
 export { usePayPalMessages } from "./hooks/usePayPalMessages";
 
@@ -340,6 +376,10 @@ export {
   useApplePayOneTimePaymentSession,
   type UseApplePayOneTimePaymentSessionProps,
 } from "./hooks/useApplePayOneTimePaymentSession";
+export {
+  useGooglePayOneTimePaymentSession,
+  type UseGooglePayOneTimePaymentSessionProps,
+} from "./hooks/useGooglePayOneTimePaymentSession";
 
 // React 19+ JSX SDK Web Components type declaration
 declare global {

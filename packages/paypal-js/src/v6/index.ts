@@ -14,7 +14,7 @@ const SCRIPT_LOADING_STATE = {
 
 const DATA_ATTRIBUTE_LOADING_STATE = "data-loading-state";
 
-function loadCoreSdkScript(options: LoadCoreSdkScriptOptions = {}) {
+function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
   validateArguments(options);
 
   if (isServer()) {
@@ -102,13 +102,9 @@ function validateArguments(options: unknown) {
   const { environment, dataNamespace, dataSdkIntegrationSource } =
     options as LoadCoreSdkScriptOptions;
 
-  if (
-    environment &&
-    environment !== "production" &&
-    environment !== "sandbox"
-  ) {
+  if (environment !== "production" && environment !== "sandbox") {
     throw new Error(
-      'The "environment" option must be either "production" or "sandbox"',
+      'The "environment" option is required and must be either "production" or "sandbox"',
     );
   }
 

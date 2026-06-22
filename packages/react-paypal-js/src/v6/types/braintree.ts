@@ -1,3 +1,5 @@
+import type { FindEligibleMethodsGetDetails } from "@paypal/paypal-js/sdk-v6";
+
 // ---- Shared types ----
 
 export interface BraintreeLineItem {
@@ -18,6 +20,22 @@ export interface BraintreeShippingOption {
     currency: string;
     value: string;
   };
+}
+
+export interface BraintreeShippingAddressOverride {
+  line1: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  countryCode: string;
+  line2?: string;
+  phone?: string;
+  recipientName?: string;
+  recipientEmail?: string;
+  contactPreference?:
+    | "NO_CONTACT_INFO"
+    | "RETAIN_CONTACT_INFO"
+    | "UPDATE_CONTACT_INFO";
 }
 
 export interface BraintreeAmountBreakdown {
@@ -141,13 +159,17 @@ export interface BraintreeTokenizePayload {
 
 // ---- Eligibility result ----
 
+// Braintree supports a subset of the SDK's funding sources — no applepay,
+// googlepay, or advanced_cards.
+export type BraintreeEligibleFundingSource = "paypal" | "paylater" | "credit";
+
 export interface BraintreeEligibilityResult {
   paypal: boolean;
   paylater: boolean;
   credit: boolean;
-  getDetails: (
-    methodName: "paypal" | "paylater" | "credit",
-  ) => Record<string, unknown> | null;
+  getDetails: <T extends BraintreeEligibleFundingSource>(
+    methodName: T,
+  ) => FindEligibleMethodsGetDetails<T>;
 }
 
 // ---- Method options ----
@@ -177,6 +199,12 @@ export interface BraintreeOneTimePaymentSessionOptions {
   ) => Promise<void>;
   lineItems?: BraintreeLineItem[];
   shippingOptions?: BraintreeShippingOption[];
+  shippingCallbackUrl?: string;
+  shippingAddressOverride?: BraintreeShippingAddressOverride;
+  contactPreference?:
+    | "NO_CONTACT_INFO"
+    | "RETAIN_CONTACT_INFO"
+    | "UPDATE_CONTACT_INFO";
   userAuthenticationEmail?: string;
   amountBreakdown?: BraintreeAmountBreakdown;
   returnUrl?: string;
@@ -192,7 +220,7 @@ export interface BraintreeBillingAgreementSessionOptions {
   amount?: string;
   currency?: string;
   offerCredit?: boolean;
-  shippingAddressOverride?: Record<string, unknown>;
+  shippingAddressOverride?: BraintreeShippingAddressOverride;
   userAction?: "CONTINUE" | "COMMIT" | "SETUP_NOW";
   displayName?: string;
   returnUrl?: string;
@@ -222,6 +250,7 @@ export interface BraintreeCheckoutWithVaultSessionOptions {
   ) => Promise<void>;
   lineItems?: BraintreeLineItem[];
   shippingOptions?: BraintreeShippingOption[];
+  shippingCallbackUrl?: string;
   userAuthenticationEmail?: string;
   amountBreakdown?: BraintreeAmountBreakdown;
   returnUrl?: string;
@@ -246,6 +275,12 @@ export interface BraintreePayLaterSessionOptions {
   ) => Promise<void>;
   lineItems?: BraintreeLineItem[];
   shippingOptions?: BraintreeShippingOption[];
+  shippingCallbackUrl?: string;
+  shippingAddressOverride?: BraintreeShippingAddressOverride;
+  contactPreference?:
+    | "NO_CONTACT_INFO"
+    | "RETAIN_CONTACT_INFO"
+    | "UPDATE_CONTACT_INFO";
   userAuthenticationEmail?: string;
   amountBreakdown?: BraintreeAmountBreakdown;
   returnUrl?: string;
