@@ -7,7 +7,7 @@
     "TODO: Remove NODE_PATH=./node_modules once we upgrade v5 SDK's storybook to v10. Currently needed because storybook CLI is hoisted to root node_modules/, but @storybook/react-vite is installed locally due to version conflict with storybook v6."
   ],
   "scripts": {
-    "storybook": "NODE_PATH=./node_modules storybook dev -p 6006",
+    "storybook": "NODE_PATH=./node_modules storybook dev -p 6006 -h localhost.paypal.com --https --ssl-cert /Users/mjawaharlal/Desktop/v6-sdk/websdknodeweb/devCerts/localhost.paypal.com.crt --ssl-key /Users/mjawaharlal/Desktop/v6-sdk/websdknodeweb/devCerts/localhost.paypal.com.key",
     "build-storybook": "NODE_PATH=./node_modules storybook build -o ../../../docs/web-sdk-v6-react-storybook",
     "generate:lpm-stories": "tsx scripts/generateLpmStories.ts"
   },
