@@ -50,7 +50,17 @@ async function main() {
     onApprove: onApproveCallback,
   });
 
+  const venmoSavePaymentSession = sdkInstance.createVenmoSavePaymentSession({
+    onApprove: async ({ vaultSetupToken }) => {
+      console.log({
+        vaultSetupToken,
+      });
+    },
+  });
+
   const createOrder = () => Promise.resolve({ orderId: "ABC123" });
+  const createVaultSetupToken = () =>
+    Promise.resolve({ vaultSetupToken: "VST-ABC123" });
 
   const venmoButton = document.querySelector("venmo-button");
 
@@ -59,6 +69,10 @@ async function main() {
       await venmoPaymentSession.start(
         { presentationMode: "auto" },
         createOrder(),
+      );
+      await venmoSavePaymentSession.start(
+        { presentationMode: "auto" },
+        createVaultSetupToken(),
       );
     } catch (error) {
       console.error(error);
