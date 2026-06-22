@@ -128,7 +128,7 @@ describe("loadScript()", () => {
         // @ts-expect-error intentionally sending invalid value
         environment: "invalid",
       }),
-    ).toThrowError(
+    ).toThrow(
       'The `environment` option must be either "production" or "sandbox"',
     );
   });

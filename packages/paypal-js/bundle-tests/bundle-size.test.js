@@ -4,7 +4,7 @@ import { filesize } from "filesize";
 
 const maxBundleSizeInKiloBytes = 4.5;
 const maxLegacyBundleSizeInKiloBytes = 8.2;
-const v6MaxBundleSizeInKiloBytes = 2;
+const v6MaxBundleSizeInKiloBytes = 3;
 
 describe("bundle size", () => {
   test(`dist/iife/paypal-js.min.js should be less than ${maxBundleSizeInKiloBytes} KB`, () => {

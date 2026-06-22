@@ -129,7 +129,7 @@ describe("loadCoreSdkScript()", () => {
 
     await expect(async () => {
       await loadCoreSdkScript({ environment: "sandbox" });
-    }).rejects.toThrowError(
+    }).rejects.toThrow(
       'The script "https://www.sandbox.paypal.com/web-sdk/v6/core" failed to load. Check the HTTP status code and response body in DevTools to learn more.',
     );
   });
@@ -138,12 +138,12 @@ describe("loadCoreSdkScript()", () => {
     await expect(async () => {
       // @ts-expect-error invalid arguments
       await loadCoreSdkScript(123);
-    }).rejects.toThrowError("Expected an options object");
+    }).rejects.toThrow("Expected an options object");
 
     await expect(async () => {
       // @ts-expect-error invalid arguments
       await loadCoreSdkScript({ environment: "bad_value" });
-    }).rejects.toThrowError(
+    }).rejects.toThrow(
       'The "environment" option is required and must be either "production" or "sandbox"',
     );
   });
@@ -152,7 +152,7 @@ describe("loadCoreSdkScript()", () => {
     await expect(async () => {
       // @ts-expect-error environment is required
       await loadCoreSdkScript({});
-    }).rejects.toThrowError(
+    }).rejects.toThrow(
       'The "environment" option is required and must be either "production" or "sandbox"',
     );
   });
@@ -161,7 +161,7 @@ describe("loadCoreSdkScript()", () => {
     await expect(async () => {
       // @ts-expect-error environment is required
       await loadCoreSdkScript({ environment: undefined });
-    }).rejects.toThrowError(
+    }).rejects.toThrow(
       'The "environment" option is required and must be either "production" or "sandbox"',
     );
   });
@@ -193,7 +193,7 @@ describe("loadCoreSdkScript()", () => {
     test("should error when dataNamespace is an empty string", async () => {
       await expect(async () => {
         await loadCoreSdkScript({ environment: "sandbox", dataNamespace: "" });
-      }).rejects.toThrowError(
+      }).rejects.toThrow(
         'The "dataNamespace" option cannot be an empty string',
       );
     });
@@ -204,7 +204,7 @@ describe("loadCoreSdkScript()", () => {
           environment: "sandbox",
           dataNamespace: "   ",
         });
-      }).rejects.toThrowError(
+      }).rejects.toThrow(
         'The "dataNamespace" option cannot be an empty string',
       );
     });
@@ -239,7 +239,7 @@ describe("loadCoreSdkScript()", () => {
           environment: "sandbox",
           dataSdkIntegrationSource: "",
         });
-      }).rejects.toThrowError(
+      }).rejects.toThrow(
         'The "dataSdkIntegrationSource" option cannot be an empty string',
       );
     });
@@ -250,7 +250,7 @@ describe("loadCoreSdkScript()", () => {
           environment: "sandbox",
           dataSdkIntegrationSource: "   ",
         });
-      }).rejects.toThrowError(
+      }).rejects.toThrow(
         'The "dataSdkIntegrationSource" option cannot be an empty string',
       );
     });
