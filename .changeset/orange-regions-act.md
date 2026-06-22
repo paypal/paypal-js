@@ -2,4 +2,4 @@
 "@paypal/paypal-js": patch
 ---
 
-Temporary changeset for CI
+Migrates Vitest to v4.
