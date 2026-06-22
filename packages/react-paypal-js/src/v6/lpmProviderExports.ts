@@ -68,32 +68,17 @@ export const BizumPaymentButton =
 export const SwishPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.swish.buttonTag, "SwishPaymentButton");
 
-export const KlarnaPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.klarna.buttonTag, "KlarnaPaymentButton");
-
 export const TwintPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.twint.buttonTag, "TwintPaymentButton");
 
 export const WechatpayPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.wechatpay.buttonTag, "WechatpayPaymentButton");
 
-export const AfterpayPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.afterpay.buttonTag, "AfterpayPaymentButton");
-
-export const OxxopayPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.oxxopay.buttonTag, "OxxopayPaymentButton");
-
-export const BoletobancarioPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.boletobancario.buttonTag, "BoletobancarioPaymentButton");
-
 export const VerkkopankkiPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.verkkopankki.buttonTag, "VerkkopankkiPaymentButton");
 
 export const PayuPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.payu.buttonTag, "PayuPaymentButton");
-
-export const PaysafecardPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.paysafecard.buttonTag, "PaysafecardPaymentButton");
 
 export const MbwayPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.mbway.buttonTag, "MbwayPaymentButton");
@@ -107,9 +92,6 @@ export const WeroPaymentButton =
 export const FloaPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.floa.buttonTag, "FloaPaymentButton");
 
-export const ScalapayPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.scalapay.buttonTag, "ScalapayPaymentButton");
-
 export const GrabpayPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.grabpay.buttonTag, "GrabpayPaymentButton");
 
@@ -119,29 +101,17 @@ export const PixInternationalPaymentButton =
 export const SepaPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.sepa.buttonTag, "SepaPaymentButton");
 
-export const CryptoPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.crypto.buttonTag, "CryptoPaymentButton");
-
 export const DokuPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.doku.buttonTag, "DokuPaymentButton");
 
-export const DragonpayPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.dragonpay.buttonTag, "DragonpayPaymentButton");
-
 export const EstoniaPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.estonia.buttonTag, "EstoniaPaymentButton");
-
-export const FpxPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.fpx.buttonTag, "FpxPaymentButton");
 
 export const GopayPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.gopay.buttonTag, "GopayPaymentButton");
 
 export const AlipayPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.alipay.buttonTag, "AlipayPaymentButton");
-
-export const IndomaretPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.indomaret.buttonTag, "IndomaretPaymentButton");
 
 export const IndonesiaBanksPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.indonesiaBanks.buttonTag, "IndonesiaBanksPaymentButton");
@@ -161,29 +131,11 @@ export const PayseraPaymentButton =
 export const SkrillPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.skrill.buttonTag, "SkrillPaymentButton");
 
-export const ThailandBanksPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.thailandBanks.buttonTag, "ThailandBanksPaymentButton");
-
 export const BlikPayLaterPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.blikPayLater.buttonTag, "BlikPayLaterPaymentButton");
 
-export const AlfamartPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.alfamart.buttonTag, "AlfamartPaymentButton");
-
-export const ZipPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.zip.buttonTag, "ZipPaymentButton");
-
 export const BancomatPayPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.bancomatPay.buttonTag, "BancomatPayPaymentButton");
-
-export const LatviaBanksPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.latviaBanks.buttonTag, "LatviaBanksPaymentButton");
-
-export const FiuuPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.fiuu.buttonTag, "FiuuPaymentButton");
-
-export const LithuaniaBanksPaymentButton =
-  createLPMButtonComponent(LPM_REGISTRY.lithuaniaBanks.buttonTag, "LithuaniaBanksPaymentButton");
 
 export const JeniuspayPaymentButton =
   createLPMButtonComponent(LPM_REGISTRY.jeniuspay.buttonTag, "JeniuspayPaymentButton");
