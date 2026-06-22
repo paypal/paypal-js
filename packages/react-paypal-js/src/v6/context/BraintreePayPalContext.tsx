@@ -6,9 +6,15 @@ import {
 } from "../types/ProviderEnums";
 
 import type { BraintreePayPalCheckoutInstance } from "../types";
+import type {
+  BraintreeEligibilityResult,
+  BraintreeFindEligibleMethodsOptions,
+} from "../types/braintree";
 
 export interface BraintreePayPalState {
   braintreePayPalCheckoutInstance: BraintreePayPalCheckoutInstance | null;
+  eligiblePaymentMethods: BraintreeEligibilityResult | null;
+  eligiblePaymentMethodsPayload?: BraintreeFindEligibleMethodsOptions | null;
   loadingStatus: INSTANCE_LOADING_STATE;
   error: Error | null;
   isHydrated: boolean;
@@ -23,11 +29,20 @@ export type BraintreeAction =
       type: BRAINTREE_DISPATCH_ACTION.SET_INSTANCE;
       value: BraintreePayPalCheckoutInstance;
     }
+  | {
+      type: BRAINTREE_DISPATCH_ACTION.SET_ELIGIBILITY;
+      value: {
+        eligiblePaymentMethods: BraintreeEligibilityResult | null;
+        payload?: BraintreeFindEligibleMethodsOptions | null;
+      };
+    }
   | { type: BRAINTREE_DISPATCH_ACTION.SET_ERROR; value: Error }
   | { type: BRAINTREE_DISPATCH_ACTION.RESET_STATE };
 
 export const braintreeInitialState: BraintreePayPalState = {
   braintreePayPalCheckoutInstance: null,
+  eligiblePaymentMethods: null,
+  eligiblePaymentMethodsPayload: null,
   loadingStatus: INSTANCE_LOADING_STATE.PENDING,
   error: null,
   isHydrated: false,
@@ -45,6 +60,12 @@ export function braintreeReducer(
         ...state,
         braintreePayPalCheckoutInstance: action.value,
         loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+      };
+    case BRAINTREE_DISPATCH_ACTION.SET_ELIGIBILITY:
+      return {
+        ...state,
+        eligiblePaymentMethods: action.value.eligiblePaymentMethods,
+        eligiblePaymentMethodsPayload: action.value.payload,
       };
     case BRAINTREE_DISPATCH_ACTION.SET_ERROR:
       return {

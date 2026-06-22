@@ -34,7 +34,9 @@ export type PayPalSubscriptionPaymentSession = Omit<
   "start"
 > & {
   start: (
-    presentationModeOptions: PayPalSubscriptionPresentationModeOptions,
+    presentationModeOptions?: PayPalSubscriptionPresentationModeOptions = {
+      presentationMode: "auto",
+    },
     subscriptionsOptionsPromise?: Promise<{ subscriptionId: string }>,
   ) => Promise<void | { redirectURL?: string }>;
   hasReturned?: () => boolean;

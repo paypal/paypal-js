@@ -17,13 +17,14 @@ type VenmoOneTimePaymentButtonProps = UseVenmoOneTimePaymentSessionProps &
  * `VenmoOneTimePaymentButtonProps` combines the arguments for {@link UseVenmoOneTimePaymentSessionProps}
  * and {@link ButtonProps}.
  *
+ * `presentationMode` is optional and defaults to `"auto"`.
+ *
  * @example
  * <VenmoOneTimePaymentButton
  *   onApprove={() => {
  *      // ... on approve logic
  *   }}
  *   orderId="your-order-id"
- *   presentationMode="auto"
  * />
  */
 export const VenmoOneTimePaymentButton = ({

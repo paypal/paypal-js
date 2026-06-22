@@ -37,6 +37,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -95,6 +96,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -124,6 +126,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["venmo-payments"]}
             pageType="checkout"
         >
@@ -178,6 +181,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["venmo-payments"]}
             pageType="checkout"
         >
@@ -207,6 +211,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -257,6 +262,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -323,6 +329,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -388,6 +395,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -417,6 +425,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-guest-payments"]}
             pageType="checkout"
         >
@@ -469,6 +478,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-guest-payments"]}
             pageType="checkout"
         >
@@ -496,6 +506,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-subscriptions"]}
             pageType="checkout"
         >
@@ -569,6 +580,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -632,6 +644,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["paypal-payments"]}
             pageType="checkout"
         >
@@ -760,6 +773,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["card-fields"]}
             pageType="checkout"
         >
@@ -877,6 +891,7 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["card-fields"]}
             pageType="checkout"
         >
@@ -982,10 +997,96 @@ export default function App() {
     return (
         <PayPalProvider
             clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
             components={["applepay-payments"]}
             pageType="checkout"
         >
             <ApplePayCheckout />
+        </PayPalProvider>
+    );
+}
+`;
+
+// ─── GooglePayOneTimePaymentButton ──────────────────────────────────────────
+
+export const getGooglePayOneTimePaymentButtonCode = (): string => `
+import {
+    PayPalProvider,
+    GooglePayOneTimePaymentButton,
+    useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+async function createOrder() {
+    const response = await fetch("/api/paypal/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            items: [{ id: "item-1", quantity: 1 }],
+        }),
+    });
+    const data = await response.json();
+    return { orderId: data.id };
+}
+
+async function onApprove(data) {
+    // confirmOrder is handled internally by the hook.
+    // Capture the order using the ID from the confirmation response.
+    const orderId = data.id;
+    const response = await fetch(\\\`/api/paypal/capture/\\\${orderId}\\\`, {
+        method: "POST",
+    });
+    const result = await response.json();
+    console.log("Google Pay payment captured:", result);
+}
+
+function GooglePayCheckout() {
+    // Step 1: Fetch eligibility and get Google Pay config.
+    const { eligiblePaymentMethods, isLoading, error } = useEligibleMethods({
+        payload: { currencyCode: "USD" },
+    });
+
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error.message}</div>;
+
+    // Step 2: Check merchant eligibility and extract config.
+    const isEligible = eligiblePaymentMethods?.isEligible("googlepay");
+    if (!isEligible) return <div>Google Pay is not eligible.</div>;
+
+    const googlePayConfig = eligiblePaymentMethods?.getDetails("googlepay")?.config;
+    if (!googlePayConfig) return null;
+
+    // Step 3: Render the button with config and transaction info.
+    return (
+        <GooglePayOneTimePaymentButton
+            googlePayConfig={googlePayConfig}
+            transactionInfo={{
+                countryCode: "US",
+                currencyCode: "USD",
+                totalPriceStatus: "FINAL",
+                totalPrice: "20.00",
+                totalPriceLabel: "Total",
+            }}
+            createOrder={createOrder}
+            onApprove={onApprove}
+            onCancel={() => console.log("Google Pay cancelled")}
+            onError={(error) => console.error("Google Pay error:", error)}
+            environment="TEST"
+            buttonType="pay"
+            buttonColor="default"
+            buttonSizeMode="fill"
+        />
+    );
+}
+
+export default function App() {
+    return (
+        <PayPalProvider
+            clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
+            components={["googlepay-payments"]}
+            pageType="checkout"
+        >
+            <GooglePayCheckout />
         </PayPalProvider>
     );
 }

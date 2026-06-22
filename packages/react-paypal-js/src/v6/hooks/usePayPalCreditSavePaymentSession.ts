@@ -11,6 +11,7 @@ import type {
   PayPalPresentationModeOptions,
   SavePaymentSessionOptions,
   BasePaymentSessionReturn,
+  WithOptionalPresentationMode,
 } from "../types";
 
 export type UsePayPalCreditSavePaymentSessionProps = (
@@ -23,7 +24,7 @@ export type UsePayPalCreditSavePaymentSessionProps = (
       vaultSetupToken: string;
     })
 ) &
-  PayPalPresentationModeOptions;
+  WithOptionalPresentationMode<PayPalPresentationModeOptions>;
 
 /**
  * Hook for managing PayPal Credit save payment sessions.
@@ -32,6 +33,8 @@ export type UsePayPalCreditSavePaymentSessionProps = (
  * It handles session lifecycle, resume flows for redirect-based flows, and provides methods to start, cancel, and destroy the session.
  *
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
+ *
+ * `presentationMode` is optional and defaults to `"auto"`.
  *
  * @example
  * function SaveCreditButton() {
@@ -57,7 +60,7 @@ export type UsePayPalCreditSavePaymentSessionProps = (
  * }
  */
 export function usePayPalCreditSavePaymentSession({
-  presentationMode,
+  presentationMode = "auto",
   fullPageOverlay,
   autoRedirect,
   createVaultToken,

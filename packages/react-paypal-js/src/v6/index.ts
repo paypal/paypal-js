@@ -52,6 +52,10 @@ export {
   BraintreePayPalCheckoutWithVaultButton,
   type BraintreePayPalCheckoutWithVaultButtonProps,
 } from "./components/Braintree/BraintreePayPalCheckoutWithVaultButton";
+export {
+  BraintreePayPalPayLaterButton,
+  type BraintreePayPalPayLaterButtonProps,
+} from "./components/Braintree/BraintreePayPalPayLaterButton";
 export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
 export {
@@ -90,6 +94,16 @@ export {
   type UseBraintreePayPalCheckoutWithVaultSessionProps,
   type UseBraintreePayPalCheckoutWithVaultSessionReturn,
 } from "./hooks/Braintree/useBraintreePayPalCheckoutWithVaultSession";
+export {
+  useBraintreePayPalPayLaterSession,
+  type UseBraintreePayPalPayLaterSessionProps,
+  type UseBraintreePayPalPayLaterSessionReturn,
+} from "./hooks/Braintree/useBraintreePayPalPayLaterSession";
+export {
+  useBraintreeEligibleMethods,
+  type UseBraintreeEligibleMethodsProps,
+  type UseBraintreeEligibleMethodsReturn,
+} from "./hooks/Braintree/useBraintreeEligibleMethods";
 export * from "./hooks/useEligibleMethods";
 export { usePayPalMessages } from "./hooks/usePayPalMessages";
 

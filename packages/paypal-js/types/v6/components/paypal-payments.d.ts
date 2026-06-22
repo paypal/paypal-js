@@ -12,6 +12,7 @@ import {
 
 export type PayLaterCountryCodes =
   | "AU"
+  | "CA"
   | "DE"
   | "ES"
   | "FR"
@@ -112,7 +113,9 @@ export type PayPalPresentationModeOptions =
 
 export type OneTimePaymentSession = BasePaymentSession & {
   start: (
-    presentationModeOptions: PayPalPresentationModeOptions,
+    presentationModeOptions?: PayPalPresentationModeOptions = {
+      presentationMode: "auto",
+    },
     paymentSessionPromise?: Promise<{ orderId: string }>,
   ) => Promise<void | { redirectURL?: string }>;
   hasReturned?: () => boolean;
@@ -121,7 +124,9 @@ export type OneTimePaymentSession = BasePaymentSession & {
 
 export type SavePaymentSession = Omit<BasePaymentSession, "start"> & {
   start: (
-    presentationModeOptions: PayPalPresentationModeOptions,
+    presentationModeOptions?: PayPalPresentationModeOptions = {
+      presentationMode: "auto",
+    },
     paymentSessionPromise?: Promise<{ vaultSetupToken: string }>,
   ) => Promise<void>;
   hasReturned?: () => boolean;

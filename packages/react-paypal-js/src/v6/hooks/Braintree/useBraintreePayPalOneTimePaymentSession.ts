@@ -31,7 +31,7 @@ export interface UseBraintreePayPalOneTimePaymentSessionReturn {
  * instance is still being initialized. Buttons should wait to render until `isPending`
  * is false.
  *
- * For a ready-to-use component that wraps this hook, see {@link BraintreePayPalOneTimePaymentButton}.
+ * For a ready-to-use component that wraps this hook, see `BraintreePayPalOneTimePaymentButton`.
  *
  * @returns Object with: `error` (any session error), `isPending` (checkout instance loading), `handleClick` (starts session)
  *
@@ -88,13 +88,18 @@ export function useBraintreePayPalOneTimePaymentSession({
   cancelUrl,
   displayName,
   presentationMode,
+  shippingCallbackUrl,
   // Object/array data options (require deep comparison)
   lineItems,
   shippingOptions,
   amountBreakdown,
+  shippingAddressOverride,
 }: UseBraintreePayPalOneTimePaymentSessionProps): UseBraintreePayPalOneTimePaymentSessionReturn {
-  const { braintreePayPalCheckoutInstance, loadingStatus } =
-    useBraintreePayPal();
+  const {
+    braintreePayPalCheckoutInstance,
+    loadingStatus,
+    error: contextError,
+  } = useBraintreePayPal();
   const isMountedRef = useIsMountedRef();
   const sessionRef = useRef<BraintreePaymentSession | null>(null);
   const [error, setError] = useError();
@@ -114,6 +119,9 @@ export function useBraintreePayPalOneTimePaymentSession({
   const memoizedLineItems = useDeepCompareMemoize(lineItems);
   const memoizedShippingOptions = useDeepCompareMemoize(shippingOptions);
   const memoizedAmountBreakdown = useDeepCompareMemoize(amountBreakdown);
+  const memoizedShippingAddressOverride = useDeepCompareMemoize(
+    shippingAddressOverride,
+  );
 
   const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
 
@@ -127,9 +135,17 @@ export function useBraintreePayPalOneTimePaymentSession({
     if (braintreePayPalCheckoutInstance) {
       setError(null);
     } else if (loadingStatus !== INSTANCE_LOADING_STATE.PENDING) {
-      setError(new Error("Braintree checkout instance not available"));
+      setError(
+        contextError
+          ? new Error(`Braintree provider error: ${contextError.message}`, {
+              cause: contextError,
+            })
+          : new Error(
+              "Braintree One-Time Payment checkout instance not available",
+            ),
+      );
     }
-  }, [braintreePayPalCheckoutInstance, setError, loadingStatus]);
+  }, [braintreePayPalCheckoutInstance, setError, loadingStatus, contextError]);
 
   // Create and manage session lifecycle
   useEffect(() => {
@@ -150,9 +166,11 @@ export function useBraintreePayPalOneTimePaymentSession({
           cancelUrl,
           displayName,
           presentationMode,
+          shippingCallbackUrl,
           lineItems: memoizedLineItems,
           shippingOptions: memoizedShippingOptions,
           amountBreakdown: memoizedAmountBreakdown,
+          shippingAddressOverride: memoizedShippingAddressOverride,
           ...proxyCallbacks,
         }),
       failedSdkRef: failedInstanceRef,
@@ -183,9 +201,11 @@ export function useBraintreePayPalOneTimePaymentSession({
     cancelUrl,
     displayName,
     presentationMode,
+    shippingCallbackUrl,
     memoizedLineItems,
     memoizedShippingOptions,
     memoizedAmountBreakdown,
+    memoizedShippingAddressOverride,
     proxyCallbacks,
     setError,
   ]);

@@ -40,7 +40,7 @@ function createMockBraintreeNamespace() {
       paypal: true,
       paylater: false,
       credit: false,
-      getDetails: jest.fn().mockReturnValue(null),
+      getDetails: jest.fn().mockReturnValue({ canBeVaulted: false }),
     }),
     getClientId: jest.fn().mockResolvedValue("client-id"),
     updatePayment: jest.fn().mockResolvedValue(undefined),
@@ -69,6 +69,8 @@ function setupTestComponent() {
   const state: BraintreePayPalState = {
     loadingStatus: INSTANCE_LOADING_STATE.PENDING,
     braintreePayPalCheckoutInstance: null,
+    eligiblePaymentMethods: null,
+    eligiblePaymentMethodsPayload: null,
     isHydrated: false,
     error: null,
   };
