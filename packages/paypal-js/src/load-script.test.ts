@@ -128,7 +128,7 @@ describe("loadScript()", () => {
         // @ts-expect-error intentionally sending invalid value
         environment: "invalid",
       }),
-    ).toThrowError(
+    ).toThrow(
       'The `environment` option must be either "production" or "sandbox"',
     );
   });
@@ -213,7 +213,7 @@ describe("loadCustomScript()", () => {
   });
 
   test("should use the provided promise ponyfill", () => {
-    const PromisePonyfill = vi.fn(() => {
+    const PromisePonyfill = vi.fn(function () {
       return {
         then: vi.fn(),
       };
