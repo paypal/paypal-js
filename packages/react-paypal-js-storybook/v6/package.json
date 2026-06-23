@@ -33,6 +33,6 @@
     "@storybook/react": "^10.2.4",
     "@storybook/react-vite": "^10.2.4",
     "storybook": "^10.2.4",
-    "vite": "^6.4.2"
+    "vite": "^6.4.3"
   }
 }
