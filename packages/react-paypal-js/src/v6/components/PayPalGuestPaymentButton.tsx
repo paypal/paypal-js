@@ -18,9 +18,14 @@ type PayPalGuestPaymentButtonProps = UsePayPalGuestPaymentSessionProps & {
  * This component automatically wraps the button with `<paypal-basic-card-container>` which is
  * required for the guest checkout form to display properly.
  *
+ * The optional `buyerCountry` (forwarded to {@link usePayPalGuestPaymentSession}) is applied to
+ * the underlying `<paypal-basic-card-button>` via its DOM property, so it works on all supported
+ * React versions.
+ *
  * @example
  * <PayPalGuestPaymentButton
  *   createOrder={createOrder}
+ *   buyerCountry="US"
  *   onApprove={() => {
  *      // ... on approve logic
  *   }}

@@ -24,7 +24,14 @@ export interface PayLaterButtonProps extends HTMLAttributes<HTMLButtonElement> {
 }
 
 export interface PayPalBasicCardButtonProps extends HTMLAttributes<HTMLButtonElement> {
-  buyerCountry?: string;
+  /**
+   * Buyer country as the kebab-case HTML attribute. The element's observed attribute is
+   * `buyer-country`; a camelCase `buyerCountry` JSX prop would be lowercased to `buyercountry`
+   * on React <19 and miss it. When using `usePayPalGuestPaymentSession` /
+   * `PayPalGuestPaymentButton`, prefer their `buyerCountry` option, which sets it via the DOM
+   * property channel.
+   */
+  "buyer-country"?: string;
   disabled?: boolean;
   ref?: Ref<HTMLElement>;
 }

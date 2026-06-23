@@ -32,7 +32,16 @@ export type UsePayPalGuestPaymentSessionProps = (
       orderId: string;
     })
 ) &
-  PayPalGuestPresentationModeHookOptions;
+  PayPalGuestPresentationModeHookOptions & {
+    /**
+     * Buyer country (ISO 3166-1 alpha-2, e.g. `"US"`) used by the guest checkout session to
+     * verify inline guest-checkout eligibility. It is applied to the target
+     * `<paypal-basic-card-button>` via the DOM property (`element.buyerCountry`) so it works on
+     * all supported React versions — a camelCase JSX prop would be lowercased to `buyercountry`
+     * on React <19 and miss the element's `buyer-country` attribute.
+     */
+    buyerCountry?: string;
+  };
 
 /**
  * `usePayPalGuestPaymentSession` is used to interface with a guest checkout session. Guest checkout
@@ -47,6 +56,7 @@ export type UsePayPalGuestPaymentSessionProps = (
  *       createOrder: async () => ({ orderId: 'ORDER-123' }),
  *       onApprove: (data) => console.log('Approved:', data),
  *       onCancel: () => console.log('Cancelled'),
+ *       buyerCountry: 'US',
  *     });
  *
  *   if (isPending) return null;
@@ -67,6 +77,7 @@ export function usePayPalGuestPaymentSession({
   fullPageOverlay,
   createOrder,
   orderId,
+  buyerCountry,
   onShippingAddressChange,
   onShippingOptionsChange,
   ...callbacks
@@ -105,6 +116,20 @@ export function usePayPalGuestPaymentSession({
       setError(new Error("no sdk instance available"));
     }
   }, [sdkInstance, setError, loadingStatus]);
+
+  // Apply the optional buyerCountry to the target element via the DOM property channel.
+  // The element's observed attribute is `buyer-country`; setting it as a property
+  // (`element.buyerCountry`) works on all supported React versions, whereas a camelCase JSX
+  // prop is lowercased to `buyercountry` on React <19 and never reaches the element.
+  // Depends on `sdkInstance` so it re-applies once the button has mounted after SDK hydration.
+  useEffect(() => {
+    const targetElement = buttonRef.current as
+      | (HTMLElement & { buyerCountry?: string })
+      | null;
+    if (targetElement && buyerCountry != null) {
+      targetElement.buyerCountry = buyerCountry;
+    }
+  }, [buyerCountry, sdkInstance]);
 
   // Create and manage session lifecycle
   useEffect(() => {

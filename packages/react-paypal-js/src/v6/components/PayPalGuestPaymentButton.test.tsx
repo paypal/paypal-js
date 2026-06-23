@@ -70,6 +70,13 @@ describe("PayPalGuestPaymentButton", () => {
     expect(containerElement?.contains(buttonElement)).toBe(true);
   });
 
+  it("should forward buyerCountry to usePayPalGuestPaymentSession", () => {
+    render(<PayPalGuestPaymentButton {...defaultProps} buyerCountry="US" />);
+    expect(mockUsePayPalGuestPaymentSession).toHaveBeenCalledWith(
+      expect.objectContaining({ buyerCountry: "US" }),
+    );
+  });
+
   it("should render a div when not hydrated", () => {
     mockUsePayPal.mockReturnValue({
       isHydrated: false,
