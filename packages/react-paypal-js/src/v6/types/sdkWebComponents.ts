@@ -27,9 +27,8 @@ export interface PayPalBasicCardButtonProps extends HTMLAttributes<HTMLButtonEle
   /**
    * Buyer country as the kebab-case HTML attribute. The element's observed attribute is
    * `buyer-country`; a camelCase `buyerCountry` JSX prop would be lowercased to `buyercountry`
-   * on React <19 and miss it. When using `usePayPalGuestPaymentSession` /
-   * `PayPalGuestPaymentButton`, prefer their `buyerCountry` option, which sets it via the DOM
-   * property channel.
+   * on React <19 and never reach it. The SDK normally determines buyer country itself; set
+   * this attribute only to override it.
    */
   "buyer-country"?: string;
   disabled?: boolean;

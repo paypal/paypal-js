@@ -2,4 +2,4 @@
 "@paypal/react-paypal-js": patch
 ---
 
-Fix the BCDC guest button so `buyerCountry` is reliably passed to the underlying `<paypal-basic-card-button>` on all supported React versions. `usePayPalGuestPaymentSession` / `PayPalGuestPaymentButton` now accept a `buyerCountry` option and apply it via the element's DOM property (a camelCase JSX prop is lowercased to `buyercountry` on React <19 and misses the element's `buyer-country` attribute). The `paypal-basic-card-button` JSX type now exposes the `buyer-country` attribute accordingly.
+Type the `<paypal-basic-card-button>` JSX element's buyer-country input as the kebab-case `buyer-country` attribute instead of a camelCase `buyerCountry` prop. The element's observed attribute is `buyer-country`, so a camelCase JSX prop is lowercased to `buyercountry` on React <19 and never reaches it. Buyer country is normally determined by the SDK; this only corrects the JSX type for the case where a merchant sets the attribute directly.
