@@ -131,6 +131,10 @@ export function useEligibleMethods(
 
     let isSubscribed = true;
     setIsFetching(true);
+    // Clear any prior error when a new fetch begins so a successful refetch
+    // (e.g. after the consumer changes the payload) doesn't return fresh data
+    // alongside a stale error from the previous attempt.
+    setError(null);
 
     sdkInstance
       .findEligibleMethods(memoizedPayload)
@@ -162,9 +166,9 @@ export function useEligibleMethods(
     };
   }, [sdkInstance, memoizedPayload, dispatch, setError]);
 
-  // isLoading should be true if:
+  // isLoading should be true (unless an error is present) if:
   // 1. We're actively fetching, OR
-  // 2. We don't have eligibility data yet and no error occurred, OR
+  // 2. We don't have eligibility data yet, OR
   // 3. Eligibility data exists but was fetched with a different payload
   //    (e.g., navigating from VAULT_WITHOUT_PAYMENT to ONE_TIME_PAYMENT)
   // This prevents a flash of stale buttons before the new fetch completes
@@ -176,13 +180,15 @@ export function useEligibleMethods(
       eligiblePaymentMethodsPayload ?? undefined,
       memoizedPayload ?? undefined,
     );
+  // Forced false whenever an error is present so a consumer that checks
+  // isLoading before error never shows a perpetual spinner over a failure.
   const isLoading =
-    isFetching || (!eligiblePaymentMethods && !eligibilityError) || isStaleData;
+    !eligibilityError && (isFetching || !eligiblePaymentMethods || isStaleData);
 
   if (contextError) {
     return {
       eligiblePaymentMethods,
-      isLoading,
+      isLoading: false,
       error: new Error(`PayPal context error: ${contextError}`),
     };
   }
