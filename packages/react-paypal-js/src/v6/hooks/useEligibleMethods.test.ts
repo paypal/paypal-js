@@ -141,9 +141,10 @@ describe("useEligibleMethods", () => {
       expect(result.current.isLoading).toBe(false);
     });
 
-    test("should return isLoading=true when context has error but no eligibility data", () => {
-      // Context error (SDK load failure) doesn't set eligibilityError,
-      // but we still don't have eligibility data, so isLoading is true
+    test("should force isLoading=false and surface a labeled context error", () => {
+      // A context error (SDK load failure) is surfaced separately and labeled,
+      // and forces isLoading=false so a consumer that checks isLoading before
+      // error doesn't spin forever over a failure.
       const { result } = renderHook(() => useEligibleMethods(), {
         wrapper: createWrapper({
           loadingStatus: INSTANCE_LOADING_STATE.REJECTED,
@@ -152,9 +153,7 @@ describe("useEligibleMethods", () => {
         }),
       });
 
-      // isLoading is true because we don't have eligibility data
-      // The context error is returned separately
-      expect(result.current.isLoading).toBe(true);
+      expect(result.current.isLoading).toBe(false);
       expect(result.current.error?.message).toContain("PayPal context error");
     });
   });
@@ -437,6 +436,89 @@ describe("useEligibleMethods", () => {
           loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
         }),
       });
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(result.current.error).toBe(fetchError);
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    test("should clear a stale error after a successful refetch", async () => {
+      // First fetch (payload A) fails; consumer then changes to payload B,
+      // which succeeds. The fresh attempt must reset the prior error so the
+      // hook doesn't return success-state data alongside a stale error.
+      let callCount = 0;
+      const mockSdkInstance = createMockSdkInstance(() => {
+        callCount += 1;
+        return callCount === 1
+          ? Promise.reject(new Error("network blip"))
+          : Promise.resolve(mockEligibilityResult);
+      });
+      let currentPayload = { currency: "USD" };
+
+      const { result, rerender } = renderHook(
+        () => useEligibleMethods({ payload: currentPayload as never }),
+        {
+          wrapper: createWrapper({
+            sdkInstance: mockSdkInstance,
+            eligiblePaymentMethods: null,
+            loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+          }),
+        },
+      );
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      // Payload A failed.
+      expect(result.current.error).not.toBeNull();
+
+      // Consumer corrects the payload — this triggers a fresh fetch.
+      currentPayload = { currency: "EUR" };
+      rerender();
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledTimes(2);
+      // The stale error from payload A is gone after the successful refetch.
+      expect(result.current.error).toBeNull();
+    });
+
+    test("should force isLoading=false when a fetch error is present alongside stale cached data", async () => {
+      // Cached eligibility is present but stale relative to the requested
+      // payload (different paymentFlow), which would normally mark
+      // isLoading=true. The refetch fails, so the present error must force
+      // isLoading=false instead of leaving the consumer on a perpetual spinner.
+      const fetchError = new Error("Fetch failed");
+      const mockSdkInstance = createMockSdkInstance(() =>
+        Promise.reject(fetchError),
+      );
+
+      const { result } = renderHook(
+        () =>
+          useEligibleMethods({
+            payload: {
+              currencyCode: "USD",
+              paymentFlow: "ONE_TIME_PAYMENT",
+            } as never,
+          }),
+        {
+          wrapper: createWrapper({
+            sdkInstance: mockSdkInstance,
+            eligiblePaymentMethods: mockEligibilityResult,
+            eligiblePaymentMethodsPayload: {
+              currencyCode: "USD",
+              paymentFlow: "VAULT_WITHOUT_PAYMENT",
+            },
+            loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+          }),
+        },
+      );
 
       await act(async () => {
         await Promise.resolve();
