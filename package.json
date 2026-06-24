@@ -13,8 +13,9 @@
   },
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "build-storybook:v5": "npm run build-storybook --workspace=@paypal/react-paypal-js",
+    "build-storybook:v5": "npm run build-storybook --workspace=@paypal/react-paypal-js-storybook-v5",
     "build-storybook:v6": "npm run build-storybook --workspace=@paypal/react-paypal-js-storybook-v6",
+    "storybook:v5": "npm run storybook --workspace=@paypal/react-paypal-js-storybook-v5",
     "storybook:v6": "npm run storybook --workspace=@paypal/react-paypal-js-storybook-v6",
     "changeset:add": "changeset add",
     "changeset:release": "npm run build && changeset publish",
