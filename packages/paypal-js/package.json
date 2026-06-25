@@ -1,6 +1,6 @@
 {
   "name": "@paypal/paypal-js",
-  "version": "10.0.0",
+  "version": "10.0.1",
   "description": "Loading wrapper and TypeScript types for the PayPal JS SDK",
   "main": "index.js",
   "module": "dist/esm/paypal-js.js",
@@ -74,7 +74,7 @@
     "husky": "8.0.3",
     "jsdom": "^23.0.1",
     "lint-staged": "15.2.0",
-    "openapi-typescript": "^6.7.3",
+    "openapi-typescript": "^7.13.0",
     "rollup": "^4.9.1",
     "semver": "7.5.4",
     "tslib": "2.6.2",
