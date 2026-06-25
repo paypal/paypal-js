@@ -104,6 +104,11 @@ export {
   type UseBraintreeEligibleMethodsProps,
   type UseBraintreeEligibleMethodsReturn,
 } from "./hooks/Braintree/useBraintreeEligibleMethods";
+export {
+  useBraintreePayPalMessages,
+  type UseBraintreePayPalMessagesProps,
+  type UseBraintreePayPalMessagesReturn,
+} from "./hooks/Braintree/useBraintreePayPalMessages";
 export * from "./hooks/useEligibleMethods";
 export { usePayPalMessages } from "./hooks/usePayPalMessages";
 

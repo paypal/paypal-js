@@ -37,6 +37,9 @@ function createMockCheckoutInstance(): BraintreePayPalCheckoutInstance {
       .fn()
       .mockReturnValue({ start: jest.fn() }),
     createPayLaterSession: jest.fn().mockReturnValue({ start: jest.fn() }),
+    createMessages: jest
+      .fn()
+      .mockResolvedValue({ fetchContent: jest.fn().mockResolvedValue({}) }),
     createPayment: jest.fn().mockResolvedValue("order-id"),
     findEligibleMethods: jest.fn().mockResolvedValue({
       paypal: true,
