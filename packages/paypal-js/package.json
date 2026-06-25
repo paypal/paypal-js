@@ -74,7 +74,7 @@
     "husky": "8.0.3",
     "jsdom": "^23.0.1",
     "lint-staged": "15.2.0",
-    "openapi-typescript": "^6.7.3",
+    "openapi-typescript": "^7.13.0",
     "rollup": "^4.9.1",
     "semver": "7.5.4",
     "tslib": "2.6.2",
