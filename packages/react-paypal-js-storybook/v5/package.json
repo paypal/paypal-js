@@ -4,7 +4,7 @@
   "private": true,
   "description": "Storybook for PayPal React SDK V5 components",
   "scripts": {
-    "storybook": "storybook dev -p 6006",
+    "storybook": "storybook dev -p 6007",
     "build-storybook": "storybook build -o ../../../docs/web-sdk-v5-react-storybook"
   },
   "keywords": [
