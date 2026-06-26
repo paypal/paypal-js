@@ -28,7 +28,10 @@ const meta = {
     controls: { expanded: true },
     docs: {
       page: (): JSX.Element => (
-        <DocPageStructure code={getDefaultCode(meta.args.style)} />
+        <DocPageStructure
+          code={getDefaultCode(meta.args.style)}
+          options={{ previewHeight: "700px", codeHeight: "600px" }}
+        />
       ),
       source: { type: "dynamic" },
       description: {
