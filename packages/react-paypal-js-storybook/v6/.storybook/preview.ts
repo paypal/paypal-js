@@ -35,6 +35,7 @@ const preview: Preview = {
             "Braintree",
             [
               "BraintreePayPalOneTimePaymentButton",
+              "BraintreePayPalPayLaterButton",
               "BraintreePayPalBillingAgreementButton",
               "BraintreePayPalCheckoutWithVaultButton",
             ],
