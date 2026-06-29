@@ -94,15 +94,33 @@ describe("ApplePayOneTimePaymentButton", () => {
     expect(mockHandleClick).toHaveBeenCalledTimes(1);
   });
 
-  it("should set disabled attribute when disabled prop is true", () => {
+  it("never writes the disabled attribute to apple-pay-button (Apple manages it)", () => {
     const { container } = render(
       <ApplePayOneTimePaymentButton {...defaultProps} disabled={true} />,
     );
     const button = container.querySelector("apple-pay-button");
-    expect(button).toHaveAttribute("disabled");
+    expect(button).not.toHaveAttribute("disabled");
   });
 
-  it("should not set disabled attribute when error is present (allows retry)", () => {
+  it("applies disabled styling on the wrapper when disabled prop is true", () => {
+    const { container } = render(
+      <ApplePayOneTimePaymentButton {...defaultProps} disabled={true} />,
+    );
+    const wrapper = container.firstElementChild as HTMLElement;
+    expect(wrapper.style.pointerEvents).toBe("none");
+    expect(wrapper.style.opacity).toBe("0.5");
+    expect(wrapper).toHaveAttribute("aria-disabled", "true");
+  });
+
+  it("does not call handleClick when the disabled prop is true", () => {
+    const { container } = render(
+      <ApplePayOneTimePaymentButton {...defaultProps} disabled={true} />,
+    );
+    fireEvent.click(container.querySelector("apple-pay-button")!);
+    expect(mockHandleClick).not.toHaveBeenCalled();
+  });
+
+  it("stays interactive when an error is present so the user can retry", () => {
     jest.spyOn(console, "error").mockImplementation();
     mockUseApplePayOneTimePaymentSession.mockReturnValue({
       error: new Error("Test error"),
@@ -116,9 +134,16 @@ describe("ApplePayOneTimePaymentButton", () => {
     );
     const button = container.querySelector("apple-pay-button");
     expect(button).not.toHaveAttribute("disabled");
+
+    const wrapper = container.firstElementChild as HTMLElement;
+    expect(wrapper.style.pointerEvents).toBe("");
+    expect(wrapper).not.toHaveAttribute("aria-disabled");
+
+    fireEvent.click(button!);
+    expect(mockHandleClick).toHaveBeenCalledTimes(1);
   });
 
-  it("should set disabled attribute when isPending is true", () => {
+  it("applies disabled styling and blocks clicks while the SDK is loading (isPending)", () => {
     mockUseApplePayOneTimePaymentSession.mockReturnValue({
       error: null,
       isPending: true,
@@ -131,15 +156,28 @@ describe("ApplePayOneTimePaymentButton", () => {
     );
     const button = container.querySelector("apple-pay-button");
     expect(button).toBeInTheDocument();
-    expect(button).toHaveAttribute("disabled");
+    expect(button).not.toHaveAttribute("disabled");
+
+    const wrapper = container.firstElementChild as HTMLElement;
+    expect(wrapper.style.pointerEvents).toBe("none");
+    expect(wrapper.style.opacity).toBe("0.5");
+    expect(wrapper).toHaveAttribute("aria-disabled", "true");
+
+    fireEvent.click(button!);
+    expect(mockHandleClick).not.toHaveBeenCalled();
   });
 
-  it("should not set disabled attribute when state is normal", () => {
+  it("applies no disabled styling when state is normal", () => {
     const { container } = render(
       <ApplePayOneTimePaymentButton {...defaultProps} />,
     );
     const button = container.querySelector("apple-pay-button");
     expect(button).not.toHaveAttribute("disabled");
+
+    const wrapper = container.firstElementChild as HTMLElement;
+    expect(wrapper.style.pointerEvents).toBe("");
+    expect(wrapper.style.opacity).toBe("");
+    expect(wrapper).not.toHaveAttribute("aria-disabled");
   });
 
   it("should set default button attributes", () => {
