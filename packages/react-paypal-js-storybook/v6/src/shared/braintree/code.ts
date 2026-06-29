@@ -98,6 +98,90 @@ function CheckoutButton() {
 ${APP_SHELL("CheckoutButton")}
 `;
 
+// ─── PayLater ───────────────────────────────────────────────────────────────
+
+export const getBraintreePayLaterButtonCode = (): string => `
+${HTML_PREREQ}
+import { useEffect, useState } from "react";
+import {
+    BraintreePayPalProvider,
+    BraintreePayPalPayLaterButton,
+    INSTANCE_LOADING_STATE,
+    useBraintreeEligibleMethods,
+    useBraintreePayPal,
+} from "@paypal/react-paypal-js/sdk-v6";
+import type {
+    BraintreeApprovalData,
+    BraintreeV6Namespace,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+declare global {
+    interface Window {
+        braintree: BraintreeV6Namespace;
+    }
+}
+
+${TOKEN_FETCH_HELPER}
+
+async function completePayment(nonce: string, amount: string) {
+    const response = await fetch("/braintree-api/transaction/sale", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ paymentMethodNonce: nonce, amount }),
+    });
+    return response.json();
+}
+
+function PayLaterButton() {
+    const amount = "100.00";
+    const currency = "USD";
+    const { braintreePayPalCheckoutInstance, loadingStatus } = useBraintreePayPal();
+    const {
+        eligiblePaymentMethods,
+        isLoading: isEligibilityLoading,
+        error: eligibilityError,
+    } = useBraintreeEligibleMethods({
+        amount,
+        currency,
+        countryCode: "US",
+        paymentFlow: "ONE_TIME_PAYMENT",
+    });
+
+    if (
+        loadingStatus !== INSTANCE_LOADING_STATE.RESOLVED ||
+        !braintreePayPalCheckoutInstance ||
+        isEligibilityLoading
+    ) {
+        return null;
+    }
+
+    if (eligibilityError) {
+        return <div>Failed to check Pay Later eligibility: {eligibilityError.message}</div>;
+    }
+
+    if (!eligiblePaymentMethods?.paylater) {
+        return <div>Pay Later is not eligible for this configuration.</div>;
+    }
+
+    return (
+        <BraintreePayPalPayLaterButton
+            amount={amount}
+            currency={currency}
+            presentationMode="auto"
+            onApprove={async (data: BraintreeApprovalData) => {
+                const { nonce } = await braintreePayPalCheckoutInstance.tokenizePayment(data);
+                const result = await completePayment(nonce, amount);
+                console.log("Pay Later payment captured:", result);
+            }}
+            onCancel={() => console.log("Cancelled")}
+            onError={(error) => console.error("Error:", error)}
+        />
+    );
+}
+
+${APP_SHELL("PayLaterButton")}
+`;
+
 // ─── BillingAgreement ───────────────────────────────────────────────────────
 
 export const getBraintreeBillingAgreementButtonCode = (): string => `
