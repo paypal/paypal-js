@@ -1,5 +1,11 @@
 # Changelog
 
+## 10.0.2
+
+### Patch Changes
+
+- cfcb985: Add a `default` export condition to the `./sdk-v6` subpath so bundlers/tracers (e.g. @vercel/nft) resolve it correctly and don't fall back to the v5 entry.
+
 ## 10.0.1
 
 ### Patch Changes
