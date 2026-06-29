@@ -16,7 +16,8 @@
     },
     "./sdk-v6": {
       "types": "./types/v6/index.d.ts",
-      "import": "./dist/v6/esm/paypal-js.js"
+      "import": "./dist/v6/esm/paypal-js.js",
+      "default": "./dist/v6/esm/paypal-js.js"
     }
   },
   "scripts": {

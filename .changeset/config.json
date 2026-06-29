@@ -7,5 +7,8 @@
   "access": "restricted",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["@paypal/react-paypal-js-storybook-v6"]
+  "ignore": [
+    "@paypal/react-paypal-js-storybook-v5",
+    "@paypal/react-paypal-js-storybook-v6"
+  ]
 }
