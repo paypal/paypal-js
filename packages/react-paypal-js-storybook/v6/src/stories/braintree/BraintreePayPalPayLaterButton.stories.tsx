@@ -47,11 +47,11 @@ function BraintreePayLaterButtonStoryWrapper({
   });
 
   if (loadingStatus !== INSTANCE_LOADING_STATE.RESOLVED || !instance) {
-    return <div>Initializing Braintree...</div>;
+    return <div>Initializing Braintree…</div>;
   }
 
   if (isEligibilityLoading) {
-    return <div>Checking Pay Later eligibility...</div>;
+    return <div>Checking Pay Later eligibility…</div>;
   }
 
   if (eligibilityError) {
