@@ -11,6 +11,14 @@ export async function getBraintreeClientToken(): Promise<string> {
   const response = await fetch(
     `${BRAINTREE_SAMPLE_INTEGRATION_API}/braintree-api/auth/browser-safe-client-token`,
   );
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(
+      `Failed to fetch Braintree client token: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ""}`,
+    );
+  }
+
   const { clientToken } = await response.json();
   return clientToken;
 }
@@ -32,6 +40,14 @@ export async function braintreeTransactionSale(
       body: JSON.stringify({ paymentMethodNonce, amount }),
     },
   );
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(
+      `Failed Braintree transaction sale: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ""}`,
+    );
+  }
+
   return response.json();
 }
 
@@ -52,6 +68,14 @@ export async function braintreeTransactionSaleWithVault(
       }),
     },
   );
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(
+      `Failed Braintree transaction sale with vault: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ""}`,
+    );
+  }
+
   return response.json();
 }
 
@@ -67,6 +91,14 @@ export async function braintreeVaultPaymentMethod(
       body: JSON.stringify({ paymentMethodNonce }),
     },
   );
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(
+      `Failed Braintree vault payment method: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ""}`,
+    );
+  }
+
   return response.json();
 }
 
