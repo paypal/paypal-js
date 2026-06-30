@@ -1,5 +1,13 @@
 # Changelog
 
+## 10.1.2
+
+### Patch Changes
+
+- 110a043: `ApplePayOneTimePaymentButton` no longer writes a `disabled` attribute to Apple's `<apple-pay-button>`, which ignored it and manages its own enabled/disabled state internally via `canMakePayments()`. The non-functional `disabled` prop has been removed — merchants control presentation themselves.
+- Updated dependencies [4619c74]
+  - @paypal/paypal-js@10.0.3
+
 ## 10.1.1
 
 ### Patch Changes
