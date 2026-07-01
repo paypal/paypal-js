@@ -269,7 +269,7 @@ export function deepEqual(
  * isEmptyMessageContent({ messageItems: { mainItems: [block] } }); // false
  */
 export function isEmptyMessageContent(content: unknown): boolean {
-  if (content === null) {
+  if (content === null || content === undefined) {
     return true;
   }
 

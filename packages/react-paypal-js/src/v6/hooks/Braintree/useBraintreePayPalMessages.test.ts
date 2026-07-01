@@ -275,7 +275,7 @@ describe("useBraintreePayPalMessages", () => {
       expectCurrentErrorValue(error);
 
       expect(error).toEqual(
-        new Error("Failed to fetch PayPal Messages content"),
+        new Error("Failed to fetch Braintree PayPal Messages content"),
       );
       // Content is still returned so setContent() lets the element collapse.
       expect(content).toBe(emptyContent);
