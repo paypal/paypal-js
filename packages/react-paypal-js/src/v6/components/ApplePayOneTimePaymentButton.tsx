@@ -7,7 +7,8 @@ import type { UseApplePayOneTimePaymentSessionProps } from "../hooks/useApplePay
 import type { ApplePayButtonElementProps } from "../types/sdkWebComponents";
 
 export type ApplePayOneTimePaymentButtonProps =
-  UseApplePayOneTimePaymentSessionProps & ApplePayButtonElementProps;
+  UseApplePayOneTimePaymentSessionProps &
+    Omit<ApplePayButtonElementProps, "disabled">;
 
 /**
  * `ApplePayOneTimePaymentButton` renders a native Apple Pay button and manages
@@ -36,21 +37,20 @@ export const ApplePayOneTimePaymentButton = ({
   buttonstyle = "black",
   type = "pay",
   locale = "en",
-  disabled = false,
   className,
   ...hookProps
 }: ApplePayOneTimePaymentButtonProps): JSX.Element | null => {
-  const { error, isPending, handleClick, handleDestroy } =
+  const { error, handleClick, handleDestroy } =
     useApplePayOneTimePaymentSession(hookProps);
   const { isHydrated } = usePayPal();
   const buttonRef = useRef<HTMLElement>(null);
   const handleClickRef = useRef(handleClick);
   handleClickRef.current = handleClick;
 
-  const isDisabled = disabled || isPending;
-
-  // React's onClick doesn't work on <apple-pay-button> due to its shadow DOM,
-  // so we attach the click handler directly on the element.
+  // Apple's <apple-pay-button> manages its own enabled/disabled state internally
+  // via canMakePayments(); we deliberately don't add an SDK-level disabled layer
+  // (merchants control presentation themselves). React's onClick also doesn't
+  // work on the element due to its shadow DOM, so we attach the handler directly.
   useEffect(() => {
     const el = buttonRef.current;
     if (!el) {
@@ -90,7 +90,6 @@ export const ApplePayOneTimePaymentButton = ({
         buttonstyle={buttonstyle}
         type={type}
         locale={locale}
-        disabled={isDisabled || undefined}
       />
     </div>
   );

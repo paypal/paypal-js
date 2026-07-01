@@ -94,15 +94,15 @@ describe("ApplePayOneTimePaymentButton", () => {
     expect(mockHandleClick).toHaveBeenCalledTimes(1);
   });
 
-  it("should set disabled attribute when disabled prop is true", () => {
+  it("never writes a disabled attribute to apple-pay-button (Apple manages it)", () => {
     const { container } = render(
-      <ApplePayOneTimePaymentButton {...defaultProps} disabled={true} />,
+      <ApplePayOneTimePaymentButton {...defaultProps} />,
     );
     const button = container.querySelector("apple-pay-button");
-    expect(button).toHaveAttribute("disabled");
+    expect(button).not.toHaveAttribute("disabled");
   });
 
-  it("should not set disabled attribute when error is present (allows retry)", () => {
+  it("stays interactive when an error is present so the user can retry", () => {
     jest.spyOn(console, "error").mockImplementation();
     mockUseApplePayOneTimePaymentSession.mockReturnValue({
       error: new Error("Test error"),
@@ -116,30 +116,9 @@ describe("ApplePayOneTimePaymentButton", () => {
     );
     const button = container.querySelector("apple-pay-button");
     expect(button).not.toHaveAttribute("disabled");
-  });
 
-  it("should set disabled attribute when isPending is true", () => {
-    mockUseApplePayOneTimePaymentSession.mockReturnValue({
-      error: null,
-      isPending: true,
-      handleClick: mockHandleClick,
-      handleCancel: mockHandleCancel,
-      handleDestroy: mockHandleDestroy,
-    });
-    const { container } = render(
-      <ApplePayOneTimePaymentButton {...defaultProps} />,
-    );
-    const button = container.querySelector("apple-pay-button");
-    expect(button).toBeInTheDocument();
-    expect(button).toHaveAttribute("disabled");
-  });
-
-  it("should not set disabled attribute when state is normal", () => {
-    const { container } = render(
-      <ApplePayOneTimePaymentButton {...defaultProps} />,
-    );
-    const button = container.querySelector("apple-pay-button");
-    expect(button).not.toHaveAttribute("disabled");
+    fireEvent.click(button!);
+    expect(mockHandleClick).toHaveBeenCalledTimes(1);
   });
 
   it("should set default button attributes", () => {
@@ -192,7 +171,6 @@ describe("ApplePayOneTimePaymentButton", () => {
         buttonstyle="white"
         type="buy"
         locale="fr"
-        disabled={true}
         className="test"
       />,
     );
