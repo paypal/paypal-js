@@ -351,7 +351,9 @@ export interface BraintreeMessagesOptions {
 // in the <paypal-message> can be changed (e.g. when cart quantity changes)
 // without re-fetching. Extra fields are passed through to `setContent`.
 export interface BraintreeMessageContent {
-  update: (options: { amount?: string }) => void;
+  update: (options?: {
+    amount?: string;
+  }) => Promise<BraintreeMessageContent | null>;
   [key: string]: unknown;
 }
 
