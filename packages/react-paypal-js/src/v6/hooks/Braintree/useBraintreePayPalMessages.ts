@@ -4,6 +4,7 @@ import { useBraintreePayPal } from "./useBraintreePayPal";
 import { useIsMountedRef } from "../useIsMounted";
 import { useError } from "../useError";
 import { INSTANCE_LOADING_STATE } from "../../types/ProviderEnums";
+import { isEmptyMessageContent } from "../../utils";
 
 import type {
   BraintreeMessagesOptions,
@@ -166,16 +167,20 @@ export function useBraintreePayPalMessages({
       }
 
       if (!messages) {
-        setError(new Error("PayPal Messages instance not available"));
+        setError(new Error("Braintree PayPal Messages instance not available"));
         return;
       }
 
       const result = await messages.fetchContent(options);
 
-      // fetchContent will return null in the case of an API error
-      if (result === null) {
-        setError(new Error("Failed to fetch PayPal Messages content"));
-        return;
+      // On an API error, fetchContent resolves to an empty sentinel MessageContent
+      // (empty messageItems) instead of throwing, so the <paypal-message> element
+      // recognizes the error state and collapses. Surface the error, but still
+      // return the content so setContent() performs that collapse.
+      if (isEmptyMessageContent(result)) {
+        setError(
+          new Error("Failed to fetch Braintree PayPal Messages content"),
+        );
       }
 
       return result;

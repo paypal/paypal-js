@@ -270,6 +270,57 @@ describe("useBraintreePayPalMessages", () => {
         new Error("Failed to fetch PayPal Messages content"),
       );
     });
+
+    test("should set an error but still return content when fetchContent returns the empty sentinel", async () => {
+      const emptyContent = {
+        messageItems: { mainItems: [], actionItems: [] },
+        update: jest.fn(),
+      } as unknown as BraintreeMessageContent;
+      (mockMessagesInstance.fetchContent as jest.Mock).mockResolvedValue(
+        emptyContent,
+      );
+
+      const { result, waitFor } = renderHook(() =>
+        useBraintreePayPalMessages({ buyerCountry: "US", currencyCode: "USD" }),
+      );
+
+      await waitFor(() => expect(result.current.isReady).toBe(true));
+
+      let content: BraintreeMessageContent | void = undefined;
+
+      await act(async () => {
+        content = await result.current.handleFetchContent({ amount: "100" });
+      });
+
+      const { error } = result.current;
+
+      expectCurrentErrorValue(error);
+
+      expect(error).toEqual(
+        new Error("Failed to fetch PayPal Messages content"),
+      );
+      // Content is still returned so setContent() lets the element collapse.
+      expect(content).toBe(emptyContent);
+    });
+
+    test("should not error when fetchContent returns populated messageItems", async () => {
+      (mockMessagesInstance.fetchContent as jest.Mock).mockResolvedValue({
+        messageItems: { mainItems: [{ type: "text" }], actionItems: [] },
+        update: jest.fn(),
+      });
+
+      const { result, waitFor } = renderHook(() =>
+        useBraintreePayPalMessages({ buyerCountry: "US", currencyCode: "USD" }),
+      );
+
+      await waitFor(() => expect(result.current.isReady).toBe(true));
+
+      await act(async () => {
+        await result.current.handleFetchContent({ amount: "100" });
+      });
+
+      expect(result.current.error).toBeNull();
+    });
   });
 
   describe("context error", () => {

@@ -362,9 +362,12 @@ export interface BraintreeFetchMessageContentOptions {
 }
 
 export interface BraintreeMessagesInstance {
+  // The SDK always resolves to a MessageContent object — on an API error it
+  // returns an empty sentinel (empty messageItems) rather than null. Use
+  // isEmptyMessageContent() to detect the error state.
   fetchContent: (
     options?: BraintreeFetchMessageContentOptions,
-  ) => Promise<BraintreeMessageContent | null>;
+  ) => Promise<BraintreeMessageContent>;
 }
 
 // ---- Core types ----
