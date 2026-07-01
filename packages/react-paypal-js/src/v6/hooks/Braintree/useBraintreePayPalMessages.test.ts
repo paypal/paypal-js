@@ -245,29 +245,7 @@ describe("useBraintreePayPalMessages", () => {
       expectCurrentErrorValue(error);
 
       expect(error).toEqual(
-        new Error("PayPal Messages instance not available"),
-      );
-    });
-
-    test("should set an error when fetchContent returns null", async () => {
-      (mockMessagesInstance.fetchContent as jest.Mock).mockResolvedValue(null);
-
-      const { result, waitFor } = renderHook(() =>
-        useBraintreePayPalMessages({ buyerCountry: "US", currencyCode: "USD" }),
-      );
-
-      await waitFor(() => expect(result.current.isReady).toBe(true));
-
-      await act(async () => {
-        await result.current.handleFetchContent({ amount: "100" });
-      });
-
-      const { error } = result.current;
-
-      expectCurrentErrorValue(error);
-
-      expect(error).toEqual(
-        new Error("Failed to fetch PayPal Messages content"),
+        new Error("Braintree PayPal Messages instance not available"),
       );
     });
 
