@@ -252,6 +252,51 @@ export function deepEqual(
   return true;
 }
 
+/**
+ * Detects the empty sentinel MessageContent the SDK returns on a fetch error.
+ *
+ * On an API error, PayPal Messages `fetchContent` resolves to a MessageContent whose
+ * `messageItems` is null or has empty main/action arrays (rather than throwing), so the
+ * `<paypal-message>` element recognizes the error state and collapses. A nullish result
+ * is likewise treated as empty. `messageItems` being absent is treated as valid content
+ * to avoid false positives.
+ *
+ * @param content - The value returned by `fetchContent`
+ * @returns `true` if the content is the empty error sentinel (or nullish)
+ *
+ * @example
+ * isEmptyMessageContent({ messageItems: { mainItems: [], actionItems: [] } }); // true
+ * isEmptyMessageContent({ messageItems: { mainItems: [block] } }); // false
+ */
+export function isEmptyMessageContent(content: unknown): boolean {
+  if (content === null || content === undefined) {
+    return true;
+  }
+
+  if (typeof content !== "object") {
+    return false;
+  }
+
+  const items = (
+    content as {
+      messageItems?: { mainItems?: unknown[]; actionItems?: unknown[] } | null;
+    }
+  ).messageItems;
+
+  if (items === undefined) {
+    return false; // no signal -> assume valid content
+  }
+
+  if (items === null) {
+    return true;
+  }
+
+  return (
+    (items.mainItems?.length ?? 0) === 0 &&
+    (items.actionItems?.length ?? 0) === 0
+  );
+}
+
 interface CreatePaymentSessionOptions<T> {
   sessionCreator: () => T;
   failedSdkRef: { current: unknown };

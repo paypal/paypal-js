@@ -340,6 +340,38 @@ export interface BraintreePaymentSession {
   start: () => void;
 }
 
+// ---- Messages ----
+
+export interface BraintreeMessagesOptions {
+  buyerCountry?: string;
+  currencyCode?: string;
+}
+
+// Content returned by `fetchContent`. Exposes `update` so the amount displayed
+// in the <paypal-message> can be changed (e.g. when cart quantity changes)
+// without re-fetching. Extra fields are passed through to `setContent`.
+export interface BraintreeMessageContent {
+  update: (options?: {
+    amount?: string;
+  }) => Promise<BraintreeMessageContent | null>;
+  [key: string]: unknown;
+}
+
+export interface BraintreeFetchMessageContentOptions {
+  amount?: string;
+  onReady?: (content: BraintreeMessageContent) => void;
+  [key: string]: unknown;
+}
+
+export interface BraintreeMessagesInstance {
+  // The SDK always resolves to a MessageContent object — on an API error it
+  // returns an empty sentinel (empty messageItems) rather than null. Use
+  // isEmptyMessageContent() to detect the error state.
+  fetchContent: (
+    options?: BraintreeFetchMessageContentOptions,
+  ) => Promise<BraintreeMessageContent>;
+}
+
 // ---- Core types ----
 
 export interface BraintreeClientInstance {
@@ -365,6 +397,9 @@ export interface BraintreePayPalCheckoutInstance {
   createPayLaterSession: (
     options: BraintreePayLaterSessionOptions,
   ) => BraintreePaymentSession;
+  createMessages: (
+    options?: BraintreeMessagesOptions,
+  ) => Promise<BraintreeMessagesInstance>;
   createPayment: (options: BraintreeCreatePaymentOptions) => Promise<string>;
   findEligibleMethods: (
     options: BraintreeFindEligibleMethodsOptions,

@@ -275,8 +275,48 @@ describe("usePayPalMessages", () => {
       expect(error).toEqual(new Error("PayPal Messages session not available"));
     });
 
-    test("should set error when fetchContent returns null", async () => {
-      (mockMessagesSession.fetchContent as jest.Mock).mockResolvedValue(null);
+    test("should set error but still return content when fetchContent returns the empty sentinel", async () => {
+      const emptyContent = {
+        messageItems: { mainItems: [], actionItems: [] },
+        update: jest.fn(),
+      };
+      (mockMessagesSession.fetchContent as jest.Mock).mockResolvedValue(
+        emptyContent,
+      );
+
+      const props: PayPalMessagesOptions = {
+        buyerCountry: "US",
+        currencyCode: "USD",
+      };
+
+      const { result } = renderHook(() => usePayPalMessages(props));
+
+      let content: Record<string, unknown> | null | void = undefined;
+
+      await act(async () => {
+        content = await result.current.handleFetchContent({
+          amount: "100",
+          logoPosition: "INLINE",
+          logoType: "MONOGRAM",
+        });
+      });
+
+      const { error } = result.current;
+
+      expectCurrentErrorValue(error);
+
+      expect(error).toEqual(
+        new Error("Failed to fetch PayPal Messages content"),
+      );
+      // Content is still returned so setContent() lets the element collapse.
+      expect(content).toBe(emptyContent);
+    });
+
+    test("should not error when fetchContent returns populated messageItems", async () => {
+      (mockMessagesSession.fetchContent as jest.Mock).mockResolvedValue({
+        messageItems: { mainItems: [{ type: "text" }], actionItems: [] },
+        update: jest.fn(),
+      });
 
       const props: PayPalMessagesOptions = {
         buyerCountry: "US",
@@ -293,13 +333,7 @@ describe("usePayPalMessages", () => {
         });
       });
 
-      const { error } = result.current;
-
-      expectCurrentErrorValue(error);
-
-      expect(error).toEqual(
-        new Error("Failed to fetch PayPal Messages content"),
-      );
+      expect(result.current.error).toBeNull();
     });
   });
 
