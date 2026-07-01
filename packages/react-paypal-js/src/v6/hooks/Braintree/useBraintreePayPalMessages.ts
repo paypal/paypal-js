@@ -121,6 +121,7 @@ export function useBraintreePayPalMessages({
 
     let isSubscribed = true;
     setIsCreating(true);
+    setError(null);
 
     braintreePayPalCheckoutInstance
       .createMessages({ buyerCountry, currencyCode })
