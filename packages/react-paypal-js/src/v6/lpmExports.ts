@@ -33,11 +33,7 @@ function createLPMButton(lpm: LPMName) {
 }
 
 function createLPMHook(lpm: LPMName) {
-  return createEnhancedLPMHook(
-    lpm,
-    LPM_REGISTRY[lpm].fields,
-    LPM_REGISTRY[lpm].buttonTag,
-  );
+  return createEnhancedLPMHook(lpm, LPM_REGISTRY[lpm].fields);
 }
 
 // Named Button Components

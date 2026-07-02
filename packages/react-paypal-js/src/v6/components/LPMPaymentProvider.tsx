@@ -148,7 +148,6 @@ export function createLPMButtonComponent(
 export function createEnhancedLPMHook(
   lpm: LPMName,
   fieldTypes: ReadonlyArray<string>,
-  _buttonTag: string, // kept for call-site uniformity with lpmExports; button is standalone
 ): (props: Omit<UseLPMOneTimePaymentSessionProps, "lpm">) => LPMEnhancedHookReturn {
 
   type NamedHookProps = Omit<UseLPMOneTimePaymentSessionProps, "lpm">;

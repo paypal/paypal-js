@@ -190,7 +190,7 @@ export const LPM_REGISTRY = {
   },
   estonia: {
     component: "estoniabank-payments",
-    buttonTag: "estonia-button",
+    buttonTag: "estoniabank-button",
     sessionMethod: "createEstoniaOneTimePaymentSession",
     displayName: "Estonia Banks",
     fields: ["name"],
