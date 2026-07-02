@@ -39,6 +39,8 @@ const preview: Preview = {
               "BraintreePayPalBillingAgreementButton",
               "BraintreePayPalCheckoutWithVaultButton",
             ],
+            "LPM",
+            ["LPMOneTimePaymentButton"],
           ],
         ],
       },

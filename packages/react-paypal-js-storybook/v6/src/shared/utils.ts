@@ -16,7 +16,6 @@ import type {
   OnCancelDataSavePayments,
   OnErrorData,
   ConfirmOrderResponse,
-  GooglePayApprovePaymentResponse,
 } from "@paypal/react-paypal-js/sdk-v6";
 import { action } from "storybook/actions";
 import { dispatchPaymentResult } from "./PaymentResult";
@@ -28,6 +27,10 @@ export const SAMPLE_INTEGRATION_API =
 export const PAYPAL_CLIENT_ID =
   import.meta.env.STORYBOOK_PAYPAL_SANDBOX_CLIENT_ID || "";
 
+export const STORYBOOK_SDK_BASE_URL =
+  import.meta.env.STORYBOOK_SDK_BASE_URL ||
+  "https://localhost.paypal.com:8443/sdk/js";
+
 // One-Time Payment APIs
 
 export async function createOrder(): Promise<{ orderId: string }> {
@@ -36,6 +39,25 @@ export async function createOrder(): Promise<{ orderId: string }> {
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
+    },
+  );
+  const data = await response.json();
+  return { orderId: data.id };
+}
+
+/**
+ * Per-LPM createOrder factory — passes the LPM name to the local server so it
+ * can select the matching merchant credentials and currency for order creation.
+ * Usage in stories:  createOrder: () => createOrderForLpm(lpm)
+ */
+export async function createOrderForLpm(lpm: string): Promise<{ orderId: string }> {
+  const response = await fetch(
+    `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/create-order-for-one-time-payment`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lpm }),
     },
   );
   const data = await response.json();
@@ -44,12 +66,14 @@ export async function createOrder(): Promise<{ orderId: string }> {
 
 export async function captureOrder(
   orderId: string,
+  lpm?: string,
 ): Promise<Record<string, unknown>> {
   const response = await fetch(
     `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/${orderId}/capture`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(lpm ? { lpm } : {}),
     },
   );
   return response.json();
@@ -248,67 +272,4 @@ export const applePayButtonTypeArgType = {
   control: { type: "select" as const },
   options: APPLE_PAY_BUTTON_TYPES,
   description: "Apple Pay button label type",
-};
-
-// Google Pay Callbacks
-
-export const googlePayCallbacks = {
-  onApprove: async (data: GooglePayApprovePaymentResponse) => {
-    const orderId = data.id;
-    const orderData = await captureOrder(orderId);
-    action("approve")({ ...orderData, orderID: orderId });
-    dispatchPaymentResult(
-      "success",
-      `Google Pay payment captured. Order ID: ${orderId}`,
-    );
-  },
-  onCancel: () => {
-    action("cancel")("Google Pay cancelled");
-    dispatchPaymentResult(
-      "cancel",
-      "Google Pay payment was cancelled by the buyer.",
-    );
-  },
-  onError: (error: Error) => {
-    action("error")(error);
-    dispatchPaymentResult(
-      "error",
-      `Google Pay error: ${error.message || "Unknown error"}`,
-    );
-  },
-};
-
-// Google Pay ArgTypes
-
-export const GOOGLE_PAY_BUTTON_TYPES = [
-  "pay",
-  "buy",
-  "checkout",
-  "donate",
-  "order",
-  "plain",
-  "subscribe",
-  "book",
-] as const;
-
-export const GOOGLE_PAY_BUTTON_COLORS = ["default", "black", "white"] as const;
-
-export const GOOGLE_PAY_BUTTON_SIZE_MODES = ["fill", "static"] as const;
-
-export const googlePayButtonTypeArgType = {
-  control: { type: "select" as const },
-  options: GOOGLE_PAY_BUTTON_TYPES,
-  description: "Google Pay button label type",
-};
-
-export const googlePayButtonColorArgType = {
-  control: { type: "select" as const },
-  options: GOOGLE_PAY_BUTTON_COLORS,
-  description: "Google Pay button color theme",
-};
-
-export const googlePayButtonSizeModeArgType = {
-  control: { type: "select" as const },
-  options: GOOGLE_PAY_BUTTON_SIZE_MODES,
-  description: "Google Pay button sizing mode (fill container or static size)",
 };

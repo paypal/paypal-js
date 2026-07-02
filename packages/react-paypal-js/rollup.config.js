@@ -153,6 +153,34 @@ export default [
       },
     ],
   },
+
+  // V6 Local Payment Methods ESM subpath (./sdk-v6/local-payment-methods)
+  {
+    input: "src/v6/lpmExports.ts",
+    plugins: [
+      typescript({
+        tsconfig: "./tsconfig.v6.json",
+      }),
+      cleanup({
+        comments: "none",
+      }),
+    ],
+    external: ["react", /^@paypal\/paypal-js/, "server-only"],
+    output: [
+      {
+        file: "dist/v6/esm/local-payment-methods.js",
+        format: "esm",
+        plugins: [getBabelOutputPlugin()],
+        banner: useClientBanner,
+      },
+      {
+        file: "dist/v6/esm/local-payment-methods.min.js",
+        format: "esm",
+        plugins: [getBabelOutputPlugin(), terser()],
+        banner: useClientBanner,
+      },
+    ],
+  },
 ];
 
 function getBannerText() {

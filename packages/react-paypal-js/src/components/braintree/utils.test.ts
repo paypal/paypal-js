@@ -31,7 +31,7 @@ describe("decorateActions", () => {
     decorateActions(buttonProps, mockedCheckout);
 
     expect(buttonProps).toMatchInlineSnapshot(`
-      {
+      Object {
         "children": null,
         "disabled": false,
         "onClick": [MockFunction],

@@ -77,8 +77,6 @@ export { PayPalCardCvvField } from "./components/PayPalCardCvvField";
 // Core hooks
 export { usePayPal } from "./hooks/usePayPal";
 export { useBraintreePayPal } from "./hooks/Braintree/useBraintreePayPal";
-
-// Braintree hooks
 export {
   useBraintreePayPalOneTimePaymentSession,
   type UseBraintreePayPalOneTimePaymentSessionProps,
