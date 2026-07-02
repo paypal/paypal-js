@@ -1,0 +1,43 @@
+{
+  "name": "@paypal/react-paypal-js-storybook-v5",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Storybook for PayPal React SDK V5 components",
+  "scripts": {
+    "storybook": "storybook dev -p 6007",
+    "build-storybook": "storybook build -o ../../../docs/web-sdk-v5-react-storybook"
+  },
+  "keywords": [
+    "paypal",
+    "react",
+    "storybook",
+    "v5"
+  ],
+  "author": "PayPal",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/paypal/paypal-js.git",
+    "directory": "packages/react-paypal-js-storybook/v5"
+  },
+  "dependencies": {
+    "@paypal/react-paypal-js": "^10.1.1",
+    "@paypal/sdk-constants": "^1.0.122",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@codesandbox/sandpack-react": "^0.14.0",
+    "@storybook/addon-docs": "^10.4.6",
+    "@storybook/react": "^10.4.6",
+    "@storybook/react-vite": "^10.4.6",
+    "@types/react": "^17.0.39",
+    "@types/react-dom": "^17.0.11",
+    "@types/string-template": "^1.0.2",
+    "react-element-to-jsx-string": "^14.3.4",
+    "storybook": "^10.4.6",
+    "string-template": "^1.0.0",
+    "ts-dedent": "^2.2.0",
+    "vite": "^6.4.3"
+  }
+}

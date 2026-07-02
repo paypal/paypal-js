@@ -6,8 +6,8 @@ on:
     # Only run when documentation-related files change to avoid unnecessary builds
     paths:
       - "packages/paypal-js/types/v6/**/*.d.ts"
-      - "packages/react-paypal-js/.storybook/**"
-      - "packages/react-paypal-js/src/**/*.stories.*"
+      - "packages/react-paypal-js-storybook/v5/.storybook/**"
+      - "packages/react-paypal-js-storybook/v5/src/**"
       - "packages/react-paypal-js-storybook/v6/.storybook/**"
       - "packages/react-paypal-js-storybook/v6/src/**"
       - ".github/workflows/build-and-deploy-docs.yml"

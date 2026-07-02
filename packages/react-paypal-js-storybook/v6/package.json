@@ -3,12 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "description": "Storybook for PayPal React SDK V6 components",
-  "//": [
-    "TODO: Remove NODE_PATH=./node_modules once we upgrade v5 SDK's storybook to v10. Currently needed because storybook CLI is hoisted to root node_modules/, but @storybook/react-vite is installed locally due to version conflict with storybook v6."
-  ],
   "scripts": {
-    "storybook": "NODE_PATH=./node_modules storybook dev -p 6006",
-    "build-storybook": "NODE_PATH=./node_modules storybook build -o ../../../docs/web-sdk-v6-react-storybook",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build -o ../../../docs/web-sdk-v6-react-storybook",
     "generate:lpm-stories": "tsx scripts/generateLpmStories.ts"
   },
   "keywords": [
@@ -25,7 +22,7 @@
     "directory": "packages/react-paypal-js-storybook/v6"
   },
   "dependencies": {
-    "@paypal/react-paypal-js": "^10.0.0",
+    "@paypal/react-paypal-js": "^10.1.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
@@ -34,6 +31,6 @@
     "@storybook/react": "^10.2.4",
     "@storybook/react-vite": "^10.2.4",
     "storybook": "^10.2.4",
-    "vite": "^6.4.2"
+    "vite": "^6.4.3"
   }
 }

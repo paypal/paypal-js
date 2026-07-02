@@ -134,4 +134,24 @@ async function main() {
     paypal.rememberFunding?.([paypal.FUNDING.VENMO]);
     paypal.isFundingEligible?.(paypal.FUNDING.VENMO);
   }
+
+  // Venmo vault-without-purchase integration
+  paypal
+    .Buttons({
+      fundingSource: paypal.FUNDING?.VENMO,
+      createVaultSetupToken: () => {
+        return fetch("/your/api/vault/setup-token/create/", { method: "post" })
+          .then((res) => res.json())
+          .then((data) => data.id);
+      },
+      onApprove: (data) => {
+        // vaultSetupToken is present for vault-without-purchase flows
+        const token: string | null | undefined = data.vaultSetupToken;
+        return fetch(`/your/api/vault/payment-token/create/`, {
+          method: "post",
+          body: JSON.stringify({ vaultSetupToken: token }),
+        }).then((res) => res.json());
+      },
+    })
+    .render("#paypal-button-container");
 }

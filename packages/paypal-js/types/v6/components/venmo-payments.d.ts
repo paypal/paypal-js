@@ -10,6 +10,14 @@ export type VenmoOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
   orderId?: string;
 };
 
+export type VenmoSavePaymentSessionOptions = Omit<
+  VenmoOneTimePaymentSessionOptions,
+  "onApprove"
+> & {
+  vaultSetupToken?: string;
+  onApprove?: (data: { vaultSetupToken: string }) => Promise<void>;
+};
+
 export type VenmoPresentationModeOptions =
   | PresentationModeOptionsForAuto
   | PresentationModeOptionsForPopup
@@ -17,12 +25,25 @@ export type VenmoPresentationModeOptions =
 
 export type VenmoOneTimePaymentSessionPromise = Promise<{ orderId: string }>;
 
+export type VenmoSavePaymentSessionPromise = Promise<{
+  vaultSetupToken: string;
+}>;
+
 export type VenmoOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
   start: (
     presentationModeOptions?: VenmoPresentationModeOptions = {
       presentationMode: "auto",
     },
     paymentSessionPromise?: VenmoOneTimePaymentSessionPromise,
+  ) => Promise<void>;
+};
+
+export type VenmoSavePaymentSession = Omit<BasePaymentSession, "start"> & {
+  start: (
+    presentationModeOptions?: VenmoPresentationModeOptions = {
+      presentationMode: "auto",
+    },
+    paymentSessionPromise?: VenmoSavePaymentSessionPromise,
   ) => Promise<void>;
 };
 
@@ -65,4 +86,40 @@ export interface VenmoPaymentsInstance {
   createVenmoOneTimePaymentSession: (
     paymentSessionOptions: VenmoOneTimePaymentSessionOptions,
   ) => VenmoOneTimePaymentSession;
+  /**
+   * Creates a Venmo save payment session for storing payment methods for future use.
+   *
+   * @remarks
+   * This method allows you to configure a Venmo vault setup flow where a buyer can
+   * save their Venmo account for future transactions without a purchase.
+   *
+   * @param paymentSessionOptions - Configuration options for the Venmo save payment session
+   * @returns A session object that can be used to start the vault setup flow
+   *
+   * @example
+   * ```typescript
+   * const venmoSaveSession = sdkInstance.createVenmoSavePaymentSession({
+   *   onApprove: async ({ vaultSetupToken }) => {
+   *     console.log('Venmo payment method saved:', vaultSetupToken);
+   *   },
+   *   onCancel: () => {
+   *     console.log('Venmo save payment canceled');
+   *   },
+   *   onError: (data) => {
+   *     console.error('Venmo save payment error:', data);
+   *   }
+   * });
+   *
+   * const createVaultSetupToken = () =>
+   *   Promise.resolve({ vaultSetupToken: 'vault_setup_token' });
+   *
+   * await venmoSaveSession.start(
+   *   { presentationMode: 'auto' },
+   *   createVaultSetupToken()
+   * );
+   * ```
+   */
+  createVenmoSavePaymentSession: (
+    paymentSessionOptions: VenmoSavePaymentSessionOptions,
+  ) => VenmoSavePaymentSession;
 }
