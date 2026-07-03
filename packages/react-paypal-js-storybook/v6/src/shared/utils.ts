@@ -46,34 +46,15 @@ export async function createOrder(): Promise<{ orderId: string }> {
   return { orderId: data.id };
 }
 
-/**
- * Per-LPM createOrder factory — passes the LPM name to the local server so it
- * can select the matching merchant credentials and currency for order creation.
- * Usage in stories:  createOrder: () => createOrderForLpm(lpm)
- */
-export async function createOrderForLpm(lpm: string): Promise<{ orderId: string }> {
-  const response = await fetch(
-    `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/create-order-for-one-time-payment`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ lpm }),
-    },
-  );
-  const data = await response.json();
-  return { orderId: data.id };
-}
-
 export async function captureOrder(
   orderId: string,
-  lpm?: string,
 ): Promise<Record<string, unknown>> {
   const response = await fetch(
     `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/${orderId}/capture`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(lpm ? { lpm } : {}),
+      body: JSON.stringify({}),
     },
   );
   return response.json();

@@ -5,8 +5,7 @@
   "description": "Storybook for PayPal React SDK V6 components",
   "scripts": {
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build -o ../../../docs/web-sdk-v6-react-storybook",
-    "generate:lpm-stories": "tsx scripts/generateLpmStories.ts"
+    "build-storybook": "storybook build -o ../../../docs/web-sdk-v6-react-storybook"
   },
   "keywords": [
     "paypal",
