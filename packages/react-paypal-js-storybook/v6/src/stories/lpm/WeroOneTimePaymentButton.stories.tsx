@@ -7,4 +7,8 @@ const meta: Meta<LPMStoryArgs> = {
 };
 
 export default meta;
-export const { Default, EagerOrder, WithHookPattern } = createLPMStories("wero");
+
+const stories = createLPMStories("wero");
+export const Default = stories.Default;
+export const EagerOrder = stories.EagerOrder;
+export const WithHookPattern = stories.WithHookPattern;

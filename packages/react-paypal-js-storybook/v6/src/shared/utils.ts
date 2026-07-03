@@ -254,3 +254,44 @@ export const applePayButtonTypeArgType = {
   options: APPLE_PAY_BUTTON_TYPES,
   description: "Apple Pay button label type",
 };
+
+// ─── Google Pay ───────────────────────────────────────────────────────────────
+
+export const googlePayCallbacks = {
+  onApprove: (data: { id: string }) => {
+    action("approve")(data);
+    dispatchPaymentResult(
+      "success",
+      `Google Pay payment approved. Order ID: ${data.id}`,
+    );
+  },
+  onCancel: () => {
+    action("cancel")("Google Pay sheet dismissed by buyer");
+    dispatchPaymentResult("cancel", "Payment was cancelled by the buyer.");
+  },
+  onError: (error: Error) => {
+    action("error")(error);
+    dispatchPaymentResult(
+      "error",
+      `Google Pay error: ${error?.message || "Unknown error"}`,
+    );
+  },
+};
+
+export const googlePayButtonTypeArgType = {
+  control: { type: "select" as const },
+  options: ["book", "buy", "checkout", "donate", "order", "pay", "plain", "subscribe"],
+  description: "Google Pay button label type",
+};
+
+export const googlePayButtonColorArgType = {
+  control: { type: "select" as const },
+  options: ["default", "black", "white"],
+  description: "Google Pay button color",
+};
+
+export const googlePayButtonSizeModeArgType = {
+  control: { type: "select" as const },
+  options: ["static", "fill"],
+  description: "Google Pay button size mode",
+};
