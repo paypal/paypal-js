@@ -2,4 +2,4 @@
 "@paypal/react-paypal-js": patch
 ---
 
-Adds 2 enum values to the paypal messages element logoType property.
+Adds 1 enum value to the paypal messages element logoType property.
