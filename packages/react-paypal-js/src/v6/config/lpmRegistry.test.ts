@@ -15,8 +15,15 @@ describe("LPM_REGISTRY", () => {
   });
 
   test("button tag derives from component name", () => {
+    // FIUU is the one exception: its SDK component is "fiuu-cash-payments" but
+    // the registered custom-element button tag is "fiuu-button".
+    const TAG_EXCEPTIONS: Record<string, string> = {
+      "fiuu-cash-payments": "fiuu-button",
+    };
     for (const config of Object.values(LPM_REGISTRY)) {
-      const expectedTag = config.component.replace("-payments", "-button");
+      const expectedTag =
+        TAG_EXCEPTIONS[config.component] ??
+        config.component.replace("-payments", "-button");
       expect(config.buttonTag).toBe(expectedTag);
     }
   });

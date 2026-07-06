@@ -5,12 +5,15 @@ import {
   IdealOneTimePaymentButton,
   BancontactOneTimePaymentButton,
   EpsOneTimePaymentButton,
+  KlarnaOneTimePaymentButton,
+  FiuuOneTimePaymentButton,
   useIdealOneTimePaymentSession,
   useEpsOneTimePaymentSession,
 } from "./lpmExports";
 import {
   IdealPaymentButton,
   EpsPaymentButton,
+  FiuuPaymentButton,
 } from "./lpmExports";
 import { useLPMOneTimePaymentSession } from "./hooks/useLPMOneTimePaymentSession";
 
@@ -80,6 +83,34 @@ describe("Factory-generated LPM exports", () => {
 
     expect(useLPMOneTimePaymentSession).toHaveBeenCalledWith(
       expect.objectContaining({ lpm: "eps" }),
+    );
+  });
+
+  test("KlarnaOneTimePaymentButton passes lpm='klarna'", () => {
+    render(
+      <KlarnaOneTimePaymentButton
+        presentationMode="auto"
+        orderId="test"
+        onApprove={jest.fn().mockResolvedValue(undefined)}
+      />,
+    );
+
+    expect(useLPMOneTimePaymentSession).toHaveBeenCalledWith(
+      expect.objectContaining({ lpm: "klarna" }),
+    );
+  });
+
+  test("FiuuOneTimePaymentButton passes lpm='fiuu'", () => {
+    render(
+      <FiuuOneTimePaymentButton
+        presentationMode="auto"
+        orderId="test"
+        onApprove={jest.fn().mockResolvedValue(undefined)}
+      />,
+    );
+
+    expect(useLPMOneTimePaymentSession).toHaveBeenCalledWith(
+      expect.objectContaining({ lpm: "fiuu" }),
     );
   });
 
@@ -174,6 +205,20 @@ describe("Standalone LPM payment buttons (lpmProviderExports)", () => {
 
   test("EpsPaymentButton has correct displayName", () => {
     expect(EpsPaymentButton.displayName).toBe("EpsPaymentButton");
+  });
+
+  test("FiuuPaymentButton renders the fiuu-button web component (non-derived tag)", () => {
+    const mockSession = {
+      handleClick: jest.fn(),
+      isPending: false,
+      error: null,
+    };
+
+    const { container } = render(
+      <FiuuPaymentButton paymentSession={mockSession} />,
+    );
+
+    expect(container.querySelector("fiuu-button")).not.toBeNull();
   });
 
   test("IdealPaymentButton renders the ideal-button web component", () => {

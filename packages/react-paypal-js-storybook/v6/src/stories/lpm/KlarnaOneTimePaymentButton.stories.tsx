@@ -2,12 +2,12 @@ import type { Meta } from "@storybook/react";
 import { createLPMMetaExtras, createLPMStories, type LPMStoryArgs } from "../../shared/lpm/storyFactory";
 
 const meta: Meta<LPMStoryArgs> = {
-  title: "V6/LPM/Swish",
+  title: "V6/LPM/Klarna",
   tags: ["autodocs"],
-  ...createLPMMetaExtras("swish"),
+  ...createLPMMetaExtras("klarna"),
 };
 
 export default meta;
 
-const stories = createLPMStories("swish");
+const stories = createLPMStories("klarna");
 export const Default = stories.Default;

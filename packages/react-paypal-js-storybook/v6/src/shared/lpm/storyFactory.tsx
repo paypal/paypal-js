@@ -1,25 +1,23 @@
 /**
- * Factory that generates Storybook `meta` + named stories for any unbranded LPM.
+ * Factory that generates Storybook `meta` + the Default story for any unbranded LPM.
+ *
+ * Only the recommended all-in-one pattern is exposed as a live story. The eager
+ * order and hook+standalone patterns are documented as code examples on the
+ * autodocs page (see `createLPMMetaExtras`) rather than as separate stories.
  *
  * Usage in a story file:
  *
- *   const stories = createLPMStory("ideal");
- *   export default stories.meta;
- *   export const Default = stories.Default;
- *   export const EagerOrder = stories.EagerOrder;
- *   export const WithHookPattern = stories.WithHookPattern;
+ *   const meta: Meta<LPMStoryArgs> = { title: "V6/LPM/iDEAL", ...createLPMMetaExtras("ideal") };
+ *   export default meta;
+ *   export const Default = createLPMStories("ideal").Default;
  */
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { action } from "storybook/actions";
 
 import * as LPMExports from "@paypal/react-paypal-js/sdk-v6/local-payment-methods";
-import type {
-  LPMName,
-  LPMButtonComponentProps,
-  LPMSessionHandle,
-} from "@paypal/react-paypal-js/sdk-v6/local-payment-methods";
+import type { LPMName } from "@paypal/react-paypal-js/sdk-v6/local-payment-methods";
 
 import { withLPMPayPalProvider } from "../../decorators";
 import { V6DocPageStructure } from "../../components";
@@ -42,7 +40,6 @@ import {
   buildPhone,
   buildBillingAddress,
   buildTaxInfo,
-  lpmCallbacks,
   SAMPLE_FIELD_VALUES,
 } from "./utils";
 
@@ -70,10 +67,6 @@ export type LPMStoryArgs = {
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function capitalize(s: string): string {
-  return s.charAt(0).toUpperCase() + s.slice(1);
-}
 
 function toPascal(lpmKey: string): string {
   return lpmKey.charAt(0).toUpperCase() + lpmKey.slice(1);
@@ -214,132 +207,6 @@ function AllInOneWrapper({ ButtonComponent, sessionFields, disabled, presentatio
   });
 }
 
-type EagerOrderWrapperProps = LPMStoryArgs & {
-  ButtonComponent: React.ComponentType<Record<string, unknown>>;
-  sessionFields: readonly string[];
-};
-
-/**
- * Eager order pattern: the order is created up-front (here, on mount) and its
- * `orderId` is passed to the button as a prop — as opposed to the lazy pattern
- * where a `createOrder` callback runs on click. Because there is no
- * `createOrder` promise on click, any required session fields (phone, billing
- * address, tax info, …) must be supplied as direct props; the hook reads them
- * from props and forwards them to `session.start()`. Sample values are provided
- * by default so the flow is complete out of the box.
- */
-function EagerOrderWrapper({ ButtonComponent, sessionFields, disabled, presentationMode, ...rest }: EagerOrderWrapperProps) {
-  const storyArgs = { disabled, presentationMode, ...rest } as LPMStoryArgs;
-  const sessionFieldProps = buildSessionExtras(sessionFields, storyArgs);
-  const [orderId, setOrderId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    createOrder()
-      .then(({ orderId: id }) => {
-        setOrderId(id);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return <div style={{ color: "#555" }}>Creating order…</div>;
-  }
-  if (!orderId) {
-    return <div style={{ color: "#c53030" }}>Failed to create order. Is the sample integration server running?</div>;
-  }
-
-  const onApprove = async (data: { orderId: string }) => {
-    const orderData = await captureOrder(data.orderId);
-    action("approve")({ ...orderData, orderID: data.orderId });
-    dispatchPaymentResult("success", `Payment captured. Order ID: ${data.orderId}`);
-  };
-
-  return React.createElement(ButtonComponent, {
-    orderId,
-    disabled,
-    presentationMode,
-    ...sessionFieldProps,
-    fieldValues: SAMPLE_FIELD_VALUES,
-    ...lpmCallbacks,
-    onApprove,
-    type: "pay",
-  });
-}
-
-type HookPatternWrapperProps = LPMStoryArgs & {
-  lpmKey: LPMName;
-  sessionFields: readonly string[];
-  fields: readonly string[];
-};
-
-function HookPatternWrapper({ lpmKey, sessionFields, fields, disabled, presentationMode, ...rest }: HookPatternWrapperProps) {
-  const storyArgs = { disabled, presentationMode, ...rest } as LPMStoryArgs;
-  const extras = buildSessionExtras(sessionFields, storyArgs);
-  const pascal = toPascal(lpmKey);
-
-  const useHook = getLPMExport<(props: Record<string, unknown>) => Record<string, unknown>>(
-    `use${pascal}OneTimePaymentSession`,
-  );
-  const StandaloneButton = getLPMExport<React.ComponentType<LPMButtonComponentProps>>(
-    `${pascal}PaymentButton`,
-  );
-
-  const createLPMOrder = async () => {
-    const { orderId } = await createOrder();
-    return { orderId, ...extras };
-  };
-
-  const onApprove = async (data: { orderId: string }) => {
-    const orderData = await captureOrder(data.orderId);
-    action("approve")({ ...orderData, orderID: data.orderId });
-    dispatchPaymentResult("success", `Payment captured. Order ID: ${data.orderId}`);
-  };
-
-  const sessionResult = useHook({
-    createOrder: createLPMOrder,
-    onApprove,
-    onCancel: lpmCallbacks.onCancel,
-    onError: lpmCallbacks.onError,
-    presentationMode,
-  });
-
-  const paymentSession: LPMSessionHandle = {
-    handleClick: sessionResult.handleClick as LPMSessionHandle["handleClick"],
-    isPending: sessionResult.isPending as boolean,
-    error: sessionResult.error as Error | null,
-  };
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-      {fields.map((fieldType) => {
-        const FieldComponent = sessionResult[`${capitalize(fieldType)}Field`] as
-          | React.ComponentType<{ containerStyles?: React.CSSProperties; value?: string }>
-          | undefined;
-        if (!FieldComponent) return null;
-        return (
-          <FieldComponent
-            key={fieldType}
-            containerStyles={{ marginBottom: "4px" }}
-            value={SAMPLE_FIELD_VALUES[fieldType]}
-          />
-        );
-      })}
-      <StandaloneButton
-        paymentSession={paymentSession}
-        type="pay"
-        disabled={disabled}
-      />
-      {paymentSession.error && (
-        <p style={{ color: "#c53030", margin: "4px 0 0", fontSize: "14px" }}>
-          {paymentSession.error.message}
-        </p>
-      )}
-    </div>
-  );
-}
-
 // ─── Factory ──────────────────────────────────────────────────────────────────
 
 /**
@@ -356,7 +223,7 @@ function HookPatternWrapper({ lpmKey, sessionFields, fields, disabled, presentat
  *   ...createLPMMetaExtras("ideal"),
  * };
  * export default meta;
- * export const { Default, EagerOrder, WithHookPattern } = createLPMStories("ideal");
+ * export const Default = createLPMStories("ideal").Default;
  */
 export function createLPMMetaExtras(lpmKey: LPMName): Omit<Meta<LPMStoryArgs>, "title"> {
   const registry = getLPMExport<typeof import("@paypal/react-paypal-js/sdk-v6/local-payment-methods")["LPM_REGISTRY"]>(
@@ -419,11 +286,12 @@ Both patterns require wrapping your app with:
 
 export interface LPMNamedStories {
   Default: StoryObj<LPMStoryArgs>;
-  EagerOrder: StoryObj<LPMStoryArgs>;
-  WithHookPattern: StoryObj<LPMStoryArgs>;
 }
 
-/** Returns the three named story objects for an LPM. */
+/**
+ * Returns the named story object(s) for an LPM. Only the recommended all-in-one
+ * `Default` story is exposed; the eager and hook patterns live in the docs page.
+ */
 export function createLPMStories(lpmKey: LPMName): LPMNamedStories {
   const registry = getLPMExport<typeof import("@paypal/react-paypal-js/sdk-v6/local-payment-methods")["LPM_REGISTRY"]>(
     "LPM_REGISTRY",
@@ -434,7 +302,7 @@ export function createLPMStories(lpmKey: LPMName): LPMNamedStories {
     `${pascal}OneTimePaymentButton`,
   );
 
-  const { sessionFields, fields } = config;
+  const { sessionFields } = config;
   const defaultArgs = buildDefaultArgs(sessionFields);
 
   const Default: StoryObj<LPMStoryArgs> = {
@@ -449,30 +317,5 @@ export function createLPMStories(lpmKey: LPMName): LPMNamedStories {
     args: defaultArgs,
   };
 
-  const EagerOrder: StoryObj<LPMStoryArgs> = {
-    name: "Eager Order Creation",
-    render: (args) => (
-      <EagerOrderWrapper
-        ButtonComponent={ButtonComponent}
-        sessionFields={sessionFields}
-        {...args}
-      />
-    ),
-    args: defaultArgs,
-  };
-
-  const WithHookPattern: StoryObj<LPMStoryArgs> = {
-    name: "Hook + Standalone Button",
-    render: (args) => (
-      <HookPatternWrapper
-        lpmKey={lpmKey}
-        sessionFields={sessionFields}
-        fields={fields}
-        {...args}
-      />
-    ),
-    args: defaultArgs,
-  };
-
-  return { Default, EagerOrder, WithHookPattern };
+  return { Default };
 }
