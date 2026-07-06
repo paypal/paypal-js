@@ -9,6 +9,7 @@ describe("LPM_REGISTRY", () => {
         /^create[A-Z]\w+OneTimePaymentSession$/,
       );
       expect(config.displayName).toBeTruthy();
+      expect(config.testBuyerCountry).toMatch(/^[A-Z]{2}$/);
       expect(typeof key).toBe("string");
     }
   });

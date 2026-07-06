@@ -45,6 +45,12 @@ export interface LPMSessionHandle {
 export type LPMFieldComponentProps = {
   containerStyles?: React.CSSProperties;
   containerClassName?: string;
+  /**
+   * Optional initial value to prefill the field with (maps to the SDK
+   * `createPaymentFields({ value })` option). Useful for demos or restoring a
+   * buyer's previously entered value.
+   */
+  value?: string;
 };
 
 export type LPMButtonComponentProps = Omit<ButtonProps, "onClick"> & {
@@ -195,6 +201,7 @@ export function createEnhancedLPMHook(
         const FieldComponent = ({
           containerStyles,
           containerClassName,
+          value,
         }: LPMFieldComponentProps): JSX.Element => {
           const [sessionVersion, bumpVersion] = useReducer(
             (n: number) => n + 1,
@@ -217,8 +224,14 @@ export function createEnhancedLPMHook(
             const s = sessionRef.current;
             if (!s?.createPaymentFields || !container) { return; }
             container.innerHTML = "";
-            container.appendChild(s.createPaymentFields({ type: fieldType }));
-          }, [sessionVersion]); // eslint-disable-line react-hooks/exhaustive-deps
+            container.appendChild(
+              s.createPaymentFields(
+                value !== undefined
+                  ? { type: fieldType, value }
+                  : { type: fieldType },
+              ),
+            );
+          }, [sessionVersion, value]); // eslint-disable-line react-hooks/exhaustive-deps
 
           return (
             <div

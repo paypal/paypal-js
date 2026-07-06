@@ -8,7 +8,15 @@ import type { ButtonProps } from "../types";
 import type { UseLPMOneTimePaymentSessionProps } from "../hooks/useLPMOneTimePaymentSession";
 
 export type LPMOneTimePaymentButtonProps =
-  UseLPMOneTimePaymentSessionProps & ButtonProps;
+  UseLPMOneTimePaymentSessionProps &
+    ButtonProps & {
+      /**
+       * Optional initial values to prefill the rendered payment fields, keyed by
+       * field type (e.g. `{ name: "John Doe", email: "john@example.com" }`).
+       * Maps to the SDK `createPaymentFields({ value })` option.
+       */
+      fieldValues?: Record<string, string>;
+    };
 
 /**
  * `LPMOneTimePaymentButton` renders the LPM payment fields and button
@@ -27,6 +35,7 @@ export const LPMOneTimePaymentButton = ({
   lpm,
   type = "pay",
   disabled = false,
+  fieldValues,
   ...hookProps
 }: LPMOneTimePaymentButtonProps): JSX.Element | null => {
   const config = LPM_REGISTRY[lpm];
@@ -53,11 +62,16 @@ export const LPMOneTimePaymentButton = ({
       const container = fieldRefs.current.get(fieldType);
       if (container) {
         container.innerHTML = "";
-        const fieldElement = session.createPaymentFields({ type: fieldType });
+        const value = fieldValues?.[fieldType];
+        const fieldElement = session.createPaymentFields(
+          value !== undefined
+            ? { type: fieldType, value }
+            : { type: fieldType },
+        );
         container.appendChild(fieldElement);
       }
     });
-  }, [session, config.fields]);
+  }, [session, config.fields, fieldValues]);
 
   if (!isHydrated) {
     return <div />;

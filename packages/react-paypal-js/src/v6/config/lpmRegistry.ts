@@ -9,6 +9,7 @@ export interface LPMConfig {
   readonly displayName: string;
   readonly fields: readonly string[];
   readonly sessionFields: readonly SessionFieldType[];
+  readonly testBuyerCountry: string;
 }
 
 export const LPM_REGISTRY = {
@@ -19,6 +20,7 @@ export const LPM_REGISTRY = {
     displayName: "iDEAL",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "NL",
   },
   bancontact: {
     component: "bancontact-payments",
@@ -27,6 +29,7 @@ export const LPM_REGISTRY = {
     displayName: "Bancontact",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "BE",
   },
   eps: {
     component: "eps-payments",
@@ -35,6 +38,7 @@ export const LPM_REGISTRY = {
     displayName: "EPS",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "AT",
   },
   blik: {
     component: "blik-payments",
@@ -43,6 +47,7 @@ export const LPM_REGISTRY = {
     displayName: "BLIK",
     fields: ["name", "email"],
     sessionFields: [],
+    testBuyerCountry: "PL",
   },
   mybank: {
     component: "mybank-payments",
@@ -51,6 +56,7 @@ export const LPM_REGISTRY = {
     displayName: "MyBank",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "IT",
   },
   trustly: {
     component: "trustly-payments",
@@ -59,6 +65,7 @@ export const LPM_REGISTRY = {
     displayName: "Trustly",
     fields: ["name", "email"],
     sessionFields: [],
+    testBuyerCountry: "SE",
   },
   p24: {
     component: "p24-payments",
@@ -67,6 +74,7 @@ export const LPM_REGISTRY = {
     displayName: "Przelewy24",
     fields: ["name", "email"],
     sessionFields: [],
+    testBuyerCountry: "PL",
   },
   multibanco: {
     component: "multibanco-payments",
@@ -75,6 +83,7 @@ export const LPM_REGISTRY = {
     displayName: "Multibanco",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "PT",
   },
   bizum: {
     component: "bizum-payments",
@@ -83,6 +92,7 @@ export const LPM_REGISTRY = {
     displayName: "Bizum",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "ES",
   },
   swish: {
     component: "swish-payments",
@@ -91,6 +101,7 @@ export const LPM_REGISTRY = {
     displayName: "Swish",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "SE",
   },
   twint: {
     component: "twint-payments",
@@ -99,6 +110,7 @@ export const LPM_REGISTRY = {
     displayName: "TWINT",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "CH",
   },
   wechatpay: {
     component: "wechatpay-payments",
@@ -107,6 +119,7 @@ export const LPM_REGISTRY = {
     displayName: "WeChat Pay",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "CN",
   },
   verkkopankki: {
     component: "verkkopankki-payments",
@@ -115,6 +128,7 @@ export const LPM_REGISTRY = {
     displayName: "Verkkopankki",
     fields: ["name", "email"],
     sessionFields: [],
+    testBuyerCountry: "FI",
   },
   payu: {
     component: "payu-payments",
@@ -123,6 +137,7 @@ export const LPM_REGISTRY = {
     displayName: "PayU",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "PL",
   },
   mbway: {
     component: "mbway-payments",
@@ -131,6 +146,7 @@ export const LPM_REGISTRY = {
     displayName: "MB WAY",
     fields: ["name", "email"],
     sessionFields: ["phone"],
+    testBuyerCountry: "PT",
   },
   satispay: {
     component: "satispay-payments",
@@ -139,6 +155,7 @@ export const LPM_REGISTRY = {
     displayName: "Satispay",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "IT",
   },
   wero: {
     component: "wero-payments",
@@ -147,6 +164,7 @@ export const LPM_REGISTRY = {
     displayName: "Wero",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "DE",
   },
   floa: {
     component: "floa-payments",
@@ -155,6 +173,7 @@ export const LPM_REGISTRY = {
     displayName: "FLOA",
     fields: ["name"],
     sessionFields: ["dateOfBirth", "numberOfInstallments"],
+    testBuyerCountry: "FR",
   },
   grabpay: {
     component: "grabpay-payments",
@@ -163,6 +182,7 @@ export const LPM_REGISTRY = {
     displayName: "GrabPay",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "SG",
   },
   pixInternational: {
     component: "pix-international-payments",
@@ -171,6 +191,7 @@ export const LPM_REGISTRY = {
     displayName: "Pix",
     fields: ["name", "email"],
     sessionFields: ["phone", "billingAddress", "taxInfo"],
+    testBuyerCountry: "BR",
   },
   sepa: {
     component: "sepa-payments",
@@ -179,6 +200,7 @@ export const LPM_REGISTRY = {
     displayName: "SEPA",
     fields: [],
     sessionFields: [],
+    testBuyerCountry: "DE",
   },
   doku: {
     component: "doku-payments",
@@ -187,6 +209,7 @@ export const LPM_REGISTRY = {
     displayName: "DOKU",
     fields: ["name", "email"],
     sessionFields: ["phone"],
+    testBuyerCountry: "ID",
   },
   estonia: {
     component: "estoniabank-payments",
@@ -195,6 +218,7 @@ export const LPM_REGISTRY = {
     displayName: "Estonia Banks",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "EE",
   },
   gopay: {
     component: "gopay-payments",
@@ -203,6 +227,7 @@ export const LPM_REGISTRY = {
     displayName: "GoPay",
     fields: ["name", "email"],
     sessionFields: ["phone"],
+    testBuyerCountry: "ID",
   },
   alipay: {
     component: "alipay-payments",
@@ -211,6 +236,7 @@ export const LPM_REGISTRY = {
     displayName: "Alipay",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "CN",
   },
   indonesiaBanks: {
     component: "indonesiabanks-payments",
@@ -219,6 +245,7 @@ export const LPM_REGISTRY = {
     displayName: "Indonesia Banks",
     fields: ["name", "email"],
     sessionFields: ["phone"],
+    testBuyerCountry: "ID",
   },
   kredivo: {
     component: "kredivo-payments",
@@ -227,6 +254,7 @@ export const LPM_REGISTRY = {
     displayName: "Kredivo",
     fields: ["name", "email"],
     sessionFields: ["phone", "taxInfo"],
+    testBuyerCountry: "ID",
   },
   linkaja: {
     component: "linkaja-payments",
@@ -235,6 +263,7 @@ export const LPM_REGISTRY = {
     displayName: "LinkAja",
     fields: ["name", "email"],
     sessionFields: ["phone"],
+    testBuyerCountry: "ID",
   },
   ovo: {
     component: "ovo-payments",
@@ -243,6 +272,7 @@ export const LPM_REGISTRY = {
     displayName: "OVO",
     fields: ["name", "email"],
     sessionFields: ["phone"],
+    testBuyerCountry: "ID",
   },
   paysera: {
     component: "paysera-payments",
@@ -251,6 +281,7 @@ export const LPM_REGISTRY = {
     displayName: "Paysera",
     fields: ["name", "email"],
     sessionFields: [],
+    testBuyerCountry: "LT",
   },
   skrill: {
     component: "skrill-payments",
@@ -259,6 +290,7 @@ export const LPM_REGISTRY = {
     displayName: "Skrill",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "DE",
   },
   blikPayLater: {
     component: "blikpaylater-payments",
@@ -267,6 +299,7 @@ export const LPM_REGISTRY = {
     displayName: "BLIK Pay Later",
     fields: ["name"],
     sessionFields: [],
+    testBuyerCountry: "PL",
   },
   bancomatPay: {
     component: "bancomatpay-payments",
@@ -275,6 +308,7 @@ export const LPM_REGISTRY = {
     displayName: "Bancomat Pay",
     fields: ["name"],
     sessionFields: ["phone", "taxInfo"],
+    testBuyerCountry: "IT",
   },
   jeniuspay: {
     component: "jeniuspay-payments",
@@ -283,6 +317,7 @@ export const LPM_REGISTRY = {
     displayName: "Jeniuspay",
     fields: ["name", "email"],
     sessionFields: ["phone"],
+    testBuyerCountry: "ID",
   },
 } as const satisfies Record<string, LPMConfig>;
 

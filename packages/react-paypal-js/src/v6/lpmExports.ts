@@ -114,6 +114,16 @@ export const useBlikPayLaterOneTimePaymentSession = createLPMHook("blikPayLater"
 export const useBancomatPayOneTimePaymentSession = createLPMHook("bancomatPay");
 export const useJeniuspayOneTimePaymentSession = createLPMHook("jeniuspay");
 
+// Provider + context utilities re-exported from this subpath. LPM consumers MUST
+// obtain PayPalProvider/usePayPal/INSTANCE_LOADING_STATE from here (not from
+// ./sdk-v6): the LPM subpath is a separate bundle with its own React context
+// instance, so a PayPalProvider imported from the main ./sdk-v6 bundle would not
+// satisfy the LPM hooks' usePayPal, throwing "usePayPal must be used within a
+// PayPalProvider".
+export { PayPalProvider } from "./components/PayPalProvider";
+export { usePayPal } from "./hooks/usePayPal";
+export { INSTANCE_LOADING_STATE } from "./types/ProviderEnums";
+
 // Generic LPM exports — also accessible from this subpath so the subpath is
 // fully self-contained and consumers never need to import from ./sdk-v6 for LPMs.
 export {
