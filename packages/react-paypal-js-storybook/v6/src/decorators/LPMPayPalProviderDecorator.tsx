@@ -2,11 +2,15 @@ import React, { useEffect } from "react";
 import type { Decorator } from "@storybook/react";
 import { action } from "storybook/actions";
 
+// Import the provider trio from the LPM subpath (not "@paypal/react-paypal-js/sdk-v6").
+// The LPM subpath is a separate bundle with its own React context instance, so the
+// PayPalProvider that wraps the LPM buttons must come from the same bundle the buttons
+// consume — otherwise usePayPal throws "must be used within a PayPalProvider".
 import {
   PayPalProvider,
   usePayPal,
   INSTANCE_LOADING_STATE,
-} from "@paypal/react-paypal-js/sdk-v6";
+} from "@paypal/react-paypal-js/sdk-v6/local-payment-methods";
 import { PAYPAL_CLIENT_ID } from "../shared/utils";
 
 function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
@@ -31,9 +35,11 @@ function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
 function LPMProviderWrapper({
   children,
   lpmComponent,
+  testBuyerCountry,
 }: {
   children: React.ReactNode;
   lpmComponent: string;
+  testBuyerCountry?: string;
 }) {
   if (!PAYPAL_CLIENT_ID) {
     return (
@@ -71,6 +77,7 @@ function LPMProviderWrapper({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       components={[lpmComponent] as any}
       pageType="checkout"
+      testBuyerCountry={testBuyerCountry}
     >
       <SdkStatusMonitor>{children}</SdkStatusMonitor>
     </PayPalProvider>
@@ -87,9 +94,15 @@ function LPMProviderWrapper({
  */
 export const withLPMPayPalProvider: Decorator = (Story, context) => {
   const lpmComponent = context.parameters?.lpmComponent as string;
+  const testBuyerCountry = context.parameters?.testBuyerCountry as
+    | string
+    | undefined;
 
   return (
-    <LPMProviderWrapper lpmComponent={lpmComponent}>
+    <LPMProviderWrapper
+      lpmComponent={lpmComponent}
+      testBuyerCountry={testBuyerCountry}
+    >
       <Story />
     </LPMProviderWrapper>
   );

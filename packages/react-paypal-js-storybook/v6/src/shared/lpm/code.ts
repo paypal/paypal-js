@@ -14,6 +14,20 @@ function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
+/** Sample values used to prefill rendered payment fields in the examples. */
+const SAMPLE_FIELD_VALUES: Record<string, string> = {
+  name: "John Doe",
+  email: "john.doe@example.com",
+};
+
+/** Builds a `fieldValues={{ ... }}` prop clause for the LPM's rendered fields. */
+function buildFieldValuesProp(fields: readonly string[], indent: string): string {
+  const entries = fields
+    .filter((f) => SAMPLE_FIELD_VALUES[f])
+    .map((f) => `${f}: "${SAMPLE_FIELD_VALUES[f]}"`);
+  return entries.length ? `\n${indent}fieldValues={{ ${entries.join(", ")} }}` : "";
+}
+
 /** Converts a camelCase LPM key to a PascalCase component prefix, e.g. "pixInternational" → "PixInternational" */
 function toPascal(lpmKey: string): string {
   return lpmKey.charAt(0).toUpperCase() + lpmKey.slice(1);
@@ -94,6 +108,7 @@ export function getLPMAllInOneCode(lpmKey: LPMName): string {
   const ButtonName = `${pascal}OneTimePaymentButton`;
   const component = config.component;
   const sessionFieldsReturn = buildSessionFieldsReturnClause(config.sessionFields);
+  const fieldValuesProp = buildFieldValuesProp(config.fields, "                ");
 
   return `// Lazy order creation (Recommended)
 // The order is created only when the buyer clicks the button.
@@ -134,8 +149,8 @@ export default function App() {
                 createOrder={createOrder}
                 onApprove={onApprove}
                 onCancel={(data) => console.log("Cancelled:", data)}
-                onError={(error) => console.error("Error:", error)}
-                presentationMode="auto"
+                onError={(error) => console.error("Error:", error)}${fieldValuesProp}
+                presentationMode="popup"
                 type="pay"
             />
         </PayPalProvider>
@@ -153,9 +168,13 @@ export function getLPMEagerOrderCode(lpmKey: LPMName): string {
   const pascal = toPascal(lpmKey);
   const ButtonName = `${pascal}OneTimePaymentButton`;
   const component = config.component;
+  const sessionFieldProps = buildSessionFieldPropsClause(config.sessionFields);
+  const fieldValuesProp = buildFieldValuesProp(config.fields, "            ");
 
   return `// Eager order creation
 // The order is created on page load and passed directly as a prop.
+// Because there is no createOrder callback on click, any required session
+// fields (phone, billing address, tax info, …) are supplied as props.
 import { useEffect, useState } from "react";
 import {
     PayPalProvider,
@@ -185,8 +204,8 @@ function Checkout() {
                 });
             }}
             onCancel={(data) => console.log("Cancelled:", data)}
-            onError={(error) => console.error("Error:", error)}
-            presentationMode="auto"
+            onError={(error) => console.error("Error:", error)}${sessionFieldProps}${fieldValuesProp}
+            presentationMode="popup"
             type="pay"
         />
     );
@@ -225,10 +244,10 @@ export function getLPMHookPatternCode(lpmKey: LPMName): string {
   const sessionFieldProps = buildSessionFieldPropsClause(config.sessionFields);
 
   const fieldRenders = config.fields
-    .map(
-      (f) =>
-        `            <${capitalize(f)}Field containerStyles={{ marginBottom: "8px" }} />`,
-    )
+    .map((f) => {
+      const valueProp = SAMPLE_FIELD_VALUES[f] ? ` value="${SAMPLE_FIELD_VALUES[f]}"` : "";
+      return `            <${capitalize(f)}Field${valueProp} containerStyles={{ marginBottom: "8px" }} />`;
+    })
     .join("\n");
 
   return `// Hook + standalone button pattern
@@ -259,7 +278,7 @@ function Checkout() {
         },
         onCancel: (data) => console.log("Cancelled:", data),
         onError: (error) => console.error("Error:", error),
-        presentationMode: "auto",${sessionFieldProps}
+        presentationMode: "popup",${sessionFieldProps}
     });
 
     return (

@@ -104,6 +104,50 @@ export const disabledArgType = {
   description: "Disable the button",
 };
 
+// ─── Shared button prop / event arg types (documentation) ────────────────────
+// These document the props common to every LPM button so each LPM's ArgTypes
+// table matches the richness of the PayPalOneTimePaymentButton doc page. They
+// are documentation-only (`control: false`): the story wrappers construct
+// `createOrder`/callbacks internally, and a live `type` control could feed the
+// SDK an unsupported value.
+
+export const buttonTypeArgType = {
+  control: false as const,
+  description:
+    "Button label rendered by the SDK button web component (defaults to `\"pay\"` in these stories).",
+  table: { category: "Properties", defaultValue: { summary: '"pay"' } },
+};
+
+export const lpmButtonEventArgTypes = {
+  createOrder: {
+    control: false as const,
+    description:
+      "Function that lazily creates an order on button click and returns `{ orderId }` (plus any required session fields). Mutually exclusive with `orderId`. (Recommended)",
+    table: { category: "Events" },
+  },
+  orderId: {
+    control: false as const,
+    description:
+      "Pre-created order ID string. Use when the order is created before the button renders (eager pattern). Mutually exclusive with `createOrder`.",
+    table: { category: "Events" },
+  },
+  onApprove: {
+    control: false as const,
+    description: "Called when the buyer approves the payment.",
+    table: { category: "Events" },
+  },
+  onCancel: {
+    control: false as const,
+    description: "Called when the buyer cancels the payment.",
+    table: { category: "Events" },
+  },
+  onError: {
+    control: false as const,
+    description: "Called when an error occurs during the payment flow.",
+    table: { category: "Events" },
+  },
+};
+
 // ─── Shared LPM callbacks ────────────────────────────────────────────────────
 
 export const lpmCallbacks = {
@@ -126,6 +170,14 @@ export const lpmCallbacks = {
       `Payment error: ${(error as OnErrorData)?.message || "Unknown error"}`,
     );
   },
+};
+
+// ─── Sample values for rendered payment fields (name/email) ──────────────────
+// Prefilled into the SDK-rendered input fields (via `createPaymentFields({ value })`)
+// so the stories demonstrate the fields with realistic sample content by default.
+export const SAMPLE_FIELD_VALUES: Record<string, string> = {
+  name: "John Doe",
+  email: "john.doe@example.com",
 };
 
 // ─── Default arg values for session fields ───────────────────────────────────

@@ -3,6 +3,7 @@ import { createLPMMetaExtras, createLPMStories, type LPMStoryArgs } from "../../
 
 const meta: Meta<LPMStoryArgs> = {
   title: "V6/LPM/Kredivo",
+  tags: ["autodocs"],
   ...createLPMMetaExtras("kredivo"),
 };
 

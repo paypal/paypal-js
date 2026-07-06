@@ -29,6 +29,8 @@ import { getLPMAllInOneCode, getLPMEagerOrderCode, getLPMHookPatternCode } from 
 import {
   presentationModeArgType,
   disabledArgType,
+  buttonTypeArgType,
+  lpmButtonEventArgTypes,
   phoneArgTypes,
   billingAddressArgTypes,
   taxInfoArgTypes,
@@ -41,6 +43,7 @@ import {
   buildBillingAddress,
   buildTaxInfo,
   lpmCallbacks,
+  SAMPLE_FIELD_VALUES,
 } from "./utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -119,6 +122,8 @@ function buildArgTypes(sessionFields: readonly string[]) {
   const base = {
     disabled: disabledArgType,
     presentationMode: presentationModeArgType,
+    type: buttonTypeArgType,
+    ...lpmButtonEventArgTypes,
   };
   if (sessionFields.includes("phone")) {
     Object.assign(base, phoneArgTypes);
@@ -139,7 +144,10 @@ function buildArgTypes(sessionFields: readonly string[]) {
 function buildDefaultArgs(sessionFields: readonly string[]): LPMStoryArgs {
   const base: LPMStoryArgs = {
     disabled: false,
-    presentationMode: "auto",
+    // "popup" is the universally-supported LPM presentation mode. Some LPMs
+    // (e.g. SEPA) reject "auto" at runtime with
+    // "PaymentFlowError: unsupported presentationMode: auto".
+    presentationMode: "popup",
   };
   if (sessionFields.includes("phone")) {
     Object.assign(base, defaultPhoneArgs);
@@ -201,15 +209,28 @@ function AllInOneWrapper({ ButtonComponent, sessionFields, disabled, presentatio
     onApprove,
     onCancel,
     onError,
+    fieldValues: SAMPLE_FIELD_VALUES,
     type: "pay",
   });
 }
 
 type EagerOrderWrapperProps = LPMStoryArgs & {
   ButtonComponent: React.ComponentType<Record<string, unknown>>;
+  sessionFields: readonly string[];
 };
 
-function EagerOrderWrapper({ ButtonComponent, disabled, presentationMode }: EagerOrderWrapperProps) {
+/**
+ * Eager order pattern: the order is created up-front (here, on mount) and its
+ * `orderId` is passed to the button as a prop — as opposed to the lazy pattern
+ * where a `createOrder` callback runs on click. Because there is no
+ * `createOrder` promise on click, any required session fields (phone, billing
+ * address, tax info, …) must be supplied as direct props; the hook reads them
+ * from props and forwards them to `session.start()`. Sample values are provided
+ * by default so the flow is complete out of the box.
+ */
+function EagerOrderWrapper({ ButtonComponent, sessionFields, disabled, presentationMode, ...rest }: EagerOrderWrapperProps) {
+  const storyArgs = { disabled, presentationMode, ...rest } as LPMStoryArgs;
+  const sessionFieldProps = buildSessionExtras(sessionFields, storyArgs);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -239,6 +260,8 @@ function EagerOrderWrapper({ ButtonComponent, disabled, presentationMode }: Eage
     orderId,
     disabled,
     presentationMode,
+    ...sessionFieldProps,
+    fieldValues: SAMPLE_FIELD_VALUES,
     ...lpmCallbacks,
     onApprove,
     type: "pay",
@@ -292,13 +315,14 @@ function HookPatternWrapper({ lpmKey, sessionFields, fields, disabled, presentat
     <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
       {fields.map((fieldType) => {
         const FieldComponent = sessionResult[`${capitalize(fieldType)}Field`] as
-          | React.ComponentType<{ containerStyles?: React.CSSProperties }>
+          | React.ComponentType<{ containerStyles?: React.CSSProperties; value?: string }>
           | undefined;
         if (!FieldComponent) return null;
         return (
           <FieldComponent
             key={fieldType}
             containerStyles={{ marginBottom: "4px" }}
+            value={SAMPLE_FIELD_VALUES[fieldType]}
           />
         );
       })}
@@ -340,14 +364,20 @@ export function createLPMMetaExtras(lpmKey: LPMName): Omit<Meta<LPMStoryArgs>, "
   );
   const config = registry[lpmKey];
   const pascal = toPascal(lpmKey);
-  const { sessionFields, component, displayName } = config;
+  const { sessionFields, component, displayName, testBuyerCountry } = config;
   const argTypes = buildArgTypes(sessionFields);
 
+  // NOTE: `tags: ["autodocs"]` is intentionally NOT returned here. Storybook's
+  // static CSF indexer only detects autodocs when `tags` is a literal in the
+  // story file's default export — a value spread in from this function is
+  // invisible at index time, so no Docs page would be generated. Each LPM story
+  // file therefore declares `tags: ["autodocs"]` as a literal (same reason the
+  // `title` must be written literally per file).
   return {
-    tags: ["autodocs"],
     parameters: {
       providerType: "lpm",
       lpmComponent: component,
+      testBuyerCountry,
       controls: { expanded: true },
       docs: {
         description: {
@@ -424,6 +454,7 @@ export function createLPMStories(lpmKey: LPMName): LPMNamedStories {
     render: (args) => (
       <EagerOrderWrapper
         ButtonComponent={ButtonComponent}
+        sessionFields={sessionFields}
         {...args}
       />
     ),

@@ -3,6 +3,7 @@ import { createLPMMetaExtras, createLPMStories, type LPMStoryArgs } from "../../
 
 const meta: Meta<LPMStoryArgs> = {
   title: "V6/LPM/Alipay",
+  tags: ["autodocs"],
   ...createLPMMetaExtras("alipay"),
 };
 
