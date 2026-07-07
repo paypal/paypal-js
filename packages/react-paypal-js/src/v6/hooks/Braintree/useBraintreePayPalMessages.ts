@@ -172,6 +172,8 @@ export function useBraintreePayPalMessages({
         return;
       }
 
+      setError(null);
+
       const result = await messages.fetchContent(options);
 
       // On an API error, fetchContent resolves to an empty sentinel MessageContent

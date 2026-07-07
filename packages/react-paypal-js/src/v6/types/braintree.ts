@@ -347,17 +347,18 @@ export interface BraintreeMessagesOptions {
   currencyCode?: string;
 }
 
-// Content returned by `fetchContent`. Exposes `update` so the amount displayed
-// in the <paypal-message> can be changed (e.g. when cart quantity changes)
-// without re-fetching. Extra fields are passed through to `setContent`.
+// Content returned by `fetchContent`. Exposes `update` so the displayed message
+// can be re-configured (e.g. when cart quantity changes) without re-creating the
+// instance. `update` accepts the same options as `fetchContent`. Extra fields are
+// passed through to `setContent`.
 export interface BraintreeMessageContent {
-  update: (options?: {
-    amount?: string;
-  }) => Promise<BraintreeMessageContent | null>;
+  update: (
+    options?: BraintreeFetchMessageContentOptions,
+  ) => Promise<BraintreeMessageContent | null>;
   [key: string]: unknown;
 }
 
-export interface BraintreeFetchMessageContentOptions {
+export interface BraintreeFetchMessageContentOptions extends BraintreeMessagesOptions {
   amount?: string;
   onReady?: (content: BraintreeMessageContent) => void;
   [key: string]: unknown;
