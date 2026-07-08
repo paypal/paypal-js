@@ -433,4 +433,135 @@ describe("useLPMOneTimePaymentSession", () => {
       expect(result.current.handleCancel).toBe(firstRender.handleCancel);
     });
   });
+
+  describe("handleValidate", () => {
+    test("should call validate on the session and return true", async () => {
+      const { result } = renderHook(() =>
+        useLPMOneTimePaymentSession({
+          lpm: "ideal",
+          presentationMode: "popup",
+          orderId: "test-order-id",
+          onApprove,
+        }),
+      );
+
+      const isValid = await result.current.handleValidate();
+
+      expect(mockSession.validate).toHaveBeenCalled();
+      expect(isValid).toBe(true);
+    });
+
+    test("should return false when no session is available", async () => {
+      // Use rejected state (no sdkInstance) to avoid side effects from error loops
+      mockPayPalRejected();
+
+      const { result } = renderHook(() =>
+        useLPMOneTimePaymentSession({
+          lpm: "ideal",
+          presentationMode: "popup",
+          orderId: "test-order-id",
+          onApprove,
+        }),
+      );
+
+      const isValid = await result.current.handleValidate();
+
+      expect(isValid).toBe(false);
+    });
+  });
+
+  describe("sessionFields (T1)", () => {
+    test("should include phone in startOptions for LPMs that require it (mbway)", async () => {
+      const mbwaySession = createMockLPMSession();
+      const mbwaySdk = createMockSdkInstance(
+        "createMbWayOneTimePaymentSession",
+        mbwaySession,
+      );
+      mockPayPalContext({ sdkInstance: mbwaySdk });
+
+      const phone = { countryCode: "351", nationalNumber: "912345678" };
+
+      const { result } = renderHook(() =>
+        useLPMOneTimePaymentSession({
+          lpm: "mbway",
+          presentationMode: "popup",
+          orderId: "test-order-id",
+          onApprove,
+          phone,
+        }),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mbwaySession.start).toHaveBeenCalledWith(
+        expect.objectContaining({
+          presentationMode: "popup",
+          phone,
+        }),
+        undefined,
+      );
+    });
+
+    test("should include taxInfo in startOptions for LPMs that require it (boletobancario)", async () => {
+      const boletoSession = createMockLPMSession();
+      const boletoSdk = createMockSdkInstance(
+        "createBoletobancarioOneTimePaymentSession",
+        boletoSession,
+      );
+      mockPayPalContext({ sdkInstance: boletoSdk });
+
+      const taxInfo = { taxId: "12345678901", taxIdType: "BR_CPF" };
+
+      const { result } = renderHook(() =>
+        useLPMOneTimePaymentSession({
+          lpm: "boletobancario",
+          presentationMode: "popup",
+          orderId: "test-order-id",
+          onApprove,
+          taxInfo,
+        }),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(boletoSession.start).toHaveBeenCalledWith(
+        expect.objectContaining({
+          presentationMode: "popup",
+          taxInfo,
+        }),
+        undefined,
+      );
+    });
+
+    test("should not include undefined sessionFields in startOptions", async () => {
+      // iDEAL has no sessionFields — startOptions should only have presentationMode
+      const { result } = renderHook(() =>
+        useLPMOneTimePaymentSession({
+          lpm: "ideal",
+          presentationMode: "popup",
+          orderId: "test-order-id",
+          onApprove,
+        }),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockSession.start).toHaveBeenCalledWith(
+        { presentationMode: "popup" },
+        undefined,
+      );
+      // Verify no session field keys (phone, billingAddress, etc.) are present
+      const startCallArg = (mockSession.start as jest.Mock).mock.calls[0][0];
+      const unexpectedKeys = ["phone", "billingAddress", "taxInfo", "expiryDate", "dateOfBirth", "numberOfInstallments"];
+      for (const key of unexpectedKeys) {
+        expect(startCallArg).not.toHaveProperty(key);
+      }
+    });
+  });
 });

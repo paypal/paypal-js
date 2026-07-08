@@ -13,6 +13,47 @@ export type LPMPresentationModeOptions =
   | PresentationModeOptionsForAuto
   | PresentationModeOptionsForPopup;
 
+/** Merchant-provided session-level inputs required by specific LPMs. */
+export type LPMSessionFieldPhone = {
+  countryCode: string;
+  nationalNumber: string;
+};
+
+export type LPMSessionFieldBillingAddress = {
+  addressLine1: string;
+  addressLine2?: string;
+  adminArea1: string;
+  adminArea2?: string;
+  postalCode: string;
+  countryCode: string;
+};
+
+export type LPMSessionFieldTaxInfo = {
+  taxId: string;
+  taxIdType: string;
+};
+
+/**
+ * Optional session-level inputs collected by the merchant and forwarded to the
+ * SDK when starting an LPM payment session. Only a subset of fields is required
+ * per LPM (see `LPMConfig.sessionFields` in the registry).
+ */
+export type LPMSessionFields = {
+  phone?: LPMSessionFieldPhone;
+  billingAddress?: LPMSessionFieldBillingAddress;
+  taxInfo?: LPMSessionFieldTaxInfo;
+  expiryDate?: string;
+  dateOfBirth?: string;
+  numberOfInstallments?: number;
+};
+
+/**
+ * Options passed to `LPMOneTimePaymentSession.start()`.
+ * Extends the presentation-mode options with optional merchant-collected
+ * session fields (phone, billingAddress, taxInfo, etc.) required by some LPMs.
+ */
+export type LPMStartOptions = LPMPresentationModeOptions & LPMSessionFields;
+
 export type LPMOneTimePaymentSessionPromise = Promise<{
   orderId: string;
   phone?: { countryCode: string; nationalNumber: string };
@@ -30,7 +71,7 @@ export type LPMOneTimePaymentSessionPromise = Promise<{
 
 export type LPMOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
   start: (
-    presentationModeOptions: LPMPresentationModeOptions,
+    options: LPMStartOptions,
     paymentSessionPromise?: LPMOneTimePaymentSessionPromise,
   ) => Promise<void>;
   createPaymentFields: (options: { type: string; value?: string }) => HTMLElement;

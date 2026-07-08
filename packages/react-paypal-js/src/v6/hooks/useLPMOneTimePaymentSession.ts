@@ -9,6 +9,8 @@ import { LPM_REGISTRY } from "../config/lpmRegistry";
 
 import type { LPMName } from "../config/lpmRegistry";
 import type {
+  LPMSessionFields,
+  LPMStartOptions,
   LPMOneTimePaymentSession,
   LPMOneTimePaymentSessionOptions,
   LPMOneTimePaymentSessionPromise,
@@ -19,7 +21,7 @@ import type {
 
 export interface LPMPaymentSessionReturn extends BasePaymentSessionReturn {
   session: LPMOneTimePaymentSession | null;
-  Button: React.ComponentType;
+  handleValidate: () => Promise<boolean>;
 }
 
 export type UseLPMOneTimePaymentSessionProps = {
@@ -34,7 +36,8 @@ export type UseLPMOneTimePaymentSessionProps = {
       orderId: string;
     })
 ) &
-  LPMPresentationModeOptions;
+  LPMPresentationModeOptions &
+  LPMSessionFields;
 
 export function useLPMOneTimePaymentSession({
   lpm,
@@ -51,6 +54,10 @@ export function useLPMOneTimePaymentSession({
   const [sessionState, setSessionState] = useState<LPMOneTimePaymentSession | null>(null);
   const proxyCallbacks = useProxyProps(callbacks);
   const [error, setError] = useError();
+
+  // Stabilize createOrder reference so handleClick doesn't recreate on every render
+  const createOrderRef = useRef(createOrder);
+  createOrderRef.current = createOrder;
 
   const failedSdkRef = useRef<unknown>(null);
 
@@ -123,10 +130,9 @@ export function useLPMOneTimePaymentSession({
     sessionRef.current?.cancel();
   }, []);
 
-  const Button = useCallback(
-    () => React.createElement(config.buttonTag),
-    [config.buttonTag],
-  );
+  const handleValidate = useCallback(async (): Promise<boolean> => {
+    return sessionRef.current?.validate() ?? false;
+  }, []);
 
   const handleClick = useCallback(async () => {
     if (!isMountedRef.current) {
@@ -138,22 +144,25 @@ export function useLPMOneTimePaymentSession({
       return;
     }
 
-    // Build start options including any merchant-collected session fields
-    // (billingAddress, taxInfo, expiryDate, phone) required by LPMs like Boleto.
-    const sessionFieldValues: Record<string, unknown> = {};
+    // Collect merchant-provided session-level fields (phone, billingAddress,
+    // taxInfo, etc.) required by specific LPMs (e.g. MB WAY, Pix, DOKU).
+    const sessionFieldValues: Partial<LPMSessionFields> = {};
     for (const field of config.sessionFields) {
-      const value = (proxyCallbacks as Record<string, unknown>)[field];
-      if (value !== undefined) sessionFieldValues[field] = value;
+      const key = field as keyof LPMSessionFields;
+      const value = (proxyCallbacks as unknown as LPMSessionFields)[key];
+      if (value !== undefined) {
+        (sessionFieldValues as Record<string, unknown>)[field] = value;
+      }
     }
 
-    const startOptions = {
+    const startOptions: LPMStartOptions = {
       presentationMode,
       fullPageOverlay,
       ...sessionFieldValues,
-    } as LPMPresentationModeOptions;
+    } as LPMStartOptions;
 
-    await sessionRef.current.start(startOptions, createOrder?.());
-  }, [isMountedRef, presentationMode, fullPageOverlay, createOrder, setError, config, proxyCallbacks]);
+    await sessionRef.current.start(startOptions, createOrderRef.current?.());
+  }, [isMountedRef, presentationMode, fullPageOverlay, setError, config, proxyCallbacks]);
 
   return {
     error,
@@ -162,6 +171,6 @@ export function useLPMOneTimePaymentSession({
     handleCancel,
     handleClick,
     handleDestroy,
-    Button,
+    handleValidate,
   };
 }

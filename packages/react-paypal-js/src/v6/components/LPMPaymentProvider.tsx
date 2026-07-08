@@ -2,6 +2,7 @@ import React, { useEffect, useReducer, useRef, type JSX } from "react";
 
 import { useLPMOneTimePaymentSession } from "../hooks/useLPMOneTimePaymentSession";
 
+import type { LPMOneTimePaymentSession } from "../types";
 import type { LPMName } from "../config/lpmRegistry";
 import type { UseLPMOneTimePaymentSessionProps, LPMPaymentSessionReturn } from "../hooks/useLPMOneTimePaymentSession";
 import type { ButtonProps } from "../types/sdkWebComponents";
@@ -117,6 +118,72 @@ export function createLPMButtonComponent(
   return ButtonComponent;
 }
 
+// ─── Module-level field component factory ─────────────────────────────────────
+
+/**
+ * Creates a stable SDK-iframe field component for a given field type.
+ *
+ * This is a module-level factory (not defined inside the hook render) so
+ * React concurrent-mode is fully safe and no ESLint suppression is required.
+ * The returned component is created once per `createEnhancedLPMHook` call via
+ * `useRef` and will not unmount/remount when the session changes — instead it
+ * uses a version counter driven by a pub/sub listener on `sessionListenersRef`.
+ */
+function createFieldComponent(
+  fieldType: string,
+  sessionRef: React.MutableRefObject<LPMOneTimePaymentSession | null>,
+  sessionListenersRef: React.MutableRefObject<Set<() => void>>,
+): (props: LPMFieldComponentProps) => JSX.Element {
+  const componentName = `${capitalize(fieldType)}Field`;
+
+  function FieldComponent({
+    containerStyles,
+    containerClassName,
+    value,
+  }: LPMFieldComponentProps): JSX.Element {
+    const [sessionVersion, bumpVersion] = useReducer((n: number) => n + 1, 0);
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    // Subscribe to session changes for the lifetime of this field component.
+    // bumpVersion is a stable dispatch from useReducer; sessionListenersRef is
+    // a stable ref — the effect only needs to run once on mount.
+    useEffect(() => {
+      const listeners = sessionListenersRef.current;
+      listeners.add(bumpVersion);
+      return () => {
+        listeners.delete(bumpVersion);
+      };
+    }, [bumpVersion]);
+
+    // Mount (or re-mount) the SDK iframe whenever the session version changes,
+    // i.e. whenever a new session becomes available via the pub/sub mechanism.
+    // sessionRef.current is accessed imperatively; fieldType is a stable
+    // closure variable from the factory — neither belongs in the deps array.
+    useEffect(() => {
+      const container = containerRef.current;
+      const s = sessionRef.current;
+      if (!s?.createPaymentFields || !container) return;
+      container.innerHTML = "";
+      container.appendChild(
+        s.createPaymentFields(
+          value !== undefined ? { type: fieldType, value } : { type: fieldType },
+        ),
+      );
+    }, [sessionVersion, value]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    return (
+      <div
+        ref={containerRef}
+        style={containerStyles}
+        className={containerClassName}
+      />
+    );
+  }
+
+  FieldComponent.displayName = componentName;
+  return FieldComponent as (props: LPMFieldComponentProps) => JSX.Element;
+}
+
 // ─── Enhanced hook factory ────────────────────────────────────────────────────
 
 /**
@@ -166,13 +233,9 @@ export function createEnhancedLPMHook(
 
     const { session } = result;
 
-    // ── Stable ref + listener store for field components ────────────────────
-    //
-    // Field components are created once (via useRef) and subscribe to this
-    // store. When the session changes, we notify subscribers so they call
-    // bumpVersion and re-run the mount-field effect without React ever
-    // treating the component as a new type (= no unmount/remount, no lost iframe).
-
+    // Stable refs shared with field components created below.
+    // sessionRef is updated every render (via useEffect) so field components
+    // always access the latest session without needing to re-subscribe.
     const sessionRef = useRef(session);
     const sessionListenersRef = useRef(new Set<() => void>());
 
@@ -181,72 +244,23 @@ export function createEnhancedLPMHook(
       sessionListenersRef.current.forEach((l) => l());
     }, [session]);
 
-    // ── Stable field component instances — created once per hook call ───────
-
+    // Create field components once per hook instantiation (stable identity).
+    // Each component is produced by the module-level `createFieldComponent`
+    // factory, which closes over `sessionRef` and `sessionListenersRef`.
     const fieldComponentsRef = useRef<
       Record<string, (props: LPMFieldComponentProps) => JSX.Element>
     >();
 
     if (!fieldComponentsRef.current) {
-      const components: Record<
-        string,
-        (props: LPMFieldComponentProps) => JSX.Element
-      > = {};
-
+      const components: Record<string, (props: LPMFieldComponentProps) => JSX.Element> = {};
       for (const fieldType of fieldTypes) {
-        const componentName = capitalize(fieldType) + "Field"; // e.g. "NameField"
-
-        // fieldType is block-scoped per for…of iteration, so each closure
-        // captures the correct value.
-        const FieldComponent = ({
-          containerStyles,
-          containerClassName,
-          value,
-        }: LPMFieldComponentProps): JSX.Element => {
-          const [sessionVersion, bumpVersion] = useReducer(
-            (n: number) => n + 1,
-            0,
-          );
-          const containerRef = useRef<HTMLDivElement>(null);
-
-          // Subscribe to session changes for the lifetime of this component.
-          useEffect(() => {
-            sessionListenersRef.current.add(bumpVersion);
-            return () => {
-              sessionListenersRef.current.delete(bumpVersion);
-            };
-          }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-          // Mount (or re-mount) the SDK iframe whenever the session version
-          // changes — i.e. whenever a new session becomes available.
-          useEffect(() => {
-            const container = containerRef.current;
-            const s = sessionRef.current;
-            if (!s?.createPaymentFields || !container) { return; }
-            container.innerHTML = "";
-            container.appendChild(
-              s.createPaymentFields(
-                value !== undefined
-                  ? { type: fieldType, value }
-                  : { type: fieldType },
-              ),
-            );
-          }, [sessionVersion, value]); // eslint-disable-line react-hooks/exhaustive-deps
-
-          return (
-            <div
-              ref={containerRef}
-              style={containerStyles}
-              className={containerClassName}
-            />
-          );
-        }
-
-        FieldComponent.displayName = componentName;
-        components[componentName] =
-          FieldComponent as (props: LPMFieldComponentProps) => JSX.Element;
+        const componentName = `${capitalize(fieldType)}Field`;
+        components[componentName] = createFieldComponent(
+          fieldType,
+          sessionRef,
+          sessionListenersRef,
+        );
       }
-
       fieldComponentsRef.current = components;
     }
 

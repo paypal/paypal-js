@@ -16,6 +16,15 @@ export type LPMOneTimePaymentButtonProps =
        * Maps to the SDK `createPaymentFields({ value })` option.
        */
       fieldValues?: Record<string, string>;
+      /**
+       * Optional CSS styles applied to each field's container `<div>`.
+       * Defaults to `{ marginBottom: 8 }` when not provided.
+       */
+      fieldContainerStyle?: React.CSSProperties;
+      /**
+       * Optional CSS class name applied to each field's container `<div>`.
+       */
+      fieldContainerClassName?: string;
     };
 
 /**
@@ -36,6 +45,8 @@ export const LPMOneTimePaymentButton = ({
   type = "pay",
   disabled = false,
   fieldValues,
+  fieldContainerStyle,
+  fieldContainerClassName,
   ...hookProps
 }: LPMOneTimePaymentButtonProps): JSX.Element | null => {
   const config = LPM_REGISTRY[lpm];
@@ -84,7 +95,8 @@ export const LPMOneTimePaymentButton = ({
           key={fieldType}
           data-testid={`${lpm}-${fieldType}-field`}
           ref={setFieldRef(fieldType)}
-          style={{ marginBottom: 8 }}
+          style={fieldContainerStyle ?? { marginBottom: 8 }}
+          className={fieldContainerClassName}
         />
       ))}
       {React.createElement(config.buttonTag, {

@@ -137,7 +137,7 @@ describe("LPMOneTimePaymentButton", () => {
         handleCancel: jest.fn(),
         handleDestroy: jest.fn(),
         session: null,
-        Button: () => null,
+        handleValidate: jest.fn().mockResolvedValue(true),
       });
 
       render(<LPMOneTimePaymentButton {...defaultProps} />);
@@ -167,6 +167,41 @@ describe("LPMOneTimePaymentButton", () => {
           orderId: "my-order",
         }),
       );
+    });
+  });
+
+  describe("fieldContainerStyle (M3)", () => {
+    test("applies custom fieldContainerStyle to field containers", () => {
+      useLPMOneTimePaymentSession.mockReturnValue({
+        error: null,
+        isPending: false,
+        handleClick: mockHandleClick,
+        session: { createPaymentFields: jest.fn().mockReturnValue(document.createElement("div")) },
+        handleValidate: jest.fn().mockResolvedValue(true),
+      });
+
+      const customStyle = { marginBottom: 16, border: "1px solid red" };
+      const { container } = render(
+        <LPMOneTimePaymentButton
+          {...defaultProps}
+          fieldContainerStyle={customStyle}
+        />,
+      );
+
+      // blik has fields: ["name", "email"] — use ideal (fields: ["name"])
+      const fieldDiv = container.querySelector('[data-testid="ideal-name-field"]');
+      expect(fieldDiv).not.toBeNull();
+      expect((fieldDiv as HTMLElement).style.marginBottom).toBe("16px");
+    });
+
+    test("defaults to marginBottom:8 when fieldContainerStyle is not provided", () => {
+      const { container } = render(
+        <LPMOneTimePaymentButton {...defaultProps} />,
+      );
+
+      const fieldDiv = container.querySelector('[data-testid="ideal-name-field"]');
+      expect(fieldDiv).not.toBeNull();
+      expect((fieldDiv as HTMLElement).style.marginBottom).toBe("8px");
     });
   });
 });

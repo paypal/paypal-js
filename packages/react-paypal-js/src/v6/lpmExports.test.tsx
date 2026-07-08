@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, act } from "@testing-library/react";
 
 import {
   IdealOneTimePaymentButton,
@@ -17,6 +17,8 @@ import {
 } from "./lpmExports";
 import { useLPMOneTimePaymentSession } from "./hooks/useLPMOneTimePaymentSession";
 
+import type { LPMOneTimePaymentSession } from "./types";
+
 jest.mock("./hooks/useLPMOneTimePaymentSession", () => ({
   useLPMOneTimePaymentSession: jest.fn().mockReturnValue({
     error: null,
@@ -30,18 +32,22 @@ jest.mock("./hooks/usePayPal", () => ({
 
 const mockedUseLPM = jest.mocked(useLPMOneTimePaymentSession);
 
+function makeDefaultMockReturn(session: LPMOneTimePaymentSession | null = null) {
+  return {
+    error: null,
+    isPending: false,
+    session,
+    handleClick: jest.fn(),
+    handleCancel: jest.fn(),
+    handleDestroy: jest.fn(),
+    handleValidate: jest.fn().mockResolvedValue(true),
+  };
+}
+
 describe("Factory-generated LPM exports", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedUseLPM.mockReturnValue({
-      error: null,
-      isPending: false,
-      session: null,
-      handleClick: jest.fn(),
-      handleCancel: jest.fn(),
-      handleDestroy: jest.fn(),
-      Button: () => null,
-    });
+    mockedUseLPM.mockReturnValue(makeDefaultMockReturn());
   });
 
   test("IdealOneTimePaymentButton passes lpm='ideal'", () => {
@@ -145,15 +151,7 @@ function captureHookResult<T>(hookFn: () => T): T {
 describe("Enhanced LPM hooks — field components", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockedUseLPM.mockReturnValue({
-      error: null,
-      isPending: false,
-      session: null,
-      handleClick: jest.fn(),
-      handleCancel: jest.fn(),
-      handleDestroy: jest.fn(),
-      Button: () => null,
-    });
+    mockedUseLPM.mockReturnValue(makeDefaultMockReturn());
   });
 
   test("useIdealOneTimePaymentSession returns a NameField component", () => {
@@ -193,6 +191,48 @@ describe("Enhanced LPM hooks — field components", () => {
     const NameField = result.NameField as React.FC<{ containerStyles?: React.CSSProperties }>;
     const { container } = render(<NameField containerStyles={{ marginBottom: 8 }} />);
     expect(container.querySelector("div")).not.toBeNull();
+  });
+
+  test("FieldComponent calls createPaymentFields when session becomes available (T2 — pub/sub)", async () => {
+    const makeSession = (): LPMOneTimePaymentSession => ({
+      start: jest.fn().mockResolvedValue(undefined),
+      cancel: jest.fn(),
+      destroy: jest.fn(),
+      createPaymentFields: jest.fn().mockReturnValue(document.createElement("div")),
+      validate: jest.fn().mockResolvedValue(true),
+    });
+
+    const session1 = makeSession();
+    let currentSession: LPMOneTimePaymentSession | null = null;
+
+    mockedUseLPM.mockImplementation(() => makeDefaultMockReturn(currentSession));
+
+    // Capture hook result + render NameField inside the same tree
+    let capturedResult: ReturnType<typeof useIdealOneTimePaymentSession> | null = null;
+
+    function TestTree() {
+      capturedResult = useIdealOneTimePaymentSession({
+        presentationMode: "popup",
+        createOrder: jest.fn().mockResolvedValue({ orderId: "t" }),
+        onApprove: jest.fn().mockResolvedValue(undefined),
+      });
+      if (!capturedResult) return null;
+      const NF = capturedResult.NameField as React.FC;
+      return <NF />;
+    }
+
+    const { rerender } = render(<TestTree />);
+
+    // No session yet — createPaymentFields not called
+    expect(session1.createPaymentFields).not.toHaveBeenCalled();
+
+    // Provide a session
+    currentSession = session1;
+    await act(async () => {
+      rerender(<TestTree />);
+    });
+
+    expect(session1.createPaymentFields).toHaveBeenCalledWith({ type: "name" });
   });
 });
 
