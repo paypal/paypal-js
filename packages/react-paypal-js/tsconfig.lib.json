@@ -1,7 +1,8 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "composite": true
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.cache/tsc/react-paypal-js.tsbuildinfo"
   },
   // these are overridden by the Rollup plugin
   "outDir": "./dist",
