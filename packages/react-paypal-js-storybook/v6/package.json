@@ -5,7 +5,8 @@
   "description": "Storybook for PayPal React SDK V6 components",
   "scripts": {
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build -o ../../../docs/web-sdk-v6-react-storybook"
+    "build-storybook": "storybook build -o ../../../docs/web-sdk-v6-react-storybook",
+    "generate:lpm-stories": "npx tsx scripts/generate-lpm-stories.ts"
   },
   "keywords": [
     "paypal",
@@ -26,10 +27,10 @@
     "react-dom": "^19.2.4"
   },
   "devDependencies": {
-    "@storybook/addon-docs": "^10.2.4",
-    "@storybook/react": "^10.2.4",
-    "@storybook/react-vite": "^10.2.4",
-    "storybook": "^10.2.4",
+    "@storybook/addon-docs": "^10.4.6",
+    "@storybook/react": "^10.4.6",
+    "@storybook/react-vite": "^10.4.6",
+    "storybook": "^10.4.6",
     "vite": "^6.4.3"
   }
 }
