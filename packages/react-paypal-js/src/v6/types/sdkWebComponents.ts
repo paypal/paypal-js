@@ -46,7 +46,7 @@ export interface PayPalMessagesElement extends HTMLAttributes<HTMLElement> {
   "buyer-country"?: string;
   "currency-code"?: string;
   "logo-position"?: "INLINE" | "LEFT" | "RIGHT" | "TOP";
-  "logo-type"?: "MONOGRAM" | "WORDMARK";
+  "logo-type"?: "MONOGRAM" | "WORDMARK" | "TEXT";
   "offer-types"?: string;
   "presentation-mode"?: "AUTO" | "MODAL" | "POPUP" | "REDIRECT";
   ref?: Ref<PayPalMessagesElement>;
