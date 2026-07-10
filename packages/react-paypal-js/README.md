@@ -124,6 +124,7 @@ Integrating PayPal into React applications requires careful handling of SDK scri
 - [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/)
 - [PayPal Sandbox Test Accounts](https://developer.paypal.com/dashboard/accounts)
 - [PayPal Sandbox Card Testing](https://developer.paypal.com/tools/sandbox/card-testing/)
+- [Find Eligible Methods API Reference](https://developer.paypal.com/docs/api/payments/v2/#find_eligible_methods) - REST API reference for the eligibility endpoint
 
 ## Installation
 
@@ -1051,6 +1052,8 @@ function MyComponent() {
 ### useEligibleMethods
 
 Returns eligible payment methods and loading state. Use this to conditionally render payment buttons based on eligibility. This hook also updates the `PayPalProvider` reducer with Eligibility Output from the SDK, enabling built-in eligibility features in the UI Button components.
+
+View the [Find Eligible Methods API reference](https://developer.paypal.com/docs/api/payments/v2/#find_eligible_methods) for the underlying REST endpoint details.
 
 ```tsx
 import { useEligibleMethods } from "@paypal/react-paypal-js/sdk-v6";

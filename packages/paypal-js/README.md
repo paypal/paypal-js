@@ -311,6 +311,8 @@ This package includes TypeScript type definitions for the PayPal JS SDK. This in
 
 The PayPal Web SDK V6 introduces a modern, component-based architecture with a `createInstance()` pattern, explicit component loading, and built-in eligibility checking.
 
+For eligibility details, see the [Find Eligible Methods API reference](https://developer.paypal.com/docs/api/payments/v2/#find_eligible_methods).
+
 ### Loading the V6 SDK
 
 Use `loadCoreSdkScript()` to asynchronously load the V6 SDK:
@@ -428,3 +430,5 @@ async function createOrderOnServer() {
   return response.json(); // { orderId: "..." }
 }
 ```
+
+View the [Find Eligible Methods API reference](https://developer.paypal.com/docs/api/payments/v2/#find_eligible_methods) for details on the eligibility endpoint used by `findEligibleMethods()`.
