@@ -2,14 +2,17 @@ import React, { useEffect } from "react";
 import type { Decorator } from "@storybook/react";
 import { action } from "storybook/actions";
 
+// Import the provider trio from the LPM subpath (not "@paypal/react-paypal-js/sdk-v6").
+// The LPM subpath is a separate bundle with its own React context instance, so the
+// PayPalProvider that wraps the LPM buttons must come from the same bundle the buttons
+// consume — otherwise usePayPal throws "must be used within a PayPalProvider".
 import {
   PayPalProvider,
   usePayPal,
   INSTANCE_LOADING_STATE,
-} from "@paypal/react-paypal-js/sdk-v6";
+} from "@paypal/react-paypal-js/sdk-v6/local-payment-methods";
 import { PAYPAL_CLIENT_ID } from "../shared/utils";
 
-// Logs SDK and button events to the Actions panel.
 function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
   const { loadingStatus } = usePayPal();
 
@@ -22,14 +25,22 @@ function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
   const handleClick = (e: React.MouseEvent) => {
     const tag = (e.target as HTMLElement).tagName.toLowerCase();
     if (tag.endsWith("-button")) {
-      action("button")("Click event dispatched from the PayPal payment button");
+      action("button")("Click event dispatched from the LPM payment button");
     }
   };
 
   return <div onClick={handleClick}>{children}</div>;
 }
 
-function ProviderWrapper({ children }: { children: React.ReactNode }) {
+function LPMProviderWrapper({
+  children,
+  lpmComponent,
+  testBuyerCountry,
+}: {
+  children: React.ReactNode;
+  lpmComponent: string;
+  testBuyerCountry?: string;
+}) {
   if (!PAYPAL_CLIENT_ID) {
     return (
       <div
@@ -63,32 +74,36 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
     <PayPalProvider
       clientId={PAYPAL_CLIENT_ID}
       environment="sandbox"
-      components={[
-        "paypal-payments",
-        "venmo-payments",
-        "paypal-guest-payments",
-        "paypal-subscriptions",
-        "card-fields",
-        "applepay-payments",
-        "googlepay-payments",
-      ]}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      components={[lpmComponent] as any}
       pageType="checkout"
+      testBuyerCountry={testBuyerCountry}
     >
       <SdkStatusMonitor>{children}</SdkStatusMonitor>
     </PayPalProvider>
   );
 }
 
-export const withPayPalProvider: Decorator = (Story, context) => {
-  // Stories can opt out via `parameters: { providerType: "braintree" }` (Braintree)
-  // or `parameters: { skipPayPalProvider: true }` (stories with their own provider).
-  const providerType = context.parameters?.providerType ?? "paypal";
-  if (providerType !== "paypal" || context.parameters?.skipPayPalProvider) {
-    return <Story />;
-  }
+/**
+ * Decorator for LPM stories. Reads `parameters.lpmComponent` from story context
+ * and wraps the story with a PayPalProvider that loads only that LPM component.
+ *
+ * Usage in a story file:
+ *   parameters: { lpmComponent: "ideal-payments", providerType: "lpm" }
+ *   decorators: [withLPMPayPalProvider]
+ */
+export const withLPMPayPalProvider: Decorator = (Story, context) => {
+  const lpmComponent = context.parameters?.lpmComponent as string;
+  const testBuyerCountry = context.parameters?.testBuyerCountry as
+    | string
+    | undefined;
+
   return (
-    <ProviderWrapper>
+    <LPMProviderWrapper
+      lpmComponent={lpmComponent}
+      testBuyerCountry={testBuyerCountry}
+    >
       <Story />
-    </ProviderWrapper>
+    </LPMProviderWrapper>
   );
 };
