@@ -74,14 +74,15 @@ describe("processOptions()", () => {
   });
 
   test("ignores prototype-polluted environment", () => {
-    // Simulate prototype pollution
-    (Object.prototype as Record<string, unknown>)["environment"] = "sandbox";
-    try {
-      const { url } = processOptions({ clientId: "test" });
-      expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
-    } finally {
-      delete (Object.prototype as Record<string, unknown>)["environment"];
-    }
+    // Simulate prototype pollution without touching the global Object.prototype:
+    // give the options object a prototype carrying a malicious `environment`.
+    const options = Object.assign(Object.create({ environment: "sandbox" }), {
+      clientId: "test",
+    });
+
+    const { url } = processOptions(options);
+
+    expect(url).toBe("https://www.paypal.com/sdk/js?client-id=test");
   });
 
   test("default values when only client-id is passed in", () => {
