@@ -56,16 +56,9 @@ export type LPMStartOptions = LPMPresentationModeOptions & LPMSessionFields;
 
 export type LPMOneTimePaymentSessionPromise = Promise<{
   orderId: string;
-  phone?: { countryCode: string; nationalNumber: string };
-  billingAddress?: {
-    addressLine1: string;
-    addressLine2?: string;
-    adminArea1: string;
-    adminArea2?: string;
-    postalCode: string;
-    countryCode: string;
-  };
-  taxInfo?: { taxId: string; taxIdType: string };
+  phone?: LPMSessionFieldPhone;
+  billingAddress?: LPMSessionFieldBillingAddress;
+  taxInfo?: LPMSessionFieldTaxInfo;
   expiryDate?: string;
 }>;
 
@@ -74,7 +67,7 @@ export type LPMOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
     options: LPMStartOptions,
     paymentSessionPromise?: LPMOneTimePaymentSessionPromise,
   ) => Promise<void>;
-  createPaymentFields: (options: { type: string; value?: string }) => HTMLElement;
+  createPaymentFields: (options: { type: "email" | "name" | "tax_id" | "tax_id_type"; style?: Record<string, unknown>; value?: string }) => HTMLElement;
   validate: () => Promise<boolean>;
 };
 
@@ -120,7 +113,7 @@ export type LPMComponents =
   | "ovo-payments"
   | "paysera-payments"
   | "skrill-payments"
-  | "thailandbanks-payments"
+  | "thailand-banks-payments"
   | "blikpaylater-payments"
   | "alfamart-payments"
   | "zip-payments"
@@ -182,6 +175,12 @@ export type LPMSessionMethodName =
   | "createLithuaniaBanksOneTimePaymentSession"
   | "createJeniuspayOneTimePaymentSession";
 
+/**
+ * The {@link LPMPaymentsInstance} provides access to Local Payment Method (LPM)
+ * session creation methods, enabling integration with a wide range of regional
+ * payment methods (e.g. iDEAL, Bancontact, BLIK, Pix). Each method corresponds
+ * to a specific LPM component passed to `createInstance`.
+ */
 export type LPMPaymentsInstance = {
   [K in LPMSessionMethodName]?: (
     options: LPMOneTimePaymentSessionOptions,
