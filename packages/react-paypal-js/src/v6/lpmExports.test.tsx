@@ -193,7 +193,7 @@ describe("Enhanced LPM hooks — field components", () => {
     expect(container.querySelector("div")).not.toBeNull();
   });
 
-  test("FieldComponent calls createPaymentFields when session becomes available (T2 — pub/sub)", async () => {
+  test("FieldComponent calls createPaymentFields when session becomes available via LPMSessionContext", async () => {
     const makeSession = (): LPMOneTimePaymentSession => ({
       start: jest.fn().mockResolvedValue(undefined),
       cancel: jest.fn(),
@@ -207,7 +207,7 @@ describe("Enhanced LPM hooks — field components", () => {
 
     mockedUseLPM.mockImplementation(() => makeDefaultMockReturn(currentSession));
 
-    // Capture hook result + render NameField inside the same tree
+    // Capture hook result + render NameField wrapped in LPMSessionProvider
     let capturedResult: ReturnType<typeof useIdealOneTimePaymentSession> | null = null;
 
     function TestTree() {
@@ -217,8 +217,13 @@ describe("Enhanced LPM hooks — field components", () => {
         onApprove: jest.fn().mockResolvedValue(undefined),
       });
       if (!capturedResult) return null;
+      const { LPMSessionProvider } = capturedResult;
       const NF = capturedResult.NameField as React.FC;
-      return <NF />;
+      return (
+        <LPMSessionProvider>
+          <NF />
+        </LPMSessionProvider>
+      );
     }
 
     const { rerender } = render(<TestTree />);

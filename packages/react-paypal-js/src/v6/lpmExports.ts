@@ -8,6 +8,7 @@ import { LPM_REGISTRY } from "./config/lpmRegistry";
 import {
   createLPMButtonComponent,
   createEnhancedLPMHook,
+  LPMSessionContext,
   type LPMSessionHandle,
   type LPMButtonComponentProps,
   type LPMFieldComponentProps,
@@ -17,6 +18,7 @@ import {
 import type { UseLPMOneTimePaymentSessionProps } from "./hooks/useLPMOneTimePaymentSession";
 import type { LPMName } from "./config/lpmRegistry";
 
+export { LPMSessionContext };
 export type { LPMSessionHandle, LPMButtonComponentProps, LPMFieldComponentProps, LPMEnhancedHookReturn };
 
 type NamedLPMButtonProps = Omit<LPMOneTimePaymentButtonProps, "lpm">;
