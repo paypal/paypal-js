@@ -213,7 +213,7 @@ export const LPM_REGISTRY = {
   },
   estonia: {
     component: "estoniabank-payments",
-    buttonTag: "estoniabank-button",
+    buttonTag: "estonia-button",
     sessionMethod: "createEstoniaOneTimePaymentSession",
     displayName: "Estonia Banks",
     fields: ["name"],
@@ -410,8 +410,8 @@ export const LPM_REGISTRY = {
     testBuyerCountry: "ID",
   },
   thailandBanks: {
-    component: "thailandbanks-payments",
-    buttonTag: "thailandbanks-button",
+    component: "thailand-banks-payments",
+    buttonTag: "thailand-banks-button",
     sessionMethod: "createThailandBanksOneTimePaymentSession",
     displayName: "Thailand Banks",
     fields: ["name"],

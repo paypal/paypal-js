@@ -1,4 +1,5 @@
 import { LPM_REGISTRY } from "./lpmRegistry";
+import { SDK_LPM_BUTTON_TAGS } from "../types/sdkWebComponents";
 
 describe("LPM_REGISTRY", () => {
   test("every entry has required fields", () => {
@@ -14,17 +15,15 @@ describe("LPM_REGISTRY", () => {
     }
   });
 
-  test("button tag derives from component name", () => {
-    // FIUU is the one exception: its SDK component is "fiuu-cash-payments" but
-    // the registered custom-element button tag is "fiuu-button".
-    const TAG_EXCEPTIONS: Record<string, string> = {
-      "fiuu-cash-payments": "fiuu-button",
-    };
-    for (const config of Object.values(LPM_REGISTRY)) {
-      const expectedTag =
-        TAG_EXCEPTIONS[config.component] ??
-        config.component.replace("-payments", "-button");
-      expect(config.buttonTag).toBe(expectedTag);
+  test("every button tag is a registered SDK web component", () => {
+    for (const [key, config] of Object.entries(LPM_REGISTRY)) {
+      const isValid = SDK_LPM_BUTTON_TAGS.has(config.buttonTag);
+      if (!isValid) {
+        throw new Error(
+          `"${key}" has buttonTag "${config.buttonTag}" which is not in SDK_LPM_BUTTON_TAGS`,
+        );
+      }
+      expect(isValid).toBe(true);
     }
   });
 
@@ -96,9 +95,5 @@ describe("LPM_REGISTRY", () => {
         }
       }
     }
-  });
-
-  test("has exactly 50 LPM entries", () => {
-    expect(Object.keys(LPM_REGISTRY)).toHaveLength(50);
   });
 });

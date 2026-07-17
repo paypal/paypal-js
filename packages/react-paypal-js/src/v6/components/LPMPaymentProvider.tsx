@@ -1,4 +1,11 @@
-import React, { useEffect, useReducer, useRef, type JSX } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type JSX,
+} from "react";
 
 import { useLPMOneTimePaymentSession } from "../hooks/useLPMOneTimePaymentSession";
 
@@ -7,19 +14,39 @@ import type { LPMName } from "../config/lpmRegistry";
 import type { UseLPMOneTimePaymentSessionProps, LPMPaymentSessionReturn } from "../hooks/useLPMOneTimePaymentSession";
 import type { ButtonProps } from "../types/sdkWebComponents";
 
+// ─── LPM Session Context ──────────────────────────────────────────────────────
+
+/**
+ * React context carrying the active `LPMOneTimePaymentSession` instance.
+ * Consumed by field components rendered inside an `LPMSessionProvider`.
+ */
+export const LPMSessionContext = createContext<LPMOneTimePaymentSession | null>(null);
+
 // ─── Enhanced hook return type ─────────────────────────────────────────────────
 
-/** Return type of every `createEnhancedLPMHook`-generated hook.
+/**
+ * Return type of every `createEnhancedLPMHook`-generated hook.
  *
- * Extends `LPMPaymentSessionReturn` with a field-component map so merchants
- * can destructure `NameField`, `EmailField`, etc. with correct prop types:
+ * Extends `LPMPaymentSessionReturn` with an `LPMSessionProvider` and a
+ * field-component map so merchants can destructure `NameField`, `EmailField`,
+ * etc. with correct prop types:
  *
  * ```tsx
- * const { NameField, handleClick, isPending } = useIdealOneTimePaymentSession({ ... });
+ * const { LPMSessionProvider, NameField, handleClick, isPending } =
+ *   useIdealOneTimePaymentSession({ ... });
+ *
+ * return (
+ *   <LPMSessionProvider>
+ *     <NameField />
+ *     <IdealPaymentButton paymentSession={idealSession} type="pay" />
+ *   </LPMSessionProvider>
+ * );
  * ```
  */
 export type LPMEnhancedHookReturn = LPMPaymentSessionReturn & {
-  [fieldKey: string]: (props: LPMFieldComponentProps) => JSX.Element;
+  /** Wrap field components with this provider to give them access to the LPM session. */
+  LPMSessionProvider: (props: { children: React.ReactNode }) => JSX.Element;
+  [fieldKey: string]: unknown;
 };
 
 // ─── Session handle ───────────────────────────────────────────────────────────
@@ -124,15 +151,12 @@ export function createLPMButtonComponent(
  * Creates a stable SDK-iframe field component for a given field type.
  *
  * This is a module-level factory (not defined inside the hook render) so
- * React concurrent-mode is fully safe and no ESLint suppression is required.
- * The returned component is created once per `createEnhancedLPMHook` call via
- * `useRef` and will not unmount/remount when the session changes — instead it
- * uses a version counter driven by a pub/sub listener on `sessionListenersRef`.
+ * React concurrent-mode is fully safe. The component reads the current session
+ * from {@link LPMSessionContext} — wrap field components with the
+ * `LPMSessionProvider` returned by every `use*OneTimePaymentSession` hook.
  */
 function createFieldComponent(
   fieldType: string,
-  sessionRef: React.MutableRefObject<LPMOneTimePaymentSession | null>,
-  sessionListenersRef: React.MutableRefObject<Set<() => void>>,
 ): (props: LPMFieldComponentProps) => JSX.Element {
   const componentName = `${capitalize(fieldType)}Field`;
 
@@ -141,27 +165,12 @@ function createFieldComponent(
     containerClassName,
     value,
   }: LPMFieldComponentProps): JSX.Element {
-    const [sessionVersion, bumpVersion] = useReducer((n: number) => n + 1, 0);
+    const session = useContext(LPMSessionContext);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    // Subscribe to session changes for the lifetime of this field component.
-    // bumpVersion is a stable dispatch from useReducer; sessionListenersRef is
-    // a stable ref — the effect only needs to run once on mount.
-    useEffect(() => {
-      const listeners = sessionListenersRef.current;
-      listeners.add(bumpVersion);
-      return () => {
-        listeners.delete(bumpVersion);
-      };
-    }, [bumpVersion]);
-
-    // Mount (or re-mount) the SDK iframe whenever the session version changes,
-    // i.e. whenever a new session becomes available via the pub/sub mechanism.
-    // sessionRef.current is accessed imperatively; fieldType is a stable
-    // closure variable from the factory — neither belongs in the deps array.
     useEffect(() => {
       const container = containerRef.current;
-      const s = sessionRef.current;
+      const s = session;
       if (!s?.createPaymentFields || !container) return;
       container.innerHTML = "";
       container.appendChild(
@@ -169,7 +178,7 @@ function createFieldComponent(
           value !== undefined ? { type: fieldType, value } : { type: fieldType },
         ),
       );
-    }, [sessionVersion, value]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [session, value]); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
       <div
@@ -188,35 +197,37 @@ function createFieldComponent(
 
 /**
  * Creates a named `use*OneTimePaymentSession` hook that returns everything the
- * underlying `useLPMOneTimePaymentSession` returns **plus** a pre-bound field
- * component for every field the LPM requires — e.g. `NameField`, `EmailField`.
+ * underlying `useLPMOneTimePaymentSession` returns **plus** an `LPMSessionProvider`
+ * and a pre-bound field component for every field the LPM requires — e.g.
+ * `NameField`, `EmailField`.
  *
  * Field component names are derived from the field type in the registry:
  *   `"name"`  → `NameField`
  *   `"email"` → `EmailField`
  *
+ * Wrap your field and button components with the returned `LPMSessionProvider`
+ * so they can access the active session through {@link LPMSessionContext}.
  * The `PaymentButton` is **not** included in the hook return; import the
  * named button component directly and pass the hook's return value as
  * `paymentSession`:
  *
  * @example
- * const { NameField, session, isPending } = useIdealOneTimePaymentSession({
- *   createOrder: async () => ({ orderId: await createOrder() }),
- *   onApprove:   async ({ orderId }) => { await capture(orderId); },
- *   presentationMode: "popup",
- * });
+ * const { LPMSessionProvider, NameField, session, isPending } =
+ *   useIdealOneTimePaymentSession({
+ *     createOrder: async () => ({ orderId: await createOrder() }),
+ *     onApprove:   async ({ orderId }) => { await capture(orderId); },
+ *     presentationMode: "popup",
+ *   });
  *
- * // NameField can live anywhere — no Provider needed:
- * <section className="billing">
- *   <input name="email" />               // merchant's own field
- *   <NameField containerStyles={{ marginBottom: 8 }} />
- * </section>
- *
- * // Button is imported separately and receives the session as a prop:
- * import { IdealPaymentButton } from "@paypal/react-paypal-js";
- * <footer>
- *   <IdealPaymentButton paymentSession={idealSession} type="pay" />
- * </footer>
+ * return (
+ *   <LPMSessionProvider>
+ *     <section className="billing">
+ *       <input name="email" />
+ *       <NameField containerStyles={{ marginBottom: 8 }} />
+ *     </section>
+ *     <IdealPaymentButton paymentSession={idealSession} type="pay" />
+ *   </LPMSessionProvider>
+ * );
  */
 export function createEnhancedLPMHook(
   lpm: LPMName,
@@ -233,20 +244,47 @@ export function createEnhancedLPMHook(
 
     const { session } = result;
 
-    // Stable refs shared with field components created below.
-    // sessionRef is updated every render (via useEffect) so field components
-    // always access the latest session without needing to re-subscribe.
+    // Keep a ref to the latest session so the Provider can seed its initial state.
     const sessionRef = useRef(session);
-    const sessionListenersRef = useRef(new Set<() => void>());
+    // Ref to the Provider's state setter — populated when the Provider mounts.
+    const providerSetterRef = useRef<React.Dispatch<React.SetStateAction<LPMOneTimePaymentSession | null>> | null>(null);
 
+    // When the session changes, sync the ref and push the update into the Provider.
     useEffect(() => {
       sessionRef.current = session;
-      sessionListenersRef.current.forEach((l) => l());
+      providerSetterRef.current?.(session);
     }, [session]);
 
+    // Stable Provider component created once per hook instantiation.
+    // It holds the session in local state so context consumers re-render
+    // when the session changes — with no pub/sub listener sets required.
+    const LPMSessionProviderRef = useRef<((props: { children: React.ReactNode }) => JSX.Element) | null>(null);
+    if (!LPMSessionProviderRef.current) {
+      function LPMSessionProvider({ children }: { children: React.ReactNode }): JSX.Element {
+        const [sessionValue, setSessionValue] = useState<LPMOneTimePaymentSession | null>(
+          sessionRef.current,
+        );
+
+        useEffect(() => {
+          // Register the state setter so the outer hook can push session updates.
+          providerSetterRef.current = setSessionValue;
+          return () => {
+            providerSetterRef.current = null;
+          };
+        }, []);
+
+        return (
+          <LPMSessionContext.Provider value={sessionValue}>
+            {children}
+          </LPMSessionContext.Provider>
+        );
+      }
+      LPMSessionProvider.displayName = "LPMSessionProvider";
+      LPMSessionProviderRef.current = LPMSessionProvider;
+    }
+
     // Create field components once per hook instantiation (stable identity).
-    // Each component is produced by the module-level `createFieldComponent`
-    // factory, which closes over `sessionRef` and `sessionListenersRef`.
+    // Each component reads the session from LPMSessionContext via useContext.
     const fieldComponentsRef = useRef<
       Record<string, (props: LPMFieldComponentProps) => JSX.Element>
     >();
@@ -255,17 +293,14 @@ export function createEnhancedLPMHook(
       const components: Record<string, (props: LPMFieldComponentProps) => JSX.Element> = {};
       for (const fieldType of fieldTypes) {
         const componentName = `${capitalize(fieldType)}Field`;
-        components[componentName] = createFieldComponent(
-          fieldType,
-          sessionRef,
-          sessionListenersRef,
-        );
+        components[componentName] = createFieldComponent(fieldType);
       }
       fieldComponentsRef.current = components;
     }
 
     return {
       ...result,
+      LPMSessionProvider: LPMSessionProviderRef.current,
       ...fieldComponentsRef.current,
     } as LPMEnhancedHookReturn;
   };

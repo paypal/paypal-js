@@ -142,7 +142,7 @@ export type SDKWebComponents = {
   "ovo-button": ButtonProps;
   "paysera-button": ButtonProps;
   "skrill-button": ButtonProps;
-  "thailandbanks-button": ButtonProps;
+  "thailand-banks-button": ButtonProps;
   "blikpaylater-button": ButtonProps;
   "alfamart-button": ButtonProps;
   "zip-button": ButtonProps;
@@ -152,3 +152,60 @@ export type SDKWebComponents = {
   "lithuaniabanks-button": ButtonProps;
   "jeniuspay-button": ButtonProps;
 };
+
+/**
+ * Runtime set of all LPM button tag names registered as SDK custom elements.
+ * Used to validate registry entries at test time.
+ */
+export const SDK_LPM_BUTTON_TAGS = new Set([
+  "ideal-button",
+  "bancontact-button",
+  "eps-button",
+  "blik-button",
+  "mybank-button",
+  "trustly-button",
+  "p24-button",
+  "multibanco-button",
+  "bizum-button",
+  "swish-button",
+  "klarna-button",
+  "twint-button",
+  "wechatpay-button",
+  "afterpay-button",
+  "oxxopay-button",
+  "boletobancario-button",
+  "verkkopankki-button",
+  "payu-button",
+  "paysafecard-button",
+  "mbway-button",
+  "satispay-button",
+  "wero-button",
+  "floa-button",
+  "scalapay-button",
+  "grabpay-button",
+  "pix-international-button",
+  "sepa-button",
+  "crypto-button",
+  "doku-button",
+  "dragonpay-button",
+  "estonia-button",
+  "fpx-button",
+  "gopay-button",
+  "alipay-button",
+  "indomaret-button",
+  "indonesiabanks-button",
+  "kredivo-button",
+  "linkaja-button",
+  "ovo-button",
+  "paysera-button",
+  "skrill-button",
+  "thailand-banks-button",
+  "blikpaylater-button",
+  "alfamart-button",
+  "zip-button",
+  "bancomatpay-button",
+  "latviabanks-button",
+  "fiuu-button",
+  "lithuaniabanks-button",
+  "jeniuspay-button",
+] as const);
