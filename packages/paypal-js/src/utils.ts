@@ -75,8 +75,15 @@ export function processOptions(options: PayPalScriptOptions): {
     ? options.sdkBaseUrl
     : undefined;
 
+  const environment = Object.prototype.hasOwnProperty.call(
+    options,
+    "environment",
+  )
+    ? options.environment
+    : undefined;
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { environment, sdkBaseUrl: _, ...rest } = options;
+  const { environment: _env, sdkBaseUrl: _, ...rest } = options;
   const sdkBaseUrl = customSdkBaseUrl || processSdkBaseUrl(environment);
 
   const optionsWithStringIndex = rest as PayPalScriptOptionsWithStringIndex;
