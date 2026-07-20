@@ -91,6 +91,16 @@ async function main() {
     },
   });
 
+  paypal.Buttons({
+    onShippingAddressChange: (data, actions) => {
+      if (data.shippingAddress.countryCode !== "US") {
+        return actions.reject(data.errors.COUNTRY_ERROR);
+      }
+
+      return Promise.resolve();
+    },
+  });
+
   paypal
     .Buttons({
       onClick: (data, actions) => {
