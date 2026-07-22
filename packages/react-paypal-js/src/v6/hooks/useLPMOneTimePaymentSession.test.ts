@@ -303,8 +303,13 @@ describe("useLPMOneTimePaymentSession", () => {
 
       expect(mockSession.start).toHaveBeenCalledWith(
         { presentationMode: "popup" },
-        undefined,
+        expect.any(Promise),
       );
+      const paymentSessionPromise = (mockSession.start as jest.Mock).mock
+        .calls[0][1];
+      await expect(paymentSessionPromise).resolves.toEqual({
+        orderId: "test-order-id",
+      });
     });
 
     test("should start session with createOrder when provided", async () => {
@@ -496,11 +501,13 @@ describe("useLPMOneTimePaymentSession", () => {
       });
 
       expect(mbwaySession.start).toHaveBeenCalledWith(
-        expect.objectContaining({
-          presentationMode: "popup",
-          phone,
-        }),
-        undefined,
+        { presentationMode: "popup" },
+        expect.any(Promise),
+      );
+      const paymentSessionPromise = (mbwaySession.start as jest.Mock).mock
+        .calls[0][1];
+      await expect(paymentSessionPromise).resolves.toEqual(
+        expect.objectContaining({ phone }),
       );
     });
 
@@ -529,11 +536,13 @@ describe("useLPMOneTimePaymentSession", () => {
       });
 
       expect(boletoSession.start).toHaveBeenCalledWith(
-        expect.objectContaining({
-          presentationMode: "popup",
-          taxInfo,
-        }),
-        undefined,
+        { presentationMode: "popup" },
+        expect.any(Promise),
+      );
+      const paymentSessionPromise = (boletoSession.start as jest.Mock).mock
+        .calls[0][1];
+      await expect(paymentSessionPromise).resolves.toEqual(
+        expect.objectContaining({ taxInfo }),
       );
     });
 
@@ -554,13 +563,20 @@ describe("useLPMOneTimePaymentSession", () => {
 
       expect(mockSession.start).toHaveBeenCalledWith(
         { presentationMode: "popup" },
-        undefined,
+        expect.any(Promise),
       );
       // Verify no session field keys (phone, billingAddress, etc.) are present
       const startCallArg = (mockSession.start as jest.Mock).mock.calls[0][0];
       const unexpectedKeys = ["phone", "billingAddress", "taxInfo", "expiryDate", "dateOfBirth", "numberOfInstallments"];
       for (const key of unexpectedKeys) {
         expect(startCallArg).not.toHaveProperty(key);
+      }
+
+      const paymentSessionPromise = (mockSession.start as jest.Mock).mock
+        .calls[0][1];
+      const resolvedPayload = await paymentSessionPromise;
+      for (const key of unexpectedKeys) {
+        expect(resolvedPayload).not.toHaveProperty(key);
       }
     });
   });

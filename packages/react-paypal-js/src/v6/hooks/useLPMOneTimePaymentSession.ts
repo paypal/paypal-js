@@ -124,7 +124,12 @@ export function useLPMOneTimePaymentSession({
       newSession.destroy();
       setSessionState(null);
     };
-  }, [sdkInstance, orderId, proxyCallbacks, setError, config]);
+    // proxyCallbacks is a stable Proxy reference (see useProxyProps) that is
+    // mutated in place on every render — including it here would recreate the
+    // session whenever its identity changes instead of only when session
+    // inputs actually change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sdkInstance, orderId, setError, config]);
 
   const handleCancel = useCallback(() => {
     sessionRef.current?.cancel();
@@ -158,11 +163,19 @@ export function useLPMOneTimePaymentSession({
     const startOptions: LPMStartOptions = {
       presentationMode,
       fullPageOverlay,
-      ...sessionFieldValues,
     } as LPMStartOptions;
 
-    await sessionRef.current.start(startOptions, createOrderRef.current?.());
-  }, [isMountedRef, presentationMode, fullPageOverlay, setError, config, proxyCallbacks]);
+    // Session fields are merchant-collected inputs resolved on the
+    // paymentSessionPromise (start()'s 2nd argument), not on the
+    // presentation-mode options (1st argument).
+    const paymentSessionPromise: LPMOneTimePaymentSessionPromise = (
+      createOrderRef.current
+        ? createOrderRef.current()
+        : Promise.resolve({ orderId: orderId as string })
+    ).then((result) => ({ ...result, ...sessionFieldValues }));
+
+    await sessionRef.current.start(startOptions, paymentSessionPromise);
+  }, [isMountedRef, presentationMode, fullPageOverlay, setError, config, proxyCallbacks, orderId]);
 
   return {
     error,

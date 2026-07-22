@@ -14,6 +14,7 @@ import {
   IdealPaymentButton,
   EpsPaymentButton,
   FiuuPaymentButton,
+  LPMSessionHandleContext,
 } from "./lpmExports";
 import { useLPMOneTimePaymentSession } from "./hooks/useLPMOneTimePaymentSession";
 
@@ -53,7 +54,7 @@ describe("Factory-generated LPM exports", () => {
   test("IdealOneTimePaymentButton passes lpm='ideal'", () => {
     render(
       <IdealOneTimePaymentButton
-        presentationMode="auto"
+        presentationMode="popup"
         orderId="test"
         onApprove={jest.fn().mockResolvedValue(undefined)}
       />,
@@ -67,7 +68,7 @@ describe("Factory-generated LPM exports", () => {
   test("BancontactOneTimePaymentButton passes lpm='bancontact'", () => {
     render(
       <BancontactOneTimePaymentButton
-        presentationMode="auto"
+        presentationMode="popup"
         orderId="test"
         onApprove={jest.fn().mockResolvedValue(undefined)}
       />,
@@ -81,7 +82,7 @@ describe("Factory-generated LPM exports", () => {
   test("EpsOneTimePaymentButton passes lpm='eps'", () => {
     render(
       <EpsOneTimePaymentButton
-        presentationMode="auto"
+        presentationMode="popup"
         orderId="test"
         onApprove={jest.fn().mockResolvedValue(undefined)}
       />,
@@ -95,7 +96,7 @@ describe("Factory-generated LPM exports", () => {
   test("KlarnaOneTimePaymentButton passes lpm='klarna'", () => {
     render(
       <KlarnaOneTimePaymentButton
-        presentationMode="auto"
+        presentationMode="popup"
         orderId="test"
         onApprove={jest.fn().mockResolvedValue(undefined)}
       />,
@@ -109,7 +110,7 @@ describe("Factory-generated LPM exports", () => {
   test("FiuuOneTimePaymentButton passes lpm='fiuu'", () => {
     render(
       <FiuuOneTimePaymentButton
-        presentationMode="auto"
+        presentationMode="popup"
         orderId="test"
         onApprove={jest.fn().mockResolvedValue(undefined)}
       />,
@@ -253,56 +254,64 @@ describe("Standalone LPM payment buttons (lpmProviderExports)", () => {
   });
 
   test("FiuuPaymentButton renders the fiuu-button web component (non-derived tag)", () => {
-    const mockSession = {
+    const mockHandle = {
       handleClick: jest.fn(),
       isPending: false,
       error: null,
     };
 
     const { container } = render(
-      <FiuuPaymentButton paymentSession={mockSession} />,
+      <LPMSessionHandleContext.Provider value={mockHandle}>
+        <FiuuPaymentButton />
+      </LPMSessionHandleContext.Provider>,
     );
 
     expect(container.querySelector("fiuu-button")).not.toBeNull();
   });
 
   test("IdealPaymentButton renders the ideal-button web component", () => {
-    const mockSession = {
+    const mockHandle = {
       handleClick: jest.fn(),
       isPending: false,
       error: null,
     };
 
     const { container } = render(
-      <IdealPaymentButton paymentSession={mockSession} />,
+      <LPMSessionHandleContext.Provider value={mockHandle}>
+        <IdealPaymentButton />
+      </LPMSessionHandleContext.Provider>,
     );
 
     expect(container.querySelector("ideal-button")).not.toBeNull();
   });
 
   test("IdealPaymentButton is disabled when isPending=true", () => {
-    const mockSession = {
+    const mockHandle = {
       handleClick: jest.fn(),
       isPending: true,
       error: null,
     };
 
     const { container } = render(
-      <IdealPaymentButton paymentSession={mockSession} />,
+      <LPMSessionHandleContext.Provider value={mockHandle}>
+        <IdealPaymentButton />
+      </LPMSessionHandleContext.Provider>,
     );
 
     expect(container.querySelector("ideal-button")?.getAttribute("disabled")).not.toBeNull();
   });
 
   test("IdealPaymentButton is disabled when error is present", () => {
-    const mockSession = {
+    const mockHandle = {
       handleClick: jest.fn(),
       isPending: false,
       error: new Error("Something went wrong"),
     };
 
     const { container } = render(
-      <IdealPaymentButton paymentSession={mockSession} />,
+      <LPMSessionHandleContext.Provider value={mockHandle}>
+        <IdealPaymentButton />
+      </LPMSessionHandleContext.Provider>,
     );
 
     expect(container.querySelector("ideal-button")?.getAttribute("disabled")).not.toBeNull();

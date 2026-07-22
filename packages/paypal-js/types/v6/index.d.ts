@@ -256,6 +256,7 @@ export * from "./components/paypal-messages";
 export * from "./components/paypal-subscriptions";
 export * from "./components/applepay-payments";
 export * from "./components/googlepay-payments";
+export * from "./components/lpm-payments";
 export * from "./components/web-components";
 
 // export a subset of types from base-component
