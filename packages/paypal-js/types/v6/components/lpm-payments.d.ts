@@ -2,16 +2,13 @@ import {
   BasePaymentSessionOptions,
   BasePaymentSession,
   PresentationModeOptionsForPopup,
-  PresentationModeOptionsForAuto,
 } from "./base-component";
 
 export type LPMOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
   orderId?: string;
 };
 
-export type LPMPresentationModeOptions =
-  | PresentationModeOptionsForAuto
-  | PresentationModeOptionsForPopup;
+export type LPMPresentationModeOptions = PresentationModeOptionsForPopup;
 
 /** Merchant-provided session-level inputs required by specific LPMs. */
 export type LPMSessionFieldPhone = {
@@ -33,6 +30,10 @@ export type LPMSessionFieldTaxInfo = {
   taxIdType: string;
 };
 
+export type LPMSessionFieldExpiryDate = {
+  expiry_date: string;
+};
+
 /**
  * Optional session-level inputs collected by the merchant and forwarded to the
  * SDK when starting an LPM payment session. Only a subset of fields is required
@@ -42,25 +43,24 @@ export type LPMSessionFields = {
   phone?: LPMSessionFieldPhone;
   billingAddress?: LPMSessionFieldBillingAddress;
   taxInfo?: LPMSessionFieldTaxInfo;
-  expiryDate?: string;
+  expiryDate?: LPMSessionFieldExpiryDate;
   dateOfBirth?: string;
   numberOfInstallments?: number;
 };
 
 /**
  * Options passed to `LPMOneTimePaymentSession.start()`.
- * Extends the presentation-mode options with optional merchant-collected
- * session fields (phone, billingAddress, taxInfo, etc.) required by some LPMs.
+ * Merchant-collected session fields (phone, billingAddress, taxInfo, etc.)
+ * required by some LPMs are provided via the `paymentSessionPromise` second
+ * argument, not via these presentation-mode options.
  */
-export type LPMStartOptions = LPMPresentationModeOptions & LPMSessionFields;
+export type LPMStartOptions = LPMPresentationModeOptions;
 
-export type LPMOneTimePaymentSessionPromise = Promise<{
-  orderId: string;
-  phone?: LPMSessionFieldPhone;
-  billingAddress?: LPMSessionFieldBillingAddress;
-  taxInfo?: LPMSessionFieldTaxInfo;
-  expiryDate?: string;
-}>;
+export type LPMOneTimePaymentSessionPromise = Promise<
+  {
+    orderId: string;
+  } & LPMSessionFields
+>;
 
 export type LPMOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
   start: (
