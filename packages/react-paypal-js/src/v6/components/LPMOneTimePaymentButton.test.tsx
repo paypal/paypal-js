@@ -21,7 +21,7 @@ const mockHandleClick = jest.fn();
 
 const defaultProps: LPMOneTimePaymentButtonProps = {
   lpm: "ideal",
-  presentationMode: "auto",
+  presentationMode: "popup",
   orderId: "test-order-id",
   onApprove: jest.fn().mockResolvedValue(undefined),
 };

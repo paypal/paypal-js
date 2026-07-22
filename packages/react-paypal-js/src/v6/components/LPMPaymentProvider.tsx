@@ -1,16 +1,14 @@
 import React, {
   createContext,
   useContext,
-  useEffect,
   useRef,
-  useState,
   type JSX,
 } from "react";
 
 import { useLPMOneTimePaymentSession } from "../hooks/useLPMOneTimePaymentSession";
 
 import type { LPMOneTimePaymentSession } from "../types";
-import type { LPMName } from "../config/lpmRegistry";
+import type { LPMName, LPMFieldType } from "../config/lpmRegistry";
 import type { UseLPMOneTimePaymentSessionProps, LPMPaymentSessionReturn } from "../hooks/useLPMOneTimePaymentSession";
 import type { ButtonProps } from "../types/sdkWebComponents";
 
@@ -22,6 +20,25 @@ import type { ButtonProps } from "../types/sdkWebComponents";
  */
 export const LPMSessionContext = createContext<LPMOneTimePaymentSession | null>(null);
 
+/**
+ * The click handler and pending/error state a payment button needs.
+ * Provided alongside {@link LPMSessionContext} by `LPMSessionProvider`, and
+ * consumed by button components created with {@link createLPMButtonComponent}.
+ */
+export interface LPMSessionHandleContextValue {
+  handleClick: () => Promise<{ redirectURL?: string } | void>;
+  isPending: boolean;
+  error: Error | null;
+}
+
+/**
+ * React context carrying the click handler and pending/error state for the
+ * active LPM session. Consumed by button components rendered inside an
+ * `LPMSessionProvider`.
+ */
+export const LPMSessionHandleContext =
+  createContext<LPMSessionHandleContextValue | null>(null);
+
 // ─── Enhanced hook return type ─────────────────────────────────────────────────
 
 /**
@@ -32,19 +49,23 @@ export const LPMSessionContext = createContext<LPMOneTimePaymentSession | null>(
  * etc. with correct prop types:
  *
  * ```tsx
- * const { LPMSessionProvider, NameField, handleClick, isPending } =
+ * const { LPMSessionProvider, NameField, isPending } =
  *   useIdealOneTimePaymentSession({ ... });
  *
  * return (
  *   <LPMSessionProvider>
  *     <NameField />
- *     <IdealPaymentButton paymentSession={idealSession} type="pay" />
+ *     <IdealPaymentButton type="pay" />
  *   </LPMSessionProvider>
  * );
  * ```
  */
 export type LPMEnhancedHookReturn = LPMPaymentSessionReturn & {
-  /** Wrap field components with this provider to give them access to the LPM session. */
+  /**
+   * Wrap field and button components with this provider so they can access
+   * the active session through {@link LPMSessionContext} and
+   * {@link LPMSessionHandleContext}.
+   */
   LPMSessionProvider: (props: { children: React.ReactNode }) => JSX.Element;
   [fieldKey: string]: unknown;
 };
@@ -52,21 +73,11 @@ export type LPMEnhancedHookReturn = LPMPaymentSessionReturn & {
 // ─── Session handle ───────────────────────────────────────────────────────────
 
 /**
- * The minimal slice of the hook return value that `IdealPaymentButton` (and
- * equivalent named buttons) require as their `paymentSession` prop.
- *
- * The return value of every `use*OneTimePaymentSession` hook satisfies this
- * interface, so you can pass the hook result directly:
- *
- * @example
- * const idealSession = useIdealOneTimePaymentSession({ ... });
- * <IdealPaymentButton paymentSession={idealSession} />
+ * The click handler and pending/error state a payment button reads from
+ * {@link LPMSessionHandleContext}. Alias of {@link LPMSessionHandleContextValue}
+ * kept for naming continuity.
  */
-export interface LPMSessionHandle {
-  handleClick: () => Promise<{ redirectURL?: string } | void>;
-  isPending: boolean;
-  error: Error | null;
-}
+export type LPMSessionHandle = LPMSessionHandleContextValue;
 
 // ─── Shared prop types ────────────────────────────────────────────────────────
 
@@ -81,17 +92,7 @@ export type LPMFieldComponentProps = {
   value?: string;
 };
 
-export type LPMButtonComponentProps = Omit<ButtonProps, "onClick"> & {
-  /**
-   * The session handle — pass the return value of the corresponding
-   * `use*OneTimePaymentSession` hook directly.
-   *
-   * @example
-   * const idealSession = useIdealOneTimePaymentSession({ ... });
-   * <IdealPaymentButton paymentSession={idealSession} type="pay" />
-   */
-  paymentSession: LPMSessionHandle;
-};
+export type LPMButtonComponentProps = Omit<ButtonProps, "onClick">;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -104,38 +105,40 @@ function capitalize(s: string): string {
 /**
  * Creates a named, standalone payment button component (e.g. `IdealPaymentButton`).
  *
- * The component accepts a `paymentSession` prop — the return value of the
- * corresponding `use*OneTimePaymentSession` hook. Because the session is passed
- * explicitly, the button can live **anywhere** in the component tree with no
- * Provider or subtree restriction.
+ * The component reads its click handler and pending/error state from
+ * {@link LPMSessionHandleContext} — render it inside the `LPMSessionProvider`
+ * returned by the corresponding `use*OneTimePaymentSession` hook.
  *
  * The underlying SDK web component tag is wrapped internally; merchants never
  * import or reference the raw tag (e.g. `<ideal-button>`).
  *
  * @example
- * // Inside lpmProviderExports.ts:
+ * // Inside lpmExports.ts:
  * export const IdealPaymentButton =
  *   createLPMButtonComponent("ideal-button", "IdealPaymentButton");
  *
  * // Merchant usage:
- * const idealSession = useIdealOneTimePaymentSession({ ... });
- * <IdealPaymentButton paymentSession={idealSession} type="pay" />
+ * const { LPMSessionProvider } = useIdealOneTimePaymentSession({ ... });
+ * <LPMSessionProvider>
+ *   <IdealPaymentButton type="pay" />
+ * </LPMSessionProvider>
  */
 export function createLPMButtonComponent(
   buttonTag: string,
   displayName: string,
 ): { (props: LPMButtonComponentProps): JSX.Element; displayName: string } {
   function ButtonComponent({
-    paymentSession,
     type = "pay",
     disabled,
     ...rest
   }: LPMButtonComponentProps): JSX.Element {
-    const { handleClick, isPending, error } = paymentSession;
+    const handle = useContext(LPMSessionHandleContext);
+    const isPending = handle?.isPending ?? false;
+    const error = handle?.error ?? null;
 
     return React.createElement(buttonTag, {
       ...rest,
-      onClick: handleClick,
+      onClick: handle?.handleClick,
       type,
       disabled: disabled || isPending || error !== null ? true : undefined,
     });
@@ -156,7 +159,7 @@ export function createLPMButtonComponent(
  * `LPMSessionProvider` returned by every `use*OneTimePaymentSession` hook.
  */
 function createFieldComponent(
-  fieldType: string,
+  fieldType: LPMFieldType,
 ): (props: LPMFieldComponentProps) => JSX.Element {
   const componentName = `${capitalize(fieldType)}Field`;
 
@@ -168,7 +171,7 @@ function createFieldComponent(
     const session = useContext(LPMSessionContext);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
+    React.useEffect(() => {
       const container = containerRef.current;
       const s = session;
       if (!s?.createPaymentFields || !container) return;
@@ -206,13 +209,13 @@ function createFieldComponent(
  *   `"email"` → `EmailField`
  *
  * Wrap your field and button components with the returned `LPMSessionProvider`
- * so they can access the active session through {@link LPMSessionContext}.
- * The `PaymentButton` is **not** included in the hook return; import the
- * named button component directly and pass the hook's return value as
- * `paymentSession`:
+ * so they can access the active session through {@link LPMSessionContext} and
+ * {@link LPMSessionHandleContext}. Import the named button component directly
+ * — it reads the click handler and pending/error state from context, no props
+ * required.
  *
  * @example
- * const { LPMSessionProvider, NameField, session, isPending } =
+ * const { LPMSessionProvider, NameField, isPending } =
  *   useIdealOneTimePaymentSession({
  *     createOrder: async () => ({ orderId: await createOrder() }),
  *     onApprove:   async ({ orderId }) => { await capture(orderId); },
@@ -225,13 +228,13 @@ function createFieldComponent(
  *       <input name="email" />
  *       <NameField containerStyles={{ marginBottom: 8 }} />
  *     </section>
- *     <IdealPaymentButton paymentSession={idealSession} type="pay" />
+ *     <IdealPaymentButton type="pay" />
  *   </LPMSessionProvider>
  * );
  */
 export function createEnhancedLPMHook(
   lpm: LPMName,
-  fieldTypes: ReadonlyArray<string>,
+  fieldTypes: ReadonlyArray<LPMFieldType>,
 ): (props: Omit<UseLPMOneTimePaymentSessionProps, "lpm">) => LPMEnhancedHookReturn {
 
   type NamedHookProps = Omit<UseLPMOneTimePaymentSessionProps, "lpm">;
@@ -242,40 +245,33 @@ export function createEnhancedLPMHook(
       ...props,
     } as UseLPMOneTimePaymentSessionProps);
 
-    const { session } = result;
+    const { session, handleClick, isPending, error } = result;
 
-    // Keep a ref to the latest session so the Provider can seed its initial state.
+    // Refs holding the latest session/handle, read synchronously during render
+    // by the stable Provider component below. Because the Provider re-renders
+    // whenever its caller does (standard JSX reconciliation), reading the ref
+    // here — rather than closing over `session`/`handleClick` directly — is
+    // all that's needed to propagate updates through context; no pub/sub
+    // listener set or effect-driven bridge required.
     const sessionRef = useRef(session);
-    // Ref to the Provider's state setter — populated when the Provider mounts.
-    const providerSetterRef = useRef<React.Dispatch<React.SetStateAction<LPMOneTimePaymentSession | null>> | null>(null);
+    sessionRef.current = session;
 
-    // When the session changes, sync the ref and push the update into the Provider.
-    useEffect(() => {
-      sessionRef.current = session;
-      providerSetterRef.current?.(session);
-    }, [session]);
+    const handleRef = useRef<LPMSessionHandleContextValue>({
+      handleClick,
+      isPending,
+      error,
+    });
+    handleRef.current = { handleClick, isPending, error };
 
     // Stable Provider component created once per hook instantiation.
-    // It holds the session in local state so context consumers re-render
-    // when the session changes — with no pub/sub listener sets required.
     const LPMSessionProviderRef = useRef<((props: { children: React.ReactNode }) => JSX.Element) | null>(null);
     if (!LPMSessionProviderRef.current) {
       function LPMSessionProvider({ children }: { children: React.ReactNode }): JSX.Element {
-        const [sessionValue, setSessionValue] = useState<LPMOneTimePaymentSession | null>(
-          sessionRef.current,
-        );
-
-        useEffect(() => {
-          // Register the state setter so the outer hook can push session updates.
-          providerSetterRef.current = setSessionValue;
-          return () => {
-            providerSetterRef.current = null;
-          };
-        }, []);
-
         return (
-          <LPMSessionContext.Provider value={sessionValue}>
-            {children}
+          <LPMSessionContext.Provider value={sessionRef.current}>
+            <LPMSessionHandleContext.Provider value={handleRef.current}>
+              {children}
+            </LPMSessionHandleContext.Provider>
           </LPMSessionContext.Provider>
         );
       }

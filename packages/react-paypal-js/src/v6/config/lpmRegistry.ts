@@ -2,12 +2,14 @@ import type { LPMComponents, LPMSessionMethodName } from "../types";
 
 export type SessionFieldType = "phone" | "billingAddress" | "taxInfo" | "expiryDate" | "dateOfBirth" | "numberOfInstallments";
 
+export type LPMFieldType = "name" | "email" | "tax_id" | "tax_id_type";
+
 export interface LPMConfig {
   readonly component: LPMComponents;
   readonly buttonTag: string;
   readonly sessionMethod: LPMSessionMethodName;
   readonly displayName: string;
-  readonly fields: readonly string[];
+  readonly fields: readonly LPMFieldType[];
   readonly sessionFields: readonly SessionFieldType[];
   readonly testBuyerCountry: string;
 }
