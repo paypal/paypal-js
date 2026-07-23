@@ -1,5 +1,22 @@
 # Changelog
 
+## 10.2.0
+
+### Minor Changes
+
+- d9c0200: Add `useBraintreePayPalMessages`, a v6 hook for rendering PayPal promotional / BNPL messaging (`<paypal-message>`) via Braintree.
+  - Wraps `BraintreePayPalCheckoutInstance.createMessages` on the shared instance from `useBraintreePayPal`. Because Braintree's `createMessages` is asynchronous (unlike the PayPal SDK's synchronous `createPayPalMessages`), the instance is created in an effect that awaits the Promise and guards against unmount / instance change before storing it.
+  - Returns `error`, `isReady`, `isLoading`, and `handleFetchContent(options)`, which fetches message content for a `<paypal-message>` element and resolves to a content object exposing `update({ amount })` so the displayed amount can change without re-fetching.
+  - Provider-level failures are surfaced separately and labeled (`Braintree PayPal context error: …`), distinct from instance/fetch errors, so consumers can tell which layer failed.
+  - Adds `BraintreeMessagesOptions`, `BraintreeMessagesInstance`, `BraintreeMessageContent`, and `BraintreeFetchMessageContentOptions` types, plus `createMessages` on `BraintreePayPalCheckoutInstance`.
+
+### Patch Changes
+
+- e3bb955: Stop shipping the TypeScript incremental-build cache (`dist/tsconfig.lib.tsbuildinfo`) in the published npm package. The build-info file is now written to `node_modules/.cache/tsc/` instead of `dist/`, trimming ~72 kB unpacked (~25 kB gzipped) from the tarball. No functional or API change — the library output is byte-identical.
+- Updated dependencies [09f2994]
+- Updated dependencies [d9c0200]
+  - @paypal/paypal-js@10.1.0
+
 ## 10.1.2
 
 ### Patch Changes
