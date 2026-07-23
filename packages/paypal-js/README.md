@@ -16,6 +16,24 @@
 [license-badge]: https://img.shields.io/npm/l/@paypal/paypal-js.svg?style=flat-square
 [license]: https://github.com/paypal/paypal-js/blob/main/LICENSE
 
+## Table of Contents
+
+- [Why use paypal-js?](#why-use-paypal-js)
+- [Installation](#installation)
+- [Usage (V5 legacy loader)](#usage)
+  - [`loadScript(options)`](#loadscriptoptions)
+  - [Passing Arguments](#passing-arguments)
+  - [Legacy Browser Support](#legacy-browser-support)
+  - [Using a CDN](#using-a-cdn)
+  - [`loadCustomScript(options)`](#loadcustomscriptoptions)
+- [TypeScript Support](#typescript-support)
+- [V6 SDK Support](#v6-sdk-support)
+  - [Loading the V6 SDK](#loading-the-v6-sdk)
+  - [Creating an SDK Instance](#creating-an-sdk-instance)
+  - [V6 Components](#v6-components)
+  - [V6 TypeScript Types](#v6-typescript-types)
+  - [Complete V6 Example](#complete-v6-example)
+
 ## Why use paypal-js?
 
 The [default JS SDK code snippet](https://developer.paypal.com/docs/checkout/standard/integrate/#link-addpaymentbuttons) blocks page rendering:
@@ -42,6 +60,8 @@ npm install @paypal/paypal-js
 ```
 
 ## Usage
+
+> This section documents the **legacy V5 loader** (`loadScript` / `loadCustomScript`), which resolves with `window.paypal`. For new integrations, use the [V6 SDK Support](#v6-sdk-support) section below.
 
 Import the `loadScript` function for asynchronously loading the Paypal JS SDK.
 
@@ -291,6 +311,8 @@ This package includes TypeScript type definitions for the PayPal JS SDK. This in
 
 The PayPal Web SDK V6 introduces a modern, component-based architecture with a `createInstance()` pattern, explicit component loading, and built-in eligibility checking.
 
+For eligibility details, see the [Find Eligible Methods API reference](https://developer.paypal.com/docs/api/payments/v2/#find_eligible_methods).
+
 ### Loading the V6 SDK
 
 Use `loadCoreSdkScript()` to asynchronously load the V6 SDK:
@@ -319,6 +341,10 @@ const paypal = await loadCoreSdkScript({
 After loading, create an instance with `createInstance()`:
 
 ```ts
+import { loadCoreSdkScript } from "@paypal/paypal-js/sdk-v6";
+
+const paypal = await loadCoreSdkScript({ environment: "sandbox" });
+
 const sdkInstance = await paypal.createInstance({
   clientId: "YOUR_CLIENT_ID",
   components: ["paypal-payments", "venmo-payments"],
@@ -326,6 +352,8 @@ const sdkInstance = await paypal.createInstance({
   pageType: "checkout",
 });
 ```
+
+The value returned by `loadCoreSdkScript` is the PayPal global namespace — the same object as `window.paypal` (or your custom `dataNamespace`) — so you can also call `window.paypal.createInstance(...)`. Note that `loadCoreSdkScript` resolves with `null` when run server-side; see the [Complete V6 Example](#complete-v6-example) for the null guard.
 
 ### V6 Components
 
@@ -340,6 +368,8 @@ These are the components that currently support the TypeScript types offered for
 | `paypal-messages`                  | PayPal messaging component                          |
 | `paypal-subscriptions`             | Subscription payment handling                       |
 | `paypal-legacy-billing-agreements` | Legacy billing support                              |
+| `applepay-payments`                | Apple Pay payment integration                       |
+| `googlepay-payments`               | Google Pay payment integration                      |
 
 ### V6 TypeScript Types
 
@@ -400,3 +430,5 @@ async function createOrderOnServer() {
   return response.json(); // { orderId: "..." }
 }
 ```
+
+View the [Find Eligible Methods API reference](https://developer.paypal.com/docs/api/payments/v2/#find_eligible_methods) for details on the eligibility endpoint used by `findEligibleMethods()`.
