@@ -6,6 +6,7 @@ import { renderHook } from "@testing-library/react-hooks";
 import {
   createPaymentSession,
   deepEqual,
+  isEmptyMessageContent,
   useDeepCompareMemoize,
   useCompareMemoize,
 } from "./utils";
@@ -379,5 +380,36 @@ describe("useCompareMemoize", () => {
     rerender();
 
     expect(result.current).not.toBe(firstRef);
+  });
+});
+
+describe("isEmptyMessageContent", () => {
+  test("treats nullish content as empty", () => {
+    expect(isEmptyMessageContent(null)).toBe(true);
+    expect(isEmptyMessageContent(undefined)).toBe(true);
+  });
+
+  test("treats the empty sentinel (empty messageItems) as empty", () => {
+    expect(
+      isEmptyMessageContent({
+        messageItems: { mainItems: [], actionItems: [] },
+      }),
+    ).toBe(true);
+  });
+
+  test("treats null messageItems as empty", () => {
+    expect(isEmptyMessageContent({ messageItems: null })).toBe(true);
+  });
+
+  test("treats populated messageItems as non-empty", () => {
+    expect(
+      isEmptyMessageContent({
+        messageItems: { mainItems: [{ type: "text" }], actionItems: [] },
+      }),
+    ).toBe(false);
+  });
+
+  test("treats content without messageItems as non-empty (assumes valid)", () => {
+    expect(isEmptyMessageContent({ content: "<div />" })).toBe(false);
   });
 });

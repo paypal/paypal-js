@@ -14,7 +14,7 @@ type BraintreePayPalButtonProps = UseBraintreePayPalOneTimePaymentSessionProps &
  * web component and manages the Braintree PayPal one-time payment flow.
  *
  * Combines {@link UseBraintreePayPalOneTimePaymentSessionProps} and {@link ButtonProps}.
- * Must be rendered inside a {@link BraintreePayPalProvider}.
+ * Must be rendered inside a BraintreePayPalProvider.
  *
  * For full control over the button UI, use the {@link useBraintreePayPalOneTimePaymentSession}
  * hook directly instead.

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { usePayPal } from "./usePayPal";
 import { useError } from "./useError";
 import { useIsMountedRef } from "./useIsMounted";
+import { isEmptyMessageContent } from "../utils";
 import {
   type FetchContentOptions,
   type MessageContent,
@@ -128,10 +129,12 @@ export function usePayPalMessages({
 
       const result = await session.fetchContent(options);
 
-      // fetchContent will return null in the case of an API error
-      if (result === null) {
+      // On an API error, fetchContent resolves to an empty sentinel MessageContent
+      // (empty messageItems) instead of throwing, so the <paypal-message> element
+      // recognizes the error state and collapses. Surface the error, but still
+      // return the content so setContent() performs that collapse.
+      if (isEmptyMessageContent(result)) {
         setError(new Error("Failed to fetch PayPal Messages content"));
-        return;
       }
 
       return result;
