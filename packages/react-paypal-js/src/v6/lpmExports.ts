@@ -8,7 +8,10 @@ import { LPM_REGISTRY } from "./config/lpmRegistry";
 import {
   createLPMButtonComponent,
   createEnhancedLPMHook,
+  LPMSessionContext,
+  LPMSessionHandleContext,
   type LPMSessionHandle,
+  type LPMSessionHandleContextValue,
   type LPMButtonComponentProps,
   type LPMFieldComponentProps,
   type LPMEnhancedHookReturn,
@@ -17,7 +20,14 @@ import {
 import type { UseLPMOneTimePaymentSessionProps } from "./hooks/useLPMOneTimePaymentSession";
 import type { LPMName } from "./config/lpmRegistry";
 
-export type { LPMSessionHandle, LPMButtonComponentProps, LPMFieldComponentProps, LPMEnhancedHookReturn };
+export { LPMSessionContext, LPMSessionHandleContext };
+export type {
+  LPMSessionHandle,
+  LPMSessionHandleContextValue,
+  LPMButtonComponentProps,
+  LPMFieldComponentProps,
+  LPMEnhancedHookReturn,
+};
 
 type NamedLPMButtonProps = Omit<LPMOneTimePaymentButtonProps, "lpm">;
 type NamedLPMHookProps = Omit<UseLPMOneTimePaymentSessionProps, "lpm">;
