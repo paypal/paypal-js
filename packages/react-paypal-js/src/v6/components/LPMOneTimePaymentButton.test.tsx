@@ -2,6 +2,8 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 
 import { LPMOneTimePaymentButton } from "./LPMOneTimePaymentButton";
+import { useLPMOneTimePaymentSession } from "../hooks/useLPMOneTimePaymentSession";
+import { usePayPal } from "../hooks/usePayPal";
 
 import type { LPMOneTimePaymentButtonProps } from "./LPMOneTimePaymentButton";
 
@@ -12,10 +14,9 @@ jest.mock("../hooks/usePayPal", () => ({
   usePayPal: jest.fn(),
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { useLPMOneTimePaymentSession } = require("../hooks/useLPMOneTimePaymentSession");
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { usePayPal } = require("../hooks/usePayPal");
+const mockUseLPMOneTimePaymentSession =
+  useLPMOneTimePaymentSession as jest.Mock;
+const mockUsePayPal = usePayPal as jest.Mock;
 
 const mockHandleClick = jest.fn();
 
@@ -29,12 +30,12 @@ const defaultProps: LPMOneTimePaymentButtonProps = {
 describe("LPMOneTimePaymentButton", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    useLPMOneTimePaymentSession.mockReturnValue({
+    mockUseLPMOneTimePaymentSession.mockReturnValue({
       error: null,
       isPending: false,
       handleClick: mockHandleClick,
     });
-    usePayPal.mockReturnValue({
+    mockUsePayPal.mockReturnValue({
       isHydrated: true,
     });
   });
@@ -45,21 +46,15 @@ describe("LPMOneTimePaymentButton", () => {
       { lpm: "bancontact" as const, expectedTag: "bancontact-button" },
       { lpm: "eps" as const, expectedTag: "eps-button" },
       { lpm: "blik" as const, expectedTag: "blik-button" },
-    ])(
-      "should render $expectedTag for lpm=$lpm",
-      ({ lpm, expectedTag }) => {
-        const { container } = render(
-          <LPMOneTimePaymentButton
-            {...defaultProps}
-            lpm={lpm}
-          />,
-        );
-        expect(container.querySelector(expectedTag)).toBeInTheDocument();
-      },
-    );
+    ])("should render $expectedTag for lpm=$lpm", ({ lpm, expectedTag }) => {
+      const { container } = render(
+        <LPMOneTimePaymentButton {...defaultProps} lpm={lpm} />,
+      );
+      expect(container.querySelector(expectedTag)).toBeInTheDocument();
+    });
 
     test("should render div placeholder when not hydrated", () => {
-      usePayPal.mockReturnValue({ isHydrated: false });
+      mockUsePayPal.mockReturnValue({ isHydrated: false });
 
       const { container } = render(
         <LPMOneTimePaymentButton {...defaultProps} />,
@@ -94,7 +89,7 @@ describe("LPMOneTimePaymentButton", () => {
     });
 
     test("should disable button when isPending is true", () => {
-      useLPMOneTimePaymentSession.mockReturnValue({
+      mockUseLPMOneTimePaymentSession.mockReturnValue({
         error: null,
         isPending: true,
         handleClick: mockHandleClick,
@@ -110,7 +105,7 @@ describe("LPMOneTimePaymentButton", () => {
     });
 
     test("should disable button when error is present", () => {
-      useLPMOneTimePaymentSession.mockReturnValue({
+      mockUseLPMOneTimePaymentSession.mockReturnValue({
         error: new Error("Test error"),
         isPending: false,
         handleClick: mockHandleClick,
@@ -130,7 +125,7 @@ describe("LPMOneTimePaymentButton", () => {
     test("should disable button when error is present", () => {
       const testError = new Error("Test error");
 
-      useLPMOneTimePaymentSession.mockReturnValue({
+      mockUseLPMOneTimePaymentSession.mockReturnValue({
         error: testError,
         isPending: false,
         handleClick: mockHandleClick,
@@ -160,7 +155,7 @@ describe("LPMOneTimePaymentButton", () => {
 
       render(<LPMOneTimePaymentButton {...hookProps} />);
 
-      expect(useLPMOneTimePaymentSession).toHaveBeenCalledWith(
+      expect(mockUseLPMOneTimePaymentSession).toHaveBeenCalledWith(
         expect.objectContaining({
           lpm: "bancontact",
           presentationMode: "popup",
@@ -172,11 +167,15 @@ describe("LPMOneTimePaymentButton", () => {
 
   describe("fieldContainerStyle (M3)", () => {
     test("applies custom fieldContainerStyle to field containers", () => {
-      useLPMOneTimePaymentSession.mockReturnValue({
+      mockUseLPMOneTimePaymentSession.mockReturnValue({
         error: null,
         isPending: false,
         handleClick: mockHandleClick,
-        session: { createPaymentFields: jest.fn().mockReturnValue(document.createElement("div")) },
+        session: {
+          createPaymentFields: jest
+            .fn()
+            .mockReturnValue(document.createElement("div")),
+        },
         handleValidate: jest.fn().mockResolvedValue(true),
       });
 
@@ -189,7 +188,9 @@ describe("LPMOneTimePaymentButton", () => {
       );
 
       // blik has fields: ["name", "email"] — use ideal (fields: ["name"])
-      const fieldDiv = container.querySelector('[data-testid="ideal-name-field"]');
+      const fieldDiv = container.querySelector(
+        '[data-testid="ideal-name-field"]',
+      );
       expect(fieldDiv).not.toBeNull();
       expect((fieldDiv as HTMLElement).style.marginBottom).toBe("16px");
     });
@@ -199,7 +200,9 @@ describe("LPMOneTimePaymentButton", () => {
         <LPMOneTimePaymentButton {...defaultProps} />,
       );
 
-      const fieldDiv = container.querySelector('[data-testid="ideal-name-field"]');
+      const fieldDiv = container.querySelector(
+        '[data-testid="ideal-name-field"]',
+      );
       expect(fieldDiv).not.toBeNull();
       expect((fieldDiv as HTMLElement).style.marginBottom).toBe("8px");
     });

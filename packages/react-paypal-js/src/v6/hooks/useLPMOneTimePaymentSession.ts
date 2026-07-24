@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { usePayPal } from "./usePayPal";
 import { useIsMountedRef } from "./useIsMounted";
@@ -51,7 +51,8 @@ export function useLPMOneTimePaymentSession({
   const { sdkInstance, loadingStatus } = usePayPal();
   const isMountedRef = useIsMountedRef();
   const sessionRef = useRef<LPMOneTimePaymentSession | null>(null);
-  const [sessionState, setSessionState] = useState<LPMOneTimePaymentSession | null>(null);
+  const [sessionState, setSessionState] =
+    useState<LPMOneTimePaymentSession | null>(null);
   const proxyCallbacks = useProxyProps(callbacks);
   const [error, setError] = useError();
 
@@ -109,8 +110,7 @@ export function useLPMOneTimePaymentSession({
       failedSdkRef,
       sdkInstance,
       setError,
-      errorMessage:
-        `Failed to create payment session. This may occur if the required component "${config.component}" is not included in the SDK components array.`,
+      errorMessage: `Failed to create payment session. This may occur if the required component "${config.component}" is not included in the SDK components array.`,
     });
 
     if (!newSession) {
@@ -175,7 +175,15 @@ export function useLPMOneTimePaymentSession({
     ).then((result) => ({ ...result, ...sessionFieldValues }));
 
     await sessionRef.current.start(startOptions, paymentSessionPromise);
-  }, [isMountedRef, presentationMode, fullPageOverlay, setError, config, proxyCallbacks, orderId]);
+  }, [
+    isMountedRef,
+    presentationMode,
+    fullPageOverlay,
+    setError,
+    config,
+    proxyCallbacks,
+    orderId,
+  ]);
 
   return {
     error,

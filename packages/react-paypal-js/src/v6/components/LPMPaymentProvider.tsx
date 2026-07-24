@@ -1,15 +1,13 @@
-import React, {
-  createContext,
-  useContext,
-  useRef,
-  type JSX,
-} from "react";
+import React, { createContext, useContext, useRef, type JSX } from "react";
 
 import { useLPMOneTimePaymentSession } from "../hooks/useLPMOneTimePaymentSession";
 
 import type { LPMOneTimePaymentSession } from "../types";
 import type { LPMName, LPMFieldType } from "../config/lpmRegistry";
-import type { UseLPMOneTimePaymentSessionProps, LPMPaymentSessionReturn } from "../hooks/useLPMOneTimePaymentSession";
+import type {
+  UseLPMOneTimePaymentSessionProps,
+  LPMPaymentSessionReturn,
+} from "../hooks/useLPMOneTimePaymentSession";
 import type { ButtonProps } from "../types/sdkWebComponents";
 
 // ─── LPM Session Context ──────────────────────────────────────────────────────
@@ -18,7 +16,9 @@ import type { ButtonProps } from "../types/sdkWebComponents";
  * React context carrying the active `LPMOneTimePaymentSession` instance.
  * Consumed by field components rendered inside an `LPMSessionProvider`.
  */
-export const LPMSessionContext = createContext<LPMOneTimePaymentSession | null>(null);
+export const LPMSessionContext = createContext<LPMOneTimePaymentSession | null>(
+  null,
+);
 
 /**
  * The click handler and pending/error state a payment button needs.
@@ -178,7 +178,9 @@ function createFieldComponent(
       container.innerHTML = "";
       container.appendChild(
         s.createPaymentFields(
-          value !== undefined ? { type: fieldType, value } : { type: fieldType },
+          value !== undefined
+            ? { type: fieldType, value }
+            : { type: fieldType },
         ),
       );
     }, [session, value]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -235,11 +237,14 @@ function createFieldComponent(
 export function createEnhancedLPMHook(
   lpm: LPMName,
   fieldTypes: ReadonlyArray<LPMFieldType>,
-): (props: Omit<UseLPMOneTimePaymentSessionProps, "lpm">) => LPMEnhancedHookReturn {
-
+): (
+  props: Omit<UseLPMOneTimePaymentSessionProps, "lpm">,
+) => LPMEnhancedHookReturn {
   type NamedHookProps = Omit<UseLPMOneTimePaymentSessionProps, "lpm">;
 
-  return function useLPMEnhancedSession(props: NamedHookProps): LPMEnhancedHookReturn {
+  return function useLPMEnhancedSession(
+    props: NamedHookProps,
+  ): LPMEnhancedHookReturn {
     const result = useLPMOneTimePaymentSession({
       lpm,
       ...props,
@@ -264,29 +269,35 @@ export function createEnhancedLPMHook(
     handleRef.current = { handleClick, isPending, error };
 
     // Stable Provider component created once per hook instantiation.
-    const LPMSessionProviderRef = useRef<((props: { children: React.ReactNode }) => JSX.Element) | null>(null);
+    const LPMSessionProviderRef = useRef<
+      ((props: { children: React.ReactNode }) => JSX.Element) | null
+    >(null);
     if (!LPMSessionProviderRef.current) {
-      function LPMSessionProvider({ children }: { children: React.ReactNode }): JSX.Element {
-        return (
-          <LPMSessionContext.Provider value={sessionRef.current}>
-            <LPMSessionHandleContext.Provider value={handleRef.current}>
-              {children}
-            </LPMSessionHandleContext.Provider>
-          </LPMSessionContext.Provider>
-        );
-      }
+      const LPMSessionProvider = ({
+        children,
+      }: {
+        children: React.ReactNode;
+      }): JSX.Element => (
+        <LPMSessionContext.Provider value={sessionRef.current}>
+          <LPMSessionHandleContext.Provider value={handleRef.current}>
+            {children}
+          </LPMSessionHandleContext.Provider>
+        </LPMSessionContext.Provider>
+      );
       LPMSessionProvider.displayName = "LPMSessionProvider";
       LPMSessionProviderRef.current = LPMSessionProvider;
     }
 
     // Create field components once per hook instantiation (stable identity).
     // Each component reads the session from LPMSessionContext via useContext.
-    const fieldComponentsRef = useRef<
-      Record<string, (props: LPMFieldComponentProps) => JSX.Element>
-    >();
+    const fieldComponentsRef =
+      useRef<Record<string, (props: LPMFieldComponentProps) => JSX.Element>>();
 
     if (!fieldComponentsRef.current) {
-      const components: Record<string, (props: LPMFieldComponentProps) => JSX.Element> = {};
+      const components: Record<
+        string,
+        (props: LPMFieldComponentProps) => JSX.Element
+      > = {};
       for (const fieldType of fieldTypes) {
         const componentName = `${capitalize(fieldType)}Field`;
         components[componentName] = createFieldComponent(fieldType);
