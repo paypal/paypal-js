@@ -55,8 +55,11 @@ async function main() {
   await idealSession.start({ presentationMode: "auto" });
 
   // Session fields must not be passed as part of the start() options.
-  // @ts-expect-error phone belongs on the paymentSessionPromise, not start options
-  await idealSession.start({ presentationMode: "popup", phone: sessionFields.phone });
+  await idealSession.start({
+    presentationMode: "popup",
+    // @ts-expect-error phone belongs on the paymentSessionPromise, not start options
+    phone: sessionFields.phone,
+  });
 
   // Verify LPMPaymentsInstance narrowing from SdkInstance
   const instance: LPMPaymentsInstance = sdkInstance;
