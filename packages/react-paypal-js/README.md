@@ -800,6 +800,121 @@ export default function App() {
 - `applePayConfig` is required and must be obtained from `useEligibleMethods()`
 - `onApprove` receives `ConfirmOrderResponse` — capture the order using `data.approveApplePayPayment.id`
 
+## Local Payment Methods (LPM)
+
+`react-paypal-js` ships pre-built components and hooks for 45+ regional Local Payment Methods (LPMs) — iDEAL, Bancontact, BLIK, Pix, Klarna, and more — each imported by name from the dedicated `@paypal/react-paypal-js/sdk-v6-lpm` subpath. LPMs are bundled separately from the core SDK to keep the main bundle small, since most integrations only need a handful of region-specific methods.
+
+Every LPM exposes the same three integration points, named after the method (e.g. `Ideal`, `Bancontact`, `Pix`):
+
+- **`<Ideal>OneTimePaymentButton`** — the simplest way to add an LPM. Renders any required buyer fields (e.g. full name) and the payment button in one self-contained component, mirroring `PayPalOneTimePaymentButton`.
+- **`use<Ideal>OneTimePaymentSession`** — a hook for full control over the click handler, pending/error state, and rendering your own button UI.
+- **`<Ideal>PaymentButton`** — a standalone button component that reads its session from context (see "Multi-field LPMs" below), for LPMs whose required fields need to be laid out separately from the button.
+
+Generic (non-name-specific) exports — `LPMOneTimePaymentButton`, `useLPMOneTimePaymentSession`, `LPM_REGISTRY`, and `LPMName` — are also available from the same subpath if you want to select the LPM dynamically (e.g. `lpm="ideal"`) rather than importing a specific named component.
+
+### Quick Start
+
+```tsx
+import {
+  PayPalProvider,
+  IdealOneTimePaymentButton,
+} from "@paypal/react-paypal-js/sdk-v6-lpm";
+
+async function createOrder() {
+  const response = await fetch("/api/paypal/create-order", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ items: [{ id: "item-1", quantity: 1 }] }),
+  });
+  const data = await response.json();
+  return { orderId: data.id };
+}
+
+async function onApprove(data) {
+  const response = await fetch(`/api/paypal/capture/${data.orderId}`, {
+    method: "POST",
+  });
+  console.log("iDEAL payment captured:", await response.json());
+}
+
+export default function App() {
+  return (
+    <PayPalProvider
+      clientId="YOUR_CLIENT_ID"
+      environment="sandbox"
+      components={["ideal-payments"]}
+      pageType="checkout"
+    >
+      <IdealOneTimePaymentButton
+        presentationMode="popup"
+        createOrder={createOrder}
+        onApprove={onApprove}
+        onCancel={() => console.log("Payment cancelled")}
+      />
+    </PayPalProvider>
+  );
+}
+```
+
+> **Note:** `PayPalProvider` and `usePayPal` must be imported from `@paypal/react-paypal-js/sdk-v6-lpm` (not `@paypal/react-paypal-js/sdk-v6`) when using LPMs — the LPM subpath is a separate bundle with its own React context instance, so a provider from the core subpath will not satisfy the LPM hooks.
+
+### Presentation mode
+
+LPMs only support `presentationMode="popup"` — `"auto"`, `"modal"`, and other presentation modes available on `PayPalOneTimePaymentButton` are not supported for LPMs and are rejected at the type level.
+
+### Multi-field LPMs
+
+Some LPMs (e.g. Pix, MB WAY, FLOA) require additional buyer-provided data — phone number, billing address, tax ID, or date of birth — passed via session fields rather than the presentation-mode options. Check `LPM_REGISTRY["<lpm>"].sessionFields` for which fields a given LPM needs.
+
+```tsx
+import { PixInternationalOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6-lpm";
+
+<PixInternationalOneTimePaymentButton
+  presentationMode="popup"
+  createOrder={createOrder}
+  onApprove={onApprove}
+  phone={{ countryCode: "55", nationalNumber: "11987654321" }}
+  billingAddress={{
+    addressLine1: "123 Main St",
+    addressLine2: "Apt 4",
+    adminArea1: "SP",
+    adminArea2: "São Paulo",
+    postalCode: "01310-100",
+    countryCode: "BR",
+  }}
+  taxInfo={{ taxId: "12345678909", taxIdType: "BR_CPF" }}
+/>;
+```
+
+For layouts where the buyer fields need to be positioned independently of the button (e.g. fields above a form, button in a sticky footer), use the enhanced hook form instead — it returns field components and a `LPMSessionProvider` alongside the session state:
+
+```tsx
+import { useMbwayOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6-lpm";
+
+function MbWayCheckout() {
+  const { LPMSessionProvider, NameField, EmailField, PhoneField, isPending } =
+    useMbwayOneTimePaymentSession({
+      presentationMode: "popup",
+      createOrder,
+      onApprove,
+    });
+
+  return (
+    <LPMSessionProvider>
+      <NameField />
+      <EmailField />
+      <PhoneField />
+      <MbwayPaymentButton disabled={isPending} />
+    </LPMSessionProvider>
+  );
+}
+```
+
+### Resources
+
+- [PayPal V6 SDK Local Payment Methods Documentation](https://docs.paypal.ai/payments/methods)
+- [React Sample Integration](https://github.com/paypal-examples/v6-web-sdk-sample-integration/tree/main/client/prebuiltPages/react) — Full working example with Node.js backend
+
 ## Braintree PayPal Integration
 
 Braintree merchants use `BraintreePayPalProvider` instead of `PayPalProvider` to integrate PayPal via Braintree's [`paypalCheckoutV6`](https://braintree.github.io/braintree-web/current/PayPalCheckoutV6.html) module. This provider initializes the Braintree client, creates a PayPal Checkout V6 instance, and loads the PayPal SDK — then exposes the instance to child components and hooks via React context.
