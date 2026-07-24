@@ -18,9 +18,9 @@ export type LPMSessionFieldPhone = {
 
 export type LPMSessionFieldBillingAddress = {
   addressLine1: string;
-  addressLine2?: string;
+  addressLine2: string;
   adminArea1: string;
-  adminArea2?: string;
+  adminArea2: string;
   postalCode: string;
   countryCode: string;
 };
