@@ -67,7 +67,11 @@ export type LPMOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
     options: LPMStartOptions,
     paymentSessionPromise?: LPMOneTimePaymentSessionPromise,
   ) => Promise<void>;
-  createPaymentFields: (options: { type: "email" | "name" | "tax_id" | "tax_id_type"; style?: Record<string, unknown>; value?: string }) => HTMLElement;
+  createPaymentFields: (options: {
+    type: "email" | "name" | "tax_id" | "tax_id_type";
+    style?: Record<string, unknown>;
+    value?: string;
+  }) => HTMLElement;
   validate: () => Promise<boolean>;
 };
 

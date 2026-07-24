@@ -7,25 +7,24 @@ import { LPM_REGISTRY } from "../config/lpmRegistry";
 import type { ButtonProps } from "../types";
 import type { UseLPMOneTimePaymentSessionProps } from "../hooks/useLPMOneTimePaymentSession";
 
-export type LPMOneTimePaymentButtonProps =
-  UseLPMOneTimePaymentSessionProps &
-    ButtonProps & {
-      /**
-       * Optional initial values to prefill the rendered payment fields, keyed by
-       * field type (e.g. `{ name: "John Doe", email: "john@example.com" }`).
-       * Maps to the SDK `createPaymentFields({ value })` option.
-       */
-      fieldValues?: Record<string, string>;
-      /**
-       * Optional CSS styles applied to each field's container `<div>`.
-       * Defaults to `{ marginBottom: 8 }` when not provided.
-       */
-      fieldContainerStyle?: React.CSSProperties;
-      /**
-       * Optional CSS class name applied to each field's container `<div>`.
-       */
-      fieldContainerClassName?: string;
-    };
+export type LPMOneTimePaymentButtonProps = UseLPMOneTimePaymentSessionProps &
+  ButtonProps & {
+    /**
+     * Optional initial values to prefill the rendered payment fields, keyed by
+     * field type (e.g. `{ name: "John Doe", email: "john@example.com" }`).
+     * Maps to the SDK `createPaymentFields({ value })` option.
+     */
+    fieldValues?: Record<string, string>;
+    /**
+     * Optional CSS styles applied to each field's container `<div>`.
+     * Defaults to `{ marginBottom: 8 }` when not provided.
+     */
+    fieldContainerStyle?: React.CSSProperties;
+    /**
+     * Optional CSS class name applied to each field's container `<div>`.
+     */
+    fieldContainerClassName?: string;
+  };
 
 /**
  * `LPMOneTimePaymentButton` renders the LPM payment fields and button
@@ -52,23 +51,29 @@ export const LPMOneTimePaymentButton = ({
   const config = LPM_REGISTRY[lpm];
   const fieldRefs = useRef<Map<string, HTMLDivElement>>(new Map());
 
-  const { error, isPending, session, handleClick } = useLPMOneTimePaymentSession({
-    lpm,
-    ...hookProps,
-  } as UseLPMOneTimePaymentSessionProps);
+  const { error, isPending, session, handleClick } =
+    useLPMOneTimePaymentSession({
+      lpm,
+      ...hookProps,
+    } as UseLPMOneTimePaymentSessionProps);
   const { isHydrated } = usePayPal();
 
   const setFieldRef = useCallback(
     (fieldType: string) => (el: HTMLDivElement | null) => {
-      if (el) { fieldRefs.current.set(fieldType, el); }
-      else { fieldRefs.current.delete(fieldType); }
+      if (el) {
+        fieldRefs.current.set(fieldType, el);
+      } else {
+        fieldRefs.current.delete(fieldType);
+      }
     },
     [],
   );
 
   // Render payment field iframes into their containers when session is ready
   useEffect(() => {
-    if (!session || !session.createPaymentFields) { return; }
+    if (!session || !session.createPaymentFields) {
+      return;
+    }
     config.fields.forEach((fieldType) => {
       const container = fieldRefs.current.get(fieldType);
       if (container) {

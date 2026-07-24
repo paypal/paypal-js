@@ -62,9 +62,9 @@ describe("LPM_REGISTRY", () => {
     expect(LPM_REGISTRY.fiuu.component).toBe("fiuu-cash-payments");
     expect(LPM_REGISTRY.fiuu.buttonTag).toBe("fiuu-button");
     // Verify it does NOT follow standard derivation
-    expect(LPM_REGISTRY.fiuu.component.replace("-payments", "-button")).not.toBe(
-      LPM_REGISTRY.fiuu.buttonTag,
-    );
+    expect(
+      LPM_REGISTRY.fiuu.component.replace("-payments", "-button"),
+    ).not.toBe(LPM_REGISTRY.fiuu.buttonTag);
   });
 
   test("LPMs with sessionFields have correct types", () => {
