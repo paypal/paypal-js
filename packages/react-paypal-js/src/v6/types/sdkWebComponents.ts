@@ -142,7 +142,7 @@ export type SDKWebComponents = {
   "ovo-button": ButtonProps;
   "paysera-button": ButtonProps;
   "skrill-button": ButtonProps;
-  "thailand-banks-button": ButtonProps;
+  "thailandbanks-button": ButtonProps;
   "blikpaylater-button": ButtonProps;
   "alfamart-button": ButtonProps;
   "zip-button": ButtonProps;
@@ -199,7 +199,7 @@ export const SDK_LPM_BUTTON_TAGS = new Set([
   "ovo-button",
   "paysera-button",
   "skrill-button",
-  "thailand-banks-button",
+  "thailandbanks-button",
   "blikpaylater-button",
   "alfamart-button",
   "zip-button",
