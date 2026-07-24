@@ -276,7 +276,7 @@ describe("useEligibleMethods", () => {
           {
             sdkInstance: mockSdkInstance,
             eligiblePaymentMethods: mockEligibilityResult,
-            eligiblePaymentMethodsPayload: undefined, // matches the undefined payload from useEligibleMethods()
+            eligiblePaymentMethodsPayload: null, // provider stores null on server hydration; must match the undefined payload from useEligibleMethods()
             loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
           },
           mockDispatch,

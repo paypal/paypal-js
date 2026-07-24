@@ -114,7 +114,13 @@ export function useEligibleMethods(
     if (
       eligiblePaymentMethodsRef.current &&
       lastFetchRef.current === null &&
-      deepEqual(eligiblePaymentMethodsPayloadRef.current, memoizedPayload)
+      // Normalize null to undefined so a server-hydrated payload (stored as
+      // null by PayPalProvider) matches a consumer that passes no payload
+      // (undefined). Mirrors the isStaleData normalization below.
+      deepEqual(
+        eligiblePaymentMethodsPayloadRef.current ?? undefined,
+        memoizedPayload ?? undefined,
+      )
     ) {
       lastFetchRef.current = {
         instance: sdkInstance,

@@ -2299,18 +2299,28 @@ The `type` prop controls the button label:
 
 ## Server-Side Rendering
 
-The `useFetchEligibleMethods` function is available from the server export path for pre-fetching eligibility data on the server. Pass the response to `PayPalProvider` via the `eligibleMethodsResponse` prop to avoid a client-side eligibility fetch.
+The `useFetchEligibleMethods` function (from the `/server` export path) lets you pre-fetch eligibility data on the server and pass it to `PayPalProvider` via the `eligibleMethodsResponse` prop. The provider hydrates the SDK instance with this response, so the client renders eligible payment methods immediately — no client-side eligibility round-trip and no flash of missing or stale buttons.
+
+**Step 1 — Fetch eligibility in a server component and hydrate the provider:**
 
 ```tsx
 // app/checkout/page.tsx (Next.js server component)
 import { useFetchEligibleMethods } from "@paypal/react-paypal-js/sdk-v6/server";
 import { PayPalProvider } from "@paypal/react-paypal-js/sdk-v6";
 
+import { CheckoutForm } from "./CheckoutForm";
+
+// Your own server-side helpers — e.g. an OAuth call to PayPal for an access
+// token, and your public client ID from env/config.
+import { getAccessToken, getClientId } from "@/lib/paypal";
+
 export default async function CheckoutPage() {
+  const accessToken = await getAccessToken();
+
   const eligibleMethodsResponse = await useFetchEligibleMethods({
     environment: "sandbox",
     headers: {
-      Authorization: `Bearer ${clientToken}`,
+      Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
     payload: {
@@ -2320,7 +2330,7 @@ export default async function CheckoutPage() {
 
   return (
     <PayPalProvider
-      clientId={clientId}
+      clientId={getClientId()}
       environment="sandbox"
       pageType="checkout"
       eligibleMethodsResponse={eligibleMethodsResponse}
@@ -2330,6 +2340,43 @@ export default async function CheckoutPage() {
   );
 }
 ```
+
+**Step 2 — Consume the hydrated eligibility on the client:**
+
+Call `useEligibleMethods()` **with no payload** so it reuses the server-hydrated
+response instead of triggering its own fetch, then render buttons conditionally:
+
+```tsx
+// app/checkout/CheckoutForm.tsx
+"use client";
+
+import {
+  useEligibleMethods,
+  PayPalOneTimePaymentButton,
+  VenmoOneTimePaymentButton,
+} from "@paypal/react-paypal-js/sdk-v6";
+
+export function CheckoutForm() {
+  // No payload → reuses the response hydrated by the provider (no client fetch).
+  const { eligiblePaymentMethods, isLoading, error } = useEligibleMethods();
+
+  if (error) return <div>Failed to load payment methods.</div>;
+  if (isLoading) return <div className="spinner">Loading...</div>;
+
+  return (
+    <>
+      {eligiblePaymentMethods?.isEligible("paypal") && (
+        <PayPalOneTimePaymentButton /* ... */ />
+      )}
+      {eligiblePaymentMethods?.isEligible("venmo") && (
+        <VenmoOneTimePaymentButton /* ... */ />
+      )}
+    </>
+  );
+}
+```
+
+> **Note:** Reuse of the hydrated response only happens when `useEligibleMethods()` is called **without** a payload. Passing a payload makes the hook fetch eligibility on the client (the server-side request payload has a different shape than the client-side `FindEligibleMethodsOptions`, so the two are not interchangeable). If you need custom, payload-specific eligibility on the client, use the [`useEligibleMethods`](#useeligiblemethods) hook directly and skip server hydration.
 
 ## Migration from v8.x (Legacy SDK)
 
