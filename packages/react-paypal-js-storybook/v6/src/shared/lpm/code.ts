@@ -21,11 +21,16 @@ const SAMPLE_FIELD_VALUES: Record<string, string> = {
 };
 
 /** Builds a `fieldValues={{ ... }}` prop clause for the LPM's rendered fields. */
-function buildFieldValuesProp(fields: readonly string[], indent: string): string {
+function buildFieldValuesProp(
+  fields: readonly string[],
+  indent: string,
+): string {
   const entries = fields
     .filter((f) => SAMPLE_FIELD_VALUES[f])
     .map((f) => `${f}: "${SAMPLE_FIELD_VALUES[f]}"`);
-  return entries.length ? `\n${indent}fieldValues={{ ${entries.join(", ")} }}` : "";
+  return entries.length
+    ? `\n${indent}fieldValues={{ ${entries.join(", ")} }}`
+    : "";
 }
 
 /** Converts a camelCase LPM key to a PascalCase component prefix, e.g. "pixInternational" → "PixInternational" */
@@ -33,67 +38,79 @@ function toPascal(lpmKey: string): string {
   return lpmKey.charAt(0).toUpperCase() + lpmKey.slice(1);
 }
 
-function buildSessionFieldsReturnClause(sessionFields: readonly string[]): string {
+function buildSessionFieldsReturnClause(
+  sessionFields: readonly string[],
+): string {
   if (sessionFields.length === 0) return "";
 
   const lines: string[] = [];
   if (sessionFields.includes("phone")) {
-    lines.push("        phone: { countryCode: \"1\", nationalNumber: \"4155552671\" },");
+    lines.push(
+      '        phone: { countryCode: "1", nationalNumber: "4155552671" },',
+    );
   }
   if (sessionFields.includes("billingAddress")) {
     lines.push(
       "        billingAddress: {",
-      "            addressLine1: \"123 Main St\",",
-      "            adminArea2: \"San Jose\",",
-      "            adminArea1: \"CA\",",
-      "            postalCode: \"95131\",",
-      "            countryCode: \"US\",",
+      '            addressLine1: "123 Main St",',
+      '            adminArea2: "San Jose",',
+      '            adminArea1: "CA",',
+      '            postalCode: "95131",',
+      '            countryCode: "US",',
       "        },",
     );
   }
   if (sessionFields.includes("taxInfo")) {
-    lines.push("        taxInfo: { taxId: \"12345678901\", taxIdType: \"BR_CPF\" },");
+    lines.push(
+      '        taxInfo: { taxId: "12345678901", taxIdType: "BR_CPF" },',
+    );
   }
   if (sessionFields.includes("dateOfBirth")) {
-    lines.push("        dateOfBirth: \"1990-01-15\",");
+    lines.push('        dateOfBirth: "1990-01-15",');
   }
   if (sessionFields.includes("numberOfInstallments")) {
     lines.push("        numberOfInstallments: 3,");
   }
   if (sessionFields.includes("expiryDate")) {
-    lines.push("        expiryDate: \"2025-12\",");
+    lines.push('        expiryDate: "2025-12",');
   }
 
   return lines.length ? `\n${lines.join("\n")}` : "";
 }
 
-function buildSessionFieldPropsClause(sessionFields: readonly string[]): string {
+function buildSessionFieldPropsClause(
+  sessionFields: readonly string[],
+): string {
   const lines: string[] = [];
   if (sessionFields.includes("phone")) {
-    lines.push("            phone={{ countryCode: \"1\", nationalNumber: \"4155552671\" }}");
+    lines.push(
+      '            phone={{ countryCode: "1", nationalNumber: "4155552671" }}',
+    );
   }
   if (sessionFields.includes("billingAddress")) {
     lines.push(
       "            billingAddress={{",
-      "                addressLine1: \"123 Main St\",",
-      "                adminArea2: \"San Jose\",",
-      "                adminArea1: \"CA\",",
-      "                postalCode: \"95131\",",
-      "                countryCode: \"US\",",
+      '                addressLine1: "123 Main St",',
+      '                adminArea2: "San Jose",',
+      '                adminArea1: "CA",',
+      '                postalCode: "95131",',
+      '                countryCode: "US",',
       "            }}",
     );
   }
   if (sessionFields.includes("taxInfo")) {
-    lines.push("            taxInfo={{ taxId: \"12345678901\", taxIdType: \"BR_CPF\" }}");
+    lines.push(
+      '            taxInfo={{ taxId: "12345678901", taxIdType: "BR_CPF" }}',
+    );
   }
   if (sessionFields.includes("dateOfBirth")) {
-    lines.push("            dateOfBirth=\"1990-01-15\"");
+    lines.push('            dateOfBirth="1990-01-15"');
   }
   if (sessionFields.includes("numberOfInstallments")) {
     lines.push("            numberOfInstallments={3}");
   }
   if (sessionFields.includes("expiryDate")) {
-    lines.push("            expiryDate=\"2025-12\"");
+    lines.push('            expiryDate="2025-12"');
   }
   return lines.length ? `\n${lines.join("\n")}` : "";
 }
@@ -107,8 +124,13 @@ export function getLPMAllInOneCode(lpmKey: LPMName): string {
   const pascal = toPascal(lpmKey);
   const ButtonName = `${pascal}OneTimePaymentButton`;
   const component = config.component;
-  const sessionFieldsReturn = buildSessionFieldsReturnClause(config.sessionFields);
-  const fieldValuesProp = buildFieldValuesProp(config.fields, "                ");
+  const sessionFieldsReturn = buildSessionFieldsReturnClause(
+    config.sessionFields,
+  );
+  const fieldValuesProp = buildFieldValuesProp(
+    config.fields,
+    "                ",
+  );
 
   return `// Lazy order creation (Recommended)
 // The order is created only when the buyer clicks the button.
@@ -245,7 +267,9 @@ export function getLPMHookPatternCode(lpmKey: LPMName): string {
 
   const fieldRenders = config.fields
     .map((f) => {
-      const valueProp = SAMPLE_FIELD_VALUES[f] ? ` value="${SAMPLE_FIELD_VALUES[f]}"` : "";
+      const valueProp = SAMPLE_FIELD_VALUES[f]
+        ? ` value="${SAMPLE_FIELD_VALUES[f]}"`
+        : "";
       return `            <${capitalize(f)}Field${valueProp} containerStyles={{ marginBottom: "8px" }} />`;
     })
     .join("\n");

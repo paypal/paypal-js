@@ -33,7 +33,9 @@ jest.mock("./hooks/usePayPal", () => ({
 
 const mockedUseLPM = jest.mocked(useLPMOneTimePaymentSession);
 
-function makeDefaultMockReturn(session: LPMOneTimePaymentSession | null = null) {
+function makeDefaultMockReturn(
+  session: LPMOneTimePaymentSession | null = null,
+) {
   return {
     error: null,
     isPending: false,
@@ -128,9 +130,7 @@ describe("Factory-generated LPM exports", () => {
     expect(BancontactOneTimePaymentButton.displayName).toBe(
       "BancontactOneTimePaymentButton",
     );
-    expect(EpsOneTimePaymentButton.displayName).toBe(
-      "EPSOneTimePaymentButton",
-    );
+    expect(EpsOneTimePaymentButton.displayName).toBe("EPSOneTimePaymentButton");
   });
 });
 
@@ -165,7 +165,9 @@ describe("Enhanced LPM hooks — field components", () => {
     );
 
     expect(typeof result.NameField).toBe("function");
-    expect((result.NameField as unknown as React.FC).displayName).toBe("NameField");
+    expect((result.NameField as unknown as React.FC).displayName).toBe(
+      "NameField",
+    );
   });
 
   test("useEpsOneTimePaymentSession returns a NameField component (eps has fields: ['name'])", () => {
@@ -189,8 +191,12 @@ describe("Enhanced LPM hooks — field components", () => {
       }),
     );
 
-    const NameField = result.NameField as React.FC<{ containerStyles?: React.CSSProperties }>;
-    const { container } = render(<NameField containerStyles={{ marginBottom: 8 }} />);
+    const NameField = result.NameField as React.FC<{
+      containerStyles?: React.CSSProperties;
+    }>;
+    const { container } = render(
+      <NameField containerStyles={{ marginBottom: 8 }} />,
+    );
     expect(container.querySelector("div")).not.toBeNull();
   });
 
@@ -199,17 +205,23 @@ describe("Enhanced LPM hooks — field components", () => {
       start: jest.fn().mockResolvedValue(undefined),
       cancel: jest.fn(),
       destroy: jest.fn(),
-      createPaymentFields: jest.fn().mockReturnValue(document.createElement("div")),
+      createPaymentFields: jest
+        .fn()
+        .mockReturnValue(document.createElement("div")),
       validate: jest.fn().mockResolvedValue(true),
     });
 
     const session1 = makeSession();
     let currentSession: LPMOneTimePaymentSession | null = null;
 
-    mockedUseLPM.mockImplementation(() => makeDefaultMockReturn(currentSession));
+    mockedUseLPM.mockImplementation(() =>
+      makeDefaultMockReturn(currentSession),
+    );
 
     // Capture hook result + render NameField wrapped in LPMSessionProvider
-    let capturedResult: ReturnType<typeof useIdealOneTimePaymentSession> | null = null;
+    let capturedResult: ReturnType<
+      typeof useIdealOneTimePaymentSession
+    > | null = null;
 
     function TestTree() {
       capturedResult = useIdealOneTimePaymentSession({
@@ -298,7 +310,9 @@ describe("Standalone LPM payment buttons (lpmProviderExports)", () => {
       </LPMSessionHandleContext.Provider>,
     );
 
-    expect(container.querySelector("ideal-button")?.getAttribute("disabled")).not.toBeNull();
+    expect(
+      container.querySelector("ideal-button")?.getAttribute("disabled"),
+    ).not.toBeNull();
   });
 
   test("IdealPaymentButton is disabled when error is present", () => {
@@ -314,6 +328,8 @@ describe("Standalone LPM payment buttons (lpmProviderExports)", () => {
       </LPMSessionHandleContext.Provider>,
     );
 
-    expect(container.querySelector("ideal-button")?.getAttribute("disabled")).not.toBeNull();
+    expect(
+      container.querySelector("ideal-button")?.getAttribute("disabled"),
+    ).not.toBeNull();
   });
 });

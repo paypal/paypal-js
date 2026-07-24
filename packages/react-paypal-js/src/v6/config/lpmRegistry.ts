@@ -1,6 +1,12 @@
 import type { LPMComponents, LPMSessionMethodName } from "../types";
 
-export type SessionFieldType = "phone" | "billingAddress" | "taxInfo" | "expiryDate" | "dateOfBirth" | "numberOfInstallments";
+export type SessionFieldType =
+  | "phone"
+  | "billingAddress"
+  | "taxInfo"
+  | "expiryDate"
+  | "dateOfBirth"
+  | "numberOfInstallments";
 
 export type LPMFieldType = "name" | "email" | "tax_id" | "tax_id_type";
 

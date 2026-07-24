@@ -63,7 +63,10 @@ export const Default = stories.Default;
 }
 
 function main(): void {
-  const lpmEntries = Object.entries(LPM_REGISTRY) as [LPMName, (typeof LPM_REGISTRY)[LPMName]][];
+  const lpmEntries = Object.entries(LPM_REGISTRY) as [
+    LPMName,
+    (typeof LPM_REGISTRY)[LPMName],
+  ][];
 
   let created = 0;
   let updated = 0;
@@ -93,7 +96,9 @@ function main(): void {
 
   // Remove story files that no longer have a registry entry
   const expectedFiles = new Set(lpmEntries.map(([key]) => toFileName(key)));
-  const existingFiles = fs.readdirSync(STORIES_DIR).filter((f) => f.endsWith(".stories.tsx"));
+  const existingFiles = fs
+    .readdirSync(STORIES_DIR)
+    .filter((f) => f.endsWith(".stories.tsx"));
 
   let removed = 0;
   for (const file of existingFiles) {

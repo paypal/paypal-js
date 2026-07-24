@@ -2,7 +2,11 @@
  * Shared utilities for LPM (Local Payment Method) stories.
  */
 
-import type { OnApproveDataOneTimePayments, OnCancelDataOneTimePayments, OnErrorData } from "@paypal/react-paypal-js/sdk-v6";
+import type {
+  OnApproveDataOneTimePayments,
+  OnCancelDataOneTimePayments,
+  OnErrorData,
+} from "@paypal/react-paypal-js/sdk-v6";
 import { action } from "storybook/actions";
 import { captureOrder } from "../utils";
 import { dispatchPaymentResult } from "../PaymentResult";
@@ -12,7 +16,7 @@ import { dispatchPaymentResult } from "../PaymentResult";
 export const phoneArgTypes = {
   phoneCountryCode: {
     control: { type: "text" as const },
-    description: "Phone country code (e.g. \"1\" for US, \"351\" for Portugal)",
+    description: 'Phone country code (e.g. "1" for US, "351" for Portugal)',
     defaultValue: "1",
     table: { category: "Session Fields" },
   },
@@ -96,7 +100,8 @@ export const floaArgTypes = {
 export const presentationModeArgType = {
   control: { type: "select" as const },
   options: ["auto", "popup"],
-  description: "How the payment flow is presented (auto redirects on mobile, popup otherwise)",
+  description:
+    "How the payment flow is presented (auto redirects on mobile, popup otherwise)",
 };
 
 export const disabledArgType = {
@@ -114,7 +119,7 @@ export const disabledArgType = {
 export const buttonTypeArgType = {
   control: false as const,
   description:
-    "Button label rendered by the SDK button web component (defaults to `\"pay\"` in these stories).",
+    'Button label rendered by the SDK button web component (defaults to `"pay"` in these stories).',
   table: { category: "Properties", defaultValue: { summary: '"pay"' } },
 };
 
@@ -225,7 +230,9 @@ export function buildBillingAddress(args: {
 }) {
   return {
     addressLine1: args.billingAddressLine1,
-    ...(args.billingAddressLine2 ? { addressLine2: args.billingAddressLine2 } : {}),
+    ...(args.billingAddressLine2
+      ? { addressLine2: args.billingAddressLine2 }
+      : {}),
     adminArea1: args.billingAdminArea1,
     adminArea2: args.billingAdminArea2,
     postalCode: args.billingPostalCode,

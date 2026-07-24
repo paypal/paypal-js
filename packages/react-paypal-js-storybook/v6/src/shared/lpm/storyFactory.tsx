@@ -23,7 +23,11 @@ import { withLPMPayPalProvider } from "../../decorators";
 import { V6DocPageStructure } from "../../components";
 import { createOrder, captureOrder } from "../utils";
 import { dispatchPaymentResult } from "../PaymentResult";
-import { getLPMAllInOneCode, getLPMEagerOrderCode, getLPMHookPatternCode } from "./code";
+import {
+  getLPMAllInOneCode,
+  getLPMEagerOrderCode,
+  getLPMHookPatternCode,
+} from "./code";
 import {
   presentationModeArgType,
   disabledArgType,
@@ -84,7 +88,11 @@ function buildSessionExtras(
 ) {
   const extras: Record<string, unknown> = {};
 
-  if (sessionFields.includes("phone") && args.phoneCountryCode && args.phoneNationalNumber) {
+  if (
+    sessionFields.includes("phone") &&
+    args.phoneCountryCode &&
+    args.phoneNationalNumber
+  ) {
     extras.phone = buildPhone(args.phoneCountryCode, args.phoneNationalNumber);
   }
   if (sessionFields.includes("billingAddress") && args.billingAddressLine1) {
@@ -103,7 +111,10 @@ function buildSessionExtras(
   if (sessionFields.includes("dateOfBirth") && args.dateOfBirth) {
     extras.dateOfBirth = args.dateOfBirth;
   }
-  if (sessionFields.includes("numberOfInstallments") && args.numberOfInstallments != null) {
+  if (
+    sessionFields.includes("numberOfInstallments") &&
+    args.numberOfInstallments != null
+  ) {
     extras.numberOfInstallments = args.numberOfInstallments;
   }
 
@@ -127,7 +138,10 @@ function buildArgTypes(sessionFields: readonly string[]) {
   if (sessionFields.includes("taxInfo")) {
     Object.assign(base, taxInfoArgTypes);
   }
-  if (sessionFields.includes("dateOfBirth") || sessionFields.includes("numberOfInstallments")) {
+  if (
+    sessionFields.includes("dateOfBirth") ||
+    sessionFields.includes("numberOfInstallments")
+  ) {
     Object.assign(base, floaArgTypes);
   }
   return base;
@@ -151,7 +165,10 @@ function buildDefaultArgs(sessionFields: readonly string[]): LPMStoryArgs {
   if (sessionFields.includes("taxInfo")) {
     Object.assign(base, defaultTaxInfoArgs);
   }
-  if (sessionFields.includes("dateOfBirth") || sessionFields.includes("numberOfInstallments")) {
+  if (
+    sessionFields.includes("dateOfBirth") ||
+    sessionFields.includes("numberOfInstallments")
+  ) {
     Object.assign(base, defaultFloaArgs);
   }
   return base;
@@ -164,7 +181,13 @@ type AllInOneWrapperProps = LPMStoryArgs & {
   sessionFields: readonly string[];
 };
 
-function AllInOneWrapper({ ButtonComponent, sessionFields, disabled, presentationMode, ...rest }: AllInOneWrapperProps) {
+function AllInOneWrapper({
+  ButtonComponent,
+  sessionFields,
+  disabled,
+  presentationMode,
+  ...rest
+}: AllInOneWrapperProps) {
   const storyArgs = { disabled, presentationMode, ...rest } as LPMStoryArgs;
   const extras = buildSessionExtras(sessionFields, storyArgs);
 
@@ -225,10 +248,13 @@ function AllInOneWrapper({ ButtonComponent, sessionFields, disabled, presentatio
  * export default meta;
  * export const Default = createLPMStories("ideal").Default;
  */
-export function createLPMMetaExtras(lpmKey: LPMName): Omit<Meta<LPMStoryArgs>, "title"> {
-  const registry = getLPMExport<typeof import("@paypal/react-paypal-js/sdk-v6/local-payment-methods")["LPM_REGISTRY"]>(
-    "LPM_REGISTRY",
-  );
+export function createLPMMetaExtras(
+  lpmKey: LPMName,
+): Omit<Meta<LPMStoryArgs>, "title"> {
+  const registry =
+    getLPMExport<
+      (typeof import("@paypal/react-paypal-js/sdk-v6/local-payment-methods"))["LPM_REGISTRY"]
+    >("LPM_REGISTRY");
   const config = registry[lpmKey];
   const pascal = toPascal(lpmKey);
   const { sessionFields, component, displayName, testBuyerCountry } = config;
@@ -293,14 +319,15 @@ export interface LPMNamedStories {
  * `Default` story is exposed; the eager and hook patterns live in the docs page.
  */
 export function createLPMStories(lpmKey: LPMName): LPMNamedStories {
-  const registry = getLPMExport<typeof import("@paypal/react-paypal-js/sdk-v6/local-payment-methods")["LPM_REGISTRY"]>(
-    "LPM_REGISTRY",
-  );
+  const registry =
+    getLPMExport<
+      (typeof import("@paypal/react-paypal-js/sdk-v6/local-payment-methods"))["LPM_REGISTRY"]
+    >("LPM_REGISTRY");
   const config = registry[lpmKey];
   const pascal = toPascal(lpmKey);
-  const ButtonComponent = getLPMExport<React.ComponentType<Record<string, unknown>>>(
-    `${pascal}OneTimePaymentButton`,
-  );
+  const ButtonComponent = getLPMExport<
+    React.ComponentType<Record<string, unknown>>
+  >(`${pascal}OneTimePaymentButton`);
 
   const { sessionFields } = config;
   const defaultArgs = buildDefaultArgs(sessionFields);

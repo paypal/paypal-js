@@ -3,10 +3,7 @@ import { renderHook, act } from "@testing-library/react-hooks";
 import { useLPMOneTimePaymentSession } from "./useLPMOneTimePaymentSession";
 import { useProxyProps } from "../utils";
 import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
-import {
-  mockPayPalContext,
-  mockPayPalRejected,
-} from "./usePayPalTestUtils";
+import { mockPayPalContext, mockPayPalRejected } from "./usePayPalTestUtils";
 
 import type { LPMOneTimePaymentSession } from "../types";
 
@@ -191,11 +188,9 @@ describe("useLPMOneTimePaymentSession", () => {
       "should handle $description thrown by session creation",
       ({ thrownError }) => {
         const failingSdk = {
-          createIdealOneTimePaymentSession: jest
-            .fn()
-            .mockImplementation(() => {
-              throw thrownError;
-            }),
+          createIdealOneTimePaymentSession: jest.fn().mockImplementation(() => {
+            throw thrownError;
+          }),
         };
         mockPayPalContext({ sdkInstance: failingSdk });
 
@@ -567,7 +562,14 @@ describe("useLPMOneTimePaymentSession", () => {
       );
       // Verify no session field keys (phone, billingAddress, etc.) are present
       const startCallArg = (mockSession.start as jest.Mock).mock.calls[0][0];
-      const unexpectedKeys = ["phone", "billingAddress", "taxInfo", "expiryDate", "dateOfBirth", "numberOfInstallments"];
+      const unexpectedKeys = [
+        "phone",
+        "billingAddress",
+        "taxInfo",
+        "expiryDate",
+        "dateOfBirth",
+        "numberOfInstallments",
+      ];
       for (const key of unexpectedKeys) {
         expect(startCallArg).not.toHaveProperty(key);
       }
