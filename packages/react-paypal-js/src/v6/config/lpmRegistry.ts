@@ -413,7 +413,7 @@ export const LPM_REGISTRY = {
   },
   thailandBanks: {
     component: "thailand-banks-payments",
-    buttonTag: "thailand-banks-button",
+    buttonTag: "thailandbanks-button",
     sessionMethod: "createThailandBanksOneTimePaymentSession",
     displayName: "Thailand Banks",
     fields: ["name"],
