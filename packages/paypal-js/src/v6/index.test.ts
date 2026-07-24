@@ -150,7 +150,7 @@ describe("loadCoreSdkScript()", () => {
 
   test("should error when environment is omitted", async () => {
     await expect(async () => {
-      // @ts-expect-error environment is required
+      // @ts-expect-error invalid arguments
       await loadCoreSdkScript({});
     }).rejects.toThrow(
       'The "environment" option is required and must be either "production" or "sandbox"',
@@ -159,7 +159,7 @@ describe("loadCoreSdkScript()", () => {
 
   test("should error when environment is explicitly undefined", async () => {
     await expect(async () => {
-      // @ts-expect-error environment is required
+      // @ts-expect-error invalid arguments
       await loadCoreSdkScript({ environment: undefined });
     }).rejects.toThrow(
       'The "environment" option is required and must be either "production" or "sandbox"',

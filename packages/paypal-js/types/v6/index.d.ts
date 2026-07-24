@@ -4,6 +4,8 @@ import { PayPalLegacyBillingInstance } from "./components/paypal-legacy-billing-
 import { VenmoPaymentsInstance } from "./components/venmo-payments";
 import { ApplePayPaymentsInstance } from "./components/applepay-payments";
 import { GooglePayPaymentsInstance } from "./components/googlepay-payments";
+import { LPMPaymentsInstance } from "./components/lpm-payments";
+import type { LPMComponents } from "./components/lpm-payments";
 import {
   EligiblePaymentMethodsOutput,
   FindEligibleMethodsOptions,
@@ -49,7 +51,8 @@ export type Components =
   | "paypal-legacy-billing-agreements"
   | "card-fields"
   | "applepay-payments"
-  | "googlepay-payments";
+  | "googlepay-payments"
+  | LPMComponents;
 
 export type PageTypes =
   | "cart"
@@ -101,6 +104,7 @@ export type CreateInstanceOptions<T extends readonly Components[]> =
  * - `"paypal-subscriptions"` - Adds PayPalSubscriptionsInstance methods
  * - `"applepay-payments"` - Adds ApplePayPaymentsInstance methods
  * - `"googlepay-payments"` - Adds GooglePayPaymentsInstance methods
+ * - LPM components (e.g. `"ideal-payments"`, `"bancontact-payments"`) - Adds LPMPaymentsInstance methods
  *
  * @example
  * ```typescript
@@ -163,7 +167,10 @@ export type SdkInstance<T extends readonly Components[]> = BaseInstance &
   ("applepay-payments" extends T[number] ? ApplePayPaymentsInstance : unknown) &
   ("googlepay-payments" extends T[number]
     ? GooglePayPaymentsInstance
-    : unknown);
+    : unknown) &
+  ([Extract<T[number], LPMComponents>] extends [never]
+    ? unknown
+    : LPMPaymentsInstance);
 
 /**
  * @internal
@@ -256,6 +263,7 @@ export * from "./components/paypal-messages";
 export * from "./components/paypal-subscriptions";
 export * from "./components/applepay-payments";
 export * from "./components/googlepay-payments";
+export * from "./components/lpm-payments";
 export * from "./components/web-components";
 
 // export a subset of types from base-component
