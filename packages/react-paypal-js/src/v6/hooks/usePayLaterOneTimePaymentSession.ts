@@ -35,7 +35,7 @@ export type UsePayLaterOneTimePaymentSessionProps = (
  * to start, cancel, and destroy the session.
  *
  * Eligibility must be fetched separately (via the `useEligibleMethods` hook client-side or
- * `useFetchEligibleMethods` server-side) to obtain the `countryCode`/`productCode` the
+ * `fetchEligibleMethods` server-side) to obtain the `countryCode`/`productCode` the
  * `<paypal-pay-later-button>` needs to render.
  *
  * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
@@ -51,7 +51,7 @@ export type UsePayLaterOneTimePaymentSessionProps = (
  *     onCancel: () => console.log('Cancelled'),
  *   });
  *
- *   // Fetch eligibility (or hydrate server-side via useFetchEligibleMethods)
+ *   // Fetch eligibility (or hydrate server-side via fetchEligibleMethods)
  *   const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
  *     payload: { purchase_units: [{ amount: { currency_code: "USD" } }] },
  *   });

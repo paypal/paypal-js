@@ -80,7 +80,7 @@ export type FindEligiblePaymentMethodsRequestPayload = {
  *
  * @example
  * // Next.js server component
- * const response = await useFetchEligibleMethods({
+ * const response = await fetchEligibleMethods({
  *     headers: {
  *         "Content-Type": "application/json",
  *         Authorization: `Bearer ${clientToken}`,
@@ -91,7 +91,7 @@ export type FindEligiblePaymentMethodsRequestPayload = {
  *
  * <PayPalProvider eligibleMethodsResponse={response} ... />
  */
-export async function useFetchEligibleMethods(
+export async function fetchEligibleMethods(
   options: FindEligiblePaymentMethodsOptions & { signal?: AbortSignal },
 ): Promise<FindEligiblePaymentMethodsResponse> {
   const { payload, signal, environment, headers } = options;
@@ -131,3 +131,11 @@ export async function useFetchEligibleMethods(
     );
   }
 }
+
+/**
+ * @deprecated Renamed to `fetchEligibleMethods`. This is a server-side async
+ * function, not a React hook — the `use` prefix falsely triggers
+ * eslint-plugin-react-hooks (`rules-of-hooks` / `no-unnecessary-use-prefix`)
+ * in consumer projects. Import `fetchEligibleMethods` instead.
+ */
+export const useFetchEligibleMethods = fetchEligibleMethods;

@@ -20,7 +20,7 @@ export type PayLaterOneTimePaymentButtonProps =
  * The `countryCode` and `productCode` are automatically populated from the eligibility API response
  * (available via `usePayPal().eligiblePaymentMethods`). The button requires eligibility to be configured
  * in the parent `PayPalProvider`, using either the `useEligibleMethods` hook client-side or
- * `useFetchEligibleMethods` server-side.
+ * `fetchEligibleMethods` server-side.
  *
  * **Eligibility must be fetched first.** Until eligibility is available, internally the button has no
  * `countryCode`/`productCode` to render with. Fetch eligibility (and wait for it) before rendering.
@@ -34,7 +34,7 @@ export type PayLaterOneTimePaymentButtonProps =
  * @example
  * function PayLaterCheckout() {
  *   // Fetch eligibility before rendering the button (or hydrate it server-side
- *   // via useFetchEligibleMethods)
+ *   // via fetchEligibleMethods)
  *   const { eligiblePaymentMethods, isLoading } = useEligibleMethods({
  *     payload: { purchase_units: [{ amount: { currency_code: "USD" } }] },
  *   });

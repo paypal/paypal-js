@@ -10,15 +10,20 @@ import {
 import { useError } from "./useError";
 import { deepEqual, useDeepCompareMemoize } from "../utils";
 
-export interface UseFetchEligibleMethodsOptions {
+export interface UseEligibleMethodsOptions {
   payload?: FindEligibleMethodsOptions;
 }
 
-export interface UseFetchEligibleMethodsResult {
+export interface UseEligibleMethodsResult {
   eligiblePaymentMethods: EligiblePaymentMethodsOutput | null;
   isLoading: boolean;
   error: Error | null;
 }
+
+/** @deprecated Renamed to `UseEligibleMethodsOptions`. */
+export type UseFetchEligibleMethodsOptions = UseEligibleMethodsOptions;
+/** @deprecated Renamed to `UseEligibleMethodsResult`. */
+export type UseFetchEligibleMethodsResult = UseEligibleMethodsResult;
 
 /**
  * Client-side hook to access eligible payment methods from the PayPal context.
@@ -58,8 +63,8 @@ export interface UseFetchEligibleMethodsResult {
  * }
  */
 export function useEligibleMethods(
-  options: UseFetchEligibleMethodsOptions = {},
-): UseFetchEligibleMethodsResult {
+  options: UseEligibleMethodsOptions = {},
+): UseEligibleMethodsResult {
   const { payload } = options;
   const {
     sdkInstance,

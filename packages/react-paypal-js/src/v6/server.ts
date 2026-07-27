@@ -3,4 +3,4 @@
  * Import from '@paypal/react-paypal-js/sdk-v6/server'
  */
 
-export * from "./hooks/useFetchEligibleMethods";
+export * from "./server/fetchEligibleMethods";

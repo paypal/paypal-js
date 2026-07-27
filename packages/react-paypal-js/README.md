@@ -2299,13 +2299,13 @@ The `type` prop controls the button label:
 
 ## Server-Side Rendering
 
-The `useFetchEligibleMethods` function (from the `/server` export path) lets you pre-fetch eligibility data on the server and pass it to `PayPalProvider` via the `eligibleMethodsResponse` prop. The provider hydrates the SDK instance with this response, so the client renders eligible payment methods immediately — no client-side eligibility round-trip and no flash of missing or stale buttons.
+The `fetchEligibleMethods` function (from the `/server` export path) lets you pre-fetch eligibility data on the server and pass it to `PayPalProvider` via the `eligibleMethodsResponse` prop. The provider hydrates the SDK instance with this response, so the client renders eligible payment methods immediately — no client-side eligibility round-trip and no flash of missing or stale buttons.
 
 **Step 1 — Fetch eligibility in a server component and hydrate the provider:**
 
 ```tsx
 // app/checkout/page.tsx (Next.js server component)
-import { useFetchEligibleMethods } from "@paypal/react-paypal-js/sdk-v6/server";
+import { fetchEligibleMethods } from "@paypal/react-paypal-js/sdk-v6/server";
 import { PayPalProvider } from "@paypal/react-paypal-js/sdk-v6";
 
 import { CheckoutForm } from "./CheckoutForm";
@@ -2317,7 +2317,7 @@ import { getAccessToken, getClientId } from "@/lib/paypal";
 export default async function CheckoutPage() {
   const accessToken = await getAccessToken();
 
-  const eligibleMethodsResponse = await useFetchEligibleMethods({
+  const eligibleMethodsResponse = await fetchEligibleMethods({
     environment: "sandbox",
     headers: {
       Authorization: `Bearer ${accessToken}`,

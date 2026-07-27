@@ -16,7 +16,7 @@ export type PayPalCreditSavePaymentButtonProps =
  *
  * The `countryCode` is automatically populated from the eligibility API response
  * (available via `usePayPal().eligiblePaymentMethods`). The button requires eligibility to be configured
- * in the parent `PayPalProvider`, using either the `useEligibleMethods` hook client-side or `useFetchEligibleMethods` server-side.
+ * in the parent `PayPalProvider`, using either the `useEligibleMethods` hook client-side or `fetchEligibleMethods` server-side.
  *
  * Note, `autoRedirect` is not allowed because if given a `presentationMode` of `"redirect"` the button
  * would not be able to provide back `redirectURL` from `start`. Advanced integrations that need
