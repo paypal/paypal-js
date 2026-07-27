@@ -1056,6 +1056,7 @@ function setupTestComponent() {
     eligiblePaymentMethods: null,
     error: null,
     isHydrated: false,
+    isEligibilityHydrationPending: false,
   };
 
   function TestComponent({ children = null }: { children?: React.ReactNode }) {

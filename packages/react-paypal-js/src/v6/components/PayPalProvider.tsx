@@ -354,6 +354,9 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
     }
   }, [state.sdkInstance, eligibleMethodsResponse, setError]);
 
+  const isEligibilityHydrationPending =
+    !!eligibleMethodsResponse && !state.eligiblePaymentMethods && !state.error;
+
   const contextValue: PayPalState = useMemo(
     () => ({
       sdkInstance: state.sdkInstance,
@@ -362,6 +365,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
       error: state.error,
       loadingStatus: state.loadingStatus,
       isHydrated,
+      isEligibilityHydrationPending,
     }),
     [
       state.sdkInstance,
@@ -370,6 +374,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
       state.error,
       state.loadingStatus,
       isHydrated,
+      isEligibilityHydrationPending,
     ],
   );
 

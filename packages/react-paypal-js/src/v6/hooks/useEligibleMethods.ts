@@ -71,6 +71,7 @@ export function useEligibleMethods(
     eligiblePaymentMethods,
     eligiblePaymentMethodsPayload,
     error: contextError,
+    isEligibilityHydrationPending,
   } = usePayPal();
   const dispatch = usePayPalDispatch();
   const [eligibilityError, setError] = useError();
@@ -100,6 +101,13 @@ export function useEligibleMethods(
     // 3. Eligibility not already in context (from server hydration or another fetch)
     //    UNLESS the payload has changed from what was used to fetch it
     if (!sdkInstance) {
+      return;
+    }
+
+    // The provider was given an eligibleMethodsResponse prop and hasn't
+    // hydrated it into context yet — wait for that instead of firing a
+    // redundant client-side fetch that would race the hydration.
+    if (isEligibilityHydrationPending) {
       return;
     }
 
@@ -175,7 +183,13 @@ export function useEligibleMethods(
       isSubscribed = false;
       lastFetchRef.current = null; // Reset fetch tracking on unmount or dependency change
     };
-  }, [sdkInstance, memoizedPayload, dispatch, setError]);
+  }, [
+    sdkInstance,
+    memoizedPayload,
+    dispatch,
+    setError,
+    isEligibilityHydrationPending,
+  ]);
 
   // isLoading should be true (unless an error is present) if:
   // 1. We're actively fetching, OR

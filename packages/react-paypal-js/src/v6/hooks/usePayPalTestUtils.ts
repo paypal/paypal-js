@@ -17,6 +17,7 @@ const defaultPayPalState: PayPalState = {
   eligiblePaymentMethods: null,
   error: null,
   isHydrated: true,
+  isEligibilityHydrationPending: false,
 };
 
 /**

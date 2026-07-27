@@ -107,6 +107,7 @@ describe("PayPalCardFieldsProvider", () => {
       eligiblePaymentMethods: null,
       error: null,
       isHydrated: true,
+      isEligibilityHydrationPending: false,
     });
   });
 
@@ -122,6 +123,7 @@ describe("PayPalCardFieldsProvider", () => {
         eligiblePaymentMethods: null,
         error: null,
         isHydrated: true,
+        isEligibilityHydrationPending: false,
       });
 
       const { result } = renderCardFieldsProvider();
@@ -138,6 +140,7 @@ describe("PayPalCardFieldsProvider", () => {
         eligiblePaymentMethods: null,
         error: null,
         isHydrated: true,
+        isEligibilityHydrationPending: false,
       });
 
       const { result } = renderCardFieldsProvider();
@@ -157,6 +160,7 @@ describe("PayPalCardFieldsProvider", () => {
         eligiblePaymentMethods: null,
         error: null,
         isHydrated: true,
+        isEligibilityHydrationPending: false,
       });
 
       const { result, rerender } = renderCardFieldsProvider();
@@ -175,6 +179,7 @@ describe("PayPalCardFieldsProvider", () => {
         eligiblePaymentMethods: null,
         error: null,
         isHydrated: true,
+        isEligibilityHydrationPending: false,
       });
 
       rerender();
@@ -292,6 +297,7 @@ describe("PayPalCardFieldsProvider", () => {
         eligiblePaymentMethods: null,
         error: null,
         isHydrated: true,
+        isEligibilityHydrationPending: false,
       });
 
       rerender();
