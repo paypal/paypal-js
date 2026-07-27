@@ -452,7 +452,7 @@ describe("PayPalProvider", () => {
       await waitFor(() => expectResolvedState(state));
 
       // Provider no longer automatically calls findEligibleMethods
-      // Client-side fetching should be done via useFetchEligibleMethods hook
+      // Client-side fetching should be done via fetchEligibleMethods hook
       expect(mockFindEligibleMethods).not.toHaveBeenCalled();
       expect(state.eligiblePaymentMethods).toBeNull();
     });

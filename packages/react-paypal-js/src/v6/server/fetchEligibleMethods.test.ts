@@ -1,7 +1,8 @@
 import {
+  fetchEligibleMethods,
   useFetchEligibleMethods,
   type FindEligiblePaymentMethodsRequestPayload,
-} from "./useFetchEligibleMethods";
+} from "./fetchEligibleMethods";
 
 import type { FindEligiblePaymentMethodsResponse } from "../types";
 
@@ -53,7 +54,7 @@ describe("fetchEligibleMethods", () => {
       json: async () => mockResponse,
     });
 
-    const result = await useFetchEligibleMethods({
+    const result = await fetchEligibleMethods({
       payload: mockPayload,
       environment: "sandbox",
       headers: mockHeaders,
@@ -83,7 +84,7 @@ describe("fetchEligibleMethods", () => {
       json: async () => mockResponse,
     });
 
-    await useFetchEligibleMethods({
+    await fetchEligibleMethods({
       payload: mockPayload,
       environment: "production",
       headers: mockHeaders,
@@ -103,7 +104,7 @@ describe("fetchEligibleMethods", () => {
       json: async () => mockResponse,
     });
 
-    await useFetchEligibleMethods({
+    await fetchEligibleMethods({
       environment: "sandbox",
     });
 
@@ -122,7 +123,7 @@ describe("fetchEligibleMethods", () => {
     });
 
     await expect(
-      useFetchEligibleMethods({
+      fetchEligibleMethods({
         environment: "sandbox",
       }),
     ).rejects.toThrow("Eligibility API error: 401");
@@ -134,7 +135,7 @@ describe("fetchEligibleMethods", () => {
     );
 
     await expect(
-      useFetchEligibleMethods({
+      fetchEligibleMethods({
         environment: "sandbox",
       }),
     ).rejects.toThrow("Failed to fetch eligible methods: Network error");
@@ -143,7 +144,7 @@ describe("fetchEligibleMethods", () => {
   test("should error when environment is omitted", async () => {
     await expect(
       // @ts-expect-error environment is required
-      useFetchEligibleMethods({ headers: mockHeaders }),
+      fetchEligibleMethods({ headers: mockHeaders }),
     ).rejects.toThrow(
       'The "environment" option is required and must be either "production" or "sandbox"',
     );
@@ -152,7 +153,7 @@ describe("fetchEligibleMethods", () => {
 
   test("should error when environment is explicitly undefined", async () => {
     await expect(
-      useFetchEligibleMethods({
+      fetchEligibleMethods({
         // @ts-expect-error environment is required
         environment: undefined,
         headers: mockHeaders,
@@ -170,7 +171,7 @@ describe("fetchEligibleMethods", () => {
       json: async () => mockResponse,
     });
 
-    await useFetchEligibleMethods({
+    await fetchEligibleMethods({
       environment: "sandbox",
       signal: abortController.signal,
     });
@@ -181,5 +182,9 @@ describe("fetchEligibleMethods", () => {
         signal: abortController.signal,
       }),
     );
+  });
+
+  test("exposes the deprecated useFetchEligibleMethods alias", () => {
+    expect(useFetchEligibleMethods).toBe(fetchEligibleMethods);
   });
 });
