@@ -55,6 +55,7 @@ function createInitialState(): PayPalState {
     error: null,
     isHydrated: true,
     eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
+    isEligibilityHydrated: false,
   };
 }
 

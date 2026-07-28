@@ -1090,6 +1090,7 @@ function setupTestComponent() {
     error: null,
     isHydrated: false,
     eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
+    isEligibilityHydrated: false,
   };
 
   function TestComponent({ children = null }: { children?: React.ReactNode }) {
