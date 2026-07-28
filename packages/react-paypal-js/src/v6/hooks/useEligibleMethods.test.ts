@@ -26,6 +26,8 @@ describe("useEligibleMethods", () => {
       loadingStatus: INSTANCE_LOADING_STATE.PENDING,
       error: null,
       isHydrated: true,
+      eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
+      isEligibilityHydrated: false,
       ...contextValue,
     };
 
@@ -667,6 +669,82 @@ describe("useEligibleMethods", () => {
 
       // Should still only be called once (deep comparison prevents re-fetch)
       expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("hydration pending behavior", () => {
+    const mockEligibilityResult = {
+      isEligible: jest.fn(),
+      getDetails: jest.fn(),
+    };
+
+    function createMockSdkInstance(
+      findEligibleMethodsImpl: () => Promise<unknown> = () =>
+        Promise.resolve(mockEligibilityResult),
+    ) {
+      return {
+        findEligibleMethods: jest.fn(findEligibleMethodsImpl),
+      } as unknown as PayPalState["sdkInstance"];
+    }
+
+    test("should NOT fetch when hydration is pending and no payload is provided", async () => {
+      const mockDispatch = jest.fn();
+      const mockSdkInstance = createMockSdkInstance();
+
+      renderHook(() => useEligibleMethods(), {
+        wrapper: createWrapper(
+          {
+            sdkInstance: mockSdkInstance,
+            eligiblePaymentMethods: null,
+            eligibilityHydrationStatus: INSTANCE_LOADING_STATE.PENDING,
+            loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+          },
+          mockDispatch,
+        ),
+      });
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      // Hydration is in flight — wait for it instead of racing ahead with a fetch
+      expect(mockSdkInstance!.findEligibleMethods).not.toHaveBeenCalled();
+      expect(mockDispatch).not.toHaveBeenCalled();
+    });
+
+    test("should fetch immediately when hydration is pending but an explicit payload is provided", async () => {
+      const mockDispatch = jest.fn();
+      const mockSdkInstance = createMockSdkInstance();
+      const testPayload = { currencyCode: "EUR" };
+
+      renderHook(() => useEligibleMethods({ payload: testPayload as never }), {
+        wrapper: createWrapper(
+          {
+            sdkInstance: mockSdkInstance,
+            eligiblePaymentMethods: null,
+            eligibilityHydrationStatus: INSTANCE_LOADING_STATE.PENDING,
+            loadingStatus: INSTANCE_LOADING_STATE.RESOLVED,
+          },
+          mockDispatch,
+        ),
+      });
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      // Server hydration is always stored with payload: null, so it can
+      // never satisfy an explicit-payload call — no reason to make it wait.
+      expect(mockSdkInstance!.findEligibleMethods).toHaveBeenCalledWith(
+        testPayload,
+      );
+      expect(mockDispatch).toHaveBeenCalledWith({
+        type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
+        value: {
+          eligiblePaymentMethods: mockEligibilityResult,
+          payload: testPayload,
+        },
+      });
     });
   });
 });

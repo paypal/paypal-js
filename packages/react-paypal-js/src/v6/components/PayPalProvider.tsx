@@ -172,6 +172,9 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
 }) => {
   const memoizedComponents = useCompareMemoize(components);
   const memoizedMerchantId = useDeepCompareMemoize(merchantId);
+  const memoizedEligibleMethodsResponse = useDeepCompareMemoize(
+    eligibleMethodsResponse,
+  );
   const [paypalNamespace, setPaypalNamespace] =
     useState<PayPalV6Namespace | null>(null);
   const [state, dispatch] = useReducer(instanceReducer, initialState);
@@ -331,20 +334,18 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
 
   useEffect(() => {
     const sdkInstance = state.sdkInstance;
-    if (!sdkInstance) {
+    if (!sdkInstance || !memoizedEligibleMethodsResponse) {
       return;
     }
 
     try {
-      if (eligibleMethodsResponse) {
-        const eligiblePaymentMethods = sdkInstance.hydrateEligibleMethods(
-          eligibleMethodsResponse,
-        );
-        dispatch({
-          type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-          value: { eligiblePaymentMethods, payload: null },
-        });
-      }
+      const eligiblePaymentMethods = sdkInstance.hydrateEligibleMethods(
+        memoizedEligibleMethodsResponse,
+      );
+      dispatch({
+        type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY_HYDRATED,
+        value: { eligiblePaymentMethods },
+      });
     } catch (error) {
       setError(error);
       dispatch({
@@ -352,7 +353,22 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
         value: toError(error),
       });
     }
-  }, [state.sdkInstance, eligibleMethodsResponse, setError]);
+  }, [state.sdkInstance, memoizedEligibleMethodsResponse, setError]);
+
+  // Dispatched during render (not in an effect) so children see the
+  // correct status on the same render, before their own effects run.
+  let eligibilityHydrationStatus = INSTANCE_LOADING_STATE.RESOLVED;
+  if (memoizedEligibleMethodsResponse && !state.isEligibilityHydrated) {
+    eligibilityHydrationStatus = state.error
+      ? INSTANCE_LOADING_STATE.REJECTED
+      : INSTANCE_LOADING_STATE.PENDING;
+  }
+  if (eligibilityHydrationStatus !== state.eligibilityHydrationStatus) {
+    dispatch({
+      type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY_HYDRATION_STATUS,
+      value: eligibilityHydrationStatus,
+    });
+  }
 
   const contextValue: PayPalState = useMemo(
     () => ({
@@ -362,6 +378,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
       error: state.error,
       loadingStatus: state.loadingStatus,
       isHydrated,
+      eligibilityHydrationStatus,
+      isEligibilityHydrated: state.isEligibilityHydrated,
     }),
     [
       state.sdkInstance,
@@ -370,6 +388,8 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
       state.error,
       state.loadingStatus,
       isHydrated,
+      eligibilityHydrationStatus,
+      state.isEligibilityHydrated,
     ],
   );
 

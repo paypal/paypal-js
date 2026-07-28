@@ -4,6 +4,7 @@ import { usePayPal } from "./usePayPal";
 import { usePayPalDispatch } from "./usePayPalDispatch";
 import {
   INSTANCE_DISPATCH_ACTION,
+  INSTANCE_LOADING_STATE,
   type EligiblePaymentMethodsOutput,
   type FindEligibleMethodsOptions,
 } from "../types";
@@ -71,6 +72,7 @@ export function useEligibleMethods(
     eligiblePaymentMethods,
     eligiblePaymentMethodsPayload,
     error: contextError,
+    eligibilityHydrationStatus,
   } = usePayPal();
   const dispatch = usePayPalDispatch();
   const [eligibilityError, setError] = useError();
@@ -100,6 +102,16 @@ export function useEligibleMethods(
     // 3. Eligibility not already in context (from server hydration or another fetch)
     //    UNLESS the payload has changed from what was used to fetch it
     if (!sdkInstance) {
+      return;
+    }
+
+    // Hydrated data always has payload null, so it can only ever satisfy a
+    // no-payload call. Only block those on hydration; let payload-specific
+    // calls fetch immediately since hydration will never answer them.
+    if (
+      eligibilityHydrationStatus === INSTANCE_LOADING_STATE.PENDING &&
+      memoizedPayload === undefined
+    ) {
       return;
     }
 
@@ -175,7 +187,13 @@ export function useEligibleMethods(
       isSubscribed = false;
       lastFetchRef.current = null; // Reset fetch tracking on unmount or dependency change
     };
-  }, [sdkInstance, memoizedPayload, dispatch, setError]);
+  }, [
+    sdkInstance,
+    memoizedPayload,
+    dispatch,
+    setError,
+    eligibilityHydrationStatus,
+  ]);
 
   // isLoading should be true (unless an error is present) if:
   // 1. We're actively fetching, OR
