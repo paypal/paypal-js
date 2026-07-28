@@ -104,10 +104,10 @@ export function useEligibleMethods(
       return;
     }
 
-    // The provider was given an eligibleMethodsResponse prop and hasn't
-    // hydrated it into context yet — wait for that instead of firing a
-    // redundant client-side fetch that would race the hydration.
-    if (isEligibilityHydrationPending) {
+    // Hydrated data always has payload null, so it can only ever satisfy a
+    // no-payload call. Only block those on hydration; let payload-specific
+    // calls fetch immediately since hydration will never answer them.
+    if (isEligibilityHydrationPending && memoizedPayload === undefined) {
       return;
     }
 

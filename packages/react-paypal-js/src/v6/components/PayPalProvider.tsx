@@ -31,7 +31,9 @@ type PayPalProviderPropsBase = Omit<
 > &
   Omit<LoadCoreSdkScriptOptions, "dataSdkIntegrationSource"> & {
     components?: Components[];
-    eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
+    eligibleMethodsResponse?:
+      | FindEligiblePaymentMethodsResponse
+      | Promise<FindEligiblePaymentMethodsResponse>;
     children: React.ReactNode;
   };
 
@@ -331,29 +333,46 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
 
   useEffect(() => {
     const sdkInstance = state.sdkInstance;
-    if (!sdkInstance) {
+    if (!sdkInstance || !eligibleMethodsResponse) {
       return;
     }
 
-    try {
-      if (eligibleMethodsResponse) {
-        const eligiblePaymentMethods = sdkInstance.hydrateEligibleMethods(
-          eligibleMethodsResponse,
-        );
+    let isSubscribed = true;
+
+    const hydrate = async () => {
+      try {
+        const resolvedResponse = await eligibleMethodsResponse;
+
+        if (!isSubscribed) {
+          return;
+        }
+
+        const eligiblePaymentMethods =
+          sdkInstance.hydrateEligibleMethods(resolvedResponse);
         dispatch({
           type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
           value: { eligiblePaymentMethods, payload: null },
         });
+      } catch (error) {
+        if (!isSubscribed) {
+          return;
+        }
+        setError(error);
+        dispatch({
+          type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
+          value: toError(error),
+        });
       }
-    } catch (error) {
-      setError(error);
-      dispatch({
-        type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-        value: toError(error),
-      });
-    }
+    };
+
+    hydrate();
+
+    return () => {
+      isSubscribed = false;
+    };
   }, [state.sdkInstance, eligibleMethodsResponse, setError]);
 
+  // True until eligibleMethodsResponse has hydrated into state.
   const isEligibilityHydrationPending =
     !!eligibleMethodsResponse && !state.eligiblePaymentMethods && !state.error;
 
