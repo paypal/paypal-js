@@ -2301,6 +2301,8 @@ The `type` prop controls the button label:
 
 The `fetchEligibleMethods` function (from the `/server` export path) lets you pre-fetch eligibility data on the server and pass it to `PayPalProvider` via the `eligibleMethodsResponse` prop. The provider hydrates the SDK instance with this response, so the client renders eligible payment methods immediately — no client-side eligibility round-trip and no flash of missing or stale buttons.
 
+> **Important:** `eligibleMethodsResponse` must be a resolved value, not a Promise. `await` the result of `fetchEligibleMethods()` (or your own fetch) before passing it to `PayPalProvider`.
+
 **Step 1 — Fetch eligibility in a server component and hydrate the provider:**
 
 ```tsx

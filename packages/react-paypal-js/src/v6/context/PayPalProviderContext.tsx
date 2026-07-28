@@ -19,7 +19,7 @@ export interface PayPalState {
   loadingStatus: INSTANCE_LOADING_STATE;
   error: Error | null;
   isHydrated: boolean;
-  isEligibilityHydrationPending: boolean;
+  eligibilityHydrationStatus: INSTANCE_LOADING_STATE;
 }
 
 export type InstanceAction =
@@ -38,6 +38,10 @@ export type InstanceAction =
         payload?: FindEligibleMethodsOptions | null;
       };
     }
+  | {
+      type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY_HYDRATION_STATUS;
+      value: INSTANCE_LOADING_STATE;
+    }
   | { type: INSTANCE_DISPATCH_ACTION.SET_ERROR; value: Error }
   | {
       type: INSTANCE_DISPATCH_ACTION.RESET_STATE;
@@ -50,7 +54,7 @@ export const initialState: PayPalState = {
   loadingStatus: INSTANCE_LOADING_STATE.PENDING,
   error: null,
   isHydrated: false,
-  isEligibilityHydrationPending: false,
+  eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
 };
 
 export function instanceReducer(
@@ -71,6 +75,11 @@ export function instanceReducer(
         ...state,
         eligiblePaymentMethods: action.value.eligiblePaymentMethods,
         eligiblePaymentMethodsPayload: action.value.payload,
+      };
+    case INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY_HYDRATION_STATUS:
+      return {
+        ...state,
+        eligibilityHydrationStatus: action.value,
       };
     case INSTANCE_DISPATCH_ACTION.SET_ERROR:
       return {

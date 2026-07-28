@@ -662,6 +662,39 @@ describe("PayPalProvider", () => {
       await waitFor(() => expectRejectedState(state, mockError));
       expect(state.eligiblePaymentMethods).toBe(null);
     });
+
+    test("eligibilityHydrationStatus is REJECTED once hydration errors out", async () => {
+      const mockError = new Error("hydration failed");
+      const mockHydrateEligibleMethods = jest.fn().mockImplementation(() => {
+        throw mockError;
+      });
+      const mockInstance = {
+        ...createMockSdkInstance(),
+        hydrateEligibleMethods: mockHydrateEligibleMethods,
+      };
+
+      (loadCoreSdkScript as jest.Mock).mockResolvedValue({
+        createInstance: jest.fn().mockResolvedValue(mockInstance),
+      });
+
+      const { state } = await renderProvider({
+        eligibleMethodsResponse: TEST_ELIGIBILITY_HOOK_RESULT,
+      });
+
+      await waitFor(() => expectRejectedState(state, mockError));
+      expect(state.eligibilityHydrationStatus).toBe(
+        INSTANCE_LOADING_STATE.REJECTED,
+      );
+    });
+
+    test("eligibilityHydrationStatus remains RESOLVED when no eligibleMethodsResponse is provided", async () => {
+      const { state } = await renderProvider();
+
+      await waitFor(() => expectResolvedState(state));
+      expect(state.eligibilityHydrationStatus).toBe(
+        INSTANCE_LOADING_STATE.RESOLVED,
+      );
+    });
   });
 
   describe("Props Changes", () => {
@@ -1056,7 +1089,7 @@ function setupTestComponent() {
     eligiblePaymentMethods: null,
     error: null,
     isHydrated: false,
-    isEligibilityHydrationPending: false,
+    eligibilityHydrationStatus: INSTANCE_LOADING_STATE.RESOLVED,
   };
 
   function TestComponent({ children = null }: { children?: React.ReactNode }) {

@@ -31,9 +31,7 @@ type PayPalProviderPropsBase = Omit<
 > &
   Omit<LoadCoreSdkScriptOptions, "dataSdkIntegrationSource"> & {
     components?: Components[];
-    eligibleMethodsResponse?:
-      | FindEligiblePaymentMethodsResponse
-      | Promise<FindEligiblePaymentMethodsResponse>;
+    eligibleMethodsResponse?: FindEligiblePaymentMethodsResponse;
     children: React.ReactNode;
   };
 
@@ -337,44 +335,37 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
       return;
     }
 
-    let isSubscribed = true;
-
-    const hydrate = async () => {
-      try {
-        const resolvedResponse = await eligibleMethodsResponse;
-
-        if (!isSubscribed) {
-          return;
-        }
-
-        const eligiblePaymentMethods =
-          sdkInstance.hydrateEligibleMethods(resolvedResponse);
-        dispatch({
-          type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
-          value: { eligiblePaymentMethods, payload: null },
-        });
-      } catch (error) {
-        if (!isSubscribed) {
-          return;
-        }
-        setError(error);
-        dispatch({
-          type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
-          value: toError(error),
-        });
-      }
-    };
-
-    hydrate();
-
-    return () => {
-      isSubscribed = false;
-    };
+    try {
+      const eligiblePaymentMethods = sdkInstance.hydrateEligibleMethods(
+        eligibleMethodsResponse,
+      );
+      dispatch({
+        type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY,
+        value: { eligiblePaymentMethods, payload: null },
+      });
+    } catch (error) {
+      setError(error);
+      dispatch({
+        type: INSTANCE_DISPATCH_ACTION.SET_ERROR,
+        value: toError(error),
+      });
+    }
   }, [state.sdkInstance, eligibleMethodsResponse, setError]);
 
-  // True until eligibleMethodsResponse has hydrated into state.
-  const isEligibilityHydrationPending =
-    !!eligibleMethodsResponse && !state.eligiblePaymentMethods && !state.error;
+  // Dispatched during render (not in an effect) so children see the
+  // correct status on the same render, before their own effects run.
+  let eligibilityHydrationStatus = INSTANCE_LOADING_STATE.RESOLVED;
+  if (eligibleMethodsResponse && !state.eligiblePaymentMethods) {
+    eligibilityHydrationStatus = state.error
+      ? INSTANCE_LOADING_STATE.REJECTED
+      : INSTANCE_LOADING_STATE.PENDING;
+  }
+  if (eligibilityHydrationStatus !== state.eligibilityHydrationStatus) {
+    dispatch({
+      type: INSTANCE_DISPATCH_ACTION.SET_ELIGIBILITY_HYDRATION_STATUS,
+      value: eligibilityHydrationStatus,
+    });
+  }
 
   const contextValue: PayPalState = useMemo(
     () => ({
@@ -384,7 +375,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
       error: state.error,
       loadingStatus: state.loadingStatus,
       isHydrated,
-      isEligibilityHydrationPending,
+      eligibilityHydrationStatus,
     }),
     [
       state.sdkInstance,
@@ -393,7 +384,7 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
       state.error,
       state.loadingStatus,
       isHydrated,
-      isEligibilityHydrationPending,
+      eligibilityHydrationStatus,
     ],
   );
 

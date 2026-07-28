@@ -4,6 +4,7 @@ import { usePayPal } from "./usePayPal";
 import { usePayPalDispatch } from "./usePayPalDispatch";
 import {
   INSTANCE_DISPATCH_ACTION,
+  INSTANCE_LOADING_STATE,
   type EligiblePaymentMethodsOutput,
   type FindEligibleMethodsOptions,
 } from "../types";
@@ -71,7 +72,7 @@ export function useEligibleMethods(
     eligiblePaymentMethods,
     eligiblePaymentMethodsPayload,
     error: contextError,
-    isEligibilityHydrationPending,
+    eligibilityHydrationStatus,
   } = usePayPal();
   const dispatch = usePayPalDispatch();
   const [eligibilityError, setError] = useError();
@@ -107,7 +108,10 @@ export function useEligibleMethods(
     // Hydrated data always has payload null, so it can only ever satisfy a
     // no-payload call. Only block those on hydration; let payload-specific
     // calls fetch immediately since hydration will never answer them.
-    if (isEligibilityHydrationPending && memoizedPayload === undefined) {
+    if (
+      eligibilityHydrationStatus === INSTANCE_LOADING_STATE.PENDING &&
+      memoizedPayload === undefined
+    ) {
       return;
     }
 
@@ -188,7 +192,7 @@ export function useEligibleMethods(
     memoizedPayload,
     dispatch,
     setError,
-    isEligibilityHydrationPending,
+    eligibilityHydrationStatus,
   ]);
 
   // isLoading should be true (unless an error is present) if:
