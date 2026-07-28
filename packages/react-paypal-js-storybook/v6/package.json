@@ -21,7 +21,7 @@
     "directory": "packages/react-paypal-js-storybook/v6"
   },
   "dependencies": {
-    "@paypal/react-paypal-js": "^10.1.2",
+    "@paypal/react-paypal-js": "^10.2.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
