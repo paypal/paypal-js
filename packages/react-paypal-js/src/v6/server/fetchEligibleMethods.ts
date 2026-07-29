@@ -62,6 +62,9 @@ export type FindEligiblePaymentMethodsRequestPayload = {
     };
   };
   shopper_session_id?: string;
+  merchant_info?: {
+    merchant_origin?: string;
+  };
 };
 
 /**
