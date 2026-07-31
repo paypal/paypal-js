@@ -120,6 +120,7 @@ describe("fetchEligibleMethods", () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: false,
       status: 401,
+      text: async () => "Unauthorized",
     });
 
     await expect(
