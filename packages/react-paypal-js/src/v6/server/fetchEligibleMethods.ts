@@ -62,6 +62,9 @@ export type FindEligiblePaymentMethodsRequestPayload = {
     };
   };
   shopper_session_id?: string;
+  merchant_info?: {
+    merchant_origin?: string;
+  };
 };
 
 /**
@@ -119,7 +122,8 @@ export async function fetchEligibleMethods(
     );
 
     if (!response.ok) {
-      throw new Error(`Eligibility API error: ${response.status}`);
+      const body = await response.text();
+      throw new Error(`Eligibility API error: ${response.status} - ${body}`);
     }
 
     const data = await response.json();
