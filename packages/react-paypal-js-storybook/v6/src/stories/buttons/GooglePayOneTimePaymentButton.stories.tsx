@@ -136,6 +136,22 @@ This component renders Google's native payment button via \`PaymentsClient.creat
 - The button is injected asynchronously by Google's SDK, so there may be a brief render delay
 
 It relies on the \`<PayPalProvider />\` parent component with \`components={["googlepay-payments"]}\`.
+
+---
+
+### Going live: domain & eligibility
+
+Google Pay behaves differently in production than in sandbox. Most "works in sandbox, fails in production" reports trace back to domain configuration, so verify these **before** you launch:
+
+1. **Register your checkout domain with Google.** In production, Google validates that the page rendering the button is an allowed domain. Register the **full FQDN** where checkout actually runs (e.g. \`shop.example.com\`) in the Google Pay Business Console — it matches the exact host, not just the apex \`example.com\`.
+
+2. **Tell PayPal your checkout origin.** How you do this depends on where eligibility runs:
+   - **Server-side** (\`fetchEligibleMethods\`, available as of \`@paypal/react-paypal-js\` 10.3.0): pass \`merchant_info.merchant_origin\` — the FQDN of your checkout page — in the payload. There is no browser origin on the server, so you must supply it.
+   - **Client-side** (\`useEligibleMethods\`): the SDK resolves the origin automatically from the browser (\`window.location.origin\`, or your client token's domain claim). You don't — and can't — set it. PayPal uses this origin when preparing the signed authorization Google requires in production.
+
+3. **⚠️ Sandbox does not enforce domain validation.** A missing or mismatched domain/origin can pass in sandbox/TEST and still fail in production. A green sandbox run is **not** proof — always verify the production configuration in production.
+
+4. **Eligibility is device- and browser-sensitive.** Google Pay eligibility depends on the buyer's device and browser. \`useEligibleMethods\` derives that context from the request, so test on the **actual target device/browser** — don't assume a desktop result applies to mobile.
 `,
       },
       page: () => (

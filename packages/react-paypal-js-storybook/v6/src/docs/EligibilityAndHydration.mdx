@@ -1,0 +1,125 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="V6/Documentation/Eligibility and Hydration" />
+
+# Eligibility and Hydration
+
+Not every payment method is available to every buyer. Whether PayPal, Venmo,
+Pay Later, a card, or a wallet should show depends on the **merchant**, the
+**buyer** (country, device, browser), and often the **amount**. Rendering a button
+a buyer can't actually use is a dead end — so you check eligibility first and only
+render what's eligible.
+
+There are **two ways** to get eligibility, and one important rule about combining
+them.
+
+---
+
+## Path A — client-side: `useEligibleMethods`
+
+Call the hook inside `PayPalProvider`. It fetches eligibility in the browser and
+gives you an `isEligible(...)` check:
+
+```tsx
+const { eligiblePaymentMethods, isLoading, error } = useEligibleMethods({
+  payload: {
+    amount: "42.00",
+    currencyCode: "USD",
+    paymentFlow: "ONE_TIME_PAYMENT",
+  },
+});
+
+if (eligiblePaymentMethods?.isEligible("venmo")) {
+  return <VenmoOneTimePaymentButton {...props} />;
+}
+```
+
+The `payload` matters for **amount-sensitive** methods — e.g. Pay Later only
+qualifies within certain amount thresholds, so passing the amount gives an accurate
+answer.
+
+## Path B — server-side prefetch + hydration
+
+On a server-rendered app (e.g. Next.js), fetch eligibility on the server and hand
+the result to the provider so the **browser makes no eligibility request at all**:
+
+```tsx
+// server component / loader
+import { fetchEligibleMethods } from "@paypal/react-paypal-js/sdk-v6/server";
+
+const response = await fetchEligibleMethods({ environment, headers, payload });
+```
+
+```tsx
+// pass it down to the provider — this "hydrates" the SDK
+<PayPalProvider clientId={clientId} eligibleMethodsResponse={response}>
+  <PaymentButtons />
+</PayPalProvider>
+```
+
+Inside `PaymentButtons`, read the hydrated data from context instead of fetching:
+
+```tsx
+const { eligiblePaymentMethods } = usePayPal();
+```
+
+This removes a client round-trip and avoids a flash of "loading" before the buttons
+appear.
+
+---
+
+## The rule: don't mix a payload with hydration
+
+> If you pass `eligibleMethodsResponse` to hydrate **and** also call
+> `useEligibleMethods({ payload })` in a child, you get a **redundant** client-side
+> fetch.
+
+Why: the hydrated response is stored **without** a payload. A later
+`useEligibleMethods({ payload })` call looks for data matching _that payload_,
+can't find it, and fetches again on the client — defeating the point of
+prefetching. Pick one:
+
+- **Hydrating (Path B)?** Read from `usePayPal().eligiblePaymentMethods`. Bake any
+  amount into the server `fetchEligibleMethods` payload, not into a client hook.
+- **Not hydrating (Path A)?** Call `useEligibleMethods({ payload })` and let it
+  fetch on the client.
+
+## Which should I use?
+
+<table>
+  <thead>
+    <tr>
+      <th>Situation</th>
+      <th>Use</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Server-rendered (Next.js App Router, SSR) checkout</td>
+      <td>
+        <strong>Path B</strong> — prefetch +{" "}
+        <code>eligibleMethodsResponse</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Purely client-rendered checkout</td>
+      <td>
+        <strong>Path A</strong> —{" "}
+        <code>{"useEligibleMethods({ payload })"}</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+Either way, when the **amount** affects eligibility (Pay Later has amount
+thresholds, for example), make sure it travels in the payload you send — the
+server `fetchEligibleMethods` payload for Path B, or the
+`useEligibleMethods({ payload })` argument for Path A.
+
+---
+
+### See it end-to-end
+
+The [Next.js sample](https://github.com/paypal-examples/nextjs-paypal-template)
+ships **both** paths side by side — a server-prefetch-and-hydrate checkout and a
+client-fetch-with-payload checkout — so you can compare the wiring directly.
