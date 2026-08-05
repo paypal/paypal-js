@@ -4,11 +4,9 @@ import { Meta } from "@storybook/addon-docs/blocks";
 
 # Eligibility and Hydration
 
-Not every payment method is available to every buyer. Whether PayPal, Venmo,
-Pay Later, a card, or a wallet should show depends on the **merchant**, the
-**buyer** (country, device, browser), and often the **amount**. Rendering a button
-a buyer can't actually use is a dead end — so you check eligibility first and only
-render what's eligible.
+Which payment methods to show depends on the **merchant**, the **buyer**
+(country, device, browser), and often the **amount**. So you check eligibility
+first and render only the methods that are eligible.
 
 There are **two ways** to get eligibility, and one important rule about combining
 them.
@@ -57,10 +55,12 @@ const response = await fetchEligibleMethods({ environment, headers, payload });
 </PayPalProvider>
 ```
 
-Inside `PaymentButtons`, read the hydrated data from context instead of fetching:
+Inside `PaymentButtons`, read the hydrated data with the same hook — call
+`useEligibleMethods()` with **no payload** and it returns the hydrated result
+without triggering a new fetch:
 
 ```tsx
-const { eligiblePaymentMethods } = usePayPal();
+const { eligiblePaymentMethods } = useEligibleMethods();
 ```
 
 This removes a client round-trip and avoids a flash of "loading" before the buttons
@@ -79,8 +79,9 @@ Why: the hydrated response is stored **without** a payload. A later
 can't find it, and fetches again on the client — defeating the point of
 prefetching. Pick one:
 
-- **Hydrating (Path B)?** Read from `usePayPal().eligiblePaymentMethods`. Bake any
-  amount into the server `fetchEligibleMethods` payload, not into a client hook.
+- **Hydrating (Path B)?** Call `useEligibleMethods()` with no payload — it returns
+  the hydrated data without fetching. Bake any amount into the server
+  `fetchEligibleMethods` payload, not into a client hook.
 - **Not hydrating (Path A)?** Call `useEligibleMethods({ payload })` and let it
   fetch on the client.
 

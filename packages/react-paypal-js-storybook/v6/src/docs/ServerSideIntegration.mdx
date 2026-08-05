@@ -15,15 +15,6 @@ its API contract; the full request/response reference lives in the
 
 ---
 
-## Why these calls are server-side
-
-- **Secret stays off the browser** — auth uses your client secret; only a
-  short-lived token or the public client ID is ever sent to the client.
-- **Pricing can't be tampered with** — the server maps a SKU → price from its own
-  catalog, so a client can't post its own amount.
-- **Order lifecycle is authoritative** — create and capture go through PayPal from
-  your server, then you record the result.
-
 ## Endpoints the samples expose
 
 Each row is one endpoint; follow the
@@ -157,3 +148,4 @@ it never creates or captures directly.
 - [Server README — every endpoint, body, and response](https://github.com/paypal-examples/v6-web-sdk-sample-integration/blob/main/server/node/README.md)
 - [PayPal Orders API](https://developer.paypal.com/docs/api/orders/v2/)
 - [PayPal Server SDK (TypeScript)](https://github.com/paypal/PayPal-TypeScript-Server-SDK)
+- [PayPal Find Eligible Methods API](https://developer.paypal.com/api/payments/v2/find-eligible-methods)
