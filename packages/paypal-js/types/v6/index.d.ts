@@ -4,8 +4,10 @@ import { PayPalLegacyBillingInstance } from "./components/paypal-legacy-billing-
 import { VenmoPaymentsInstance } from "./components/venmo-payments";
 import { ApplePayPaymentsInstance } from "./components/applepay-payments";
 import { GooglePayPaymentsInstance } from "./components/googlepay-payments";
-import { LPMPaymentsInstance } from "./components/lpm-payments";
-import type { LPMComponents } from "./components/lpm-payments";
+import type {
+  LPMComponents,
+  LPMInstanceFor,
+} from "./components/lpm-payments";
 import {
   EligiblePaymentMethodsOutput,
   FindEligibleMethodsOptions,
@@ -104,7 +106,7 @@ export type CreateInstanceOptions<T extends readonly Components[]> =
  * - `"paypal-subscriptions"` - Adds PayPalSubscriptionsInstance methods
  * - `"applepay-payments"` - Adds ApplePayPaymentsInstance methods
  * - `"googlepay-payments"` - Adds GooglePayPaymentsInstance methods
- * - LPM components (e.g. `"ideal-payments"`, `"bancontact-payments"`) - Adds LPMPaymentsInstance methods
+ * - LPM components (e.g. `"ideal-payments"`, `"bancontact-payments"`) - Adds only the session-creation method for each requested LPM component (e.g. `createIdealOneTimePaymentSession`)
  *
  * @example
  * ```typescript
@@ -168,9 +170,7 @@ export type SdkInstance<T extends readonly Components[]> = BaseInstance &
   ("googlepay-payments" extends T[number]
     ? GooglePayPaymentsInstance
     : unknown) &
-  ([Extract<T[number], LPMComponents>] extends [never]
-    ? unknown
-    : LPMPaymentsInstance);
+  LPMInstanceFor<T>;
 
 /**
  * @internal

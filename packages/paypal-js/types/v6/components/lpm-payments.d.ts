@@ -71,109 +71,70 @@ export type LPMOneTimePaymentSession = Omit<BasePaymentSession, "start"> & {
   validate: () => Promise<boolean>;
 };
 
-export type LPMComponents =
-  | "ideal-payments"
-  | "bancontact-payments"
-  | "eps-payments"
-  | "blik-payments"
-  | "mybank-payments"
-  | "trustly-payments"
-  | "p24-payments"
-  | "multibanco-payments"
-  | "bizum-payments"
-  | "swish-payments"
-  | "klarna-payments"
-  | "twint-payments"
-  | "wechatpay-payments"
-  | "afterpay-payments"
-  | "oxxopay-payments"
-  | "boletobancario-payments"
-  | "verkkopankki-payments"
-  | "payu-payments"
-  | "paysafecard-payments"
-  | "mbway-payments"
-  | "satispay-payments"
-  | "wero-payments"
-  | "floa-payments"
-  | "scalapay-payments"
-  | "grabpay-payments"
-  | "pix-international-payments"
-  | "sepa-payments"
-  | "crypto-payments"
-  | "doku-payments"
-  | "dragonpay-payments"
-  | "estoniabank-payments"
-  | "fpx-payments"
-  | "gopay-payments"
-  | "alipay-payments"
-  | "indomaret-payments"
-  | "indonesiabanks-payments"
-  | "kredivo-payments"
-  | "linkaja-payments"
-  | "ovo-payments"
-  | "paysera-payments"
-  | "skrill-payments"
-  | "thailand-banks-payments"
-  | "blikpaylater-payments"
-  | "alfamart-payments"
-  | "zip-payments"
-  | "bancomatpay-payments"
-  | "latviabanks-payments"
-  | "fiuu-cash-payments"
-  | "lithuaniabanks-payments"
-  | "jeniuspay-payments";
+/**
+ * Single source of truth mapping each LPM component to the session-creation
+ * method it adds to the SDK instance. `LPMComponents` and `LPMSessionMethodName`
+ * are both derived from this map so they can never drift out of alignment, and
+ * {@link LPMInstanceFor} uses it to narrow the instance type to only the methods
+ * for the components actually requested in `createInstance`.
+ */
+export type LPMComponentToSessionMethod = {
+  "ideal-payments": "createIdealOneTimePaymentSession";
+  "bancontact-payments": "createBancontactOneTimePaymentSession";
+  "eps-payments": "createEpsOneTimePaymentSession";
+  "blik-payments": "createBlikOneTimePaymentSession";
+  "mybank-payments": "createMyBankOneTimePaymentSession";
+  "trustly-payments": "createTrustlyOneTimePaymentSession";
+  "p24-payments": "createP24OneTimePaymentSession";
+  "multibanco-payments": "createMultibancoOneTimePaymentSession";
+  "bizum-payments": "createBizumOneTimePaymentSession";
+  "swish-payments": "createSwishOneTimePaymentSession";
+  "klarna-payments": "createKlarnaOneTimePaymentSession";
+  "twint-payments": "createTwintOneTimePaymentSession";
+  "wechatpay-payments": "createWechatpayOneTimePaymentSession";
+  "afterpay-payments": "createAfterpayOneTimePaymentSession";
+  "oxxopay-payments": "createOxxopayOneTimePaymentSession";
+  "boletobancario-payments": "createBoletobancarioOneTimePaymentSession";
+  "verkkopankki-payments": "createVerkkopankkiOneTimePaymentSession";
+  "payu-payments": "createPayuOneTimePaymentSession";
+  "paysafecard-payments": "createPaysafecardOneTimePaymentSession";
+  "mbway-payments": "createMbWayOneTimePaymentSession";
+  "satispay-payments": "createSatispayOneTimePaymentSession";
+  "wero-payments": "createWeroOneTimePaymentSession";
+  "floa-payments": "createFloaOneTimePaymentSession";
+  "scalapay-payments": "createScalapayOneTimePaymentSession";
+  "grabpay-payments": "createGrabpayOneTimePaymentSession";
+  "pix-international-payments": "createPixInternationalOneTimePaymentSession";
+  "sepa-payments": "createSepaOneTimePaymentSession";
+  "crypto-payments": "createCryptoOneTimePaymentSession";
+  "doku-payments": "createDOKUOneTimePaymentSession";
+  "dragonpay-payments": "createDragonpayOneTimePaymentSession";
+  "estoniabank-payments": "createEstoniaOneTimePaymentSession";
+  "fpx-payments": "createFpxOneTimePaymentSession";
+  "gopay-payments": "createGopayOneTimePaymentSession";
+  "alipay-payments": "createAlipayOneTimePaymentSession";
+  "indomaret-payments": "createIndomaretOneTimePaymentSession";
+  "indonesiabanks-payments": "createIndonesiaBanksOneTimePaymentSession";
+  "kredivo-payments": "createKredivoOneTimePaymentSession";
+  "linkaja-payments": "createLinkajaOneTimePaymentSession";
+  "ovo-payments": "createOvoOneTimePaymentSession";
+  "paysera-payments": "createPayseraOneTimePaymentSession";
+  "skrill-payments": "createSkrillOneTimePaymentSession";
+  "thailand-banks-payments": "createThailandBanksOneTimePaymentSession";
+  "blikpaylater-payments": "createBlikPayLaterOneTimePaymentSession";
+  "alfamart-payments": "createAlfamartOneTimePaymentSession";
+  "zip-payments": "createZipOneTimePaymentSession";
+  "bancomatpay-payments": "createBancomatPayOneTimePaymentSession";
+  "latviabanks-payments": "createLatviaBanksOneTimePaymentSession";
+  "fiuu-cash-payments": "createFIUUOneTimePaymentSession";
+  "lithuaniabanks-payments": "createLithuaniaBanksOneTimePaymentSession";
+  "jeniuspay-payments": "createJeniuspayOneTimePaymentSession";
+};
+
+export type LPMComponents = keyof LPMComponentToSessionMethod;
 
 export type LPMSessionMethodName =
-  | "createIdealOneTimePaymentSession"
-  | "createBancontactOneTimePaymentSession"
-  | "createEpsOneTimePaymentSession"
-  | "createBlikOneTimePaymentSession"
-  | "createMyBankOneTimePaymentSession"
-  | "createTrustlyOneTimePaymentSession"
-  | "createP24OneTimePaymentSession"
-  | "createMultibancoOneTimePaymentSession"
-  | "createBizumOneTimePaymentSession"
-  | "createSwishOneTimePaymentSession"
-  | "createKlarnaOneTimePaymentSession"
-  | "createTwintOneTimePaymentSession"
-  | "createWechatpayOneTimePaymentSession"
-  | "createAfterpayOneTimePaymentSession"
-  | "createOxxopayOneTimePaymentSession"
-  | "createBoletobancarioOneTimePaymentSession"
-  | "createVerkkopankkiOneTimePaymentSession"
-  | "createPayuOneTimePaymentSession"
-  | "createPaysafecardOneTimePaymentSession"
-  | "createMbWayOneTimePaymentSession"
-  | "createSatispayOneTimePaymentSession"
-  | "createWeroOneTimePaymentSession"
-  | "createFloaOneTimePaymentSession"
-  | "createScalapayOneTimePaymentSession"
-  | "createGrabpayOneTimePaymentSession"
-  | "createPixInternationalOneTimePaymentSession"
-  | "createSepaOneTimePaymentSession"
-  | "createCryptoOneTimePaymentSession"
-  | "createDOKUOneTimePaymentSession"
-  | "createDragonpayOneTimePaymentSession"
-  | "createEstoniaOneTimePaymentSession"
-  | "createFpxOneTimePaymentSession"
-  | "createGopayOneTimePaymentSession"
-  | "createAlipayOneTimePaymentSession"
-  | "createIndomaretOneTimePaymentSession"
-  | "createIndonesiaBanksOneTimePaymentSession"
-  | "createKredivoOneTimePaymentSession"
-  | "createLinkajaOneTimePaymentSession"
-  | "createOvoOneTimePaymentSession"
-  | "createPayseraOneTimePaymentSession"
-  | "createSkrillOneTimePaymentSession"
-  | "createThailandBanksOneTimePaymentSession"
-  | "createBlikPayLaterOneTimePaymentSession"
-  | "createAlfamartOneTimePaymentSession"
-  | "createZipOneTimePaymentSession"
-  | "createBancomatPayOneTimePaymentSession"
-  | "createLatviaBanksOneTimePaymentSession"
-  | "createFIUUOneTimePaymentSession"
-  | "createLithuaniaBanksOneTimePaymentSession"
-  | "createJeniuspayOneTimePaymentSession";
+  LPMComponentToSessionMethod[keyof LPMComponentToSessionMethod];
 
 /**
  * The {@link LPMPaymentsInstance} provides access to Local Payment Method (LPM)
@@ -183,6 +144,23 @@ export type LPMSessionMethodName =
  */
 export type LPMPaymentsInstance = {
   [K in LPMSessionMethodName]?: (
+    options: LPMOneTimePaymentSessionOptions,
+  ) => LPMOneTimePaymentSession;
+};
+
+/**
+ * Narrows {@link LPMPaymentsInstance} down to only the session-creation methods
+ * for the LPM components present in `T`. Requesting `["ideal-payments"]` yields
+ * only `createIdealOneTimePaymentSession?`, instead of all LPM methods.
+ * `T` is generic over `readonly string[]` (rather than `Components[]`) to avoid
+ * a circular import with `../index`; non-LPM entries in `T` are ignored via
+ * `Extract`, and an empty extraction resolves to `{}` (a no-op intersection).
+ */
+export type LPMInstanceFor<T extends readonly string[]> = {
+  [C in Extract<
+    T[number],
+    LPMComponents
+  > as LPMComponentToSessionMethod[C]]?: (
     options: LPMOneTimePaymentSessionOptions,
   ) => LPMOneTimePaymentSession;
 };

@@ -61,9 +61,16 @@ async function main() {
     phone: sessionFields.phone,
   });
 
-  // Verify LPMPaymentsInstance narrowing from SdkInstance
+  // A narrower LPM instance (only the requested component's method) is
+  // always assignable to the full LPMPaymentsInstance (all methods optional).
   const instance: LPMPaymentsInstance = sdkInstance;
   instance.createIdealOneTimePaymentSession?.({
     onApprove: async () => undefined,
   });
+
+  // Requesting only "ideal-payments" must narrow the instance down to just
+  // createIdealOneTimePaymentSession; other LPM methods should not exist on
+  // the type at all (not merely be `undefined`).
+  // @ts-expect-error createBancontactOneTimePaymentSession is not part of the type when only "ideal-payments" was requested
+  sdkInstance.createBancontactOneTimePaymentSession;
 }
