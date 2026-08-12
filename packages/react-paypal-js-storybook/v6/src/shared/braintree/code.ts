@@ -12,6 +12,9 @@ const HTML_PREREQ = `// IMPORTANT: load the Braintree client and paypal-checkout
 
 const TOKEN_FETCH_HELPER = `async function getBraintreeClientToken(): Promise<string> {
     const response = await fetch("/braintree-api/auth/browser-safe-client-token");
+    if (!response.ok) {
+        throw new Error(\`Failed to fetch Braintree client token: \${response.status} \${response.statusText}\`);
+    }
     const { clientToken } = await response.json();
     return clientToken;
 }`;
@@ -65,6 +68,9 @@ async function completePayment(nonce: string, amount: string) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ paymentMethodNonce: nonce, amount }),
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to complete payment: \${response.status} \${response.statusText}\`);
+    }
     return response.json();
 }
 
@@ -212,6 +218,9 @@ async function vaultPaymentMethod(nonce: string) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ paymentMethodNonce: nonce }),
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to vault payment method: \${response.status} \${response.statusText}\`);
+    }
     return response.json();
 }
 
@@ -278,6 +287,9 @@ async function completePaymentAndVault(nonce: string, amount: string) {
             options: { storeInVaultOnSuccess: true },
         }),
     });
+    if (!response.ok) {
+        throw new Error(\`Failed to complete payment and vault: \${response.status} \${response.statusText}\`);
+    }
     return response.json();
 }
 

@@ -38,6 +38,14 @@ export async function createOrder(): Promise<{ orderId: string }> {
       headers: { "Content-Type": "application/json" },
     },
   );
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(
+      `Failed to create order: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ""}`,
+    );
+  }
+
   const data = await response.json();
   return { orderId: data.id };
 }
@@ -52,6 +60,14 @@ export async function captureOrder(
       headers: { "Content-Type": "application/json" },
     },
   );
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(
+      `Failed to capture order ${orderId}: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ""}`,
+    );
+  }
+
   return response.json();
 }
 
@@ -65,6 +81,14 @@ export async function createVaultToken(): Promise<{ vaultSetupToken: string }> {
       headers: { "Content-Type": "application/json" },
     },
   );
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(
+      `Failed to create vault setup token: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ""}`,
+    );
+  }
+
   const data = await response.json();
   return { vaultSetupToken: data.id };
 }
@@ -81,6 +105,14 @@ export async function createSubscription(): Promise<{
       headers: { "Content-Type": "application/json" },
     },
   );
+
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(
+      `Failed to create subscription: ${response.status} ${response.statusText}${errorBody ? ` - ${errorBody}` : ""}`,
+    );
+  }
+
   const data = await response.json();
   return { subscriptionId: data.id };
 }
