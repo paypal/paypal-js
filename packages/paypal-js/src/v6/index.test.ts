@@ -186,8 +186,7 @@ describe("loadCoreSdkScript()", () => {
       );
 
       expect(result).toBeDefined();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect(window[customNamespace as any]).toBeDefined();
+      expect(customNamespace in window).toBe(true);
     });
 
     test("should error when dataNamespace is an empty string", async () => {
