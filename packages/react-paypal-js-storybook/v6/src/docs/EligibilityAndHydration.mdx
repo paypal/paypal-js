@@ -68,6 +68,34 @@ appear.
 
 ---
 
+## `merchant_origin`: send a bare hostname, not a full origin
+
+When you build the server-side `fetchEligibleMethods` payload, set
+`merchant_info.merchant_origin` to your checkout page's **bare hostname** — no
+scheme, no port, no path:
+
+```json
+{ "merchant_info": { "merchant_origin": "checkout.example.com" } }
+```
+
+Despite the `origin` in the field name, this is **not** a full web origin (which
+would include the `https://` scheme and any port). It is only the **hostname**
+(fully-qualified domain name):
+
+- ✅ `checkout.example.com`
+- ❌ `https://checkout.example.com` (has a scheme)
+- ❌ `checkout.example.com:8443` (has a port)
+- ❌ `https://checkout.example.com/pay` (scheme and path)
+
+Why it matters: domain-bound wallets like **Google Pay** and **Apple Pay** validate
+this value against the merchant's **registered domain**, which is a bare FQDN.
+Sending a scheme or port makes the wallet reject it — for example, Google Pay
+returns an `OR_BIBED` origin error. You only set `merchant_origin` yourself on the
+**server** (Path B) payload; the client-side `useEligibleMethods` hook derives it
+for you.
+
+---
+
 ## The rule: don't mix a payload with hydration
 
 > If you pass `eligibleMethodsResponse` to hydrate **and** also call
