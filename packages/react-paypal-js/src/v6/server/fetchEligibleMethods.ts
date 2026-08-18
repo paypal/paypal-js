@@ -63,9 +63,48 @@ export type FindEligiblePaymentMethodsRequestPayload = {
   };
   shopper_session_id?: string;
   merchant_info?: {
+    /**
+     * The merchant's checkout domain as a bare hostname — NO scheme, NO port
+     * (e.g. `checkout.example.com`). Google Pay validates this against the
+     * registered domain; a scheme or port causes OR_BIBED_06.
+     * `fetchEligibleMethods` normalizes this to a hostname before sending.
+     */
     merchant_origin?: string;
   };
 };
+
+/**
+ * Reduce a `merchant_origin` to a bare hostname (no scheme, no port). Google Pay
+ * (and other domain-bound methods) validate it against the registered domain, and
+ * a scheme/port gets signed into the Google Pay authJwt and rejected by Google
+ * (OR_BIBED_06). If the value can't be parsed, return it unchanged and let the API
+ * validate it.
+ */
+function toHostname(value: string): string {
+  try {
+    const hasScheme = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(value);
+    return new URL(hasScheme ? value : `https://${value}`).hostname;
+  } catch {
+    return value;
+  }
+}
+
+/** Return a copy of `payload` with `merchant_info.merchant_origin` normalized to a hostname. */
+function normalizeMerchantOrigin(
+  payload: FindEligiblePaymentMethodsRequestPayload,
+): FindEligiblePaymentMethodsRequestPayload {
+  const origin = payload.merchant_info?.merchant_origin;
+  if (origin === undefined) {
+    return payload;
+  }
+  return {
+    ...payload,
+    merchant_info: {
+      ...payload.merchant_info,
+      merchant_origin: toHostname(origin),
+    },
+  };
+}
 
 /**
  * Server-side function to fetch eligible payment methods from the PayPal API.
@@ -105,7 +144,7 @@ export async function fetchEligibleMethods(
     );
   }
 
-  const defaultPayload = payload ?? {};
+  const defaultPayload = normalizeMerchantOrigin(payload ?? {});
   const baseUrl =
     environment === "production"
       ? "https://api-m.paypal.com"

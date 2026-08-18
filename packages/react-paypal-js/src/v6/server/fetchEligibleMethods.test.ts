@@ -185,6 +185,44 @@ describe("fetchEligibleMethods", () => {
     );
   });
 
+  test("normalizes merchant_origin to a bare hostname (strips scheme and port)", async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockResponse,
+    });
+
+    await fetchEligibleMethods({
+      environment: "sandbox",
+      headers: mockHeaders,
+      payload: {
+        ...mockPayload,
+        merchant_info: { merchant_origin: "https://checkout.example.com:8443" },
+      },
+    });
+
+    const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body);
+    expect(body.merchant_info.merchant_origin).toBe("checkout.example.com");
+  });
+
+  test("leaves a bare-hostname merchant_origin unchanged", async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => mockResponse,
+    });
+
+    await fetchEligibleMethods({
+      environment: "sandbox",
+      headers: mockHeaders,
+      payload: {
+        ...mockPayload,
+        merchant_info: { merchant_origin: "checkout.example.com" },
+      },
+    });
+
+    const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body);
+    expect(body.merchant_info.merchant_origin).toBe("checkout.example.com");
+  });
+
   test("exposes the deprecated useFetchEligibleMethods alias", () => {
     expect(useFetchEligibleMethods).toBe(fetchEligibleMethods);
   });
