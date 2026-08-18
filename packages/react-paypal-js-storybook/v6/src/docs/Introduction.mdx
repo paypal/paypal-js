@@ -1,0 +1,103 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="V6/Documentation/Introduction" />
+
+# PayPal v6 Web SDK — React Components
+
+This Storybook is an interactive reference for [`@paypal/react-paypal-js`](https://www.npmjs.com/package/@paypal/react-paypal-js) (v6),
+the React wrapper around PayPal's v6 Web SDK. Every button in the **Buttons**,
+**Card Fields**, and **Braintree** sections is a live, editable example — change
+the controls and watch the component re-render.
+
+The **Documentation** pages collect the cross-cutting knowledge you
+need _around_ the components: how to set up credentials, what your server has to
+provide, and how payment-method eligibility works.
+
+---
+
+## Two official sample integrations
+
+Everything shown here comes from two maintained, end-to-end sample apps. Read the
+distilled version on these pages; clone the repos for the complete, runnable code.
+
+<table>
+  <thead>
+    <tr>
+      <th>Sample</th>
+      <th>Stack</th>
+      <th>Use it when…</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <a href="https://github.com/paypal-examples/v6-web-sdk-sample-integration">
+          <strong>v6 Web SDK Sample Integration</strong>
+        </a>
+      </td>
+      <td>
+        Vanilla HTML/JS demos + a prebuilt React (Vite) app, on a shared
+        Node/Express server
+      </td>
+      <td>
+        You want the broadest coverage — one-time payments, vault,
+        subscriptions, Apple/Google Pay, ACH
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="https://github.com/paypal-examples/nextjs-paypal-template">
+          <strong>Next.js Sample Integration</strong>
+        </a>
+      </td>
+      <td>Next.js (App Router) + React + the same Express backend</td>
+      <td>
+        You're on Next.js / React and want Server Components, Server Actions,
+        and SSR eligibility hydration
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+Both talk to the **same** Node/Express backend, so the server contract in
+[Server-Side Integration](?path=/docs/v6-documentation-server-side-integration--docs)
+applies to either one.
+
+---
+
+## How the pieces fit together
+
+A checkout spans three tiers — the React app in the browser, **your** server, and
+PayPal. The React components never touch your secret or the amount; those stay on
+your server.
+
+1. **Load** — [`PayPalProvider`](?path=/docs/v6-documentation-getting-started--docs)
+   fetches a browser-safe `clientId` (or client token) from your server, then loads
+   the SDK once and shares a single checkout-scoped instance.
+2. **Eligibility** — `useEligibleMethods()` asks your server's
+   `find-eligible-methods` endpoint which methods to render for this buyer, merchant,
+   and amount. See [Eligibility and Hydration](?path=/docs/v6-documentation-eligibility-and-hydration--docs).
+3. **Create order** — when the buyer clicks a button, its `createOrder` calls your
+   server, which calls PayPal's Orders API and returns an `orderId`.
+4. **Capture** — after the buyer approves, `onApprove` calls your server again to
+   capture the order through the Orders API.
+
+Steps 3 and 4 are server-side on purpose — see
+[Server-Side Integration](?path=/docs/v6-documentation-server-side-integration--docs).
+
+---
+
+## Where to go next
+
+1. [**Getting Started**](?path=/docs/v6-documentation-getting-started--docs) — credentials and running a sample locally.
+2. [**Server-Side Integration**](?path=/docs/v6-documentation-server-side-integration--docs) — the endpoints your backend must expose.
+3. [**Eligibility and Hydration**](?path=/docs/v6-documentation-eligibility-and-hydration--docs) — client vs. server eligibility, and SSR hydration.
+4. Browse the **Buttons** section on the left for per-component props and live examples.
+
+### Reference links
+
+- [PayPal v6 Web SDK documentation](https://docs.paypal.ai/developer/how-to/sdk/js/v6/configuration)
+- [`@paypal/react-paypal-js` on npm](https://www.npmjs.com/package/@paypal/react-paypal-js)
+- [v6 Web SDK Sample Integration (GitHub)](https://github.com/paypal-examples/v6-web-sdk-sample-integration)
+- [Next.js Sample Integration (GitHub)](https://github.com/paypal-examples/nextjs-paypal-template)
+- [PayPal Developer Dashboard](https://developer.paypal.com/dashboard/)

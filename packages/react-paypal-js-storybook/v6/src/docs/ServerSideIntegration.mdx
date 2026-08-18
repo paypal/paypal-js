@@ -1,0 +1,151 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="V6/Documentation/Server-Side Integration" />
+
+# Server-Side Integration
+
+The buttons in this Storybook render in the browser, but a real integration needs
+a server for anything sensitive: it holds your **client secret**, owns **pricing**,
+and creates/captures **orders**. The browser never sees the secret and never
+decides the amount.
+
+Both official samples talk to the **same Node/Express backend**. This page distills
+its API contract; the full request/response reference lives in the
+[server README](https://github.com/paypal-examples/v6-web-sdk-sample-integration/blob/main/server/node/README.md).
+
+---
+
+## Endpoints the samples expose
+
+Each row is one endpoint; follow the
+[server README](https://github.com/paypal-examples/v6-web-sdk-sample-integration/blob/main/server/node/README.md)
+for the full body and response shape.
+
+<table>
+  <thead>
+    <tr>
+      <th>Endpoint</th>
+      <th>Method</th>
+      <th>What it does</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>/paypal-api/auth/browser-safe-client-token</code>
+      </td>
+      <td>GET</td>
+      <td>
+        Short-lived <strong>client token</strong> — works with every SDK feature
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>/paypal-api/auth/browser-safe-client-id</code>
+      </td>
+      <td>GET</td>
+      <td>
+        Static <strong>client ID</strong> — works with a limited set of features
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>/paypal-api/products</code>
+      </td>
+      <td>GET</td>
+      <td>
+        Product catalog (SKU → price); server-owned so pricing can't be
+        manipulated
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>
+          /paypal-api/checkout/orders/create-order-for-one-time-payment
+        </code>
+      </td>
+      <td>POST</td>
+      <td>
+        Creates an order; server computes the total from the cart + catalog
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>/paypal-api/checkout/orders/{"{orderId}"}/capture</code>
+      </td>
+      <td>POST</td>
+      <td>Captures an approved order and finalizes payment</td>
+    </tr>
+    <tr>
+      <td>
+        <code>/paypal-api/vault/create-setup-token-for-*</code>
+      </td>
+      <td>POST</td>
+      <td>Starts saving a PayPal or card payment method (vault)</td>
+    </tr>
+    <tr>
+      <td>
+        <code>/paypal-api/vault/payment-token/create</code>
+      </td>
+      <td>POST</td>
+      <td>Turns a setup token into a long-lived, stored payment token</td>
+    </tr>
+    <tr>
+      <td>
+        <code>/paypal-api/billing/create-subscription</code>
+      </td>
+      <td>POST</td>
+      <td>Creates a subscription against a billing plan</td>
+    </tr>
+    <tr>
+      <td>
+        <code>/paypal-api/payments/find-eligible-methods</code>
+      </td>
+      <td>POST</td>
+      <td>
+        Returns which payment methods are eligible (see Eligibility and
+        Hydration)
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+> The samples build these on top of the
+> [PayPal Server SDK](https://github.com/paypal/PayPal-TypeScript-Server-SDK). You
+> don't have to match these exact paths — they're the contract the sample _clients_
+> expect. What matters is that create/capture/auth happen on your server.
+
+## Authentication: token vs. client ID
+
+The SDK supports two browser-safe auth options:
+
+- **Client token** — short-lived; unlocks **every** SDK feature. Fetch it per
+  session from `browser-safe-client-token`.
+- **Client ID** — a static public identifier; works with a **limited** feature
+  set. Simpler, but not sufficient for every method.
+
+When in doubt, use the **client token**. See PayPal's
+[Authentication docs](https://developer.paypal.com/api/rest/authentication/).
+
+## The create → approve → capture flow
+
+Three steps, with the two API calls on your server:
+
+1. **Create** — the button's `createOrder` calls your `create-order` endpoint,
+   which calls PayPal and returns an `orderId`.
+2. **Approve** — the buyer approves in the PayPal or wallet UI (handled by the SDK).
+3. **Capture** — the button's `onApprove` receives the `orderId` and calls your
+   `capture` endpoint, which finalizes the payment and returns
+   `status: "COMPLETED"`.
+
+The client only forwards the `orderId` it receives back to your capture endpoint —
+it never creates or captures directly.
+
+---
+
+### Full reference
+
+- [Server README — every endpoint, body, and response](https://github.com/paypal-examples/v6-web-sdk-sample-integration/blob/main/server/node/README.md)
+- [PayPal Orders API](https://developer.paypal.com/docs/api/orders/v2/)
+- [PayPal Server SDK (TypeScript)](https://github.com/paypal/PayPal-TypeScript-Server-SDK)
+- [PayPal Find Eligible Methods API](https://developer.paypal.com/api/payments/v2/find-eligible-methods)
