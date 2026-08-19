@@ -151,7 +151,7 @@ export type LPMPaymentsInstance = {
 /**
  * Narrows {@link LPMPaymentsInstance} down to only the session-creation methods
  * for the LPM components present in `T`. Requesting `["ideal-payments"]` yields
- * only `createIdealOneTimePaymentSession?`, instead of all LPM methods.
+ * only `createIdealOneTimePaymentSession`, instead of all LPM methods.
  * `T` is generic over `readonly string[]` (rather than `Components[]`) to avoid
  * a circular import with `../index`; non-LPM entries in `T` are ignored via
  * `Extract`, and an empty extraction resolves to `{}` (a no-op intersection).
@@ -160,7 +160,7 @@ export type LPMInstanceFor<T extends readonly string[]> = {
   [C in Extract<
     T[number],
     LPMComponents
-  > as LPMComponentToSessionMethod[C]]?: (
+  > as LPMComponentToSessionMethod[C]]: (
     options: LPMOneTimePaymentSessionOptions,
   ) => LPMOneTimePaymentSession;
 };

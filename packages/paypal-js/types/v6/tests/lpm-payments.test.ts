@@ -29,14 +29,10 @@ async function main() {
     components: ["ideal-payments"],
   });
 
-  const idealSession: LPMOneTimePaymentSession | undefined =
-    sdkInstance.createIdealOneTimePaymentSession?.({
+  const idealSession: LPMOneTimePaymentSession =
+    sdkInstance.createIdealOneTimePaymentSession({
       onApprove: async () => undefined,
     });
-
-  if (!idealSession) {
-    return;
-  }
 
   // Session fields belong in the promise passed as the 2nd argument to
   // start(), not on the presentation-mode options (1st argument).
