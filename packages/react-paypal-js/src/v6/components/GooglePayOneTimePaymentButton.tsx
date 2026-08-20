@@ -25,6 +25,11 @@ export type GooglePayOneTimePaymentButtonProps =
  * Unlike PayPal/Venmo buttons (which use PayPal web components), this component
  * mounts the native Google Pay button created by `google.payments.api.PaymentsClient.createButton()`.
  *
+ * When an order requires 3DS (`PAYER_ACTION_REQUIRED`), the underlying hook runs the
+ * payer-action (SCA) flow automatically and calls `onApprove` only after the buyer
+ * authenticates — with `liabilityShift` included in the data. A cancel or failure is
+ * reported through `onError`.
+ *
  * @example
  * ```tsx
  * <GooglePayOneTimePaymentButton
