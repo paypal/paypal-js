@@ -18,6 +18,13 @@ const preview: Preview = {
         order: [
           "V6",
           [
+            "Documentation",
+            [
+              "Introduction",
+              "Getting Started",
+              "Server-Side Integration",
+              "Eligibility and Hydration",
+            ],
             "Buttons",
             [
               "PayPalOneTimePaymentButton",

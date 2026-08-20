@@ -1,0 +1,120 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="V6/Documentation/Getting Started" />
+
+# Getting Started
+
+This page is the distilled quickstart. For the full, runnable setup see each
+sample's README:
+[v6 Web SDK sample](https://github.com/paypal-examples/v6-web-sdk-sample-integration#readme)
+·
+[Next.js sample](https://github.com/paypal-examples/nextjs-paypal-template#readme).
+
+---
+
+## 1. Get PayPal credentials
+
+1. Create or log in to a PayPal account, then open the
+   [Developer Dashboard](https://developer.paypal.com/dashboard/).
+2. [Create a sandbox application](https://developer.paypal.com/dashboard/applications/sandbox/create)
+   to obtain a **Client ID** and **Secret**.
+3. Keep the **Secret** on your server only. The **Client ID** is browser-safe and
+   is what `PayPalProvider` needs.
+
+## 2. Install the package
+
+```bash
+npm install @paypal/react-paypal-js
+```
+
+All v6 components and hooks are imported from the `sdk-v6` entry point:
+
+```tsx
+import {
+  PayPalProvider,
+  PayPalOneTimePaymentButton,
+  useEligibleMethods,
+} from "@paypal/react-paypal-js/sdk-v6";
+```
+
+## 3. Wrap your checkout in `PayPalProvider`
+
+The provider loads the SDK once and shares a single checkout-scoped instance. Pass
+the `clientId` you fetched from your server (never hard-code it) and the
+`components` you actually render:
+
+```tsx
+<PayPalProvider
+  clientId={clientId}
+  environment="sandbox" // "production" when you go live
+  components={["paypal-payments", "venmo-payments", "paypal-guest-payments"]}
+  pageType="checkout"
+>
+  <PaymentButtons />
+</PayPalProvider>
+```
+
+`components` maps to the buttons you render:
+
+- `paypal-payments` — PayPal and Pay Later buttons
+- `venmo-payments` — Venmo button
+- `paypal-guest-payments` — card (BCDC guest) button
+- `googlepay-payments` / `applepay-payments` — the wallet buttons
+
+Load only what you render — each component adds to what the SDK downloads.
+
+## 4. Render a button
+
+```tsx
+function PaymentButtons() {
+  return (
+    <PayPalOneTimePaymentButton
+      presentationMode="auto"
+      createOrder={() => createOrderOnYourServer()}
+      onApprove={(data) => captureOnYourServer(data.orderId)}
+    />
+  );
+}
+```
+
+`createOrder` and `onApprove` must call **your server** — see
+[Server-Side Integration](?path=/docs/v6-documentation-server-side-integration--docs).
+To render only the methods a buyer is eligible for, see
+[Eligibility and Hydration](?path=/docs/v6-documentation-eligibility-and-hydration--docs).
+
+---
+
+## Running a sample locally
+
+Every sample needs the shared Express backend. Create a `.env` with your sandbox
+`PAYPAL_SANDBOX_CLIENT_ID` and `PAYPAL_SANDBOX_CLIENT_SECRET`, then start the
+backend once (leave it running):
+
+```bash
+cd server/node && npm install && npm start   # backend on :8080
+```
+
+Then pick a frontend:
+
+**[v6 Web SDK sample](https://github.com/paypal-examples/v6-web-sdk-sample-integration) — vanilla HTML examples:** the backend also serves these as static files, so nothing else to start — open [http://localhost:8080](http://localhost:8080).
+
+**[v6 Web SDK sample](https://github.com/paypal-examples/v6-web-sdk-sample-integration/tree/main/client/prebuiltPages/react) — React app** (`client/prebuiltPages/react`): start its Vite dev server in a second terminal:
+
+```bash
+cd client/prebuiltPages/react && npm install && npm start   # React on :3000
+```
+
+**[Next.js sample](https://github.com/paypal-examples/nextjs-paypal-template):** start the Next.js dev server in a second terminal:
+
+```bash
+npm install && npm run dev                    # Next.js on :3000
+```
+
+Both React frontends reach the backend on `:8080` (the Vite dev server proxies
+`/paypal-api` there; the Next.js sample calls it via Server Actions). See each
+README for the full setup:
+[v6 Web SDK sample README](https://github.com/paypal-examples/v6-web-sdk-sample-integration#readme)
+·
+[React app README](https://github.com/paypal-examples/v6-web-sdk-sample-integration/blob/main/client/prebuiltPages/react/README.md)
+·
+[Next.js sample README](https://github.com/paypal-examples/nextjs-paypal-template#readme).
