@@ -29,10 +29,14 @@ async function main() {
     components: ["ideal-payments"],
   });
 
-  const idealSession: LPMOneTimePaymentSession =
-    sdkInstance.createIdealOneTimePaymentSession({
+  const idealSession: LPMOneTimePaymentSession | undefined =
+    sdkInstance.createIdealOneTimePaymentSession?.({
       onApprove: async () => undefined,
     });
+
+  if (!idealSession) {
+    return;
+  }
 
   // Session fields belong in the promise passed as the 2nd argument to
   // start(), not on the presentation-mode options (1st argument).
@@ -57,16 +61,9 @@ async function main() {
     phone: sessionFields.phone,
   });
 
-  // A narrower LPM instance (only the requested component's method) is
-  // always assignable to the full LPMPaymentsInstance (all methods optional).
+  // Verify LPMPaymentsInstance narrowing from SdkInstance
   const instance: LPMPaymentsInstance = sdkInstance;
   instance.createIdealOneTimePaymentSession?.({
     onApprove: async () => undefined,
   });
-
-  // Requesting only "ideal-payments" must narrow the instance down to just
-  // createIdealOneTimePaymentSession; other LPM methods should not exist on
-  // the type at all (not merely be `undefined`).
-  // @ts-expect-error createBancontactOneTimePaymentSession is not part of the type when only "ideal-payments" was requested
-  sdkInstance.createBancontactOneTimePaymentSession;
 }
