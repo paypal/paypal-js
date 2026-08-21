@@ -1,18 +1,18 @@
 @font-face {
-  font-family: "PayPal Plain";
+  font-family: "PayPalOpen";
   font-weight: 400;
   font-display: block;
   font-style: normal;
-  src: url("https://www.paypalobjects.com/marketing/pp-com-components/fonts/PayPal%20Plain/PayPalPlain-Regular.woff2")
+  src: url("https://www.paypalobjects.com/paypal-ui/fonts/PayPalOpen-Regular.woff2")
     format("woff2");
 }
 
 @font-face {
-  font-family: "PayPal Plain";
+  font-family: "PayPalOpen";
   font-weight: 500;
   font-display: block;
   font-style: normal;
-  src: url("https://www.paypalobjects.com/marketing/pp-com-components/fonts/PayPal%20Plain/PayPalPlain-Medium.woff2")
+  src: url("https://www.paypalobjects.com/paypal-ui/fonts/PayPalOpen-Medium.woff2")
     format("woff2");
 }
 
@@ -46,7 +46,7 @@ h5,
 h6 {
   font-family:
     "PayPal Pro",
-    "PayPal Plain",
+    "PayPalOpen",
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
