@@ -235,7 +235,7 @@ export interface ApplePayPaymentsInstance {
    * ```typescript
    * // Check if Apple Pay is available
    * const isApplePayAvailable =
-   *   window.ApplePaySession && ApplePaySession.canMakePayments();
+   *   typeof ApplePaySession !== "undefined" && ApplePaySession.canMakePayments();
    *
    * if (!isApplePayAvailable) {
    *   return;

@@ -10,7 +10,6 @@ import type {
   ApplePayOneTimePaymentSession,
   ApplePayConfig,
   ApplePayContact,
-  ApplePayPaymentToken,
   ConfirmOrderResponse,
   BasePaymentSessionReturn,
 } from "../types";
@@ -232,10 +231,13 @@ export function useApplePayOneTimePaymentSession({
       return;
     }
 
-    // Check if Apple Pay is available on this device/browser
+    // Check if Apple Pay is available on this device/browser.
+    // `ApplePaySession` is Apple's browser global (typed by @types/applepayjs); guard with
+    // `typeof` since it is absent outside Safari and referencing it bare would throw.
     if (
       typeof window === "undefined" ||
-      !window.ApplePaySession?.canMakePayments()
+      typeof ApplePaySession === "undefined" ||
+      !ApplePaySession.canMakePayments()
     ) {
       setError(new Error("Apple Pay is not available"));
       return;
@@ -247,7 +249,7 @@ export function useApplePayOneTimePaymentSession({
       return;
     }
 
-    const { ApplePaySession: ApplePaySessionConstructor } = window;
+    const ApplePaySessionConstructor = ApplePaySession;
 
     try {
       const paypalSession = sessionRef.current;
@@ -264,7 +266,7 @@ export function useApplePayOneTimePaymentSession({
       // Create Apple's native payment session
       const applePaySession = new ApplePaySessionConstructor(
         applePaySessionVersion,
-        fullPaymentRequest,
+        fullPaymentRequest as ApplePayJS.ApplePayPaymentRequest,
       );
       activeApplePaySessionRef.current = applePaySession;
 
@@ -295,13 +297,9 @@ export function useApplePayOneTimePaymentSession({
       };
 
       // Handle payment authorization
-      applePaySession.onpaymentauthorized = async (event: {
-        payment: {
-          token: ApplePayPaymentToken;
-          billingContact: ApplePayContact;
-          shippingContact?: ApplePayContact;
-        };
-      }) => {
+      applePaySession.onpaymentauthorized = async (
+        event: ApplePayJS.ApplePayPaymentAuthorizedEvent,
+      ) => {
         let didCompletePayment = false;
 
         // Call completePayment only once per ApplePaySession.
@@ -329,7 +327,10 @@ export function useApplePayOneTimePaymentSession({
           const confirmResult = await paypalSession.confirmOrder({
             orderId: order.orderId,
             token: event.payment.token,
-            billingContact: event.payment.billingContact,
+            // Apple types billingContact as optional, but PayPal's SDK requires it to
+            // proxy the order to Apple Pay; the merchant requests billing fields, so it
+            // is present at runtime.
+            billingContact: event.payment.billingContact as ApplePayContact,
             shippingContact: event.payment.shippingContact,
           });
 

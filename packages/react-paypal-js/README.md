@@ -758,7 +758,7 @@ Renders Apple's native `<apple-pay-button>` web component and manages the full A
 
 **Integration steps:**
 
-1. Check `window.ApplePaySession?.canMakePayments()` — only render the button if this returns `true`. Wrap in `try-catch` because it throws on non-HTTPS connections.
+1. Check `ApplePaySession.canMakePayments()` — only render the button if this returns `true`. Wrap in `try-catch` because it throws on non-HTTPS connections. (`ApplePaySession` is Apple's browser global; install `@types/applepayjs` to type it.)
 2. Call `useEligibleMethods()` to fetch eligibility and obtain `applePayConfig` from `getDetails("applepay").config`.
 3. Pass `applePayConfig` explicitly to the component — it is a required prop.
 
@@ -798,8 +798,8 @@ function ApplePayCheckout() {
   let canUseApplePay = false;
   try {
     canUseApplePay =
-      typeof window !== "undefined" &&
-      !!window.ApplePaySession?.canMakePayments();
+      typeof ApplePaySession !== "undefined" &&
+      !!ApplePaySession.canMakePayments();
   } catch {
     // Not available (e.g., non-HTTPS environment)
   }
