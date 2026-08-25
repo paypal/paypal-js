@@ -752,6 +752,10 @@ Renders Apple's native `<apple-pay-button>` web component and manages the full A
 ></script>
 ```
 
+> **TypeScript:** the integration below references Apple's native `window.ApplePaySession`
+> global. PayPal does not ship types for it. Install the community typings to type it in your
+> own code: `npm install --save-dev @types/applepayjs`.
+
 **Integration steps:**
 
 1. Check `window.ApplePaySession?.canMakePayments()` — only render the button if this returns `true`. Wrap in `try-catch` because it throws on non-HTTPS connections.

@@ -371,6 +371,11 @@ These are the components that currently support the TypeScript types offered for
 | `applepay-payments`                | Apple Pay payment integration                       |
 | `googlepay-payments`               | Google Pay payment integration                      |
 
+> **Apple Pay & TypeScript:** the Apple Pay flow relies on Apple's native
+> `window.ApplePaySession` browser global. `paypal-js` does not ship types for it. If you
+> reference it in your own code, install the community typings:
+> `npm install --save-dev @types/applepayjs`.
+
 ### V6 TypeScript Types
 
 Import types from the `@paypal/paypal-js/sdk-v6` subpath:
