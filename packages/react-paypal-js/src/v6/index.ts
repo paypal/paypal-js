@@ -163,6 +163,7 @@ export {
 export {
   useGooglePayOneTimePaymentSession,
   type UseGooglePayOneTimePaymentSessionProps,
+  type GooglePayOnApproveData,
 } from "./hooks/useGooglePayOneTimePaymentSession";
 
 // React 19+ JSX SDK Web Components type declaration

@@ -118,7 +118,10 @@ async function main() {
 
   // Check if 3DS is required
   if (approveResponse.status === "PAYER_ACTION_REQUIRED") {
-    googlePaySession.initiatePayerAction();
+    const payerActionResult = await googlePaySession.initiatePayerAction({
+      orderId: "ORDER-123",
+    });
+    payerActionResult.liabilityShift;
   }
 
   // Verify GooglePayPaymentsInstance narrowing from SdkInstance

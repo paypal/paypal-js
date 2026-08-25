@@ -14,8 +14,33 @@ import type {
   GooglePayButtonOptions,
   GooglePayApprovePaymentResponse,
   GooglePayTransactionInfo,
+  LiabilityShiftType,
   BasePaymentSessionReturn,
 } from "../types";
+
+/**
+ * Data passed to `onApprove`. When the order required 3DS
+ * (`PAYER_ACTION_REQUIRED`), this fires after the payer-action flow resolves and
+ * includes the resulting `liabilityShift`.
+ *
+ * @remarks
+ * `liabilityShift` is the only 3DS field the JS SDK surfaces client-side. The
+ * full authentication result — `liability_shift` alongside the enrollment and
+ * authentication statuses — lives on the order at
+ * `payment_source.google_pay.card.authentication_result`. Merchants who need
+ * that richer context to decide whether to capture (for example, a `"NO"`
+ * shift can mean either a hard decline or "card not enrolled, proceed at your
+ * own risk") should read it from the order server-side rather than from this
+ * payload.
+ */
+export type GooglePayOnApproveData = GooglePayApprovePaymentResponse & {
+  /**
+   * The 3DS liability-shift outcome, present only when 3DS ran. For the
+   * enrollment and authentication statuses, read the order's
+   * `payment_source.google_pay.card.authentication_result` server-side.
+   */
+  liabilityShift?: LiabilityShiftType;
+};
 
 export type UseGooglePayOneTimePaymentSessionProps = {
   /**
@@ -39,8 +64,14 @@ export type UseGooglePayOneTimePaymentSessionProps = {
   createOrder: () => Promise<{ orderId: string }>;
   /**
    * Callback invoked when the payment is successfully approved.
+   *
+   * When 3DS (`PAYER_ACTION_REQUIRED`) is required, this fires after the
+   * payer-action flow resolves, and the data includes `liabilityShift`.
+   * The enrollment and authentication statuses are not surfaced here; read the
+   * order's `payment_source.google_pay.card.authentication_result` server-side
+   * if you need them.
    */
-  onApprove: (data: GooglePayApprovePaymentResponse) => void | Promise<void>;
+  onApprove: (data: GooglePayOnApproveData) => void | Promise<void>;
   /**
    * Optional callback invoked when the payment is cancelled.
    */
@@ -91,6 +122,11 @@ export type UseGooglePayOneTimePaymentSessionReturn =
  * The hook manages the entire session lifecycle including order creation, payment confirmation,
  * 3DS (PAYER_ACTION_REQUIRED) handling, and error management.
  *
+ * When an order requires 3DS, the hook launches the payer-action (SCA) flow automatically and
+ * calls `onApprove` (which merchants typically use to capture) after the payer-action flow
+ * resolves. On that path the `onApprove` data also includes `liabilityShift`. If the buyer
+ * cancels or authentication errors out, `onError` is called instead.
+ *
  * @example
  * ```typescript
  * function GooglePayCheckoutButton() {
@@ -120,7 +156,10 @@ export type UseGooglePayOneTimePaymentSessionReturn =
  *       const data = await response.json();
  *       return { orderId: data.id };
  *     },
- *     onApprove: (data) => console.log("Payment approved:", data),
+ *     onApprove: (data) => {
+ *       // data.liabilityShift is present when 3DS ran
+ *       console.log("Payment approved:", data);
+ *     },
  *     onError: (err) => console.error("Payment error:", err),
  *   });
  *
@@ -261,10 +300,45 @@ export function useGooglePayOneTimePaymentSession({
                   paymentData.paymentMethodData as unknown as GooglePayPaymentMethodData,
               });
 
-              // Handle 3DS (3-D Secure) authentication if required
-              // When confirmOrder returns PAYER_ACTION_REQUIRED status, initiate payer action
+              // Handle 3DS (3-D Secure) authentication when required.
+              // When confirmOrder returns PAYER_ACTION_REQUIRED, the buyer must
+              // complete the payer-action flow before the order can be captured.
               if (confirmResult.status === "PAYER_ACTION_REQUIRED") {
-                paypalSession.initiatePayerAction();
+                // Do NOT await here: the 3DS modal can only open once Google's
+                // payment sheet closes, and that sheet stays open until this
+                // callback resolves. So we kick off the 3DS flow, return SUCCESS
+                // to close the sheet, and notify the merchant out-of-band once
+                // the payer-action flow resolves. onApprove fires when that flow
+                // resolves; buyer cancel and authentication errors reject and are
+                // routed to onError instead.
+                paypalSession
+                  .initiatePayerAction({ orderId: order.orderId })
+                  .then((payerActionResult) => {
+                    if (!isMountedRef.current) {
+                      return;
+                    }
+                    // Merge liabilityShift into the approve payload so merchants
+                    // can read the shift without a separate order fetch. The
+                    // enrollment/authentication statuses are not available
+                    // client-side; they live on the order's
+                    // payment_source.google_pay.card.authentication_result.
+                    return proxyCallbacks.onApprove({
+                      ...confirmResult,
+                      ...payerActionResult,
+                    });
+                  })
+                  .catch((err) => {
+                    if (!isMountedRef.current) {
+                      return;
+                    }
+                    // The core SDK rejects with the same error for both buyer
+                    // cancel and authentication failure, so both surface here.
+                    const paymentError = toError(err);
+                    setError(paymentError);
+                    proxyCallbacks.onError?.(paymentError);
+                  });
+
+                return { transactionState: "SUCCESS" as const };
               }
 
               await proxyCallbacks.onApprove(confirmResult);
@@ -299,7 +373,14 @@ export function useGooglePayOneTimePaymentSession({
       setError(setupError);
       proxyCallbacks.onError?.(setupError);
     }
-  }, [googlePayConfig, environment, proxyCallbacks, sdkInstance, setError]);
+  }, [
+    googlePayConfig,
+    environment,
+    proxyCallbacks,
+    sdkInstance,
+    setError,
+    isMountedRef,
+  ]);
 
   const createGooglePayButton = useCallback(
     async (options: GooglePayButtonOptions): Promise<HTMLElement | null> => {

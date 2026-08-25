@@ -121,7 +121,9 @@ const createMockGooglePaySession = (): GooglePayOneTimePaymentSession => ({
     },
     links: [],
   }),
-  initiatePayerAction: jest.fn(),
+  initiatePayerAction: jest
+    .fn()
+    .mockResolvedValue({ liabilityShift: "POSSIBLE" }),
 });
 
 const createMockSdkInstance = (
@@ -500,7 +502,7 @@ describe("useGooglePayOneTimePaymentSession", () => {
       expect(authResult).toEqual({ transactionState: "SUCCESS" });
     });
 
-    test("should handle 3DS PAYER_ACTION_REQUIRED response", async () => {
+    test("should complete 3DS PAYER_ACTION_REQUIRED and approve with liabilityShift", async () => {
       (mockGooglePaySession.confirmOrder as jest.Mock).mockResolvedValue({
         id: "test-order-id",
         status: "PAYER_ACTION_REQUIRED",
@@ -522,6 +524,11 @@ describe("useGooglePayOneTimePaymentSession", () => {
           },
         ],
       });
+      (mockGooglePaySession.initiatePayerAction as jest.Mock).mockResolvedValue(
+        {
+          liabilityShift: "POSSIBLE",
+        },
+      );
 
       const { result } = renderHook(() =>
         useGooglePayOneTimePaymentSession(defaultProps),
@@ -538,9 +545,116 @@ describe("useGooglePayOneTimePaymentSession", () => {
         authResult = await capturedOnPaymentAuthorized!(mockPaymentData);
       });
 
-      expect(mockGooglePaySession.initiatePayerAction).toHaveBeenCalled();
-      expect(defaultProps.onApprove).toHaveBeenCalled();
+      // The callback returns SUCCESS immediately so the Google Pay sheet closes
+      // and the 3DS modal can open (3DS is not awaited inside the callback).
       expect(authResult).toEqual({ transactionState: "SUCCESS" });
+      expect(mockGooglePaySession.initiatePayerAction).toHaveBeenCalledWith({
+        orderId: "ORDER-123",
+      });
+
+      // onApprove fires out-of-band, only after 3DS resolves.
+      await act(async () => {
+        await Promise.resolve();
+        await Promise.resolve();
+      });
+
+      expect(defaultProps.onApprove).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: "PAYER_ACTION_REQUIRED",
+          liabilityShift: "POSSIBLE",
+        }),
+      );
+      expect(defaultProps.onError).not.toHaveBeenCalled();
+    });
+
+    test("should route a 3DS cancel/failure to onError, not onApprove", async () => {
+      (mockGooglePaySession.confirmOrder as jest.Mock).mockResolvedValue({
+        id: "test-order-id",
+        status: "PAYER_ACTION_REQUIRED",
+        payment_source: {
+          google_pay: {
+            name: "Test User",
+            card: { last_digits: "1234", type: "CREDIT", brand: "VISA" },
+          },
+        },
+        links: [],
+      });
+      const threeDSError = new Error("3DS authentication failed");
+      (mockGooglePaySession.initiatePayerAction as jest.Mock).mockRejectedValue(
+        threeDSError,
+      );
+
+      const { result } = renderHook(() =>
+        useGooglePayOneTimePaymentSession(defaultProps),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      let authResult: unknown;
+      await act(async () => {
+        authResult = await capturedOnPaymentAuthorized!(mockPaymentData);
+      });
+
+      // Sheet still closes on the merchant's behalf.
+      expect(authResult).toEqual({ transactionState: "SUCCESS" });
+
+      await act(async () => {
+        await Promise.resolve();
+        await Promise.resolve();
+      });
+
+      expect(defaultProps.onError).toHaveBeenCalledWith(threeDSError);
+      expect(defaultProps.onApprove).not.toHaveBeenCalled();
+      expectCurrentErrorValue(result.current.error);
+      expect(result.current.error).toEqual(threeDSError);
+    });
+
+    test("should not notify after unmount when 3DS resolves late", async () => {
+      (mockGooglePaySession.confirmOrder as jest.Mock).mockResolvedValue({
+        id: "test-order-id",
+        status: "PAYER_ACTION_REQUIRED",
+        payment_source: {
+          google_pay: {
+            name: "Test User",
+            card: { last_digits: "1234", type: "CREDIT", brand: "VISA" },
+          },
+        },
+        links: [],
+      });
+      // A payer-action promise we resolve manually, after unmount.
+      let resolvePayerAction: (value: {
+        liabilityShift: string;
+      }) => void = () => {};
+      (mockGooglePaySession.initiatePayerAction as jest.Mock).mockReturnValue(
+        new Promise((resolve) => {
+          resolvePayerAction = resolve;
+        }),
+      );
+
+      const { result, unmount } = renderHook(() =>
+        useGooglePayOneTimePaymentSession(defaultProps),
+      );
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      await act(async () => {
+        await capturedOnPaymentAuthorized!(mockPaymentData);
+      });
+
+      unmount();
+
+      await act(async () => {
+        resolvePayerAction({ liabilityShift: "YES" });
+        await Promise.resolve();
+        await Promise.resolve();
+      });
+
+      expect(defaultProps.onApprove).not.toHaveBeenCalled();
+      expect(defaultProps.onError).not.toHaveBeenCalled();
     });
 
     test("should error when Google Pay SDK is not available", async () => {

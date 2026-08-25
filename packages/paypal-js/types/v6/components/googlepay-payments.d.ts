@@ -267,6 +267,35 @@ export type GooglePayApprovePaymentResponse = {
 };
 
 /**
+ * Outcome of the issuer's 3D Secure authentication, indicating whether
+ * liability for the transaction has shifted to the card issuer.
+ */
+export type LiabilityShiftType = "UNKNOWN" | "NO" | "YES" | "POSSIBLE";
+
+/**
+ * Options passed when launching the 3DS payer action flow.
+ */
+export type InitiatePayerActionOptions = {
+  /** The PayPal order ID returned when the order was created. */
+  orderId: string;
+};
+
+/**
+ * Result of a successful 3DS payer action flow.
+ *
+ * If the buyer cancels the 3DS modal or authentication fails, the promise
+ * rejects instead of resolving, so the merchant does not attempt to capture an
+ * unauthenticated order.
+ */
+export type InitiatePayerActionResponse = {
+  /**
+   * The outcome of the issuer's authentication, indicating whether liability
+   * for the transaction has shifted to the card issuer.
+   */
+  liabilityShift?: LiabilityShiftType;
+};
+
+/**
  * Options for confirming a Google Pay order
  *
  * @remarks
@@ -365,14 +394,29 @@ export interface GooglePayOneTimePaymentSession {
   ): Promise<GooglePayApprovePaymentResponse>;
 
   /**
-   * Initiates 3DS authentication flow (placeholder)
+   * Launches the 3DS (Strong Customer Authentication) flow for an order.
    *
    * @remarks
-   * This method is currently a placeholder for future 3DS support.
+   * Call this after `confirmOrder` returns a `status` of
+   * `"PAYER_ACTION_REQUIRED"`. It opens PayPal's 3DS iframe modal and resolves
+   * once the buyer completes authentication, with the resulting `liabilityShift`.
    *
-   * @internal
+   * If the buyer cancels the modal or authentication fails, the promise
+   * **rejects** so the merchant does not capture an unauthenticated order.
+   *
+   * Note for Google Pay: the 3DS modal can only open after Google's payment
+   * sheet has closed, and that sheet stays open until the `onPaymentAuthorized`
+   * callback resolves. Do **not** `await` this method inside
+   * `onPaymentAuthorized` — return `{ transactionState: "SUCCESS" }` to close the
+   * sheet first, then handle this promise out-of-band.
+   *
+   * @param options - Object containing the PayPal `orderId`
+   * @returns Promise resolving with the 3DS `liabilityShift` outcome on success,
+   *   and rejecting on cancel or failure
    */
-  initiatePayerAction(): void;
+  initiatePayerAction(
+    options: InitiatePayerActionOptions,
+  ): Promise<InitiatePayerActionResponse>;
 }
 
 /**
