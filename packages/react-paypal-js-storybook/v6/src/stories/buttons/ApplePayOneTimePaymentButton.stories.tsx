@@ -45,8 +45,8 @@ function ApplePayStoryWrapper(args: ApplePayStoryArgs) {
   let canUseApplePay = false;
   try {
     canUseApplePay =
-      typeof window !== "undefined" &&
-      !!window.ApplePaySession?.canMakePayments();
+      typeof ApplePaySession !== "undefined" &&
+      !!ApplePaySession.canMakePayments();
   } catch {
     // canMakePayments() throws on non-HTTPS (InvalidAccessError)
   }
@@ -162,7 +162,7 @@ This component renders Apple's native \`<apple-pay-button>\` and manages the ful
 - Apple Pay JS SDK loaded via \`<script crossorigin src="https://applepay.cdn-apple.com/jsapi/1.latest/apple-pay-sdk.js"></script>\`
 
 **Merchant responsibilities (before rendering this component):**
-1. Check \`window.ApplePaySession?.canMakePayments()\` — only render the button if this returns \`true\`. This avoids unnecessary API calls on unsupported browsers.
+1. Check \`ApplePaySession.canMakePayments()\` — only render the button if this returns \`true\`. This avoids unnecessary API calls on unsupported browsers.
 2. Call \`useEligibleMethods()\` to fetch eligibility and obtain \`applePayConfig\` from \`getDetails("applepay").config\`.
 3. Pass \`applePayConfig\` explicitly to the component — this is a required prop.
 
