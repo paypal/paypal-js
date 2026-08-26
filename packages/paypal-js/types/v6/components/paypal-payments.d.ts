@@ -79,7 +79,10 @@ export type OnCancelDataSavePayments = {
   vaultSetupToken?: string;
 };
 
-export type PayPalOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
+export type PayPalOneTimePaymentSessionOptions = Omit<
+  BasePaymentSessionOptions,
+  "onApprove"
+> & {
   commit?: boolean;
   orderId?: string;
   onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;
