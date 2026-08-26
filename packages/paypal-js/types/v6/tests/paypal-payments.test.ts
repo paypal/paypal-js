@@ -63,19 +63,20 @@ async function main() {
   });
 
   // Regression guard for https://github.com/paypal/paypal-js/issues/1020:
-  // `onApprove` is required for one-time PayPal payment sessions (and its
-  // Pay Later / Credit aliases). It must not be reintroduced as optional
-  // (e.g. via an intersection that fails to `Omit` it from
-  // `BasePaymentSessionOptions` first).
-
-  // @ts-expect-error - onApprove is required
+  // `onApprove` is OPTIONAL for one-time PayPal payment sessions (and its
+  // Pay Later / Credit aliases). The presentation mode is only chosen later at
+  // `.start()`, and redirect flows legitimately omit `onApprove`, so core cannot
+  // require it. It is re-added as optional via `Omit<BasePaymentSessionOptions,
+  // "onApprove">` (mirroring `SavePaymentSessionOptions`), so an empty options
+  // object must type-check.
   sdkInstance.createPayPalOneTimePaymentSession({});
-
-  // @ts-expect-error - onApprove is required
   sdkInstance.createPayLaterOneTimePaymentSession({});
-
-  // @ts-expect-error - onApprove is required
   sdkInstance.createPayPalCreditOneTimePaymentSession({});
+
+  // When supplied, `onApprove` is still type-checked.
+  sdkInstance.createPayPalOneTimePaymentSession({
+    onApprove: onApproveCallback,
+  });
 
   const createOrder = () => Promise.resolve({ orderId: "ABC123" });
 
