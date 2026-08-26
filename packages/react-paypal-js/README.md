@@ -296,7 +296,20 @@ function CheckoutPage() {
     );
   }
 
-  return <PayPalOneTimePaymentButton orderId="ORDER-123" />;
+  return (
+    <PayPalOneTimePaymentButton
+      orderId="ORDER-123"
+      onApprove={async ({ orderId }) => {
+        const response = await fetch(`/api/capture/${orderId}`, {
+          method: "POST",
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to capture order: ${response.status}`);
+        }
+      }}
+    />
+  );
 }
 ```
 
@@ -308,17 +321,19 @@ All button components share a common set of props for order creation, payment ca
 
 These props are accepted by the standard PayPal button components. Buttons with different flows (vault, subscription, Google Pay, Apple Pay) override some of these — see the individual sections.
 
-| Prop               | Type                                                         | Description                                                         |
-| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------------- |
-| `orderId`          | `string`                                                     | Static order ID (alternative to `createOrder`)                      |
-| `createOrder`      | `() => Promise<{ orderId: string }>`                         | Async function to create an order                                   |
-| `presentationMode` | `"auto" \| "popup" \| "modal" \| "redirect"`                 | Optional. How to present the payment session. Defaults to `"auto"`. |
-| `onApprove`        | `(data) => void`                                             | Called when payment is approved                                     |
-| `onCancel`         | `() => void`                                                 | Called when buyer cancels                                           |
-| `onError`          | `(error) => void`                                            | Called on error                                                     |
-| `onComplete`       | `(data) => void`                                             | Called when payment session completes                               |
-| `type`             | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"` | Button label type                                                   |
-| `disabled`         | `boolean`                                                    | Disable the button                                                  |
+| Prop               | Type                                                         | Description                                                            |
+| ------------------ | ------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| `orderId`          | `string`                                                     | Static order ID (alternative to `createOrder`)                         |
+| `createOrder`      | `() => Promise<{ orderId: string }>`                         | Async function to create an order                                      |
+| `presentationMode` | `"auto" \| "popup" \| "modal" \| "redirect"`                 | Optional. How to present the payment session. Defaults to `"auto"`.    |
+| `onApprove`        | `(data) => Promise<void>`                                    | Called after buyer approval; return or await payment-finalization work |
+| `onCancel`         | `() => void`                                                 | Called when buyer cancels                                              |
+| `onError`          | `(error) => void`                                            | Called on error                                                        |
+| `onComplete`       | `(data) => void`                                             | Called when payment session completes                                  |
+| `type`             | `"pay" \| "checkout" \| "buynow" \| "donate" \| "subscribe"` | Button label type                                                      |
+| `disabled`         | `boolean`                                                    | Disable the button                                                     |
+
+For PayPal, Pay Later, and PayPal Credit one-time payment flows, `onApprove` must return a Promise. Return or await all capture or authorization work so the SDK waits for it to finish; do not start the request without returning its Promise.
 
 > **Vault and subscription buttons** replace order creation: `PayPalSavePaymentButton` and `PayPalCreditSavePaymentButton` use `vaultSetupToken`/`createVaultToken` instead of `orderId`/`createOrder`, and `PayPalSubscriptionButton` uses `subscriptionId`/`createSubscription`.
 
@@ -336,7 +351,14 @@ import { PayPalOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
     return { orderId };
   }}
   onApprove={async ({ orderId }: OnApproveDataOneTimePayments) => {
-    await fetch(`/api/capture/${orderId}`, { method: "POST" });
+    const response = await fetch(`/api/capture/${orderId}`, {
+      method: "POST",
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to capture order: ${response.status}`);
+    }
+
     console.log("Payment approved!");
   }}
   onCancel={(data: OnCancelDataOneTimePayments) =>
