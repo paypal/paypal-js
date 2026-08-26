@@ -1,7 +1,6 @@
 import {
   BasePaymentSessionOptions,
   BasePaymentSession,
-  OnApproveDataOneTimePayments,
   PresentationModeOptionsForPopup,
   PresentationModeOptionsForModal,
   PresentationModeOptionsForAuto,
@@ -82,7 +81,6 @@ export type OnCancelDataSavePayments = {
 export type PayPalOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
   commit?: boolean;
   orderId?: string;
-  onApprove?: (data: OnApproveDataOneTimePayments) => Promise<void>;
   onShippingAddressChange?: (
     data: OnShippingAddressChangeData,
   ) => Promise<void>;

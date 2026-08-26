@@ -296,7 +296,14 @@ function CheckoutPage() {
     );
   }
 
-  return <PayPalOneTimePaymentButton orderId="ORDER-123" />;
+  return (
+    <PayPalOneTimePaymentButton
+      orderId="ORDER-123"
+      onApprove={async ({ orderId }) => {
+        await fetch(`/api/capture/${orderId}`, { method: "POST" });
+      }}
+    />
+  );
 }
 ```
 
