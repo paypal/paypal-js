@@ -62,6 +62,21 @@ async function main() {
     commit: true,
   });
 
+  // Regression guard for https://github.com/paypal/paypal-js/issues/1020:
+  // `onApprove` is required for one-time PayPal payment sessions (and its
+  // Pay Later / Credit aliases). It must not be reintroduced as optional
+  // (e.g. via an intersection that fails to `Omit` it from
+  // `BasePaymentSessionOptions` first).
+
+  // @ts-expect-error - onApprove is required
+  sdkInstance.createPayPalOneTimePaymentSession({});
+
+  // @ts-expect-error - onApprove is required
+  sdkInstance.createPayLaterOneTimePaymentSession({});
+
+  // @ts-expect-error - onApprove is required
+  sdkInstance.createPayPalCreditOneTimePaymentSession({});
+
   const createOrder = () => Promise.resolve({ orderId: "ABC123" });
 
   const paypalButton = document.querySelector("paypal-button");
