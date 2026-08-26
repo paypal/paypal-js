@@ -300,7 +300,15 @@ function CheckoutPage() {
     <PayPalOneTimePaymentButton
       orderId="ORDER-123"
       onApprove={async ({ orderId }) => {
-        await fetch(`/api/capture/${orderId}`, { method: "POST" });
+        const response = await fetch(`/api/capture/${orderId}`,
+        {
+          method: "POST",
+        });
+    
+        if (!response.ok) {
+          throw new Error(`Failed to capture order:
+          ${response.status}`);
+        }
       }}
     />
   );
