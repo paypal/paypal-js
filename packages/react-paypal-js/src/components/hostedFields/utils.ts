@@ -42,14 +42,20 @@ export const generateMissingHostedFieldsError = ({
  * @param registerTypes
  * @returns @type {true} when the children are valid
  */
-const validateExpirationDate = (
+const hasInvalidExpirationDate = (
   registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[],
 ) => {
-  return (
-    !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE) &&
-    !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_MONTH) &&
-    !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_YEAR)
+  const hasDate = registerTypes.includes(
+    PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE,
   );
+  const hasMonth = registerTypes.includes(
+    PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_MONTH,
+  );
+  const hasYear = registerTypes.includes(
+    PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_YEAR,
+  );
+
+  return hasDate ? hasMonth || hasYear : !hasMonth || !hasYear;
 };
 
 /**
@@ -63,7 +69,7 @@ const hasDefaultChildren = (registerTypes: PAYPAL_HOSTED_FIELDS_TYPES[]) => {
   if (
     !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.NUMBER) ||
     !registerTypes.includes(PAYPAL_HOSTED_FIELDS_TYPES.CVV) ||
-    validateExpirationDate(registerTypes)
+    hasInvalidExpirationDate(registerTypes)
   ) {
     throw new Error(HOSTED_FIELDS_CHILDREN_ERROR);
   }

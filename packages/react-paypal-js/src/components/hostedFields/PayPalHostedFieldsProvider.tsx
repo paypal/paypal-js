@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 
 import { PayPalHostedFieldsContext } from "../../context/payPalHostedFieldsContext";
 import { useHostedFieldsRegister } from "./hooks";
@@ -16,10 +16,7 @@ import { getPayPalWindowNamespace } from "../../utils";
 
 import type { FC } from "react";
 import type { PayPalHostedFieldsComponentProps } from "../../types/payPalHostedFieldTypes";
-import type {
-  PayPalHostedFieldsComponent,
-  HostedFieldsHandler,
-} from "@paypal/paypal-js";
+import type { HostedFieldsHandler } from "@paypal/paypal-js";
 
 /**
 This `<PayPalHostedFieldsProvider />` provider component wraps the form field elements and accepts props like `createOrder()`.
@@ -37,8 +34,6 @@ export const PayPalHostedFieldsProvider: FC<
   const [isEligible, setIsEligible] = useState<boolean>(true);
   const [cardFields, setCardFields] = useState<HostedFieldsHandler>();
   const [, setErrorState] = useState(null);
-  const hostedFieldsContainerRef = useRef<HTMLDivElement>(null);
-  const hostedFields = useRef<PayPalHostedFieldsComponent>();
   const [registeredFields, registerHostedField] = useHostedFieldsRegister();
 
   useEffect(() => {
@@ -50,11 +45,11 @@ export const PayPalHostedFieldsProvider: FC<
       return;
     }
     // Get the hosted fields from the [window.paypal.HostedFields] SDK
-    hostedFields.current = getPayPalWindowNamespace(
+    const hostedFields = getPayPalWindowNamespace(
       options[SDK_SETTINGS.DATA_NAMESPACE],
-    ).HostedFields;
+    )?.HostedFields;
 
-    if (!hostedFields.current) {
+    if (!hostedFields) {
       throw new Error(
         generateMissingHostedFieldsError({
           components: options.components,
@@ -62,15 +57,21 @@ export const PayPalHostedFieldsProvider: FC<
         }),
       );
     }
-    if (!hostedFields.current.isEligible()) {
+    if (!hostedFields.isEligible()) {
       return setIsEligible(false);
     }
-    // Clean all the fields before the rerender
-    if (cardFields) {
-      cardFields.teardown();
-    }
+    let isSubscribed = true;
+    let cardFieldsInstance: HostedFieldsHandler | undefined;
 
-    hostedFields.current
+    const teardown = async () => {
+      try {
+        await cardFieldsInstance?.teardown();
+      } catch {
+        // Ignore errors when closing an obsolete or unmounted instance.
+      }
+    };
+
+    hostedFields
       .render({
         // Call your server to set up the transaction
         createOrder: createOrder,
@@ -78,22 +79,34 @@ export const PayPalHostedFieldsProvider: FC<
         installments,
         styles,
       })
-      .then((cardFieldsInstance) => {
-        if (hostedFieldsContainerRef.current) {
-          setCardFields(cardFieldsInstance);
+      .then((instance) => {
+        cardFieldsInstance = instance;
+        if (isSubscribed) {
+          setCardFields(instance);
+        } else {
+          return teardown();
         }
       })
       .catch((err) => {
+        if (!isSubscribed) {
+          return;
+        }
         setErrorState(() => {
           throw new Error(
             `Failed to render <PayPalHostedFieldsProvider /> component. ${err}`,
           );
         });
       });
+
+    return () => {
+      isSubscribed = false;
+      teardown();
+      setCardFields(undefined);
+    };
   }, [loadingStatus, styles]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div ref={hostedFieldsContainerRef}>
+    <div>
       {isEligible ? (
         <PayPalHostedFieldsContext.Provider
           value={{
