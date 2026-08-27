@@ -18,7 +18,7 @@ import type { BraintreePayPalButtonsComponentProps } from "../../types";
  */
 const isValidBraintreeNamespace = (braintreeSource?: BraintreeNamespace) => {
   if (
-    typeof braintreeSource?.client?.create !== "function" &&
+    typeof braintreeSource?.client?.create !== "function" ||
     typeof braintreeSource?.paypalCheckout?.create !== "function"
   ) {
     throw new Error(
