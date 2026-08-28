@@ -943,8 +943,8 @@ function ApplePayCheckout() {
     let canUseApplePay = false;
     try {
         canUseApplePay =
-            typeof window !== "undefined" &&
-            !!window.ApplePaySession?.canMakePayments();
+            typeof ApplePaySession !== "undefined" &&
+            !!ApplePaySession.canMakePayments();
     } catch {
         // Not available (e.g., non-HTTPS environment)
     }

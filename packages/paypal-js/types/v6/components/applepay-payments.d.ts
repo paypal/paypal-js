@@ -210,6 +210,11 @@ export type ApplePayOneTimePaymentSession = {
  * The {@link ApplePayPaymentsInstance} enables seamless integration with Apple Pay's payment flow,
  * providing a secure and user-friendly way to process payments through the Apple Pay platform.
  *
+ * @remarks
+ * The examples below reference Apple's native `ApplePaySession` browser global. PayPal does not
+ * ship types for it; install the community typings to type it in your own code:
+ * `npm install --save-dev @types/applepayjs`.
+ *
  */
 export interface ApplePayPaymentsInstance {
   /**
@@ -230,7 +235,7 @@ export interface ApplePayPaymentsInstance {
    * ```typescript
    * // Check if Apple Pay is available
    * const isApplePayAvailable =
-   *   window.ApplePaySession && ApplePaySession.canMakePayments();
+   *   typeof window.ApplePaySession !== "undefined" && window.ApplePaySession.canMakePayments();
    *
    * if (!isApplePayAvailable) {
    *   return;
@@ -293,35 +298,4 @@ export interface ApplePayPaymentsInstance {
    * ```
    */
   createApplePayOneTimePaymentSession: () => ApplePayOneTimePaymentSession;
-}
-
-/**
- * Native Apple Pay session API (Safari-only).
- * @see https://developer.apple.com/documentation/apple_pay_on_the_web/applepaysession
- */
-declare class ApplePaySession {
-  static STATUS_SUCCESS: number;
-  static STATUS_FAILURE: number;
-  static canMakePayments(): boolean;
-  static supportsVersion(version: number): boolean;
-  constructor(version: number, paymentRequest: unknown);
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onvalidatemerchant: ((event: any) => void) | null;
-  onpaymentmethodselected: (() => void) | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onpaymentauthorized: ((event: any) => void) | null;
-  oncancel: (() => void) | null;
-
-  completeMerchantValidation(merchantSession: unknown): void;
-  completePaymentMethodSelection(update: unknown): void;
-  completePayment(result: { status: number }): void;
-  begin(): void;
-  abort(): void;
-}
-
-declare global {
-  interface Window {
-    ApplePaySession?: typeof ApplePaySession;
-  }
 }
