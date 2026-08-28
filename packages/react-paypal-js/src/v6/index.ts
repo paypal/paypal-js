@@ -166,6 +166,12 @@ export {
   type GooglePayOnApproveData,
 } from "./hooks/useGooglePayOneTimePaymentSession";
 
+// ============================================================================
+// Local Payment Methods
+// ============================================================================
+
+export * from "./lpmExports";
+
 // React 19+ JSX SDK Web Components type declaration
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

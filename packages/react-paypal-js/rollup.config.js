@@ -93,8 +93,9 @@ export default [
     ],
   },
 
-  // V6 ESM build
+  // V6 Client ESM build
   // - Bundle-level "use client" directive for RSC compatibility
+  // - Exposes core and LPM APIs from one public client entry
   // - Externalizes @paypal/paypal-js to avoid bundling the core SDK
   // - Externalizes server-only for RSC server/client boundary enforcement
   // - ESM-only (no CJS) as v6 targets modern React/Next.js environments
@@ -105,7 +106,7 @@ export default [
         tsconfig: "./tsconfig.v6.json",
       }),
       cleanup({
-        comments: "none",
+        comments: [/__PURE__/],
       }),
     ],
     external: ["react", /^@paypal\/paypal-js/, "server-only"],
@@ -150,34 +151,6 @@ export default [
         format: "esm",
         plugins: [getBabelOutputPlugin(), terser()],
         banner,
-      },
-    ],
-  },
-
-  // V6 Local Payment Methods ESM subpath (./sdk-v6/local-payment-methods)
-  {
-    input: "src/v6/lpmExports.ts",
-    plugins: [
-      typescript({
-        tsconfig: "./tsconfig.v6.json",
-      }),
-      cleanup({
-        comments: "none",
-      }),
-    ],
-    external: ["react", /^@paypal\/paypal-js/, "server-only"],
-    output: [
-      {
-        file: "dist/v6/esm/local-payment-methods.js",
-        format: "esm",
-        plugins: [getBabelOutputPlugin()],
-        banner: useClientBanner,
-      },
-      {
-        file: "dist/v6/esm/local-payment-methods.min.js",
-        format: "esm",
-        plugins: [getBabelOutputPlugin(), terser()],
-        banner: useClientBanner,
       },
     ],
   },

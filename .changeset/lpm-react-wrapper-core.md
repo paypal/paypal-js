@@ -2,7 +2,7 @@
 "@paypal/react-paypal-js": minor
 ---
 
-Add a React wrapper for all 50 v6 SDK Local Payment Methods (LPM), shipped via a new `@paypal/react-paypal-js/sdk-v6/local-payment-methods` subpath so the default `@paypal/react-paypal-js` export is unaffected.
+Add a React wrapper for all 50 v6 SDK Local Payment Methods (LPM) to the existing `@paypal/react-paypal-js/sdk-v6` entry. The legacy `@paypal/react-paypal-js` entry remains unaffected, while static named v6 imports allow compatible production bundlers to remove unused LPM exports.
 
 Each LPM ships three usage patterns:
 
@@ -12,14 +12,14 @@ import {
   IdealOneTimePaymentButton,
   useIdealOneTimePaymentSession,
   IdealPaymentButton,
-} from "@paypal/react-paypal-js/sdk-v6/local-payment-methods";
+} from "@paypal/react-paypal-js/sdk-v6";
 ```
 
 - An all-in-one named button, e.g. `IdealOneTimePaymentButton`.
 - A split hook + standalone button, e.g. `useIdealOneTimePaymentSession` + `IdealPaymentButton`.
 - A generic dynamic-selector button, `LPMOneTimePaymentButton`.
 
-The LPM subpath is a separate bundle with its own React context instance, so it re-exports `PayPalProvider`, `usePayPal`, and `INSTANCE_LOADING_STATE` — LPM consumers should obtain the provider from this subpath rather than `@paypal/react-paypal-js/sdk-v6` to ensure their `PayPalProvider` and LPM hooks/buttons share the same context.
+PayPal and LPM components imported from `@paypal/react-paypal-js/sdk-v6` share the same `PayPalProvider`, React context, and SDK instance. LPM factory exports are annotated as side-effect free so unused payment methods can be tree-shaken from the single published client bundle.
 
 The rendered payment fields can be prefilled with initial values (mapping to the SDK `createPaymentFields({ value })` option):
 
