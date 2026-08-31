@@ -4,6 +4,9 @@ import typescript from "@rollup/plugin-typescript";
 import terser from "@rollup/plugin-terser";
 import cleanup from "rollup-plugin-cleanup";
 
+import { dirname } from "path";
+import { writeFileSync } from "fs";
+
 import pkg from "./package.json";
 
 const pkgName = pkg.name.split("@paypal/")[1];
@@ -107,6 +110,7 @@ export default [
       cleanup({
         comments: "none",
       }),
+      emitEsmModuleMarker(),
     ],
     external: ["react", /^@paypal\/paypal-js/, "server-only"],
     output: [
@@ -136,6 +140,7 @@ export default [
       cleanup({
         comments: "none",
       }),
+      emitEsmModuleMarker(),
     ],
     external: ["react", "server-only"],
     output: [
@@ -154,6 +159,24 @@ export default [
     ],
   },
 ];
+
+// Writes a nested `package.json` containing `{"type":"module"}` next to the v6
+// ESM outputs. Without it, Node interprets these `.js` files as CommonJS (the
+// package has no root `"type":"module"`, which would break the v5 CJS bundles),
+// triggering a MODULE_TYPELESS_PACKAGE_JSON warning + reparse on modern Node and
+// a hard load failure on older/stricter loaders.
+function emitEsmModuleMarker() {
+  return {
+    name: "emit-esm-module-marker",
+    writeBundle(options) {
+      const outDir = dirname(options.file);
+      writeFileSync(
+        `${outDir}/package.json`,
+        `${JSON.stringify({ type: "module" }, null, 2)}\n`,
+      );
+    },
+  };
+}
 
 function getBannerText() {
   return `
