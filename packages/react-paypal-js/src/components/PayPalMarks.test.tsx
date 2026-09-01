@@ -208,7 +208,9 @@ describe("<PayPalMarks />", () => {
         container.querySelector(".ineligible") instanceof HTMLDivElement,
       ).toBeTruthy(),
     );
-    expect(container.querySelector(".mark-container")).toBeNull();
+    expect(container.querySelector(".mark-container")).toHaveAttribute(
+      "hidden",
+    );
     expect(mockIsEligible).toBeCalledTimes(1);
     expect(mockRender).not.toBeCalled();
   });
@@ -246,5 +248,48 @@ describe("<PayPalMarks />", () => {
     );
 
     await waitFor(() => expect(mockRender).toBeCalledTimes(2));
+  });
+
+  test("should render after becoming eligible", async () => {
+    const mockRender = jest.fn().mockResolvedValue(undefined);
+    const mockIsEligible = jest
+      .fn()
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(true);
+    window.paypal = {
+      Marks() {
+        return {
+          isEligible: mockIsEligible,
+          render: mockRender,
+        };
+      },
+      version: "",
+    };
+
+    const { container, rerender } = render(
+      <PayPalScriptProvider options={{ clientId: "test" }}>
+        <PayPalMarks className="mark-container" fundingSource="paypal">
+          <div className="ineligible" />
+        </PayPalMarks>
+      </PayPalScriptProvider>,
+    );
+
+    await waitFor(() =>
+      expect(container.querySelector(".ineligible")).toBeInTheDocument(),
+    );
+
+    rerender(
+      <PayPalScriptProvider options={{ clientId: "test" }}>
+        <PayPalMarks className="mark-container" fundingSource="card">
+          <div className="ineligible" />
+        </PayPalMarks>
+      </PayPalScriptProvider>,
+    );
+
+    await waitFor(() => expect(mockRender).toHaveBeenCalledTimes(1));
+    expect(container.querySelector(".ineligible")).not.toBeInTheDocument();
+    expect(container.querySelector(".mark-container")).not.toHaveAttribute(
+      "hidden",
+    );
   });
 });

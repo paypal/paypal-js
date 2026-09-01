@@ -46,6 +46,7 @@ export const PayPalMarks: FC<PayPalMarksComponentProps> = ({
     if (!current || !mark.isEligible()) {
       return setIsEligible(false);
     }
+    setIsEligible(true);
     // Remove any children before render it again
     if (current.firstChild) {
       current.removeChild(current.firstChild);
@@ -97,11 +98,8 @@ export const PayPalMarks: FC<PayPalMarksComponentProps> = ({
 
   return (
     <>
-      {isEligible ? (
-        <div ref={markContainerRef} className={className} />
-      ) : (
-        children
-      )}
+      <div ref={markContainerRef} className={className} hidden={!isEligible} />
+      {isEligible ? null : children}
     </>
   );
 };
