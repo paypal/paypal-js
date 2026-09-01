@@ -274,6 +274,35 @@ describe("<PayPalButtons />", () => {
     ).toBeFalsy();
   });
 
+  test("should render Buttons after becoming eligible", async () => {
+    mockPaypalButtonsComponent.isEligible
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(true);
+
+    const { rerender } = render(
+      <PayPalScriptProvider options={{ clientId: "test" }}>
+        <PayPalButtons forceReRender={[0]}>
+          <div data-testid="ineligible">Unavailable</div>
+        </PayPalButtons>
+      </PayPalScriptProvider>,
+    );
+
+    await waitFor(() => expect(screen.getByTestId("ineligible")).toBeVisible());
+
+    rerender(
+      <PayPalScriptProvider options={{ clientId: "test" }}>
+        <PayPalButtons forceReRender={[1]}>
+          <div data-testid="ineligible">Unavailable</div>
+        </PayPalButtons>
+      </PayPalScriptProvider>,
+    );
+
+    await waitFor(() =>
+      expect(screen.queryByTestId("ineligible")).not.toBeInTheDocument(),
+    );
+    expect(mockPaypalButtonsComponent.render).toHaveBeenCalledTimes(1);
+  });
+
   test("should catch the error when no components are passed to the PayPalScriptProvider", async () => {
     const spyConsoleError = jest.spyOn(console, "error").mockImplementation();
     const onErrorCallback = jest.fn();

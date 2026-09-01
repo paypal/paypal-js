@@ -104,6 +104,7 @@ const PayPalButtonsInner: FunctionComponent<PayPalButtonsComponentProps> = ({
       setIsEligible(false);
       return closeButtonsComponent;
     }
+    setIsEligible(true);
 
     if (!buttonsContainerRef.current) {
       return closeButtonsComponent;
@@ -147,15 +148,13 @@ const PayPalButtonsInner: FunctionComponent<PayPalButtonsComponentProps> = ({
 
   return (
     <>
-      {isEligible ? (
-        <div
-          ref={buttonsContainerRef}
-          style={isDisabledStyle}
-          className={classNames}
-        />
-      ) : (
-        children
-      )}
+      <div
+        ref={buttonsContainerRef}
+        style={isDisabledStyle}
+        className={classNames}
+        hidden={!isEligible}
+      />
+      {isEligible ? null : children}
     </>
   );
 };
