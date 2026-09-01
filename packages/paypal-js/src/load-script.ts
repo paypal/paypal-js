@@ -2,6 +2,11 @@ import { findScript, insertScriptElement, processOptions } from "./utils";
 import type { PayPalScriptOptions } from "../types/script-options";
 import type { PayPalNamespace } from "../types/index";
 
+const loadingScripts: Record<
+  string,
+  Promise<PayPalNamespace | null>
+> = Object.create(null);
+
 /**
  * Load the Paypal JS SDK script asynchronously.
  *
@@ -26,12 +31,24 @@ export function loadScript(
     attributes["data-js-sdk-library"] = "paypal-js";
   }
 
+  const scriptKey = JSON.stringify([
+    url,
+    Object.keys(attributes)
+      .sort()
+      .map((key) => [key, attributes[key]]),
+  ]);
+  const loadingScript = loadingScripts[scriptKey];
+
+  if (loadingScript) {
+    return loadingScript;
+  }
+
   // resolve with the existing global paypal namespace when a script with the same params already exists
   if (findScript(url, attributes) && existingWindowNamespace) {
     return PromisePonyfill.resolve(existingWindowNamespace);
   }
 
-  return loadCustomScript(
+  const loadPromise = loadCustomScript(
     {
       url,
       attributes: attributes,
@@ -48,6 +65,19 @@ export function loadScript(
       `The window.${namespace} global variable is not available.`,
     );
   });
+
+  loadingScripts[scriptKey] = loadPromise.then(
+    (paypalNamespace) => {
+      delete loadingScripts[scriptKey];
+      return paypalNamespace;
+    },
+    (error: unknown) => {
+      delete loadingScripts[scriptKey];
+      throw error;
+    },
+  );
+
+  return loadingScripts[scriptKey];
 }
 
 /**

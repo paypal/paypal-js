@@ -98,6 +98,17 @@ describe("loadScript()", () => {
     expect(response).toEqual([windowObject.paypal1, windowObject.paypal2]);
   });
 
+  test("should reuse an in-flight request with the same options", async () => {
+    const [response1, response2] = await Promise.all([
+      loadScript({ clientId: "test" }),
+      loadScript({ clientId: "test" }),
+    ]);
+
+    expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+    expect(response1).toBe(window.paypal);
+    expect(response2).toBe(window.paypal);
+  });
+
   test("should reject the promise when window.paypal is undefined after loading the <script>", async () => {
     expect.assertions(3);
 
