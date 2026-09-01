@@ -335,6 +335,85 @@ describe("usePayPalMessages", () => {
 
       expect(result.current.error).toBeNull();
     });
+
+    test("should clear a previous fetch error after a successful retry", async () => {
+      const emptyContent = {
+        messageItems: { mainItems: [], actionItems: [] },
+        update: jest.fn(),
+      };
+      const populatedContent = {
+        messageItems: { mainItems: [{ type: "text" }], actionItems: [] },
+        update: jest.fn(),
+      };
+      (mockMessagesSession.fetchContent as jest.Mock)
+        .mockResolvedValueOnce(emptyContent)
+        .mockResolvedValueOnce(populatedContent);
+
+      const { result } = renderHook(() =>
+        usePayPalMessages({ buyerCountry: "US", currencyCode: "USD" }),
+      );
+
+      await act(async () => {
+        await result.current.handleFetchContent({
+          amount: "100",
+          logoPosition: "INLINE",
+          logoType: "MONOGRAM",
+        });
+      });
+      expect(result.current.error).not.toBeNull();
+
+      await act(async () => {
+        await result.current.handleFetchContent({
+          amount: "200",
+          logoPosition: "INLINE",
+          logoType: "MONOGRAM",
+        });
+      });
+      expect(result.current.error).toBeNull();
+    });
+
+    test("should ignore an older fetch error after a newer fetch succeeds", async () => {
+      const emptyContent = {
+        messageItems: { mainItems: [], actionItems: [] },
+        update: jest.fn(),
+      };
+      const populatedContent = {
+        messageItems: { mainItems: [{ type: "text" }], actionItems: [] },
+        update: jest.fn(),
+      };
+      let resolveFirst!: (content: typeof emptyContent) => void;
+      const first = new Promise<typeof emptyContent>((resolve) => {
+        resolveFirst = resolve;
+      });
+      (mockMessagesSession.fetchContent as jest.Mock)
+        .mockReturnValueOnce(first)
+        .mockResolvedValueOnce(populatedContent);
+
+      const { result } = renderHook(() =>
+        usePayPalMessages({ buyerCountry: "US", currencyCode: "USD" }),
+      );
+
+      let firstFetch!: Promise<unknown>;
+      await act(async () => {
+        firstFetch = result.current.handleFetchContent({
+          amount: "100",
+          logoPosition: "INLINE",
+          logoType: "MONOGRAM",
+        });
+        await result.current.handleFetchContent({
+          amount: "200",
+          logoPosition: "INLINE",
+          logoType: "MONOGRAM",
+        });
+      });
+
+      await act(async () => {
+        resolveFirst(emptyContent);
+        await firstFetch;
+      });
+
+      expect(result.current.error).toBeNull();
+    });
   });
 
   describe("handleCreateLearnMore", () => {
