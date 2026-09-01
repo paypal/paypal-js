@@ -52,4 +52,19 @@ describe("useProxyProps", () => {
     expect(current.fundingSource).toBe(props.fundingSource);
     expect(props.fundingSource).toBe(fundingSource);
   });
+
+  test("should remove props that are omitted from a later render", () => {
+    let props: Record<string, unknown> = {
+      createOrder: jest.fn(),
+      onClick: jest.fn(),
+    };
+    const { result, rerender } = renderHook(() => useProxyProps(props));
+
+    expect(result.current).toHaveProperty("onClick");
+
+    props = { createOrder: props.createOrder };
+    rerender();
+
+    expect(result.current).not.toHaveProperty("onClick");
+  });
 });

@@ -30,6 +30,11 @@ export function useProxyProps<T extends Record<PropertyKey, unknown>>(
     }),
   );
 
+  for (const prop of Reflect.ownKeys(proxyRef.current)) {
+    if (!Object.prototype.hasOwnProperty.call(props, prop)) {
+      Reflect.deleteProperty(proxyRef.current, prop);
+    }
+  }
   proxyRef.current = Object.assign(proxyRef.current, props);
 
   return proxyRef.current;
