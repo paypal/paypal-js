@@ -65,6 +65,10 @@ export const PayPalHostedFieldsProvider: FC<
     if (!hostedFields.current.isEligible()) {
       return setIsEligible(false);
     }
+    if (!isEligible) {
+      setIsEligible(true);
+      return;
+    }
     // Clean all the fields before the rerender
     if (cardFields) {
       cardFields.teardown();
@@ -90,7 +94,7 @@ export const PayPalHostedFieldsProvider: FC<
           );
         });
       });
-  }, [loadingStatus, styles]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [loadingStatus, styles, isEligible]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div ref={hostedFieldsContainerRef}>

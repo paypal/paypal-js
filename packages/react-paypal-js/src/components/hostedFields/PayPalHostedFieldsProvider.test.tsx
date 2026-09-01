@@ -221,6 +221,59 @@ describe("PayPalHostedFieldsProvider", () => {
     expect(container.querySelector(".cvv")).toEqual(null);
   });
 
+  test("should render hosted fields after becoming eligible", async () => {
+    let eligible = false;
+    isEligible.mockImplementation(() => eligible);
+
+    const renderProvider = (styles?: Record<string, unknown>) => (
+      <PayPalScriptProvider
+        options={{
+          clientId: "test-client",
+          currency: "USD",
+          intent: "authorize",
+          components: "hosted-fields",
+          dataClientToken: "test-data-client-token",
+        }}
+      >
+        <PayPalHostedFieldsProvider
+          createOrder={mockCreateOrder}
+          styles={styles}
+        >
+          <PayPalHostedField
+            className="number"
+            hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
+            options={{ selector: ".number" }}
+          />
+          <PayPalHostedField
+            className="expiration"
+            hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE}
+            options={{ selector: ".expiration" }}
+          />
+          <PayPalHostedField
+            className="cvv"
+            hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.CVV}
+            options={{ selector: ".cvv" }}
+          />
+        </PayPalHostedFieldsProvider>
+      </PayPalScriptProvider>
+    );
+
+    const { container, rerender } = render(renderProvider());
+
+    await waitFor(() =>
+      expect(container.querySelector(".number")).not.toBeInTheDocument(),
+    );
+    expect(window.paypal?.HostedFields?.render).not.toHaveBeenCalled();
+
+    eligible = true;
+    rerender(renderProvider({ input: { color: "black" } }));
+
+    await waitFor(() =>
+      expect(window.paypal?.HostedFields?.render).toHaveBeenCalledTimes(1),
+    );
+    expect(container.querySelector(".number")).toBeInTheDocument();
+  });
+
   test("should throw an Error on hosted fields render process exception", async () => {
     const spyConsoleError = jest.spyOn(console, "error").mockImplementation();
     (
