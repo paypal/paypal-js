@@ -125,6 +125,10 @@ export default [
 // package has no root `"type":"module"`, which would break the v5 CJS bundles),
 // triggering a MODULE_TYPELESS_PACKAGE_JSON warning + reparse on modern Node and
 // a hard load failure on older/stricter loaders.
+const v6EsmPackageMetadata = {
+  type: "module",
+};
+
 function emitEsmModuleMarker() {
   return {
     name: "emit-esm-module-marker",
@@ -132,7 +136,7 @@ function emitEsmModuleMarker() {
       const outDir = dirname(options.file);
       writeFileSync(
         `${outDir}/package.json`,
-        `${JSON.stringify({ type: "module" }, null, 2)}\n`,
+        `${JSON.stringify(v6EsmPackageMetadata, null, 2)}\n`,
       );
     },
   };
