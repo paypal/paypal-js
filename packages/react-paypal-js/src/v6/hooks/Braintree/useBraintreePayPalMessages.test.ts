@@ -299,6 +299,43 @@ describe("useBraintreePayPalMessages", () => {
 
       expect(result.current.error).toBeNull();
     });
+
+    test("should ignore an older fetch error after a newer fetch succeeds", async () => {
+      const emptyContent = {
+        messageItems: { mainItems: [], actionItems: [] },
+        update: jest.fn(),
+      } as unknown as BraintreeMessageContent;
+      const populatedContent = {
+        messageItems: { mainItems: [{ type: "text" }], actionItems: [] },
+        update: jest.fn(),
+      } as unknown as BraintreeMessageContent;
+      let resolveFirst!: (content: BraintreeMessageContent) => void;
+      const first = new Promise<BraintreeMessageContent>((resolve) => {
+        resolveFirst = resolve;
+      });
+      (mockMessagesInstance.fetchContent as jest.Mock)
+        .mockReturnValueOnce(first)
+        .mockResolvedValueOnce(populatedContent);
+
+      const { result, waitFor } = renderHook(() =>
+        useBraintreePayPalMessages({ buyerCountry: "US", currencyCode: "USD" }),
+      );
+
+      await waitFor(() => expect(result.current.isReady).toBe(true));
+
+      let firstFetch!: Promise<unknown>;
+      await act(async () => {
+        firstFetch = result.current.handleFetchContent({ amount: "100" });
+        await result.current.handleFetchContent({ amount: "200" });
+      });
+
+      await act(async () => {
+        resolveFirst(emptyContent);
+        await firstFetch;
+      });
+
+      expect(result.current.error).toBeNull();
+    });
   });
 
   describe("context error", () => {

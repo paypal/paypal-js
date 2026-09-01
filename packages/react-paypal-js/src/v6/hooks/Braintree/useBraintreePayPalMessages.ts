@@ -79,6 +79,7 @@ export function useBraintreePayPalMessages({
   );
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useError();
+  const fetchRequestRef = useRef(0);
 
   // Prevents auto-retrying the exact (instance, buyerCountry, currencyCode) call
   // that just failed. Keyed on the options too so that changing them on the same
@@ -151,6 +152,7 @@ export function useBraintreePayPalMessages({
 
     return () => {
       isSubscribed = false;
+      fetchRequestRef.current += 1;
       setMessages(null);
     };
   }, [
@@ -167,6 +169,8 @@ export function useBraintreePayPalMessages({
         return;
       }
 
+      const request = ++fetchRequestRef.current;
+
       if (!messages) {
         setError(new Error("Braintree PayPal Messages instance not available"));
         return;
@@ -175,6 +179,10 @@ export function useBraintreePayPalMessages({
       setError(null);
 
       const result = await messages.fetchContent(options);
+
+      if (!isMountedRef.current || request !== fetchRequestRef.current) {
+        return result;
+      }
 
       // On an API error, fetchContent resolves to an empty sentinel MessageContent
       // (empty messageItems) instead of throwing, so the <paypal-message> element
