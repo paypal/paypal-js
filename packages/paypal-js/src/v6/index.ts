@@ -40,9 +40,11 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
   }
 
   const scriptElement =
-    document.querySelector<HTMLScriptElement>(
-      `script[src*="${url.pathname}"][${DATA_ATTRIBUTE_LOADING_STATE}="${SCRIPT_LOADING_STATE.PENDING}"]`,
-    ) ??
+    findPendingScript({
+      url: url.toString(),
+      namespace,
+      dataSdkIntegrationSource,
+    }) ??
     createScriptElement({
       url: url.toString(),
       attributes: {
@@ -94,6 +96,30 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
     );
   });
 }
+
+function findPendingScript({
+  url,
+  namespace,
+  dataSdkIntegrationSource,
+}: {
+  url: string;
+  namespace: string;
+  dataSdkIntegrationSource?: string;
+}): HTMLScriptElement | undefined {
+  return Array.from(
+    document.querySelectorAll<HTMLScriptElement>(
+      `script[${DATA_ATTRIBUTE_LOADING_STATE}="${SCRIPT_LOADING_STATE.PENDING}"]`,
+    ),
+  ).find(
+    (scriptElement) =>
+      scriptElement.src === url &&
+      (scriptElement.getAttribute("data-namespace") ?? "paypal") ===
+        namespace &&
+      scriptElement.getAttribute("data-sdk-integration-source") ===
+        (dataSdkIntegrationSource ?? null),
+  );
+}
+
 function validateArguments(options: unknown) {
   if (typeof options !== "object" || options === null) {
     throw new Error("Expected an options object");

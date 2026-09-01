@@ -121,6 +121,46 @@ describe("loadCoreSdkScript()", () => {
     expect(window.paypal).toBeDefined();
   });
 
+  test.each([
+    {
+      name: "environment",
+      existing:
+        '<script src="https://www.paypal.com/web-sdk/v6/core" data-loading-state="pending"></script>',
+      options: { environment: "sandbox" } as const,
+    },
+    {
+      name: "debug mode",
+      existing:
+        '<script src="https://www.sandbox.paypal.com/web-sdk/v6/core" data-loading-state="pending"></script>',
+      options: { environment: "sandbox", debug: true } as const,
+    },
+    {
+      name: "namespace",
+      existing:
+        '<script src="https://www.sandbox.paypal.com/web-sdk/v6/core" data-loading-state="pending" data-namespace="first"></script>',
+      options: { environment: "sandbox", dataNamespace: "second" } as const,
+    },
+    {
+      name: "integration source",
+      existing:
+        '<script src="https://www.sandbox.paypal.com/web-sdk/v6/core" data-loading-state="pending" data-sdk-integration-source="first"></script>',
+      options: {
+        environment: "sandbox",
+        dataSdkIntegrationSource: "second",
+      } as const,
+    },
+  ])(
+    "should not reuse a pending script with a different $name",
+    async (testCase) => {
+      document.head.innerHTML = testCase.existing;
+
+      const result = await loadCoreSdkScript(testCase.options);
+
+      expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
+      expect(result).toBeDefined();
+    },
+  );
+
   test("should reject when the script fails to load", async () => {
     vi.spyOn(document.head, "appendChild").mockImplementationOnce((node) => {
       process.nextTick(() => node.dispatchEvent(new Event("error")));
