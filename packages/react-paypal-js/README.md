@@ -929,7 +929,7 @@ export default function App() {
 
 ## Local Payment Methods (LPM)
 
-`react-paypal-js` ships pre-built components and hooks for 45+ regional Local Payment Methods (LPMs) — iDEAL, Bancontact, BLIK, Pix, Klarna, and more — from the same `@paypal/react-paypal-js/sdk-v6` entry as the other V6 payment methods. Static named imports allow compatible production bundlers to remove unused LPM exports.
+`react-paypal-js` ships pre-built components and hooks for 45+ regional Local Payment Methods (LPMs) — iDEAL, Bancontact, BLIK, Pix, Klarna, and more — from the same `@paypal/react-paypal-js/sdk-v6` entry as the other v6 payment methods. With static named imports, compatible production bundlers can remove unused LPM React wrapper components and hooks. When at least one LPM is used, the shared `LPM_REGISTRY` remains in the bundle because it is accessed by runtime key.
 
 Every LPM exposes the same three integration points, named after the method (e.g. `Ideal`, `Bancontact`, `Pix`):
 
@@ -982,8 +982,6 @@ export default function App() {
   );
 }
 ```
-
-> **Note:** Import `PayPalProvider`, PayPal components, and LPM components from the same `@paypal/react-paypal-js/sdk-v6` entry. When rendered under one `PayPalProvider`, they share one React context and SDK instance.
 
 ### Presentation mode
 
