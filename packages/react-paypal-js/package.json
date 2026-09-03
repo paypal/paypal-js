@@ -15,6 +15,13 @@
   "main": "index.js",
   "module": "dist/esm/react-paypal-js.js",
   "types": "dist/types/index.d.ts",
+  "sideEffects": [
+    "./index.js",
+    "./dist/cjs/**",
+    "./dist/esm/**",
+    "./dist/v6/esm/server.js",
+    "./dist/v6/esm/server.min.js"
+  ],
   "publishConfig": {
     "access": "public"
   },
