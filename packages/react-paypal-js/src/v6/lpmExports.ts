@@ -46,57 +46,93 @@ function createLPMHook<const L extends LPMName>(lpm: L) {
   return createEnhancedLPMHook(lpm, LPM_REGISTRY[lpm].fields);
 }
 
+function createStandaloneLPMButton(lpm: LPMName, displayName: string) {
+  return createLPMButtonComponent(LPM_REGISTRY[lpm].buttonTag, displayName);
+}
+
 // Named Button Components
-export const IdealOneTimePaymentButton = createLPMButton("ideal");
-export const BancontactOneTimePaymentButton = createLPMButton("bancontact");
-export const EpsOneTimePaymentButton = createLPMButton("eps");
-export const BlikOneTimePaymentButton = createLPMButton("blik");
-export const MybankOneTimePaymentButton = createLPMButton("mybank");
-export const TrustlyOneTimePaymentButton = createLPMButton("trustly");
-export const P24OneTimePaymentButton = createLPMButton("p24");
-export const MultibancoOneTimePaymentButton = createLPMButton("multibanco");
-export const BizumOneTimePaymentButton = createLPMButton("bizum");
-export const SwishOneTimePaymentButton = createLPMButton("swish");
-export const TwintOneTimePaymentButton = createLPMButton("twint");
-export const WechatpayOneTimePaymentButton = createLPMButton("wechatpay");
-export const VerkkopankkiOneTimePaymentButton = createLPMButton("verkkopankki");
-export const PayuOneTimePaymentButton = createLPMButton("payu");
-export const MbwayOneTimePaymentButton = createLPMButton("mbway");
-export const SatispayOneTimePaymentButton = createLPMButton("satispay");
-export const WeroOneTimePaymentButton = createLPMButton("wero");
-export const FloaOneTimePaymentButton = createLPMButton("floa");
-export const GrabpayOneTimePaymentButton = createLPMButton("grabpay");
-export const PixInternationalOneTimePaymentButton = createLPMButton("pixInternational");
-export const SepaOneTimePaymentButton = createLPMButton("sepa");
-export const DokuOneTimePaymentButton = createLPMButton("doku");
-export const EstoniaOneTimePaymentButton = createLPMButton("estonia");
-export const GopayOneTimePaymentButton = createLPMButton("gopay");
-export const AlipayOneTimePaymentButton = createLPMButton("alipay");
-export const IndonesiaBanksOneTimePaymentButton = createLPMButton("indonesiaBanks");
-export const KredivoOneTimePaymentButton = createLPMButton("kredivo");
-export const LinkajaOneTimePaymentButton = createLPMButton("linkaja");
-export const OvoOneTimePaymentButton = createLPMButton("ovo");
-export const PayseraOneTimePaymentButton = createLPMButton("paysera");
-export const SkrillOneTimePaymentButton = createLPMButton("skrill");
-export const BlikPayLaterOneTimePaymentButton = createLPMButton("blikPayLater");
-export const BancomatPayOneTimePaymentButton = createLPMButton("bancomatPay");
-export const JeniuspayOneTimePaymentButton = createLPMButton("jeniuspay");
-export const KlarnaOneTimePaymentButton = createLPMButton("klarna");
-export const AfterpayOneTimePaymentButton = createLPMButton("afterpay");
-export const OxxopayOneTimePaymentButton = createLPMButton("oxxopay");
-export const BoletobancarioOneTimePaymentButton = createLPMButton("boletobancario");
-export const PaysafecardOneTimePaymentButton = createLPMButton("paysafecard");
-export const ScalapayOneTimePaymentButton = createLPMButton("scalapay");
-export const CryptoOneTimePaymentButton = createLPMButton("crypto");
-export const DragonpayOneTimePaymentButton = createLPMButton("dragonpay");
-export const FpxOneTimePaymentButton = createLPMButton("fpx");
-export const IndomaretOneTimePaymentButton = createLPMButton("indomaret");
-export const ThailandBanksOneTimePaymentButton = createLPMButton("thailandBanks");
-export const AlfamartOneTimePaymentButton = createLPMButton("alfamart");
-export const ZipOneTimePaymentButton = createLPMButton("zip");
-export const LatviaBanksOneTimePaymentButton = createLPMButton("latviaBanks");
-export const FiuuOneTimePaymentButton = createLPMButton("fiuu");
-export const LithuaniaBanksOneTimePaymentButton = createLPMButton("lithuaniaBanks");
+export const IdealOneTimePaymentButton = /*#__PURE__*/ createLPMButton("ideal");
+export const BancontactOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("bancontact");
+export const EpsOneTimePaymentButton = /*#__PURE__*/ createLPMButton("eps");
+export const BlikOneTimePaymentButton = /*#__PURE__*/ createLPMButton("blik");
+export const MybankOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("mybank");
+export const TrustlyOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("trustly");
+export const P24OneTimePaymentButton = /*#__PURE__*/ createLPMButton("p24");
+export const MultibancoOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("multibanco");
+export const BizumOneTimePaymentButton = /*#__PURE__*/ createLPMButton("bizum");
+export const SwishOneTimePaymentButton = /*#__PURE__*/ createLPMButton("swish");
+export const TwintOneTimePaymentButton = /*#__PURE__*/ createLPMButton("twint");
+export const WechatpayOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("wechatpay");
+export const VerkkopankkiOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("verkkopankki");
+export const PayuOneTimePaymentButton = /*#__PURE__*/ createLPMButton("payu");
+export const MbwayOneTimePaymentButton = /*#__PURE__*/ createLPMButton("mbway");
+export const SatispayOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("satispay");
+export const WeroOneTimePaymentButton = /*#__PURE__*/ createLPMButton("wero");
+export const FloaOneTimePaymentButton = /*#__PURE__*/ createLPMButton("floa");
+export const GrabpayOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("grabpay");
+export const PixInternationalOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("pixInternational");
+export const SepaOneTimePaymentButton = /*#__PURE__*/ createLPMButton("sepa");
+export const DokuOneTimePaymentButton = /*#__PURE__*/ createLPMButton("doku");
+export const EstoniaOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("estonia");
+export const GopayOneTimePaymentButton = /*#__PURE__*/ createLPMButton("gopay");
+export const AlipayOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("alipay");
+export const IndonesiaBanksOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("indonesiaBanks");
+export const KredivoOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("kredivo");
+export const LinkajaOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("linkaja");
+export const OvoOneTimePaymentButton = /*#__PURE__*/ createLPMButton("ovo");
+export const PayseraOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("paysera");
+export const SkrillOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("skrill");
+export const BlikPayLaterOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("blikPayLater");
+export const BancomatPayOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("bancomatPay");
+export const JeniuspayOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("jeniuspay");
+export const KlarnaOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("klarna");
+export const AfterpayOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("afterpay");
+export const OxxopayOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("oxxopay");
+export const BoletobancarioOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("boletobancario");
+export const PaysafecardOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("paysafecard");
+export const ScalapayOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("scalapay");
+export const CryptoOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("crypto");
+export const DragonpayOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("dragonpay");
+export const FpxOneTimePaymentButton = /*#__PURE__*/ createLPMButton("fpx");
+export const IndomaretOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("indomaret");
+export const ThailandBanksOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("thailandBanks");
+export const AlfamartOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("alfamart");
+export const ZipOneTimePaymentButton = /*#__PURE__*/ createLPMButton("zip");
+export const LatviaBanksOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("latviaBanks");
+export const FiuuOneTimePaymentButton = /*#__PURE__*/ createLPMButton("fiuu");
+export const LithuaniaBanksOneTimePaymentButton =
+  /*#__PURE__*/ createLPMButton("lithuaniaBanks");
 
 // Button prop type aliases
 export type IdealOneTimePaymentButtonProps = NamedLPMButtonProps;
@@ -151,69 +187,102 @@ export type FiuuOneTimePaymentButtonProps = NamedLPMButtonProps;
 export type LithuaniaBanksOneTimePaymentButtonProps = NamedLPMButtonProps;
 
 // Named Hooks
-export const useIdealOneTimePaymentSession = createLPMHook("ideal");
-export const useBancontactOneTimePaymentSession = createLPMHook("bancontact");
-export const useEpsOneTimePaymentSession = createLPMHook("eps");
-export const useBlikOneTimePaymentSession = createLPMHook("blik");
-export const useMybankOneTimePaymentSession = createLPMHook("mybank");
-export const useTrustlyOneTimePaymentSession = createLPMHook("trustly");
-export const useP24OneTimePaymentSession = createLPMHook("p24");
-export const useMultibancoOneTimePaymentSession = createLPMHook("multibanco");
-export const useBizumOneTimePaymentSession = createLPMHook("bizum");
-export const useSwishOneTimePaymentSession = createLPMHook("swish");
-export const useTwintOneTimePaymentSession = createLPMHook("twint");
-export const useWechatpayOneTimePaymentSession = createLPMHook("wechatpay");
-export const useVerkkopankkiOneTimePaymentSession = createLPMHook("verkkopankki");
-export const usePayuOneTimePaymentSession = createLPMHook("payu");
-export const useMbwayOneTimePaymentSession = createLPMHook("mbway");
-export const useSatispayOneTimePaymentSession = createLPMHook("satispay");
-export const useWeroOneTimePaymentSession = createLPMHook("wero");
-export const useFloaOneTimePaymentSession = createLPMHook("floa");
-export const useGrabpayOneTimePaymentSession = createLPMHook("grabpay");
-export const usePixInternationalOneTimePaymentSession = createLPMHook("pixInternational");
-export const useSepaOneTimePaymentSession = createLPMHook("sepa");
-export const useDokuOneTimePaymentSession = createLPMHook("doku");
-export const useEstoniaOneTimePaymentSession = createLPMHook("estonia");
-export const useGopayOneTimePaymentSession = createLPMHook("gopay");
-export const useAlipayOneTimePaymentSession = createLPMHook("alipay");
-export const useIndonesiaBanksOneTimePaymentSession = createLPMHook("indonesiaBanks");
-export const useKredivoOneTimePaymentSession = createLPMHook("kredivo");
-export const useLinkajaOneTimePaymentSession = createLPMHook("linkaja");
-export const useOvoOneTimePaymentSession = createLPMHook("ovo");
-export const usePayseraOneTimePaymentSession = createLPMHook("paysera");
-export const useSkrillOneTimePaymentSession = createLPMHook("skrill");
-export const useBlikPayLaterOneTimePaymentSession = createLPMHook("blikPayLater");
-export const useBancomatPayOneTimePaymentSession = createLPMHook("bancomatPay");
-export const useJeniuspayOneTimePaymentSession = createLPMHook("jeniuspay");
-export const useKlarnaOneTimePaymentSession = createLPMHook("klarna");
-export const useAfterpayOneTimePaymentSession = createLPMHook("afterpay");
-export const useOxxopayOneTimePaymentSession = createLPMHook("oxxopay");
-export const useBoletobancarioOneTimePaymentSession = createLPMHook("boletobancario");
-export const usePaysafecardOneTimePaymentSession = createLPMHook("paysafecard");
-export const useScalapayOneTimePaymentSession = createLPMHook("scalapay");
-export const useCryptoOneTimePaymentSession = createLPMHook("crypto");
-export const useDragonpayOneTimePaymentSession = createLPMHook("dragonpay");
-export const useFpxOneTimePaymentSession = createLPMHook("fpx");
-export const useIndomaretOneTimePaymentSession = createLPMHook("indomaret");
-export const useThailandBanksOneTimePaymentSession = createLPMHook("thailandBanks");
-export const useAlfamartOneTimePaymentSession = createLPMHook("alfamart");
-export const useZipOneTimePaymentSession = createLPMHook("zip");
-export const useLatviaBanksOneTimePaymentSession = createLPMHook("latviaBanks");
-export const useFiuuOneTimePaymentSession = createLPMHook("fiuu");
-export const useLithuaniaBanksOneTimePaymentSession = createLPMHook("lithuaniaBanks");
+export const useIdealOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("ideal");
+export const useBancontactOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("bancontact");
+export const useEpsOneTimePaymentSession = /*#__PURE__*/ createLPMHook("eps");
+export const useBlikOneTimePaymentSession = /*#__PURE__*/ createLPMHook("blik");
+export const useMybankOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("mybank");
+export const useTrustlyOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("trustly");
+export const useP24OneTimePaymentSession = /*#__PURE__*/ createLPMHook("p24");
+export const useMultibancoOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("multibanco");
+export const useBizumOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("bizum");
+export const useSwishOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("swish");
+export const useTwintOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("twint");
+export const useWechatpayOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("wechatpay");
+export const useVerkkopankkiOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("verkkopankki");
+export const usePayuOneTimePaymentSession = /*#__PURE__*/ createLPMHook("payu");
+export const useMbwayOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("mbway");
+export const useSatispayOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("satispay");
+export const useWeroOneTimePaymentSession = /*#__PURE__*/ createLPMHook("wero");
+export const useFloaOneTimePaymentSession = /*#__PURE__*/ createLPMHook("floa");
+export const useGrabpayOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("grabpay");
+export const usePixInternationalOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("pixInternational");
+export const useSepaOneTimePaymentSession = /*#__PURE__*/ createLPMHook("sepa");
+export const useDokuOneTimePaymentSession = /*#__PURE__*/ createLPMHook("doku");
+export const useEstoniaOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("estonia");
+export const useGopayOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("gopay");
+export const useAlipayOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("alipay");
+export const useIndonesiaBanksOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("indonesiaBanks");
+export const useKredivoOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("kredivo");
+export const useLinkajaOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("linkaja");
+export const useOvoOneTimePaymentSession = /*#__PURE__*/ createLPMHook("ovo");
+export const usePayseraOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("paysera");
+export const useSkrillOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("skrill");
+export const useBlikPayLaterOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("blikPayLater");
+export const useBancomatPayOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("bancomatPay");
+export const useJeniuspayOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("jeniuspay");
+export const useKlarnaOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("klarna");
+export const useAfterpayOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("afterpay");
+export const useOxxopayOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("oxxopay");
+export const useBoletobancarioOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("boletobancario");
+export const usePaysafecardOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("paysafecard");
+export const useScalapayOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("scalapay");
+export const useCryptoOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("crypto");
+export const useDragonpayOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("dragonpay");
+export const useFpxOneTimePaymentSession = /*#__PURE__*/ createLPMHook("fpx");
+export const useIndomaretOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("indomaret");
+export const useThailandBanksOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("thailandBanks");
+export const useAlfamartOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("alfamart");
+export const useZipOneTimePaymentSession = /*#__PURE__*/ createLPMHook("zip");
+export const useLatviaBanksOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("latviaBanks");
+export const useFiuuOneTimePaymentSession = /*#__PURE__*/ createLPMHook("fiuu");
+export const useLithuaniaBanksOneTimePaymentSession =
+  /*#__PURE__*/ createLPMHook("lithuaniaBanks");
 
-// Provider + context utilities re-exported from this subpath. LPM consumers MUST
-// obtain PayPalProvider/usePayPal/INSTANCE_LOADING_STATE from here (not from
-// ./sdk-v6): the LPM subpath is a separate bundle with its own React context
-// instance, so a PayPalProvider imported from the main ./sdk-v6 bundle would not
-// satisfy the LPM hooks' usePayPal, throwing "usePayPal must be used within a
-// PayPalProvider".
+// Provider + context utilities are re-exported through the single ./sdk-v6
+// public entry so PayPal and LPM components share the same React context.
 export { PayPalProvider } from "./components/PayPalProvider";
 export { usePayPal } from "./hooks/usePayPal";
 export { INSTANCE_LOADING_STATE } from "./types/ProviderEnums";
 
-// Generic LPM exports — also accessible from this subpath so the subpath is
-// fully self-contained and consumers never need to import from ./sdk-v6 for LPMs.
+// Generic LPM exports are also exposed through the single ./sdk-v6 entry.
 export {
   LPMOneTimePaymentButton,
   type LPMOneTimePaymentButtonProps,
@@ -281,53 +350,210 @@ export type UseLithuaniaBanksOneTimePaymentSessionProps = NamedLPMHookProps;
 // ─── Named standalone button components ───────────────────────────────────────
 // Read session state from LPMSessionHandleContext — render inside the
 // LPMSessionProvider returned by the corresponding use*OneTimePaymentSession hook.
-export const IdealPaymentButton = createLPMButtonComponent(LPM_REGISTRY.ideal.buttonTag, "IdealPaymentButton");
-export const BancontactPaymentButton = createLPMButtonComponent(LPM_REGISTRY.bancontact.buttonTag, "BancontactPaymentButton");
-export const EpsPaymentButton = createLPMButtonComponent(LPM_REGISTRY.eps.buttonTag, "EpsPaymentButton");
-export const BlikPaymentButton = createLPMButtonComponent(LPM_REGISTRY.blik.buttonTag, "BlikPaymentButton");
-export const MybankPaymentButton = createLPMButtonComponent(LPM_REGISTRY.mybank.buttonTag, "MybankPaymentButton");
-export const TrustlyPaymentButton = createLPMButtonComponent(LPM_REGISTRY.trustly.buttonTag, "TrustlyPaymentButton");
-export const P24PaymentButton = createLPMButtonComponent(LPM_REGISTRY.p24.buttonTag, "P24PaymentButton");
-export const MultibancoPaymentButton = createLPMButtonComponent(LPM_REGISTRY.multibanco.buttonTag, "MultibancoPaymentButton");
-export const BizumPaymentButton = createLPMButtonComponent(LPM_REGISTRY.bizum.buttonTag, "BizumPaymentButton");
-export const SwishPaymentButton = createLPMButtonComponent(LPM_REGISTRY.swish.buttonTag, "SwishPaymentButton");
-export const TwintPaymentButton = createLPMButtonComponent(LPM_REGISTRY.twint.buttonTag, "TwintPaymentButton");
-export const WechatpayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.wechatpay.buttonTag, "WechatpayPaymentButton");
-export const VerkkopankkiPaymentButton = createLPMButtonComponent(LPM_REGISTRY.verkkopankki.buttonTag, "VerkkopankkiPaymentButton");
-export const PayuPaymentButton = createLPMButtonComponent(LPM_REGISTRY.payu.buttonTag, "PayuPaymentButton");
-export const MbwayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.mbway.buttonTag, "MbwayPaymentButton");
-export const SatispayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.satispay.buttonTag, "SatispayPaymentButton");
-export const WeroPaymentButton = createLPMButtonComponent(LPM_REGISTRY.wero.buttonTag, "WeroPaymentButton");
-export const FloaPaymentButton = createLPMButtonComponent(LPM_REGISTRY.floa.buttonTag, "FloaPaymentButton");
-export const GrabpayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.grabpay.buttonTag, "GrabpayPaymentButton");
-export const PixInternationalPaymentButton = createLPMButtonComponent(LPM_REGISTRY.pixInternational.buttonTag, "PixInternationalPaymentButton");
-export const SepaPaymentButton = createLPMButtonComponent(LPM_REGISTRY.sepa.buttonTag, "SepaPaymentButton");
-export const DokuPaymentButton = createLPMButtonComponent(LPM_REGISTRY.doku.buttonTag, "DokuPaymentButton");
-export const EstoniaPaymentButton = createLPMButtonComponent(LPM_REGISTRY.estonia.buttonTag, "EstoniaPaymentButton");
-export const GopayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.gopay.buttonTag, "GopayPaymentButton");
-export const AlipayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.alipay.buttonTag, "AlipayPaymentButton");
-export const IndonesiaBanksPaymentButton = createLPMButtonComponent(LPM_REGISTRY.indonesiaBanks.buttonTag, "IndonesiaBanksPaymentButton");
-export const KredivoPaymentButton = createLPMButtonComponent(LPM_REGISTRY.kredivo.buttonTag, "KredivoPaymentButton");
-export const LinkajaPaymentButton = createLPMButtonComponent(LPM_REGISTRY.linkaja.buttonTag, "LinkajaPaymentButton");
-export const OvoPaymentButton = createLPMButtonComponent(LPM_REGISTRY.ovo.buttonTag, "OvoPaymentButton");
-export const PayseraPaymentButton = createLPMButtonComponent(LPM_REGISTRY.paysera.buttonTag, "PayseraPaymentButton");
-export const SkrillPaymentButton = createLPMButtonComponent(LPM_REGISTRY.skrill.buttonTag, "SkrillPaymentButton");
-export const BlikPayLaterPaymentButton = createLPMButtonComponent(LPM_REGISTRY.blikPayLater.buttonTag, "BlikPayLaterPaymentButton");
-export const BancomatPayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.bancomatPay.buttonTag, "BancomatPayPaymentButton");
-export const JeniuspayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.jeniuspay.buttonTag, "JeniuspayPaymentButton");
-export const KlarnaPaymentButton = createLPMButtonComponent(LPM_REGISTRY.klarna.buttonTag, "KlarnaPaymentButton");
-export const AfterpayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.afterpay.buttonTag, "AfterpayPaymentButton");
-export const OxxopayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.oxxopay.buttonTag, "OxxopayPaymentButton");
-export const BoletobancarioPaymentButton = createLPMButtonComponent(LPM_REGISTRY.boletobancario.buttonTag, "BoletobancarioPaymentButton");
-export const PaysafecardPaymentButton = createLPMButtonComponent(LPM_REGISTRY.paysafecard.buttonTag, "PaysafecardPaymentButton");
-export const ScalapayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.scalapay.buttonTag, "ScalapayPaymentButton");
-export const CryptoPaymentButton = createLPMButtonComponent(LPM_REGISTRY.crypto.buttonTag, "CryptoPaymentButton");
-export const DragonpayPaymentButton = createLPMButtonComponent(LPM_REGISTRY.dragonpay.buttonTag, "DragonpayPaymentButton");
-export const FpxPaymentButton = createLPMButtonComponent(LPM_REGISTRY.fpx.buttonTag, "FpxPaymentButton");
-export const IndomaretPaymentButton = createLPMButtonComponent(LPM_REGISTRY.indomaret.buttonTag, "IndomaretPaymentButton");
-export const ThailandBanksPaymentButton = createLPMButtonComponent(LPM_REGISTRY.thailandBanks.buttonTag, "ThailandBanksPaymentButton");
-export const AlfamartPaymentButton = createLPMButtonComponent(LPM_REGISTRY.alfamart.buttonTag, "AlfamartPaymentButton");
-export const ZipPaymentButton = createLPMButtonComponent(LPM_REGISTRY.zip.buttonTag, "ZipPaymentButton");
-export const LatviaBanksPaymentButton = createLPMButtonComponent(LPM_REGISTRY.latviaBanks.buttonTag, "LatviaBanksPaymentButton");
-export const FiuuPaymentButton = createLPMButtonComponent(LPM_REGISTRY.fiuu.buttonTag, "FiuuPaymentButton");
-export const LithuaniaBanksPaymentButton = createLPMButtonComponent(LPM_REGISTRY.lithuaniaBanks.buttonTag, "LithuaniaBanksPaymentButton");
+export const IdealPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "ideal",
+  "IdealPaymentButton",
+);
+export const BancontactPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "bancontact",
+  "BancontactPaymentButton",
+);
+export const EpsPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "eps",
+  "EpsPaymentButton",
+);
+export const BlikPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "blik",
+  "BlikPaymentButton",
+);
+export const MybankPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "mybank",
+  "MybankPaymentButton",
+);
+export const TrustlyPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "trustly",
+  "TrustlyPaymentButton",
+);
+export const P24PaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "p24",
+  "P24PaymentButton",
+);
+export const MultibancoPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "multibanco",
+  "MultibancoPaymentButton",
+);
+export const BizumPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "bizum",
+  "BizumPaymentButton",
+);
+export const SwishPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "swish",
+  "SwishPaymentButton",
+);
+export const TwintPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "twint",
+  "TwintPaymentButton",
+);
+export const WechatpayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "wechatpay",
+  "WechatpayPaymentButton",
+);
+export const VerkkopankkiPaymentButton =
+  /*#__PURE__*/ createStandaloneLPMButton(
+    "verkkopankki",
+    "VerkkopankkiPaymentButton",
+  );
+export const PayuPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "payu",
+  "PayuPaymentButton",
+);
+export const MbwayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "mbway",
+  "MbwayPaymentButton",
+);
+export const SatispayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "satispay",
+  "SatispayPaymentButton",
+);
+export const WeroPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "wero",
+  "WeroPaymentButton",
+);
+export const FloaPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "floa",
+  "FloaPaymentButton",
+);
+export const GrabpayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "grabpay",
+  "GrabpayPaymentButton",
+);
+export const PixInternationalPaymentButton =
+  /*#__PURE__*/ createStandaloneLPMButton(
+    "pixInternational",
+    "PixInternationalPaymentButton",
+  );
+export const SepaPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "sepa",
+  "SepaPaymentButton",
+);
+export const DokuPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "doku",
+  "DokuPaymentButton",
+);
+export const EstoniaPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "estonia",
+  "EstoniaPaymentButton",
+);
+export const GopayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "gopay",
+  "GopayPaymentButton",
+);
+export const AlipayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "alipay",
+  "AlipayPaymentButton",
+);
+export const IndonesiaBanksPaymentButton =
+  /*#__PURE__*/ createStandaloneLPMButton(
+    "indonesiaBanks",
+    "IndonesiaBanksPaymentButton",
+  );
+export const KredivoPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "kredivo",
+  "KredivoPaymentButton",
+);
+export const LinkajaPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "linkaja",
+  "LinkajaPaymentButton",
+);
+export const OvoPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "ovo",
+  "OvoPaymentButton",
+);
+export const PayseraPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "paysera",
+  "PayseraPaymentButton",
+);
+export const SkrillPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "skrill",
+  "SkrillPaymentButton",
+);
+export const BlikPayLaterPaymentButton =
+  /*#__PURE__*/ createStandaloneLPMButton(
+    "blikPayLater",
+    "BlikPayLaterPaymentButton",
+  );
+export const BancomatPayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "bancomatPay",
+  "BancomatPayPaymentButton",
+);
+export const JeniuspayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "jeniuspay",
+  "JeniuspayPaymentButton",
+);
+export const KlarnaPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "klarna",
+  "KlarnaPaymentButton",
+);
+export const AfterpayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "afterpay",
+  "AfterpayPaymentButton",
+);
+export const OxxopayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "oxxopay",
+  "OxxopayPaymentButton",
+);
+export const BoletobancarioPaymentButton =
+  /*#__PURE__*/ createStandaloneLPMButton(
+    "boletobancario",
+    "BoletobancarioPaymentButton",
+  );
+export const PaysafecardPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "paysafecard",
+  "PaysafecardPaymentButton",
+);
+export const ScalapayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "scalapay",
+  "ScalapayPaymentButton",
+);
+export const CryptoPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "crypto",
+  "CryptoPaymentButton",
+);
+export const DragonpayPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "dragonpay",
+  "DragonpayPaymentButton",
+);
+export const FpxPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "fpx",
+  "FpxPaymentButton",
+);
+export const IndomaretPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "indomaret",
+  "IndomaretPaymentButton",
+);
+export const ThailandBanksPaymentButton =
+  /*#__PURE__*/ createStandaloneLPMButton(
+    "thailandBanks",
+    "ThailandBanksPaymentButton",
+  );
+export const AlfamartPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "alfamart",
+  "AlfamartPaymentButton",
+);
+export const ZipPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "zip",
+  "ZipPaymentButton",
+);
+export const LatviaBanksPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "latviaBanks",
+  "LatviaBanksPaymentButton",
+);
+export const FiuuPaymentButton = /*#__PURE__*/ createStandaloneLPMButton(
+  "fiuu",
+  "FiuuPaymentButton",
+);
+export const LithuaniaBanksPaymentButton =
+  /*#__PURE__*/ createStandaloneLPMButton(
+    "lithuaniaBanks",
+    "LithuaniaBanksPaymentButton",
+  );

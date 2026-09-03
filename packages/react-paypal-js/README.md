@@ -929,7 +929,7 @@ export default function App() {
 
 ## Local Payment Methods (LPM)
 
-`react-paypal-js` ships pre-built components and hooks for 45+ regional Local Payment Methods (LPMs) — iDEAL, Bancontact, BLIK, Pix, Klarna, and more — each imported by name from the dedicated `@paypal/react-paypal-js/sdk-v6/local-payment-methods` subpath. LPMs are bundled separately from the core SDK to keep the main bundle small, since most integrations only need a handful of region-specific methods.
+`react-paypal-js` ships pre-built components and hooks for 45+ regional Local Payment Methods (LPMs) — iDEAL, Bancontact, BLIK, Pix, Klarna, and more — from the same `@paypal/react-paypal-js/sdk-v6` entry as the other v6 payment methods. With static named imports, compatible production bundlers can remove unused LPM React wrapper components and hooks. When at least one LPM is used, the shared `LPM_REGISTRY` remains in the bundle because it is accessed by runtime key.
 
 Every LPM exposes the same three integration points, named after the method (e.g. `Ideal`, `Bancontact`, `Pix`):
 
@@ -937,7 +937,7 @@ Every LPM exposes the same three integration points, named after the method (e.g
 - **`use<Ideal>OneTimePaymentSession`** — a hook for full control over the click handler, pending/error state, and rendering your own button UI.
 - **`<Ideal>PaymentButton`** — a standalone button component that reads its session from context (see "Multi-field LPMs" below), for LPMs whose required fields need to be laid out separately from the button.
 
-Generic (non-name-specific) exports — `LPMOneTimePaymentButton`, `useLPMOneTimePaymentSession`, `LPM_REGISTRY`, and `LPMName` — are also available from the same subpath if you want to select the LPM dynamically (e.g. `lpm="ideal"`) rather than importing a specific named component.
+Generic (non-name-specific) exports — `LPMOneTimePaymentButton`, `useLPMOneTimePaymentSession`, `LPM_REGISTRY`, and `LPMName` — are also available from the same V6 entry if you want to select the LPM dynamically (e.g. `lpm="ideal"`) rather than importing a specific named component.
 
 ### Quick Start
 
@@ -945,7 +945,7 @@ Generic (non-name-specific) exports — `LPMOneTimePaymentButton`, `useLPMOneTim
 import {
   PayPalProvider,
   IdealOneTimePaymentButton,
-} from "@paypal/react-paypal-js/sdk-v6/local-payment-methods";
+} from "@paypal/react-paypal-js/sdk-v6";
 
 async function createOrder() {
   const response = await fetch("/api/paypal/create-order", {
@@ -983,8 +983,6 @@ export default function App() {
 }
 ```
 
-> **Note:** `PayPalProvider` and `usePayPal` must be imported from `@paypal/react-paypal-js/sdk-v6/local-payment-methods` (not `@paypal/react-paypal-js/sdk-v6`) when using LPMs — the LPM subpath is a separate bundle with its own React context instance, so a provider from the core subpath will not satisfy the LPM hooks.
-
 ### Presentation mode
 
 LPMs only support `presentationMode="popup"` — `"auto"`, `"modal"`, and other presentation modes available on `PayPalOneTimePaymentButton` are not supported for LPMs and are rejected at the type level.
@@ -994,7 +992,7 @@ LPMs only support `presentationMode="popup"` — `"auto"`, `"modal"`, and other 
 Some LPMs (e.g. Pix, MB WAY, FLOA) require additional buyer-provided data — phone number, billing address, tax ID, or date of birth — passed via session fields rather than the presentation-mode options. Check `LPM_REGISTRY["<lpm>"].sessionFields` for which fields a given LPM needs.
 
 ```tsx
-import { PixInternationalOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6/local-payment-methods";
+import { PixInternationalOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
 
 <PixInternationalOneTimePaymentButton
   presentationMode="popup"
@@ -1016,7 +1014,7 @@ import { PixInternationalOneTimePaymentButton } from "@paypal/react-paypal-js/sd
 For layouts where the buyer fields need to be positioned independently of the button (e.g. fields above a form, button in a sticky footer), use the enhanced hook form instead — it returns field components and a `LPMSessionProvider` alongside the session state:
 
 ```tsx
-import { useMbwayOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6/local-payment-methods";
+import { useMbwayOneTimePaymentSession } from "@paypal/react-paypal-js/sdk-v6";
 
 function MbWayCheckout() {
   // "phone" is a session field for MB WAY (LPM_REGISTRY.mbway.sessionFields),

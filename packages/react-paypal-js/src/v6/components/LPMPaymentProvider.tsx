@@ -17,9 +17,8 @@ import type { ButtonProps } from "../types/sdkWebComponents";
  * React context carrying the active `LPMOneTimePaymentSession` instance.
  * Consumed by field components rendered inside an `LPMSessionProvider`.
  */
-export const LPMSessionContext = createContext<LPMOneTimePaymentSession | null>(
-  null,
-);
+export const LPMSessionContext =
+  /*#__PURE__*/ createContext<LPMOneTimePaymentSession | null>(null);
 
 /**
  * The click handler and pending/error state a payment button needs.
@@ -38,7 +37,7 @@ export interface LPMSessionHandleContextValue {
  * `LPMSessionProvider`.
  */
 export const LPMSessionHandleContext =
-  createContext<LPMSessionHandleContextValue | null>(null);
+  /*#__PURE__*/ createContext<LPMSessionHandleContextValue | null>(null);
 
 // ─── Enhanced hook return type ─────────────────────────────────────────────────
 
@@ -48,7 +47,9 @@ export const LPMSessionHandleContext =
  * `unknown` — so merchants (and tests) never need to cast the result.
  */
 export type FieldComponents<Fields extends readonly LPMFieldType[]> = {
-  [F in Fields[number] as `${Capitalize<F>}Field`]: React.FC<LPMFieldComponentProps>;
+  [
+    F in Fields[number] as `${Capitalize<F>}Field`
+  ]: React.FC<LPMFieldComponentProps>;
 };
 
 /**
@@ -252,7 +253,9 @@ function createFieldComponent(
  *   </LPMSessionProvider>
  * );
  */
-export function createEnhancedLPMHook<const Fields extends readonly LPMFieldType[]>(
+export function createEnhancedLPMHook<
+  const Fields extends readonly LPMFieldType[],
+>(
   lpm: LPMName,
   fieldTypes: Fields,
 ): (

@@ -15,6 +15,13 @@
   "main": "index.js",
   "module": "dist/esm/react-paypal-js.js",
   "types": "dist/types/index.d.ts",
+  "sideEffects": [
+    "./index.js",
+    "./dist/cjs/**",
+    "./dist/esm/**",
+    "./dist/v6/esm/server.js",
+    "./dist/v6/esm/server.min.js"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -31,10 +38,6 @@
     "./sdk-v6/server": {
       "types": "./dist/types/v6/server.d.ts",
       "import": "./dist/v6/esm/server.js"
-    },
-    "./sdk-v6/local-payment-methods": {
-      "types": "./dist/types/v6/lpmExports.d.ts",
-      "import": "./dist/v6/esm/local-payment-methods.js"
     }
   },
   "scripts": {
