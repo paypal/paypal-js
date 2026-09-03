@@ -76,7 +76,7 @@
     "jsdom": "^23.0.1",
     "lint-staged": "15.2.0",
     "openapi-typescript": "^7.13.0",
-    "rollup": "^4.9.1",
+    "rollup": "^4.62.2",
     "semver": "7.5.4",
     "tslib": "2.6.2",
     "typedoc": "^0.28.13",
