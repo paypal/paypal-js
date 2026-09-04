@@ -82,6 +82,19 @@ describe("ApplePayOneTimePaymentButton", () => {
     expect(container.querySelector("div")).toBeInTheDocument();
   });
 
+  it("attaches the click handler after hydration", () => {
+    mockUsePayPal.mockReturnValue({ isHydrated: false });
+    const { container, rerender } = render(
+      <ApplePayOneTimePaymentButton {...defaultProps} />,
+    );
+
+    mockUsePayPal.mockReturnValue({ isHydrated: true });
+    rerender(<ApplePayOneTimePaymentButton {...defaultProps} />);
+
+    fireEvent.click(container.querySelector("apple-pay-button")!);
+    expect(mockHandleClick).toHaveBeenCalledTimes(1);
+  });
+
   it("should call handleClick when button is clicked", () => {
     const { container } = render(
       <ApplePayOneTimePaymentButton {...defaultProps} />,

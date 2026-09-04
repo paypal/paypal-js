@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { useGooglePayOneTimePaymentSession } from "../hooks/useGooglePayOneTimePaymentSession";
 import { usePayPal } from "../hooks/usePayPal";
@@ -64,18 +64,18 @@ export const GooglePayOneTimePaymentButton = ({
     useGooglePayOneTimePaymentSession(hookProps);
   const { isHydrated } = usePayPal();
   const containerRef = useRef<HTMLDivElement>(null);
-  const buttonMountedRef = useRef(false);
   const handleClickRef = useRef(handleClick);
   handleClickRef.current = handleClick;
 
   const isDisabled = disabled || isPending;
 
-  // Create and mount the Google Pay button
-  const mountButton = useCallback(() => {
+  // Mount only the button requested by the current effect.
+  useEffect(() => {
     const container = containerRef.current;
-    if (!container || buttonMountedRef.current) {
+    if (!isHydrated || isPending || !container) {
       return;
     }
+    let isSubscribed = true;
 
     const mountIfReady = async () => {
       const button = await createGooglePayButton({
@@ -89,32 +89,27 @@ export const GooglePayOneTimePaymentButton = ({
         ...(buttonLocale && { buttonLocale }),
       });
 
-      if (!button) {
+      if (!isSubscribed || !button) {
         return;
       }
 
       // Clear any previous content and mount the button
       container.replaceChildren(button);
-      buttonMountedRef.current = true;
     };
 
     void mountIfReady();
+    return () => {
+      isSubscribed = false;
+    };
   }, [
+    isHydrated,
+    isPending,
     createGooglePayButton,
     buttonType,
     buttonColor,
     buttonSizeMode,
     buttonLocale,
   ]);
-
-  // Mount the button when hydrated and not pending
-  useEffect(() => {
-    if (isHydrated && !isPending) {
-      // Reset mounted flag when button options change so we remount
-      buttonMountedRef.current = false;
-      mountButton();
-    }
-  }, [isHydrated, isPending, mountButton]);
 
   // Cleanup on unmount
   useEffect(() => {
