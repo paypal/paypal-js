@@ -260,6 +260,12 @@ describe("deepEqual", () => {
       expect(deepEqual({ a: 1 }, { b: 1 })).toBe(false);
     });
 
+    test("returns false when a matching value is inherited", () => {
+      const inherited = Object.assign(Object.create({ a: 1 }), { b: 1 });
+
+      expect(deepEqual({ a: 1 }, inherited)).toBe(false);
+    });
+
     test("returns false for objects with different key counts", () => {
       expect(deepEqual({ a: 1 }, { a: 1, b: 2 })).toBe(false);
     });
