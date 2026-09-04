@@ -394,24 +394,28 @@ describe("usePayPalMessages", () => {
       );
 
       let firstFetch!: Promise<unknown>;
+      let latestContent: unknown;
       await act(async () => {
         firstFetch = result.current.handleFetchContent({
           amount: "100",
           logoPosition: "INLINE",
           logoType: "MONOGRAM",
         });
-        await result.current.handleFetchContent({
+        latestContent = await result.current.handleFetchContent({
           amount: "200",
           logoPosition: "INLINE",
           logoType: "MONOGRAM",
         });
       });
 
+      let staleContent: unknown;
       await act(async () => {
         resolveFirst(emptyContent);
-        await firstFetch;
+        staleContent = await firstFetch;
       });
 
+      expect(latestContent).toBe(populatedContent);
+      expect(staleContent).toBeUndefined();
       expect(result.current.error).toBeNull();
     });
   });
