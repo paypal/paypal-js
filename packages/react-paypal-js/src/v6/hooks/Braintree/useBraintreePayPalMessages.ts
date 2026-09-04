@@ -181,7 +181,7 @@ export function useBraintreePayPalMessages({
       const result = await messages.fetchContent(options);
 
       if (!isMountedRef.current || request !== fetchRequestRef.current) {
-        return result;
+        return;
       }
 
       // On an API error, fetchContent resolves to an empty sentinel MessageContent
