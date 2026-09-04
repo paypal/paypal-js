@@ -324,16 +324,22 @@ describe("useBraintreePayPalMessages", () => {
       await waitFor(() => expect(result.current.isReady).toBe(true));
 
       let firstFetch!: Promise<unknown>;
+      let latestContent: unknown;
       await act(async () => {
         firstFetch = result.current.handleFetchContent({ amount: "100" });
-        await result.current.handleFetchContent({ amount: "200" });
+        latestContent = await result.current.handleFetchContent({
+          amount: "200",
+        });
       });
 
+      let staleContent: unknown;
       await act(async () => {
         resolveFirst(emptyContent);
-        await firstFetch;
+        staleContent = await firstFetch;
       });
 
+      expect(latestContent).toBe(populatedContent);
+      expect(staleContent).toBeUndefined();
       expect(result.current.error).toBeNull();
     });
   });
