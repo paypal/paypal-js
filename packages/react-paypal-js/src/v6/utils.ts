@@ -244,7 +244,10 @@ export function deepEqual(
   }
 
   for (const key of keys1) {
-    if (!deepEqual(record1[key], record2[key], maxDepth, currentDepth + 1)) {
+    if (
+      !Object.prototype.hasOwnProperty.call(record2, key) ||
+      !deepEqual(record1[key], record2[key], maxDepth, currentDepth + 1)
+    ) {
       return false;
     }
   }
