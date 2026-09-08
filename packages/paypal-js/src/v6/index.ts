@@ -21,14 +21,8 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
     return Promise.resolve(null);
   }
 
-  const { debug, dataNamespace, dataSdkIntegrationSource } = options;
-  // Use hasOwnProperty to avoid picking up prototype-polluted values.
-  const environment = Object.prototype.hasOwnProperty.call(
-    options,
-    "environment",
-  )
-    ? options.environment
-    : undefined;
+  const { environment, debug, dataNamespace, dataSdkIntegrationSource } =
+    options;
   const namespace = dataNamespace ?? "paypal";
   const paypalWindowReference = getPayPalWindowNamespace(namespace);
   if (paypalWindowReference?.version.startsWith("6")) {
