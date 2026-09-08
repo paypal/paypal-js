@@ -3,6 +3,7 @@ import {
   PayLaterProductCodes,
   PayPalCreditCountryCodes,
 } from "./paypal-payments";
+import { FundingSource } from "./constants";
 import { ApplePayConfig } from "./applepay-payments";
 import type { GooglePayConfigFromFindEligibleMethods } from "./googlepay-payments";
 
@@ -27,16 +28,6 @@ export type FindEligibleMethodsOptions = {
   currencyCode?: string;
   paymentFlow?: PaymentFlow;
 };
-
-export type FundingSource =
-  | "credit"
-  | "paylater"
-  | "paypal"
-  | "venmo"
-  | "card"
-  | "advanced_cards"
-  | "applepay"
-  | "googlepay";
 
 type BaseEligiblePaymentMethodDetails = {
   canBeVaulted: boolean;

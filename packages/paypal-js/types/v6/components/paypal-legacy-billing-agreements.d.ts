@@ -7,11 +7,14 @@ import {
   PresentationModeOptionsForPaymentHandler,
 } from "./base-component";
 
+import { FundingSource } from "./constants";
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { PayPalPaymentsInstance } from "./paypal-payments.d";
 
 export type OnApproveDataBillingAgreements = {
   billingToken: string;
+  fundingSource: FundingSource;
   payerId?: string;
 };
 

@@ -1,3 +1,5 @@
+import { FundingSource } from "./constants";
+
 /* eslint-disable tsdoc/syntax */
 /**
  * @module
@@ -6,6 +8,7 @@
 /* eslint-enable tsdoc/syntax */
 
 export type OnApproveDataOneTimePayments = {
+  fundingSource: FundingSource;
   orderId: string;
   payerId?: string;
   billingToken?: string;
