@@ -3,6 +3,7 @@ import {
   PayLaterProductCodes,
   PayPalCreditCountryCodes,
 } from "./paypal-payments";
+import { FundingSource } from "./constants";
 import { ApplePayConfig } from "./applepay-payments";
 import type { GooglePayConfigFromFindEligibleMethods } from "./googlepay-payments";
 
