@@ -41,10 +41,12 @@ async function main() {
 
   function onApproveCallback({
     billingToken,
+    fundingSource,
     payerId,
   }: OnApproveDataBillingAgreements) {
     console.log({
       billingToken,
+      fundingSource,
       payerId,
     });
     return Promise.resolve();

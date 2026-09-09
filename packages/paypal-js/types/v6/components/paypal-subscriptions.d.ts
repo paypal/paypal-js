@@ -10,8 +10,10 @@ import {
   BasePaymentSessionOptions,
   BasePaymentSession,
 } from "./base-component";
+import { FundingSource } from "./constants";
 
 export type OnApproveDataSubscriptions = {
+  fundingSource: FundingSource;
   subscriptionId: string;
   payerId?: string;
 };
