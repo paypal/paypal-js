@@ -104,7 +104,13 @@ function validateArguments(options: unknown, PromisePonyfill?: unknown) {
   if (typeof options !== "object" || options === null) {
     throw new Error("Expected an options object.");
   }
-  const { environment } = options as PayPalScriptOptions;
+  // Use hasOwnProperty to avoid picking up prototype-polluted values.
+  const environment = Object.prototype.hasOwnProperty.call(
+    options,
+    "environment",
+  )
+    ? (options as PayPalScriptOptions).environment
+    : undefined;
 
   if (
     environment &&
