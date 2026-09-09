@@ -155,7 +155,9 @@ export function usePayLaterOneTimePaymentSession({
             await newSession.resume?.();
           }
         } catch (err) {
-          setError(err as Error);
+          if (sessionRef.current === newSession) {
+            setError(err as Error);
+          }
         }
       };
 
