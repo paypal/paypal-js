@@ -2,11 +2,13 @@ import { test, expect } from "@playwright/test";
 import { validationErrorSDKResponseMock } from "./mocks";
 
 test("Validation errors", async ({ page }) => {
-  page.route("https://www.paypal.com/sdk/js?", (route) =>
-    route.fulfill({
-      status: 400,
-      body: validationErrorSDKResponseMock(),
-    }),
+  await page.route(
+    (url) => url.href.startsWith("https://www.paypal.com/sdk/js"),
+    (route) =>
+      route.fulfill({
+        status: 400,
+        body: validationErrorSDKResponseMock(),
+      }),
   );
 
   await page.goto("/e2e-tests/validation-errors.html");

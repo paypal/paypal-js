@@ -101,4 +101,111 @@ export type SDKWebComponents = {
   "paypal-basic-card-container": HTMLAttributes<HTMLElement>;
   "paypal-message": PayPalMessagesElement;
   "apple-pay-button": ApplePayButtonElementProps;
+  "ideal-button": ButtonProps;
+  "bancontact-button": ButtonProps;
+  "eps-button": ButtonProps;
+  "blik-button": ButtonProps;
+  "mybank-button": ButtonProps;
+  "trustly-button": ButtonProps;
+  "p24-button": ButtonProps;
+  "multibanco-button": ButtonProps;
+  "bizum-button": ButtonProps;
+  "swish-button": ButtonProps;
+  "klarna-button": ButtonProps;
+  "twint-button": ButtonProps;
+  "wechatpay-button": ButtonProps;
+  "afterpay-button": ButtonProps;
+  "oxxopay-button": ButtonProps;
+  "boletobancario-button": ButtonProps;
+  "verkkopankki-button": ButtonProps;
+  "payu-button": ButtonProps;
+  "paysafecard-button": ButtonProps;
+  "mbway-button": ButtonProps;
+  "satispay-button": ButtonProps;
+  "wero-button": ButtonProps;
+  "floa-button": ButtonProps;
+  "scalapay-button": ButtonProps;
+  "grabpay-button": ButtonProps;
+  "pix-international-button": ButtonProps;
+  "sepa-button": ButtonProps;
+  "crypto-button": ButtonProps;
+  "doku-button": ButtonProps;
+  "dragonpay-button": ButtonProps;
+  "estonia-button": ButtonProps;
+  "fpx-button": ButtonProps;
+  "gopay-button": ButtonProps;
+  "alipay-button": ButtonProps;
+  "indomaret-button": ButtonProps;
+  "indonesiabanks-button": ButtonProps;
+  "kredivo-button": ButtonProps;
+  "linkaja-button": ButtonProps;
+  "ovo-button": ButtonProps;
+  "paysera-button": ButtonProps;
+  "skrill-button": ButtonProps;
+  "thailandbanks-button": ButtonProps;
+  "blikpaylater-button": ButtonProps;
+  "alfamart-button": ButtonProps;
+  "zip-button": ButtonProps;
+  "bancomatpay-button": ButtonProps;
+  "latviabanks-button": ButtonProps;
+  "fiuu-button": ButtonProps;
+  "lithuaniabanks-button": ButtonProps;
+  "jeniuspay-button": ButtonProps;
 };
+
+/**
+ * Runtime set of all LPM button tag names registered as SDK custom elements.
+ * Used to validate registry entries at test time.
+ */
+export const SDK_LPM_BUTTON_TAGS = new Set([
+  "ideal-button",
+  "bancontact-button",
+  "eps-button",
+  "blik-button",
+  "mybank-button",
+  "trustly-button",
+  "p24-button",
+  "multibanco-button",
+  "bizum-button",
+  "swish-button",
+  "klarna-button",
+  "twint-button",
+  "wechatpay-button",
+  "afterpay-button",
+  "oxxopay-button",
+  "boletobancario-button",
+  "verkkopankki-button",
+  "payu-button",
+  "paysafecard-button",
+  "mbway-button",
+  "satispay-button",
+  "wero-button",
+  "floa-button",
+  "scalapay-button",
+  "grabpay-button",
+  "pix-international-button",
+  "sepa-button",
+  "crypto-button",
+  "doku-button",
+  "dragonpay-button",
+  "estonia-button",
+  "fpx-button",
+  "gopay-button",
+  "alipay-button",
+  "indomaret-button",
+  "indonesiabanks-button",
+  "kredivo-button",
+  "linkaja-button",
+  "ovo-button",
+  "paysera-button",
+  "skrill-button",
+  "thailandbanks-button",
+  "blikpaylater-button",
+  "alfamart-button",
+  "zip-button",
+  "bancomatpay-button",
+  "latviabanks-button",
+  "fiuu-button",
+  "lithuaniabanks-button",
+  "jeniuspay-button",
+] as const);

@@ -96,8 +96,9 @@ export default [
     ],
   },
 
-  // V6 ESM build
+  // V6 Client ESM build
   // - Bundle-level "use client" directive for RSC compatibility
+  // - Exposes core and LPM APIs from one public client entry
   // - Externalizes @paypal/paypal-js to avoid bundling the core SDK
   // - Externalizes server-only for RSC server/client boundary enforcement
   // - ESM-only (no CJS) as v6 targets modern React/Next.js environments
@@ -108,7 +109,7 @@ export default [
         tsconfig: "./tsconfig.v6.json",
       }),
       cleanup({
-        comments: "none",
+        comments: [/__PURE__/],
       }),
       emitEsmModuleMarker(),
     ],
