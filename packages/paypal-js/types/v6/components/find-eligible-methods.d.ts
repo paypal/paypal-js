@@ -28,15 +28,71 @@ export type FindEligibleMethodsOptions = {
   paymentFlow?: PaymentFlow;
 };
 
+/**
+ * Funding sources accepted by `EligiblePaymentMethodsOutput.isEligible` /
+ * `getDetails`. This includes the funding sources used by the v6 Local Payment
+ * Method wrappers (e.g. `ideal`, `blik`) in addition to the core wallet and
+ * card methods.
+ */
 export type FundingSource =
+  | "advanced_cards"
+  | "afterpay"
+  | "alfamart"
+  | "alipay"
+  | "applepay"
+  | "bancomatpay"
+  | "bancontact"
+  | "bizum"
+  | "blik"
+  | "blik_pay_later"
+  | "boletobancario"
+  | "card"
   | "credit"
+  | "crypto"
+  | "doku"
+  | "dragonpay"
+  | "eps"
+  | "estonia_banks"
+  | "fiuu_cash"
+  | "floa_pay"
+  | "fpx"
+  | "googlepay"
+  | "gopay"
+  | "grabpay"
+  | "ideal"
+  | "indomaret"
+  | "indonesia_banks"
+  | "jenius_pay"
+  | "klarna"
+  | "kredivo"
+  | "latvia_banks"
+  | "linkaja"
+  | "lithuania_banks"
+  | "mbway"
+  | "multibanco"
+  | "mybank"
+  | "ovo"
+  | "oxxo_pay"
+  | "p24"
   | "paylater"
   | "paypal"
+  | "paysafecard"
+  | "paysera"
+  | "payu"
+  | "pix_international"
+  | "satispay"
+  | "scalapay"
+  | "sepa"
+  | "skrill"
+  | "swish"
+  | "thailand_banks"
+  | "trustly"
+  | "twint"
   | "venmo"
-  | "card"
-  | "advanced_cards"
-  | "applepay"
-  | "googlepay";
+  | "verkkopankki"
+  | "wechatpay"
+  | "wero"
+  | "zip";
 
 type BaseEligiblePaymentMethodDetails = {
   canBeVaulted: boolean;
