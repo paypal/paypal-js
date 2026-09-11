@@ -1,5 +1,11 @@
 # Changelog
 
+## 11.0.2
+
+### Patch Changes
+
+- cb9899e: Expand the v6 eligibility `FundingSource` type to include supported local payment methods.
+
 ## 11.0.1
 
 ### Patch Changes
