@@ -7,7 +7,18 @@ import {
   usePayPal,
   INSTANCE_LOADING_STATE,
 } from "@paypal/react-paypal-js/sdk-v6";
+import type { Components } from "@paypal/react-paypal-js/sdk-v6";
 import { PAYPAL_CLIENT_ID } from "../shared/utils";
+
+const DEFAULT_COMPONENTS: Components[] = [
+  "paypal-payments",
+  "venmo-payments",
+  "paypal-guest-payments",
+  "paypal-subscriptions",
+  "card-fields",
+  "applepay-payments",
+  "googlepay-payments",
+];
 
 // Logs SDK and button events to the Actions panel.
 function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
@@ -29,7 +40,15 @@ function SdkStatusMonitor({ children }: { children: React.ReactNode }) {
   return <div onClick={handleClick}>{children}</div>;
 }
 
-function ProviderWrapper({ children }: { children: React.ReactNode }) {
+function ProviderWrapper({
+  children,
+  components,
+  testBuyerCountry,
+}: {
+  children: React.ReactNode;
+  components: Components[];
+  testBuyerCountry?: string;
+}) {
   if (!PAYPAL_CLIENT_ID) {
     return (
       <div
@@ -63,16 +82,9 @@ function ProviderWrapper({ children }: { children: React.ReactNode }) {
     <PayPalProvider
       clientId={PAYPAL_CLIENT_ID}
       environment="sandbox"
-      components={[
-        "paypal-payments",
-        "venmo-payments",
-        "paypal-guest-payments",
-        "paypal-subscriptions",
-        "card-fields",
-        "applepay-payments",
-        "googlepay-payments",
-      ]}
+      components={components}
       pageType="checkout"
+      testBuyerCountry={testBuyerCountry}
     >
       <SdkStatusMonitor>{children}</SdkStatusMonitor>
     </PayPalProvider>
@@ -87,8 +99,17 @@ export const withPayPalProvider: Decorator = (Story, context) => {
     return <Story />;
   }
 
+  const components =
+    (context.parameters?.sdkComponents as Components[] | undefined) ??
+    DEFAULT_COMPONENTS;
+  const testBuyerCountry = context.parameters?.testBuyerCountry as
+    string | undefined;
+
   return (
-    <ProviderWrapper>
+    <ProviderWrapper
+      components={components}
+      testBuyerCountry={testBuyerCountry}
+    >
       <Story />
     </ProviderWrapper>
   );
