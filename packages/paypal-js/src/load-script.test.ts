@@ -70,6 +70,23 @@ describe("loadScript()", () => {
     expect(response).toEqual(window.paypal);
   });
 
+  test("should ignore a prototype-polluted environment and not throw", async () => {
+    expect(window.paypal).toBe(undefined);
+    // Simulate prototype pollution with a value that would otherwise fail
+    // validation and break loadScript() entirely.
+    (Object.prototype as Record<string, unknown>)["environment"] = "invalid";
+    try {
+      const response = await loadScript({ clientId: "test" });
+      expect(mockedInsertScriptElement).toHaveBeenCalledTimes(1);
+      expect(mockedInsertScriptElement.mock.calls[0][0].url).toEqual(
+        "https://www.paypal.com/sdk/js?client-id=test",
+      );
+      expect(response).toEqual(window.paypal);
+    } finally {
+      delete (Object.prototype as Record<string, unknown>)["environment"];
+    }
+  });
+
   test("should not insert <script> when an existing script with the same params is already in the DOM", async () => {
     expect(window.paypal).toBe(undefined);
 

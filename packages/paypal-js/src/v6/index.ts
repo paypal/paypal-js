@@ -98,8 +98,15 @@ function validateArguments(options: unknown) {
   if (typeof options !== "object" || options === null) {
     throw new Error("Expected an options object");
   }
-  const { environment, dataNamespace, dataSdkIntegrationSource } =
+  const { dataNamespace, dataSdkIntegrationSource } =
     options as LoadCoreSdkScriptOptions;
+  // Use hasOwnProperty to avoid picking up prototype-polluted values.
+  const environment = Object.prototype.hasOwnProperty.call(
+    options,
+    "environment",
+  )
+    ? (options as LoadCoreSdkScriptOptions).environment
+    : undefined;
 
   if (environment !== "production" && environment !== "sandbox") {
     throw new Error(

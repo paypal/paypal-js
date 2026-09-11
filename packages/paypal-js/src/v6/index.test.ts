@@ -166,6 +166,23 @@ describe("loadCoreSdkScript()", () => {
     );
   });
 
+  test("should ignore a prototype-polluted environment and reject", async () => {
+    // Simulate prototype pollution: without an own-property guard, the polluted
+    // value would pass validation and silently load the sandbox SDK.
+    (Object.prototype as Record<string, unknown>)["environment"] = "sandbox";
+    try {
+      await expect(async () => {
+        // @ts-expect-error invalid arguments
+        await loadCoreSdkScript({});
+      }).rejects.toThrow(
+        'The "environment" option is required and must be either "production" or "sandbox"',
+      );
+      expect(scriptAppendChildSpy).not.toHaveBeenCalled();
+    } finally {
+      delete (Object.prototype as Record<string, unknown>)["environment"];
+    }
+  });
+
   describe("dataNamespace option", () => {
     test("should support custom data-namespace attribute", async () => {
       const customNamespace = "myCustomNamespace";
