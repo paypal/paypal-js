@@ -663,6 +663,7 @@ export const getCardFieldsOneTimePaymentCode = (): string => `
 import {
     PayPalProvider,
     PayPalCardFieldsProvider,
+    PayPalCardNameField,
     PayPalCardNumberField,
     PayPalCardExpiryField,
     PayPalCardCvvField,
@@ -723,6 +724,10 @@ function CardFields() {
 
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <PayPalCardNameField
+                containerStyles={{ height: "3rem" }}
+                placeholder="Enter your name"
+            />
             <PayPalCardNumberField
                 containerStyles={{ height: "3rem" }}
                 placeholder="Enter card number"
@@ -790,6 +795,7 @@ export const getCardFieldsSavePaymentCode = (): string => `
 import {
     PayPalProvider,
     PayPalCardFieldsProvider,
+    PayPalCardNameField,
     PayPalCardNumberField,
     PayPalCardExpiryField,
     PayPalCardCvvField,
@@ -841,6 +847,10 @@ function CardFields() {
 
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <PayPalCardNameField
+                containerStyles={{ height: "3rem" }}
+                placeholder="Enter your name"
+            />
             <PayPalCardNumberField
                 containerStyles={{ height: "3rem" }}
                 placeholder="Enter card number"
