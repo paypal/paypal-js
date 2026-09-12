@@ -57,6 +57,7 @@
   - [PayPalCardNumberField](#paypalcardnumberfield)
   - [PayPalCardExpiryField](#paypalcardexpiryfield)
   - [PayPalCardCvvField](#paypalcardcvvfield)
+  - [PayPalCardNameField](#paypalcardnamefield-optional-field)
   - [Field Component Props](#field-component-props)
 - [Payment Flow: Card Fields](#payment-flow-card-fields)
 - [Hooks API](#hooks-api)
@@ -1143,6 +1144,19 @@ import { PayPalCardCvvField } from "@paypal/react-paypal-js/sdk-v6";
 />;
 ```
 
+### PayPalCardNameField (Optional Field)
+
+Renders a Name input field. Must be used within a [PayPalCardFieldsProvider](#paypalcardfieldsprovider) component. This field is optional, and a transaction can complete without it being rendered or filled.
+
+```tsx
+import { PayPalCardNameField } from "@paypal/react-paypal-js/sdk-v6";
+
+<PayPalCardNameField
+  placeholder="Name"
+  containerStyles={{ height: "3rem", marginBottom: "1rem" }}
+/>;
+```
+
 ### Field Component Props
 
 All field components ([`PayPalCardNumberField`](#paypalcardnumberfield), [`PayPalCardExpiryField`](#paypalcardexpiryfield), [`PayPalCardCvvField`](#paypalcardcvvfield)) accept the same set of props. They combine container styling properties with CardField-specific configuration options.
@@ -1160,7 +1174,7 @@ All field components ([`PayPalCardNumberField`](#paypalcardnumberfield), [`PayPa
 
 ## Payment Flow: Card Fields
 
-1. User enters card number, expiry, and CVV in the card fields
+1. User enters card number, expiry, CVV, and an optional name in the card fields
 2. User clicks your submit button
 3. `createOrder` creates an order via your backend API
 4. `submit(orderId)` processes the card payment with the order ID
@@ -1688,6 +1702,7 @@ function CardPaymentForm() {
 
   return (
     <div>
+      <PayPalCardNameField />
       <PayPalCardNumberField />
       <PayPalCardExpiryField />
       <PayPalCardCvvField />
@@ -1748,6 +1763,7 @@ function CardPaymentForm() {
 
   return (
     <div>
+      <PayPalCardNameField />
       <PayPalCardNumberField />
       <PayPalCardExpiryField />
       <PayPalCardCvvField />

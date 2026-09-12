@@ -61,7 +61,7 @@ export type FieldState = {
   isPotentiallyValid: boolean;
 };
 
-export type CardFieldTypes = "cvv" | "expiry" | "number";
+export type CardFieldTypes = "cvv" | "expiry" | "number" | "name";
 
 export type MerchantMessagingEvents =
   | "blur"
@@ -88,6 +88,7 @@ export type EventState = {
   number: FieldState;
   cvv: FieldState;
   expiry: FieldState;
+  name?: FieldState;
 };
 
 export type EventPayload = {

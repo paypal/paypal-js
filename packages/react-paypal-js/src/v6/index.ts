@@ -66,6 +66,7 @@ export {
   GooglePayOneTimePaymentButton,
   type GooglePayOneTimePaymentButtonProps,
 } from "./components/GooglePayOneTimePaymentButton";
+export { PayPalCardNameField } from "./components/PayPalCardNameField";
 export { PayPalCardNumberField } from "./components/PayPalCardNumberField";
 export { PayPalCardExpiryField } from "./components/PayPalCardExpiryField";
 export { PayPalCardCvvField } from "./components/PayPalCardCvvField";
