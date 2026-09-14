@@ -72,22 +72,8 @@ async function main() {
         { presentationMode: "auto" },
         createOrder(),
       );
-      // sandboxSupport must be accepted alongside every presentation mode,
-      // not just "modal" (regression guard for intersection precedence).
-      await venmoPaymentSession.start(
-        { presentationMode: "auto", sandboxSupport: { enabled: true } },
-        createOrder(),
-      );
-      await venmoPaymentSession.start(
-        { presentationMode: "popup", sandboxSupport: { enabled: true } },
-        createOrder(),
-      );
-      await venmoPaymentSession.start(
-        { presentationMode: "modal", sandboxSupport: { enabled: true } },
-        createOrder(),
-      );
       await venmoSavePaymentSession.start(
-        { presentationMode: "auto", sandboxSupport: { enabled: true } },
+        { presentationMode: "auto" },
         createVaultSetupToken(),
       );
     } catch (error) {

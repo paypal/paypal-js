@@ -15,6 +15,16 @@ import type {
   WithOptionalPresentationMode,
 } from "../types";
 
+/**
+ * `sandboxSupport` is a temporary Venmo sandbox-testing flag that the JS SDK will
+ * remove once it is no longer needed. It is intentionally typed locally here
+ * rather than in `@paypal/paypal-js`, so it can be dropped from react-paypal-js
+ * without a breaking change to the published SDK types.
+ */
+type VenmoSandboxSupport = {
+  sandboxSupport?: { enabled: boolean };
+};
+
 export type UseVenmoOneTimePaymentSessionProps = (
   | (Omit<VenmoOneTimePaymentSessionOptions, "orderId"> & {
       createOrder: () => VenmoOneTimePaymentSessionPromise;
@@ -25,7 +35,8 @@ export type UseVenmoOneTimePaymentSessionProps = (
       orderId: string;
     })
 ) &
-  WithOptionalPresentationMode<VenmoPresentationModeOptions>;
+  WithOptionalPresentationMode<VenmoPresentationModeOptions> &
+  VenmoSandboxSupport;
 
 /**
  * Hook for managing Venmo one-time payment sessions.
@@ -139,7 +150,7 @@ export function useVenmoOneTimePaymentSession({
       presentationMode,
       fullPageOverlay,
       ...(sandboxSupport && { sandboxSupport }),
-    } as VenmoPresentationModeOptions;
+    } as VenmoPresentationModeOptions & VenmoSandboxSupport;
 
     await sessionRef.current.start(startOptions, createOrder?.());
   }, [
