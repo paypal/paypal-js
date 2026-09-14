@@ -532,6 +532,28 @@ describe("useVenmoOneTimePaymentSession", () => {
         mockPayPalContext({ sdkInstance: mockSdkInstance });
       }
     });
+
+    test("should forward sandboxSupport to start", async () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+        sandboxSupport: { enabled: true },
+      };
+
+      const { result } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockVenmoSession.start).toHaveBeenCalledWith(
+        expect.objectContaining({
+          presentationMode: "auto",
+          sandboxSupport: { enabled: true },
+        }),
+        undefined,
+      );
+    });
   });
 
   describe("handleCancel", () => {
