@@ -1159,7 +1159,7 @@ import { PayPalCardNameField } from "@paypal/react-paypal-js/sdk-v6";
 
 ### Field Component Props
 
-All field components ([`PayPalCardNumberField`](#paypalcardnumberfield), [`PayPalCardExpiryField`](#paypalcardexpiryfield), [`PayPalCardCvvField`](#paypalcardcvvfield)) accept the same set of props. They combine container styling properties with CardField-specific configuration options.
+All field components ([`PayPalCardNumberField`](#paypalcardnumberfield), [`PayPalCardExpiryField`](#paypalcardexpiryfield), [`PayPalCardCvvField`](#paypalcardcvvfield), and [`PayPalCardNameField`](#paypalcardnamefield-optional-field)) accept the same set of props. They combine container styling properties with CardField-specific configuration options.
 
 | Prop                      | Type                  | Required | Description                                    |
 | ------------------------- | --------------------- | -------- | ---------------------------------------------- |
