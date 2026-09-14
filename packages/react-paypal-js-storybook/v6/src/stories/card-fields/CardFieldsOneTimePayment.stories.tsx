@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import {
   PayPalCardFieldsProvider,
+  PayPalCardNameField,
   PayPalCardNumberField,
   PayPalCardExpiryField,
   PayPalCardCvvField,
@@ -105,6 +106,10 @@ function CardFields() {
         maxWidth: "400px",
       }}
     >
+      <PayPalCardNameField
+        containerStyles={{ height: "3rem" }}
+        placeholder="Enter your name"
+      />
       <PayPalCardNumberField
         containerStyles={{ height: "3rem" }}
         placeholder="Enter card number"
@@ -165,7 +170,7 @@ const meta: Meta = {
       description: {
         component: `Card Fields for one-time payment flows.
 
-This example demonstrates the complete Card Fields integration using \`PayPalCardFieldsProvider\`, \`PayPalCardNumberField\`, \`PayPalCardExpiryField\`, and \`PayPalCardCvvField\` components.
+This example demonstrates the complete Card Fields integration using \`PayPalCardFieldsProvider\`, \`PayPalCardNumberField\`, \`PayPalCardExpiryField\`, \`PayPalCardCvvField\`, and \`PayPalCardNameField\` components.
 
 The Card Fields components render secure, PCI-compliant input fields for collecting card payment details. They must be wrapped in a \`<PayPalCardFieldsProvider>\` which manages the card fields session.
 

@@ -54,6 +54,10 @@ async function main() {
   const paypalCardFieldsOneTimePaymentSession =
     sdkInstance.createCardFieldsOneTimePaymentSession();
   paypalCardFieldsOneTimePaymentSession.createCardFieldsComponent({
+    type: "name",
+    placeholder: "Enter your name:",
+  });
+  paypalCardFieldsOneTimePaymentSession.createCardFieldsComponent({
     type: "number",
     placeholder: "Enter a number:",
   });
