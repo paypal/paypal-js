@@ -554,6 +554,49 @@ describe("useVenmoOneTimePaymentSession", () => {
         undefined,
       );
     });
+
+    test("should omit sandboxSupport from start options when not provided", async () => {
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        orderId: "test-order-id",
+        onApprove: jest.fn(),
+      };
+
+      const { result } = renderHook(() => useVenmoOneTimePaymentSession(props));
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      const startOptions = (mockVenmoSession.start as jest.Mock).mock
+        .calls[0][0];
+      expect(startOptions).not.toHaveProperty("sandboxSupport");
+    });
+
+    test("should use the latest sandboxSupport after a prop update", async () => {
+      const onApprove = jest.fn();
+      const { result, rerender } = renderHook(
+        ({ sandboxSupport }) =>
+          useVenmoOneTimePaymentSession({
+            orderId: "test-order-id",
+            onApprove,
+            sandboxSupport,
+          }),
+        { initialProps: { sandboxSupport: { enabled: false } } },
+      );
+
+      rerender({ sandboxSupport: { enabled: true } });
+
+      await act(async () => {
+        await result.current.handleClick();
+      });
+
+      expect(mockVenmoSession.start).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sandboxSupport: { enabled: true },
+        }),
+        undefined,
+      );
+    });
   });
 
   describe("handleCancel", () => {
