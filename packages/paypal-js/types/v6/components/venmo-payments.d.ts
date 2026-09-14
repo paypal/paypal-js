@@ -18,10 +18,15 @@ export type VenmoSavePaymentSessionOptions = Omit<
   onApprove?: (data: { vaultSetupToken: string }) => Promise<void>;
 };
 
-export type VenmoPresentationModeOptions =
+export type VenmoPresentationModeOptions = (
   | PresentationModeOptionsForAuto
   | PresentationModeOptionsForPopup
-  | PresentationModeOptionsForModal;
+  | PresentationModeOptionsForModal
+) & {
+  sandboxSupport?: {
+    enabled: boolean;
+  };
+};
 
 export type VenmoOneTimePaymentSessionPromise = Promise<{ orderId: string }>;
 

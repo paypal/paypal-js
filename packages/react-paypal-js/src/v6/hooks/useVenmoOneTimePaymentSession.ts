@@ -58,11 +58,13 @@ export function useVenmoOneTimePaymentSession({
   fullPageOverlay,
   createOrder,
   orderId,
+  sandboxSupport,
   ...callbacks
 }: UseVenmoOneTimePaymentSessionProps): BasePaymentSessionReturn {
   const { sdkInstance, loadingStatus } = usePayPal();
   const isMountedRef = useIsMountedRef();
   const sessionRef = useRef<VenmoOneTimePaymentSession | null>(null);
+  const sandboxSupportRef = useRef(sandboxSupport);
   const proxyCallbacks = useProxyProps(callbacks);
   const [error, setError] = useError();
 
@@ -137,6 +139,7 @@ export function useVenmoOneTimePaymentSession({
     const startOptions = {
       presentationMode,
       fullPageOverlay,
+      sandboxSupport: sandboxSupportRef.current,
     } as VenmoPresentationModeOptions;
 
     await sessionRef.current.start(startOptions, createOrder?.());
