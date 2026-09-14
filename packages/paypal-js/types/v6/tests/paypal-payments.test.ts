@@ -40,10 +40,12 @@ async function main() {
   }
 
   function onApproveCallback({
+    fundingSource,
     orderId,
     payerId,
   }: OnApproveDataOneTimePayments) {
     console.log({
+      fundingSource,
       orderId,
       payerId,
     });

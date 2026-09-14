@@ -4,10 +4,7 @@ import { PayPalLegacyBillingInstance } from "./components/paypal-legacy-billing-
 import { VenmoPaymentsInstance } from "./components/venmo-payments";
 import { ApplePayPaymentsInstance } from "./components/applepay-payments";
 import { GooglePayPaymentsInstance } from "./components/googlepay-payments";
-import type {
-  LPMComponents,
-  LPMInstanceFor,
-} from "./components/lpm-payments";
+import type { LPMComponents, LPMInstanceFor } from "./components/lpm-payments";
 import {
   EligiblePaymentMethodsOutput,
   FindEligibleMethodsOptions,
@@ -265,6 +262,7 @@ export * from "./components/applepay-payments";
 export * from "./components/googlepay-payments";
 export * from "./components/lpm-payments";
 export * from "./components/web-components";
+export * from "./components/constants";
 
 // export a subset of types from base-component
 export {

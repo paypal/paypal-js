@@ -9,6 +9,7 @@ import {
   PresentationModeOptionsForRedirect,
   PresentationModeOptionsForDirectAppSwitch,
 } from "./base-component";
+import { FundingSource } from "./constants";
 
 export type PayLaterCountryCodes =
   | "AU"
@@ -71,6 +72,7 @@ export type OnShippingOptionsChangeData = {
 };
 
 export type OnApproveDataSavePayments = {
+  fundingSource: FundingSource;
   vaultSetupToken: string;
   payerId?: string;
 };
