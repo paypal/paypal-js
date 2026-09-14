@@ -139,7 +139,9 @@ export function useVenmoOneTimePaymentSession({
     const startOptions = {
       presentationMode,
       fullPageOverlay,
-      sandboxSupport: sandboxSupportRef.current,
+      ...(sandboxSupportRef.current && {
+        sandboxSupport: sandboxSupportRef.current,
+      }),
     } as VenmoPresentationModeOptions;
 
     await sessionRef.current.start(startOptions, createOrder?.());
