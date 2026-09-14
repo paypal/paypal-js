@@ -34,49 +34,10 @@ export type BraintreePayPalCheckoutWithVaultButtonProps =
 export const BraintreePayPalCheckoutWithVaultButton = ({
   type = "pay",
   disabled = false,
-  // Callbacks
-  onApprove,
-  onCancel,
-  onError,
-  onShippingAddressChange,
-  onShippingOptionsChange,
-  // Primitive data options
-  amount,
-  currency,
-  intent,
-  commit,
-  userAuthenticationEmail,
-  returnUrl,
-  cancelUrl,
-  displayName,
-  presentationMode,
-  // Object/array data options
-  billingAgreementDetails,
-  lineItems,
-  shippingOptions,
-  amountBreakdown,
+  ...hookProps
 }: BraintreePayPalCheckoutWithVaultButtonProps): JSX.Element | null => {
   const { error, isPending, handleClick } =
-    useBraintreePayPalCheckoutWithVaultSession({
-      onApprove,
-      onCancel,
-      onError,
-      onShippingAddressChange,
-      onShippingOptionsChange,
-      amount,
-      currency,
-      intent,
-      commit,
-      userAuthenticationEmail,
-      returnUrl,
-      cancelUrl,
-      displayName,
-      presentationMode,
-      billingAgreementDetails,
-      lineItems,
-      shippingOptions,
-      amountBreakdown,
-    });
+    useBraintreePayPalCheckoutWithVaultSession(hookProps);
   const { isHydrated } = useBraintreePayPal();
 
   useEffect(() => {
