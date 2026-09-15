@@ -212,6 +212,16 @@ export { PayPalProvider } from "./components/PayPalProvider";
 export { usePayPal } from "./hooks/usePayPal";
 export { INSTANCE_LOADING_STATE } from "./types/ProviderEnums";
 
+// Eligibility checks (e.g. `useEligibleMethods().isEligible("blik")`) must also
+// come from this subpath's bundle instance for the same reason as above: the
+// hook reads `sdkInstance`/`eligiblePaymentMethods` off the LPM subpath's own
+// PayPalProvider context.
+export { useEligibleMethods } from "./hooks/useEligibleMethods";
+export type {
+  UseEligibleMethodsOptions,
+  UseEligibleMethodsResult,
+} from "./hooks/useEligibleMethods";
+
 // Generic LPM exports — also accessible from this subpath so the subpath is
 // fully self-contained and consumers never need to import from ./sdk-v6 for LPMs.
 export {

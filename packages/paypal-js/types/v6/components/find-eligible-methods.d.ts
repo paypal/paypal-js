@@ -36,7 +36,66 @@ export type FundingSource =
   | "card"
   | "advanced_cards"
   | "applepay"
-  | "googlepay";
+  | "googlepay"
+  | LPMFundingSource;
+
+/**
+ * Funding source identifiers for Local Payment Methods (LPMs), one per entry
+ * in `LPM_REGISTRY` (`packages/react-paypal-js/src/v6/config/lpmRegistry.ts`).
+ * Kept as a literal union here (rather than imported) to avoid a dependency
+ * from `paypal-js` on `react-paypal-js`.
+ */
+export type LPMFundingSource =
+  | "ideal"
+  | "bancontact"
+  | "eps"
+  | "blik"
+  | "mybank"
+  | "trustly"
+  | "p24"
+  | "multibanco"
+  | "bizum"
+  | "swish"
+  | "twint"
+  | "wechatpay"
+  | "verkkopankki"
+  | "payu"
+  | "mbway"
+  | "satispay"
+  | "wero"
+  | "floa"
+  | "grabpay"
+  | "pixInternational"
+  | "sepa"
+  | "doku"
+  | "estonia"
+  | "gopay"
+  | "alipay"
+  | "indonesiaBanks"
+  | "kredivo"
+  | "linkaja"
+  | "ovo"
+  | "paysera"
+  | "skrill"
+  | "blikPayLater"
+  | "bancomatPay"
+  | "jeniuspay"
+  | "klarna"
+  | "afterpay"
+  | "oxxopay"
+  | "boletobancario"
+  | "paysafecard"
+  | "scalapay"
+  | "crypto"
+  | "dragonpay"
+  | "fpx"
+  | "indomaret"
+  | "thailandBanks"
+  | "alfamart"
+  | "zip"
+  | "latviaBanks"
+  | "fiuu"
+  | "lithuaniaBanks";
 
 type BaseEligiblePaymentMethodDetails = {
   canBeVaulted: boolean;
