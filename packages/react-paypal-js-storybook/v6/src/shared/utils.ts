@@ -30,12 +30,15 @@ export const PAYPAL_CLIENT_ID =
 
 // One-Time Payment APIs
 
-export async function createOrder(): Promise<{ orderId: string }> {
+export async function createOrder(
+  currencyCode = "USD",
+): Promise<{ orderId: string }> {
   const response = await fetch(
     `${SAMPLE_INTEGRATION_API}/paypal-api/checkout/orders/create-order-for-one-time-payment`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ currencyCode }),
     },
   );
   const data = await response.json();

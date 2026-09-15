@@ -18,6 +18,10 @@ import { action } from "storybook/actions";
 
 import * as LPMExports from "@paypal/react-paypal-js/sdk-v6/local-payment-methods";
 import type { LPMName } from "@paypal/react-paypal-js/sdk-v6/local-payment-methods";
+// Eligibility must be checked via the LPM subpath's own `useEligibleMethods`
+// (not `@paypal/react-paypal-js/sdk-v6`): it reads off the same bundle
+// instance's PayPalProvider context that `withLPMPayPalProvider` sets up.
+import { useEligibleMethods } from "@paypal/react-paypal-js/sdk-v6/local-payment-methods";
 
 import { withLPMPayPalProvider } from "../../decorators";
 import { V6DocPageStructure } from "../../components";
@@ -174,16 +178,57 @@ function buildDefaultArgs(sessionFields: readonly string[]): LPMStoryArgs {
   return base;
 }
 
+// ─── Eligibility gate ──────────────────────────────────────────────────────────
+
+/**
+ * Wrapper that calls `useEligibleMethods` in the LPM's test currency and only
+ * renders the button once that LPM is confirmed eligible, mirroring the
+ * client-side eligibility pattern the sample integration uses for LPMs (which
+ * pass currencyCode only — no paymentFlow).
+ */
+function LPMEligibilityWrapper({
+  lpmKey,
+  displayName,
+  currencyCode,
+  children,
+}: {
+  lpmKey: LPMName;
+  displayName: string;
+  currencyCode: string;
+  children: React.ReactNode;
+}) {
+  const {
+    eligiblePaymentMethods,
+    isLoading: isEligibilityLoading,
+    error: eligibilityError,
+  } = useEligibleMethods({
+    payload: { currencyCode },
+  });
+
+  const isEligible =
+    !isEligibilityLoading && eligiblePaymentMethods?.isEligible(lpmKey);
+
+  if (isEligibilityLoading) return <div>Checking eligibility...</div>;
+  if (eligibilityError)
+    return <div>Failed to check eligibility: {eligibilityError.message}</div>;
+  if (!isEligible)
+    return <div>{displayName} is not eligible for this configuration.</div>;
+
+  return <>{children}</>;
+}
+
 // ─── Story wrapper components ─────────────────────────────────────────────────
 
 type AllInOneWrapperProps = LPMStoryArgs & {
   ButtonComponent: React.ComponentType<Record<string, unknown>>;
   sessionFields: readonly string[];
+  currencyCode: string;
 };
 
 function AllInOneWrapper({
   ButtonComponent,
   sessionFields,
+  currencyCode,
   disabled,
   presentationMode,
   ...rest
@@ -192,7 +237,7 @@ function AllInOneWrapper({
   const extras = buildSessionExtras(sessionFields, storyArgs);
 
   const createLPMOrder = async () => {
-    const { orderId } = await createOrder();
+    const { orderId } = await createOrder(currencyCode);
     return { orderId, ...extras };
   };
 
@@ -329,17 +374,24 @@ export function createLPMStories(lpmKey: LPMName): LPMNamedStories {
     React.ComponentType<Record<string, unknown>>
   >(`${pascal}OneTimePaymentButton`);
 
-  const { sessionFields } = config;
+  const { sessionFields, currencyCode, displayName } = config;
   const defaultArgs = buildDefaultArgs(sessionFields);
 
   const Default: StoryObj<LPMStoryArgs> = {
     name: "Default (All-in-one button)",
     render: (args) => (
-      <AllInOneWrapper
-        ButtonComponent={ButtonComponent}
-        sessionFields={sessionFields}
-        {...args}
-      />
+      <LPMEligibilityWrapper
+        lpmKey={lpmKey}
+        displayName={displayName}
+        currencyCode={currencyCode}
+      >
+        <AllInOneWrapper
+          ButtonComponent={ButtonComponent}
+          sessionFields={sessionFields}
+          currencyCode={currencyCode}
+          {...args}
+        />
+      </LPMEligibilityWrapper>
     ),
     args: defaultArgs,
   };
