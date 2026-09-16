@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useReducer, useRef, useState } from "react";
+import React, { useEffect, useMemo, useReducer, useState } from "react";
 
 import {
   BraintreePayPalContext,
@@ -93,8 +93,6 @@ export const BraintreePayPalProvider: React.FC<
   const [state, dispatch] = useReducer(braintreeReducer, braintreeInitialState);
   const [isHydrated, setIsHydrated] = useState(false);
   const [, setError] = useError();
-  const braintreePayPalCheckoutRef =
-    useRef<BraintreePayPalCheckoutInstance | null>(null);
 
   // Set hydrated state after initial client render to prevent hydration mismatch
   useIsomorphicLayoutEffect(() => {
@@ -117,6 +115,18 @@ export const BraintreePayPalProvider: React.FC<
     }
 
     let isSubscribed = true;
+    let isInitializing = true;
+    let checkoutInstance: BraintreePayPalCheckoutInstance | undefined;
+
+    const teardown = async () => {
+      const instance = checkoutInstance;
+      checkoutInstance = undefined;
+      try {
+        await instance?.teardown();
+      } catch {
+        // Closing an obsolete instance must not create an unhandled rejection.
+      }
+    };
 
     dispatch({
       type: BRAINTREE_DISPATCH_ACTION.SET_LOADING_STATUS,
@@ -150,6 +160,7 @@ export const BraintreePayPalProvider: React.FC<
         const paypalCheckoutInstance = await namespace.paypalCheckoutV6.create({
           client: clientInstance,
         });
+        checkoutInstance = paypalCheckoutInstance;
 
         if (!isSubscribed) {
           return;
@@ -161,18 +172,23 @@ export const BraintreePayPalProvider: React.FC<
           return;
         }
 
-        braintreePayPalCheckoutRef.current = paypalCheckoutInstance;
         dispatch({
           type: BRAINTREE_DISPATCH_ACTION.SET_INSTANCE,
           value: paypalCheckoutInstance,
         });
       } catch (error) {
+        void teardown();
         if (isSubscribed) {
           setError(error);
           dispatch({
             type: BRAINTREE_DISPATCH_ACTION.SET_ERROR,
             value: toError(error),
           });
+        }
+      } finally {
+        isInitializing = false;
+        if (!isSubscribed) {
+          void teardown();
         }
       }
     };
@@ -181,8 +197,9 @@ export const BraintreePayPalProvider: React.FC<
 
     return () => {
       isSubscribed = false;
-      braintreePayPalCheckoutRef.current?.teardown();
-      braintreePayPalCheckoutRef.current = null;
+      if (!isInitializing) {
+        void teardown();
+      }
     };
   }, [namespace, braintreeClientToken, setError]);
 

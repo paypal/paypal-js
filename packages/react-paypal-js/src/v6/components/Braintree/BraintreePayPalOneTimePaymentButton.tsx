@@ -43,49 +43,10 @@ type BraintreePayPalButtonProps = UseBraintreePayPalOneTimePaymentSessionProps &
 export const BraintreePayPalOneTimePaymentButton = ({
   type = "pay",
   disabled = false,
-  // Callbacks
-  onApprove,
-  onCancel,
-  onError,
-  onShippingAddressChange,
-  onShippingOptionsChange,
-  // Primitive data options
-  amount,
-  currency,
-  intent,
-  commit,
-  offerCredit,
-  userAuthenticationEmail,
-  returnUrl,
-  cancelUrl,
-  displayName,
-  presentationMode,
-  // Object/array data options
-  lineItems,
-  shippingOptions,
-  amountBreakdown,
+  ...hookProps
 }: BraintreePayPalButtonProps): JSX.Element | null => {
   const { error, isPending, handleClick } =
-    useBraintreePayPalOneTimePaymentSession({
-      onApprove,
-      onCancel,
-      onError,
-      onShippingAddressChange,
-      onShippingOptionsChange,
-      amount,
-      currency,
-      intent,
-      commit,
-      offerCredit,
-      userAuthenticationEmail,
-      returnUrl,
-      cancelUrl,
-      displayName,
-      presentationMode,
-      lineItems,
-      shippingOptions,
-      amountBreakdown,
-    });
+    useBraintreePayPalOneTimePaymentSession(hookProps);
   const { isHydrated } = useBraintreePayPal();
 
   useEffect(() => {
