@@ -198,7 +198,7 @@ export const LPM_REGISTRY = {
     sessionMethod: "createPixInternationalOneTimePaymentSession",
     displayName: "Pix",
     fields: ["name", "email"],
-    sessionFields: ["phone", "billingAddress", "taxInfo"],
+    sessionFields: ["taxInfo"],
     testBuyerCountry: "BR",
   },
   sepa: {
@@ -261,7 +261,7 @@ export const LPM_REGISTRY = {
     sessionMethod: "createKredivoOneTimePaymentSession",
     displayName: "Kredivo",
     fields: ["name", "email"],
-    sessionFields: ["phone", "taxInfo"],
+    sessionFields: ["phone"],
     testBuyerCountry: "ID",
   },
   linkaja: {
@@ -315,7 +315,7 @@ export const LPM_REGISTRY = {
     sessionMethod: "createBancomatPayOneTimePaymentSession",
     displayName: "Bancomat Pay",
     fields: ["name"],
-    sessionFields: ["phone", "taxInfo"],
+    sessionFields: ["phone"],
     testBuyerCountry: "IT",
   },
   jeniuspay: {
@@ -333,7 +333,7 @@ export const LPM_REGISTRY = {
     sessionMethod: "createKlarnaOneTimePaymentSession",
     displayName: "Klarna",
     fields: ["name", "email"],
-    sessionFields: [],
+    sessionFields: ["phone", "billingAddress"],
     testBuyerCountry: "SE",
   },
   afterpay: {
@@ -342,7 +342,7 @@ export const LPM_REGISTRY = {
     sessionMethod: "createAfterpayOneTimePaymentSession",
     displayName: "Afterpay",
     fields: ["name", "email"],
-    sessionFields: [],
+    sessionFields: ["billingAddress"],
     testBuyerCountry: "AU",
   },
   oxxopay: {
@@ -351,7 +351,7 @@ export const LPM_REGISTRY = {
     sessionMethod: "createOxxopayOneTimePaymentSession",
     displayName: "OXXO",
     fields: ["name", "email"],
-    sessionFields: [],
+    sessionFields: ["expiryDate"],
     testBuyerCountry: "MX",
   },
   boletobancario: {
@@ -360,7 +360,7 @@ export const LPM_REGISTRY = {
     sessionMethod: "createBoletobancarioOneTimePaymentSession",
     displayName: "Boleto Bancário",
     fields: ["name", "email"],
-    sessionFields: ["taxInfo"],
+    sessionFields: ["billingAddress", "taxInfo", "expiryDate"],
     testBuyerCountry: "BR",
   },
   paysafecard: {
@@ -378,7 +378,7 @@ export const LPM_REGISTRY = {
     sessionMethod: "createScalapayOneTimePaymentSession",
     displayName: "Scalapay",
     fields: ["name", "email"],
-    sessionFields: [],
+    sessionFields: ["phone"],
     testBuyerCountry: "IT",
   },
   crypto: {
@@ -396,7 +396,7 @@ export const LPM_REGISTRY = {
     sessionMethod: "createDragonpayOneTimePaymentSession",
     displayName: "Dragonpay",
     fields: ["name", "email"],
-    sessionFields: [],
+    sessionFields: ["phone"],
     testBuyerCountry: "PH",
   },
   fpx: {
@@ -414,7 +414,7 @@ export const LPM_REGISTRY = {
     sessionMethod: "createIndomaretOneTimePaymentSession",
     displayName: "Indomaret",
     fields: ["name", "email"],
-    sessionFields: [],
+    sessionFields: ["phone"],
     testBuyerCountry: "ID",
   },
   thailandBanks: {
@@ -432,7 +432,7 @@ export const LPM_REGISTRY = {
     sessionMethod: "createAlfamartOneTimePaymentSession",
     displayName: "Alfamart",
     fields: ["name", "email"],
-    sessionFields: [],
+    sessionFields: ["phone"],
     testBuyerCountry: "ID",
   },
   zip: {
