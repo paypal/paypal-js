@@ -1,4 +1,4 @@
-import { isServer } from "../utils";
+import { getOwnProperty, isServer } from "../utils";
 import type {
   PayPalV6Namespace,
   LoadCoreSdkScriptOptions,
@@ -21,8 +21,14 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
     return Promise.resolve(null);
   }
 
-  const { environment, debug, dataNamespace, dataSdkIntegrationSource } =
-    options;
+  // Use getOwnProperty to avoid picking up prototype-polluted values.
+  const environment = getOwnProperty(options, "environment");
+  const debug = getOwnProperty(options, "debug");
+  const dataNamespace = getOwnProperty(options, "dataNamespace");
+  const dataSdkIntegrationSource = getOwnProperty(
+    options,
+    "dataSdkIntegrationSource",
+  );
   const namespace = dataNamespace ?? "paypal";
   const paypalWindowReference = getPayPalWindowNamespace(namespace);
   if (paypalWindowReference?.version.startsWith("6")) {
@@ -98,15 +104,14 @@ function validateArguments(options: unknown) {
   if (typeof options !== "object" || options === null) {
     throw new Error("Expected an options object");
   }
-  const { dataNamespace, dataSdkIntegrationSource } =
-    options as LoadCoreSdkScriptOptions;
-  // Use hasOwnProperty to avoid picking up prototype-polluted values.
-  const environment = Object.prototype.hasOwnProperty.call(
-    options,
-    "environment",
-  )
-    ? (options as LoadCoreSdkScriptOptions).environment
-    : undefined;
+  // Use getOwnProperty to avoid picking up prototype-polluted values.
+  const guardedOptions = options as LoadCoreSdkScriptOptions;
+  const environment = getOwnProperty(guardedOptions, "environment");
+  const dataNamespace = getOwnProperty(guardedOptions, "dataNamespace");
+  const dataSdkIntegrationSource = getOwnProperty(
+    guardedOptions,
+    "dataSdkIntegrationSource",
+  );
 
   if (environment !== "production" && environment !== "sandbox") {
     throw new Error(

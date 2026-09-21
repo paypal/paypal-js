@@ -207,6 +207,23 @@ describe("loadCustomScript()", () => {
     ).toThrow("Expected PromisePonyfill to be a function.");
   });
 
+  test("should ignore a prototype-polluted url and throw", () => {
+    // Simulate prototype pollution: a caller omitting `url` must not silently
+    // pick up an attacker-controlled value from Object.prototype and have it
+    // injected as a <script src>.
+    (Object.prototype as Record<string, unknown>)["url"] =
+      "https://evil.example.com/malicious.js";
+    try {
+      // @ts-expect-error ignore missing url error
+      expect(() => loadCustomScript({ attributes: {} })).toThrow(
+        "Invalid url.",
+      );
+      expect(mockedInsertScriptElement).not.toHaveBeenCalled();
+    } finally {
+      delete (Object.prototype as Record<string, unknown>)["url"];
+    }
+  });
+
   test("should throw an error when the script fails to load", async () => {
     expect.assertions(2);
 

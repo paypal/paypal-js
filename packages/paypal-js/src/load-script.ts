@@ -1,4 +1,9 @@
-import { findScript, insertScriptElement, processOptions } from "./utils";
+import {
+  findScript,
+  getOwnProperty,
+  insertScriptElement,
+  processOptions,
+} from "./utils";
 import type { PayPalScriptOptions } from "../types/script-options";
 import type { PayPalNamespace } from "../types/index";
 
@@ -66,7 +71,9 @@ export function loadCustomScript(
 ): Promise<void> {
   validateArguments(options, PromisePonyfill);
 
-  const { url, attributes } = options;
+  // Use getOwnProperty to avoid picking up prototype-polluted values.
+  const url = getOwnProperty(options, "url");
+  const attributes = getOwnProperty(options, "attributes");
 
   if (typeof url !== "string" || url.length === 0) {
     throw new Error("Invalid url.");
@@ -104,13 +111,11 @@ function validateArguments(options: unknown, PromisePonyfill?: unknown) {
   if (typeof options !== "object" || options === null) {
     throw new Error("Expected an options object.");
   }
-  // Use hasOwnProperty to avoid picking up prototype-polluted values.
-  const environment = Object.prototype.hasOwnProperty.call(
-    options,
+  // Use getOwnProperty to avoid picking up prototype-polluted values.
+  const environment = getOwnProperty(
+    options as PayPalScriptOptions,
     "environment",
-  )
-    ? (options as PayPalScriptOptions).environment
-    : undefined;
+  );
 
   if (
     environment &&

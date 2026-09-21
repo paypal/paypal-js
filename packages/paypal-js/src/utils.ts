@@ -67,20 +67,9 @@ export function processOptions(options: PayPalScriptOptions): {
   url: string;
   attributes: StringMap;
 } {
-  // Use hasOwnProperty to avoid picking up prototype-polluted values.
-  const customSdkBaseUrl = Object.prototype.hasOwnProperty.call(
-    options,
-    "sdkBaseUrl",
-  )
-    ? options.sdkBaseUrl
-    : undefined;
-
-  const environment = Object.prototype.hasOwnProperty.call(
-    options,
-    "environment",
-  )
-    ? options.environment
-    : undefined;
+  // Use getOwnProperty to avoid picking up prototype-polluted values.
+  const customSdkBaseUrl = getOwnProperty(options, "sdkBaseUrl");
+  const environment = getOwnProperty(options, "environment");
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { environment: _env, sdkBaseUrl: _, ...rest } = options;
@@ -174,4 +163,19 @@ function createScriptElement(
 
 export function isServer(): boolean {
   return typeof window === "undefined" && typeof document === "undefined";
+}
+
+/**
+ * Read an own property from an options object, ignoring any value inherited
+ * from the prototype chain. This prevents prototype-polluted values (e.g. a
+ * malicious `Object.prototype.environment`) from being silently accepted when
+ * the caller's own options object omits the property (CWE-1321).
+ */
+export function getOwnProperty<T extends object, K extends keyof T>(
+  options: T,
+  key: K,
+): T[K] | undefined {
+  return Object.prototype.hasOwnProperty.call(options, key)
+    ? options[key]
+    : undefined;
 }
