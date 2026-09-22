@@ -76,7 +76,7 @@ describe("LPM_REGISTRY", () => {
     ).not.toBe(LPM_REGISTRY.fiuu.buttonTag);
   });
 
-  test("LPMs with sessionFields have correct types", () => {
+  test("session fields match the corresponding core SDK payment sessions", () => {
     const validSessionFieldTypes = new Set([
       "phone",
       "billingAddress",
@@ -84,27 +84,40 @@ describe("LPM_REGISTRY", () => {
       "expiryDate",
       "dateOfBirth",
       "numberOfInstallments",
-      "bic",
-      "identification",
     ]);
+
+    const expectedSessionFields = {
+      afterpay: ["billingAddress"],
+      alfamart: ["phone"],
+      bancomatPay: ["phone"],
+      boletobancario: ["billingAddress", "taxInfo", "expiryDate"],
+      doku: ["phone"],
+      dragonpay: ["phone"],
+      floa: ["dateOfBirth", "numberOfInstallments"],
+      gopay: ["phone"],
+      indomaret: ["phone"],
+      indonesiaBanks: ["phone"],
+      jeniuspay: ["phone"],
+      klarna: ["phone", "billingAddress"],
+      kredivo: ["phone"],
+      linkaja: ["phone"],
+      mbway: ["phone"],
+      ovo: ["phone"],
+      oxxopay: ["expiryDate"],
+      pixInternational: ["taxInfo"],
+      scalapay: ["phone"],
+      zip: ["phone", "billingAddress"],
+    } as const;
 
     for (const [lpmKey, config] of Object.entries(LPM_REGISTRY)) {
       for (const field of config.sessionFields) {
         expect(validSessionFieldTypes.has(field)).toBe(true);
-        // Verify the documented fields match registry entries
-        if (lpmKey === "mbway") {
-          expect(config.sessionFields).toContain("phone");
-        }
-        if (lpmKey === "pixInternational") {
-          expect(config.sessionFields).toContain("phone");
-          expect(config.sessionFields).toContain("billingAddress");
-          expect(config.sessionFields).toContain("taxInfo");
-        }
-        if (lpmKey === "floa") {
-          expect(config.sessionFields).toContain("dateOfBirth");
-          expect(config.sessionFields).toContain("numberOfInstallments");
-        }
       }
+
+      expect(config.sessionFields).toEqual(
+        expectedSessionFields[lpmKey as keyof typeof expectedSessionFields] ??
+          [],
+      );
     }
   });
 });

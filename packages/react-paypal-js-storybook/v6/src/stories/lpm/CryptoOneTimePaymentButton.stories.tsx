@@ -8,10 +8,10 @@ import {
 } from "../../shared/lpm/storyFactory";
 
 const meta: Meta<LPMStoryArgs> = {
-  title: "V6/Local Payment Methods/BLIK",
-  ...createLPMMetaExtras("blik"),
+  title: "V6/Local Payment Methods/Crypto",
+  ...createLPMMetaExtras("crypto"),
 };
 
 export default meta;
 
-export const Default = createLPMStories("blik").Default;
+export const Default = createLPMStories("crypto").Default;
