@@ -183,6 +183,24 @@ describe("loadCoreSdkScript()", () => {
     }
   });
 
+  test("should ignore a prototype-polluted dataNamespace and use the default", async () => {
+    // Simulate prototype pollution: without an own-property guard, a caller
+    // omitting `dataNamespace` would pick up the attacker's value and expose the
+    // SDK under an attacker-chosen global (namespace confusion).
+    (Object.prototype as Record<string, unknown>)["dataNamespace"] = "evilNs";
+    try {
+      const result = await loadCoreSdkScript({ environment: "sandbox" });
+      expect(scriptAppendChildSpy).toHaveBeenCalledTimes(1);
+      const scriptElement = scriptAppendChildSpy.mock.calls[0][0];
+      expect(scriptElement.getAttribute("data-namespace")).toBe(null);
+      expect(result).toBe(window.paypal);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((window as any).evilNs).toBeUndefined();
+    } finally {
+      delete (Object.prototype as Record<string, unknown>)["dataNamespace"];
+    }
+  });
+
   describe("dataNamespace option", () => {
     test("should support custom data-namespace attribute", async () => {
       const customNamespace = "myCustomNamespace";
