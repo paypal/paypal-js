@@ -103,11 +103,10 @@ export function processOptions(options: PayPalScriptOptions): {
       },
     );
 
-  if (
-    queryParams["merchant-id"] &&
-    queryParams["merchant-id"].indexOf(",") !== -1
-  ) {
-    attributes["data-merchant-id"] = queryParams["merchant-id"];
+  const merchantId = getOwnProperty(queryParams, "merchant-id");
+
+  if (merchantId && merchantId.indexOf(",") !== -1) {
+    attributes["data-merchant-id"] = merchantId;
     queryParams["merchant-id"] = "*";
   }
 

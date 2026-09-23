@@ -24,10 +24,10 @@ export function loadScript(
   if (typeof document === "undefined") return PromisePonyfill.resolve(null);
 
   const { url, attributes } = processOptions(options);
-  const namespace = attributes["data-namespace"] || "paypal";
+  const namespace = getOwnProperty(attributes, "data-namespace") || "paypal";
   const existingWindowNamespace = getPayPalWindowNamespace(namespace);
 
-  if (!attributes["data-js-sdk-library"]) {
+  if (!getOwnProperty(attributes, "data-js-sdk-library")) {
     attributes["data-js-sdk-library"] = "paypal-js";
   }
 
