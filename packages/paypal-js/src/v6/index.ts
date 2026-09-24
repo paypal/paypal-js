@@ -62,7 +62,10 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
       inFlightScriptLoads.delete(namespace);
     }
   };
-  loadPromise.finally(clearInFlightLoad);
+  // Passing clearInFlightLoad as both the onFulfilled and onRejected handler
+  // runs it regardless of outcome, while also marking the rejection as
+  // handled here so a failed load doesn't surface as an unhandled rejection.
+  loadPromise.then(clearInFlightLoad, clearInFlightLoad);
 
   return loadPromise;
 }

@@ -139,6 +139,7 @@ describe("loadCoreSdkScript()", () => {
         }
         return node;
       });
+    appendChildSpy.mockClear();
 
     const result = await loadCoreSdkScript({ environment: "sandbox" });
     expect(appendChildSpy).toHaveBeenCalledTimes(1);
