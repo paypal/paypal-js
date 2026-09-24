@@ -3,11 +3,15 @@ import { successfulV6SDKResponseMock } from "../mocks";
 
 test("Retry script (v6)", async ({ page }) => {
   let requestCount = 0;
+  const retryParamValues: (string | null)[] = [];
 
   await page.route(
     "https://www.sandbox.paypal.com/web-sdk/v6/core**",
     (route) => {
       requestCount++;
+
+      const requestUrl = new URL(route.request().url());
+      retryParamValues.push(requestUrl.searchParams.get("paypal-sdk-retry"));
 
       // fail the first two attempts, succeed on the third
       if (requestCount < 3) {
@@ -30,4 +34,5 @@ test("Retry script (v6)", async ({ page }) => {
   await expect(page.locator("#result")).toHaveText("loaded");
 
   expect(requestCount).toEqual(3);
+  expect(retryParamValues).toEqual([null, "1", "2"]);
 });
