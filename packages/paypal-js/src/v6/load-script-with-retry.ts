@@ -1,0 +1,136 @@
+import type { PayPalV6Namespace } from "../../types/v6/index";
+import {
+  DATA_ATTRIBUTE_LOADING_STATE,
+  MAX_SCRIPT_LOAD_RETRIES,
+  RETRY_BASE_DELAY_MS,
+  RETRY_MAX_DELAY_MS,
+  SCRIPT_LOADING_STATE,
+  SCRIPT_LOAD_TIMEOUT_MS,
+} from "./constants";
+import { createScriptElement, getPayPalWindowNamespace } from "./dom";
+
+function getRetryDelayMs(retryCount: number): number {
+  const exponential = Math.min(
+    RETRY_BASE_DELAY_MS * 2 ** (retryCount - 1),
+    RETRY_MAX_DELAY_MS,
+  );
+  return exponential + Math.random() * exponential * 0.5;
+}
+
+function withCacheBustingParam(url: URL, attempt: number): URL {
+  const retryUrl = new URL(url.toString());
+  retryUrl.searchParams.set("paypal-sdk-retry", String(attempt));
+  return retryUrl;
+}
+
+export function loadScriptWithRetry({
+  url,
+  namespace,
+  dataNamespace,
+  dataSdkIntegrationSource,
+  attempt = 0,
+}: {
+  url: URL;
+  namespace: string;
+  dataNamespace: string | undefined;
+  dataSdkIntegrationSource: string | undefined;
+  attempt?: number;
+}): Promise<PayPalV6Namespace> {
+  const isRetry = attempt > 0;
+  const scriptUrl = isRetry ? withCacheBustingParam(url, attempt) : url;
+
+  const scriptElement =
+    (!isRetry &&
+      document.querySelector<HTMLScriptElement>(
+        `script[src*="${url.pathname}"][${DATA_ATTRIBUTE_LOADING_STATE}="${SCRIPT_LOADING_STATE.PENDING}"]`,
+      )) ||
+    createScriptElement({
+      url: scriptUrl.toString(),
+      attributes: {
+        "data-namespace": dataNamespace,
+        "data-sdk-integration-source": dataSdkIntegrationSource,
+        [DATA_ATTRIBUTE_LOADING_STATE]: SCRIPT_LOADING_STATE.PENDING,
+      },
+    });
+
+  return new Promise<PayPalV6Namespace>((resolve, reject) => {
+    let settled = false;
+
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+      scriptElement.removeEventListener("load", handleLoad);
+      scriptElement.removeEventListener("error", handleFailure);
+    };
+
+    const handleLoad = () => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      cleanup();
+
+      const paypalWindowReference = getPayPalWindowNamespace(namespace);
+
+      if (!paypalWindowReference) {
+        scriptElement.setAttribute(
+          DATA_ATTRIBUTE_LOADING_STATE,
+          SCRIPT_LOADING_STATE.REJECTED,
+        );
+
+        return reject(
+          `The window.${namespace} global variable is not available`,
+        );
+      }
+      scriptElement.setAttribute(
+        DATA_ATTRIBUTE_LOADING_STATE,
+        SCRIPT_LOADING_STATE.RESOLVED,
+      );
+      return resolve(paypalWindowReference);
+    };
+
+    const handleFailure = () => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      cleanup();
+
+      scriptElement.setAttribute(
+        DATA_ATTRIBUTE_LOADING_STATE,
+        SCRIPT_LOADING_STATE.REJECTED,
+      );
+      scriptElement.remove();
+
+      if (attempt < MAX_SCRIPT_LOAD_RETRIES) {
+        setTimeout(
+          () => {
+            resolve(
+              loadScriptWithRetry({
+                url,
+                namespace,
+                dataNamespace,
+                dataSdkIntegrationSource,
+                attempt: attempt + 1,
+              }),
+            );
+          },
+          getRetryDelayMs(attempt + 1),
+        );
+        return;
+      }
+
+      return reject(
+        new Error(
+          `The script "${url.toString()}" failed to load after ${
+            attempt + 1
+          } attempts. Check the HTTP status code and response body in DevTools to learn more.`,
+        ),
+      );
+    };
+
+    const timeoutId = setTimeout(handleFailure, SCRIPT_LOAD_TIMEOUT_MS);
+
+    scriptElement.addEventListener("load", handleLoad);
+    scriptElement.addEventListener("error", handleFailure);
+  });
+}

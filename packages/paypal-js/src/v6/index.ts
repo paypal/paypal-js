@@ -3,16 +3,16 @@ import type {
   PayPalV6Namespace,
   LoadCoreSdkScriptOptions,
 } from "../../types/v6/index";
+import { getPayPalWindowNamespace } from "./dom";
+import { loadScriptWithRetry } from "./load-script-with-retry";
+import { validateArguments } from "./validate-arguments";
 
 const version = "__VERSION__";
 
-const SCRIPT_LOADING_STATE = {
-  PENDING: "pending",
-  RESOLVED: "resolved",
-  REJECTED: "rejected",
-} as const;
-
-const DATA_ATTRIBUTE_LOADING_STATE = "data-loading-state";
+// Callers awaiting the same namespace share one retry chain, otherwise
+// concurrent calls would each independently retry the same failure and
+// insert duplicate script elements.
+const inFlightScriptLoads = new Map<string, Promise<PayPalV6Namespace>>();
 
 function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
   validateArguments(options);
@@ -35,6 +35,11 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
     return Promise.resolve(paypalWindowReference);
   }
 
+  const existingLoad = inFlightScriptLoads.get(namespace);
+  if (existingLoad) {
+    return existingLoad;
+  }
+
   const baseURL =
     environment === "production"
       ? "https://www.paypal.com"
@@ -45,119 +50,21 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
     url.searchParams.append("debug", "true");
   }
 
-  const scriptElement =
-    document.querySelector<HTMLScriptElement>(
-      `script[src*="${url.pathname}"][${DATA_ATTRIBUTE_LOADING_STATE}="${SCRIPT_LOADING_STATE.PENDING}"]`,
-    ) ??
-    createScriptElement({
-      url: url.toString(),
-      attributes: {
-        "data-namespace": dataNamespace,
-        "data-sdk-integration-source": dataSdkIntegrationSource,
-        [DATA_ATTRIBUTE_LOADING_STATE]: SCRIPT_LOADING_STATE.PENDING,
-      },
-    });
-
-  return new Promise<PayPalV6Namespace>((resolve, reject) => {
-    scriptElement.addEventListener(
-      "load",
-      () => {
-        const paypalWindowReference = getPayPalWindowNamespace(namespace);
-
-        if (!paypalWindowReference) {
-          scriptElement.setAttribute(
-            DATA_ATTRIBUTE_LOADING_STATE,
-            SCRIPT_LOADING_STATE.REJECTED,
-          );
-
-          return reject(
-            `The window.${namespace} global variable is not available`,
-          );
-        }
-        scriptElement.setAttribute(
-          DATA_ATTRIBUTE_LOADING_STATE,
-          SCRIPT_LOADING_STATE.RESOLVED,
-        );
-        return resolve(paypalWindowReference);
-      },
-      { once: true },
-    );
-
-    scriptElement.addEventListener(
-      "error",
-      () => {
-        const defaultError = new Error(
-          `The script "${url.toString()}" failed to load. Check the HTTP status code and response body in DevTools to learn more.`,
-        );
-
-        scriptElement.setAttribute(
-          DATA_ATTRIBUTE_LOADING_STATE,
-          SCRIPT_LOADING_STATE.REJECTED,
-        );
-        return reject(defaultError);
-      },
-      { once: true },
-    );
+  const loadPromise = loadScriptWithRetry({
+    url,
+    namespace,
+    dataNamespace,
+    dataSdkIntegrationSource,
   });
-}
-function validateArguments(options: unknown) {
-  if (typeof options !== "object" || options === null) {
-    throw new Error("Expected an options object");
-  }
-  // Use getOwnProperty to avoid picking up prototype-polluted values.
-  const guardedOptions = options as LoadCoreSdkScriptOptions;
-  const environment = getOwnProperty(guardedOptions, "environment");
-  const dataNamespace = getOwnProperty(guardedOptions, "dataNamespace");
-  const dataSdkIntegrationSource = getOwnProperty(
-    guardedOptions,
-    "dataSdkIntegrationSource",
-  );
-
-  if (environment !== "production" && environment !== "sandbox") {
-    throw new Error(
-      'The "environment" option is required and must be either "production" or "sandbox"',
-    );
-  }
-
-  if (dataNamespace !== undefined && dataNamespace.trim() === "") {
-    throw new Error('The "dataNamespace" option cannot be an empty string');
-  }
-
-  if (
-    dataSdkIntegrationSource !== undefined &&
-    dataSdkIntegrationSource.trim() === ""
-  ) {
-    throw new Error(
-      'The "dataSdkIntegrationSource" option cannot be an empty string',
-    );
-  }
-}
-
-function getPayPalWindowNamespace(
-  namespace: string,
-): PayPalV6Namespace | undefined {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (window as any)[namespace];
-}
-
-function createScriptElement({
-  url,
-  attributes,
-}: {
-  url: string;
-  attributes: Record<string, string | undefined>;
-}) {
-  const newScript = document.createElement("script");
-  newScript.src = url;
-
-  for (const [key, value] of Object.entries(attributes)) {
-    if (value !== undefined) {
-      newScript.setAttribute(key, value);
+  inFlightScriptLoads.set(namespace, loadPromise);
+  const clearInFlightLoad = () => {
+    if (inFlightScriptLoads.get(namespace) === loadPromise) {
+      inFlightScriptLoads.delete(namespace);
     }
-  }
+  };
+  loadPromise.then(clearInFlightLoad, clearInFlightLoad);
 
-  document.head.appendChild(newScript);
-  return newScript;
+  return loadPromise;
 }
 
 export { loadCoreSdkScript, version };
