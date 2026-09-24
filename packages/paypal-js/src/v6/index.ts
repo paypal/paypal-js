@@ -62,7 +62,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
       inFlightScriptLoads.delete(namespace);
     }
   };
-  loadPromise.then(clearInFlightLoad, clearInFlightLoad);
+  loadPromise.finally(clearInFlightLoad);
 
   return loadPromise;
 }
