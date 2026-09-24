@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Retry Script V6 | PayPal JS</title>
+  </head>
+  <body>
+    <h1>Retry Script V6</h1>
+
+    <div id="result"></div>
+
+    <script type="module">
+      import { loadCoreSdkScript } from "../../dist/v6/esm/paypal-js.js";
+
+      loadCoreSdkScript({ environment: "sandbox" }).then(() => {
+        document.querySelector("#result").textContent = "loaded";
+      });
+    </script>
+  </body>
+</html>

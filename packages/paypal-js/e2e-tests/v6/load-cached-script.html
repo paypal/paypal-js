@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Load Cached Script V6 | PayPal JS</title>
+  </head>
+  <body>
+    <h1>Load Cached Script V6</h1>
+
+    <script type="module">
+      import { loadCoreSdkScript } from "../../dist/v6/esm/paypal-js.js";
+
+      const options = {
+        environment: "sandbox",
+      };
+
+      // initial load
+      loadCoreSdkScript(options);
+
+      document.querySelector("#btn-reload").addEventListener("click", () => {
+        // this should not reload the script since a v6 window.paypal namespace already exists
+        loadCoreSdkScript(options);
+      });
+    </script>
+
+    <button id="btn-reload" type="button">Reload Script</button>
+  </body>
+</html>
