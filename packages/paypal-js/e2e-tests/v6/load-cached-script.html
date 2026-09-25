@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Load Cached Script V6 | PayPal JS</title>
+  </head>
+  <body>
+    <h1>Load Cached Script V6</h1>
+
+    <script type="module">
+      import { loadCoreSdkScript } from "../../dist/v6/esm/paypal-js.js";
+
+      const options = {
+        environment: "sandbox",
+      };
+
+      let callCount = 0;
+      let requestCount = 0;
+
+      // count actual <script> insertions separately from loadCoreSdkScript()
+      // calls, since a cache hit resolves without inserting a new script
+      new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          for (const node of mutation.addedNodes) {
+            if (
+              node instanceof HTMLScriptElement &&
+              node.src.includes("/web-sdk/v6/core")
+            ) {
+              requestCount++;
+              document.querySelector("#request-count").textContent =
+                requestCount;
+            }
+          }
+        }
+      }).observe(document.head, { childList: true });
+
+      function load() {
+        callCount++;
+        document.querySelector("#call-count").textContent = callCount;
+        loadCoreSdkScript(options);
+      }
+
+      // initial load
+      load();
+
+      document.querySelector("#btn-reload").addEventListener("click", () => {
+        // this should not reload the script since a v6 window.paypal namespace already exists
+        load();
+      });
+    </script>
+
+    <button id="btn-reload" type="button">Reload Script</button>
+    <p>loadCoreSdkScript() called <span id="call-count">0</span> time(s)</p>
+    <p>Network request made <span id="request-count">0</span> time(s)</p>
+  </body>
+</html>
