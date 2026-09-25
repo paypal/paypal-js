@@ -96,6 +96,15 @@ export function loadScriptWithRetry({
     const retry = (nextTimeoutRetryCount: number) => {
       setTimeout(
         () => {
+          // Another script tag (e.g. one already in the DOM before this
+          // attempt started) may have finished loading the namespace in the
+          // meantime, so avoid inserting a redundant script element.
+          const paypalWindowReference = getPayPalWindowNamespace(namespace);
+          if (paypalWindowReference) {
+            resolve(paypalWindowReference);
+            return;
+          }
+
           resolve(
             loadScriptWithRetry({
               url,

@@ -214,6 +214,34 @@ describe("loadScriptWithRetry()", () => {
     }
   });
 
+  test("should resolve with the window namespace instead of retrying if it becomes available before the retry fires", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    const appendChildSpy = vi
+      .spyOn(document.head, "appendChild")
+      .mockImplementation((node) => {
+        process.nextTick(() => node.dispatchEvent(new Event("error")));
+        return node;
+      });
+
+    vi.useFakeTimers();
+    try {
+      const loadPromise = loadScriptWithRetry(buildParams());
+
+      // the first attempt errors, scheduling a retry; before that retry
+      // fires, something else (e.g. a concurrent load) sets the namespace
+      await vi.advanceTimersByTimeAsync(0);
+      vi.stubGlobal("paypal", { version: "6" });
+
+      await vi.advanceTimersByTimeAsync(expectedRetryDelayMs(1));
+
+      const result = await loadPromise;
+      expect(result).toBe(window.paypal);
+      expect(appendChildSpy).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   test("should reject after exhausting timeout retries without waiting for error retries", async () => {
     vi.spyOn(Math, "random").mockReturnValue(0);
     let attempts = 0;
