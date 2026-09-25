@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
-import { MAX_SCRIPT_LOAD_RETRIES, SCRIPT_LOAD_TIMEOUT_MS } from "./constants";
+import {
+  MAX_SCRIPT_LOAD_ERROR_RETRIES,
+  MAX_SCRIPT_LOAD_TIMEOUT_RETRIES,
+  SCRIPT_LOAD_TIMEOUT_MS,
+} from "./constants";
 import { loadScriptWithRetry } from "./load-script-with-retry";
 
 const SCRIPT_URL = "https://www.sandbox.paypal.com/web-sdk/v6/core";
@@ -141,11 +145,13 @@ describe("loadScriptWithRetry()", () => {
 
     await expect(loadScriptWithRetry(buildParams())).rejects.toThrow(
       `The script "${SCRIPT_URL}" failed to load after ${
-        MAX_SCRIPT_LOAD_RETRIES + 1
+        MAX_SCRIPT_LOAD_ERROR_RETRIES + 1
       } attempts. Check the HTTP status code and response body in DevTools to learn more.`,
     );
-    // 1 initial attempt + MAX_SCRIPT_LOAD_RETRIES retries
-    expect(appendChildSpy).toHaveBeenCalledTimes(MAX_SCRIPT_LOAD_RETRIES + 1);
+    // 1 initial attempt + MAX_SCRIPT_LOAD_ERROR_RETRIES retries
+    expect(appendChildSpy).toHaveBeenCalledTimes(
+      MAX_SCRIPT_LOAD_ERROR_RETRIES + 1,
+    );
   });
 
   test("should retry when the script neither loads nor errors within the timeout", async () => {
@@ -170,6 +176,38 @@ describe("loadScriptWithRetry()", () => {
       const result = await loadPromise;
       expect(attempts).toBe(2);
       expect(result).toBeDefined();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  test("should reject after exhausting timeout retries without waiting for error retries", async () => {
+    let attempts = 0;
+    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
+      attempts++;
+      // never fires load or error, only ever times out
+      return node;
+    });
+
+    vi.useFakeTimers();
+    try {
+      const loadPromise = loadScriptWithRetry(buildParams());
+      const expectation = expect(loadPromise).rejects.toThrow(
+        `The script "${SCRIPT_URL}" timed out after ${
+          MAX_SCRIPT_LOAD_TIMEOUT_RETRIES + 1
+        } attempts.`,
+      );
+
+      for (let i = 0; i <= MAX_SCRIPT_LOAD_TIMEOUT_RETRIES; i++) {
+        await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
+        await vi.advanceTimersByTimeAsync(1_000);
+      }
+
+      await expectation;
+      // 1 initial attempt + MAX_SCRIPT_LOAD_TIMEOUT_RETRIES retries, well
+      // short of MAX_SCRIPT_LOAD_ERROR_RETRIES which only applies to error retries
+      expect(attempts).toBe(MAX_SCRIPT_LOAD_TIMEOUT_RETRIES + 1);
+      expect(attempts).toBeLessThan(MAX_SCRIPT_LOAD_ERROR_RETRIES + 1);
     } finally {
       vi.useRealTimers();
     }
