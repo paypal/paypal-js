@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Retry Exhausted Script V6 | PayPal JS</title>
+  </head>
+  <body>
+    <h1>Retry Exhausted Script V6</h1>
+
+    <div id="result"></div>
+    <p id="error-message"></p>
+
+    <script type="module">
+      import { loadCoreSdkScript } from "../../dist/v6/esm/paypal-js.js";
+
+      loadCoreSdkScript({ environment: "sandbox" })
+        .then(() => {
+          document.querySelector("#result").textContent = "loaded";
+        })
+        .catch((err) => {
+          document.querySelector("#error-message").textContent = err;
+        });
+    </script>
+  </body>
+</html>

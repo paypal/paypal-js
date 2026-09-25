@@ -31,6 +31,7 @@ export function loadScriptWithRetry({
   dataSdkIntegrationSource,
   attempt = 0,
   timeoutRetryCount = 0,
+  startTime = Date.now(),
 }: {
   url: URL;
   namespace: string;
@@ -38,6 +39,7 @@ export function loadScriptWithRetry({
   dataSdkIntegrationSource: string | undefined;
   attempt?: number;
   timeoutRetryCount?: number;
+  startTime?: number;
 }): Promise<PayPalV6Namespace> {
   const isRetry = attempt > 0;
   const scriptUrl = isRetry ? withCacheBustingParam(url, attempt) : url;
@@ -102,6 +104,7 @@ export function loadScriptWithRetry({
               dataSdkIntegrationSource,
               attempt: attempt + 1,
               timeoutRetryCount: nextTimeoutRetryCount,
+              startTime,
             }),
           );
         },
@@ -134,7 +137,9 @@ export function loadScriptWithRetry({
         new Error(
           `The script "${url.toString()}" timed out after ${
             timeoutRetryCount + 1
-          } attempts.`,
+          } attempt(s) totaling ${
+            Date.now() - startTime
+          }ms, exceeding the ${SCRIPT_LOAD_TIMEOUT_MS}ms timeout on the final attempt.`,
         ),
       );
     };
@@ -156,7 +161,9 @@ export function loadScriptWithRetry({
         new Error(
           `The script "${url.toString()}" failed to load after ${
             attempt + 1
-          } attempts. Check the HTTP status code and response body in DevTools to learn more.`,
+          } attempt(s) totaling ${
+            Date.now() - startTime
+          }ms. Check the HTTP status code and response body in DevTools to learn more.`,
         ),
       );
     };

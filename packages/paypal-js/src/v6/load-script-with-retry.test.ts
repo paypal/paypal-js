@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import {
   MAX_SCRIPT_LOAD_ERROR_RETRIES,
   MAX_SCRIPT_LOAD_TIMEOUT_RETRIES,
+  RETRY_BASE_DELAY_MS,
+  RETRY_MAX_DELAY_MS,
   SCRIPT_LOAD_TIMEOUT_MS,
 } from "./constants";
 import { loadScriptWithRetry } from "./load-script-with-retry";
@@ -17,6 +19,15 @@ function buildParams(overrides: Partial<Record<string, unknown>> = {}) {
     dataSdkIntegrationSource: undefined,
     ...overrides,
   };
+}
+
+// Mirrors the (jitter-free) retry delay calculation in load-script-with-retry.ts,
+// so tests can assert on an exact expected duration once Math.random is mocked to 0.
+function expectedRetryDelayMs(retryCount: number): number {
+  return Math.min(
+    RETRY_BASE_DELAY_MS * 2 ** (retryCount - 1),
+    RETRY_MAX_DELAY_MS,
+  );
 }
 
 describe("loadScriptWithRetry()", () => {
@@ -136,6 +147,7 @@ describe("loadScriptWithRetry()", () => {
   });
 
   test("should reject after exhausting all retries", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
     const appendChildSpy = vi
       .spyOn(document.head, "appendChild")
       .mockImplementation((node) => {
@@ -143,15 +155,36 @@ describe("loadScriptWithRetry()", () => {
         return node;
       });
 
-    await expect(loadScriptWithRetry(buildParams())).rejects.toThrow(
-      `The script "${SCRIPT_URL}" failed to load after ${
-        MAX_SCRIPT_LOAD_ERROR_RETRIES + 1
-      } attempts. Check the HTTP status code and response body in DevTools to learn more.`,
+    const retryDelaysMs = Array.from(
+      { length: MAX_SCRIPT_LOAD_ERROR_RETRIES },
+      (_, index) => expectedRetryDelayMs(index + 1),
     );
-    // 1 initial attempt + MAX_SCRIPT_LOAD_ERROR_RETRIES retries
-    expect(appendChildSpy).toHaveBeenCalledTimes(
-      MAX_SCRIPT_LOAD_ERROR_RETRIES + 1,
+    const totalDurationMs = retryDelaysMs.reduce(
+      (sum, delay) => sum + delay,
+      0,
     );
+
+    vi.useFakeTimers();
+    try {
+      const loadPromise = loadScriptWithRetry(buildParams());
+      const expectation = expect(loadPromise).rejects.toThrow(
+        `The script "${SCRIPT_URL}" failed to load after ${
+          MAX_SCRIPT_LOAD_ERROR_RETRIES + 1
+        } attempt(s) totaling ${totalDurationMs}ms. Check the HTTP status code and response body in DevTools to learn more.`,
+      );
+
+      for (const delay of retryDelaysMs) {
+        await vi.advanceTimersByTimeAsync(delay);
+      }
+
+      await expectation;
+      // 1 initial attempt + MAX_SCRIPT_LOAD_ERROR_RETRIES retries
+      expect(appendChildSpy).toHaveBeenCalledTimes(
+        MAX_SCRIPT_LOAD_ERROR_RETRIES + 1,
+      );
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   test("should retry when the script neither loads nor errors within the timeout", async () => {
@@ -182,6 +215,7 @@ describe("loadScriptWithRetry()", () => {
   });
 
   test("should reject after exhausting timeout retries without waiting for error retries", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
     let attempts = 0;
     vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
       attempts++;
@@ -189,19 +223,29 @@ describe("loadScriptWithRetry()", () => {
       return node;
     });
 
+    const retryDelaysMs = Array.from(
+      { length: MAX_SCRIPT_LOAD_TIMEOUT_RETRIES },
+      (_, index) => expectedRetryDelayMs(index + 1),
+    );
+    const totalDurationMs =
+      SCRIPT_LOAD_TIMEOUT_MS * (MAX_SCRIPT_LOAD_TIMEOUT_RETRIES + 1) +
+      retryDelaysMs.reduce((sum, delay) => sum + delay, 0);
+
     vi.useFakeTimers();
     try {
       const loadPromise = loadScriptWithRetry(buildParams());
       const expectation = expect(loadPromise).rejects.toThrow(
         `The script "${SCRIPT_URL}" timed out after ${
           MAX_SCRIPT_LOAD_TIMEOUT_RETRIES + 1
-        } attempts.`,
+        } attempt(s) totaling ${totalDurationMs}ms, exceeding the ${SCRIPT_LOAD_TIMEOUT_MS}ms timeout on the final attempt.`,
       );
 
-      for (let i = 0; i <= MAX_SCRIPT_LOAD_TIMEOUT_RETRIES; i++) {
+      for (const delay of retryDelaysMs) {
         await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
-        await vi.advanceTimersByTimeAsync(1_000);
+        await vi.advanceTimersByTimeAsync(delay);
       }
+      // final attempt times out with no further retry scheduled
+      await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
 
       await expectation;
       // 1 initial attempt + MAX_SCRIPT_LOAD_TIMEOUT_RETRIES retries, well
