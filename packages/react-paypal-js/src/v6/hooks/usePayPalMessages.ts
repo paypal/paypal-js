@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { usePayPal } from "./usePayPal";
 import { useError } from "./useError";
@@ -89,6 +89,7 @@ export function usePayPalMessages({
   const isMountedRef = useIsMountedRef();
   const [session, setSession] = useState<PayPalMessagesSession | null>(null);
   const [error, setError] = useError();
+  const fetchRequestRef = useRef(0);
 
   useEffect(() => {
     if (sdkInstance) {
@@ -112,6 +113,7 @@ export function usePayPalMessages({
     setSession(newSession);
 
     return () => {
+      fetchRequestRef.current += 1;
       setSession(null);
     };
   }, [buyerCountry, currencyCode, sdkInstance, shopperSessionId]);
@@ -122,12 +124,19 @@ export function usePayPalMessages({
         return;
       }
 
+      const request = ++fetchRequestRef.current;
+
       if (!session) {
         setError(new Error("PayPal Messages session not available"));
         return;
       }
 
+      setError(null);
       const result = await session.fetchContent(options);
+
+      if (!isMountedRef.current || request !== fetchRequestRef.current) {
+        return;
+      }
 
       // On an API error, fetchContent resolves to an empty sentinel MessageContent
       // (empty messageItems) instead of throwing, so the <paypal-message> element
