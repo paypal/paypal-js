@@ -482,6 +482,44 @@ describe("usePayPalCreditSavePaymentSession", () => {
 
       expect(mockSession.resume).toHaveBeenCalled();
     });
+
+    test("should ignore a resume error from a replaced session", async () => {
+      const firstSession = createMockPayPalCreditSavePaymentSession();
+      const secondSession = createMockPayPalCreditSavePaymentSession();
+      const resumeError = new Error("obsolete resume failed");
+      let rejectResume!: (error: Error) => void;
+      (firstSession.hasReturned as jest.Mock).mockReturnValue(true);
+      (firstSession.resume as jest.Mock).mockReturnValue(
+        new Promise<void>((_, reject) => {
+          rejectResume = reject;
+        }),
+      );
+      const mockSdk = createMockSdkInstance(firstSession);
+      mockSdk.createPayPalSavePaymentSession.mockReturnValueOnce(firstSession);
+      mockSdk.createPayPalSavePaymentSession.mockReturnValue(secondSession);
+      mockPayPalContext({ sdkInstance: mockSdk });
+
+      const { result, rerender } = renderHook(
+        ({ vaultSetupToken }) =>
+          usePayPalCreditSavePaymentSession({
+            presentationMode: "redirect",
+            vaultSetupToken,
+            onApprove: jest.fn(),
+          }),
+        { initialProps: { vaultSetupToken: "first-token" } },
+      );
+
+      expect(firstSession.resume).toHaveBeenCalled();
+
+      rerender({ vaultSetupToken: "second-token" });
+
+      await act(async () => {
+        rejectResume(resumeError);
+        await Promise.resolve();
+      });
+
+      expect(result.current.error).toBeNull();
+    });
   });
 
   describe("handleClick", () => {
