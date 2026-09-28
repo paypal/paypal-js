@@ -6,9 +6,9 @@ docs/*/
 
 node_modules
 .DS_Store
-/test-results/
-/playwright-report/
-/playwright/.cache/
+test-results/
+playwright-report/
+playwright/.cache/
 .idea
 .rollup.cache
 *.tgz

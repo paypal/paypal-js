@@ -19,6 +19,15 @@ export function successfulSDKResponseMock() {
     `.trim();
 }
 
+export function successfulV6SDKResponseMock() {
+  return `
+    window.paypal = {
+        version: "6.0.0",
+        createInstance: () => Promise.resolve({}),
+    };
+    `.trim();
+}
+
 export function validationErrorSDKResponseMock() {
   return `
     throw new Error("SDK Validation error: 'Expected client-id to be passed'" );
