@@ -1,8 +1,7 @@
 import React, { ReactNode, useEffect, useRef, useState } from "react";
 
 import { usePayPalScriptReducer } from "../../hooks/scriptProviderHooks";
-import { getPayPalWindowNamespace } from "../../utils";
-import { SDK_SETTINGS } from "../../constants";
+import { getPayPalWindowNamespace, getOwnProperty } from "../../utils";
 import { generateMissingCardFieldsError } from "./utils";
 import { PayPalCardFieldsContext } from "./context";
 import { usePayPalCardFieldsRegistry } from "./hooks";
@@ -13,6 +12,7 @@ import type {
   PayPalCardFieldsComponentOptions,
   PayPalCardFieldsComponent,
 } from "@paypal/paypal-js";
+import type { PayPalCardFieldsNamespace } from "../../types/payPalCardFieldsTypes";
 
 type CardFieldsProviderProps = PayPalCardFieldsComponentOptions & {
   children: ReactNode;
@@ -60,7 +60,7 @@ export const PayPalCardFieldsProvider = ({
     try {
       cardFieldsInstance.current =
         getPayPalWindowNamespace(
-          options[SDK_SETTINGS.DATA_NAMESPACE],
+          getOwnProperty(options, "dataNamespace"),
         ).CardFields?.({
           ...proxyProps,
         }) ?? null;
@@ -78,8 +78,8 @@ export const PayPalCardFieldsProvider = ({
         throw new Error(
           generateMissingCardFieldsError({
             components: options.components,
-            [SDK_SETTINGS.DATA_NAMESPACE]: options[SDK_SETTINGS.DATA_NAMESPACE],
-          }),
+            dataNamespace: getOwnProperty(options, "dataNamespace"),
+          } as PayPalCardFieldsNamespace),
         );
       });
       return;

@@ -451,4 +451,53 @@ describe("PayPalHostedFieldsProvider", () => {
       );
     });
   });
+
+  describe("prototype pollution hardening", () => {
+    afterEach(() => {
+      delete (Object.prototype as Record<string, unknown>).dataNamespace;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (window as any).evilNs;
+    });
+
+    test("resolves window.paypal instead of a prototype-polluted namespace when dataNamespace is omitted", async () => {
+      (Object.prototype as Record<string, unknown>).dataNamespace = "evilNs";
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).evilNs = {
+        HostedFields: { isEligible, render: jest.fn() },
+      };
+
+      render(
+        <PayPalScriptProvider
+          options={{
+            clientId: "test-client",
+            currency: "USD",
+            intent: "authorize",
+            components: "hosted-fields",
+            dataClientToken: "test-data-client-token",
+          }}
+        >
+          <PayPalHostedFieldsProvider createOrder={mockCreateOrder}>
+            <PayPalHostedField
+              hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.NUMBER}
+              options={{ selector: "number" }}
+            />
+            <PayPalHostedField
+              hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.EXPIRATION_DATE}
+              options={{ selector: "expiration" }}
+            />
+            <PayPalHostedField
+              hostedFieldType={PAYPAL_HOSTED_FIELDS_TYPES.CVV}
+              options={{ selector: "cvv" }}
+            />
+          </PayPalHostedFieldsProvider>
+        </PayPalScriptProvider>,
+      );
+
+      await waitFor(() =>
+        expect(window?.paypal?.HostedFields?.render).toHaveBeenCalled(),
+      );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((window as any).evilNs.HostedFields.render).not.toHaveBeenCalled();
+    });
+  });
 });

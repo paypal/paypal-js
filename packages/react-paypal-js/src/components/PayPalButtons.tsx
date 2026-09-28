@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
-import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
-import { SDK_SETTINGS } from "../constants";
+import {
+  getPayPalWindowNamespace,
+  generateErrorMessage,
+  getOwnProperty,
+} from "../utils";
 import { useProxyProps } from "../hooks/useProxyProps";
 import { PayPalButtonsErrorBoundary } from "./PayPalButtonsErrorBoundary";
 
@@ -55,7 +58,7 @@ const PayPalButtonsInner: FunctionComponent<PayPalButtonsComponentProps> = ({
     }
 
     const paypalWindowNamespace = getPayPalWindowNamespace(
-      options.dataNamespace,
+      getOwnProperty(options, "dataNamespace"),
     );
 
     // verify dependency on window object
@@ -69,7 +72,7 @@ const PayPalButtonsInner: FunctionComponent<PayPalButtonsComponentProps> = ({
             reactComponentName: PayPalButtons.displayName as string,
             sdkComponentKey: "buttons",
             sdkRequestedComponents: options.components,
-            sdkDataNamespace: options[SDK_SETTINGS.DATA_NAMESPACE],
+            sdkDataNamespace: getOwnProperty(options, "dataNamespace"),
           }),
         );
       });
