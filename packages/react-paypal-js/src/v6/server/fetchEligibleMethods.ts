@@ -3,6 +3,7 @@ import {
   type EligiblePaymentMethods,
   type FindEligiblePaymentMethodsResponse,
 } from "../types";
+import { getOwnProperty } from "../getOwnProperty";
 
 type FindEligiblePaymentMethodsOptions = {
   environment: "production" | "sandbox";
@@ -97,7 +98,12 @@ export type FindEligiblePaymentMethodsRequestPayload = {
 export async function fetchEligibleMethods(
   options: FindEligiblePaymentMethodsOptions & { signal?: AbortSignal },
 ): Promise<FindEligiblePaymentMethodsResponse> {
-  const { payload, signal, environment, headers } = options;
+  const { signal } = options;
+  // Use getOwnProperty to avoid picking up prototype-polluted values when
+  // the caller omits these fields (CWE-1321).
+  const payload = getOwnProperty(options, "payload");
+  const headers = getOwnProperty(options, "headers");
+  const environment = getOwnProperty(options, "environment");
 
   if (environment !== "production" && environment !== "sandbox") {
     throw new Error(

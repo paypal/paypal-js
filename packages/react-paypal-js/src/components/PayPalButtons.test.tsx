@@ -533,4 +533,33 @@ describe("<PayPalButtons />", () => {
     });
     spyConsoleError.mockRestore();
   });
+
+  describe("prototype pollution hardening", () => {
+    afterEach(() => {
+      delete (Object.prototype as Record<string, unknown>).dataNamespace;
+    });
+
+    test("resolves window.paypal instead of a prototype-polluted namespace when dataNamespace is omitted", async () => {
+      (Object.prototype as Record<string, unknown>).dataNamespace = "evilNs";
+      const buttonsMock = jest.fn().mockReturnValue(mockPaypalButtonsComponent);
+      window.paypal = {
+        Buttons: buttonsMock,
+        version: "",
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).evilNs = { Buttons: jest.fn() };
+
+      render(
+        <PayPalScriptProvider options={{ clientId: "test" }}>
+          <PayPalButtons />
+        </PayPalScriptProvider>,
+      );
+
+      await waitFor(() => expect(buttonsMock).toHaveBeenCalled());
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((window as any).evilNs.Buttons).not.toHaveBeenCalled();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (window as any).evilNs;
+    });
+  });
 });

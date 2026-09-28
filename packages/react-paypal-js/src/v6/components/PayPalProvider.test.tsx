@@ -1080,6 +1080,30 @@ describe("Auto-memoization", () => {
       loadCallCount,
     );
   });
+
+  describe("prototype pollution hardening", () => {
+    afterEach(() => {
+      delete (Object.prototype as Record<string, unknown>).dataNamespace;
+    });
+
+    test("does not forward a prototype-polluted dataNamespace when the prop is omitted", async () => {
+      (Object.prototype as Record<string, unknown>).dataNamespace = "evilNs";
+      const { TestComponent } = setupTestComponent();
+
+      await act(async () => {
+        render(
+          <PayPalProvider clientToken={TEST_CLIENT_TOKEN} environment="sandbox">
+            <TestComponent />
+          </PayPalProvider>,
+        );
+      });
+
+      await waitFor(() => expect(loadCoreSdkScript).toHaveBeenCalled());
+
+      const callArgs = (loadCoreSdkScript as jest.Mock).mock.calls[0][0];
+      expect(callArgs.dataNamespace).toBeUndefined();
+    });
+  });
 });
 
 function setupTestComponent() {

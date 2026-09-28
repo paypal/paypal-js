@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 
 import { usePayPalScriptReducer } from "../hooks/scriptProviderHooks";
-import { getPayPalWindowNamespace, generateErrorMessage } from "../utils";
-import { SDK_SETTINGS } from "../constants";
+import {
+  getPayPalWindowNamespace,
+  generateErrorMessage,
+  getOwnProperty,
+} from "../utils";
 
 import type { FC, ReactNode } from "react";
 import type {
@@ -71,7 +74,7 @@ export const PayPalMarks: FC<PayPalMarksComponentProps> = ({
     }
 
     const paypalWindowNamespace = getPayPalWindowNamespace(
-      options[SDK_SETTINGS.DATA_NAMESPACE],
+      getOwnProperty(options, "dataNamespace"),
     );
 
     // verify dependency on window object
@@ -85,7 +88,7 @@ export const PayPalMarks: FC<PayPalMarksComponentProps> = ({
             reactComponentName: PayPalMarks.displayName as string,
             sdkComponentKey: "marks",
             sdkRequestedComponents: options.components,
-            sdkDataNamespace: options[SDK_SETTINGS.DATA_NAMESPACE],
+            sdkDataNamespace: getOwnProperty(options, "dataNamespace"),
           }),
         );
       });

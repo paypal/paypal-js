@@ -461,4 +461,46 @@ describe("PayPalCardFieldsProvider", () => {
     fireEvent.focus(numberField);
     expect(onFocusFn).toHaveBeenCalledWith(2);
   });
+
+  describe("prototype pollution hardening", () => {
+    afterEach(() => {
+      delete (Object.prototype as Record<string, unknown>).dataNamespace;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (window as any).evilNs;
+    });
+
+    test("resolves window.paypal instead of a prototype-polluted namespace when dataNamespace is omitted", async () => {
+      (Object.prototype as Record<string, unknown>).dataNamespace = "evilNs";
+      const evilCardFields = jest.fn();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).evilNs = { CardFields: evilCardFields };
+
+      render(
+        <PayPalScriptProvider
+          options={{
+            clientId: "test-client",
+            currency: "USD",
+            intent: "authorize",
+            dataClientToken: "test-data-client-token",
+            components: "card-fields",
+          }}
+        >
+          <PayPalCardFieldsProvider
+            onApprove={mockOnApprove}
+            createOrder={mockCreateOrder}
+            onError={mockOnError}
+          >
+            <PayPalNumberField />
+            <PayPalCVVField />
+            <PayPalExpiryField />
+          </PayPalCardFieldsProvider>
+        </PayPalScriptProvider>,
+      );
+
+      await waitFor(() => {
+        expect(getMockElementsRendered().length).toEqual(3);
+      });
+      expect(evilCardFields).not.toHaveBeenCalled();
+    });
+  });
 });

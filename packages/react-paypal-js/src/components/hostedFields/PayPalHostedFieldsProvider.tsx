@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { PayPalHostedFieldsContext } from "../../context/payPalHostedFieldsContext";
 import { useHostedFieldsRegister } from "./hooks";
 import { useScriptProviderContext } from "../../hooks/scriptProviderHooks";
-import { SDK_SETTINGS } from "../../constants";
 import {
   validateHostedFieldChildren,
   generateMissingHostedFieldsError,
@@ -12,10 +11,13 @@ import {
   PAYPAL_HOSTED_FIELDS_TYPES,
   SCRIPT_LOADING_STATE,
 } from "../../types/enums";
-import { getPayPalWindowNamespace } from "../../utils";
+import { getPayPalWindowNamespace, getOwnProperty } from "../../utils";
 
 import type { FC } from "react";
-import type { PayPalHostedFieldsComponentProps } from "../../types/payPalHostedFieldTypes";
+import type {
+  PayPalHostedFieldsComponentProps,
+  PayPalHostedFieldsNamespace,
+} from "../../types/payPalHostedFieldTypes";
 import type {
   PayPalHostedFieldsComponent,
   HostedFieldsHandler,
@@ -51,15 +53,15 @@ export const PayPalHostedFieldsProvider: FC<
     }
     // Get the hosted fields from the [window.paypal.HostedFields] SDK
     hostedFields.current = getPayPalWindowNamespace(
-      options[SDK_SETTINGS.DATA_NAMESPACE],
+      getOwnProperty(options, "dataNamespace"),
     ).HostedFields;
 
     if (!hostedFields.current) {
       throw new Error(
         generateMissingHostedFieldsError({
           components: options.components,
-          [SDK_SETTINGS.DATA_NAMESPACE]: options[SDK_SETTINGS.DATA_NAMESPACE],
-        }),
+          dataNamespace: getOwnProperty(options, "dataNamespace"),
+        } as PayPalHostedFieldsNamespace),
       );
     }
     if (!hostedFields.current.isEligible()) {

@@ -188,4 +188,63 @@ describe("fetchEligibleMethods", () => {
   test("exposes the deprecated useFetchEligibleMethods alias", () => {
     expect(useFetchEligibleMethods).toBe(fetchEligibleMethods);
   });
+
+  describe("prototype pollution hardening", () => {
+    afterEach(() => {
+      delete (Object.prototype as Record<string, unknown>).environment;
+      delete (Object.prototype as Record<string, unknown>).payload;
+      delete (Object.prototype as Record<string, unknown>).headers;
+    });
+
+    test("throws the required-environment error instead of using a polluted environment", async () => {
+      (Object.prototype as Record<string, unknown>).environment = "sandbox";
+
+      await expect(
+        fetchEligibleMethods({
+          payload: mockPayload,
+        } as Parameters<typeof fetchEligibleMethods>[0]),
+      ).rejects.toThrow(
+        'The "environment" option is required and must be either "production" or "sandbox"',
+      );
+      expect(global.fetch).not.toHaveBeenCalled();
+    });
+
+    test("does not forward a prototype-polluted payload when omitted", async () => {
+      (Object.prototype as Record<string, unknown>).payload = {
+        purchase_units: [{ amount: { currency_code: "EVIL" } }],
+      };
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      });
+
+      await fetchEligibleMethods({ environment: "sandbox" });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          body: JSON.stringify({}),
+        }),
+      );
+    });
+
+    test("does not forward prototype-polluted headers when omitted", async () => {
+      (Object.prototype as Record<string, unknown>).headers = {
+        "X-Evil": "true",
+      };
+      (global.fetch as jest.Mock).mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+      });
+
+      await fetchEligibleMethods({ environment: "sandbox" });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          headers: undefined,
+        }),
+      );
+    });
+  });
 });

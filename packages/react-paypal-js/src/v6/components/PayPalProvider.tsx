@@ -14,6 +14,7 @@ import {
 } from "../types/ProviderEnums";
 import { toError, useCompareMemoize, useDeepCompareMemoize } from "../utils";
 import { useError } from "../hooks/useError";
+import { getOwnProperty } from "../getOwnProperty";
 
 import type {
   Components,
@@ -200,13 +201,28 @@ export const PayPalProvider: React.FC<PayPalProviderProps> = ({
 
     const loadSdk = async () => {
       try {
-        const sdkNamespace = await loadCoreSdkScript({
-          environment: loadCoreScriptOptions.current.environment,
-          debug: loadCoreScriptOptions.current.debug,
-          dataNamespace: loadCoreScriptOptions.current.dataNamespace,
-          dataSdkIntegrationSource:
-            loadCoreScriptOptions.current.dataSdkIntegrationSource,
-        });
+        // Read via getOwnProperty instead of dot access: a plain dot access
+        // would fall through to a polluted Object.prototype value when the
+        // caller omits a field, and re-assigning that value as an explicit
+        // key below would turn it into an *own* property — defeating
+        // loadCoreSdkScript's own getOwnProperty guard downstream (CWE-1321).
+        const sdkOptions = {
+          environment: getOwnProperty(
+            loadCoreScriptOptions.current,
+            "environment",
+          ),
+          debug: getOwnProperty(loadCoreScriptOptions.current, "debug"),
+          dataNamespace: getOwnProperty(
+            loadCoreScriptOptions.current,
+            "dataNamespace",
+          ),
+          dataSdkIntegrationSource: getOwnProperty(
+            loadCoreScriptOptions.current,
+            "dataSdkIntegrationSource",
+          ),
+        } as LoadCoreSdkScriptOptions;
+
+        const sdkNamespace = await loadCoreSdkScript(sdkOptions);
 
         if (sdkNamespace && isSubscribed) {
           setPaypalNamespace(sdkNamespace);

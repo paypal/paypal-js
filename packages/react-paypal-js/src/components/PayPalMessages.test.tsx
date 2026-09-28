@@ -175,4 +175,37 @@ describe("<PayPalMessages />", () => {
     expect(onError.mock.calls[0][0].message).toMatchSnapshot();
     spyConsoleError.mockRestore();
   });
+
+  describe("prototype pollution hardening", () => {
+    afterEach(() => {
+      delete (Object.prototype as Record<string, unknown>).dataNamespace;
+    });
+
+    test("resolves window.paypal instead of a prototype-polluted namespace when dataNamespace is omitted", async () => {
+      (Object.prototype as Record<string, unknown>).dataNamespace = "evilNs";
+      const messagesMock = jest.fn(() => ({
+        render: jest.fn().mockResolvedValue({}),
+      }));
+      window.paypal = {
+        Messages: messagesMock,
+        version: "",
+      };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).evilNs = { Messages: jest.fn() };
+
+      render(
+        <PayPalScriptProvider
+          options={{ clientId: "test", components: "messages" }}
+        >
+          <PayPalMessages />
+        </PayPalScriptProvider>,
+      );
+
+      await waitFor(() => expect(messagesMock).toHaveBeenCalled());
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      expect((window as any).evilNs.Messages).not.toHaveBeenCalled();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (window as any).evilNs;
+    });
+  });
 });
