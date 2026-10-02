@@ -9,6 +9,7 @@ import {
 import { loadScriptWithRetry } from "./load-script-with-retry";
 
 const SCRIPT_URL = "https://www.sandbox.paypal.com/web-sdk/v6/core";
+const SLOW_SCRIPT_LOAD_MS = 20_000;
 
 function buildParams(overrides: Partial<Record<string, unknown>> = {}) {
   return {
@@ -47,6 +48,29 @@ describe("loadScriptWithRetry()", () => {
     const result = await loadScriptWithRetry(buildParams());
 
     expect(result).toBe(window.paypal);
+  });
+
+  test("should continue waiting for a slow script until the 30-second timeout", async () => {
+    vi.useFakeTimers();
+    try {
+      const appendChildSpy = vi
+        .spyOn(document.head, "appendChild")
+        .mockImplementation((node) => {
+          setTimeout(() => {
+            vi.stubGlobal("paypal", { version: "6" });
+            node.dispatchEvent(new Event("load"));
+          }, SLOW_SCRIPT_LOAD_MS);
+          return node;
+        });
+
+      const loadPromise = loadScriptWithRetry(buildParams());
+      await vi.advanceTimersByTimeAsync(SLOW_SCRIPT_LOAD_MS);
+
+      await expect(loadPromise).resolves.toBe(window.paypal);
+      expect(appendChildSpy).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   test("should reject when the window namespace is not available after the load event", async () => {
@@ -211,6 +235,40 @@ describe("loadScriptWithRetry()", () => {
           .querySelector('script[src*="/web-sdk/v6/core"]')
           ?.getAttribute("data-loading-state"),
       ).toBe("pending");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  test("should give an explicit-error retry its own timeout", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    let attempts = 0;
+    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
+      attempts++;
+      if (attempts === 1) {
+        setTimeout(
+          () => node.dispatchEvent(new Event("error")),
+          SCRIPT_LOAD_TIMEOUT_MS / 2,
+        );
+      }
+      return node;
+    });
+
+    vi.useFakeTimers();
+    try {
+      const loadPromise = loadScriptWithRetry(buildParams());
+      const expectedTotalDurationMs =
+        SCRIPT_LOAD_TIMEOUT_MS / 2 +
+        expectedRetryDelayMs(1) +
+        SCRIPT_LOAD_TIMEOUT_MS;
+      const expectation = expect(loadPromise).rejects.toThrow(
+        `The script "${SCRIPT_URL}" timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms on attempt 2, totaling ${expectedTotalDurationMs}ms. The request may still complete, so no retry was attempted to avoid loading the SDK twice.`,
+      );
+
+      await vi.advanceTimersByTimeAsync(expectedTotalDurationMs);
+      await expectation;
+
+      expect(attempts).toBe(2);
     } finally {
       vi.useRealTimers();
     }
