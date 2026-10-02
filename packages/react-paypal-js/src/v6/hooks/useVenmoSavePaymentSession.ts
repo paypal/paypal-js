@@ -7,10 +7,10 @@ import { useProxyProps, createPaymentSession } from "../utils";
 import { INSTANCE_LOADING_STATE } from "../types/ProviderEnums";
 
 import type {
-  VenmoOneTimePaymentSession,
+  VenmoSavePaymentSession,
   VenmoPresentationModeOptions,
-  VenmoOneTimePaymentSessionOptions,
-  VenmoOneTimePaymentSessionPromise,
+  VenmoSavePaymentSessionOptions,
+  VenmoSavePaymentSessionPromise,
   BasePaymentSessionReturn,
   WithOptionalPresentationMode,
 } from "../types";
@@ -25,38 +25,38 @@ type VenmoSandboxSupport = {
   sandboxSupport?: { enabled: boolean };
 };
 
-export type UseVenmoOneTimePaymentSessionProps = (
-  | (Omit<VenmoOneTimePaymentSessionOptions, "orderId"> & {
-      createOrder: () => VenmoOneTimePaymentSessionPromise;
-      orderId?: never;
+export type UseVenmoSavePaymentSessionProps = (
+  | (Omit<VenmoSavePaymentSessionOptions, "vaultSetupToken"> & {
+      createVaultToken: () => VenmoSavePaymentSessionPromise;
+      vaultSetupToken?: never;
     })
-  | (VenmoOneTimePaymentSessionOptions & {
-      createOrder?: never;
-      orderId: string;
+  | (VenmoSavePaymentSessionOptions & {
+      createVaultToken?: never;
+      vaultSetupToken: string;
     })
 ) &
   WithOptionalPresentationMode<VenmoPresentationModeOptions> &
   VenmoSandboxSupport;
 
 /**
- * Hook for managing Venmo one-time payment sessions.
+ * Hook for managing a Venmo save payment session, vault without purchase.
  *
- * This hook creates and manages a Venmo payment session. It handles session lifecycle
- * and provides methods to start, cancel, and destroy the session.
- *
- * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
+ * This hook creates and manages a Venmo save payment session for vaulting a buyer's
+ * Venmo account without completing a purchase. It handles session lifecycle and
+ * provides methods to start, cancel, and destroy the session.
  *
  * `presentationMode` is optional and defaults to `"auto"`.
  *
- * Pass `savePayment: true` to vault the buyer's Venmo account while also completing
- * the order (VAULT_WITH_PAYMENT). For a vault-only flow with no purchase, use
- * {@link useVenmoSavePaymentSession} instead.
+ * For a flow that vaults the Venmo account while also completing an order
+ * (VAULT_WITH_PAYMENT), pass `savePayment: true` to {@link useVenmoOneTimePaymentSession} instead.
+ *
+ * @returns Object with: `error` (any session error), `isPending` (SDK loading), `handleClick` (starts session), `handleCancel` (cancels session), `handleDestroy` (cleanup)
  *
  * @example
- * function VenmoCheckout() {
- *   const { error, isPending, handleClick, handleCancel } = useVenmoOneTimePaymentSession({
- *     createOrder: async () => ({ orderId: 'ORDER-123' }),
- *     onApprove: (data) => console.log('Approved:', data),
+ * function SaveVenmoButton() {
+ *   const { error, isPending, handleClick, handleCancel } = useVenmoSavePaymentSession({
+ *     createVaultToken: async () => ({ vaultSetupToken: 'VAULT-TOKEN-123' }),
+ *     onApprove: (data) => console.log('Vaulted:', data),
  *     onCancel: () => console.log('Cancelled'),
  *   });
  *
@@ -68,18 +68,17 @@ export type UseVenmoOneTimePaymentSessionProps = (
  *   );
  * }
  */
-export function useVenmoOneTimePaymentSession({
+export function useVenmoSavePaymentSession({
   presentationMode = "auto",
   fullPageOverlay,
-  createOrder,
-  orderId,
-  savePayment,
+  createVaultToken,
+  vaultSetupToken,
   sandboxSupport,
   ...callbacks
-}: UseVenmoOneTimePaymentSessionProps): BasePaymentSessionReturn {
+}: UseVenmoSavePaymentSessionProps): BasePaymentSessionReturn {
   const { sdkInstance, loadingStatus } = usePayPal();
   const isMountedRef = useIsMountedRef();
-  const sessionRef = useRef<VenmoOneTimePaymentSession | null>(null);
+  const sessionRef = useRef<VenmoSavePaymentSession | null>(null);
   const proxyCallbacks = useProxyProps(callbacks);
   const [error, setError] = useError();
 
@@ -115,9 +114,8 @@ export function useVenmoOneTimePaymentSession({
 
     const newSession = createPaymentSession({
       sessionCreator: () =>
-        sdkInstance.createVenmoOneTimePaymentSession({
-          orderId,
-          savePayment,
+        sdkInstance.createVenmoSavePaymentSession({
+          vaultSetupToken,
           ...proxyCallbacks,
         }),
       failedSdkRef,
@@ -136,7 +134,7 @@ export function useVenmoOneTimePaymentSession({
     return () => {
       newSession.destroy();
     };
-  }, [sdkInstance, orderId, savePayment, proxyCallbacks, setError]);
+  }, [sdkInstance, vaultSetupToken, proxyCallbacks, setError]);
 
   const handleCancel = useCallback(() => {
     sessionRef.current?.cancel();
@@ -158,21 +156,25 @@ export function useVenmoOneTimePaymentSession({
       ...(sandboxSupport && { sandboxSupport }),
     } as VenmoPresentationModeOptions & VenmoSandboxSupport;
 
-    await sessionRef.current.start(startOptions, createOrder?.());
+    if (createVaultToken) {
+      await sessionRef.current.start(startOptions, createVaultToken());
+    } else {
+      await sessionRef.current.start(startOptions);
+    }
   }, [
     isMountedRef,
     presentationMode,
     fullPageOverlay,
     sandboxSupport,
-    createOrder,
+    createVaultToken,
     setError,
   ]);
 
   return {
     error,
     isPending,
-    handleCancel,
     handleClick,
+    handleCancel,
     handleDestroy,
   };
 }
