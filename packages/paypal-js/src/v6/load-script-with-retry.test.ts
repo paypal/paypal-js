@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import {
   MAX_SCRIPT_LOAD_ERROR_RETRIES,
-  MAX_SCRIPT_LOAD_TIMEOUT_RETRIES,
   RETRY_BASE_DELAY_MS,
   RETRY_MAX_DELAY_MS,
   SCRIPT_LOAD_TIMEOUT_MS,
@@ -187,28 +186,112 @@ describe("loadScriptWithRetry()", () => {
     }
   });
 
-  test("should retry when the script neither loads nor errors within the timeout", async () => {
-    let attempts = 0;
-    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
-      attempts++;
-      if (attempts >= 2 && node instanceof HTMLScriptElement) {
-        vi.stubGlobal("paypal", { version: "6" });
-        process.nextTick(() => node.dispatchEvent(new Event("load")));
-      }
-      // the first attempt's script never fires load or error
-      return node;
-    });
+  test("should reject on timeout without creating a second script request", async () => {
+    const appendChildSpy = vi
+      .spyOn(document.head, "appendChild")
+      .mockImplementation((node) => {
+        // Actually attach the node so its post-timeout state can be asserted.
+        Element.prototype.appendChild.call(document.head, node);
+        return node;
+      });
 
     vi.useFakeTimers();
     try {
       const loadPromise = loadScriptWithRetry(buildParams());
+      const expectation = expect(loadPromise).rejects.toThrow(
+        `The script "${SCRIPT_URL}" timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms on attempt 1, totaling ${SCRIPT_LOAD_TIMEOUT_MS}ms. The request may still complete, so no retry was attempted to avoid loading the SDK twice.`,
+      );
 
       await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
-      await vi.advanceTimersByTimeAsync(1_000);
+      await expectation;
 
-      const result = await loadPromise;
-      expect(attempts).toBe(2);
-      expect(result).toBeDefined();
+      expect(appendChildSpy).toHaveBeenCalledTimes(1);
+      expect(
+        document
+          .querySelector('script[src*="/web-sdk/v6/core"]')
+          ?.getAttribute("data-loading-state"),
+      ).toBe("pending");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  test("should reuse a timed-out script if the caller tries again while its request is pending", async () => {
+    let scriptElement: HTMLScriptElement | undefined;
+    const appendChildSpy = vi
+      .spyOn(document.head, "appendChild")
+      .mockImplementation((node) => {
+        if (node instanceof HTMLScriptElement) {
+          scriptElement = node;
+        }
+        Element.prototype.appendChild.call(document.head, node);
+        return node;
+      });
+
+    vi.useFakeTimers();
+    try {
+      const firstLoad = loadScriptWithRetry(buildParams());
+      const firstExpectation = expect(firstLoad).rejects.toThrow(
+        "no retry was attempted to avoid loading the SDK twice",
+      );
+
+      await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
+      await firstExpectation;
+
+      const secondLoad = loadScriptWithRetry(buildParams());
+      expect(appendChildSpy).toHaveBeenCalledTimes(1);
+
+      vi.stubGlobal("paypal", { version: "6" });
+      scriptElement!.dispatchEvent(new Event("load"));
+
+      await expect(secondLoad).resolves.toBe(window.paypal);
+      expect(scriptElement?.getAttribute("data-loading-state")).toBe(
+        "resolved",
+      );
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  test("should share one late-result observer across repeated timeouts", async () => {
+    let scriptElement: HTMLScriptElement | undefined;
+    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
+      if (node instanceof HTMLScriptElement) {
+        scriptElement = node;
+      }
+      Element.prototype.appendChild.call(document.head, node);
+      return node;
+    });
+    const addEventListenerSpy = vi.spyOn(
+      HTMLScriptElement.prototype,
+      "addEventListener",
+    );
+
+    vi.useFakeTimers();
+    try {
+      const firstExpectation = expect(
+        loadScriptWithRetry(buildParams()),
+      ).rejects.toThrow("no retry was attempted");
+      await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
+      await firstExpectation;
+
+      const secondExpectation = expect(
+        loadScriptWithRetry(buildParams()),
+      ).rejects.toThrow("no retry was attempted");
+      await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
+      await secondExpectation;
+
+      // Initial load listeners + one shared late observer + second-call
+      // listeners. A second late observer would increase each count to four.
+      expect(
+        addEventListenerSpy.mock.calls.filter(([type]) => type === "load"),
+      ).toHaveLength(3);
+      expect(
+        addEventListenerSpy.mock.calls.filter(([type]) => type === "error"),
+      ).toHaveLength(3);
+
+      scriptElement!.dispatchEvent(new Event("error"));
+      expect(scriptElement!.isConnected).toBe(false);
     } finally {
       vi.useRealTimers();
     }
@@ -242,44 +325,35 @@ describe("loadScriptWithRetry()", () => {
     }
   });
 
-  test("should reject after exhausting timeout retries without waiting for error retries", async () => {
-    vi.spyOn(Math, "random").mockReturnValue(0);
-    let attempts = 0;
-    vi.spyOn(document.head, "appendChild").mockImplementation((node) => {
-      attempts++;
-      // never fires load or error, only ever times out
-      return node;
-    });
-
-    const retryDelaysMs = Array.from(
-      { length: MAX_SCRIPT_LOAD_TIMEOUT_RETRIES },
-      (_, index) => expectedRetryDelayMs(index + 1),
-    );
-    const totalDurationMs =
-      SCRIPT_LOAD_TIMEOUT_MS * (MAX_SCRIPT_LOAD_TIMEOUT_RETRIES + 1) +
-      retryDelaysMs.reduce((sum, delay) => sum + delay, 0);
+  test("should remove a timed-out script after its request eventually errors", async () => {
+    let scriptElement: HTMLScriptElement | undefined;
+    const appendChildSpy = vi
+      .spyOn(document.head, "appendChild")
+      .mockImplementation((node) => {
+        if (node instanceof HTMLScriptElement) {
+          scriptElement = node;
+        }
+        Element.prototype.appendChild.call(document.head, node);
+        return node;
+      });
 
     vi.useFakeTimers();
     try {
       const loadPromise = loadScriptWithRetry(buildParams());
       const expectation = expect(loadPromise).rejects.toThrow(
-        `The script "${SCRIPT_URL}" timed out after ${
-          MAX_SCRIPT_LOAD_TIMEOUT_RETRIES + 1
-        } attempt(s) totaling ${totalDurationMs}ms, exceeding the ${SCRIPT_LOAD_TIMEOUT_MS}ms timeout on the final attempt.`,
+        "no retry was attempted to avoid loading the SDK twice",
       );
 
-      for (const delay of retryDelaysMs) {
-        await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
-        await vi.advanceTimersByTimeAsync(delay);
-      }
-      // final attempt times out with no further retry scheduled
       await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
-
       await expectation;
-      // 1 initial attempt + MAX_SCRIPT_LOAD_TIMEOUT_RETRIES retries, well
-      // short of MAX_SCRIPT_LOAD_ERROR_RETRIES which only applies to error retries
-      expect(attempts).toBe(MAX_SCRIPT_LOAD_TIMEOUT_RETRIES + 1);
-      expect(attempts).toBeLessThan(MAX_SCRIPT_LOAD_ERROR_RETRIES + 1);
+
+      scriptElement!.dispatchEvent(new Event("error"));
+
+      expect(appendChildSpy).toHaveBeenCalledTimes(1);
+      expect(scriptElement!.isConnected).toBe(false);
+      expect(scriptElement?.getAttribute("data-loading-state")).toBe(
+        "rejected",
+      );
     } finally {
       vi.useRealTimers();
     }
