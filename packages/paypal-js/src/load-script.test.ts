@@ -100,6 +100,22 @@ describe("loadScript()", () => {
     expect(response).toEqual(window.paypal);
   });
 
+  test("reuses a matching namespace after another script with the same URL", async () => {
+    document.head.innerHTML =
+      '<script src="https://www.paypal.com/sdk/js?client-id=test" data-namespace="paypal1" data-js-sdk-library="paypal-js"></script>' +
+      '<script src="https://www.paypal.com/sdk/js?client-id=test" data-namespace="paypal2" data-js-sdk-library="paypal-js"></script>';
+    const existingNamespace = { version: "5" };
+    vi.stubGlobal("paypal2", existingNamespace);
+
+    const response = await loadScript({
+      clientId: "test",
+      dataNamespace: "paypal2",
+    });
+
+    expect(mockedInsertScriptElement).not.toHaveBeenCalled();
+    expect(response).toBe(existingNamespace);
+  });
+
   test("should support loading multiple scripts using different namespaces", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const windowObject = window as any;
