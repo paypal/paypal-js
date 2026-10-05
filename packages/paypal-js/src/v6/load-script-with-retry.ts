@@ -182,9 +182,7 @@ export function loadScriptWithRetry({
         new Error(
           `The script "${url.toString()}" timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms on attempt ${
             attempt + 1
-          }, totaling ${
-            Date.now() - startTime
-          }ms. The request may still complete, so no retry was attempted to avoid loading the SDK twice.`,
+          }, totaling ${Date.now() - startTime}ms.`,
         ),
       );
     };

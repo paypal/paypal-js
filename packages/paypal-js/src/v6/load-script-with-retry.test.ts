@@ -223,7 +223,7 @@ describe("loadScriptWithRetry()", () => {
     try {
       const loadPromise = loadScriptWithRetry(buildParams());
       const expectation = expect(loadPromise).rejects.toThrow(
-        `The script "${SCRIPT_URL}" timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms on attempt 1, totaling ${SCRIPT_LOAD_TIMEOUT_MS}ms. The request may still complete, so no retry was attempted to avoid loading the SDK twice.`,
+        `The script "${SCRIPT_URL}" timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms on attempt 1, totaling ${SCRIPT_LOAD_TIMEOUT_MS}ms.`,
       );
 
       await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
@@ -262,7 +262,7 @@ describe("loadScriptWithRetry()", () => {
         expectedRetryDelayMs(1) +
         SCRIPT_LOAD_TIMEOUT_MS;
       const expectation = expect(loadPromise).rejects.toThrow(
-        `The script "${SCRIPT_URL}" timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms on attempt 2, totaling ${expectedTotalDurationMs}ms. The request may still complete, so no retry was attempted to avoid loading the SDK twice.`,
+        `The script "${SCRIPT_URL}" timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms on attempt 2, totaling ${expectedTotalDurationMs}ms.`,
       );
 
       await vi.advanceTimersByTimeAsync(expectedTotalDurationMs);
@@ -290,7 +290,7 @@ describe("loadScriptWithRetry()", () => {
     try {
       const firstLoad = loadScriptWithRetry(buildParams());
       const firstExpectation = expect(firstLoad).rejects.toThrow(
-        "no retry was attempted to avoid loading the SDK twice",
+        `timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms`,
       );
 
       await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
@@ -329,13 +329,13 @@ describe("loadScriptWithRetry()", () => {
     try {
       const firstExpectation = expect(
         loadScriptWithRetry(buildParams()),
-      ).rejects.toThrow("no retry was attempted");
+      ).rejects.toThrow(`timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms`);
       await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
       await firstExpectation;
 
       const secondExpectation = expect(
         loadScriptWithRetry(buildParams()),
-      ).rejects.toThrow("no retry was attempted");
+      ).rejects.toThrow(`timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms`);
       await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
       await secondExpectation;
 
@@ -399,7 +399,7 @@ describe("loadScriptWithRetry()", () => {
     try {
       const loadPromise = loadScriptWithRetry(buildParams());
       const expectation = expect(loadPromise).rejects.toThrow(
-        "no retry was attempted to avoid loading the SDK twice",
+        `timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms`,
       );
 
       await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
