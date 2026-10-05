@@ -58,6 +58,7 @@ export {
 } from "./components/Braintree/BraintreePayPalPayLaterButton";
 export { PayPalSavePaymentButton } from "./components/PayPalSavePaymentButton";
 export { VenmoOneTimePaymentButton } from "./components/VenmoOneTimePaymentButton";
+export { VenmoSavePaymentButton } from "./components/VenmoSavePaymentButton";
 export {
   ApplePayOneTimePaymentButton,
   type ApplePayOneTimePaymentButtonProps,
@@ -157,6 +158,10 @@ export {
   useVenmoOneTimePaymentSession,
   type UseVenmoOneTimePaymentSessionProps,
 } from "./hooks/useVenmoOneTimePaymentSession";
+export {
+  useVenmoSavePaymentSession,
+  type UseVenmoSavePaymentSessionProps,
+} from "./hooks/useVenmoSavePaymentSession";
 export {
   useApplePayOneTimePaymentSession,
   type UseApplePayOneTimePaymentSessionProps,

@@ -8,11 +8,12 @@ import {
 
 export type VenmoOneTimePaymentSessionOptions = BasePaymentSessionOptions & {
   orderId?: string;
+  savePayment?: boolean;
 };
 
 export type VenmoSavePaymentSessionOptions = Omit<
   VenmoOneTimePaymentSessionOptions,
-  "onApprove"
+  "onApprove" | "savePayment"
 > & {
   vaultSetupToken?: string;
   onApprove?: (data: { vaultSetupToken: string }) => Promise<void>;

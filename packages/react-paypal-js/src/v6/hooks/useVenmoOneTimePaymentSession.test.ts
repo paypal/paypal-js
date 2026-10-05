@@ -234,6 +234,27 @@ describe("useVenmoOneTimePaymentSession", () => {
       expect(onError).toHaveBeenCalledWith(new Error("test error"));
     });
 
+    test("should forward savePayment to createVenmoOneTimePaymentSession", () => {
+      const onApprove = jest.fn();
+
+      const props: UseVenmoOneTimePaymentSessionProps = {
+        presentationMode: "popup",
+        orderId: "test-order-id",
+        savePayment: true,
+        onApprove,
+      };
+
+      renderHook(() => useVenmoOneTimePaymentSession(props));
+
+      expect(
+        mockSdkInstance.createVenmoOneTimePaymentSession,
+      ).toHaveBeenCalledWith({
+        orderId: "test-order-id",
+        savePayment: true,
+        onApprove,
+      });
+    });
+
     test("should create Venmo session without orderId when createOrder is provided", () => {
       const mockCreateOrder = jest
         .fn()

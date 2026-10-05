@@ -72,6 +72,23 @@ export async function createVaultToken(): Promise<{ vaultSetupToken: string }> {
   return { vaultSetupToken: data.id };
 }
 
+// NOTE: this endpoint does not exist on the sample integration server yet.
+// It needs to be added there (mirroring create-setup-token-for-paypal-save-payment)
+// before this story's live "Canvas" tab can actually create a Venmo vault setup token.
+export async function createVenmoVaultToken(): Promise<{
+  vaultSetupToken: string;
+}> {
+  const response = await fetch(
+    `${SAMPLE_INTEGRATION_API}/paypal-api/vault/create-setup-token-for-venmo-save-payment`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    },
+  );
+  const data = await response.json();
+  return { vaultSetupToken: data.id };
+}
+
 // Subscription APIs
 
 export async function createSubscription(): Promise<{

@@ -191,6 +191,126 @@ export default function App() {
 }
 `;
 
+export const getVenmoOneTimePaymentButtonVaultWithPaymentCode = (): string => `
+// Option 3: Vault with purchase
+// Pass savePayment to also vault the buyer's Venmo account while completing this order
+// (VAULT_WITH_PAYMENT). For a vault-only flow with no purchase, use VenmoSavePaymentButton instead.
+import { PayPalProvider, VenmoOneTimePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+
+async function createOrder() {
+    const response = await fetch("/api/paypal/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json();
+    return { orderId: data.id };
+}
+
+export default function App() {
+    return (
+        <PayPalProvider
+            clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
+            components={["venmo-payments"]}
+            pageType="checkout"
+        >
+            <VenmoOneTimePaymentButton
+                createOrder={createOrder}
+                savePayment={true}
+                onApprove={async (data) => {
+                    await fetch(\`/api/paypal/capture/\${data.orderId}\`, {
+                        method: "POST",
+                    });
+                }}
+                presentationMode="auto"
+            />
+        </PayPalProvider>
+    );
+}
+`;
+
+// ─── VenmoSavePaymentButton ─────────────────────────────────────────────────
+
+export const getVenmoSavePaymentButtonCode = (): string => `
+// Option 1: Lazy vault token creation (Recommended)
+// The vault setup token is created only when the buyer clicks the button.
+// This is a vault-only flow with no purchase (VAULT_WITHOUT_PAYMENT).
+import { PayPalProvider, VenmoSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+
+async function createVaultToken() {
+    const response = await fetch("/api/paypal/create-vault-token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json();
+    return { vaultSetupToken: data.id };
+}
+
+export default function App() {
+    return (
+        <PayPalProvider
+            clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
+            components={["venmo-payments"]}
+            pageType="checkout"
+        >
+            <VenmoSavePaymentButton
+                createVaultToken={createVaultToken}
+                onApprove={async (data) => {
+                    console.log("Venmo account saved:", data.vaultSetupToken);
+                }}
+                presentationMode="auto"
+            />
+        </PayPalProvider>
+    );
+}
+`;
+
+export const getVenmoSavePaymentButtonEagerCode = (): string => `
+// Option 2: Eager vault token creation
+// The vault setup token is created on page load and passed directly as a prop.
+import { useEffect, useState } from "react";
+import { PayPalProvider, VenmoSavePaymentButton } from "@paypal/react-paypal-js/sdk-v6";
+
+function SaveVenmoAccount() {
+    const [vaultSetupToken, setVaultSetupToken] = useState<string | null>(null);
+
+    useEffect(() => {
+        fetch("/api/paypal/create-vault-token", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+        })
+            .then((res) => res.json())
+            .then((data) => setVaultSetupToken(data.id));
+    }, []);
+
+    if (!vaultSetupToken) return <div>Loading...</div>;
+
+    return (
+        <VenmoSavePaymentButton
+            vaultSetupToken={vaultSetupToken}
+            onApprove={async (data) => {
+                console.log("Venmo account saved:", data.vaultSetupToken);
+            }}
+            presentationMode="auto"
+        />
+    );
+}
+
+export default function App() {
+    return (
+        <PayPalProvider
+            clientId="YOUR_CLIENT_ID"
+            environment="sandbox"
+            components={["venmo-payments"]}
+            pageType="checkout"
+        >
+            <SaveVenmoAccount />
+        </PayPalProvider>
+    );
+}
+`;
+
 // ─── PayPalSavePaymentButton ────────────────────────────────────────────────
 
 export const getPayPalSavePaymentButtonCode = (): string => `
