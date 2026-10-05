@@ -2,7 +2,6 @@ import type { PayPalV6Namespace } from "../../types/v6/index";
 import {
   DATA_ATTRIBUTE_LOADING_STATE,
   MAX_SCRIPT_LOAD_ERROR_RETRIES,
-  MAX_SCRIPT_LOAD_TIMEOUT_RETRIES,
   RETRY_BASE_DELAY_MS,
   RETRY_MAX_DELAY_MS,
   SCRIPT_LOADING_STATE,
@@ -24,13 +23,53 @@ function withCacheBustingParam(url: URL, attempt: number): URL {
   return retryUrl;
 }
 
+const observedTimedOutScripts = new WeakSet<HTMLScriptElement>();
+
+function observeTimedOutScriptOutcome(
+  scriptElement: HTMLScriptElement,
+  namespace: string,
+) {
+  if (observedTimedOutScripts.has(scriptElement)) {
+    return;
+  }
+  observedTimedOutScripts.add(scriptElement);
+
+  const cleanup = () => {
+    observedTimedOutScripts.delete(scriptElement);
+    scriptElement.removeEventListener("load", handleLateLoad);
+    scriptElement.removeEventListener("error", handleLateError);
+  };
+
+  const handleLateLoad = () => {
+    cleanup();
+    const paypalWindowReference = getPayPalWindowNamespace(namespace);
+    scriptElement.setAttribute(
+      DATA_ATTRIBUTE_LOADING_STATE,
+      paypalWindowReference
+        ? SCRIPT_LOADING_STATE.RESOLVED
+        : SCRIPT_LOADING_STATE.REJECTED,
+    );
+  };
+
+  const handleLateError = () => {
+    cleanup();
+    scriptElement.setAttribute(
+      DATA_ATTRIBUTE_LOADING_STATE,
+      SCRIPT_LOADING_STATE.REJECTED,
+    );
+    scriptElement.remove();
+  };
+
+  scriptElement.addEventListener("load", handleLateLoad);
+  scriptElement.addEventListener("error", handleLateError);
+}
+
 export function loadScriptWithRetry({
   url,
   namespace,
   dataNamespace,
   dataSdkIntegrationSource,
   attempt = 0,
-  timeoutRetryCount = 0,
   startTime = Date.now(),
 }: {
   url: URL;
@@ -38,7 +77,6 @@ export function loadScriptWithRetry({
   dataNamespace: string | undefined;
   dataSdkIntegrationSource: string | undefined;
   attempt?: number;
-  timeoutRetryCount?: number;
   startTime?: number;
 }): Promise<PayPalV6Namespace> {
   const isRetry = attempt > 0;
@@ -93,7 +131,7 @@ export function loadScriptWithRetry({
       return resolve(paypalWindowReference);
     };
 
-    const retry = (nextTimeoutRetryCount: number) => {
+    const retry = () => {
       setTimeout(
         () => {
           // Another script tag (e.g. one already in the DOM before this
@@ -112,7 +150,6 @@ export function loadScriptWithRetry({
               dataNamespace,
               dataSdkIntegrationSource,
               attempt: attempt + 1,
-              timeoutRetryCount: nextTimeoutRetryCount,
               startTime,
             }),
           );
@@ -135,20 +172,17 @@ export function loadScriptWithRetry({
       }
       settled = true;
       cleanup();
-      failScript();
 
-      if (timeoutRetryCount < MAX_SCRIPT_LOAD_TIMEOUT_RETRIES) {
-        retry(timeoutRetryCount + 1);
-        return;
-      }
+      // Removing a <script> does not cancel its request. Keep the element and
+      // one shared observer so a manual follow-up call reuses the same request,
+      // while its eventual error still allows a future clean retry.
+      observeTimedOutScriptOutcome(scriptElement, namespace);
 
       return reject(
         new Error(
-          `The script "${url.toString()}" timed out after ${
-            timeoutRetryCount + 1
-          } attempt(s) totaling ${
-            Date.now() - startTime
-          }ms, exceeding the ${SCRIPT_LOAD_TIMEOUT_MS}ms timeout on the final attempt.`,
+          `The script "${url.toString()}" timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms on attempt ${
+            attempt + 1
+          }, totaling ${Date.now() - startTime}ms.`,
         ),
       );
     };
@@ -162,7 +196,7 @@ export function loadScriptWithRetry({
       failScript();
 
       if (attempt < MAX_SCRIPT_LOAD_ERROR_RETRIES) {
-        retry(timeoutRetryCount);
+        retry();
         return;
       }
 

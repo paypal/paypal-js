@@ -12,9 +12,13 @@
     <script type="module">
       import { loadCoreSdkScript } from "../../dist/v6/esm/paypal-js.js";
 
-      loadCoreSdkScript({ environment: "sandbox" }).then(() => {
-        document.querySelector("#result").textContent = "loaded";
-      });
+      loadCoreSdkScript({ environment: "sandbox" })
+        .then(() => {
+          document.querySelector("#result").textContent = "loaded";
+        })
+        .catch((error) => {
+          document.querySelector("#result").textContent = error.message;
+        });
     </script>
   </body>
 </html>
