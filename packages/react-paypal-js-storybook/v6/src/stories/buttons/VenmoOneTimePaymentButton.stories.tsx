@@ -12,6 +12,7 @@ import { V6DocPageStructure } from "../../components";
 import {
   getVenmoOneTimePaymentButtonCode,
   getVenmoOneTimePaymentButtonEagerCode,
+  getVenmoOneTimePaymentButtonVaultWithPaymentCode,
 } from "../../shared/code";
 
 const meta: Meta<typeof VenmoOneTimePaymentButton> = {
@@ -23,6 +24,8 @@ const meta: Meta<typeof VenmoOneTimePaymentButton> = {
     docs: {
       description: {
         component: `Pay with Venmo offers a simplified mobile checkout experience at no additional cost.
+
+Pass \`savePayment\` to also vault the buyer's Venmo account while completing this order (VAULT_WITH_PAYMENT). For a vault-only flow with no purchase, use \`VenmoSavePaymentButton\` instead.
 
 It relies on the \`<PayPalProvider />\` parent component for managing SDK initialization and state.
 For more information, see [Pay with Venmo](https://docs.paypal.ai/payments/methods/venmo/integrate)
@@ -36,6 +39,10 @@ For more information, see [Pay with Venmo](https://docs.paypal.ai/payments/metho
             {
               title: "Option 2: Eager Order Creation",
               code: getVenmoOneTimePaymentButtonEagerCode(),
+            },
+            {
+              title: "Option 3: Vault With Purchase (savePayment)",
+              code: getVenmoOneTimePaymentButtonVaultWithPaymentCode(),
             },
           ]}
         />
@@ -54,6 +61,12 @@ For more information, see [Pay with Venmo](https://docs.paypal.ai/payments/metho
     orderId: {
       description:
         "Pre-created order ID string. Use when the order is created before rendering. Mutually exclusive with `createOrder`.",
+      table: { category: "Events" },
+    },
+    savePayment: {
+      description:
+        "Vault the buyer's Venmo account while also completing this order (VAULT_WITH_PAYMENT). For a vault-only flow with no purchase, use `VenmoSavePaymentButton` instead.",
+      control: { type: "boolean" as const },
       table: { category: "Events" },
     },
     onApprove: {
@@ -78,6 +91,15 @@ type Story = StoryObj<typeof VenmoOneTimePaymentButton>;
 export const Default: Story = {
   args: {
     createOrder,
+    presentationMode: "auto",
+    ...oneTimePaymentCallbacks,
+  },
+};
+
+export const VaultWithPayment: Story = {
+  args: {
+    createOrder,
+    savePayment: true,
     presentationMode: "auto",
     ...oneTimePaymentCallbacks,
   },
