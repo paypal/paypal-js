@@ -240,6 +240,34 @@ describe("loadScriptWithRetry()", () => {
     }
   });
 
+  test("should resolve on timeout when the namespace is available without a load event", async () => {
+    const appendChildSpy = vi
+      .spyOn(document.head, "appendChild")
+      .mockImplementation((node) => {
+        Element.prototype.appendChild.call(document.head, node);
+        return node;
+      });
+
+    vi.useFakeTimers();
+    try {
+      const loadPromise = loadScriptWithRetry(buildParams());
+
+      await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS - 1);
+      vi.stubGlobal("paypal", { version: "6" });
+      await vi.advanceTimersByTimeAsync(1);
+
+      await expect(loadPromise).resolves.toBe(window.paypal);
+      expect(appendChildSpy).toHaveBeenCalledTimes(1);
+      expect(
+        document
+          .querySelector('script[src*="/web-sdk/v6/core"]')
+          ?.getAttribute("data-loading-state"),
+      ).toBe("resolved");
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   test("should give an explicit-error retry its own timeout", async () => {
     vi.spyOn(Math, "random").mockReturnValue(0);
     let attempts = 0;
