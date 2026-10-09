@@ -170,6 +170,14 @@ export function loadScriptWithRetry({
       if (settled) {
         return;
       }
+
+      // Treat it as a successful load if the script executed but its load
+      // event was not observed before the timeout fired.
+      if (getPayPalWindowNamespace(namespace)) {
+        handleLoad();
+        return;
+      }
+
       settled = true;
       cleanup();
 
