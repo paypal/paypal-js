@@ -132,6 +132,44 @@ describe("GooglePayOneTimePaymentButton", () => {
     });
   });
 
+  it("does not let an older async button replace the latest one", async () => {
+    let resolveFirst!: (button: HTMLElement) => void;
+    const firstButton = document.createElement("button");
+    firstButton.dataset.request = "first";
+    const secondButton = document.createElement("button");
+    secondButton.dataset.request = "second";
+
+    mockCreateGooglePayButton
+      .mockReturnValueOnce(
+        new Promise<HTMLElement>((resolve) => {
+          resolveFirst = resolve;
+        }),
+      )
+      .mockResolvedValueOnce(secondButton);
+
+    const { container, rerender } = render(
+      <GooglePayOneTimePaymentButton {...defaultProps} buttonType="pay" />,
+    );
+    rerender(
+      <GooglePayOneTimePaymentButton {...defaultProps} buttonType="buy" />,
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector('[data-request="second"]')).toBe(
+        secondButton,
+      );
+    });
+
+    resolveFirst(firstButton);
+
+    await waitFor(() => {
+      expect(container.querySelector('[data-request="second"]')).toBe(
+        secondButton,
+      );
+      expect(container.querySelector('[data-request="first"]')).toBeNull();
+    });
+  });
+
   it("does not mount button when createGooglePayButton returns null", async () => {
     mockCreateGooglePayButton.mockResolvedValue(null);
 
