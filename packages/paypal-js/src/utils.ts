@@ -12,35 +12,26 @@ export function findScript(
   url: string,
   attributes?: StringMap,
 ): HTMLScriptElement | null {
-  const currentScript = document.querySelector<HTMLScriptElement>(
+  const currentScripts = document.querySelectorAll<HTMLScriptElement>(
     `script[src="${url}"]`,
   );
-  if (currentScript === null) return null;
-
   const nextScript = createScriptElement(url, attributes);
 
-  // ignore the data-uid-auto attribute that gets auto-assigned to every script tag
-  const currentScriptClone = currentScript.cloneNode() as HTMLScriptElement;
-  delete currentScriptClone.dataset.uidAuto;
+  return (
+    Array.from(currentScripts).find((currentScript) => {
+      // Ignore the attribute that gets auto-assigned to every script tag.
+      const currentScriptClone = currentScript.cloneNode() as HTMLScriptElement;
+      delete currentScriptClone.dataset.uidAuto;
+      const keys = Object.keys(currentScriptClone.dataset);
 
-  // check if the new script has the same number of data attributes
-  if (
-    Object.keys(currentScriptClone.dataset).length !==
-    Object.keys(nextScript.dataset).length
-  ) {
-    return null;
-  }
-
-  let isExactMatch = true;
-
-  // check if the data attribute values are the same
-  Object.keys(currentScriptClone.dataset).forEach((key) => {
-    if (currentScriptClone.dataset[key] !== nextScript.dataset[key]) {
-      isExactMatch = false;
-    }
-  });
-
-  return isExactMatch ? currentScript : null;
+      return (
+        keys.length === Object.keys(nextScript.dataset).length &&
+        keys.every(
+          (key) => currentScriptClone.dataset[key] === nextScript.dataset[key],
+        )
+      );
+    }) || null
+  );
 }
 
 export interface ScriptElement {
