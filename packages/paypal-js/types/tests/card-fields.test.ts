@@ -5,6 +5,7 @@ import {
   PayPalCardFieldsComponent,
   PayPalCardFieldsBillingAddress,
   PayPalCardFieldsSubmitOptions,
+  CardFieldsOnApproveData,
 } from "../components/card-fields";
 
 describe("testing createOrder and createVaultToken types", () => {
@@ -117,5 +118,26 @@ describe("testing submit options types", () => {
   test("submit rejects non-object argument", () => {
     // @ts-expect-error: submit should not accept a string
     mockCardFields.submit("billingAddress");
+  });
+
+  test("CardFieldsOnApproveData supports orderID, liabilityShift, and vaultSetupToken", () => {
+    const orderData: CardFieldsOnApproveData = {
+      orderID: "ORDER-12345",
+      liabilityShift: "POSSIBLE",
+    };
+    expect(orderData.orderID).toBe("ORDER-12345");
+    expect(orderData.liabilityShift).toBe("POSSIBLE");
+
+    const vaultData: CardFieldsOnApproveData = {
+      vaultSetupToken: "VAULT-TOKEN-67890",
+    };
+    expect(vaultData.vaultSetupToken).toBe("VAULT-TOKEN-67890");
+
+    const combinedData: CardFieldsOnApproveData = {
+      orderID: "ORDER-12345",
+      liabilityShift: "YES",
+      vaultSetupToken: "VAULT-TOKEN-67890",
+    };
+    expect(combinedData.orderID).toBe("ORDER-12345");
   });
 });

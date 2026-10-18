@@ -54,8 +54,10 @@ export type PayPalCardFieldsSubmitOptions = {
 };
 
 export type CardFieldsOnApproveData = {
-  orderID: string;
-  liabilityShift?: string;
+  orderID?: string;
+  liabilityShift?: "POSSIBLE" | "YES" | "NO" | "UNKNOWN" | string;
+  /** Present for vault-without-purchase flows */
+  vaultSetupToken?: string | null;
 };
 
 export interface PayPalCardFieldsInputEvents {
