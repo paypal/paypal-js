@@ -17,6 +17,14 @@ describe("getPayPalWindowNamespace()", () => {
     expect(getPayPalWindowNamespace("paypal")).toBe(reference);
   });
 
+  test("should return undefined when window[namespace] is not the v6 SDK", () => {
+    vi.stubGlobal("paypal", { version: "5.0.500" });
+    expect(getPayPalWindowNamespace("paypal")).toBeUndefined();
+
+    vi.stubGlobal("paypal", {});
+    expect(getPayPalWindowNamespace("paypal")).toBeUndefined();
+  });
+
   test("should support custom namespaces", () => {
     const reference = { version: "6" };
     vi.stubGlobal("myCustomNamespace", reference);

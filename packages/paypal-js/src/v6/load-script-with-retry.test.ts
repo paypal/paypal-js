@@ -411,6 +411,56 @@ describe("loadScriptWithRetry()", () => {
     }
   });
 
+  test("should retry instead of resolving with a non-v6 namespace already on window", async () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
+    // e.g. a v5 SDK left on window.paypal by an earlier page
+    vi.stubGlobal("paypal", { version: "5.0.500" });
+    let attempts = 0;
+    const appendChildSpy = vi
+      .spyOn(document.head, "appendChild")
+      .mockImplementation((node) => {
+        attempts++;
+        if (attempts === 1) {
+          process.nextTick(() => node.dispatchEvent(new Event("error")));
+        } else {
+          vi.stubGlobal("paypal", { version: "6.1.0" });
+          process.nextTick(() => node.dispatchEvent(new Event("load")));
+        }
+        return node;
+      });
+
+    vi.useFakeTimers();
+    try {
+      const loadPromise = loadScriptWithRetry(buildParams());
+
+      await vi.advanceTimersByTimeAsync(expectedRetryDelayMs(1));
+
+      const result = await loadPromise;
+      expect(result.version).toBe("6.1.0");
+      expect(appendChildSpy).toHaveBeenCalledTimes(2);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  test("should not resolve on timeout with a non-v6 namespace already on window", async () => {
+    vi.stubGlobal("paypal", { version: "5.0.500" });
+    vi.spyOn(document.head, "appendChild").mockImplementation((node) => node);
+
+    vi.useFakeTimers();
+    try {
+      const loadPromise = loadScriptWithRetry(buildParams());
+      const expectation = expect(loadPromise).rejects.toThrow(
+        `timed out after ${SCRIPT_LOAD_TIMEOUT_MS}ms`,
+      );
+
+      await vi.advanceTimersByTimeAsync(SCRIPT_LOAD_TIMEOUT_MS);
+      await expectation;
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   test("should remove a timed-out script after its request eventually errors", async () => {
     let scriptElement: HTMLScriptElement | undefined;
     const appendChildSpy = vi
