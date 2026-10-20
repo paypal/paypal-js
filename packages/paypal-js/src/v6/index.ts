@@ -31,7 +31,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
   );
   const namespace = dataNamespace ?? "paypal";
   const paypalWindowReference = getPayPalWindowNamespace(namespace);
-  if (paypalWindowReference?.version.startsWith("6")) {
+  if (paypalWindowReference) {
     return Promise.resolve(paypalWindowReference);
   }
 
