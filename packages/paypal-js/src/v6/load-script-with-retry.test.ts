@@ -50,7 +50,7 @@ describe("loadScriptWithRetry()", () => {
     expect(result).toBe(window.paypal);
   });
 
-  test("should continue waiting for a slow script until the 30-second timeout", async () => {
+  test("should continue waiting for a slow script until the 60-second timeout", async () => {
     vi.useFakeTimers();
     try {
       const appendChildSpy = vi
