@@ -89,8 +89,9 @@ export function useVenmoOneTimePaymentSession({
   const isPending = loadingStatus === INSTANCE_LOADING_STATE.PENDING;
 
   const handleDestroy = useCallback(() => {
-    sessionRef.current?.destroy();
+    const session = sessionRef.current;
     sessionRef.current = null;
+    session?.destroy();
   }, []);
 
   // Handle SDK availability
@@ -134,7 +135,10 @@ export function useVenmoOneTimePaymentSession({
     sessionRef.current = newSession;
 
     return () => {
-      newSession.destroy();
+      if (sessionRef.current === newSession) {
+        sessionRef.current = null;
+        newSession.destroy();
+      }
     };
   }, [sdkInstance, orderId, savePayment, proxyCallbacks, setError]);
 
