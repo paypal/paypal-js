@@ -64,7 +64,7 @@ export const ApplePayOneTimePaymentButton = ({
 
     el.addEventListener("click", onClick);
     return () => el.removeEventListener("click", onClick);
-  }, []);
+  }, [isHydrated]);
 
   useEffect(() => {
     if (error) {
