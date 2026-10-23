@@ -81,7 +81,7 @@
     "tslib": "2.6.2",
     "typedoc": "^0.28.13",
     "typedoc-material-theme": "^1.4.0",
-    "vitest": "4.1.0"
+    "vitest": "4.1.11"
   },
   "dependencies": {
     "promise-polyfill": "^8.3.0"
