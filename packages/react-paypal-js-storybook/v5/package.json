@@ -35,7 +35,7 @@
     "@types/react-dom": "^17.0.11",
     "@types/string-template": "^1.0.2",
     "react-element-to-jsx-string": "^14.3.4",
-    "storybook": "^10.4.6",
+    "storybook": "^10.6.3",
     "string-template": "^1.0.0",
     "ts-dedent": "^2.2.0",
     "vite": "^6.4.3"
