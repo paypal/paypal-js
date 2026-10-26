@@ -3,6 +3,7 @@ import type {
   PayPalV6Namespace,
   LoadCoreSdkScriptOptions,
 } from "../../types/v6/index";
+import { DEFAULT_NAMESPACE } from "./constants";
 import { getPayPalWindowNamespace } from "./dom";
 import { loadScriptWithRetry } from "./load-script-with-retry";
 import { validateArguments } from "./validate-arguments";
@@ -29,7 +30,7 @@ function loadCoreSdkScript(options: LoadCoreSdkScriptOptions) {
     options,
     "dataSdkIntegrationSource",
   );
-  const namespace = dataNamespace ?? "paypal";
+  const namespace = dataNamespace ?? DEFAULT_NAMESPACE;
   const paypalWindowReference = getPayPalWindowNamespace(namespace);
   if (paypalWindowReference) {
     return Promise.resolve(paypalWindowReference);

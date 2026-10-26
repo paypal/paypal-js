@@ -6,6 +6,9 @@ export const SCRIPT_LOADING_STATE = {
 
 export const DATA_ATTRIBUTE_LOADING_STATE = "data-loading-state";
 
+// The window namespace used when no dataNamespace is given.
+export const DEFAULT_NAMESPACE = "paypal";
+
 export const MAX_SCRIPT_LOAD_ERROR_RETRIES = 2;
 // Each script attempt may remain pending for this long before timing out.
 export const SCRIPT_LOAD_TIMEOUT_MS = 60_000;
