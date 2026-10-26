@@ -53,9 +53,21 @@ export type PayPalCardFieldsSubmitOptions = {
   billingAddress?: PayPalCardFieldsBillingAddress;
 };
 
+export type CardFieldsLiabilityShift =
+  | "POSSIBLE"
+  | "YES"
+  | "NO"
+  | "UNKNOWN"
+  | (string & {});
+
 export type CardFieldsOnApproveData = {
   orderID: string;
-  liabilityShift?: string;
+  liabilityShift?: CardFieldsLiabilityShift;
+};
+
+export type CardFieldsVaultOnApproveData = {
+  vaultSetupToken: string;
+  liabilityShift?: CardFieldsLiabilityShift;
 };
 
 export interface PayPalCardFieldsInputEvents {
@@ -146,7 +158,6 @@ export interface PayPalCardFieldsIndividualField {
 }
 
 export interface PayPalCardFieldsComponentBasics {
-  onApprove: (data: CardFieldsOnApproveData) => void;
   onError: (err: Record<string, unknown>) => void;
   onCancel?: () => Promise<void> | void;
   inputEvents?: PayPalCardFieldsInputEvents;
@@ -156,11 +167,13 @@ export interface PayPalCardFieldsComponentBasics {
 export interface PayPalCardFieldsComponentCreateOrder extends PayPalCardFieldsComponentBasics {
   createOrder: () => Promise<string>;
   createVaultSetupToken?: never;
+  onApprove: (data: CardFieldsOnApproveData) => void;
 }
 
 export interface PayPalCardFieldsComponentCreateVaultSetupToken extends PayPalCardFieldsComponentBasics {
   createOrder?: never;
   createVaultSetupToken: () => Promise<string>;
+  onApprove: (data: CardFieldsVaultOnApproveData) => void;
 }
 
 export type PayPalCardFieldsComponentOptions =
