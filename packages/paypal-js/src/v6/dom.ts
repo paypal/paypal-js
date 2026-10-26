@@ -4,7 +4,18 @@ export function getPayPalWindowNamespace(
   namespace: string,
 ): PayPalV6Namespace | undefined {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return (window as any)[namespace];
+  const paypalWindowReference = (window as any)[namespace];
+
+  // Ignore anything that is not the v6 SDK, such as a v5 SDK that is
+  // already loaded on the same namespace.
+  if (
+    typeof paypalWindowReference?.version !== "string" ||
+    !paypalWindowReference.version.startsWith("6")
+  ) {
+    return undefined;
+  }
+
+  return paypalWindowReference;
 }
 
 export function createScriptElement({

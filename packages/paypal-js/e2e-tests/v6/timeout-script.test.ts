@@ -76,7 +76,7 @@ test("Wait for a slow script without starting a second request (v6)", async ({
   await expect(resolvedScripts).toHaveCount(1);
 });
 
-test("Reject after 30 seconds when the script never loads (v6)", async ({
+test("Reject after 60 seconds when the script never loads (v6)", async ({
   page,
 }) => {
   test.setTimeout(SCRIPT_LOAD_TIMEOUT_MS + 15_000);

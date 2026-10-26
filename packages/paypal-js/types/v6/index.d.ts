@@ -92,6 +92,7 @@ export type CreateInstanceOptions<T extends readonly Components[]> =
  * **Always includes:**
  * - `findEligibleMethods()` - Base method that verifies buyer and merchant eligibility for various payment methods. Use this to conditionally render the appropriate payment buttons on your site.
  * - `updateLocale()` - Base method that updates the locale for the SDK instance. The locale should be specified using a BCP-47 code.
+ * - `updateClientToken()` - Base method that updates the client token for the SDK instance.
  *
  * **Conditionally includes methods based on components:**
  * - `"paypal-payments"` - Adds PayPalPaymentsInstance methods
@@ -212,6 +213,22 @@ export interface BaseInstance {
    * ```
    */
   updateLocale: (locale: string) => void;
+  /**
+   * Replaces the clientToken (e.g. before it expires) for this SDK instance and
+   * its sessions, without calling `createInstance` again. The new token must be
+   * for the same clientId and merchant.
+   *
+   * @param clientToken - A PayPal JWT or Braintree-wrapped clientToken.
+   * @throws If the instance was created with a clientId, or if the token is not
+   * a valid JWT.
+   * @returns void
+   *
+   * @example
+   * ```typescript
+   * sdkInstance.updateClientToken("your-new-client-token");
+   * ```
+   */
+  updateClientToken: (clientToken: string) => void;
   /**
    * Hydrates the SDK instance with eligible payment methods from a pre-fetched response.
    *
