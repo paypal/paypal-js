@@ -101,6 +101,84 @@ describe("loadScriptWithRetry()", () => {
     expect(result).toBeDefined();
   });
 
+  test("should not reuse a pending script that belongs to another namespace", async () => {
+    document.head.innerHTML = `<script src="${SCRIPT_URL}" data-loading-state="pending"></script>`;
+    const pendingScript = document.querySelector("script")!;
+    const customNamespace = { version: "6" };
+    const appendChildSpy = vi
+      .spyOn(document.head, "appendChild")
+      .mockImplementation((node) => {
+        vi.stubGlobal("customNamespace", customNamespace);
+        process.nextTick(() => node.dispatchEvent(new Event("load")));
+        return node;
+      });
+
+    const result = await loadScriptWithRetry(
+      buildParams({
+        namespace: "customNamespace",
+        dataNamespace: "customNamespace",
+      }),
+    );
+
+    expect(appendChildSpy).toHaveBeenCalledTimes(1);
+    const insertedScript = appendChildSpy.mock.calls[0][0] as HTMLScriptElement;
+    expect(insertedScript.getAttribute("data-namespace")).toBe(
+      "customNamespace",
+    );
+    expect(result).toBe(customNamespace);
+    // the other namespace's script is left as it was
+    expect(pendingScript.getAttribute("data-loading-state")).toBe("pending");
+  });
+
+  test.each([
+    {
+      description: 'without a data-namespace when called with "paypal"',
+      scriptAttributes: "",
+      dataNamespace: "paypal",
+    },
+    {
+      description: 'with data-namespace="paypal" when called without one',
+      scriptAttributes: ' data-namespace="paypal"',
+      dataNamespace: undefined,
+    },
+  ])(
+    "should reuse a pending script $description",
+    async ({ scriptAttributes, dataNamespace }) => {
+      document.head.innerHTML = `<script src="${SCRIPT_URL}"${scriptAttributes} data-loading-state="pending"></script>`;
+      const appendChildSpy = vi.spyOn(document.head, "appendChild");
+
+      process.nextTick(() => {
+        vi.stubGlobal("paypal", { version: "6" });
+        document
+          .querySelector('script[src*="/web-sdk/v6/core"]')!
+          .dispatchEvent(new Event("load"));
+      });
+
+      const result = await loadScriptWithRetry(buildParams({ dataNamespace }));
+
+      expect(appendChildSpy).not.toHaveBeenCalled();
+      expect(result).toBeDefined();
+    },
+  );
+
+  test("should not reuse a pending script for another environment", async () => {
+    document.head.innerHTML = `<script src="https://www.paypal.com/web-sdk/v6/core" data-loading-state="pending"></script>`;
+    const appendChildSpy = vi
+      .spyOn(document.head, "appendChild")
+      .mockImplementation((node) => {
+        vi.stubGlobal("paypal", { version: "6" });
+        process.nextTick(() => node.dispatchEvent(new Event("load")));
+        return node;
+      });
+
+    await loadScriptWithRetry(buildParams());
+
+    expect(appendChildSpy).toHaveBeenCalledTimes(1);
+    expect((appendChildSpy.mock.calls[0][0] as HTMLScriptElement).src).toBe(
+      SCRIPT_URL,
+    );
+  });
+
   test("should append a cache-busting query param on retry attempts", async () => {
     const scriptElements: HTMLScriptElement[] = [];
     vi.spyOn(document.head, "appendChild").mockImplementation((node) => {

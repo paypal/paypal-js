@@ -1,6 +1,7 @@
 import type { PayPalV6Namespace } from "../../types/v6/index";
 import {
   DATA_ATTRIBUTE_LOADING_STATE,
+  DEFAULT_NAMESPACE,
   MAX_SCRIPT_LOAD_ERROR_RETRIES,
   RETRY_BASE_DELAY_MS,
   RETRY_MAX_DELAY_MS,
@@ -64,6 +65,41 @@ function observeTimedOutScriptOutcome(
   scriptElement.addEventListener("error", handleLateError);
 }
 
+// A pending script is only reusable when it requests the same SDK (same
+// origin and path, so production and sandbox are not mixed) for the same
+// namespace. Each data-namespace is meant to load in isolation, and a script
+// for another namespace would never set window[namespace] for this call.
+// An omitted data-namespace means DEFAULT_NAMESPACE, the same default
+// loadCoreSdkScript uses, so the two are treated as the same namespace.
+function findPendingScript(
+  url: URL,
+  dataNamespace: string | undefined,
+): HTMLScriptElement | null {
+  const pendingScripts = document.querySelectorAll<HTMLScriptElement>(
+    `script[${DATA_ATTRIBUTE_LOADING_STATE}="${SCRIPT_LOADING_STATE.PENDING}"]`,
+  );
+
+  for (const script of Array.from(pendingScripts)) {
+    let scriptUrl: URL;
+    try {
+      scriptUrl = new URL(script.src);
+    } catch {
+      continue;
+    }
+
+    if (
+      scriptUrl.origin === url.origin &&
+      scriptUrl.pathname === url.pathname &&
+      (script.getAttribute("data-namespace") ?? DEFAULT_NAMESPACE) ===
+        (dataNamespace ?? DEFAULT_NAMESPACE)
+    ) {
+      return script;
+    }
+  }
+
+  return null;
+}
+
 export function loadScriptWithRetry({
   url,
   namespace,
@@ -83,10 +119,7 @@ export function loadScriptWithRetry({
   const scriptUrl = isRetry ? withCacheBustingParam(url, attempt) : url;
 
   const scriptElement =
-    (!isRetry &&
-      document.querySelector<HTMLScriptElement>(
-        `script[src*="${url.pathname}"][${DATA_ATTRIBUTE_LOADING_STATE}="${SCRIPT_LOADING_STATE.PENDING}"]`,
-      )) ||
+    (!isRetry && findPendingScript(url, dataNamespace)) ||
     createScriptElement({
       url: scriptUrl.toString(),
       attributes: {

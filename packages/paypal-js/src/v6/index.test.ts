@@ -188,6 +188,38 @@ describe("loadCoreSdkScript()", () => {
     });
   });
 
+  test("should load concurrent namespaces independently", async () => {
+    scriptAppendChildSpy.mockImplementation((node: Node) => {
+      Element.prototype.appendChild.call(document.head, node);
+      return node;
+    });
+
+    const first = loadCoreSdkScript({ environment: "sandbox" });
+    const second = loadCoreSdkScript({
+      environment: "sandbox",
+      dataNamespace: "paypalB",
+    });
+
+    const scripts = document.querySelectorAll<HTMLScriptElement>("script");
+    expect(scripts).toHaveLength(2);
+
+    const sdkA = { version: "6.0.0" };
+    vi.stubGlobal("paypal", sdkA);
+    scripts[0].dispatchEvent(new Event("load"));
+
+    await expect(first).resolves.toBe(sdkA);
+    expect(scripts[0].getAttribute("data-loading-state")).toBe("resolved");
+    expect(scripts[1].getAttribute("data-loading-state")).toBe("pending");
+
+    const sdkB = { version: "6.0.0" };
+    vi.stubGlobal("paypalB", sdkB);
+    scripts[1].dispatchEvent(new Event("load"));
+
+    await expect(second).resolves.toBe(sdkB);
+    expect(scripts[0].getAttribute("data-loading-state")).toBe("resolved");
+    expect(scripts[1].getAttribute("data-loading-state")).toBe("resolved");
+  });
+
   describe("dataSdkIntegrationSource option", () => {
     test("should support custom data-sdk-integration-source attribute", async () => {
       const integrationSource = "react-paypal-js";
